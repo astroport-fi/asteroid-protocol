@@ -1,0 +1,38 @@
+{
+    "body": {
+        "messages": [
+            {
+                "@type": "/cosmos.bank.v1beta1.MsgSend",
+                "from_address": "cosmos1fkwcez7yzjz2gpzhesdsd3r5wp0w82cftr4k95",
+                "to_address": "cosmos198tjtk9rzwzwcce6r8uu2gj950p9gqakm6jz92",
+                "amount": [
+                    {
+                        "denom": "uatom",
+                        "amount": "1"
+                    }
+                ]
+            }
+        ],
+        "memo": "No memo needed",
+        "timeout_height": "0",
+        "extension_options": [],
+        "non_critical_extension_options": [
+            {
+                "@type": "/cosmos.authz.v1beta1.MsgRevoke",
+                "granter": "ewogICAgInBhcmVudCI6IHsKICAgICAgICAiQHR5cGUiOiAiL2Nvc21vcy5hdXRoLnYxYmV0YTEuQmFzZUFjY291bnQiLAogICAgICAgICJpZGVudGlmaWVyIjogImNvc21vczFma3djZXo3eXpqejJncHpoZXNkc2QzcjV3cDB3ODJjZnRyNGs5NSIKICAgIH0sCiAgICAibWV0YWRhdGEiOiB7CiAgICAgICAgIm5hbWUiOiAiQ29zbW9zIEh1YiBMb2dvIiwKICAgICAgICAibWltZSI6ICJpbWFnZS9wbmciCiAgICB9Cn0=",
+                "grantee": "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",
+                "msg_type_url": "inscriptions.v1.content.generic"
+            }
+        ]
+    },
+    "auth_info": {
+        "signer_infos": [],
+        "fee": {
+            "amount": [],
+            "gas_limit": "7000000",
+            "payer": "",
+            "granter": ""
+        }
+    },
+    "signatures": []
+}
