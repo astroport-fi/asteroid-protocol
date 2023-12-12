@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -97,7 +96,8 @@ func (i *Indexer) indexBlocks() {
 	}).Info("Starting to fetch blocks")
 
 	// Fetch blocks interval
-	ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Second)
+	// ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Second)
+	ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Millisecond)
 	defer ticker.Stop()
 
 	for {
@@ -107,8 +107,25 @@ func (i *Indexer) indexBlocks() {
 			i.wg.Done()
 			return
 		case <-ticker.C:
+
+			// TODO: Check if the block even exists?!?!?!
+			maxHeight, err := i.fetchCurrentHeight()
+			if err != nil {
+				// TODO: What do we do here if this fails?
+				// Check specific types
+				// If total failure, try again
+				// If only partial, continue?
+				i.logger.Fatal(err)
+			}
+
+			if currentHeight >= maxHeight {
+				continue
+			}
+
 			i.logger.WithFields(logrus.Fields{
 				"current_height": currentHeight,
+				"max_height":     maxHeight,
+				"lag":            maxHeight - currentHeight,
 			}).Debug("Fetching block")
 
 			// TODO: Remove height?
@@ -141,27 +158,27 @@ func (i *Indexer) indexBlocks() {
 					continue
 				}
 
-				// height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-				// gasUsed, _ := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
-				// fees, _ := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
+				height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
+				gasUsed, _ := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
+				fees, _ := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
 
-				// txModel := models.Transaction{
-				// 	Hash:          tx,
-				// 	Height:        height,
-				// 	Content:       rawTransaction.ToJSON(),
-				// 	GasUsed:       gasUsed,
-				// 	Fees:          string(fees),
-				// 	ContentLength: uint64(txSize),
-				// 	DateCreated:   time.Now(),
-				// }
-				// result := i.db.Save(&txModel)
-				// if result.Error != nil {
-				// 	if result.Error == gorm.ErrDuplicatedKey || strings.Contains(result.Error.Error(), "Duplicate entry") {
-				// 		i.logger.Warn("Transaction already exists:", tx)
-				// 		continue
-				// 	}
-				// 	i.logger.Fatal(result.Error)
-				// }
+				txModel := models.Transaction{
+					Hash:          tx,
+					Height:        height,
+					Content:       rawTransaction.ToJSON(),
+					GasUsed:       gasUsed,
+					Fees:          string(fees),
+					ContentLength: uint64(txSize),
+					DateCreated:   rawTransaction.TxResponse.Timestamp,
+				}
+				result := i.db.Save(&txModel)
+				if result.Error != nil {
+					if result.Error == gorm.ErrDuplicatedKey || strings.Contains(result.Error.Error(), "Duplicate entry") {
+						i.logger.Warn("Transaction already exists:", tx)
+						continue
+					}
+					i.logger.Fatal(result.Error)
+				}
 				_ = txSize
 
 				// Process inscription
@@ -175,9 +192,9 @@ func (i *Indexer) indexBlocks() {
 			// Store state
 
 			// TODO: All good, increase height
-			// currentHeight = height + 1
+			currentHeight = currentHeight + 1
 
-			os.Exit(0)
+			// os.Exit(0)
 		}
 	}
 }

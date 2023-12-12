@@ -9,17 +9,26 @@ import (
 
 const InscriptionTypeContentGeneric = "inscriptions.v1.content.generic"
 const InscriptionTypeContentNFT = "inscriptions.v1.content.nft"
+const InscriptionTypeContentNFTCollection = "inscriptions.v1.content.nft.collection"
+const InscriptionTypeMultipart = "inscriptions.v1.multipart"
 
 type InscriptionParent struct {
 	Type       string `json:"@type"`
 	Identifier string `json:"identifier"`
 }
 
+type MultipartMetadata struct {
+	Index uint `json:"index"`
+	Total uint `json:"total"`
+}
+
 type ContentGenericMetadata struct {
-	Parent   InscriptionParent `json:"parent"`
-	Metadata struct {
-		Name string `json:"name"`
-		MIME string `json:"mime"`
+	Parent    InscriptionParent `json:"parent"`
+	Multipart InscriptionParent `json:"part,omitempty"`
+	Metadata  struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		MIME        string `json:"mime"`
 	} `json:"metadata"`
 }
 

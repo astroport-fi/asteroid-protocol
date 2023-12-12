@@ -28,7 +28,7 @@ run: build ## Build and run the service binary
 	CHAIN_ID="gaialocal-1" \
 	DATABASE_DSN="local:local@tcp(127.0.0.1)/inscriptions?charset=utf8mb4&parseTime=True" \
 	LCD_ENDPOINT="http://127.0.0.1:8665/chain/gaia/lcd" \
-	BLOCK_POLL_INTERVAL_SECONDS=1 \
+	BLOCK_POLL_INTERVAL_SECONDS=200 \
 	./bin/${APP_NAME}
 
 run_race: ## Run the service with race condition checking enabled
