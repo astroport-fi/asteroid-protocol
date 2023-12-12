@@ -6,7 +6,7 @@ This document describes how we use the [Cosmos inscription specification](cosmos
 
 What we aim to support in the MVP:
 
-1. NFTs (minting, tradding and transfers)
+1. NFTs (minting, trading and transfers)
 2. Arbitrary data such as images, websites, audio files, etc.
 
 What we'd like to support in the near future:
@@ -40,7 +40,7 @@ This can be translated to:
 ```
 
 
-### Content Types
+### Inscription Types
 
 Restricting the use of `msg_type_url` to standard MIME content types seems very limiting, instead we'll implement a higher level type which is then expanded on in either the metadata or in the content itself.
 
@@ -63,6 +63,49 @@ TODO: Example
 A standard NFT collection based on [OpenSea's collection model](https://docs.opensea.io/v1.0/reference/collection-model)
 
 TODO: Example
+
+
+### Multipart inscriptions
+
+Multipart inscriptions allow you to inscribe larger content across several transactions. All transactions referenced in a multipart inscription must be valid for the entire inscription to be considered valid.
+
+**`inscriptions.v1.multipart`**
+
+The multipart type indicates this inscription is part of a multipart inscription and the linking inscription will come in a later transaction. In this inscription the `grantee` field is the partial base64 of the final inscription. 
+
+The metadata specific in `granter` follows the following minimalistic structure:
+
+```json
+{
+    "part": {
+        "index": 0,
+        "total": 5
+    }
+}
+```
+
+Linking partial inscriptions together is a matter of indicating the individual parts within the final metadata.
+
+```json
+{
+    "parent": {
+        ..parent information, NOT partial inscriptions..
+    },
+    "multipart": {
+        "parts": [
+            ..ordered list of transaction hashes..
+        ]
+    },
+    "metadata": {
+        ..as defined by the content type..
+    }
+}
+```
+
+Having the linking inscription follow the same structure as all other inscriptions allows the multipart inscription to be of any of the supported types without addditional work needed.
+
+TODO: Example
+
 
 ### Actions
 

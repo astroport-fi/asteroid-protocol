@@ -44,7 +44,7 @@ The final part of the sentence is key "if any of these are present and can't be 
 }
 ```
 
-In this example, the field names are validated, but the _content_ of the fields are not. This is expected as this specific option isn't handled and thus ignored - none of the ones we tried is handled. Once of the caveats of this approach is that [SIGN_MODE_DIRECT](https://docs.cosmos.network/main/learn/advanced/transactions#sign_mode_direct-preferred) is required which means this [will not work with Ledger devices](https://docs.cosmos.network/main/build/architecture/adr-050-sign-mode-textual#context)
+In this example, the field names are validated, but the _content_ of the fields are not. This is expected as this specific option isn't handled and thus ignored - none of the ones we tried is handled. One of the caveats of this approach is that [SIGN_MODE_DIRECT](https://docs.cosmos.network/main/learn/advanced/transactions#sign_mode_direct-preferred) is required which means this [will not work with Ledger devices](https://docs.cosmos.network/main/build/architecture/adr-050-sign-mode-textual#context)
 
 `MsgSend` is not really well suited for what we want to achieve, we feel that `/cosmos.authz.v1beta1.MsgRevoke` is better suited. It has the following structure
 
