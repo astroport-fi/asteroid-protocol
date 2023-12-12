@@ -1,0 +1,21 @@
+ion-content {
+    background-color: #232f3d;
+    border-radius: 10px !important;
+
+    -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+}
+
+ion-header.transparent,
+ion-toolbar.transparent,
+ion-title.transparent {
+    box-shadow: 0px !important;
+    --background: transparent !important;
+    --border-color: transparent !important;
+    --border-width: 0 !important;
+
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+}
