@@ -48,8 +48,34 @@ ion-button[color="warning"] {
     --ion-color-warning-tint: #ffca22;
 }
 
+ion-input,
+ion-textarea {
+    border-bottom: 1px solid rgba(66, 108, 117, 0.2);
+    --background: transparent;
+    // border-bottom: 1px solid var(--color-teal);
+    --highlight-color-focused: var(--color-orange) !important;
+    --highlight-color-invalid: var(--ion-color-danger) !important;
+    --highlight-color-valid: var(--ion-color-success) !important;
+
+    &:focus {
+        border-bottom: 1px solid var(--color-orange);
+    }
+
+    &:focus-within {
+        border-bottom: 1px solid var(--color-orange);
+    }
+}
+
 a {
     text-decoration: none;
+}
+
+p {
+    font-weight: 300;
+
+    &.note {
+        color: #ddd;
+    }
 }
 
 h1,
@@ -69,40 +95,9 @@ h2 {
     font-weight: 300;
 }
 
-.p-0 {
-    padding: 0;
-}
-
-.p-1 {
-    padding: 1em;
-}
-
-.p-2 {
-    padding: 2em;
-}
-
-.p-3 {
-    padding: 3em;
-}
-
-.m-0 {
-    margin: 0;
-}
-
-.m-1 {
-    margin: 1em;
-}
-
-.m-2 {
-    margin: 2em;
-}
-
-.m-3 {
-    margin: 3em;
-}
-
 div.aligned {
     padding-left: 25px;
+    padding-right: 25px;
 }
 
 .bordered {
@@ -113,10 +108,4 @@ div.aligned {
     &:hover {
         border: 1px solid #80712f;
     }
-}
-
-
-
-ion-card.lighter {
-    background-color: #233143;
 }

@@ -48,7 +48,7 @@ import { addIcons } from 'ionicons';
     IonChip,
     IonButton,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
   ],
 })
 export class DashboardLayoutComponent {

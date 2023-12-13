@@ -6,7 +6,7 @@
         <ion-back-button defaultHref="/app/create"></ion-back-button>
       </ion-buttons>
       <ion-title>
-        New content inscription
+        New token inscription
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -18,14 +18,6 @@
     <form class="form" [formGroup]="createForm">
       <ion-grid>
         <ion-row>
-          <ion-col size-xl="3" size-lg="5" size-xs="12">
-            <div class="uploader text-center" formGroupName="basic">
-              <p>Any content. Max 800kb.</p>
-              <label for='input-file'>Select file</label>
-              <input id='input-file' type='file' formControlName="imageUpload" />
-            </div>
-            <!-- <ion-input type="file" accept=".csv, text/plain"></ion-input> -->
-          </ion-col>
           <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
             <div class="form-group" formGroupName="basic">
               <ion-item lines="none">

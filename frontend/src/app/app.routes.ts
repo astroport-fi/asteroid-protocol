@@ -23,6 +23,10 @@ export const routes: Routes = [
         loadComponent: () => import('./create-content/create-content.page').then(m => m.CreateContentPage)
       },
       {
+        path: 'create/token',
+        loadComponent: () => import('./create-token/create-token.page').then(m => m.CreateTokenPage)
+      },
+      {
         path: 'browse',
         loadComponent: () => import('./browse/browse.page').then(m => m.BrowsePage)
       },
