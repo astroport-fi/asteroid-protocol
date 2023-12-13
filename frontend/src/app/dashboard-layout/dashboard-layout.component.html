@@ -1,0 +1,65 @@
+<ion-content class="layout">
+  <ion-split-pane contentId="primaryContent" class="menu-split-pane">
+    <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside">
+
+      <div class="menu">
+        <div class="logo">
+          <a href="/app/dashboard">
+            <img src="../../assets/logo/small.png" />
+          </a>
+        </div>
+        <div class="profile disconnected">
+          <div class="alter-ego">
+            <img src="../../assets/background/connect-profile.png" />
+          </div>
+          <div class="connect-wallet">
+            <ion-chip color="warning" [outline]="true">
+              <ion-icon name="key-sharp" color="warning"></ion-icon>
+              <ion-label>Connect wallet</ion-label>
+            </ion-chip>
+          </div>
+        </div>
+        <ion-list lines="none">
+          <ion-list-header>
+            <ion-label>Home</ion-label>
+          </ion-list-header>
+          <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
+            <ion-label>Dashboard</ion-label>
+          </ion-item>
+          <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
+            <ion-label>My inscriptions</ion-label>
+          </ion-item>
+          <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
+            <ion-label>My tokens</ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-list lines="none">
+          <ion-list-header>
+            <ion-label>Inscriptions</ion-label>
+          </ion-list-header>
+          <ion-item [button]="true" [routerLink]="['/app/create']" routerLinkActive="active">
+            <ion-label>Create</ion-label>
+          </ion-item>
+          <ion-item [button]="true" [routerLink]="['/app/browse']" routerLinkActive="active">
+            <ion-label>Browse</ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-list lines="none">
+          <ion-list-header>
+            <ion-label>Tokens</ion-label>
+          </ion-list-header>
+          <ion-item [button]="true">
+            <ion-label>Create</ion-label>
+          </ion-item>
+          <ion-item [button]="true">
+            <ion-label>Browse</ion-label>
+          </ion-item>
+        </ion-list>
+
+      </div>
+    </ion-menu>
+    <ion-router-outlet id="primaryContent">
+
+    </ion-router-outlet>
+  </ion-split-pane>
+</ion-content>

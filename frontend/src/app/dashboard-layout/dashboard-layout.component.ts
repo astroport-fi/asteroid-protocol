@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {
-  ActivatedRoute,
-  NavigationEnd, Router
+  RouterLink,
+  RouterLinkActive
 } from '@angular/router';
 import {
   IonApp,
@@ -16,15 +16,19 @@ import {
   IonItem,
   IonLabel,
   IonListHeader,
-  IonIcon
+  IonIcon,
+  IonChip,
+  IonButton
 } from '@ionic/angular/standalone';
-// import { HomePage } from './home/home.page';
 import { CommonModule } from '@angular/common';
 
+import { chevronForward, keySharp, pencilSharp, createSharp } from "ionicons/icons";
+import { addIcons } from 'ionicons';
+
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: 'dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  selector: 'app-dashboard-layout',
+  templateUrl: 'dashboard-layout.component.html',
+  styleUrls: ['./dashboard-layout.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -40,10 +44,15 @@ import { CommonModule } from '@angular/common';
     IonItem,
     IonLabel,
     IonListHeader,
-    IonIcon],
+    IonIcon,
+    IonChip,
+    IonButton,
+    RouterLink,
+    RouterLinkActive
+  ],
 })
-export class DashboardComponent {
+export class DashboardLayoutComponent {
   constructor() {
-
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp });
   }
 }

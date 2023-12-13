@@ -1,0 +1,122 @@
+ion-card.no-shadow,
+ion-header.no-shadow,
+ion-toolbar.no-shadow,
+ion-title.no-shadow {
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+}
+
+ion-item {
+    border-left: 1px solid transparent;
+}
+
+ion-item.active {
+    border-left: 1px solid var(--color-orange);
+    --color: var(--color-orange);
+}
+
+ion-button {
+    text-transform: initial;
+}
+
+
+ion-content.shadowed {
+    background-color: #232f3d;
+    border-radius: 10px !important;
+
+    -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+}
+
+ion-button[color="primary"] {
+    --ion-color-primary: var(--color-teal);
+    --ion-color-primary-rgb: 87, 170, 167;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #4e918e;
+    --ion-color-primary-tint: #7bc9c6;
+}
+
+ion-button[color="warning"] {
+    --ion-color-warning: var(--color-orange);
+    --ion-color-warning-rgb: 255, 119, 46;
+    --ion-color-warning-contrast: #ffffff;
+    --ion-color-warning-contrast-rgb: 255, 255, 255;
+    --ion-color-warning-shade: #e0ac08;
+    --ion-color-warning-tint: #ffca22;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: #dbdbdb;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 14pt;
+}
+
+.thin {
+    font-weight: 300;
+}
+
+.p-0 {
+    padding: 0;
+}
+
+.p-1 {
+    padding: 1em;
+}
+
+.p-2 {
+    padding: 2em;
+}
+
+.p-3 {
+    padding: 3em;
+}
+
+.m-0 {
+    margin: 0;
+}
+
+.m-1 {
+    margin: 1em;
+}
+
+.m-2 {
+    margin: 2em;
+}
+
+.m-3 {
+    margin: 3em;
+}
+
+div.aligned {
+    padding-left: 25px;
+}
+
+.bordered {
+    border: 1px solid rgba(66, 108, 117, 0.2);
+    border-radius: 10px;
+    transition: border 0.2s ease-in-out;
+
+    &:hover {
+        border: 1px solid #80712f;
+    }
+}
+
+
+
+ion-card.lighter {
+    background-color: #233143;
+}

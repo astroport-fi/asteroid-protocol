@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.page.html',
-  styleUrls: ['./create.page.scss'],
+  selector: 'app-create-content',
+  templateUrl: './create-content.page.html',
+  styleUrls: ['./create-content.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, RouterLink]
 })
-export class CreatePage implements OnInit {
+export class CreateContentPage implements OnInit {
 
   constructor() {
 
