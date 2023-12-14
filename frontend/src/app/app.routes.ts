@@ -15,16 +15,28 @@ export const routes: Routes = [
         loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
       },
       {
+        path: 'my-inscriptions',
+        loadComponent: () => import('./my-inscriptions/my-inscriptions.page').then(m => m.MyInscriptionsPage)
+      },
+      {
+        path: 'my-tokens',
+        loadComponent: () => import('./my-tokens/my-tokens.page').then(m => m.MyTokensPage)
+      },
+      {
         path: 'create',
         loadComponent: () => import('./create/create.page').then(m => m.CreatePage)
       },
       {
-        path: 'create/content',
-        loadComponent: () => import('./create-content/create-content.page').then(m => m.CreateContentPage)
+        path: 'create/inscription',
+        loadComponent: () => import('./create-inscription/create-inscription.page').then(m => m.CreateInscriptionPage)
       },
       {
         path: 'create/token',
         loadComponent: () => import('./create-token/create-token.page').then(m => m.CreateTokenPage)
+      },
+      {
+        path: 'create/alter-ego',
+        loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
       },
       {
         path: 'browse',

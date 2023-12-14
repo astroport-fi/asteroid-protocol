@@ -6,7 +6,7 @@
         <ion-back-button defaultHref="/app/create"></ion-back-button>
       </ion-buttons>
       <ion-title>
-        New content inscription
+        New inscription
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -20,7 +20,7 @@
         <ion-row>
           <ion-col size-xl="3" size-lg="5" size-xs="12">
             <div class="uploader text-center" formGroupName="basic">
-              <p>Any content. Max 800kb.</p>
+              <p>Any content<br />Max 800kb</p>
               <label for='input-file'>Select file</label>
               <input id='input-file' type='file' formControlName="imageUpload" />
             </div>
@@ -28,6 +28,9 @@
           </ion-col>
           <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
             <div class="form-group" formGroupName="basic">
+              <ion-item lines="none">
+                DROPDOWN TO SELECT ALTER EGO
+              </ion-item>
               <ion-item lines="none">
                 <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"></ion-input>
               </ion-item>
@@ -62,7 +65,7 @@
             </div>
             <div class="p-3">
               <ion-button color="primary" fill="solid">
-                <ion-icon slot="start" name="create-sharp"></ion-icon>
+                <ion-icon slot="start" name="checkmark"></ion-icon>
                 Inscribe
               </ion-button>
             </div>

@@ -98,8 +98,14 @@ ion-item {
         .connect-wallet {
             position: absolute;
             top: 220px;
-            left: 50px;
+            // left: 45px;
+            width: 100%;
             z-index: 99;
+            text-align: center;
+
+            ion-chip {
+                backdrop-filter: blur(10px);
+            }
         }
     }
 }

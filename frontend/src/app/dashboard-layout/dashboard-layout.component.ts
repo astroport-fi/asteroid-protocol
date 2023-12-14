@@ -22,8 +22,13 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 
-import { chevronForward, keySharp, pencilSharp, createSharp } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark } from "ionicons/icons";
 import { addIcons } from 'ionicons';
+import { WalletService } from '../core/service/wallet.service';
+import { environment } from 'src/environments/environment';
+import { WalletStatus } from '../core/enum/wallet-status.enum';
+import { AccountData } from '@keplr-wallet/types';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -49,10 +54,48 @@ import { addIcons } from 'ionicons';
     IonButton,
     RouterLink,
     RouterLinkActive,
+    ShortenAddressPipe
   ],
 })
 export class DashboardLayoutComponent {
-  constructor() {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp });
+  isWalletConnected = false;
+  walletStatusText = "Connect wallet";
+  connectedAccount: any;
+
+  constructor(private walletService: WalletService) {
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark });
+
+    this.walletService.isConnected().then((isConnected) => {
+      this.isWalletConnected = isConnected;
+      this.walletService.getAccount().then((account) => {
+        this.connectedAccount = account;
+      }).catch((err) => {
+        this.isWalletConnected = false;
+      });
+    });
+  }
+
+  async connectWallet() {
+    if (!window.keplr) {
+      // TODO: Popup explaining that Keplr is needed and needs to be installed
+      // first
+      console.error('Keplr extension not found.');
+      return;
+    }
+    this.walletStatusText = "Connecting...";
+    let walletStatus = await this.walletService.connect();
+    switch (walletStatus) {
+      case WalletStatus.Connected:
+        this.walletStatusText = "Connected";
+        break;
+      case WalletStatus.Rejected:
+        // TODO: Popup to inform rejection and try again
+        this.walletStatusText = "Connect wallet";
+        break;
+      case WalletStatus.NotInstalled:
+        // TODO: Popup to install Keplr
+        this.walletStatusText = "Connect wallet";
+        break;
+    }
   }
 }

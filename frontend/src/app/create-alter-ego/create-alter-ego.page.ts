@@ -5,23 +5,22 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-create-content',
-  templateUrl: './create-content.page.html',
-  styleUrls: ['./create-content.page.scss'],
+  selector: 'app-create-alter-ego',
+  templateUrl: './create-alter-ego.page.html',
+  styleUrls: ['./create-alter-ego.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink]
 })
-export class CreateContentPage implements OnInit {
-
-  // Hold the form for persistance
+export class CreateAlterEgoPage implements OnInit {
   createForm: FormGroup;
 
   constructor(private builder: FormBuilder) {
     this.createForm = this.builder.group({
       basic: this.builder.group({
         name: "",
-        description: "",
-        imageUpload: null,
+        bio: "",
+        link: "",
+        imageUpload: null
       }),
     });
   }

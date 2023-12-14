@@ -13,9 +13,13 @@
             <img src="../../assets/background/connect-profile.png" />
           </div>
           <div class="connect-wallet">
-            <ion-chip color="warning" [outline]="true">
+            <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
               <ion-icon name="key-sharp" color="warning"></ion-icon>
-              <ion-label>Connect wallet</ion-label>
+              <ion-label>{{ walletStatusText }}</ion-label>
+            </ion-chip>
+            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected">
+              <ion-icon name="key-sharp" color="warning"></ion-icon>
+              <ion-label>{{ connectedAccount.address | shortenAddress }}</ion-label>
             </ion-chip>
           </div>
         </div>
@@ -26,10 +30,12 @@
           <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
             <ion-label>Dashboard</ion-label>
           </ion-item>
-          <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
+          <ion-item [button]="true" [routerLink]="['/app/my-inscriptions']" routerLinkActive="active"
+            [disabled]="!isWalletConnected">
             <ion-label>My inscriptions</ion-label>
           </ion-item>
-          <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
+          <ion-item [button]="true" [routerLink]="['/app/my-tokens']" routerLinkActive="active"
+            [disabled]="!isWalletConnected">
             <ion-label>My tokens</ion-label>
           </ion-item>
         </ion-list>
@@ -48,7 +54,7 @@
           <ion-list-header>
             <ion-label>Tokens</ion-label>
           </ion-list-header>
-          <ion-item [button]="true">
+          <ion-item [button]="true" [routerLink]="['/app/create/token']" routerLinkActive="active">
             <ion-label>Create</ion-label>
           </ion-item>
           <ion-item [button]="true">
