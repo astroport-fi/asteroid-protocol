@@ -60,7 +60,7 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 export class DashboardLayoutComponent {
   isWalletConnected = false;
   walletStatusText = "Connect wallet";
-  connectedAccount: any;
+  connectedAccount: any = {};
 
   constructor(private walletService: WalletService) {
     addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark });

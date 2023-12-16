@@ -45,10 +45,6 @@
                   [maskito]="numberMask" [maskitoElement]="maskPredicate"></ion-input>
               </ion-item>
               <ion-item lines="none">
-                <ion-checkbox formControlName="openMint" labelPlacement="end" justify="start">Anyone can
-                  mint</ion-checkbox>
-              </ion-item>
-              <ion-item lines="none" *ngIf="createForm.get('basic.openMint')?.value">
                 <ion-input label="Per wallet mint limit" labelPlacement="stacked" placeholder="Mint limit"
                   [maskito]="numberMask" [maskitoElement]="maskPredicate"></ion-input>
               </ion-item>

@@ -45,9 +45,9 @@
               <input type="text" class="form-control" formControlName="name" placeholder="My inscription" value="" />
               <div class="form-hint d-inline">Your login email address</div> -->
               <!-- <div class="d-inline" *ngIf="
-                                    getBasicField('basic.email').invalid && 
-                                    (getBasicField('basic.email').dirty || getBasicField('basic.email').touched)
-                                    then emailError">
+                getBasicField('basic.email').invalid && 
+                (getBasicField('basic.email').dirty || getBasicField('basic.email').touched)
+                then emailError">
               </div> -->
               <!-- <ng-template #emailError>
                 <div class="form-hint d-inline">.
@@ -64,10 +64,16 @@
               </ng-template> -->
             </div>
             <div class="p-3">
-              <ion-button color="primary" fill="solid">
-                <ion-icon slot="start" name="checkmark"></ion-icon>
-                Inscribe
-              </ion-button>
+              <div *ngIf="isSigning">
+                <ion-progress-bar type="indeterminate"></ion-progress-bar>
+                <p>Signing transaction...</p>
+              </div>
+              <div *ngIf="!isSigning">
+                <ion-button color="primary" fill="solid" type="submit" (click)="inscribe()" *ngIf="!isSigning">
+                  <ion-icon slot="start" name="checkmark"></ion-icon>
+                  Inscribe
+                </ion-button>
+              </div>
             </div>
           </ion-col>
         </ion-row>

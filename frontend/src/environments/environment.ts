@@ -4,7 +4,24 @@
 
 export const environment = {
   production: false,
-
+  fees: {
+    protocol: {
+      receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+      amount: [
+        {
+          denom: "uatom",
+          amount: "10000"
+        }
+      ]
+    },
+    chain: {
+      gasLimit: "100000000",
+      amount: {
+        denom: "uatom",
+        amount: "10000",
+      },
+    }
+  },
   api: {
     endpoint: 'http://localhost:8080',
   },
