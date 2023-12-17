@@ -1,0 +1,21 @@
+<ion-content class="shadowed">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>
+        Inscription <span *ngIf="!isLoading">#</span>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <div class="p-4">
+    <div class="loading" *ngIf="isLoading">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      <p>
+        Loading inscription...
+      </p>
+    </div>
+  </div>
+</ion-content>

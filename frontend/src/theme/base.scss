@@ -109,3 +109,36 @@ div.aligned {
         border: 1px solid #80712f;
     }
 }
+
+ion-alert {
+    --background: #232f3d !important;
+    --min-width: 300px !important;
+    --backdrop-opacity: 0.6 !important;
+}
+
+ion-progress-bar::part(track) {
+    background: var(--color-dark-teal);
+}
+
+ion-progress-bar::part(progress) {
+    background: var(--color-teal);
+}
+
+.loading {
+    max-width: 50%;
+
+    p {
+        padding-top: 5px;
+        font-size: 14px;
+        color: var(--ion-color-step-750);
+    }
+}
+
+.warning-box {
+    margin-left: 15px;
+    border-left: 1px solid var(--ion-color-warning);
+    border-radius: 0px;
+    padding-top: 5px;
+    padding-left: 15px;
+    color: var(--ion-color-warning);
+}

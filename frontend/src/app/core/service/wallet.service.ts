@@ -101,8 +101,6 @@ export class WalletService {
       throw new Error("Account not found");
     }
 
-    console.log(accountInfo);
-
     const protoMsgs = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
       value: MsgSend.encode({
@@ -133,6 +131,7 @@ export class WalletService {
           ],
         })
       ).finish(),
+
       authInfoBytes: AuthInfo.encode({
         signerInfos: [
           {
@@ -155,6 +154,7 @@ export class WalletService {
           gasLimit: environment.fees.chain.gasLimit,
         }),
       }).finish(),
+
       chainId: environment.chain.chainId,
       accountNumber: Long.fromNumber(accountInfo.account_number)
     };
@@ -179,14 +179,14 @@ export class WalletService {
     try {
       const signer = await this.getSigner();
       const client = await SigningStargateClient.connectWithSigner(environment.chain.rpc, signer);
-      console.log("sending", tx.length);
+      // console.log("sending", tx.length);
       if (tx.length >= 1048576) {
         console.error("tx too large");
         return "ERR: Transaction will be too large, multiple tx inscriptions not yet implemented";
       } else {
 
         const txHash = await client.broadcastTxSync(tx);
-        console.log(txHash);
+        // console.log(txHash);
         return txHash;
       }
     } catch (error) {

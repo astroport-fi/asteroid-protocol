@@ -42,6 +42,10 @@ export const routes: Routes = [
         path: 'browse',
         loadComponent: () => import('./browse/browse.page').then(m => m.BrowsePage)
       },
+      {
+        path: 'inscription/:txhash',
+        loadComponent: () => import('./view-inscription/view-inscription.page').then(m => m.ViewInscriptionPage)
+      },
     ]
   }
 ];
