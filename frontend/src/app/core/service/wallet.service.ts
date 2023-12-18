@@ -92,82 +92,83 @@ export class WalletService {
    * @param data The inscription data
    * @returns 
    */
-  async sign(inscriptionType: string, metadata: string, data: string) {
+  async sign(urn: string, metadata: string, data: string) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
 
-    const accountInfo = await this.chainService.fetchAccountInfo(account.address);
-    if (!accountInfo) {
-      throw new Error("Account not found");
-    }
-
-    const protoMsgs = {
-      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-      value: MsgSend.encode({
-        fromAddress: account?.address as string,
-        toAddress: environment.fees.protocol.receiver,
-        amount: [
-          ...environment.fees.protocol.amount,
-        ],
-      }).finish(),
-    }
-
-    const signDoc = {
-      bodyBytes: TxBody.encode(
-        TxBody.fromPartial({
-          messages: [protoMsgs],
-          memo: "",
-          nonCriticalExtensionOptions: [
-            {
-              typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
-              value: MsgRevoke.encode(
-                MsgRevoke.fromPartial({
-                  granter: metadata,
-                  grantee: data,
-                  msgTypeUrl: inscriptionType,
-                })
-              ).finish(),
-            }
+    try {
+      const accountInfo = await this.chainService.fetchAccountInfo(account.address);
+      const protoMsgs = {
+        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+        value: MsgSend.encode({
+          fromAddress: account?.address as string,
+          toAddress: environment.fees.protocol.receiver,
+          amount: [
+            ...environment.fees.protocol.amount,
           ],
-        })
-      ).finish(),
+        }).finish(),
+      }
 
-      authInfoBytes: AuthInfo.encode({
-        signerInfos: [
-          {
-            publicKey: {
-              typeUrl: "/cosmos.crypto.secp256k1.PubKey",
-              value: PubKey.encode({
-                key: account.pubkey,
-              }).finish(),
-            },
-            modeInfo: {
-              single: {
-                mode: SignMode.SIGN_MODE_DIRECT,
+      const signDoc = {
+        bodyBytes: TxBody.encode(
+          TxBody.fromPartial({
+            messages: [protoMsgs],
+            memo: "",
+            nonCriticalExtensionOptions: [
+              {
+                typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
+                value: MsgRevoke.encode(
+                  MsgRevoke.fromPartial({
+                    granter: metadata,
+                    grantee: data,
+                    msgTypeUrl: urn,
+                  })
+                ).finish(),
+              }
+            ],
+          })
+        ).finish(),
+
+        authInfoBytes: AuthInfo.encode({
+          signerInfos: [
+            {
+              publicKey: {
+                typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+                value: PubKey.encode({
+                  key: account.pubkey,
+                }).finish(),
               },
+              modeInfo: {
+                single: {
+                  mode: SignMode.SIGN_MODE_DIRECT,
+                },
+              },
+              sequence: BigInt(accountInfo.sequence),
             },
-            sequence: BigInt(accountInfo.sequence),
-          },
-        ],
-        fee: Fee.fromJSON({
-          amount: environment.fees.chain.amount,
-          gasLimit: environment.fees.chain.gasLimit,
-        }),
-      }).finish(),
+          ],
+          fee: Fee.fromJSON({
+            amount: environment.fees.chain.amount,
+            gasLimit: environment.fees.chain.gasLimit,
+          }),
+        }).finish(),
 
-      chainId: environment.chain.chainId,
-      accountNumber: Long.fromNumber(accountInfo.account_number)
-    };
-    const signed = await signer.signDirect(account.address, signDoc);
-    const signedTx = {
-      tx: TxRaw.encode({
-        bodyBytes: signed.signed.bodyBytes,
-        authInfoBytes: signed.signed.authInfoBytes,
-        signatures: [Buffer.from(signed.signature.signature, "base64")],
-      }).finish(),
-      signDoc: signed.signed,
+        chainId: environment.chain.chainId,
+        accountNumber: Long.fromNumber(accountInfo.account_number)
+      };
+      const signed = await signer.signDirect(account.address, signDoc);
+      const signedTx = {
+        tx: TxRaw.encode({
+          bodyBytes: signed.signed.bodyBytes,
+          authInfoBytes: signed.signed.authInfoBytes,
+          signatures: [Buffer.from(signed.signature.signature, "base64")],
+        }).finish(),
+        signDoc: signed.signed,
+      }
+      return signedTx.tx;
     }
-    return signedTx.tx;
+    catch (error) {
+      throw error;
+    }
   }
 
   /**

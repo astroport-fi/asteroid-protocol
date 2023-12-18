@@ -22,7 +22,7 @@
             <div class="uploader text-center" formGroupName="basic">
               <p>Any content<br />Max 800kb</p>
               <label for='input-file'>Select file</label>
-              <input id='input-file' type='file' formControlName="imageUpload" />
+              <input id='input-file' type='file' (change)="onFileSelected($event)" />
             </div>
             <!-- <ion-input type="file" accept=".csv, text/plain"></ion-input> -->
           </ion-col>
@@ -32,15 +32,13 @@
                 DROPDOWN TO SELECT ALTER EGO
               </ion-item>
               <ion-item lines="none">
-                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"></ion-input>
+                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"
+                  formControlName="name"></ion-input>
               </ion-item>
               <ion-item lines="none">
-                <ion-textarea label="Description" labelPlacement="stacked"
-                  placeholder="Describe your inscription"></ion-textarea>
+                <ion-textarea label="Description" labelPlacement="stacked" placeholder="Describe your inscription"
+                  formControlName="description"></ion-textarea>
               </ion-item>
-
-
-
               <!-- <label>Name your inscription <span class="text-danger">*</span></label>
               <input type="text" class="form-control" formControlName="name" placeholder="My inscription" value="" />
               <div class="form-hint d-inline">Your login email address</div> -->
@@ -65,7 +63,8 @@
             </div>
             <div class="mt-3 warning-box" *ngIf="isError">
               <b>Unable to sign transaction</b>
-              <p>You must sign the transaction in order to inscribe content. Please try again</p>
+              <p>{{ errorText }}</p>
+              <p>You must sign the transaction in order to inscribe content</p>
             </div>
             <div class="p-3">
               <div>

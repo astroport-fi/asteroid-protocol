@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { AlertController, LoadingController, IonicModule } from '@ionic/angular';
 import { WalletService } from '../core/service/wallet.service';
 import { delay } from '../core/helpers/delay';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-inscription',
@@ -15,6 +16,7 @@ import { delay } from '../core/helpers/delay';
 })
 export class CreateInscriptionPage implements OnInit {
   isError = false;
+  errorText = "";
 
   // Hold the form for persistance
   createForm: FormGroup;
@@ -42,7 +44,8 @@ export class CreateInscriptionPage implements OnInit {
 
     // TODO: Validate form
     const metadata = {
-
+      name: this.createForm.value.basic.name,
+      description: this.createForm.value.basic.description,
     };
 
     const data = {};
@@ -74,8 +77,17 @@ export class CreateInscriptionPage implements OnInit {
 
     // this.isSigning = false;
 
+
+    const metadataBase64 = btoa(JSON.stringify(metadata));
+
+    const inscriptionHash = "unique_hash_of_inscription_content_datametadata";
+    // urn:inscription:chainId=content@hash
+    const urn = `urn:inscription:${environment.chain.chainId}=content@${inscriptionHash}`
+
+
+    console.log("this.createForm.value.basic.imageUpload", this.createForm.value.basic.imageUpload);
     try {
-      const signedTx = await this.walletService.sign("inscriptions.v1.content.generic", JSON.stringify(metadata), JSON.stringify(data));
+      const signedTx = await this.walletService.sign(urn, metadataBase64, this.createForm.value.basic.imageUpload);
 
       await alert.dismiss();
 
@@ -102,9 +114,34 @@ export class CreateInscriptionPage implements OnInit {
       await loading.dismiss();
       this.router.navigate(["/app/inscription", result]);
 
-    } catch (error) {
+    } catch (error: any) {
       this.isError = true;
+
+      if (error instanceof Error) {
+        this.errorText = error.message;
+      }
       await alert.dismiss();
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e: any) => {
+        const base64Image = e.target.result;
+        console.log(base64Image);
+        this.createForm.patchValue({
+          basic: {
+            imageUpload: base64Image
+          }
+        });
+
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 

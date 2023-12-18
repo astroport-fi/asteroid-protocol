@@ -20,8 +20,7 @@ export class ChainService {
 
       return response.account;
     } catch (e) {
-      console.error("This may be a new account. Please send some tokens to this account first.")
-      return undefined;
+      throw new Error(`This may be a new account. Please send some tokens to this account first.`);
     }
   }
 

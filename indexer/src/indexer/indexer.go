@@ -7,12 +7,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
+	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -25,6 +28,8 @@ type Indexer struct {
 	lcdEndpoint              string
 	blockPollIntervalSeconds int
 	logger                   *logrus.Entry
+
+	metaprotocols map[string]metaprotocol.Processor
 
 	stopChannel chan bool
 	db          *gorm.DB
@@ -43,10 +48,14 @@ func New(chainID string, databaseDSN string, lcdEndpoint string, blockPollInterv
 
 	}
 
+	metaprotocols := make(map[string]metaprotocol.Processor)
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor()
+
 	return &Indexer{
 		chainID:                  chainID,
 		lcdEndpoint:              lcdEndpoint,
 		blockPollIntervalSeconds: blockPollIntervalSeconds,
+		metaprotocols:            metaprotocols,
 		logger:                   log,
 		stopChannel:              make(chan bool),
 		db:                       db,
@@ -158,27 +167,27 @@ func (i *Indexer) indexBlocks() {
 					continue
 				}
 
-				height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-				gasUsed, _ := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
-				fees, _ := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
+				// height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
+				// gasUsed, _ := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
+				// fees, _ := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
 
-				txModel := models.Transaction{
-					Hash:          tx,
-					Height:        height,
-					Content:       rawTransaction.ToJSON(),
-					GasUsed:       gasUsed,
-					Fees:          string(fees),
-					ContentLength: uint64(txSize),
-					DateCreated:   rawTransaction.TxResponse.Timestamp,
-				}
-				result := i.db.Save(&txModel)
-				if result.Error != nil {
-					if result.Error == gorm.ErrDuplicatedKey || strings.Contains(result.Error.Error(), "Duplicate entry") {
-						i.logger.Warn("Transaction already exists:", tx)
-						continue
-					}
-					i.logger.Fatal(result.Error)
-				}
+				// txModel := models.Transaction{
+				// 	Hash:          tx,
+				// 	Height:        height,
+				// 	Content:       rawTransaction.ToJSON(),
+				// 	GasUsed:       gasUsed,
+				// 	Fees:          string(fees),
+				// 	ContentLength: uint64(txSize),
+				// 	DateCreated:   rawTransaction.TxResponse.Timestamp,
+				// }
+				// result := i.db.Save(&txModel)
+				// if result.Error != nil {
+				// 	if result.Error == gorm.ErrDuplicatedKey || strings.Contains(result.Error.Error(), "Duplicate entry") {
+				// 		i.logger.Warn("Transaction already exists:", tx)
+				// 		continue
+				// 	}
+				// 	i.logger.Fatal(result.Error)
+				// }
 				_ = txSize
 
 				// Process inscription
@@ -194,9 +203,143 @@ func (i *Indexer) indexBlocks() {
 			// TODO: All good, increase height
 			currentHeight = currentHeight + 1
 
-			// os.Exit(0)
+			os.Exit(0)
 		}
 	}
+}
+
+func (i *Indexer) processInscription(rawTransaction RawTransaction) error {
+	i.logger.Debug("Processing Inscription:", rawTransaction.TxResponse.Txhash)
+
+	// TODO: Check for a duplicate of the content
+	// rawTransaction.Tx.Body.NonCriticalExtensionOptions
+
+	// Determine creator and owner of the inscription
+	// We determine the creator as the sender of the first MsgSend message
+	// in messages
+
+	// Get the first transaction message
+	firstMessage := rawTransaction.Tx.Body.Messages[0]
+	sender := firstMessage.FromAddress
+	_ = sender
+
+	// TODO Decode the inscription
+	for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
+		fmt.Println(extension.MsgTypeURL)
+
+		u, ok := urn.Parse([]byte(extension.MsgTypeURL))
+		if !ok {
+			panic("error parsing urn")
+		}
+
+		fmt.Println(u.ID)
+		fmt.Println(u.SS)
+
+		// Match the ID and send the SS to the correct processor with base64 data to decode
+		processor, ok := i.metaprotocols[u.ID]
+		if !ok {
+			panic("No processor for this metaprotocol")
+		}
+
+		i.logger.WithFields(logrus.Fields{
+			"processor": processor.Name(),
+		}).Debug("Processing metaprotocol")
+
+		err := processor.Process(u.SS, extension.Granter, extension.Grantee)
+		_ = err
+
+		// switch extension.MsgTypeURL {
+		// case InscriptionTypeContentGeneric:
+		// 	fmt.Println("Generic inscription")
+		// 	// Decode metadata for this type of inscription
+		// 	metadataBytes, err := base64.StdEncoding.DecodeString(extension.Granter)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	fmt.Println(string(metadataBytes))
+		// 	var genericMetadata ContentGenericMetadata
+		// 	err = json.Unmarshal(metadataBytes, &genericMetadata)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	// Decode content to store on the disk
+		// 	contentBytes, err := base64.StdEncoding.DecodeString(extension.Grantee)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	parentJSON, err := json.Marshal(genericMetadata.Parent)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	// For this type of inscription, the sender is the creator and owner
+		// 	fmt.Println("creator", sender)
+		// 	fmt.Println("owner", sender)
+		// 	fmt.Println(genericMetadata.Parent.Type)
+		// 	fmt.Println(genericMetadata.Parent.Identifier)
+		// 	fmt.Println(genericMetadata.Metadata.Name)
+
+		// 	ext, _ := mime.ExtensionsByType(genericMetadata.Metadata.MIME)
+		// 	fmt.Println("MIME", genericMetadata.Metadata.MIME)
+		// 	fmt.Println(fmt.Sprintf("Filename: inscription%s", ext))
+
+		// 	endpoint := "ams3.digitaloceanspaces.com"
+		// 	region := "ams3"
+		// 	sess := session.Must(session.NewSession(&aws.Config{
+		// 		Endpoint:    &endpoint,
+		// 		Region:      &region,
+		// 		Credentials: credentials.NewStaticCredentials("DO00HXJJQVNBTGA62TV7", "4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU", ""),
+		// 	}))
+
+		// 	// Create an uploader with the session and default options
+		// 	uploader := s3manager.NewUploader(sess)
+
+		// 	myBucket := "inscriptions-mvp"
+		// 	filename := rawTransaction.TxResponse.Txhash + ext[0]
+		// 	// Upload the file to S3.
+		// 	uploadResult, err := uploader.Upload(&s3manager.UploadInput{
+		// 		ACL:    aws.String("public-read"),
+		// 		Bucket: aws.String(myBucket),
+		// 		Key:    aws.String(filename),
+		// 		Body:   bytes.NewReader(contentBytes),
+		// 	})
+		// 	if err != nil {
+		// 		return fmt.Errorf("failed to upload file, %v", err)
+		// 	}
+		// 	fmt.Printf("file uploaded to, %s\n", aws.StringValue(&uploadResult.Location))
+
+		// 	height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
+
+		// 	inscriptionModel := models.Inscription{
+		// 		Height:         height,
+		// 		Hash:           rawTransaction.TxResponse.Txhash,
+		// 		Creator:        sender,
+		// 		Owner:          sender,
+		// 		Parent:         string(parentJSON),
+		// 		Type:           extension.MsgTypeURL,
+		// 		MetadataBase64: extension.Granter,
+		// 		ContentBase64:  extension.Grantee,
+		// 		ContentPath:    aws.StringValue(&uploadResult.Location),
+		// 		DateCreated:    rawTransaction.TxResponse.Timestamp,
+		// 	}
+
+		// 	result := i.db.Save(&inscriptionModel)
+		// 	if result.Error != nil {
+		// 		return result.Error
+		// 	}
+
+		// case InscriptionTypeContentNFT:
+		// 	fmt.Println("NFT inscription")
+		// }
+
+	}
+
+	// TODO Handle the different type of inscriptions
+
+	return nil
 }
 
 // fetchCurrentHeight fetches the current height from the chain by using the
