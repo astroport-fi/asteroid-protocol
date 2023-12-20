@@ -29,7 +29,8 @@ export class CreateTokenPage implements OnInit {
         ticker: "",
         maxSupply: 0,
         mintLimit: 0,
-        decimals: 6
+        decimals: 6,
+        launchImmediately: 'true',
       }),
       optional: this.builder.group({
         imageUpload: null

@@ -10,6 +10,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
   imports: [IonContent, RouterModule],
 })
 export class MintPage {
+
   constructor(private router: Router) {
   }
 }

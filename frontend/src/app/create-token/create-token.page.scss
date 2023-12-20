@@ -1,3 +1,8 @@
+:host {
+    // This is a hack for styling the datepicker button
+    --ion-color-step-300: transparent !important;
+}
+
 .mw-400 {
     max-width: 400px;
 }
@@ -33,4 +38,34 @@
     input[type="file"] {
         display: none;
     }
+}
+
+.section {
+    padding-left: 15px;
+    font-size: 14px;
+
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+}
+
+
+ion-datetime-button {
+    --ion-text-color: var(--color-teal) !important;
+}
+
+.ion-datetime-button-overlay ion-datetime.datetime-grid {
+    background: #232f3d;
+}
+
+:host .datetime-time {
+    color: #ffff00 !important;
+}
+
+button[part="wheel-item"] {
+    color: #ffff00 !important;
 }

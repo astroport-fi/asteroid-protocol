@@ -126,6 +126,14 @@ export class CreateInscriptionPage implements OnInit {
             imageUpload: base64Image
           }
         });
+
+        const img = new Image();
+        img.src = reader.result as string;
+        img.onload = () => {
+          const height = img.naturalHeight;
+          const width = img.naturalWidth;
+          console.log('Width and Height', width, height);
+        };
       };
       reader.readAsDataURL(file);
     }
