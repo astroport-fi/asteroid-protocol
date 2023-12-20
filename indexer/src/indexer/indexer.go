@@ -234,6 +234,7 @@ func (i *Indexer) processInscription(rawTransaction RawTransaction) error {
 
 		fmt.Println(u.ID)
 		fmt.Println(u.SS)
+		fmt.Println(extension.Grantee)
 
 		// Match the ID and send the SS to the correct processor with base64 data to decode
 		processor, ok := i.metaprotocols[u.ID]
@@ -245,8 +246,36 @@ func (i *Indexer) processInscription(rawTransaction RawTransaction) error {
 			"processor": processor.Name(),
 		}).Debug("Processing metaprotocol")
 
-		err := processor.Process(u.SS, extension.Granter, extension.Grantee)
-		_ = err
+		metadata, _ := base64.StdEncoding.DecodeString(extension.Granter)
+		data, err := base64.StdEncoding.DecodeString(extension.Grantee)
+		if err != nil {
+			fmt.Println("error decoding base64, skip", err)
+		}
+
+		dataModels, err := processor.Process(u.SS, metadata, data)
+		if err != nil {
+			fmt.Println("error processing metaprotocol, skip", err)
+			return err
+		}
+
+		fmt.Println("Attmepting to save")
+
+		for _, model := range dataModels {
+			switch v := model.(type) {
+			case models.Inscription:
+				result := i.db.Save(&v)
+				if result.Error != nil {
+					fmt.Println(result.Error)
+					return result.Error
+				}
+				fmt.Println("SAVED?")
+			}
+		}
+
+		// switch model.(type) {
+		// case models.Inscription:
+		// 	fmt.Println("Inscription model")
+		// }
 
 		// switch extension.MsgTypeURL {
 		// case InscriptionTypeContentGeneric:
