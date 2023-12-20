@@ -7,6 +7,10 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
+    path: 'mint/:ticker',
+    loadComponent: () => import('./mint/mint.page').then((m) => m.MintPage),
+  },
+  {
     path: 'app',
     component: DashboardLayoutComponent,
     children: [

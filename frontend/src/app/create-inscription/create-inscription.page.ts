@@ -4,8 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AlertController, LoadingController, IonicModule } from '@ionic/angular';
 import { WalletService } from '../core/service/wallet.service';
-import { delay } from '../core/helpers/delay';
 import { environment } from 'src/environments/environment';
+import { Parent } from '../core/types/metadata/parent';
+import { ContentInscription } from '../core/types/metadata/content-inscription';
+import { hashValue } from '../core/helpers/crypto';
+
+type InscriptionMetadata = {
+  parent: Parent;
+  metadata: ContentInscription;
+}
 
 @Component({
   selector: 'app-create-inscription',
@@ -17,8 +24,6 @@ import { environment } from 'src/environments/environment';
 export class CreateInscriptionPage implements OnInit {
   isError = false;
   errorText = "";
-
-  // Hold the form for persistance
   createForm: FormGroup;
 
   constructor(private builder: FormBuilder,
@@ -40,16 +45,36 @@ export class CreateInscriptionPage implements OnInit {
   }
 
   async inscribe() {
-    console.log("Inscribe");
 
-    // TODO: Validate form
-    const metadata = {
-      name: this.createForm.value.basic.name,
-      description: this.createForm.value.basic.description,
+    // The base64 data contains the mime type as well as the data itself
+    // we need to strip the mime type from the data and store it in the metadata
+    // Sample of the value "data:image/png;base64,iVBORw0Kbase64"
+    let data = this.createForm.value.basic.imageUpload;
+    const mime = data.split(";")[0].split(":")[1];
+    data = data.split(",")[1];
+
+    // Build the metadata for this inscription
+    const metadata: InscriptionMetadata = {
+      parent: {
+        type: "/cosmos.bank.Account",
+        identifier: (await this.walletService.getAccount()).address,
+      },
+      metadata: {
+        name: this.createForm.value.basic.name,
+        description: this.createForm.value.basic.description,
+        mime,
+      }
     };
+    const metadataBase64 = btoa(JSON.stringify(metadata));
+    const inscriptionHash = await hashValue(metadataBase64 + data);
 
-    const data = {};
+    // URN for a content inscription follows the structure
+    // urn:inscription:chainId=content@hash
+    // where hash is SHA-256(base64 encoded JSON metadata + base64 encoded data)
+    // Example: urn:inscription:gaialocal-1=content@76189406df1f72cd2e55b9246ec9944d338432154fc5cfc105bf87d1e595730b
+    const urn = `urn:inscription:${environment.chain.chainId}=content@${inscriptionHash}`
 
+    // TODO: Add fee/gas information to alert/modal/popup
     const alert = await this.alertController.create({
       header: "Inscribe",
       subHeader: "Sign the inscription transaction",
@@ -62,33 +87,10 @@ export class CreateInscriptionPage implements OnInit {
     this.isError = false;
     await alert.present();
 
-    // this.isSigning = true;
-    // await delay(1000);
-    // console.log("one");
 
-    // await delay(1000);
-    // console.log("tweo");
-
-    // await delay(1000);
-    // console.log("three");
-
-
-    // TODO: Popup, check keplr popup to sign the inscription transaction
-
-    // this.isSigning = false;
-
-
-    const metadataBase64 = btoa(JSON.stringify(metadata));
-
-    const inscriptionHash = "unique_hash_of_inscription_content_datametadata";
-    // urn:inscription:chainId=content@hash
-    const urn = `urn:inscription:${environment.chain.chainId}=content@${inscriptionHash}`
-
-
-    console.log("this.createForm.value.basic.imageUpload", this.createForm.value.basic.imageUpload);
     try {
-      const signedTx = await this.walletService.sign(urn, metadataBase64, this.createForm.value.basic.imageUpload);
-
+      // Sign the inscription transaction
+      const signedTx = await this.walletService.sign(urn, metadataBase64, data);
       await alert.dismiss();
 
       const loading = await this.loadingCtrl.create({
@@ -97,21 +99,10 @@ export class CreateInscriptionPage implements OnInit {
 
       loading.present();
 
-      // const broadcast = await this.alertController.create({
-      //   header: "Inscribing",
-      //   message: "Inscribing your content on the Hub. Please wait...",
-      //   translucent: true,
-      //   keyboardClose: true,
-      //   backdropDismiss: false,
-      //   buttons: [],
-      // });
-
-      // this.isError = false;
-      // await broadcast.present();
-
       const result = await this.walletService.broadcast(signedTx);
-
       await loading.dismiss();
+
+      // Redirect to the view page
       this.router.navigate(["/app/inscription", result]);
 
     } catch (error: any) {
@@ -126,21 +117,16 @@ export class CreateInscriptionPage implements OnInit {
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
-
     if (file) {
       const reader = new FileReader();
-
       reader.onload = (e: any) => {
         const base64Image = e.target.result;
-        console.log(base64Image);
         this.createForm.patchValue({
           basic: {
             imageUpload: base64Image
           }
         });
-
       };
-
       reader.readAsDataURL(file);
     }
   }
