@@ -15,14 +15,22 @@
     <p class="note">
       Details about content inscriptions
     </p>
-    <form class="form" [formGroup]="createForm">
+    <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
       <ion-grid>
         <ion-row>
           <ion-col size-xl="3" size-lg="5" size-xs="12">
-            <div class="uploader text-center" formGroupName="optional">
-              <p>Optional logo<br />Max 800kb</p>
-              <label for='input-file'>Select file</label>
-              <input id='input-file' type='file' formControlName="imageUpload" />
+            <div class="uploaded rounded text-center">
+              <img [src]="this.createForm.value.optional.imageUpload" />
+            </div>
+            <div class="uploader text-center">
+              <p>Optional Square Logo</p>
+              <p class="info">Minimum dimensions<br />250x250</p>
+              <p class="info">Maximum dimensions<br />1024x1024</p>
+              <p class="info">Max file size<br />800kb</p>
+              <div class="upload">
+                <label for='input-file'>Select logo file</label>
+                <input id='input-file' type='file' (change)="onFileSelected($event)" />
+              </div>
             </div>
           </ion-col>
           <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
@@ -32,26 +40,27 @@
             </div>
             <div class="form-group" formGroupName="basic">
               <ion-item lines="none">
-                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your token"></ion-input>
+                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your token" formControlName="name"
+                  errorText="Please enter a name"></ion-input>
               </ion-item>
               <ion-item lines="none">
-                <ion-input label="Ticker" labelPlacement="stacked" placeholder="3-5 letter ticker"></ion-input>
+                <ion-input class="no-border" label="Ticker" labelPlacement="stacked" placeholder="TOKEN"
+                  label="Ticker (3 - 5 characters)" formControlName="ticker" [counter]="true" [minlength]="3"
+                  [maxlength]="5"></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-input label="Decimal places" labelPlacement="stacked" placeholder="Decimals"
-                  [maskito]="maxDecimalsMask" [maskitoElement]="maskPredicate"></ion-input>
+                  [maskito]="maxDecimalsMask" [maskitoElement]="maskPredicate" formControlName="decimals"></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-input label="Maximum supply" labelPlacement="stacked" placeholder="Maximum supply"
-                  [maskito]="numberMask" [maskitoElement]="maskPredicate"></ion-input>
+                  [maskito]="numberMask" [maskitoElement]="maskPredicate" formControlName="maxSupply"></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-input label="Per wallet mint limit" labelPlacement="stacked" placeholder="Mint limit"
-                  [maskito]="numberMask" [maskitoElement]="maskPredicate"></ion-input>
+                  [maskito]="numberMask" [maskitoElement]="maskPredicate" formControlName="mintLimit"></ion-input>
               </ion-item>
             </div>
-
-
           </ion-col>
         </ion-row>
         <ion-row>
@@ -83,11 +92,13 @@
                 </ion-radio-group>
               </ion-list>
             </div>
-            <div style="width: 200px;" *ngIf="this.createForm.value.basic.launchImmediately == 'false'">
+            <div style="width: 300px;" *ngIf="this.createForm.value.basic.launchImmediately == 'false'">
               <ion-datetime-button datetime="datetime"></ion-datetime-button>
-              <ion-modal [keepContentsMounted]="true">
+              <ion-modal [keepContentsMounted]="true" formGroupName="basic">
                 <ng-template>
-                  <ion-datetime id="datetime"></ion-datetime>
+                  <ion-datetime [showDefaultTitle]="true" showDefaultButtons="true" id="datetime"
+                    min="{{ minDate | date: 'yyyy-MM-ddTHH:mm:ss' }}"
+                    value="{{ minDate | date: 'yyyy-MM-ddTHH:mm:ss' }}" formControlName="launchDate"></ion-datetime>
                 </ng-template>
               </ion-modal>
             </div>
@@ -110,9 +121,9 @@
           <ion-col size-xl="3" size-lg="5" size-xs="12">
             &nbsp;
           </ion-col>
-          <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
+          <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
             <div class="section">
-              <ion-button color="primary" fill="solid">
+              <ion-button color="primary" fill="solid" type="submit">
                 <ion-icon slot="start" name="checkmark"></ion-icon>
                 Create token
               </ion-button>
@@ -122,10 +133,8 @@
             </div>
           </ion-col>
         </ion-row>
-
-
-
       </ion-grid>
     </form>
   </div>
+  <div style="height: 100px;"></div>
 </ion-content>

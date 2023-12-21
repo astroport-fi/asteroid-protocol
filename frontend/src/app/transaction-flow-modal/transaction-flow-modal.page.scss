@@ -1,0 +1,17 @@
+:root {
+    border-radius: 10px !important;
+}
+
+:host {
+    border-radius: 10px !important;
+}
+
+ion-content {
+    --background: var(--color-dark-teal);
+    border-radius: 10px !important;
+}
+
+
+.mw-400 {
+    max-width: 400px;
+}

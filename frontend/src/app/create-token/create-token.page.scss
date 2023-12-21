@@ -38,6 +38,18 @@
     input[type="file"] {
         display: none;
     }
+
+    .info {
+        font-size: 12px;
+        color: #fff;
+        padding: 0px;
+        margin: 5px;
+        text-align: left;
+    }
+
+    .upload {
+        margin-top: 20px;
+    }
 }
 
 .section {
@@ -68,4 +80,11 @@ ion-datetime-button {
 
 button[part="wheel-item"] {
     color: #ffff00 !important;
+}
+
+ion-datetime {
+    --background: rgb(35, 47, 61);
+    --background-rgb: 35, 47, 61;
+    --wheel-highlight-background: rgb(35, 47, 61);
+    --wheel-fade-background-rgb: 35, 47, 61;
 }

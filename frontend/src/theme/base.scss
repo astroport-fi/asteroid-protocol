@@ -50,19 +50,25 @@ ion-button[color="warning"] {
 
 ion-input,
 ion-textarea {
-    border-bottom: 1px solid rgba(66, 108, 117, 0.2);
+    // --border-color: rgba(66, 108, 117, 0.2) !important;
     --background: transparent;
     // border-bottom: 1px solid var(--color-teal);
+
     --highlight-color-focused: var(--color-orange) !important;
     --highlight-color-invalid: var(--ion-color-danger) !important;
     --highlight-color-valid: var(--ion-color-success) !important;
 
-    &:focus {
-        border-bottom: 1px solid var(--color-orange);
-    }
+    // &:focus {
+    //     border-bottom: 1px solid var(--color-orange);
+    // }
 
-    &:focus-within {
-        border-bottom: 1px solid var(--color-orange);
+    // &:focus-within {
+    //     border-bottom: 1px solid var(--color-orange);
+    // }
+
+    &.no-border {
+        border-bottom: 1px solid transparent;
+
     }
 }
 

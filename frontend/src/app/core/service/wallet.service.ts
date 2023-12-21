@@ -88,13 +88,34 @@ export class WalletService {
   /**
    * Sign the inscription transaction
    * 
+   * @param urn The metaprotocol URN for the inscription
    * @param metadata The metadata about the inscription
    * @param data The inscription data
    * @returns 
    */
-  async sign(urn: string, metadata: string, data: string) {
+  async sign(urn: string, metadata: string | null, data: string | null) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
+
+    let nonCriticalExtensionOptions: any[] = [];
+    // We only add the nonCriticalExtensionOptions inscription if the protocl
+    // requires it
+    if (metadata && data) {
+      nonCriticalExtensionOptions = [
+        {
+          // This typeUrl isn't really important here as long as it is a type
+          // that the chain recognises it
+          typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
+          value: MsgRevoke.encode(
+            MsgRevoke.fromPartial({
+              granter: metadata,
+              grantee: data,
+              msgTypeUrl: urn,
+            })
+          ).finish(),
+        }
+      ];
+    }
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
@@ -113,19 +134,8 @@ export class WalletService {
         bodyBytes: TxBody.encode(
           TxBody.fromPartial({
             messages: [protoMsgs],
-            memo: "",
-            nonCriticalExtensionOptions: [
-              {
-                typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
-                value: MsgRevoke.encode(
-                  MsgRevoke.fromPartial({
-                    granter: metadata,
-                    grantee: data,
-                    msgTypeUrl: urn,
-                  })
-                ).finish(),
-              }
-            ],
+            memo: urn,
+            nonCriticalExtensionOptions,
           })
         ).finish(),
 

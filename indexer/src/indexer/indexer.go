@@ -234,7 +234,7 @@ func (i *Indexer) processInscription(rawTransaction RawTransaction) error {
 
 		fmt.Println(u.ID)
 		fmt.Println(u.SS)
-		fmt.Println(extension.Grantee)
+c		fmt.Println(extension.Grantee)
 
 		// Match the ID and send the SS to the correct processor with base64 data to decode
 		processor, ok := i.metaprotocols[u.ID]

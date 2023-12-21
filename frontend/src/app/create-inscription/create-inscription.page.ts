@@ -71,7 +71,7 @@ export class CreateInscriptionPage implements OnInit {
     // URN for a content inscription follows the structure
     // urn:inscription:chainId=content@hash
     // where hash is SHA-256(base64 encoded JSON metadata + base64 encoded data)
-    // Example: urn:inscription:gaialocal-1=content@76189406df1f72cd2e55b9246ec9944d338432154fc5cfc105bf87d1e595730b
+    // Example: urn:inscription:gaialocal-1@v1=content@76189406df1f72cd2e55b9246ec9944d338432154fc5cfc105bf87d1e595730b
     const urn = `urn:inscription:${environment.chain.chainId}=content@${inscriptionHash}`
 
     // TODO: Add fee/gas information to alert/modal/popup
