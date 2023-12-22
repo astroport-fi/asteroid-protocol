@@ -33,7 +33,7 @@ export class CreateTokenPage implements OnInit {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['Tokeeey', Validators.required],
+        name: ['Tokeeey', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
         ticker: ['TOKEY', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
         maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
@@ -58,9 +58,12 @@ export class CreateTokenPage implements OnInit {
       max: 18,
     });
 
-    const modal = this.modalCtrl.create({
-      component: TransactionFlowModalPage,
-    }).then(modal => modal.present());
+    // const modal = this.modalCtrl.create({
+    //   component: TransactionFlowModalPage,
+    //   componentProps: {
+    //     'message': 'Hello worldz'
+    //   }
+    // }).then(modal => modal.present());
 
 
   }
@@ -108,6 +111,11 @@ export class CreateTokenPage implements OnInit {
 
     const modal = await this.modalCtrl.create({
       component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+      }
     });
     modal.present();
   }

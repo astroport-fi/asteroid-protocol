@@ -20,6 +20,14 @@ ion-button {
     text-transform: initial;
 }
 
+ion-modal {
+    --background: transparent !important;
+    --border-radius: 10px;
+    --border-style: solid;
+    --border-color: #0c151d;
+    --border-width: 1px;
+}
+
 
 ion-content.shadowed {
     background-color: #232f3d;
@@ -94,6 +102,14 @@ h5 {
 }
 
 h2 {
+    font-size: 18pt;
+}
+
+h3 {
+    font-size: 16pt;
+}
+
+h4 {
     font-size: 14pt;
 }
 
@@ -147,4 +163,5 @@ ion-progress-bar::part(progress) {
     padding-top: 5px;
     padding-left: 15px;
     color: var(--ion-color-warning);
+    text-align: left;
 }

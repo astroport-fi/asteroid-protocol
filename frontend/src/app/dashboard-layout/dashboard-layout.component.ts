@@ -22,13 +22,21 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
 import { WalletStatus } from '../core/enum/wallet-status.enum';
 import { AccountData } from '@keplr-wallet/types';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { LottieComponent, LottieModule } from 'ngx-lottie';
+import player from 'lottie-web';
+
+// Note we need a separate function as it's required
+// by the AOT compiler.
+export function playerFactory() {
+  return player;
+}
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -54,7 +62,8 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
     IonButton,
     RouterLink,
     RouterLinkActive,
-    ShortenAddressPipe
+    ShortenAddressPipe,
+    LottieComponent
   ],
 })
 export class DashboardLayoutComponent {
@@ -63,7 +72,7 @@ export class DashboardLayoutComponent {
   connectedAccount: any = {};
 
   constructor(private walletService: WalletService) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark });
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close });
 
     this.walletService.isConnected().then((isConnected) => {
       this.isWalletConnected = isConnected;

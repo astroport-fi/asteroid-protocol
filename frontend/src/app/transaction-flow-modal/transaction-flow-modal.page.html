@@ -1,14 +1,43 @@
 <ion-content>
   <ion-header class="no-shadow">
     <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button></ion-back-button>
-      </ion-buttons>
-      <ion-title>
-        Sending TX
-      </ion-title>
+      <ion-button>
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
     </ion-toolbar>
   </ion-header>
+  <div>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="animation mx-auto">
+            <ng-lottie [options]="{path: '../assets/lottie/scan.json'}"></ng-lottie>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center">
+          <h2>Sign transaction</h2>
+          <p>Sign the transaction with your wallet to inscribe your content</p>
+          <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
+            <b>Unable to sign transaction</b>
+            <p>{{ errorText }}</p>
+            <p>You must sign the transaction in order to inscribe content</p>
+          </div>
+        </ion-col>
+      </ion-row>
 
-  SENDING IT!
+
+      <ion-row>
+        <ion-col>
+          <h4>Fees</h4>
+          <p>
+            Gas: 0.50 ATOM<br />
+            Chain: 0.24 ATOM<br />
+            Metaprotocol: 0.1 ATOM<br />
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
