@@ -1,41 +1,117 @@
 <ion-content>
-  <ion-header class="no-shadow">
-    <ion-toolbar>
-      <ion-button>
-        <ion-icon name="close"></ion-icon>
-      </ion-button>
-    </ion-toolbar>
-  </ion-header>
   <div>
-    <ion-grid>
+    <ion-grid *ngIf="state == 'sign' || state == 'error'">
       <ion-row>
         <ion-col>
           <div class="animation mx-auto">
             <ng-lottie [options]="{path: '../assets/lottie/scan.json'}"></ng-lottie>
+            <!-- <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie> -->
           </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="text-center">
-          <h2>Sign transaction</h2>
-          <p>Sign the transaction with your wallet to inscribe your content</p>
+          <h2>Sign and submit transaction</h2>
+          <p>Inscription transactions are typically larger than standard<br />transactions and require higher fees
+          </p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
             <p>{{ errorText }}</p>
-            <p>You must sign the transaction in order to inscribe content</p>
+            <p>You must sign and submit the transaction in order to inscribe content</p>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="fees">
+            <h4>Estimated fee breakdown</h4>
+            <table>
+              <tr>
+                <td class="label">Gas</td>
+                <td>0.50 ATOM</td>
+              </tr>
+              <tr>
+                <td class="label">Chain</td>
+                <td>0.24 ATOM</td>
+              </tr>
+              <tr>
+                <td class="label">Metaprotocol</td>
+                <td>0.10 ATOM</td>
+              </tr>
+              <tr>
+                <td class="label total">Estimated total</td>
+                <td class="total">0.85 ATOM</td>
+              </tr>
+            </table>
           </div>
         </ion-col>
       </ion-row>
 
-
       <ion-row>
         <ion-col>
-          <h4>Fees</h4>
-          <p>
-            Gas: 0.50 ATOM<br />
-            Chain: 0.24 ATOM<br />
-            Metaprotocol: 0.1 ATOM<br />
-          </p>
+          <div class="text-center">
+            <ion-button class="mt-3" color="success" (click)="submit()">{{ state == 'error' ? 'Retry' : 'Continue'
+              }}</ion-button>
+            <br />
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Cancel</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="state == 'submit' || state == 'long'" class="mt-5">
+      <ion-row>
+        <ion-col>
+          <div class="animation mx-auto">
+            <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center mt-5">
+          <h2>Waiting for transaction</h2>
+          <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
+          <p *ngIf="state == 'long'" class="color-orange">This transaction is taking longer than usual</p>
+          <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
+            <b>Unable to sign transaction</b>
+            <p>{{ errorText }}</p>
+            <p>You must sign and submit the transaction in order to inscribe content</p>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center note">
+          <h3>Transaction hash</h3>
+          <p>{{ txHash }}</p>
+          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="state == 'success'">
+      <ion-row>
+        <ion-col>
+          <div class="animation large mx-auto p-0 m-0">
+            <ng-lottie [options]="{path: '../assets/lottie/success.json', loop: false}"></ng-lottie>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center">
+          <h2>Transaction complete</h2>
+          <p>Your inscription has been created on-chain</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center">
+          <div>
+            <ion-button color="primary">View inscription</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="text-center note">
+          <h3>Transaction hash</h3>
+          <p>{{ txHash }}</p>
+          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
         </ion-col>
       </ion-row>
     </ion-grid>

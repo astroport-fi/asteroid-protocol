@@ -104,11 +104,6 @@ export class CreateTokenPage implements OnInit {
       params.set("opn", Math.round(launchDate.getTime() / 1000).toString());
     }
     const urn = this.protocolService.buildURN('cosmoshub-4', 'deploy', params);
-    console.log(urn);
-
-    // const signed = await this.walletService.sign(urn, null, null);
-    // console.log(signed);
-
     const modal = await this.modalCtrl.create({
       component: TransactionFlowModalPage,
       componentProps: {

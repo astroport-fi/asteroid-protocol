@@ -1,4 +1,4 @@
-<ion-content class="shadowed">
+<!-- <ion-content class="shadowed">
   <ion-header class="no-shadow">
     <ion-toolbar>
       <ion-buttons slot="start">
@@ -24,7 +24,6 @@
               <label for='input-file'>Select file</label>
               <input id='input-file' type='file' (change)="onFileSelected($event)" />
             </div>
-            <!-- <ion-input type="file" accept=".csv, text/plain"></ion-input> -->
           </ion-col>
           <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
             <div class="form-group" formGroupName="basic">
@@ -39,27 +38,6 @@
                 <ion-textarea label="Description" labelPlacement="stacked" placeholder="Describe your inscription"
                   formControlName="description"></ion-textarea>
               </ion-item>
-              <!-- <label>Name your inscription <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="name" placeholder="My inscription" value="" />
-              <div class="form-hint d-inline">Your login email address</div> -->
-              <!-- <div class="d-inline" *ngIf="
-                getBasicField('basic.email').invalid && 
-                (getBasicField('basic.email').dirty || getBasicField('basic.email').touched)
-                then emailError">
-              </div> -->
-              <!-- <ng-template #emailError>
-                <div class="form-hint d-inline">.
-                  <span *ngIf="getBasicField('basic.email').errors.required" class="text-warning">
-                    Required.
-                  </span>
-                  <span *ngIf="getBasicField('basic.email').errors.email" class="text-warning">
-                    Must be a valid email address.
-                  </span>
-                  <span *ngIf="getBasicField('basic.email').errors.minlength" class="text-warning">
-                    Must be at least 8 characters long
-                  </span>
-                </div>
-              </ng-template> -->
             </div>
             <div class="mt-3 warning-box" *ngIf="isError">
               <b>Unable to sign transaction</b>
@@ -79,4 +57,78 @@
       </ion-grid>
     </form>
   </div>
+</ion-content> -->
+
+
+<ion-content class="shadowed">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+        <ion-back-button defaultHref="/app/create"></ion-back-button>
+      </ion-buttons>
+      <ion-title>
+        New inscription
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="aligned">
+    <p class="note">
+      Details about content inscriptions
+    </p>
+    <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
+      <ion-grid>
+        <ion-row>
+          <ion-col size-xl="3" size-lg="5" size-xs="12">
+            <div class="uploaded rounded text-center">
+              <img [src]="this.createForm.value.basic.imageUpload" />
+            </div>
+            <div class="uploader text-center">
+              <p>Content</p>
+              <p class="info">Max file size<br />800kb</p>
+              <div class="upload">
+                <label for='input-file'>Select file</label>
+                <input id='input-file' type='file' (change)="onFileSelected($event)" />
+              </div>
+              <div *ngIf="contentRequired" class="info text-center color-danger">
+                You must add content to inscribe
+              </div>
+            </div>
+          </ion-col>
+          <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
+            <div class="section mt-3 mb-3" formGroupName="basic">
+              <h2>Inscription information</h2>
+              <p class="note">Add detail to your inscription</p>
+            </div>
+            <div class="form-group" formGroupName="basic">
+              <ion-item lines="none">
+                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"
+                  formControlName="name" [counter]="true" [minlength]="3" [maxlength]="32"
+                  errorText="Please enter a name"></ion-input>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-textarea class="no-border" label="Description" labelPlacement="stacked"
+                  placeholder="Decribe you inscription" rows="4" formControlName="description"></ion-textarea>
+              </ion-item>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size-xl="3" size-lg="5" size-xs="12">
+            &nbsp;
+          </ion-col>
+          <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
+            <div class="section">
+              <ion-button color="primary" fill="solid" type="submit">
+                <ion-icon slot="start" name="checkmark"></ion-icon>
+                Inscribe
+              </ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </div>
+  <div style="height: 100px;"></div>
 </ion-content>

@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { WalletStatus } from '../enum/wallet-status.enum';
 import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate';
 import { ChainService } from './chain.service';
-import { Coin, coin, makeStdTx } from '@cosmjs/amino';
+import { Coin, coin, makeStdTx, StdSignDoc } from '@cosmjs/amino';
 import { SignDoc, AuthInfo } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { MsgRevoke } from "cosmjs-types/cosmos/authz/v1beta1/tx";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
@@ -30,6 +30,7 @@ export class WalletService {
     if (!window.keplr) {
       throw new Error('Keplr extension is not available');
     }
+
     return window.keplr.getOfflineSigner(environment.chain.chainId);
   }
 
@@ -61,6 +62,13 @@ export class WalletService {
     }
 
     try {
+      // Prefer the users can't change the memo we set
+      window.keplr.defaultOptions = {
+        sign: {
+          preferNoSetMemo: true,
+        }
+      }
+
       await window.keplr.experimentalSuggestChain(environment.chain);
       await window.keplr.enable(environment.chain.chainId);
       return WalletStatus.Connected;
@@ -98,7 +106,7 @@ export class WalletService {
     const account = await this.getAccount();
 
     let nonCriticalExtensionOptions: any[] = [];
-    // We only add the nonCriticalExtensionOptions inscription if the protocl
+    // We only add the nonCriticalExtensionOptions inscription if the protocol
     // requires it
     if (metadata && data) {
       nonCriticalExtensionOptions = [
@@ -110,7 +118,7 @@ export class WalletService {
             MsgRevoke.fromPartial({
               granter: metadata,
               grantee: data,
-              msgTypeUrl: urn,
+              msgTypeUrl: `${environment.domain} metaprotocol`,
             })
           ).finish(),
         }
@@ -163,9 +171,13 @@ export class WalletService {
         }).finish(),
 
         chainId: environment.chain.chainId,
-        accountNumber: Long.fromNumber(accountInfo.account_number)
+        accountNumber: Long.fromNumber(accountInfo.account_number),
       };
+
+      // We use the direct signer so that we can inscribe using 
+      // nonCriticalExtensionOptions
       const signed = await signer.signDirect(account.address, signDoc);
+
       const signedTx = {
         tx: TxRaw.encode({
           bodyBytes: signed.signed.bodyBytes,
@@ -175,10 +187,16 @@ export class WalletService {
         signDoc: signed.signed,
       }
       return signedTx.tx;
+
+
     }
     catch (error) {
       throw error;
     }
+  }
+
+  async simulate(urn: string, metadata: string | null, data: string | null) {
+    // TODO: Implement simulation to get gas estimate
   }
 
   /**

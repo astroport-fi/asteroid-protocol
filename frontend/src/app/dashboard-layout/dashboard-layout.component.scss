@@ -20,7 +20,10 @@
 }
 
 .layout {
+
     --ion-background-color: transparent;
+
+    // background: url("../../assets/background/ui-background.png") no-repeat center center fixed;
     background: rgb(58, 75, 89);
     background: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
 }

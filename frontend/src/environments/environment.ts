@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  domain: 'localhost:8100',
   fees: {
     protocol: {
       receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
@@ -24,6 +25,7 @@ export const environment = {
   },
   api: {
     endpoint: 'http://localhost:8080',
+    explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {
     chainId: "gaialocal-1",

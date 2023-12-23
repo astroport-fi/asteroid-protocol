@@ -165,3 +165,11 @@ ion-progress-bar::part(progress) {
     color: var(--ion-color-warning);
     text-align: left;
 }
+
+.color-orange {
+    color: var(--color-orange) !important;
+}
+
+.color-danger {
+    color: var(--ion-color-danger) !important;
+}

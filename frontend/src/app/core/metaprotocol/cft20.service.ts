@@ -11,14 +11,16 @@ import { api } from '../helpers/api';
 })
 export class CFT20Service {
 
+    version: string = 'v1';
+
     constructor() { }
 
     buildURN(chainId: string, operation: string, params: Map<string, string>) {
         // The URN for deploying a new token is as follows
-        // urn:{metaprotocol}:{chain-id};{op}?{param1}={value1}&{param2}={value2}&{param3}={value3}
+        // urn:{metaprotocol}:{chain-id}@{version};{op}?{param1}={value1}&{param2}={value2}&{param3}={value3}
         // urn:cft20:cosmoshub-1;mint?TOKEN=1000
         const paramString = Array.from(params, ([key, value]) => `${key}=${value}`).join('&');
-        const urn = `urn:cft20:${chainId};${operation}?${paramString}`;
+        const urn = `urn:cft20:${chainId}@${this.version};${operation}?${paramString}`;
 
         return urn;
     }

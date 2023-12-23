@@ -18,4 +18,53 @@ ion-content {
 
 .animation {
     max-width: 150px;
+
+    &.large {
+        max-width: 250px;
+        height: 250px;
+    }
+}
+
+ion-col.note {
+    font-size: 14px;
+    color: #a7a7a7;
+
+    h3 {
+        font-size: 14px;
+        color: #ebebeb;
+    }
+
+    a {
+        color: var(--color-teal);
+    }
+}
+
+div.fees {
+    font-size: 14px;
+    color: #a7a7a7;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h4 {
+        font-size: 16px;
+        color: #ebebeb;
+    }
+
+    table {
+        td {
+            padding-right: 12px;
+            padding-bottom: 4px;
+
+            &.label {
+                text-align: left;
+                font-weight: bold;
+            }
+
+            &.total {
+                padding-top: 10px;
+                border-top: 1px solid #a7a7a7;
+            }
+        }
+    }
 }
