@@ -33,11 +33,11 @@ export class CreateTokenPage implements OnInit {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['Tokeeey', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
-        ticker: ['TOKEY', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
+        name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
+        ticker: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
         maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
-        decimals: [6, [Validators.required, Validators.pattern("^[0-9]*$")]],
+        decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],
         launchImmediately: 'true',
         launchDate: this.datePipe.transform(new Date(this.minDate), 'yyyy-MM-ddTHH:mm:ss'),
       }),
@@ -55,7 +55,7 @@ export class CreateTokenPage implements OnInit {
 
     this.maxDecimalsMask = maskitoNumberOptionsGenerator({
       min: 0,
-      max: 18,
+      max: 6,
     });
 
     // const modal = this.modalCtrl.create({
@@ -98,10 +98,11 @@ export class CreateTokenPage implements OnInit {
       ["sup", maxSupply],
       ["dec", decimals],
       ["lim", mintLimit],
+      ["opn", Math.round((new Date().getTime()) / 1000)],
     ]);
     if (this.createForm.value.basic.launchImmediately === 'false') {
       const launchDate = new Date(this.createForm.value.basic.launchDate);
-      params.set("opn", Math.round(launchDate.getTime() / 1000).toString());
+      params.set("opn", launchDate.getTime() / 1000);
     }
     const urn = this.protocolService.buildURN('cosmoshub-4', 'deploy', params);
     const modal = await this.modalCtrl.create({

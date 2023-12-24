@@ -18,7 +18,10 @@ import {
   IonListHeader,
   IonIcon,
   IonChip,
-  IonButton
+  IonButton,
+  IonMenuToggle,
+  IonAccordion,
+  IonAccordionGroup,
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 
@@ -60,6 +63,9 @@ export function playerFactory() {
     IonIcon,
     IonChip,
     IonButton,
+    IonMenuToggle,
+    IonAccordion,
+    IonAccordionGroup,
     RouterLink,
     RouterLinkActive,
     ShortenAddressPipe,

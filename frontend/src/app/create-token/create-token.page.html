@@ -46,7 +46,7 @@
               <ion-item lines="none">
                 <ion-input class="no-border" label="Ticker" labelPlacement="stacked" placeholder="TOKEN"
                   label="Ticker (3 - 5 characters)" formControlName="ticker" [counter]="true" [minlength]="3"
-                  [maxlength]="5"></ion-input>
+                  [maxlength]="5" oninput="this.value = this.value.toUpperCase()"></ion-input>
               </ion-item>
               <ion-item lines="none">
                 <ion-input label="Decimal places" labelPlacement="stacked" placeholder="Decimals"

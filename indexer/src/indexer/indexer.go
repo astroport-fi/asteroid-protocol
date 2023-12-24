@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
@@ -38,7 +40,20 @@ type Indexer struct {
 
 // New returns a new instance of the indexer service and returns an error if
 // there was a problem setting up the service
-func New(chainID string, databaseDSN string, lcdEndpoint string, blockPollIntervalSeconds int, log *logrus.Entry) (*Indexer, error) {
+func New(
+	chainID string,
+	databaseDSN string,
+	lcdEndpoint string,
+	blockPollIntervalSeconds int,
+	s3Endpoint string,
+	s3Region string,
+	s3Bucket string,
+	s3ID string,
+	s3Secret string,
+	s3Token string,
+	log *logrus.Entry) (*Indexer, error) {
+
+	// TODO: Parsee config here
 
 	db, err := gorm.Open(mysql.Open(databaseDSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
@@ -49,7 +64,8 @@ func New(chainID string, databaseDSN string, lcdEndpoint string, blockPollInterv
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor()
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(s3Endpoint, s3Region, s3Bucket, s3ID, s3Secret, s3Token)
+	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor()
 
 	return &Indexer{
 		chainID:                  chainID,
@@ -148,53 +164,70 @@ func (i *Indexer) indexBlocks() {
 			}
 
 			for _, tx := range transactions {
-				// TODO Now query the hash from the LCD
+
+				// Get the full transaction from the LCD
 				// We do this because we want more information, such as gas used
 				// and a JSON-only way to parse the content
-
 				txSize, rawTransaction, err := i.fetchTransaction(tx)
 				if err != nil {
 					i.logger.Fatal(err)
 				}
 
-				// Verify that this is a valid inscription.
-				// That is, it must have a MsgSend and a MsgRevoke in
-				// NonCriticalExtensionOptions
-				if !rawTransaction.isValidInscription() {
+				// Verify that this transaction is a metaprotocol inscription
+				if !rawTransaction.ValidateBasic() {
 					i.logger.WithFields(logrus.Fields{
 						"hash": tx,
-					}).Debug("Transaction is not an inscription")
+					}).Debug("Transaction does not contain a valid metaprotocol memo")
 					continue
 				}
 
-				// height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-				// gasUsed, _ := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
-				// fees, _ := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
-
-				// txModel := models.Transaction{
-				// 	Hash:          tx,
-				// 	Height:        height,
-				// 	Content:       rawTransaction.ToJSON(),
-				// 	GasUsed:       gasUsed,
-				// 	Fees:          string(fees),
-				// 	ContentLength: uint64(txSize),
-				// 	DateCreated:   rawTransaction.TxResponse.Timestamp,
-				// }
-				// result := i.db.Save(&txModel)
-				// if result.Error != nil {
-				// 	if result.Error == gorm.ErrDuplicatedKey || strings.Contains(result.Error.Error(), "Duplicate entry") {
-				// 		i.logger.Warn("Transaction already exists:", tx)
-				// 		continue
-				// 	}
-				// 	i.logger.Fatal(result.Error)
-				// }
-				_ = txSize
-
-				// Process inscription
-				err = i.processInscription(rawTransaction)
+				height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 				if err != nil {
 					i.logger.Fatal(err)
 				}
+				gasUsed, err := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
+				if err != nil {
+					i.logger.Fatal(err)
+				}
+
+				fees, err := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
+				if err != nil {
+					i.logger.Fatal(err)
+				}
+
+				txModel := models.Transaction{
+					Hash:          tx,
+					Height:        height,
+					Content:       rawTransaction.ToJSON(),
+					GasUsed:       gasUsed,
+					Fees:          string(fees),
+					ContentLength: uint64(txSize),
+					DateCreated:   rawTransaction.TxResponse.Timestamp,
+				}
+				result := i.db.Save(&txModel)
+				if result.Error != nil {
+					i.logger.WithFields(logrus.Fields{
+						"hash": rawTransaction.TxResponse.Txhash,
+						"err":  result.Error,
+					}).Warning("Unable to store transaction")
+
+					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+						i.logger.Fatal(result.Error)
+					}
+
+					// Even if we are unable to store the transaction, we can
+					// still try to handle the metaprotocol
+				}
+
+				// Process metaprotocol memo
+				err = i.processMetaprotocolMemo(rawTransaction)
+				if err != nil {
+					i.logger.Error(err)
+				}
+
+				i.logger.WithFields(logrus.Fields{
+					"hash": rawTransaction.TxResponse.Txhash,
+				}).Info("Transaction processed")
 			}
 
 			// Apply rules for state
@@ -208,162 +241,92 @@ func (i *Indexer) indexBlocks() {
 	}
 }
 
-func (i *Indexer) processInscription(rawTransaction RawTransaction) error {
-	i.logger.Debug("Processing Inscription:", rawTransaction.TxResponse.Txhash)
+func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) error {
+	i.logger.WithFields(logrus.Fields{
+		"hash": rawTransaction.TxResponse.Txhash,
+	}).Debug("Processing memo")
 
-	// TODO: Check for a duplicate of the content
-	// rawTransaction.Tx.Body.NonCriticalExtensionOptions
+	fmt.Println(rawTransaction.Tx.Body.Memo)
+	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Tx.Body.Memo))
+	if !ok {
+		return errors.New("invalid metaprotocol URN")
+	}
 
-	// Determine creator and owner of the inscription
-	// We determine the creator as the sender of the first MsgSend message
-	// in messages
+	// Match the ID and send the SS to the correct processor with base64 data to decode
+	processor, ok := i.metaprotocols[metaprotocolURN.ID]
+	if !ok {
+		return fmt.Errorf("no processor for metaprotocol '%s'", metaprotocolURN.ID)
+	}
 
-	// Get the first transaction message
-	firstMessage := rawTransaction.Tx.Body.Messages[0]
-	sender := firstMessage.FromAddress
-	_ = sender
+	i.logger.WithFields(logrus.Fields{
+		"processor": processor.Name(),
+		"hash":      rawTransaction.TxResponse.Txhash,
+	}).Info("Processing metaprotocol")
 
-	// TODO Decode the inscription
-	for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
-		fmt.Println(extension.MsgTypeURL)
-
-		u, ok := urn.Parse([]byte(extension.MsgTypeURL))
-		if !ok {
-			panic("error parsing urn")
-		}
-
-		fmt.Println(u.ID)
-		fmt.Println(u.SS)
-c		fmt.Println(extension.Grantee)
-
-		// Match the ID and send the SS to the correct processor with base64 data to decode
-		processor, ok := i.metaprotocols[u.ID]
-		if !ok {
-			panic("No processor for this metaprotocol")
-		}
-
+	dataModels, err := processor.Process(metaprotocolURN, rawTransaction)
+	if err != nil {
 		i.logger.WithFields(logrus.Fields{
-			"processor": processor.Name(),
-		}).Debug("Processing metaprotocol")
+			"metaprotocol": metaprotocolURN.ID,
+			"err":          err,
+			"hash":         rawTransaction.TxResponse.Txhash,
+		}).Warning("failed to process, skipping")
+	}
 
-		metadata, _ := base64.StdEncoding.DecodeString(extension.Granter)
-		data, err := base64.StdEncoding.DecodeString(extension.Grantee)
-		if err != nil {
-			fmt.Println("error decoding base64, skip", err)
-		}
+	i.logger.WithFields(logrus.Fields{
+		"processor": processor.Name(),
+		"hash":      rawTransaction.TxResponse.Txhash,
+		"db_ops":    len(dataModels),
+	}).Info("Saving processed data")
 
-		dataModels, err := processor.Process(u.SS, metadata, data)
-		if err != nil {
-			fmt.Println("error processing metaprotocol, skip", err)
-			return err
-		}
+	for _, model := range dataModels {
+		switch v := model.(type) {
+		case models.Inscription:
+			result := i.db.Save(&v)
+			if result.Error != nil {
 
-		fmt.Println("Attmepting to save")
+				i.logger.WithFields(logrus.Fields{
+					"processor": processor.Name(),
+					"hash":      rawTransaction.TxResponse.Txhash,
+					"err":       result.Error,
+				}).Warning("Unable to store processed data")
 
-		for _, model := range dataModels {
-			switch v := model.(type) {
-			case models.Inscription:
-				result := i.db.Save(&v)
-				if result.Error != nil {
-					fmt.Println(result.Error)
-					return result.Error
+				// Do we need to panic here? If we can't update the
+				// owner or something critical like that we shouldd retry
+				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+					i.logger.Fatal(result.Error)
 				}
-				fmt.Println("SAVED?")
+
+			} else {
+				i.logger.WithFields(logrus.Fields{
+					"processor": processor.Name(),
+					"hash":      rawTransaction.TxResponse.Txhash,
+				}).Debug("Data stored successfully")
 			}
+
+		case models.Token:
+			result := i.db.Save(&v)
+			if result.Error != nil {
+
+				i.logger.WithFields(logrus.Fields{
+					"processor": processor.Name(),
+					"hash":      rawTransaction.TxResponse.Txhash,
+					"err":       result.Error,
+				}).Warning("Unable to store processed data")
+
+				// Do we need to panic here? If we can't update the
+				// owner or something critical like that we shouldd retry
+				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+					i.logger.Fatal(result.Error)
+				}
+
+			} else {
+				i.logger.WithFields(logrus.Fields{
+					"processor": processor.Name(),
+					"hash":      rawTransaction.TxResponse.Txhash,
+				}).Debug("Data stored successfully")
+			}
+
 		}
-
-		// switch model.(type) {
-		// case models.Inscription:
-		// 	fmt.Println("Inscription model")
-		// }
-
-		// switch extension.MsgTypeURL {
-		// case InscriptionTypeContentGeneric:
-		// 	fmt.Println("Generic inscription")
-		// 	// Decode metadata for this type of inscription
-		// 	metadataBytes, err := base64.StdEncoding.DecodeString(extension.Granter)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	fmt.Println(string(metadataBytes))
-		// 	var genericMetadata ContentGenericMetadata
-		// 	err = json.Unmarshal(metadataBytes, &genericMetadata)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	// Decode content to store on the disk
-		// 	contentBytes, err := base64.StdEncoding.DecodeString(extension.Grantee)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	parentJSON, err := json.Marshal(genericMetadata.Parent)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	// For this type of inscription, the sender is the creator and owner
-		// 	fmt.Println("creator", sender)
-		// 	fmt.Println("owner", sender)
-		// 	fmt.Println(genericMetadata.Parent.Type)
-		// 	fmt.Println(genericMetadata.Parent.Identifier)
-		// 	fmt.Println(genericMetadata.Metadata.Name)
-
-		// 	ext, _ := mime.ExtensionsByType(genericMetadata.Metadata.MIME)
-		// 	fmt.Println("MIME", genericMetadata.Metadata.MIME)
-		// 	fmt.Println(fmt.Sprintf("Filename: inscription%s", ext))
-
-		// 	endpoint := "ams3.digitaloceanspaces.com"
-		// 	region := "ams3"
-		// 	sess := session.Must(session.NewSession(&aws.Config{
-		// 		Endpoint:    &endpoint,
-		// 		Region:      &region,
-		// 		Credentials: credentials.NewStaticCredentials("DO00HXJJQVNBTGA62TV7", "4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU", ""),
-		// 	}))
-
-		// 	// Create an uploader with the session and default options
-		// 	uploader := s3manager.NewUploader(sess)
-
-		// 	myBucket := "inscriptions-mvp"
-		// 	filename := rawTransaction.TxResponse.Txhash + ext[0]
-		// 	// Upload the file to S3.
-		// 	uploadResult, err := uploader.Upload(&s3manager.UploadInput{
-		// 		ACL:    aws.String("public-read"),
-		// 		Bucket: aws.String(myBucket),
-		// 		Key:    aws.String(filename),
-		// 		Body:   bytes.NewReader(contentBytes),
-		// 	})
-		// 	if err != nil {
-		// 		return fmt.Errorf("failed to upload file, %v", err)
-		// 	}
-		// 	fmt.Printf("file uploaded to, %s\n", aws.StringValue(&uploadResult.Location))
-
-		// 	height, _ := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-
-		// 	inscriptionModel := models.Inscription{
-		// 		Height:         height,
-		// 		Hash:           rawTransaction.TxResponse.Txhash,
-		// 		Creator:        sender,
-		// 		Owner:          sender,
-		// 		Parent:         string(parentJSON),
-		// 		Type:           extension.MsgTypeURL,
-		// 		MetadataBase64: extension.Granter,
-		// 		ContentBase64:  extension.Grantee,
-		// 		ContentPath:    aws.StringValue(&uploadResult.Location),
-		// 		DateCreated:    rawTransaction.TxResponse.Timestamp,
-		// 	}
-
-		// 	result := i.db.Save(&inscriptionModel)
-		// 	if result.Error != nil {
-		// 		return result.Error
-		// 	}
-
-		// case InscriptionTypeContentNFT:
-		// 	fmt.Println("NFT inscription")
-		// }
-
 	}
 
 	// TODO Handle the different type of inscriptions
@@ -378,7 +341,7 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	var block LCDBlock
+	var block types.LCDBlock
 	err = json.NewDecoder(resp.Body).Decode(&block)
 	if err != nil {
 		return 0, err
@@ -394,7 +357,7 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 	if err != nil {
 		return height, transactions, err
 	}
-	var lcdBlock LCDBlock
+	var lcdBlock types.LCDBlock
 	err = json.NewDecoder(resp.Body).Decode(&lcdBlock)
 	if err != nil {
 		return height, transactions, err
@@ -488,15 +451,15 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 }
 
 // fetchTransaction fetches a single transaction from the LCD
-func (i *Indexer) fetchTransaction(hash string) (int, RawTransaction, error) {
+func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, error) {
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", i.lcdEndpoint, hash))
 	if err != nil {
-		return 0, RawTransaction{}, err
+		return 0, types.RawTransaction{}, err
 	}
-	var rawTransaction RawTransaction
+	var rawTransaction types.RawTransaction
 	err = json.NewDecoder(resp.Body).Decode(&rawTransaction)
 	if err != nil {
-		return 0, RawTransaction{}, err
+		return 0, types.RawTransaction{}, err
 	}
 	i.logger.WithFields(logrus.Fields{
 		"hash": hash,

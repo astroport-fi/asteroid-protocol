@@ -30,8 +30,24 @@ ion-modal {
 
 
 ion-content.shadowed {
-    background-color: #232f3d;
+    // background-color: #232f3d;
+    // background-color: #363c41;
+    // background-color: rgba(53, 60, 66, 0.1);
+    // border: 1px solid #363c41;
+    // // background: linear-gradient(184deg, rgba(53, 60, 66, 1) 0%, rgba(44, 50, 58, 1) 100%);
+    // // opacity: 0.9;
+    // backdrop-filter: blur(100px) !important;
+
+
+    // background-color: rgba(36, 43, 51, 0.75);
+    --background: transparent;
+    background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
+
+    backdrop-filter: blur(100px) !important;
+    opacity: 0.99;
     border-radius: 10px !important;
+    --border-radius: 10px !important;
+
 
     -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);

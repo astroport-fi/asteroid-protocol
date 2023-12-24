@@ -12,6 +12,7 @@ import (
 )
 
 // Config defines the environment variables for the service
+// TODO: Move this content to a config file
 type Config struct {
 	LogFormat                string `envconfig:"LOG_FORMAT" required:"true"`
 	LogLevel                 string `envconfig:"LOG_LEVEL" required:"true"`
@@ -20,6 +21,12 @@ type Config struct {
 	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
 	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
 	BlockPollIntervalSeconds int    `envconfig:"BLOCK_POLL_INTERVAL_SECONDS" required:"true"`
+	S3Endpoint               string `envconfig:"S3_ENDPOINT" required:"true"`
+	S3Region                 string `envconfig:"S3_REGION" required:"true"`
+	S3Bucket                 string `envconfig:"S3_BUCKET"`
+	S3ID                     string `envconfig:"S3_ID" required:"true"`
+	S3Secret                 string `envconfig:"S3_SECRET" required:"true"`
+	S3Token                  string `envconfig:"S3_TOKEN"`
 }
 
 func main() {
@@ -63,6 +70,12 @@ func main() {
 		config.DatabaseDSN,
 		config.LCDEndpoint,
 		config.BlockPollIntervalSeconds,
+		config.S3Endpoint,
+		config.S3Region,
+		config.S3Bucket,
+		config.S3ID,
+		config.S3Secret,
+		config.S3Token,
 		logger,
 	)
 	if err != nil {

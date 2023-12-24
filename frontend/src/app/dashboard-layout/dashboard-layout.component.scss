@@ -23,19 +23,54 @@
 
     --ion-background-color: transparent;
 
-    // background: url("../../assets/background/ui-background.png") no-repeat center center fixed;
-    background: rgb(58, 75, 89);
-    background: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
+    background: url("../../assets/background/ui-background-flipped.png") no-repeat 50% center fixed;
+
+    @media only screen and (max-width: 2000px) and (min-width: 1501px) {
+        background: url("../../assets/background/ui-background-flipped.png") no-repeat 35% center fixed;
+    }
+
+    @media only screen and (max-width: 1500px) and (min-width: 1001px) {
+        background: url("../../assets/background/ui-background-flipped.png") no-repeat 25% center fixed;
+    }
+
+    @media only screen and (max-width: 1000px) and (min-width: 501px) {
+        background: url("../../assets/background/ui-background-flipped.png") no-repeat 15% center fixed;
+    }
+
+    @media only screen and (max-width: 500px) {
+        background: url("../../assets/background/ui-background-flipped.png") no-repeat 15% center fixed;
+    }
+
+    // background: rgb(58, 75, 89);
+    // background: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
 }
 
 ion-list,
 ion-item,
 ion-list-header,
-ion-label {
+ion-label,
+ion-accordion,
+ion-accordion-group {
     --background: transparent;
     --ion-background-color: transparent !important;
     --background-color: transparent !important;
     background-color: transparent !important;
+}
+
+ion-item[slot=header] {
+    color: #ffffff;
+    // border-left: 1px solid #ff0000;
+
+    ion-label {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+}
+
+
+ion-accordion::part(expanded) {
+    // --background: #ff0000 !important;
+    background-color: rgba(30, 30, 30, 0.1) !important;
 }
 
 
@@ -63,21 +98,29 @@ ion-item {
         --min-height: 25px;
         height: 20px;
         padding: 0px;
-        color: #999999;
+        color: #ccc;
     }
 }
 
 
 .menu {
     position: relative;
-    background-color: #232f3d;
+    // background-color: #232f3d;
+    // background-color: #242b33;
+    background-color: rgba(36, 43, 51, 0.1);
+
+    // 3a4045
+    background: linear-gradient(0deg, rgba(58, 64, 69, 0.1) 0%, rgba(58, 64, 69, 0) 60%);
+    // opacity: 0.9;
+    backdrop-filter: blur(100px) !important;
+    opacity: 0.95;
     margin: 30px;
     border-radius: 10px;
     height: 100vh;
 
-    -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
 
 
     img {
@@ -87,11 +130,11 @@ ion-item {
 
 
 .logo {
-    position: absolute;
-    top: 15px;
+    margin-left: auto;
+    margin-right: auto;
     width: 150px;
-    left: 42px;
-    z-index: 100;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .profile {
@@ -103,16 +146,28 @@ ion-item {
         }
 
         .connect-wallet {
-            position: absolute;
-            top: 220px;
+            // position: absolute;
+            position: relative;
+            // top: 220px;
             // left: 45px;
             width: 100%;
             z-index: 99;
             text-align: center;
 
-            ion-chip {
-                backdrop-filter: blur(10px);
-            }
+            // ion-chip {
+            //     backdrop-filter: blur(10px);
+            // }
         }
     }
+}
+
+.about {
+    position: absolute;
+    bottom: 20px;
+    margin: 10px;
+    text-transform: uppercase;
+
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+
 }

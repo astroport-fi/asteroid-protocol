@@ -29,6 +29,11 @@ run: build ## Build and run the service binary
 	DATABASE_DSN="local:local@tcp(127.0.0.1)/inscriptions?charset=utf8mb4&parseTime=True" \
 	LCD_ENDPOINT="http://127.0.0.1:8665/chain/gaia/lcd" \
 	BLOCK_POLL_INTERVAL_SECONDS=200 \
+	S3_ENDPOINT="ams3.digitaloceanspaces.com" \
+	S3_REGION="ams3" \
+	S3_BUCKET="inscriptions-mvp" \
+	S3_ID="DO00HXJJQVNBTGA62TV7" \
+	S3_SECRET="4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU" \
 	./bin/${APP_NAME}
 
 run_race: ## Run the service with race condition checking enabled

@@ -3,10 +3,12 @@ module github.com/donovansolms/cosmos-inscriptions/indexer
 go 1.20
 
 require (
+	github.com/aws/aws-sdk-go v1.27.0
 	github.com/calvinlauyh/cosmosutils v0.1.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/leodido/go-urn v1.2.4
 	github.com/sirupsen/logrus v1.9.3
+	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
 )
@@ -62,6 +64,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
 	github.com/keybase/go-keychain v0.0.0-20190712205309-48d3d31d256d // indirect
 	github.com/libp2p/go-buffer-pool v0.0.2 // indirect
