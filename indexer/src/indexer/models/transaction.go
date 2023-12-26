@@ -11,6 +11,7 @@ type Transaction struct {
 	Fees          string    `gorm:"column:fees"`
 	ContentLength uint64    `gorm:"column:content_length"`
 	DateCreated   time.Time `gorm:"column:date_created"`
+	StatusMessage string    `gorm:"column:status_message"`
 }
 
 func (Transaction) TableName() string {

@@ -42,6 +42,7 @@ ion-content.shadowed {
     // background-color: rgba(36, 43, 51, 0.75);
     --background: transparent;
     background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
+    // background: linear-gradient(184deg, #353c42, #353c42, #343b41, #333940, #31383f, #30363d, #2e353c, #2d333b, #2c323a, #2c323a);
 
     backdrop-filter: blur(100px) !important;
     opacity: 0.99;

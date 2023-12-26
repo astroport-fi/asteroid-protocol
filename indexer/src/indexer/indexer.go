@@ -203,6 +203,7 @@ func (i *Indexer) indexBlocks() {
 					Fees:          string(fees),
 					ContentLength: uint64(txSize),
 					DateCreated:   rawTransaction.TxResponse.Timestamp,
+					StatusMessage: types.TransactionStatePending,
 				}
 				result := i.db.Save(&txModel)
 				if result.Error != nil {
@@ -211,18 +212,32 @@ func (i *Indexer) indexBlocks() {
 						"err":  result.Error,
 					}).Warning("Unable to store transaction")
 
-					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
 						i.logger.Fatal(result.Error)
 					}
 
+					// TODO: No, we shouldn't continue, as that breaks the FE flow
 					// Even if we are unable to store the transaction, we can
 					// still try to handle the metaprotocol
 				}
 
 				// Process metaprotocol memo
+				statusMessage := types.TransactionStateSuccess
 				err = i.processMetaprotocolMemo(rawTransaction)
 				if err != nil {
 					i.logger.Error(err)
+					statusMessage = fmt.Sprintf("%s: %s", types.TransactionStateError, err)
+				}
+
+				// If there is an error in processing the metaprotocol,
+				// store the error in the transaction for debugging
+				txModel.StatusMessage = statusMessage
+				result = i.db.Save(&txModel)
+				if result.Error != nil {
+					i.logger.WithFields(logrus.Fields{
+						"hash": rawTransaction.TxResponse.Txhash,
+						"err":  result.Error,
+					}).Warning("Unable to update transaction status")
 				}
 
 				i.logger.WithFields(logrus.Fields{
@@ -241,6 +256,7 @@ func (i *Indexer) indexBlocks() {
 	}
 }
 
+// processMetaprotocolMemo handles the processing of different metaprotocols
 func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) error {
 	i.logger.WithFields(logrus.Fields{
 		"hash": rawTransaction.TxResponse.Txhash,
@@ -269,7 +285,8 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 			"metaprotocol": metaprotocolURN.ID,
 			"err":          err,
 			"hash":         rawTransaction.TxResponse.Txhash,
-		}).Warning("failed to process, skipping")
+		}).Error("failed to process, skipping")
+		return err
 	}
 
 	i.logger.WithFields(logrus.Fields{
@@ -292,16 +309,15 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 
 				// Do we need to panic here? If we can't update the
 				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
 					i.logger.Fatal(result.Error)
 				}
-
-			} else {
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-				}).Debug("Data stored successfully")
+				return result.Error
 			}
+			i.logger.WithFields(logrus.Fields{
+				"processor": processor.Name(),
+				"hash":      rawTransaction.TxResponse.Txhash,
+			}).Debug("Data stored successfully")
 
 		case models.Token:
 			result := i.db.Save(&v)
@@ -315,21 +331,19 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 
 				// Do we need to panic here? If we can't update the
 				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "Duplicate entry") {
+				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
 					i.logger.Fatal(result.Error)
 				}
+				return result.Error
 
-			} else {
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-				}).Debug("Data stored successfully")
 			}
+			i.logger.WithFields(logrus.Fields{
+				"processor": processor.Name(),
+				"hash":      rawTransaction.TxResponse.Txhash,
+			}).Debug("Data stored successfully")
 
 		}
 	}
-
-	// TODO Handle the different type of inscriptions
 
 	return nil
 }

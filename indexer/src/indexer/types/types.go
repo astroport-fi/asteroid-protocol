@@ -14,6 +14,10 @@ const InscriptionTypeContentNFT = "inscriptions.v1.content.nft"
 const InscriptionTypeContentNFTCollection = "inscriptions.v1.content.nft.collection"
 const InscriptionTypeMultipart = "inscriptions.v1.multipart"
 
+const TransactionStatePending = "pending"
+const TransactionStateSuccess = "success"
+const TransactionStateError = "error: "
+
 type InscriptionParent struct {
 	Type       string `json:"@type"`
 	Identifier string `json:"identifier"`

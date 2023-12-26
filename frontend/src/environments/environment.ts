@@ -24,7 +24,7 @@ export const environment = {
     }
   },
   api: {
-    endpoint: 'http://localhost:8080',
+    endpoint: 'http://localhost:8080/v1/graphql',
     explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {
