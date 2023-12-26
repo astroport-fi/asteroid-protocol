@@ -19,7 +19,7 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -55,7 +55,7 @@ func New(
 
 	// TODO: Parsee config here
 
-	db, err := gorm.Open(mysql.Open(databaseDSN), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(databaseDSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
