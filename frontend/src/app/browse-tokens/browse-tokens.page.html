@@ -1,0 +1,43 @@
+<ion-content class="shadowed">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        CFT-20 Tokens
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="aligned">
+    <div *ngIf="isLoading">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+    <div class="list" *ngIf="!isLoading">
+      <div class="inscription-item" *ngFor="let item of tokens; let index">
+        <div class="content">
+          <div class="ticker">{{ item.ticker }}</div>
+        </div>
+        <h4>#{{item.id}} {{ item.ticker }}</h4>
+        <div class="detail">
+          <div class="detail-item">
+            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
+            <span>{{ item.name }}</span>
+          </div>
+          <div class="detail-item">
+            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
+            <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
+          </div>
+          <div class="detail-item">
+            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
+            <span>{{ item.date_created | dateAgo }}</span>
+          </div>
+        </div>
+      </div>
+
+      <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+  </div>

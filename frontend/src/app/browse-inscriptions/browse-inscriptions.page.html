@@ -1,0 +1,39 @@
+<ion-content class="shadowed">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        Inscriptions
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="aligned">
+    <div *ngIf="isLoading">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+    <div class="list" *ngIf="!isLoading">
+      <div class="inscription-item" *ngFor="let item of inscriptions; let index">
+        <div class="content">
+          <img [src]="item.content_path" />
+        </div>
+        <h4>#{{item.id}} {{ item.name }}</h4>
+        <div class="detail">
+          <div class="detail-item">
+            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
+            <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }} kb)</span>
+          </div>
+          <div class="detail-item">
+            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
+            <span>{{ item.date_created | dateAgo }}</span>
+          </div>
+        </div>
+      </div>
+
+      <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+  </div>

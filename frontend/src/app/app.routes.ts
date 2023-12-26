@@ -43,8 +43,12 @@ export const routes: Routes = [
         loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
       },
       {
-        path: 'browse',
-        loadComponent: () => import('./browse/browse.page').then(m => m.BrowsePage)
+        path: 'inscriptions',
+        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
+      },
+      {
+        path: 'tokens',
+        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
       },
       {
         path: 'inscription/:txhash',
