@@ -6,13 +6,14 @@ import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-browse-inscriptions',
   templateUrl: './browse-inscriptions.page.html',
   styleUrls: ['./browse-inscriptions.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink]
 })
 export class BrowseInscriptionsPage implements OnInit {
 

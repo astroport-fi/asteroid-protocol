@@ -33,7 +33,7 @@ export class HumanTypePipe implements PipeTransform {
             case 'application/x-gzip':
                 return 'GZIP'
             default:
-                return 'Unknown'
+                return value
         }
     }
 }

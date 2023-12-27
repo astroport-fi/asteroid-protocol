@@ -22,15 +22,12 @@
         <h4>#{{item.id}} {{ item.ticker }}</h4>
         <div class="detail">
           <div class="detail-item">
-            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
             <span>{{ item.name }}</span>
           </div>
           <div class="detail-item">
-            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
             <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
           </div>
           <div class="detail-item">
-            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
             <span>{{ item.date_created | dateAgo }}</span>
           </div>
         </div>

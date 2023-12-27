@@ -15,18 +15,21 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
     <div class="list" *ngIf="!isLoading">
-      <div class="inscription-item" *ngFor="let item of inscriptions; let index">
-        <div class="content">
+      <div class="inscription-item" [routerLink]="['/app/inscription', item.transaction_hash]"
+        *ngFor="let item of inscriptions; let index">
+        <!-- TODO: Do better here -->
+        <div class="content" *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
           <img [src]="item.content_path" />
+        </div>
+        <div class="content" *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
+          <div class="mime">{{ item.mime | humanType }}</div>
         </div>
         <h4>#{{item.id}} {{ item.name }}</h4>
         <div class="detail">
           <div class="detail-item">
-            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
             <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }} kb)</span>
           </div>
           <div class="detail-item">
-            <!-- <ion-icon name="calendar-outline"></ion-icon> -->
             <span>{{ item.date_created | dateAgo }}</span>
           </div>
         </div>
