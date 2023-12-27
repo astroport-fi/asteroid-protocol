@@ -19,14 +19,6 @@ export const routes: Routes = [
         loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
       },
       {
-        path: 'my-inscriptions',
-        loadComponent: () => import('./my-inscriptions/my-inscriptions.page').then(m => m.MyInscriptionsPage)
-      },
-      {
-        path: 'my-tokens',
-        loadComponent: () => import('./my-tokens/my-tokens.page').then(m => m.MyTokensPage)
-      },
-      {
         path: 'create',
         loadComponent: () => import('./create/create.page').then(m => m.CreatePage)
       },
@@ -43,8 +35,16 @@ export const routes: Routes = [
         loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
       },
       {
+        path: 'inscriptions/:address',
+        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
+      },
+      {
         path: 'inscriptions',
         loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
+      },
+      {
+        path: 'tokens/:address',
+        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
       },
       {
         path: 'tokens',
@@ -53,6 +53,10 @@ export const routes: Routes = [
       {
         path: 'inscription/:txhash',
         loadComponent: () => import('./view-inscription/view-inscription.page').then(m => m.ViewInscriptionPage)
+      },
+      {
+        path: 'token/:txhash',
+        loadComponent: () => import('./view-token/view-token.page').then(m => m.ViewTokenPage)
       },
     ]
   }

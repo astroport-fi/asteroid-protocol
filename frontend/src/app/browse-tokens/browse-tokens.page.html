@@ -8,6 +8,9 @@
         CFT-20 Tokens
       </ion-title>
     </ion-toolbar>
+    <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
+      created by {{ this.selectedAddress }}
+    </div>
   </ion-header>
 
   <div class="aligned">
@@ -15,7 +18,8 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
     <div class="list" *ngIf="!isLoading">
-      <div class="inscription-item" *ngFor="let item of tokens; let index">
+      <div class="inscription-item" [routerLink]="['/app/token', item.transaction_hash]"
+        *ngFor="let item of tokens; let index">
         <div class="content">
           <div class="ticker">{{ item.ticker }}</div>
         </div>
@@ -36,5 +40,14 @@
       <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
+    </div>
+  </div>
+
+  <div class="aligned no-shadow">
+    <h3>
+      Holdings
+    </h3>
+    <div class="list" *ngIf="!isLoading">
+      LIST TOKEN HOLDINGS
     </div>
   </div>

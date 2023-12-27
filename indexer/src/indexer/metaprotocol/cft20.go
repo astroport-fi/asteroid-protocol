@@ -28,7 +28,7 @@ func NewCFT20Processor() *CFT20 {
 		nameMaxLength:          32,
 		tickerMinLength:        3,
 		tickerMaxLength:        5,
-		decimalsMaxValue:       18,
+		decimalsMaxValue:       6,
 		maxSupplyMaxValue:      math.MaxUint64,
 		perWalletLimitMaxValue: math.MaxUint64,
 	}

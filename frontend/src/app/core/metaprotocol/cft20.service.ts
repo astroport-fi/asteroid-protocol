@@ -10,7 +10,7 @@ import { api } from '../helpers/api';
     providedIn: 'root'
 })
 export class CFT20Service {
-    version: string = 'v1beta';
+    version: string = 'v1';
 
     constructor() { }
 
@@ -23,4 +23,5 @@ export class CFT20Service {
 
         return urn;
     }
+
 }
