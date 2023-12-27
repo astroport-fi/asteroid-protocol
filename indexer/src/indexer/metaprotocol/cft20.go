@@ -52,55 +52,29 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 	// {chainId}@{version};operation$h={unique hash of content}
 	// cosmoshub-4@v1beta;deploy$nam=The Name,tic=TICK,sup=21000000,dec=6,lim=1000
 	// cosmoshub-4@v1beta;deploy$nam=NewYearDay,tic=NYD,sup=28000000,dec=18,lim=50000,opn=1704059940
-	sourceContent := strings.Split(protocolURN.SS, ";")
-	if len(sourceContent) != 2 {
-		return dataModels, fmt.Errorf("invalid source/content split: %s", protocolURN.SS)
+	parsedURN, err := ParseProtocolString(protocolURN)
+	if err != nil {
+		return dataModels, err
 	}
 
-	// Parse cosmoshub-4@v1beta
-	sourceVersioning := strings.Split(sourceContent[0], "@")
-	if len(sourceVersioning) != 2 {
-		return dataModels, fmt.Errorf("incorrect source versioning parts: %s", protocolURN.SS)
-	}
-	chainID := sourceVersioning[0]
-	version := sourceVersioning[1]
-
-	// Parse deploy$nam=The Name,tic=TICK,sup=21000000,dec=6,lim=1000
-	opContent := strings.Split(sourceContent[1], "$")
-	if len(opContent) != 2 {
-		return dataModels, fmt.Errorf("invalid op/content parts: %s", protocolURN.SS)
-	}
-	operation := opContent[0]
-
-	// TODO: Split off based on operation
-	fmt.Println("Got operation: ", operation)
-
-	// Parse key=value,key=value
-	keyValuePairs := make(map[string]string)
-	keyValuePairsString := strings.Split(opContent[1], ",")
-	for _, keyValuePair := range keyValuePairsString {
-		keyValue := strings.Split(keyValuePair, "=")
-		keyValuePairs[keyValue[0]] = keyValue[1]
-	}
-
-	name := strings.TrimSpace(keyValuePairs["nam"])
-	ticker := strings.TrimSpace(keyValuePairs["tic"])
+	name := strings.TrimSpace(parsedURN.KeyValuePairs["nam"])
+	ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 	ticker = strings.ToUpper(ticker)
 
-	supply, err := strconv.ParseUint(keyValuePairs["sup"], 10, 64)
+	supply, err := strconv.ParseUint(parsedURN.KeyValuePairs["sup"], 10, 64)
 	if err != nil {
 		return dataModels, fmt.Errorf("unable to parse supply '%s'", err)
 	}
-	decimals, err := strconv.ParseUint(keyValuePairs["dec"], 10, 64)
+	decimals, err := strconv.ParseUint(parsedURN.KeyValuePairs["dec"], 10, 64)
 	if err != nil {
 		return dataModels, fmt.Errorf("unable to parse decimals '%s'", err)
 	}
-	limit, err := strconv.ParseUint(keyValuePairs["lim"], 10, 64)
+	limit, err := strconv.ParseUint(parsedURN.KeyValuePairs["lim"], 10, 64)
 	if err != nil {
 		return dataModels, fmt.Errorf("unable to parse limit '%s'", err)
 	}
 
-	openTimestamp, err := strconv.ParseUint(keyValuePairs["opn"], 10, 64)
+	openTimestamp, err := strconv.ParseUint(parsedURN.KeyValuePairs["opn"], 10, 64)
 	if err != nil {
 		// If this fails, we set the open time to the block time
 		openTimestamp = uint64(rawTransaction.TxResponse.Timestamp.Unix())
@@ -123,9 +97,9 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 
 	// Create the inscription model
 	dataModels = append(dataModels, models.Token{
-		ChainID:         chainID,
+		ChainID:         parsedURN.chainID,
 		Height:          height,
-		Version:         version,
+		Version:         parsedURN.version,
 		TransactionHash: rawTransaction.TxResponse.Txhash,
 		Creator:         sender,
 		CurrentOwner:    sender,

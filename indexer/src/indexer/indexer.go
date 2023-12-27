@@ -17,12 +17,20 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
+
+type Config struct {
+	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
+	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
+	BlockPollIntervalSeconds int    `envconfig:"BLOCK_POLL_INTERVAL_SECONDS" required:"true"`
+}
 
 // Indexer implements the reference indexer service
 type Indexer struct {
@@ -41,21 +49,16 @@ type Indexer struct {
 // New returns a new instance of the indexer service and returns an error if
 // there was a problem setting up the service
 func New(
-	chainID string,
-	databaseDSN string,
-	lcdEndpoint string,
-	blockPollIntervalSeconds int,
-	s3Endpoint string,
-	s3Region string,
-	s3Bucket string,
-	s3ID string,
-	s3Secret string,
-	s3Token string,
 	log *logrus.Entry) (*Indexer, error) {
 
-	// TODO: Parsee config here
+	// Parse config environment variables for self
+	var config Config
+	err := envconfig.Process("", &config)
+	if err != nil {
+		log.Fatalf("Unable to process config: %s", err)
+	}
 
-	db, err := gorm.Open(postgres.Open(databaseDSN), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(config.DatabaseDSN), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
@@ -64,13 +67,13 @@ func New(
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(s3Endpoint, s3Region, s3Bucket, s3ID, s3Secret, s3Token)
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor()
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor()
 
 	return &Indexer{
-		chainID:                  chainID,
-		lcdEndpoint:              lcdEndpoint,
-		blockPollIntervalSeconds: blockPollIntervalSeconds,
+		chainID:                  config.ChainID,
+		lcdEndpoint:              config.LCDEndpoint,
+		blockPollIntervalSeconds: config.BlockPollIntervalSeconds,
 		metaprotocols:            metaprotocols,
 		logger:                   log,
 		stopChannel:              make(chan bool),

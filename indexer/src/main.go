@@ -12,25 +12,14 @@ import (
 )
 
 // Config defines the environment variables for the service
-// TODO: Move this content to a config file
 type Config struct {
-	LogFormat                string `envconfig:"LOG_FORMAT" required:"true"`
-	LogLevel                 string `envconfig:"LOG_LEVEL" required:"true"`
-	ServiceName              string `envconfig:"SERVICE_NAME" required:"true"`
-	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
-	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
-	BlockPollIntervalSeconds int    `envconfig:"BLOCK_POLL_INTERVAL_SECONDS" required:"true"`
-	S3Endpoint               string `envconfig:"S3_ENDPOINT" required:"true"`
-	S3Region                 string `envconfig:"S3_REGION" required:"true"`
-	S3Bucket                 string `envconfig:"S3_BUCKET"`
-	S3ID                     string `envconfig:"S3_ID" required:"true"`
-	S3Secret                 string `envconfig:"S3_SECRET" required:"true"`
-	S3Token                  string `envconfig:"S3_TOKEN"`
+	LogFormat   string `envconfig:"LOG_FORMAT" required:"true"`
+	LogLevel    string `envconfig:"LOG_LEVEL" required:"true"`
+	ServiceName string `envconfig:"SERVICE_NAME" required:"true"`
 }
 
 func main() {
-	// Parse config vai environment variables
+	// Parse config environment variables
 	var config Config
 	err := envconfig.Process("", &config)
 	if err != nil {
@@ -66,16 +55,6 @@ func main() {
 
 	// Set up collector
 	service, err := indexer.New(
-		config.ChainID,
-		config.DatabaseDSN,
-		config.LCDEndpoint,
-		config.BlockPollIntervalSeconds,
-		config.S3Endpoint,
-		config.S3Region,
-		config.S3Bucket,
-		config.S3ID,
-		config.S3Secret,
-		config.S3Token,
 		logger,
 	)
 	if err != nil {

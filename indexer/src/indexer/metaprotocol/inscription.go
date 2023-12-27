@@ -5,9 +5,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log"
 	"mime"
 	"strconv"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -15,9 +15,19 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/datatypes"
 )
+
+type Config struct {
+	S3Endpoint string `envconfig:"S3_ENDPOINT" required:"true"`
+	S3Region   string `envconfig:"S3_REGION" required:"true"`
+	S3Bucket   string `envconfig:"S3_BUCKET"`
+	S3ID       string `envconfig:"S3_ID" required:"true"`
+	S3Secret   string `envconfig:"S3_SECRET" required:"true"`
+	S3Token    string `envconfig:"S3_TOKEN"`
+}
 
 type InscriptionMetadata struct {
 	Parent struct {
@@ -43,14 +53,22 @@ type Inscription struct {
 	s3Token string
 }
 
-func NewInscriptionProcessor(s3Endpoint string, s3Region string, s3Bucket string, s3ID string, s3Secret string, s3Token string) *Inscription {
+func NewInscriptionProcessor() *Inscription {
+
+	// Parse config environment variables for self
+	var config Config
+	err := envconfig.Process("", &config)
+	if err != nil {
+		log.Fatalf("Unable to process config: %s", err)
+	}
+
 	return &Inscription{
-		s3Endpoint: s3Endpoint,
-		s3Region:   s3Region,
-		s3Bucket:   s3Bucket,
-		s3ID:       s3ID,
-		s3Secret:   s3Secret,
-		s3Token:    s3Token,
+		s3Endpoint: config.S3Endpoint,
+		s3Region:   config.S3Region,
+		s3Bucket:   config.S3Bucket,
+		s3ID:       config.S3ID,
+		s3Secret:   config.S3Secret,
+		s3Token:    config.S3Token,
 	}
 }
 
@@ -69,38 +87,12 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 	// We need to parse the protocol specific string in SS, it contains
 	// {chainId}@{version};operation$h={unique hash of content}
 	// cosmoshub-4@v1beta;inscribe$h=c4749f95902411d1a45a033d8a6b3e6aa0de0a0028fe8737f66fed6834dce8bf
-	sourceContent := strings.Split(protocolURN.SS, ";")
-	if len(sourceContent) != 2 {
-		return dataModels, fmt.Errorf("invalid source/content split: %s", protocolURN.SS)
+	parsedURN, err := ParseProtocolString(protocolURN)
+	if err != nil {
+		return dataModels, err
 	}
 
-	// Parse cosmoshub-4@v1beta
-	sourceVersioning := strings.Split(sourceContent[0], "@")
-	if len(sourceVersioning) != 2 {
-		return dataModels, fmt.Errorf("incorrect source versioning parts: %s", protocolURN.SS)
-	}
-	chainID := sourceVersioning[0]
-	version := sourceVersioning[1]
-
-	// Parse inscribe$h=...contenthash...
-	opContent := strings.Split(sourceContent[1], "$")
-	if len(opContent) != 2 {
-		return dataModels, fmt.Errorf("invalid op/content parts: %s", protocolURN.SS)
-	}
-	operation := opContent[0]
-
-	// TODO: Split off based on operation
-	fmt.Println("Got operation: ", operation)
-
-	// Parse h=...contenthash...
-	// Parse key=value,key=value
-	keyValuePairs := make(map[string]string)
-	keyValuePairsString := strings.Split(opContent[1], ",")
-	for _, keyValuePair := range keyValuePairsString {
-		keyValue := strings.Split(keyValuePair, "=")
-		keyValuePairs[keyValue[0]] = keyValue[1]
-	}
-	contentHash := keyValuePairs["h"]
+	contentHash := parsedURN.KeyValuePairs["h"]
 
 	// Inscription metadata is stored in the non_critical_extension_options
 	// section of the transaction
@@ -132,20 +124,6 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 		return dataModels, fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
-	// fmt.Println("Sendder", sender)
-	// fmt.Println("Got chainID: ", chainID)
-	// fmt.Println("Got version: ", version)
-	// fmt.Println("Got operation: ", operation)
-	// fmt.Println("Got hash: ", contentHash)
-
-	// fmt.Println("Got metadata: ", string(metadata))
-	// _ = inscriptionMetadata
-	// _ = content
-	// fmt.Println("Got parent: ", inscriptionMetadata.Parent.Identifier)
-	// fmt.Println("Got name: ", inscriptionMetadata.Metadata.Name)
-	// fmt.Println("Got mime: ", inscriptionMetadata.Metadata.Mime)
-	// fmt.Println("Got byte length: ", len(content))
-
 	height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 	if err != nil {
 		return dataModels, fmt.Errorf("unable to parse height '%s'", err)
@@ -159,9 +137,9 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 
 	// Create the inscription model
 	dataModels = append(dataModels, models.Inscription{
-		ChainID:          chainID,
+		ChainID:          parsedURN.chainID,
 		Height:           height,
-		Version:          version,
+		Version:          parsedURN.version,
 		TransactionHash:  rawTransaction.TxResponse.Txhash,
 		ContentHash:      contentHash,
 		Creator:          sender,
