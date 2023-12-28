@@ -78,12 +78,13 @@ The fields represent:
 
 |Field|Description|
 |-----|-----------|
-|`msg_type_url`|Determines the type of inscription|
-|`granter`|Metadata about the content|
+|`@type`|The protobuf type that the chain recognises, but doesn't validate|
+|`msg_type_url`|Can be anything|
+|`granter`|base64 encoded metadata about the content|
 |`grantee`|The actual base64 encoded content. All content is to be base64 encoded|
 
 We use the `MsgRevoke` here as is is a no-op and is ignored by the chain when part of `non_critical_extension_options`. In any case, the content is invalid and the chain would reject the message if it was ever implemented as part of `non_critical_extension_options`.
 
 ## Summary
 
-This document provided a method of how inscription can be done with a much larger limit than the memo field, albeit in an unconventional fashion. Next we'll look at how we implemented this to be extensible and enable a vast variety of use-cases.
+This document provided a method of how inscription can be done with a much larger limit than the memo field, albeit in an unconventional fashion. Next we'll look at how we implemented this to be extensible and enable a vast variety of use-cases by introducing Meteor metaprotocols.
