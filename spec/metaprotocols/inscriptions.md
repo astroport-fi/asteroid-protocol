@@ -13,10 +13,6 @@ This standard is implemented using the [Meteors metaprocotol framework](../meteo
 
 **Creating a new inscription**
 
-        // urn:{metaprotocol}:{chain-id}@{version};{op}${param1}={value1},{param2}={value2},{param3}={value3}
-        // urn:inscription:cosmoshub-1@v1;inscribe$h={hash}
-        // where hash is SHA-256(base64 encoded JSON metadata + base64 encoded data)
-
 `urn:inscription:{chain-id}@{version};{operation}${param}={value},{param}={value}`
 
 The operation values are:
