@@ -17,8 +17,7 @@
     <div *ngIf="isLoading">
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
-    <div class="list" *ngIf="!isLoading">
-
+    <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
       <a class="inscription-item" [routerLink]="['/app/inscription', item.transaction_hash]"
         *ngFor="let item of inscriptions; let index">
         <!-- TODO: Do better here -->
@@ -41,5 +40,8 @@
       <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
+    </div>
+    <div class="list" *ngIf="!isLoading && inscriptions.length == 0">
+      No inscriptions found
     </div>
   </div>

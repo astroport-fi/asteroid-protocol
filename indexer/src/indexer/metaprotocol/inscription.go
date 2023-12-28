@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -18,9 +19,10 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
-type Config struct {
+type InscriptionConfig struct {
 	S3Endpoint string `envconfig:"S3_ENDPOINT" required:"true"`
 	S3Region   string `envconfig:"S3_REGION" required:"true"`
 	S3Bucket   string `envconfig:"S3_BUCKET"`
@@ -42,6 +44,8 @@ type InscriptionMetadata struct {
 }
 
 type Inscription struct {
+	chainID    string
+	db         *gorm.DB
 	s3Endpoint string
 	s3Region   string
 	s3Bucket   string
@@ -53,16 +57,18 @@ type Inscription struct {
 	s3Token string
 }
 
-func NewInscriptionProcessor() *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
 
 	// Parse config environment variables for self
-	var config Config
+	var config InscriptionConfig
 	err := envconfig.Process("", &config)
 	if err != nil {
 		log.Fatalf("Unable to process config: %s", err)
 	}
 
 	return &Inscription{
+		chainID:    chainID,
+		db:         db,
 		s3Endpoint: config.S3Endpoint,
 		s3Region:   config.S3Region,
 		s3Bucket:   config.S3Bucket,
@@ -76,12 +82,10 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
-func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) ([]interface{}, error) {
-	var dataModels []interface{}
-
+func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
-		return dataModels, err
+		return err
 	}
 
 	// We need to parse the protocol specific string in SS, it contains
@@ -89,7 +93,18 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 	// cosmoshub-4@v1beta;inscribe$h=c4749f95902411d1a45a033d8a6b3e6aa0de0a0028fe8737f66fed6834dce8bf
 	parsedURN, err := ParseProtocolString(protocolURN)
 	if err != nil {
-		return dataModels, err
+		return err
+	}
+
+	// TODO: Rework validation
+	if parsedURN.Operation != "inscribe" {
+		return fmt.Errorf("invalid operation '%s'", parsedURN.Operation)
+	}
+	if parsedURN.KeyValuePairs["h"] == "" {
+		return fmt.Errorf("missing content hash")
+	}
+	if parsedURN.ChainID != protocol.chainID {
+		return fmt.Errorf("invalid chain ID '%s'", parsedURN.ChainID)
 	}
 
 	contentHash := parsedURN.KeyValuePairs["h"]
@@ -104,13 +119,13 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 			// The granter field contains the metadata
 			metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
 			if err != nil {
-				return dataModels, fmt.Errorf("unable to decode granter metadata '%s'", err)
+				return fmt.Errorf("unable to decode granter metadata '%s'", err)
 			}
 
 			// The grantee field contains the content base64
 			content, err = base64.StdEncoding.DecodeString(extension.Grantee)
 			if err != nil {
-				return dataModels, fmt.Errorf("unable to decode grantee content '%s'", err)
+				return fmt.Errorf("unable to decode grantee content '%s'", err)
 			}
 
 			// We only process the first extension option
@@ -121,25 +136,24 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 	var inscriptionMetadata InscriptionMetadata
 	err = json.Unmarshal(metadata, &inscriptionMetadata)
 	if err != nil {
-		return dataModels, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
 	height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 	if err != nil {
-		return dataModels, fmt.Errorf("unable to parse height '%s'", err)
+		return fmt.Errorf("unable to parse height '%s'", err)
 	}
 
 	// Store the content with the correct mime type on DO
 	contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, content)
 	if err != nil {
-		return dataModels, fmt.Errorf("unable to store content '%s'", err)
+		return fmt.Errorf("unable to store content '%s'", err)
 	}
 
-	// Create the inscription model
-	dataModels = append(dataModels, models.Inscription{
-		ChainID:          parsedURN.chainID,
+	inscriptionModel := models.Inscription{
+		ChainID:          parsedURN.ChainID,
 		Height:           height,
-		Version:          parsedURN.version,
+		Version:          parsedURN.Version,
 		TransactionHash:  rawTransaction.TxResponse.Txhash,
 		ContentHash:      contentHash,
 		Creator:          sender,
@@ -149,9 +163,17 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 		ContentPath:      contentPath,
 		ContentSizeBytes: uint64(len(content)),
 		DateCreated:      rawTransaction.TxResponse.Timestamp,
-	})
+	}
 
-	return dataModels, nil
+	result := protocol.db.Save(&inscriptionModel)
+	if result.Error != nil {
+		// If the error is a duplicate key error, we ignore it
+		if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
+			return result.Error
+		}
+	}
+
+	return nil
 }
 
 // storeContent stores the content in the S3 bucket

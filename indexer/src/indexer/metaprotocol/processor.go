@@ -7,5 +7,5 @@ import (
 
 type Processor interface {
 	Name() string
-	Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) ([]interface{}, error)
+	Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) error
 }

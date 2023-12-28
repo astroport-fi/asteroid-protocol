@@ -67,8 +67,8 @@ func New(
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor()
-	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor()
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
+	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
 
 	return &Indexer{
 		chainID:                  config.ChainID,
@@ -210,25 +210,22 @@ func (i *Indexer) indexBlocks() {
 				}
 				result := i.db.Save(&txModel)
 				if result.Error != nil {
-					i.logger.WithFields(logrus.Fields{
-						"hash": rawTransaction.TxResponse.Txhash,
-						"err":  result.Error,
-					}).Warning("Unable to store transaction")
-
+					// If the error is a duplicate key error, we ignore it
 					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-						i.logger.Fatal(result.Error)
+						i.logger.WithFields(logrus.Fields{
+							"hash": rawTransaction.TxResponse.Txhash,
+							"err":  result.Error,
+						}).Fatal("Unable to store transaction")
 					}
-
-					// TODO: No, we shouldn't continue, as that breaks the FE flow
-					// Even if we are unable to store the transaction, we can
-					// still try to handle the metaprotocol
 				}
 
 				// Process metaprotocol memo
 				statusMessage := types.TransactionStateSuccess
 				err = i.processMetaprotocolMemo(rawTransaction)
 				if err != nil {
-					i.logger.Error(err)
+					i.logger.WithFields(logrus.Fields{
+						"hash": rawTransaction.TxResponse.Txhash,
+					}).Error(err)
 					statusMessage = fmt.Sprintf("%s: %s", types.TransactionStateError, err)
 				}
 
@@ -282,7 +279,7 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 		"hash":      rawTransaction.TxResponse.Txhash,
 	}).Info("Processing metaprotocol")
 
-	dataModels, err := processor.Process(metaprotocolURN, rawTransaction)
+	err := processor.Process(metaprotocolURN, rawTransaction)
 	if err != nil {
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,
@@ -290,62 +287,6 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 			"hash":         rawTransaction.TxResponse.Txhash,
 		}).Error("failed to process, skipping")
 		return err
-	}
-
-	i.logger.WithFields(logrus.Fields{
-		"processor": processor.Name(),
-		"hash":      rawTransaction.TxResponse.Txhash,
-		"db_ops":    len(dataModels),
-	}).Info("Saving processed data")
-
-	for _, model := range dataModels {
-		switch v := model.(type) {
-		case models.Inscription:
-			result := i.db.Save(&v)
-			if result.Error != nil {
-
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-					"err":       result.Error,
-				}).Warning("Unable to store processed data")
-
-				// Do we need to panic here? If we can't update the
-				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-					i.logger.Fatal(result.Error)
-				}
-				return result.Error
-			}
-			i.logger.WithFields(logrus.Fields{
-				"processor": processor.Name(),
-				"hash":      rawTransaction.TxResponse.Txhash,
-			}).Debug("Data stored successfully")
-
-		case models.Token:
-			result := i.db.Save(&v)
-			if result.Error != nil {
-
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-					"err":       result.Error,
-				}).Warning("Unable to store processed data")
-
-				// Do we need to panic here? If we can't update the
-				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-					i.logger.Fatal(result.Error)
-				}
-				return result.Error
-
-			}
-			i.logger.WithFields(logrus.Fields{
-				"processor": processor.Name(),
-				"hash":      rawTransaction.TxResponse.Txhash,
-			}).Debug("Data stored successfully")
-
-		}
 	}
 
 	return nil

@@ -15,7 +15,7 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
   templateUrl: './view-token.page.html',
   styleUrls: ['./view-token.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe,]
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe]
 })
 export class ViewTokenPage implements OnInit {
   isLoading = false;

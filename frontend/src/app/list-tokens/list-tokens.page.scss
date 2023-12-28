@@ -30,6 +30,14 @@
         margin-bottom: 5px;
     }
 
+    .image {
+        width: 230px;
+        height: 130px;
+        overflow: hidden;
+        background-color: var(--color-dark-teal);
+        text-align: center;
+    }
+
     .ticker {
         width: 230px;
         height: 130px;

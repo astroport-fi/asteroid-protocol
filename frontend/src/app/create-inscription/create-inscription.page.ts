@@ -22,6 +22,7 @@ import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { InscriptionMetadata, InscriptionService } from '../core/metaprotocol/inscription.service';
 import { hashValue } from '../core/helpers/crypto';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-inscription',
@@ -32,6 +33,10 @@ import { hashValue } from '../core/helpers/crypto';
 })
 export class CreateInscriptionPage implements OnInit {
   createForm: FormGroup;
+  originalFilename: string = '';
+  inscriptionFileSize: number = 0;
+  maxFileSize = environment.limits.maxFileSize;
+  renderImagePreview = false;
   contentRequired = false;
 
   constructor(private builder: FormBuilder, private protocolService: InscriptionService, private walletService: WalletService, private modalCtrl: ModalController) {
@@ -85,7 +90,7 @@ export class CreateInscriptionPage implements OnInit {
     const params = new Map([
       ["h", inscriptionHash],
     ]);
-    const urn = this.protocolService.buildURN('cosmoshub-4', 'inscribe', params);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'inscribe', params);
 
     const modal = await this.modalCtrl.create({
       component: TransactionFlowModalPage,
@@ -104,6 +109,16 @@ export class CreateInscriptionPage implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const base64 = e.target.result;
+
+
+        this.renderImagePreview = false;
+        const mime = base64.split(";")[0].split(":")[1];
+        if (mime.startsWith("image/")) {
+          this.renderImagePreview = true;
+        }
+        this.originalFilename = file.name;
+        this.inscriptionFileSize = file.size;
+
         this.createForm.patchValue({
           basic: {
             contentUpload: base64

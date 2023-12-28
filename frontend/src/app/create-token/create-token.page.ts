@@ -10,6 +10,8 @@ import { formatDate } from '../core/helpers/delay';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { environment } from 'src/environments/environment';
+import { InscriptionMetadata } from '../core/metaprotocol/inscription.service';
 
 @Component({
   selector: 'app-create-token',
@@ -21,7 +23,7 @@ import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-
 })
 export class CreateTokenPage implements OnInit {
   createForm: FormGroup;
-
+  precheckErrorText: string = '';
   minDate: Date;
 
   readonly numberMask: MaskitoOptions;
@@ -33,8 +35,8 @@ export class CreateTokenPage implements OnInit {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
-        ticker: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
+        name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
+        ticker: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(5), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
         maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],
@@ -57,15 +59,6 @@ export class CreateTokenPage implements OnInit {
       min: 0,
       max: 6,
     });
-
-    // const modal = this.modalCtrl.create({
-    //   component: TransactionFlowModalPage,
-    //   componentProps: {
-    //     'message': 'Hello worldz'
-    //   }
-    // }).then(modal => modal.present());
-
-
   }
 
 
@@ -83,15 +76,13 @@ export class CreateTokenPage implements OnInit {
   }
 
   async createToken() {
-    console.log(this.createForm.get('optional.imageUpload')?.value);
-
-    const name = this.createForm.value.basic.name.trim();
+    const name = encodeURI(this.createForm.value.basic.name.trim());
     const ticker = this.createForm.value.basic.ticker.replace(/\s/g, '');
     const decimals = this.createForm.value.basic.decimals;
     const maxSupply = this.createForm.value.basic.maxSupply.replace(/\s/g, '');
     const mintLimit = this.createForm.value.basic.mintLimit.replace(/\s/g, '');
 
-    // TODO Construct metaprotocol memo message
+    // Construct metaprotocol memo message
     const params = new Map([
       ["nam", name],
       ["tic", ticker],
@@ -104,37 +95,82 @@ export class CreateTokenPage implements OnInit {
       const launchDate = new Date(this.createForm.value.basic.launchDate);
       params.set("opn", launchDate.getTime() / 1000);
     }
-    const urn = this.protocolService.buildURN('cosmoshub-4', 'deploy', params);
+
+    let data = this.createForm.value.optional.imageUpload;
+    let metadataBase64 = null;
+    if (data) {
+      const mime = data.split(";")[0].split(":")[1];
+      data = data.split(",")[1];
+
+      // Build the metadata for this inscription
+      const metadata: InscriptionMetadata = {
+        parent: {
+          type: "/cosmos.bank.Account",
+          identifier: (await this.walletService.getAccount()).address,
+        },
+        metadata: {
+          name: "Token Logo",
+          description: "Token Logo",
+          mime,
+        }
+      };
+
+      metadataBase64 = btoa(JSON.stringify(metadata));
+    }
+
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'deploy', params);
     const modal = await this.modalCtrl.create({
       component: TransactionFlowModalPage,
       componentProps: {
         urn,
-        metadata: null,
-        data: null,
+        metadata: metadataBase64,
+        data,
       }
     });
     modal.present();
   }
 
   onFileSelected(event: any) {
+    this.precheckErrorText = '';
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        const base64Image = e.target.result;
-        this.createForm.patchValue({
-          optional: {
-            imageUpload: base64Image
-          }
-        });
+        const base64 = e.target.result;
+
+        const mime = base64.split(";")[0].split(":")[1];
+        if (!mime.startsWith("image/")) {
+          this.precheckErrorText = "Only image files are allowed for token logos";
+          return;
+        }
+        if (file.size > environment.limits.maxFileSize) {
+          this.precheckErrorText = `File size exceeds maximum allowed size of ${environment.limits.maxFileSize / 1000} kb`
+          return;
+        }
 
         const img = new Image();
         img.src = reader.result as string;
         img.onload = () => {
           const height = img.naturalHeight;
           const width = img.naturalWidth;
-          console.log('Width and Height', width, height);
+
+          if (width != height) {
+            this.precheckErrorText = "Image must be square";
+            return;
+          }
+
+          if (width < 250 || width > 1024) {
+            this.precheckErrorText = "Image must be square and between 250x250 and 1024x1024 pixels";
+            return;
+          }
+
+          this.createForm.patchValue({
+            optional: {
+              imageUpload: base64
+            }
+          });
         };
+
       };
       reader.readAsDataURL(file);
     }

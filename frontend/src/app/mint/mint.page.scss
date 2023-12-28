@@ -7,28 +7,124 @@ ion-content {
 
 }
 
+.cover {
+  margin: 0px;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  backdrop-filter: blur(24px);
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .mint-container {
   margin-top: 200px;
-  width: 50%;
-  height: 200px;
-  /* Optional styles */
-  // border: 1px solid var(--color-yellow);
-  padding: 20px;
-
-  // background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-
-  // position: relative;
-  //   // background-color: #232f3d;
-  //   // background-color: #242b33;
+  max-width: 500px;
+  // height: 200px;
+  padding: 20px !important;
   background-color: rgba(36, 43, 51, 0.1);
-
-  // 3a4045
-  background: linear-gradient(90deg, rgba(8, 12, 16, 0.8) 0%, rgba(46, 46, 49, 0.8) 100%);
-  // opacity: 0.9;
-  backdrop-filter: blur(100px) !important;
+  // backdrop-filter: blur(4px);
+  backdrop-filter: blur(100px);
   opacity: 0.95;
-  margin: 30px;
   border-radius: 10px;
-  // height: 100vh;
+  position: relative;
+  border: 1px solid rgba(36, 43, 51, 0.3);
+}
+
+.credit-container {
+  max-width: 500px;
+  padding-top: 10px;
+  padding-right: 10px;
+  opacity: 0.95;
+  position: relative;
+  text-align: right;
+  color: rgba(255, 255, 255, 0.3);
+
+
+  a {
+    font-weight: bold;
+    color: rgba(87, 170, 167, 0.6);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transition: all 0.2s ease-in-out;
+      color: rgba(87, 170, 167, 1);
+    }
+  }
+}
+
+.logo {
+  display: block;
+  position: relative;
+  top: -75px;
+  width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+
+  .inner {
+    border: 1px solid var(--color-dark-teal);
+    text-align: center;
+    background-color: var(--color-dark-teal);
+    border-radius: 10px;
+    width: 150px;
+    height: 150px;
+    padding-top: 0px;
+    font-size: 38px;
+
+    img {
+      border-radius: 10px;
+    }
+
+    div {
+      padding-top: 30px;
+    }
+
+    span {
+      display: block;
+      font-size: 12px;
+    }
+  }
+}
+
+div.content {
+  margin-top: -60px;
+
+}
+
+div.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  padding-top: 0px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+
+.meta {
+  .label {
+    font-size: 14px;
+    color: #dddddd;
+    font-weight: 600;
+    display: block;
+  }
+
+  .value {
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: normal;
+    display: block;
+  }
+
+  a {
+    color: var(--color-teal);
+  }
 }

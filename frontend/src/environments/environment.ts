@@ -5,6 +5,9 @@
 export const environment = {
   production: false,
   domain: 'localhost:8100',
+  limits: {
+    maxFileSize: 770000,
+  },
   fees: {
     protocol: {
       receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",

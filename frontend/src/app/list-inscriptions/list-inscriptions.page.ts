@@ -1,27 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, IonNav, IonNavLink } from '@ionic/angular';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 
 @Component({
-  selector: 'app-browse-tokens',
-  templateUrl: './browse-tokens.page.html',
-  styleUrls: ['./browse-tokens.page.scss'],
+  selector: 'app-list-inscriptions',
+  templateUrl: './list-inscriptions.page.html',
+  styleUrls: ['./list-inscriptions.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink]
+  // providers: [IonNav],
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink, ShortenAddressPipe]
 })
-export class BrowseTokensPage implements OnInit {
+export class ListInscriptionsPage implements OnInit {
 
   isLoading = true;
   selectedAddress: string = '';
-  tokens: any = null;
+  inscriptions: any = null;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }
@@ -30,11 +31,10 @@ export class BrowseTokensPage implements OnInit {
     this.activatedRoute.params.subscribe(async params => {
       this.selectedAddress = params["address"];
       this.isLoading = true;
-
-      const chain = Chain(environment.api.endpoint);
+      const chain = Chain(environment.api.endpoint)
 
       const result = await chain('query')({
-        token: [
+        inscription: [
           {
             offset: 0,
             limit: 10,
@@ -53,19 +53,38 @@ export class BrowseTokensPage implements OnInit {
             transaction_hash: true,
             current_owner: true,
             content_path: true,
-            name: true,
-            ticker: true,
-            max_supply: true,
-            decimals: true,
-            launch_timestamp: true,
-            date_created: true
+            content_size_bytes: true,
+            date_created: true,
+            __alias: {
+              name: {
+                metadata: [{
+                  path: '$.metadata.name'
+                },
+                  true
+                ]
+              },
+              description: {
+                metadata: [{
+                  path: '$.metadata.description'
+                },
+                  true
+                ]
+              },
+              mime: {
+                metadata: [{
+                  path: '$.metadata.mime'
+                },
+                  true
+                ]
+              }
+            }
           }
         ]
       });
-      this.tokens = result.token;
+
+      this.inscriptions = result.inscription;
       this.isLoading = false;
     });
-
 
 
 

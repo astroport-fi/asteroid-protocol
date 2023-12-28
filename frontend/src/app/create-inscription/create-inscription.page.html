@@ -19,10 +19,20 @@
       <ion-grid>
         <ion-row>
           <ion-col size-xl="3" size-lg="5" size-xs="12">
-            <div class="uploaded rounded text-center">
-              <img [src]="this.createForm.value.basic.imageUpload" />
+            <div class="uploaded text-center" *ngIf="this.createForm.value.basic.contentUpload">
+              <div class="uploader no-style text-center">
+                <img class="rounded" [src]="this.createForm.value.basic.contentUpload" *ngIf="renderImagePreview" />
+                <span *ngIf="originalFilename">{{ originalFilename }}</span>
+                <div class="upload">
+                  <label for='input-file'>Change file</label>
+                  <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                </div>
+                <div *ngIf="contentRequired" class="info text-center color-danger">
+                  You must add content to inscribe
+                </div>
+              </div>
             </div>
-            <div class="uploader text-center">
+            <div class="uploader text-center" *ngIf="!this.createForm.value.basic.contentUpload">
               <p>Content</p>
               <p class="info">Max file size<br />800kb</p>
               <div class="upload">
@@ -52,13 +62,23 @@
             </div>
           </ion-col>
         </ion-row>
+        <ion-row *ngIf="inscriptionFileSize > maxFileSize">
+          <ion-col size-xl="3" size-lg="5" size-xs="12">
+            &nbsp;
+          </ion-col>
+          <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
+            <div class="section color-orange">
+              The content you are trying to inscribe exceeds the maximum file size of {{ maxFileSize / 1000 }}kb
+            </div>
+          </ion-col>
+        </ion-row>
         <ion-row>
           <ion-col size-xl="3" size-lg="5" size-xs="12">
             &nbsp;
           </ion-col>
           <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
             <div class="section">
-              <ion-button color="primary" fill="solid" type="submit">
+              <ion-button color="primary" fill="solid" type="submit" [disabled]="inscriptionFileSize > maxFileSize">
                 <ion-icon slot="start" name="checkmark"></ion-icon>
                 Inscribe
               </ion-button>

@@ -36,19 +36,19 @@ export const routes: Routes = [
       },
       {
         path: 'inscriptions/:address',
-        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
+        loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
       {
         path: 'inscriptions',
-        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
+        loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
       {
         path: 'tokens/:address',
-        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
+        loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
       },
       {
         path: 'tokens',
-        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
+        loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
       },
       {
         path: 'inscription/:txhash',

@@ -17,11 +17,14 @@
     <div *ngIf="isLoading">
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
-    <div class="list" *ngIf="!isLoading">
+    <div class="list" *ngIf="!isLoading && tokens.length > 0">
       <div class="inscription-item" [routerLink]="['/app/token', item.transaction_hash]"
         *ngFor="let item of tokens; let index">
         <div class="content">
-          <div class="ticker">{{ item.ticker }}</div>
+          <div class="image" *ngIf="item.content_path">
+            <img [src]="item.content_path" />
+          </div>
+          <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
         </div>
         <h4>#{{item.id}} {{ item.ticker }}</h4>
         <div class="detail">
@@ -40,6 +43,9 @@
       <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
+    </div>
+    <div class="list" *ngIf="!isLoading && tokens.length == 0">
+      No tokens found
     </div>
   </div>
 

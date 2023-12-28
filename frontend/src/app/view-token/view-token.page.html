@@ -25,11 +25,6 @@
           <div class="text-center">
             <img class="rounded" [src]="token.content_path" />
           </div>
-          <div class="text-center p-2">
-            <a class="color-teal" href="{{ token.content_path }}" target="_blank">
-              Open content
-            </a>
-          </div>
         </ion-col>
         <ion-col size-lg="4" size-xs="12" *ngIf="!token.content_path">
           <div class="text-center">
@@ -77,6 +72,9 @@
               </ion-col>
               <ion-col size="12" class="pt-3" *ngIf="tokenIsLaunched">
                 <ion-button color="success">Mint now</ion-button>
+                <ion-button color="primary" fill="clear" href="/mint/{{token.ticker}}" target="_blank">Open
+                  mint
+                  page</ion-button>
               </ion-col>
             </ion-row>
             <ion-row class="break pt-3">
