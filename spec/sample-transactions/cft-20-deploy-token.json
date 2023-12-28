@@ -1,0 +1,31 @@
+{
+    "body": {
+        "messages": [
+            {
+                "@type": "/cosmos.bank.v1beta1.MsgSend",
+                "from_address": "cosmos1fkwcez7yzjz2gpzhesdsd3r5wp0w82cftr4k95",
+                "to_address": "cosmos198tjtk9rzwzwcce6r8uu2gj950p9gqakm6jz92",
+                "amount": [
+                    {
+                        "denom": "uatom",
+                        "amount": "1"
+                    }
+                ]
+            }
+        ],
+        "memo": "urn:cft20:cosmoshub-4@v1;deploy$nam=My token,tic=TOKN1,sup=21000000,dec=6,lim=1000,opn=1703765770",
+        "timeout_height": "0",
+        "extension_options": [],
+        "non_critical_extension_options": []
+    },
+    "auth_info": {
+        "signer_infos": [],
+        "fee": {
+            "amount": [],
+            "gas_limit": "7000000",
+            "payer": "",
+            "granter": ""
+        }
+    },
+    "signatures": []
+}

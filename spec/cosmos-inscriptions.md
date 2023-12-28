@@ -28,7 +28,7 @@ From the [SDK documentation](https://docs.cosmos.network/v0.45/core/proto-docs.h
 
 > extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, they will be ignored
 
-The final part of the sentence is key "if any of these are present and can't be handled, they will be ignored". This leaves a path for adding content that is not validated past the protobuf type. As long as you use a type known to the chain, it can be used. An example is the sending of tokens below using the `/cosmos.bank.v1beta1.MsgSend` type:
+The final part of the sentence is key "if any of these are present and can't be handled, they will be ignored". This leaves a path for adding content that is not validated past the protocol buffer type. As long as you use a type known to the chain, it can be used. An example is the sending of tokens below using the `/cosmos.bank.v1beta1.MsgSend` type:
 
 ```json
 {
@@ -87,4 +87,4 @@ We use the `MsgRevoke` here as is is a no-op and is ignored by the chain when pa
 
 ## Summary
 
-This document provided a method of how inscription can be done with a much larger limit than the memo field, albeit in an unconventional fashion. Next we'll look at how we implemented this to be extensible and enable a vast variety of use-cases by introducing Meteor metaprotocols.
+This document provided a method of how inscriptions can be done with a much larger limit than the memo field, albeit in an unconventional fashion. Next we'll look at how we implemented this to be extensible and enable a vast variety of use-cases by introducing [Meteor metaprotocols](./meteors-metaprotocols.md).
