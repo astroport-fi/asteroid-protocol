@@ -2,8 +2,7 @@
 
 ## Introduction
 
-The CFT-20 token standard describes how we create, mint and transfer fungible tokens using the Meteors metaprotocol framework 
-
+The CFT-20 token standard describes how we create, mint and transfer fungible tokens using the Meteors metaprotocol framework. It is derived from the initial BRC-20 idea from [@redphonecrypto](https://twitter.com/redphonecrypto/status/1632481591069929478) and implementation from [@domo](https://twitter.com/domodata/status/1633658976931037184). However, it differs in implementation, and takes a more [CBRC-20](https://cybord.org/) approach.
 
 ## Technical details
 
