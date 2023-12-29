@@ -50,7 +50,10 @@ export class ListInscriptionsPage implements OnInit {
             }
           }, {
             id: true,
-            transaction_hash: true,
+            transaction: {
+              hash: true
+            },
+            // transaction_hash: true,
             current_owner: true,
             content_path: true,
             content_size_bytes: true,

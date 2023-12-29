@@ -915,7 +915,9 @@ export type ValueTypes = {
 		metadata?: [{	/** JSON select path */
 			path?: string | undefined | null | Variable<any, string>
 		}, boolean | `@${string}`],
-		transaction_hash?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
 		type?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -935,7 +937,8 @@ export type ValueTypes = {
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["json_comparison_exp"] | undefined | null | Variable<any, string>,
-		transaction_hash?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 	};
@@ -951,7 +954,8 @@ export type ValueTypes = {
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-		transaction_hash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
@@ -976,7 +980,7 @@ export type ValueTypes = {
 		height?: number | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-		transaction_hash?: string | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>,
 		type?: string | undefined | null | Variable<any, string>,
 		version?: string | undefined | null | Variable<any, string>
 	};
@@ -1019,7 +1023,23 @@ export type ValueTypes = {
 			order_by?: Array<ValueTypes["token_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["token"]],
+		token_address_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_address_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_address_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_address_history"]],
+		token_address_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token_address_history"]],
 		token_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token"]],
+		token_holder?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_holder_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_holder_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_holder"]],
+		token_holder_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token_holder"]],
 		transaction?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["transaction_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -1118,7 +1138,33 @@ export type ValueTypes = {
 			order_by?: Array<ValueTypes["token_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["token"]],
+		token_address_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_address_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_address_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_address_history"]],
+		token_address_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token_address_history"]],
+		token_address_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["token_address_history_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_address_history"]],
 		token_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token"]],
+		token_holder?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_holder_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_holder_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_holder"]],
+		token_holder_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["token_holder"]],
+		token_holder_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["token_holder_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_holder"]],
 		token_stream?: [{	/** maximum number of rows returned in a single batch */
 			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 			cursor: Array<ValueTypes["token_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
@@ -1155,6 +1201,7 @@ export type ValueTypes = {
 	/** columns and relationships of "token" */
 	["token"]: AliasType<{
 		chain_id?: boolean | `@${string}`,
+		circulating_supply?: boolean | `@${string}`,
 		content_path?: boolean | `@${string}`,
 		content_size_bytes?: boolean | `@${string}`,
 		creator?: boolean | `@${string}`,
@@ -1170,16 +1217,210 @@ export type ValueTypes = {
 		name?: boolean | `@${string}`,
 		per_wallet_limit?: boolean | `@${string}`,
 		ticker?: boolean | `@${string}`,
-		transaction_hash?: boolean | `@${string}`,
+		token_address_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_address_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_address_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_address_history"]],
+		token_holders?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_holder_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_holder_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_holder"]],
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** columns and relationships of "token_address_history" */
+	["token_address_history"]: AliasType<{
+		action?: boolean | `@${string}`,
+		amount?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		height?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		receiver?: boolean | `@${string}`,
+		sender?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ValueTypes["token"],
+		token_id?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "token_address_history" */
+	["token_address_history_aggregate_order_by"]: {
+		avg?: ValueTypes["token_address_history_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["token_address_history_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["token_address_history_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["token_address_history_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["token_address_history_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["token_address_history_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["token_address_history_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["token_address_history_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["token_address_history_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["token_address_history_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "token_address_history" */
+	["token_address_history_avg_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Boolean expression to filter rows from the table "token_address_history". All fields are combined with a logical 'AND'. */
+	["token_address_history_bool_exp"]: {
+		_and?: Array<ValueTypes["token_address_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["token_address_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		action?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** order by max() on columns of table "token_address_history" */
+	["token_address_history_max_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "token_address_history" */
+	["token_address_history_min_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "token_address_history". */
+	["token_address_history_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "token_address_history" */
+	["token_address_history_select_column"]: token_address_history_select_column;
+	/** order by stddev() on columns of table "token_address_history" */
+	["token_address_history_stddev_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "token_address_history" */
+	["token_address_history_stddev_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "token_address_history" */
+	["token_address_history_stddev_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Streaming cursor of the table "token_address_history" */
+	["token_address_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["token_address_history_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_address_history_stream_cursor_value_input"]: {
+		action?: string | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		chain_id?: string | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		height?: number | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		receiver?: string | undefined | null | Variable<any, string>,
+		sender?: string | undefined | null | Variable<any, string>,
+		token_id?: number | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>
+	};
+	/** order by sum() on columns of table "token_address_history" */
+	["token_address_history_sum_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "token_address_history" */
+	["token_address_history_var_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "token_address_history" */
+	["token_address_history_var_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "token_address_history" */
+	["token_address_history_variance_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Boolean expression to filter rows from the table "token". All fields are combined with a logical 'AND'. */
 	["token_bool_exp"]: {
 		_and?: Array<ValueTypes["token_bool_exp"]> | undefined | null | Variable<any, string>,
 		_not?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
 		_or?: Array<ValueTypes["token_bool_exp"]> | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		circulating_supply?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		content_path?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		content_size_bytes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		creator?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1195,12 +1436,149 @@ export type ValueTypes = {
 		name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		per_wallet_limit?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		ticker?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-		transaction_hash?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		token_address_histories?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
+		token_holders?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** columns and relationships of "token_holder" */
+	["token_holder"]: AliasType<{
+		address?: boolean | `@${string}`,
+		amount?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_updated?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ValueTypes["token"],
+		token_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "token_holder" */
+	["token_holder_aggregate_order_by"]: {
+		avg?: ValueTypes["token_holder_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["token_holder_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["token_holder_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["token_holder_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["token_holder_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["token_holder_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["token_holder_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["token_holder_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["token_holder_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["token_holder_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "token_holder" */
+	["token_holder_avg_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Boolean expression to filter rows from the table "token_holder". All fields are combined with a logical 'AND'. */
+	["token_holder_bool_exp"]: {
+		_and?: Array<ValueTypes["token_holder_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["token_holder_bool_exp"]> | undefined | null | Variable<any, string>,
+		address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** order by max() on columns of table "token_holder" */
+	["token_holder_max_order_by"]: {
+		address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "token_holder" */
+	["token_holder_min_order_by"]: {
+		address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "token_holder". */
+	["token_holder_order_by"]: {
+		address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "token_holder" */
+	["token_holder_select_column"]: token_holder_select_column;
+	/** order by stddev() on columns of table "token_holder" */
+	["token_holder_stddev_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "token_holder" */
+	["token_holder_stddev_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "token_holder" */
+	["token_holder_stddev_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Streaming cursor of the table "token_holder" */
+	["token_holder_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["token_holder_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_holder_stream_cursor_value_input"]: {
+		address?: string | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		chain_id?: string | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		token_id?: number | undefined | null | Variable<any, string>
+	};
+	/** order by sum() on columns of table "token_holder" */
+	["token_holder_sum_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "token_holder" */
+	["token_holder_var_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "token_holder" */
+	["token_holder_var_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "token_holder" */
+	["token_holder_variance_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		circulating_supply?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		content_path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		content_size_bytes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		creator?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1216,7 +1594,10 @@ export type ValueTypes = {
 		name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		per_wallet_limit?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ticker?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-		transaction_hash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_address_histories_aggregate?: ValueTypes["token_address_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
+		token_holders_aggregate?: ValueTypes["token_holder_aggregate_order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	/** select columns of table "token" */
@@ -1231,6 +1612,7 @@ export type ValueTypes = {
 	/** Initial value of the column from where the streaming should start */
 	["token_stream_cursor_value_input"]: {
 		chain_id?: string | undefined | null | Variable<any, string>,
+		circulating_supply?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		content_path?: string | undefined | null | Variable<any, string>,
 		content_size_bytes?: number | undefined | null | Variable<any, string>,
 		creator?: string | undefined | null | Variable<any, string>,
@@ -1246,7 +1628,7 @@ export type ValueTypes = {
 		name?: string | undefined | null | Variable<any, string>,
 		per_wallet_limit?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		ticker?: string | undefined | null | Variable<any, string>,
-		transaction_hash?: string | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>,
 		version?: string | undefined | null | Variable<any, string>
 	};
 	/** columns and relationships of "transaction" */
@@ -1259,7 +1641,13 @@ export type ValueTypes = {
 		hash?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ValueTypes["inscription"],
 		status_message?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ValueTypes["token"],
+		/** An object relationship */
+		token_address_history?: ValueTypes["token_address_history"],
 		__typename?: boolean | `@${string}`
 	}>;
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
@@ -1275,7 +1663,10 @@ export type ValueTypes = {
 		hash?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-		status_message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
+		status_message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
+		token_address_history?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -1287,7 +1678,10 @@ export type ValueTypes = {
 		hash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-		status_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
+		status_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
+		token_address_history?: ValueTypes["token_address_history_order_by"] | undefined | null | Variable<any, string>
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -1391,7 +1785,9 @@ export type ResolverInputTypes = {
 		metadata?: [{	/** JSON select path */
 			path?: string | undefined | null
 		}, boolean | `@${string}`],
-		transaction_hash?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
 		type?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -1411,7 +1807,8 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		metadata?: ResolverInputTypes["json_comparison_exp"] | undefined | null,
-		transaction_hash?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 	};
@@ -1427,7 +1824,8 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		metadata?: ResolverInputTypes["order_by"] | undefined | null,
-		transaction_hash?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null,
 		type?: ResolverInputTypes["order_by"] | undefined | null,
 		version?: ResolverInputTypes["order_by"] | undefined | null
 	};
@@ -1452,7 +1850,7 @@ export type ResolverInputTypes = {
 		height?: number | undefined | null,
 		id?: number | undefined | null,
 		metadata?: ResolverInputTypes["json"] | undefined | null,
-		transaction_hash?: string | undefined | null,
+		transaction_id?: number | undefined | null,
 		type?: string | undefined | null,
 		version?: string | undefined | null
 	};
@@ -1495,7 +1893,23 @@ export type ResolverInputTypes = {
 			order_by?: Array<ResolverInputTypes["token_order_by"]> | undefined | null,	/** filter the rows returned */
 			where?: ResolverInputTypes["token_bool_exp"] | undefined | null
 		}, ResolverInputTypes["token"]],
+		token_address_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_address_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_address_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_address_history"]],
+		token_address_history_by_pk?: [{ id: number }, ResolverInputTypes["token_address_history"]],
 		token_by_pk?: [{ id: number }, ResolverInputTypes["token"]],
+		token_holder?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_holder_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_holder_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_holder"]],
+		token_holder_by_pk?: [{ id: number }, ResolverInputTypes["token_holder"]],
 		transaction?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["transaction_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -1594,7 +2008,33 @@ export type ResolverInputTypes = {
 			order_by?: Array<ResolverInputTypes["token_order_by"]> | undefined | null,	/** filter the rows returned */
 			where?: ResolverInputTypes["token_bool_exp"] | undefined | null
 		}, ResolverInputTypes["token"]],
+		token_address_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_address_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_address_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_address_history"]],
+		token_address_history_by_pk?: [{ id: number }, ResolverInputTypes["token_address_history"]],
+		token_address_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["token_address_history_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_address_history"]],
 		token_by_pk?: [{ id: number }, ResolverInputTypes["token"]],
+		token_holder?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_holder_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_holder_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_holder"]],
+		token_holder_by_pk?: [{ id: number }, ResolverInputTypes["token_holder"]],
+		token_holder_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["token_holder_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_holder"]],
 		token_stream?: [{	/** maximum number of rows returned in a single batch */
 			batch_size: number,	/** cursor to stream the results returned by the query */
 			cursor: Array<ResolverInputTypes["token_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
@@ -1631,6 +2071,7 @@ export type ResolverInputTypes = {
 	/** columns and relationships of "token" */
 	["token"]: AliasType<{
 		chain_id?: boolean | `@${string}`,
+		circulating_supply?: boolean | `@${string}`,
 		content_path?: boolean | `@${string}`,
 		content_size_bytes?: boolean | `@${string}`,
 		creator?: boolean | `@${string}`,
@@ -1646,16 +2087,210 @@ export type ResolverInputTypes = {
 		name?: boolean | `@${string}`,
 		per_wallet_limit?: boolean | `@${string}`,
 		ticker?: boolean | `@${string}`,
-		transaction_hash?: boolean | `@${string}`,
+		token_address_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_address_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_address_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_address_history"]],
+		token_holders?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_holder_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_holder_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_holder"]],
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** columns and relationships of "token_address_history" */
+	["token_address_history"]: AliasType<{
+		action?: boolean | `@${string}`,
+		amount?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		height?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		receiver?: boolean | `@${string}`,
+		sender?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ResolverInputTypes["token"],
+		token_id?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "token_address_history" */
+	["token_address_history_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["token_address_history_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["token_address_history_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["token_address_history_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["token_address_history_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["token_address_history_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["token_address_history_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["token_address_history_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["token_address_history_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["token_address_history_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["token_address_history_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "token_address_history" */
+	["token_address_history_avg_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Boolean expression to filter rows from the table "token_address_history". All fields are combined with a logical 'AND'. */
+	["token_address_history_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["token_address_history_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["token_address_history_bool_exp"]> | undefined | null,
+		action?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		amount?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		receiver?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		sender?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
+		token_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** order by max() on columns of table "token_address_history" */
+	["token_address_history_max_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "token_address_history" */
+	["token_address_history_min_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Ordering options when selecting data from "token_address_history". */
+	["token_address_history_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		token?: ResolverInputTypes["token_order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "token_address_history" */
+	["token_address_history_select_column"]: token_address_history_select_column;
+	/** order by stddev() on columns of table "token_address_history" */
+	["token_address_history_stddev_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "token_address_history" */
+	["token_address_history_stddev_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "token_address_history" */
+	["token_address_history_stddev_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Streaming cursor of the table "token_address_history" */
+	["token_address_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["token_address_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_address_history_stream_cursor_value_input"]: {
+		action?: string | undefined | null,
+		amount?: ResolverInputTypes["bigint"] | undefined | null,
+		chain_id?: string | undefined | null,
+		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		height?: number | undefined | null,
+		id?: number | undefined | null,
+		receiver?: string | undefined | null,
+		sender?: string | undefined | null,
+		token_id?: number | undefined | null,
+		transaction_id?: number | undefined | null
+	};
+	/** order by sum() on columns of table "token_address_history" */
+	["token_address_history_sum_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "token_address_history" */
+	["token_address_history_var_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "token_address_history" */
+	["token_address_history_var_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "token_address_history" */
+	["token_address_history_variance_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Boolean expression to filter rows from the table "token". All fields are combined with a logical 'AND'. */
 	["token_bool_exp"]: {
 		_and?: Array<ResolverInputTypes["token_bool_exp"]> | undefined | null,
 		_not?: ResolverInputTypes["token_bool_exp"] | undefined | null,
 		_or?: Array<ResolverInputTypes["token_bool_exp"]> | undefined | null,
 		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		circulating_supply?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		content_path?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		content_size_bytes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		creator?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -1671,12 +2306,149 @@ export type ResolverInputTypes = {
 		name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		per_wallet_limit?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		ticker?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-		transaction_hash?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		token_address_histories?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
+		token_holders?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+	};
+	/** columns and relationships of "token_holder" */
+	["token_holder"]: AliasType<{
+		address?: boolean | `@${string}`,
+		amount?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_updated?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ResolverInputTypes["token"],
+		token_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "token_holder" */
+	["token_holder_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["token_holder_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["token_holder_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["token_holder_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["token_holder_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["token_holder_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["token_holder_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["token_holder_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["token_holder_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["token_holder_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["token_holder_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "token_holder" */
+	["token_holder_avg_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Boolean expression to filter rows from the table "token_holder". All fields are combined with a logical 'AND'. */
+	["token_holder_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["token_holder_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["token_holder_bool_exp"]> | undefined | null,
+		address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		amount?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_updated?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
+		token_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** order by max() on columns of table "token_holder" */
+	["token_holder_max_order_by"]: {
+		address?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "token_holder" */
+	["token_holder_min_order_by"]: {
+		address?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Ordering options when selecting data from "token_holder". */
+	["token_holder_order_by"]: {
+		address?: ResolverInputTypes["order_by"] | undefined | null,
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token?: ResolverInputTypes["token_order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "token_holder" */
+	["token_holder_select_column"]: token_holder_select_column;
+	/** order by stddev() on columns of table "token_holder" */
+	["token_holder_stddev_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "token_holder" */
+	["token_holder_stddev_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "token_holder" */
+	["token_holder_stddev_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Streaming cursor of the table "token_holder" */
+	["token_holder_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["token_holder_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_holder_stream_cursor_value_input"]: {
+		address?: string | undefined | null,
+		amount?: ResolverInputTypes["bigint"] | undefined | null,
+		chain_id?: string | undefined | null,
+		date_updated?: ResolverInputTypes["timestamp"] | undefined | null,
+		id?: number | undefined | null,
+		token_id?: number | undefined | null
+	};
+	/** order by sum() on columns of table "token_holder" */
+	["token_holder_sum_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "token_holder" */
+	["token_holder_var_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "token_holder" */
+	["token_holder_var_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "token_holder" */
+	["token_holder_variance_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		circulating_supply?: ResolverInputTypes["order_by"] | undefined | null,
 		content_path?: ResolverInputTypes["order_by"] | undefined | null,
 		content_size_bytes?: ResolverInputTypes["order_by"] | undefined | null,
 		creator?: ResolverInputTypes["order_by"] | undefined | null,
@@ -1692,7 +2464,10 @@ export type ResolverInputTypes = {
 		name?: ResolverInputTypes["order_by"] | undefined | null,
 		per_wallet_limit?: ResolverInputTypes["order_by"] | undefined | null,
 		ticker?: ResolverInputTypes["order_by"] | undefined | null,
-		transaction_hash?: ResolverInputTypes["order_by"] | undefined | null,
+		token_address_histories_aggregate?: ResolverInputTypes["token_address_history_aggregate_order_by"] | undefined | null,
+		token_holders_aggregate?: ResolverInputTypes["token_holder_aggregate_order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null,
 		version?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	/** select columns of table "token" */
@@ -1707,6 +2482,7 @@ export type ResolverInputTypes = {
 	/** Initial value of the column from where the streaming should start */
 	["token_stream_cursor_value_input"]: {
 		chain_id?: string | undefined | null,
+		circulating_supply?: ResolverInputTypes["bigint"] | undefined | null,
 		content_path?: string | undefined | null,
 		content_size_bytes?: number | undefined | null,
 		creator?: string | undefined | null,
@@ -1722,7 +2498,7 @@ export type ResolverInputTypes = {
 		name?: string | undefined | null,
 		per_wallet_limit?: ResolverInputTypes["bigint"] | undefined | null,
 		ticker?: string | undefined | null,
-		transaction_hash?: string | undefined | null,
+		transaction_id?: number | undefined | null,
 		version?: string | undefined | null
 	};
 	/** columns and relationships of "transaction" */
@@ -1735,7 +2511,13 @@ export type ResolverInputTypes = {
 		hash?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ResolverInputTypes["inscription"],
 		status_message?: boolean | `@${string}`,
+		/** An object relationship */
+		token?: ResolverInputTypes["token"],
+		/** An object relationship */
+		token_address_history?: ResolverInputTypes["token_address_history"],
 		__typename?: boolean | `@${string}`
 	}>;
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
@@ -1751,7 +2533,10 @@ export type ResolverInputTypes = {
 		hash?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-		status_message?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
+		status_message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
+		token_address_history?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -1763,7 +2548,10 @@ export type ResolverInputTypes = {
 		hash?: ResolverInputTypes["order_by"] | undefined | null,
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
-		status_message?: ResolverInputTypes["order_by"] | undefined | null
+		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
+		status_message?: ResolverInputTypes["order_by"] | undefined | null,
+		token?: ResolverInputTypes["token_order_by"] | undefined | null,
+		token_address_history?: ResolverInputTypes["token_address_history_order_by"] | undefined | null
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -1863,7 +2651,9 @@ export type ModelTypes = {
 		height: number,
 		id: number,
 		metadata: ModelTypes["json"],
-		transaction_hash: string,
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number,
 		type: string,
 		version: string
 	};
@@ -1882,7 +2672,8 @@ export type ModelTypes = {
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		metadata?: ModelTypes["json_comparison_exp"] | undefined,
-		transaction_hash?: ModelTypes["String_comparison_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
 		type?: ModelTypes["String_comparison_exp"] | undefined,
 		version?: ModelTypes["String_comparison_exp"] | undefined
 	};
@@ -1898,7 +2689,8 @@ export type ModelTypes = {
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		metadata?: ModelTypes["order_by"] | undefined,
-		transaction_hash?: ModelTypes["order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined,
 		type?: ModelTypes["order_by"] | undefined,
 		version?: ModelTypes["order_by"] | undefined
 	};
@@ -1922,7 +2714,7 @@ export type ModelTypes = {
 		height?: number | undefined,
 		id?: number | undefined,
 		metadata?: ModelTypes["json"] | undefined,
-		transaction_hash?: string | undefined,
+		transaction_id?: number | undefined,
 		type?: string | undefined,
 		version?: string | undefined
 	};
@@ -1951,8 +2743,16 @@ export type ModelTypes = {
 		status_by_pk?: ModelTypes["status"] | undefined,
 		/** fetch data from the table: "token" */
 		token: Array<ModelTypes["token"]>,
+		/** fetch data from the table: "token_address_history" */
+		token_address_history: Array<ModelTypes["token_address_history"]>,
+		/** fetch data from the table: "token_address_history" using primary key columns */
+		token_address_history_by_pk?: ModelTypes["token_address_history"] | undefined,
 		/** fetch data from the table: "token" using primary key columns */
 		token_by_pk?: ModelTypes["token"] | undefined,
+		/** fetch data from the table: "token_holder" */
+		token_holder: Array<ModelTypes["token_holder"]>,
+		/** fetch data from the table: "token_holder" using primary key columns */
+		token_holder_by_pk?: ModelTypes["token_holder"] | undefined,
 		/** fetch data from the table: "transaction" */
 		transaction: Array<ModelTypes["transaction"]>,
 		/** fetch data from the table: "transaction" using primary key columns */
@@ -2025,8 +2825,20 @@ export type ModelTypes = {
 		status_stream: Array<ModelTypes["status"]>,
 		/** fetch data from the table: "token" */
 		token: Array<ModelTypes["token"]>,
+		/** fetch data from the table: "token_address_history" */
+		token_address_history: Array<ModelTypes["token_address_history"]>,
+		/** fetch data from the table: "token_address_history" using primary key columns */
+		token_address_history_by_pk?: ModelTypes["token_address_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "token_address_history" */
+		token_address_history_stream: Array<ModelTypes["token_address_history"]>,
 		/** fetch data from the table: "token" using primary key columns */
 		token_by_pk?: ModelTypes["token"] | undefined,
+		/** fetch data from the table: "token_holder" */
+		token_holder: Array<ModelTypes["token_holder"]>,
+		/** fetch data from the table: "token_holder" using primary key columns */
+		token_holder_by_pk?: ModelTypes["token_holder"] | undefined,
+		/** fetch data from the table in a streaming manner: "token_holder" */
+		token_holder_stream: Array<ModelTypes["token_holder"]>,
 		/** fetch data from the table in a streaming manner: "token" */
 		token_stream: Array<ModelTypes["token"]>,
 		/** fetch data from the table: "transaction" */
@@ -2052,6 +2864,7 @@ export type ModelTypes = {
 	/** columns and relationships of "token" */
 	["token"]: {
 		chain_id: string,
+		circulating_supply: ModelTypes["bigint"],
 		content_path?: string | undefined,
 		content_size_bytes?: number | undefined,
 		creator: string,
@@ -2067,8 +2880,189 @@ export type ModelTypes = {
 		name: string,
 		per_wallet_limit: ModelTypes["bigint"],
 		ticker: string,
-		transaction_hash: string,
+		/** An array relationship */
+		token_address_histories: Array<ModelTypes["token_address_history"]>,
+		/** An array relationship */
+		token_holders: Array<ModelTypes["token_holder"]>,
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number,
 		version: string
+	};
+	/** columns and relationships of "token_address_history" */
+	["token_address_history"]: {
+		action: string,
+		amount: ModelTypes["bigint"],
+		chain_id: string,
+		date_created: ModelTypes["timestamp"],
+		height: number,
+		id: number,
+		receiver?: string | undefined,
+		sender: string,
+		/** An object relationship */
+		token: ModelTypes["token"],
+		token_id: number,
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number
+	};
+	/** order by aggregate values of table "token_address_history" */
+	["token_address_history_aggregate_order_by"]: {
+		avg?: ModelTypes["token_address_history_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["token_address_history_max_order_by"] | undefined,
+		min?: ModelTypes["token_address_history_min_order_by"] | undefined,
+		stddev?: ModelTypes["token_address_history_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["token_address_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["token_address_history_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["token_address_history_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["token_address_history_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["token_address_history_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["token_address_history_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_address_history" */
+	["token_address_history_avg_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "token_address_history". All fields are combined with a logical 'AND'. */
+	["token_address_history_bool_exp"]: {
+		_and?: Array<ModelTypes["token_address_history_bool_exp"]> | undefined,
+		_not?: ModelTypes["token_address_history_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["token_address_history_bool_exp"]> | undefined,
+		action?: ModelTypes["String_comparison_exp"] | undefined,
+		amount?: ModelTypes["bigint_comparison_exp"] | undefined,
+		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		height?: ModelTypes["Int_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		receiver?: ModelTypes["String_comparison_exp"] | undefined,
+		sender?: ModelTypes["String_comparison_exp"] | undefined,
+		token?: ModelTypes["token_bool_exp"] | undefined,
+		token_id?: ModelTypes["Int_comparison_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "token_address_history" */
+	["token_address_history_max_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_address_history" */
+	["token_address_history_min_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "token_address_history". */
+	["token_address_history_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		token?: ModelTypes["token_order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	["token_address_history_select_column"]: token_address_history_select_column;
+	/** order by stddev() on columns of table "token_address_history" */
+	["token_address_history_stddev_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_address_history" */
+	["token_address_history_stddev_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_address_history" */
+	["token_address_history_stddev_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "token_address_history" */
+	["token_address_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["token_address_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_address_history_stream_cursor_value_input"]: {
+		action?: string | undefined,
+		amount?: ModelTypes["bigint"] | undefined,
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		height?: number | undefined,
+		id?: number | undefined,
+		receiver?: string | undefined,
+		sender?: string | undefined,
+		token_id?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_address_history" */
+	["token_address_history_sum_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_address_history" */
+	["token_address_history_var_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_address_history" */
+	["token_address_history_var_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_address_history" */
+	["token_address_history_variance_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
 	};
 	/** Boolean expression to filter rows from the table "token". All fields are combined with a logical 'AND'. */
 	["token_bool_exp"]: {
@@ -2076,6 +3070,7 @@ export type ModelTypes = {
 		_not?: ModelTypes["token_bool_exp"] | undefined,
 		_or?: Array<ModelTypes["token_bool_exp"]> | undefined,
 		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		circulating_supply?: ModelTypes["bigint_comparison_exp"] | undefined,
 		content_path?: ModelTypes["String_comparison_exp"] | undefined,
 		content_size_bytes?: ModelTypes["Int_comparison_exp"] | undefined,
 		creator?: ModelTypes["String_comparison_exp"] | undefined,
@@ -2091,12 +3086,147 @@ export type ModelTypes = {
 		name?: ModelTypes["String_comparison_exp"] | undefined,
 		per_wallet_limit?: ModelTypes["bigint_comparison_exp"] | undefined,
 		ticker?: ModelTypes["String_comparison_exp"] | undefined,
-		transaction_hash?: ModelTypes["String_comparison_exp"] | undefined,
+		token_address_histories?: ModelTypes["token_address_history_bool_exp"] | undefined,
+		token_holders?: ModelTypes["token_holder_bool_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
 		version?: ModelTypes["String_comparison_exp"] | undefined
+	};
+	/** columns and relationships of "token_holder" */
+	["token_holder"]: {
+		address: string,
+		amount: ModelTypes["bigint"],
+		chain_id: string,
+		date_updated: ModelTypes["timestamp"],
+		id: number,
+		/** An object relationship */
+		token: ModelTypes["token"],
+		token_id: number
+	};
+	/** order by aggregate values of table "token_holder" */
+	["token_holder_aggregate_order_by"]: {
+		avg?: ModelTypes["token_holder_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["token_holder_max_order_by"] | undefined,
+		min?: ModelTypes["token_holder_min_order_by"] | undefined,
+		stddev?: ModelTypes["token_holder_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["token_holder_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["token_holder_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["token_holder_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["token_holder_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["token_holder_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["token_holder_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_holder" */
+	["token_holder_avg_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "token_holder". All fields are combined with a logical 'AND'. */
+	["token_holder_bool_exp"]: {
+		_and?: Array<ModelTypes["token_holder_bool_exp"]> | undefined,
+		_not?: ModelTypes["token_holder_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["token_holder_bool_exp"]> | undefined,
+		address?: ModelTypes["String_comparison_exp"] | undefined,
+		amount?: ModelTypes["bigint_comparison_exp"] | undefined,
+		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		date_updated?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		token?: ModelTypes["token_bool_exp"] | undefined,
+		token_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "token_holder" */
+	["token_holder_max_order_by"]: {
+		address?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_holder" */
+	["token_holder_min_order_by"]: {
+		address?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "token_holder". */
+	["token_holder_order_by"]: {
+		address?: ModelTypes["order_by"] | undefined,
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token?: ModelTypes["token_order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	["token_holder_select_column"]: token_holder_select_column;
+	/** order by stddev() on columns of table "token_holder" */
+	["token_holder_stddev_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_holder" */
+	["token_holder_stddev_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_holder" */
+	["token_holder_stddev_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "token_holder" */
+	["token_holder_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["token_holder_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_holder_stream_cursor_value_input"]: {
+		address?: string | undefined,
+		amount?: ModelTypes["bigint"] | undefined,
+		chain_id?: string | undefined,
+		date_updated?: ModelTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		token_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_holder" */
+	["token_holder_sum_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_holder" */
+	["token_holder_var_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_holder" */
+	["token_holder_var_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_holder" */
+	["token_holder_variance_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
 		chain_id?: ModelTypes["order_by"] | undefined,
+		circulating_supply?: ModelTypes["order_by"] | undefined,
 		content_path?: ModelTypes["order_by"] | undefined,
 		content_size_bytes?: ModelTypes["order_by"] | undefined,
 		creator?: ModelTypes["order_by"] | undefined,
@@ -2112,7 +3242,10 @@ export type ModelTypes = {
 		name?: ModelTypes["order_by"] | undefined,
 		per_wallet_limit?: ModelTypes["order_by"] | undefined,
 		ticker?: ModelTypes["order_by"] | undefined,
-		transaction_hash?: ModelTypes["order_by"] | undefined,
+		token_address_histories_aggregate?: ModelTypes["token_address_history_aggregate_order_by"] | undefined,
+		token_holders_aggregate?: ModelTypes["token_holder_aggregate_order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined,
 		version?: ModelTypes["order_by"] | undefined
 	};
 	["token_select_column"]: token_select_column;
@@ -2126,6 +3259,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 	["token_stream_cursor_value_input"]: {
 		chain_id?: string | undefined,
+		circulating_supply?: ModelTypes["bigint"] | undefined,
 		content_path?: string | undefined,
 		content_size_bytes?: number | undefined,
 		creator?: string | undefined,
@@ -2141,7 +3275,7 @@ export type ModelTypes = {
 		name?: string | undefined,
 		per_wallet_limit?: ModelTypes["bigint"] | undefined,
 		ticker?: string | undefined,
-		transaction_hash?: string | undefined,
+		transaction_id?: number | undefined,
 		version?: string | undefined
 	};
 	/** columns and relationships of "transaction" */
@@ -2154,7 +3288,13 @@ export type ModelTypes = {
 		hash: string,
 		height: number,
 		id: number,
-		status_message?: string | undefined
+		/** An object relationship */
+		inscription?: ModelTypes["inscription"] | undefined,
+		status_message?: string | undefined,
+		/** An object relationship */
+		token?: ModelTypes["token"] | undefined,
+		/** An object relationship */
+		token_address_history?: ModelTypes["token_address_history"] | undefined
 	};
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
 	["transaction_bool_exp"]: {
@@ -2169,7 +3309,10 @@ export type ModelTypes = {
 		hash?: ModelTypes["String_comparison_exp"] | undefined,
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
-		status_message?: ModelTypes["String_comparison_exp"] | undefined
+		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
+		status_message?: ModelTypes["String_comparison_exp"] | undefined,
+		token?: ModelTypes["token_bool_exp"] | undefined,
+		token_address_history?: ModelTypes["token_address_history_bool_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -2181,7 +3324,10 @@ export type ModelTypes = {
 		hash?: ModelTypes["order_by"] | undefined,
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
-		status_message?: ModelTypes["order_by"] | undefined
+		inscription?: ModelTypes["inscription_order_by"] | undefined,
+		status_message?: ModelTypes["order_by"] | undefined,
+		token?: ModelTypes["token_order_by"] | undefined,
+		token_address_history?: ModelTypes["token_address_history_order_by"] | undefined
 	};
 	["transaction_select_column"]: transaction_select_column;
 	/** Streaming cursor of the table "transaction" */
@@ -2278,7 +3424,9 @@ export type GraphQLTypes = {
 		height: number,
 		id: number,
 		metadata: GraphQLTypes["json"],
-		transaction_hash: string,
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number,
 		type: string,
 		version: string
 	};
@@ -2297,7 +3445,8 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		metadata?: GraphQLTypes["json_comparison_exp"] | undefined,
-		transaction_hash?: GraphQLTypes["String_comparison_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		type?: GraphQLTypes["String_comparison_exp"] | undefined,
 		version?: GraphQLTypes["String_comparison_exp"] | undefined
 	};
@@ -2313,7 +3462,8 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		metadata?: GraphQLTypes["order_by"] | undefined,
-		transaction_hash?: GraphQLTypes["order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined,
 		type?: GraphQLTypes["order_by"] | undefined,
 		version?: GraphQLTypes["order_by"] | undefined
 	};
@@ -2338,7 +3488,7 @@ export type GraphQLTypes = {
 		height?: number | undefined,
 		id?: number | undefined,
 		metadata?: GraphQLTypes["json"] | undefined,
-		transaction_hash?: string | undefined,
+		transaction_id?: number | undefined,
 		type?: string | undefined,
 		version?: string | undefined
 	};
@@ -2369,8 +3519,16 @@ export type GraphQLTypes = {
 		status_by_pk?: GraphQLTypes["status"] | undefined,
 		/** fetch data from the table: "token" */
 		token: Array<GraphQLTypes["token"]>,
+		/** fetch data from the table: "token_address_history" */
+		token_address_history: Array<GraphQLTypes["token_address_history"]>,
+		/** fetch data from the table: "token_address_history" using primary key columns */
+		token_address_history_by_pk?: GraphQLTypes["token_address_history"] | undefined,
 		/** fetch data from the table: "token" using primary key columns */
 		token_by_pk?: GraphQLTypes["token"] | undefined,
+		/** fetch data from the table: "token_holder" */
+		token_holder: Array<GraphQLTypes["token_holder"]>,
+		/** fetch data from the table: "token_holder" using primary key columns */
+		token_holder_by_pk?: GraphQLTypes["token_holder"] | undefined,
 		/** fetch data from the table: "transaction" */
 		transaction: Array<GraphQLTypes["transaction"]>,
 		/** fetch data from the table: "transaction" using primary key columns */
@@ -2446,8 +3604,20 @@ export type GraphQLTypes = {
 		status_stream: Array<GraphQLTypes["status"]>,
 		/** fetch data from the table: "token" */
 		token: Array<GraphQLTypes["token"]>,
+		/** fetch data from the table: "token_address_history" */
+		token_address_history: Array<GraphQLTypes["token_address_history"]>,
+		/** fetch data from the table: "token_address_history" using primary key columns */
+		token_address_history_by_pk?: GraphQLTypes["token_address_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "token_address_history" */
+		token_address_history_stream: Array<GraphQLTypes["token_address_history"]>,
 		/** fetch data from the table: "token" using primary key columns */
 		token_by_pk?: GraphQLTypes["token"] | undefined,
+		/** fetch data from the table: "token_holder" */
+		token_holder: Array<GraphQLTypes["token_holder"]>,
+		/** fetch data from the table: "token_holder" using primary key columns */
+		token_holder_by_pk?: GraphQLTypes["token_holder"] | undefined,
+		/** fetch data from the table in a streaming manner: "token_holder" */
+		token_holder_stream: Array<GraphQLTypes["token_holder"]>,
 		/** fetch data from the table in a streaming manner: "token" */
 		token_stream: Array<GraphQLTypes["token"]>,
 		/** fetch data from the table: "transaction" */
@@ -2474,6 +3644,7 @@ export type GraphQLTypes = {
 	["token"]: {
 		__typename: "token",
 		chain_id: string,
+		circulating_supply: GraphQLTypes["bigint"],
 		content_path?: string | undefined,
 		content_size_bytes?: number | undefined,
 		creator: string,
@@ -2489,8 +3660,191 @@ export type GraphQLTypes = {
 		name: string,
 		per_wallet_limit: GraphQLTypes["bigint"],
 		ticker: string,
-		transaction_hash: string,
+		/** An array relationship */
+		token_address_histories: Array<GraphQLTypes["token_address_history"]>,
+		/** An array relationship */
+		token_holders: Array<GraphQLTypes["token_holder"]>,
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number,
 		version: string
+	};
+	/** columns and relationships of "token_address_history" */
+	["token_address_history"]: {
+		__typename: "token_address_history",
+		action: string,
+		amount: GraphQLTypes["bigint"],
+		chain_id: string,
+		date_created: GraphQLTypes["timestamp"],
+		height: number,
+		id: number,
+		receiver?: string | undefined,
+		sender: string,
+		/** An object relationship */
+		token: GraphQLTypes["token"],
+		token_id: number,
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number
+	};
+	/** order by aggregate values of table "token_address_history" */
+	["token_address_history_aggregate_order_by"]: {
+		avg?: GraphQLTypes["token_address_history_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["token_address_history_max_order_by"] | undefined,
+		min?: GraphQLTypes["token_address_history_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["token_address_history_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["token_address_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["token_address_history_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["token_address_history_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["token_address_history_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["token_address_history_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["token_address_history_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_address_history" */
+	["token_address_history_avg_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "token_address_history". All fields are combined with a logical 'AND'. */
+	["token_address_history_bool_exp"]: {
+		_and?: Array<GraphQLTypes["token_address_history_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["token_address_history_bool_exp"]> | undefined,
+		action?: GraphQLTypes["String_comparison_exp"] | undefined,
+		amount?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		receiver?: GraphQLTypes["String_comparison_exp"] | undefined,
+		sender?: GraphQLTypes["String_comparison_exp"] | undefined,
+		token?: GraphQLTypes["token_bool_exp"] | undefined,
+		token_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "token_address_history" */
+	["token_address_history_max_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_address_history" */
+	["token_address_history_min_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "token_address_history". */
+	["token_address_history_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		token?: GraphQLTypes["token_order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "token_address_history" */
+	["token_address_history_select_column"]: token_address_history_select_column;
+	/** order by stddev() on columns of table "token_address_history" */
+	["token_address_history_stddev_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_address_history" */
+	["token_address_history_stddev_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_address_history" */
+	["token_address_history_stddev_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "token_address_history" */
+	["token_address_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["token_address_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_address_history_stream_cursor_value_input"]: {
+		action?: string | undefined,
+		amount?: GraphQLTypes["bigint"] | undefined,
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		height?: number | undefined,
+		id?: number | undefined,
+		receiver?: string | undefined,
+		sender?: string | undefined,
+		token_id?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_address_history" */
+	["token_address_history_sum_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_address_history" */
+	["token_address_history_var_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_address_history" */
+	["token_address_history_var_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_address_history" */
+	["token_address_history_variance_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
 	};
 	/** Boolean expression to filter rows from the table "token". All fields are combined with a logical 'AND'. */
 	["token_bool_exp"]: {
@@ -2498,6 +3852,7 @@ export type GraphQLTypes = {
 		_not?: GraphQLTypes["token_bool_exp"] | undefined,
 		_or?: Array<GraphQLTypes["token_bool_exp"]> | undefined,
 		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		circulating_supply?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		content_path?: GraphQLTypes["String_comparison_exp"] | undefined,
 		content_size_bytes?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		creator?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -2513,12 +3868,149 @@ export type GraphQLTypes = {
 		name?: GraphQLTypes["String_comparison_exp"] | undefined,
 		per_wallet_limit?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		ticker?: GraphQLTypes["String_comparison_exp"] | undefined,
-		transaction_hash?: GraphQLTypes["String_comparison_exp"] | undefined,
+		token_address_histories?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
+		token_holders?: GraphQLTypes["token_holder_bool_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		version?: GraphQLTypes["String_comparison_exp"] | undefined
+	};
+	/** columns and relationships of "token_holder" */
+	["token_holder"]: {
+		__typename: "token_holder",
+		address: string,
+		amount: GraphQLTypes["bigint"],
+		chain_id: string,
+		date_updated: GraphQLTypes["timestamp"],
+		id: number,
+		/** An object relationship */
+		token: GraphQLTypes["token"],
+		token_id: number
+	};
+	/** order by aggregate values of table "token_holder" */
+	["token_holder_aggregate_order_by"]: {
+		avg?: GraphQLTypes["token_holder_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["token_holder_max_order_by"] | undefined,
+		min?: GraphQLTypes["token_holder_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["token_holder_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["token_holder_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["token_holder_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["token_holder_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["token_holder_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["token_holder_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["token_holder_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_holder" */
+	["token_holder_avg_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "token_holder". All fields are combined with a logical 'AND'. */
+	["token_holder_bool_exp"]: {
+		_and?: Array<GraphQLTypes["token_holder_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["token_holder_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["token_holder_bool_exp"]> | undefined,
+		address?: GraphQLTypes["String_comparison_exp"] | undefined,
+		amount?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_updated?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		token?: GraphQLTypes["token_bool_exp"] | undefined,
+		token_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "token_holder" */
+	["token_holder_max_order_by"]: {
+		address?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_holder" */
+	["token_holder_min_order_by"]: {
+		address?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "token_holder". */
+	["token_holder_order_by"]: {
+		address?: GraphQLTypes["order_by"] | undefined,
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token?: GraphQLTypes["token_order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "token_holder" */
+	["token_holder_select_column"]: token_holder_select_column;
+	/** order by stddev() on columns of table "token_holder" */
+	["token_holder_stddev_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_holder" */
+	["token_holder_stddev_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_holder" */
+	["token_holder_stddev_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "token_holder" */
+	["token_holder_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["token_holder_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["token_holder_stream_cursor_value_input"]: {
+		address?: string | undefined,
+		amount?: GraphQLTypes["bigint"] | undefined,
+		chain_id?: string | undefined,
+		date_updated?: GraphQLTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		token_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_holder" */
+	["token_holder_sum_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_holder" */
+	["token_holder_var_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_holder" */
+	["token_holder_var_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_holder" */
+	["token_holder_variance_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
 		chain_id?: GraphQLTypes["order_by"] | undefined,
+		circulating_supply?: GraphQLTypes["order_by"] | undefined,
 		content_path?: GraphQLTypes["order_by"] | undefined,
 		content_size_bytes?: GraphQLTypes["order_by"] | undefined,
 		creator?: GraphQLTypes["order_by"] | undefined,
@@ -2534,7 +4026,10 @@ export type GraphQLTypes = {
 		name?: GraphQLTypes["order_by"] | undefined,
 		per_wallet_limit?: GraphQLTypes["order_by"] | undefined,
 		ticker?: GraphQLTypes["order_by"] | undefined,
-		transaction_hash?: GraphQLTypes["order_by"] | undefined,
+		token_address_histories_aggregate?: GraphQLTypes["token_address_history_aggregate_order_by"] | undefined,
+		token_holders_aggregate?: GraphQLTypes["token_holder_aggregate_order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined,
 		version?: GraphQLTypes["order_by"] | undefined
 	};
 	/** select columns of table "token" */
@@ -2549,6 +4044,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 	["token_stream_cursor_value_input"]: {
 		chain_id?: string | undefined,
+		circulating_supply?: GraphQLTypes["bigint"] | undefined,
 		content_path?: string | undefined,
 		content_size_bytes?: number | undefined,
 		creator?: string | undefined,
@@ -2564,7 +4060,7 @@ export type GraphQLTypes = {
 		name?: string | undefined,
 		per_wallet_limit?: GraphQLTypes["bigint"] | undefined,
 		ticker?: string | undefined,
-		transaction_hash?: string | undefined,
+		transaction_id?: number | undefined,
 		version?: string | undefined
 	};
 	/** columns and relationships of "transaction" */
@@ -2578,7 +4074,13 @@ export type GraphQLTypes = {
 		hash: string,
 		height: number,
 		id: number,
-		status_message?: string | undefined
+		/** An object relationship */
+		inscription?: GraphQLTypes["inscription"] | undefined,
+		status_message?: string | undefined,
+		/** An object relationship */
+		token?: GraphQLTypes["token"] | undefined,
+		/** An object relationship */
+		token_address_history?: GraphQLTypes["token_address_history"] | undefined
 	};
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
 	["transaction_bool_exp"]: {
@@ -2593,7 +4095,10 @@ export type GraphQLTypes = {
 		hash?: GraphQLTypes["String_comparison_exp"] | undefined,
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
-		status_message?: GraphQLTypes["String_comparison_exp"] | undefined
+		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
+		status_message?: GraphQLTypes["String_comparison_exp"] | undefined,
+		token?: GraphQLTypes["token_bool_exp"] | undefined,
+		token_address_history?: GraphQLTypes["token_address_history_bool_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -2605,7 +4110,10 @@ export type GraphQLTypes = {
 		hash?: GraphQLTypes["order_by"] | undefined,
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
-		status_message?: GraphQLTypes["order_by"] | undefined
+		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
+		status_message?: GraphQLTypes["order_by"] | undefined,
+		token?: GraphQLTypes["token_order_by"] | undefined,
+		token_address_history?: GraphQLTypes["token_address_history_order_by"] | undefined
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -2646,7 +4154,7 @@ export const enum inscription_select_column {
 	height = "height",
 	id = "id",
 	metadata = "metadata",
-	transaction_hash = "transaction_hash",
+	transaction_id = "transaction_id",
 	type = "type",
 	version = "version"
 }
@@ -2666,9 +4174,32 @@ export const enum status_select_column {
 	id = "id",
 	last_processed_height = "last_processed_height"
 }
+/** select columns of table "token_address_history" */
+export const enum token_address_history_select_column {
+	action = "action",
+	amount = "amount",
+	chain_id = "chain_id",
+	date_created = "date_created",
+	height = "height",
+	id = "id",
+	receiver = "receiver",
+	sender = "sender",
+	token_id = "token_id",
+	transaction_id = "transaction_id"
+}
+/** select columns of table "token_holder" */
+export const enum token_holder_select_column {
+	address = "address",
+	amount = "amount",
+	chain_id = "chain_id",
+	date_updated = "date_updated",
+	id = "id",
+	token_id = "token_id"
+}
 /** select columns of table "token" */
 export const enum token_select_column {
 	chain_id = "chain_id",
+	circulating_supply = "circulating_supply",
 	content_path = "content_path",
 	content_size_bytes = "content_size_bytes",
 	creator = "creator",
@@ -2684,7 +4215,7 @@ export const enum token_select_column {
 	name = "name",
 	per_wallet_limit = "per_wallet_limit",
 	ticker = "ticker",
-	transaction_hash = "transaction_hash",
+	transaction_id = "transaction_id",
 	version = "version"
 }
 /** select columns of table "transaction" */
@@ -2723,7 +4254,39 @@ type ZEUS_VARIABLES = {
 	["status_stream_cursor_value_input"]: ValueTypes["status_stream_cursor_value_input"];
 	["timestamp"]: ValueTypes["timestamp"];
 	["timestamp_comparison_exp"]: ValueTypes["timestamp_comparison_exp"];
+	["token_address_history_aggregate_order_by"]: ValueTypes["token_address_history_aggregate_order_by"];
+	["token_address_history_avg_order_by"]: ValueTypes["token_address_history_avg_order_by"];
+	["token_address_history_bool_exp"]: ValueTypes["token_address_history_bool_exp"];
+	["token_address_history_max_order_by"]: ValueTypes["token_address_history_max_order_by"];
+	["token_address_history_min_order_by"]: ValueTypes["token_address_history_min_order_by"];
+	["token_address_history_order_by"]: ValueTypes["token_address_history_order_by"];
+	["token_address_history_select_column"]: ValueTypes["token_address_history_select_column"];
+	["token_address_history_stddev_order_by"]: ValueTypes["token_address_history_stddev_order_by"];
+	["token_address_history_stddev_pop_order_by"]: ValueTypes["token_address_history_stddev_pop_order_by"];
+	["token_address_history_stddev_samp_order_by"]: ValueTypes["token_address_history_stddev_samp_order_by"];
+	["token_address_history_stream_cursor_input"]: ValueTypes["token_address_history_stream_cursor_input"];
+	["token_address_history_stream_cursor_value_input"]: ValueTypes["token_address_history_stream_cursor_value_input"];
+	["token_address_history_sum_order_by"]: ValueTypes["token_address_history_sum_order_by"];
+	["token_address_history_var_pop_order_by"]: ValueTypes["token_address_history_var_pop_order_by"];
+	["token_address_history_var_samp_order_by"]: ValueTypes["token_address_history_var_samp_order_by"];
+	["token_address_history_variance_order_by"]: ValueTypes["token_address_history_variance_order_by"];
 	["token_bool_exp"]: ValueTypes["token_bool_exp"];
+	["token_holder_aggregate_order_by"]: ValueTypes["token_holder_aggregate_order_by"];
+	["token_holder_avg_order_by"]: ValueTypes["token_holder_avg_order_by"];
+	["token_holder_bool_exp"]: ValueTypes["token_holder_bool_exp"];
+	["token_holder_max_order_by"]: ValueTypes["token_holder_max_order_by"];
+	["token_holder_min_order_by"]: ValueTypes["token_holder_min_order_by"];
+	["token_holder_order_by"]: ValueTypes["token_holder_order_by"];
+	["token_holder_select_column"]: ValueTypes["token_holder_select_column"];
+	["token_holder_stddev_order_by"]: ValueTypes["token_holder_stddev_order_by"];
+	["token_holder_stddev_pop_order_by"]: ValueTypes["token_holder_stddev_pop_order_by"];
+	["token_holder_stddev_samp_order_by"]: ValueTypes["token_holder_stddev_samp_order_by"];
+	["token_holder_stream_cursor_input"]: ValueTypes["token_holder_stream_cursor_input"];
+	["token_holder_stream_cursor_value_input"]: ValueTypes["token_holder_stream_cursor_value_input"];
+	["token_holder_sum_order_by"]: ValueTypes["token_holder_sum_order_by"];
+	["token_holder_var_pop_order_by"]: ValueTypes["token_holder_var_pop_order_by"];
+	["token_holder_var_samp_order_by"]: ValueTypes["token_holder_var_samp_order_by"];
+	["token_holder_variance_order_by"]: ValueTypes["token_holder_variance_order_by"];
 	["token_order_by"]: ValueTypes["token_order_by"];
 	["token_select_column"]: ValueTypes["token_select_column"];
 	["token_stream_cursor_input"]: ValueTypes["token_stream_cursor_input"];

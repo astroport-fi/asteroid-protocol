@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Chain } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { WalletService } from '../core/service/wallet.service';
 
 
 @Component({
@@ -24,7 +27,7 @@ export class ViewTokenPage implements OnInit {
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController) {
     this.tokenLaunchDate = new Date();
   }
 
@@ -32,19 +35,22 @@ export class ViewTokenPage implements OnInit {
     this.isLoading = true;
 
     const chain = Chain(environment.api.endpoint)
-
     const result = await chain('query')({
       token: [
         {
           where: {
-            transaction_hash: {
-              _eq: this.activatedRoute.snapshot.params["txhash"]
+            transaction: {
+              hash: {
+                _eq: this.activatedRoute.snapshot.params["txhash"]
+              }
             }
           }
         }, {
           id: true,
           height: true,
-          transaction_hash: true,
+          transaction: {
+            hash: true
+          },
           creator: true,
           current_owner: true,
           name: true,
@@ -67,6 +73,24 @@ export class ViewTokenPage implements OnInit {
       this.tokenIsLaunched = true;
     }
     this.isLoading = false;
+  }
+
+  async mint() {
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["tic", this.token.ticker],
+      ["amt", this.token.per_wallet_limit],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'mint', params);
+    const modal = await this.modalCtrl.create({
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+      }
+    });
+    modal.present();
   }
 
 }

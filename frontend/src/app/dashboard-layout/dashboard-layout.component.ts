@@ -25,7 +25,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -78,7 +78,7 @@ export class DashboardLayoutComponent {
   connectedAccount: any = {};
 
   constructor(private walletService: WalletService) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close });
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp });
 
     this.walletService.isConnected().then((isConnected) => {
       this.isWalletConnected = isConnected;

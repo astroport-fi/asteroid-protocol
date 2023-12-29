@@ -18,7 +18,7 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
     <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
-      <a class="inscription-item" [routerLink]="['/app/inscription', item.transaction_hash]"
+      <a class="inscription-item" [routerLink]="['/app/inscription', item.transaction.hash]"
         *ngFor="let item of inscriptions; let index">
         <!-- TODO: Do better here -->
         <div class="content" *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">

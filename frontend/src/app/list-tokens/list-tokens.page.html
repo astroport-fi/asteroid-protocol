@@ -18,7 +18,7 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
     <div class="list" *ngIf="!isLoading && tokens.length > 0">
-      <div class="inscription-item" [routerLink]="['/app/token', item.transaction_hash]"
+      <a class="inscription-item" [routerLink]="['/app/token', item.transaction.hash]"
         *ngFor="let item of tokens; let index">
         <div class="content">
           <div class="image" *ngIf="item.content_path">
@@ -38,7 +38,7 @@
             <span>{{ item.date_created | dateAgo }}</span>
           </div>
         </div>
-      </div>
+      </a>
 
       <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -53,7 +53,46 @@
     <h3>
       Holdings
     </h3>
-    <div class="list" *ngIf="!isLoading">
-      LIST TOKEN HOLDINGS
+    <div class="list" *ngIf="!isLoading && holdings.length > 0">
+      <ion-grid class="token-holdings-list">
+        <ion-row class="item">
+          <ion-col>
+            #
+          </ion-col>
+          <ion-col>
+            Ticker
+          </ion-col>
+          <ion-col>
+            Balance
+          </ion-col>
+          <ion-col>
+            Share of supply
+          </ion-col>
+          <ion-col>
+            &nbsp;
+          </ion-col>
+        </ion-row>
+        <ion-row class="item interactable" *ngFor="let item of holdings; index as i"
+          [routerLink]="['/app/manage/token', item.token.transaction.hash]">
+          <ion-col>
+            {{ i + 1 }}
+          </ion-col>
+          <ion-col>
+            {{ item.token.ticker }}
+          </ion-col>
+          <ion-col>
+            {{ item.amount | tokenDecimals:item.token.decimals }}
+          </ion-col>
+          <ion-col>
+            {{ item.amount / item.token.circulating_supply | percent }}
+          </ion-col>
+          <ion-col class="actions">
+            <ion-icon name="chevron-forward"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="list" *ngIf="!isLoading && holdings.length == 0">
+      You don't hold any tokens
     </div>
   </div>

@@ -43,6 +43,10 @@ export const routes: Routes = [
         loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
       {
+        path: 'manage/token/:txhash',
+        loadComponent: () => import('./manage-token/manage-token.page').then(m => m.ManageTokenPage)
+      },
+      {
         path: 'tokens/:address',
         loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
       },

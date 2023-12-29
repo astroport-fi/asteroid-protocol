@@ -10,6 +10,9 @@ export class ShortenAddressPipe implements PipeTransform {
         if (!value) {
             return '';
         }
+        if (value.length <= startLength + endLength) {
+            return value;
+        }
         const start = value.substring(0, startLength);
         const end = value.substring(value.length - endLength);
         return `${start}...${end}`;

@@ -71,8 +71,8 @@
                     date:'shortTime' }}</span>
                 </div>
               </ion-col>
-              <ion-col size="12" class="pt-3" *ngIf="tokenIsLaunched">
-                <ion-button color="success">Mint now</ion-button>
+              <ion-col size="12" class="pt-3">
+                <ion-button color="warning" (click)="mint()" *ngIf="tokenIsLaunched">Mint now</ion-button>
                 <ion-button color="primary" fill="clear" href="/mint/{{token.ticker}}" target="_blank">Open
                   mint
                   page</ion-button>
@@ -82,7 +82,7 @@
               <ion-col>
                 <div class="meta">
                   <span class="label">Created by</span>
-                  <a [routerLink]="['/app/tokens']">
+                  <a [routerLink]="['/app/tokens', token.creator ]">
                     <ion-chip>
                       <ion-avatar>
                         <img alt="Unknown avatar" src="../../assets/avatar.svg" />
@@ -95,12 +95,14 @@
               <ion-col>
                 <div class="meta">
                   <span class="label">Owned by</span>
-                  <ion-chip>
-                    <ion-avatar>
-                      <img alt="Unknown avatar" src="../../assets/avatar.svg" />
-                    </ion-avatar>
-                    <ion-label>{{ token.current_owner | shortenAddress }}</ion-label>
-                  </ion-chip>
+                  <a [routerLink]="['/app/tokens', token.current_owner ]">
+                    <ion-chip>
+                      <ion-avatar>
+                        <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                      </ion-avatar>
+                      <ion-label>{{ token.current_owner | shortenAddress }}</ion-label>
+                    </ion-chip>
+                  </a>
                 </div>
               </ion-col>
             </ion-row>
@@ -118,8 +120,8 @@
               <ion-col>
                 <div class="meta">
                   <span class="label">Transaction</span>
-                  <span class="value"><a href="{{ explorerTxUrl }}{{ token.transaction_hash }}" target="_blank">{{
-                      token.transaction_hash }}</a></span>
+                  <span class="value"><a href="{{ explorerTxUrl }}{{ token.transaction.hash }}" target="_blank">{{
+                      token.transaction.hash }}</a></span>
                 </div>
               </ion-col>
             </ion-row>

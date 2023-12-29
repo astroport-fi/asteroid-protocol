@@ -40,7 +40,8 @@
             <ion-col size="6">
               <div class="meta">
                 <span class="label">Circulating</span>
-                <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}</span>
+                <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply }}
+                  ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-2'}}%)</span>
               </div>
             </ion-col>
             <ion-col size="6">
@@ -61,6 +62,14 @@
 
         <div class="cta text-center m-5" *ngIf="tokenIsLaunched">
           <ion-button color="warning" (click)="mint()">MINT NOW</ion-button>
+        </div>
+        <div class="countdown" *ngIf="!tokenIsLaunched">
+          <div class="title">
+            Minting starts in
+          </div>
+          <div class="counter">
+            {{ countdown }}
+          </div>
         </div>
       </div>
     </div>

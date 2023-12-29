@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -26,24 +25,22 @@ import (
 )
 
 type Config struct {
-	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
-	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
-	BlockPollIntervalSeconds int    `envconfig:"BLOCK_POLL_INTERVAL_SECONDS" required:"true"`
+	ChainID             string `envconfig:"CHAIN_ID" required:"true"`
+	DatabaseDSN         string `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoint         string `envconfig:"LCD_ENDPOINT" required:"true"`
+	BlockPollIntervalMS int    `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
 // Indexer implements the reference indexer service
 type Indexer struct {
-	chainID                  string
-	lcdEndpoint              string
-	blockPollIntervalSeconds int
-	logger                   *logrus.Entry
-
-	metaprotocols map[string]metaprotocol.Processor
-
-	stopChannel chan bool
-	db          *gorm.DB
-	wg          sync.WaitGroup
+	chainID             string
+	lcdEndpoint         string
+	blockPollIntervalMS int
+	logger              *logrus.Entry
+	metaprotocols       map[string]metaprotocol.Processor
+	stopChannel         chan bool
+	db                  *gorm.DB
+	wg                  sync.WaitGroup
 }
 
 // New returns a new instance of the indexer service and returns an error if
@@ -71,16 +68,17 @@ func New(
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
 
 	return &Indexer{
-		chainID:                  config.ChainID,
-		lcdEndpoint:              config.LCDEndpoint,
-		blockPollIntervalSeconds: config.BlockPollIntervalSeconds,
-		metaprotocols:            metaprotocols,
-		logger:                   log,
-		stopChannel:              make(chan bool),
-		db:                       db,
+		chainID:             config.ChainID,
+		lcdEndpoint:         config.LCDEndpoint,
+		blockPollIntervalMS: config.BlockPollIntervalMS,
+		metaprotocols:       metaprotocols,
+		logger:              log,
+		stopChannel:         make(chan bool),
+		db:                  db,
 	}, nil
 }
 
+// Run the indexer service forever
 func (i *Indexer) Run() error {
 	i.logger.Info("Starting indexer")
 	i.wg.Add(1)
@@ -90,18 +88,21 @@ func (i *Indexer) Run() error {
 	return nil
 }
 
+// Stop the indexer
 func (i *Indexer) Stop() error {
 	i.logger.Info("Stopping indexer")
 	i.stopChannel <- true
 	return nil
 }
 
+// indexBlocks fetches blocks from the chain, indexes them and stores a
+// record of the last processed block
 func (i *Indexer) indexBlocks() {
 	var err error
 	var currentHeight uint64
 	// Fetch the latest processed height from the database
 	var status models.Status
-	result := i.db.First(&status, "chain_id = ?", i.chainID)
+	result := i.db.Where("chain_id = ?", i.chainID).First(&status)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			// if the record doesn't exist, find the current height from the chain
@@ -124,8 +125,7 @@ func (i *Indexer) indexBlocks() {
 	}).Info("Starting to fetch blocks")
 
 	// Fetch blocks interval
-	// ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Second)
-	ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Millisecond)
+	ticker := time.NewTicker(time.Duration(i.blockPollIntervalMS) * time.Millisecond)
 	defer ticker.Stop()
 
 	for {
@@ -136,13 +136,8 @@ func (i *Indexer) indexBlocks() {
 			return
 		case <-ticker.C:
 
-			// TODO: Check if the block even exists?!?!?!
 			maxHeight, err := i.fetchCurrentHeight()
 			if err != nil {
-				// TODO: What do we do here if this fails?
-				// Check specific types
-				// If total failure, try again
-				// If only partial, continue?
 				i.logger.Fatal(err)
 			}
 
@@ -156,18 +151,12 @@ func (i *Indexer) indexBlocks() {
 				"lag":            maxHeight - currentHeight,
 			}).Debug("Fetching block")
 
-			// TODO: Remove height?
 			_, transactions, err := i.fetchTransactions(currentHeight)
 			if err != nil {
-				// TODO: What do we do here if this fails?
-				// Check specific types
-				// If total failure, try again
-				// If only partial, continue?
 				i.logger.Fatal(err)
 			}
 
 			for _, tx := range transactions {
-
 				// Get the full transaction from the LCD
 				// We do this because we want more information, such as gas used
 				// and a JSON-only way to parse the content
@@ -184,6 +173,7 @@ func (i *Indexer) indexBlocks() {
 					continue
 				}
 
+				// Extract some commonly used values
 				height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 				if err != nil {
 					i.logger.Fatal(err)
@@ -198,6 +188,7 @@ func (i *Indexer) indexBlocks() {
 					i.logger.Fatal(err)
 				}
 
+				// Store the transaction
 				txModel := models.Transaction{
 					Hash:          tx,
 					Height:        height,
@@ -221,7 +212,7 @@ func (i *Indexer) indexBlocks() {
 
 				// Process metaprotocol memo
 				statusMessage := types.TransactionStateSuccess
-				err = i.processMetaprotocolMemo(rawTransaction)
+				err = i.processMetaprotocolMemo(txModel, rawTransaction)
 				if err != nil {
 					i.logger.WithFields(logrus.Fields{
 						"hash": rawTransaction.TxResponse.Txhash,
@@ -230,7 +221,7 @@ func (i *Indexer) indexBlocks() {
 				}
 
 				// If there is an error in processing the metaprotocol,
-				// store the error in the transaction for debugging
+				// store the error in the transaction for frontend feedback
 				txModel.StatusMessage = statusMessage
 				result = i.db.Save(&txModel)
 				if result.Error != nil {
@@ -245,24 +236,20 @@ func (i *Indexer) indexBlocks() {
 				}).Info("Transaction processed")
 			}
 
-			// Apply rules for state
-			// Store state
-
-			// TODO: All good, increase height
+			// All good, save last processed and increase height
+			status.LastProcessedHeight = currentHeight
+			i.db.Save(&status)
 			currentHeight = currentHeight + 1
-
-			os.Exit(0)
 		}
 	}
 }
 
 // processMetaprotocolMemo handles the processing of different metaprotocols
-func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) error {
+func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, rawTransaction types.RawTransaction) error {
 	i.logger.WithFields(logrus.Fields{
 		"hash": rawTransaction.TxResponse.Txhash,
 	}).Debug("Processing memo")
 
-	fmt.Println(rawTransaction.Tx.Body.Memo)
 	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Tx.Body.Memo))
 	if !ok {
 		return errors.New("invalid metaprotocol URN")
@@ -279,7 +266,7 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 		"hash":      rawTransaction.TxResponse.Txhash,
 	}).Info("Processing metaprotocol")
 
-	err := processor.Process(metaprotocolURN, rawTransaction)
+	err := processor.Process(transactionModel, metaprotocolURN, rawTransaction)
 	if err != nil {
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,

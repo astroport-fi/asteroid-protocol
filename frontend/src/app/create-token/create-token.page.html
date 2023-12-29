@@ -26,6 +26,9 @@
                 <div class="upload">
                   <label for='input-file'>Change file</label>
                   <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                  <ion-button color="warning" fill="clear" (click)="this.createForm.value.optional.imageUpload = ''">
+                    Remove
+                  </ion-button>
                 </div>
                 <div class="section color-orange p-2">
                   {{ precheckErrorText }}
@@ -147,7 +150,7 @@
           </ion-col>
           <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
             <div class="section">
-              <ion-button color="primary" fill="solid" type="submit" [disabled]="precheckErrorText != ''">
+              <ion-button color="primary" fill="solid" type="submit">
                 <ion-icon slot="start" name="checkmark"></ion-icon>
                 Create token
               </ion-button>

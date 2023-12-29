@@ -22,6 +22,7 @@ export class ListTokensPage implements OnInit {
   isLoading = true;
   selectedAddress: string = '';
   tokens: any = null;
+  holdings: any = null;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }
@@ -33,7 +34,7 @@ export class ListTokensPage implements OnInit {
 
       const chain = Chain(environment.api.endpoint);
 
-      const result = await chain('query')({
+      const tokensResult = await chain('query')({
         token: [
           {
             offset: 0,
@@ -50,7 +51,9 @@ export class ListTokensPage implements OnInit {
             }
           }, {
             id: true,
-            transaction_hash: true,
+            transaction: {
+              hash: true
+            },
             current_owner: true,
             content_path: true,
             name: true,
@@ -62,7 +65,36 @@ export class ListTokensPage implements OnInit {
           }
         ]
       });
-      this.tokens = result.token;
+      this.tokens = tokensResult.token;
+
+      const holderResult = await chain('query')({
+        token_holder: [
+          {
+            offset: 0,
+            limit: 100,
+            where: {
+              address: {
+                _eq: this.selectedAddress
+              }
+            }
+          },
+          {
+            token: {
+              ticker: true,
+              max_supply: true,
+              circulating_supply: true,
+              decimals: true,
+              transaction: {
+                hash: true
+              }
+            },
+            amount: true,
+            date_updated: true,
+          }
+        ]
+      });
+
+      this.holdings = holderResult.token_holder;
       this.isLoading = false;
     });
 

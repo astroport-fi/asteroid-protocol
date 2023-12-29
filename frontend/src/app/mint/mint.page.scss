@@ -1,6 +1,6 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.5);
-  background-image: url("../../assets/background/landing/earth.png");
+  background-image: url("../../assets/background/landing/abstract-01.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -14,7 +14,7 @@ ion-content {
   position: absolute;
   width: 100%;
   height: 100vh;
-  backdrop-filter: blur(24px);
+  // backdrop-filter: blur(0px);
 }
 
 .loading {
@@ -28,14 +28,13 @@ ion-content {
   margin-top: 200px;
   max-width: 500px;
   // height: 200px;
-  padding: 20px !important;
-  background-color: rgba(36, 43, 51, 0.1);
-  // backdrop-filter: blur(4px);
+  padding: 20px;
+  background-color: rgba(36, 43, 51, 0.4);
   backdrop-filter: blur(100px);
-  opacity: 0.95;
+  opacity: 0.98;
   border-radius: 10px;
   position: relative;
-  border: 1px solid rgba(36, 43, 51, 0.3);
+  border: 1px solid rgba(253, 135, 71, 0.1);
 }
 
 .credit-container {
@@ -49,13 +48,15 @@ ion-content {
 
 
   a {
+    font-size: 14px;
+    text-transform: uppercase;
     font-weight: bold;
-    color: rgba(87, 170, 167, 0.6);
+    color: rgba(253, 135, 71, 0.6);
     transition: all 0.2s ease-in-out;
 
     &:hover {
       transition: all 0.2s ease-in-out;
-      color: rgba(87, 170, 167, 1);
+      color: rgba(253, 135, 71, 1);
     }
   }
 }
@@ -71,14 +72,14 @@ ion-content {
   padding-bottom: 0px;
 
   .inner {
-    border: 1px solid var(--color-dark-teal);
+    border: 1px solid rgba(253, 135, 71, 0.1);
     text-align: center;
-    background-color: var(--color-dark-teal);
+    background-color: #1d1a19;
     border-radius: 10px;
     width: 150px;
     height: 150px;
     padding-top: 0px;
-    font-size: 38px;
+    font-size: 34px;
 
     img {
       border-radius: 10px;
@@ -126,5 +127,26 @@ div.title {
 
   a {
     color: var(--color-teal);
+  }
+}
+
+.countdown {
+  text-align: center;
+  padding-top: 20px;
+  margin-bottom: 10px;
+  border-top: 1px solid rgba(253, 135, 71, 0.1);
+
+  .title {
+    font-size: 18px;
+    color: #dddddd;
+    font-weight: normal;
+    display: block;
+  }
+
+  .counter {
+    font-size: 24px;
+    color: var(--color-yellow);
+    font-weight: normal;
+    display: block;
   }
 }

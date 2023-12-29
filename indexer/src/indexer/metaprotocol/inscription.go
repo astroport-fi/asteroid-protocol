@@ -81,7 +81,7 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
-func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -149,11 +149,13 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 		return fmt.Errorf("unable to store content '%s'", err)
 	}
 
+	fmt.Println("txid", transactionModel.ID)
+
 	inscriptionModel := models.Inscription{
 		ChainID:          parsedURN.ChainID,
 		Height:           height,
 		Version:          parsedURN.Version,
-		TransactionHash:  rawTransaction.TxResponse.Txhash,
+		TransactionID:    transactionModel.ID,
 		ContentHash:      contentHash,
 		Creator:          sender,
 		CurrentOwner:     sender,

@@ -85,7 +85,7 @@ func (protocol *CFT20) Name() string {
 	return "cft20"
 }
 
-func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -215,7 +215,7 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 			ChainID:           parsedURN.ChainID,
 			Height:            height,
 			Version:           parsedURN.Version,
-			TransactionHash:   rawTransaction.TxResponse.Txhash,
+			TransactionID:     transactionModel.ID,
 			Creator:           sender,
 			CurrentOwner:      sender,
 			Name:              name,
@@ -254,25 +254,36 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 			return fmt.Errorf("token with ticker '%s' is not yet open for minting", ticker)
 		}
 
-		// TODO: Check if the sender has minted <= max per wallet
-		var addressMinted int64
-		row := protocol.db.Table("token_address_history").Where("chain_id = ? AND ticker = ? AND sender = ? AND action = 'mint'", parsedURN.ChainID, ticker, sender).Select("sum(amount)").Row()
+		// Check if the sender has minted <= max per wallet
+		var addressMinted uint64
+		row := protocol.db.Table("token_address_history").Where("chain_id = ? AND token_id = ? AND sender = ? AND action = 'mint'", parsedURN.ChainID, tokenModel.ID, sender).Select("sum(amount)").Row()
 		row.Scan(&addressMinted)
 
-		mintAmount := tokenModel.PerWalletLimit
+		// Minted more of equal to the allowed amount
+		if addressMinted >= tokenModel.PerWalletLimit {
+			return fmt.Errorf("sender has already minted the maximum of %d tokens", tokenModel.PerWalletLimit/uint64(math.Pow10(int(tokenModel.Decimals))))
+		}
 
-		// TODO Check that minted + new mint <= max supply
+		// If the sender has minted some, we need to check if the new mint will exceed the limit
+		mintAmount := tokenModel.PerWalletLimit - addressMinted
 
-		// Add to tx history
+		if tokenModel.CirculatingSupply+mintAmount > tokenModel.MaxSupply {
+			// Determine if there is anything left to mint
+			mintAmount = tokenModel.MaxSupply - tokenModel.CirculatingSupply
+		}
+
+		// Add to tx history, we do this first so that if this tx has been processed
+		// we don't alter anything else
 		historyModel := models.TokenAddressHistory{
-			ChainID:         parsedURN.ChainID,
-			Height:          height,
-			TransactionHash: rawTransaction.TxResponse.Txhash,
-			Ticker:          ticker,
-			Sender:          sender,
-			Action:          "mint",
-			Amount:          mintAmount,
-			DateCreated:     rawTransaction.TxResponse.Timestamp,
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        tokenModel.Ticker,
+			Receiver:      sender,
+			Action:        "mint",
+			Amount:        mintAmount,
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -280,7 +291,7 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 		}
 
 		// Update token circulating
-		tokenModel.CirculatingSupply = tokenModel.CirculatingSupply + tokenModel.PerWalletLimit
+		tokenModel.CirculatingSupply = tokenModel.CirculatingSupply + mintAmount
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
 			return result.Error
@@ -288,20 +299,18 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 
 		// Update user balance
 		var holderModel models.TokenHolder
-		result = protocol.db.Where("chain_id = ? AND ticker = ? AND address = ?", parsedURN.ChainID, ticker, sender).First(&holderModel)
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
 		if result.Error != nil {
 			if result.Error != gorm.ErrRecordNotFound {
 				return result.Error
 			}
 		}
 
-		holderModel = models.TokenHolder{
-			ChainID:     parsedURN.ChainID,
-			Ticker:      ticker,
-			Address:     sender,
-			Amount:      holderModel.Amount + mintAmount,
-			DateUpdated: rawTransaction.TxResponse.Timestamp,
-		}
+		holderModel.ChainID = parsedURN.ChainID
+		holderModel.TokenID = tokenModel.ID
+		holderModel.Address = sender
+		holderModel.Amount = holderModel.Amount + mintAmount
+		holderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
 
 		result = protocol.db.Save(&holderModel)
 		if result.Error != nil {
@@ -309,12 +318,92 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 		}
 
 	case "transfer":
-		fmt.Println("TRANSFER TOKEN!")
+		fmt.Println(protocolURN)
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+
+		// Check required fields
+		destinationAddress := strings.TrimSpace(parsedURN.KeyValuePairs["dst"])
+		destinationAddress = strings.ToLower(destinationAddress)
+		if len(destinationAddress) != 45 {
+			return fmt.Errorf("cosmos hub addresses must be 45 characters long")
+		}
+		if !strings.Contains(destinationAddress, "cosmos1") {
+			return fmt.Errorf("destination address does not look like a valid address")
+		}
+
+		amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+		// Convert amount to have the correct number of decimals
+		amount, err := strconv.ParseUint(amountString, 10, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse amount '%s'", err)
+		}
+		amount = amount * uint64(math.Pow10(int(tokenModel.Decimals)))
+
+		// Check that the user has enough tokens to transfer
+		var holderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("sender does not have any tokens to transfer")
+		}
+
+		if holderModel.Amount < amount {
+			return fmt.Errorf("sender does not have enough tokens to transfer")
+		}
+
+		// At this point we know that the sender has enough tokens to transfer
+		// Check if the destination address has any tokens
+		var destinationHolderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, destinationAddress).First(&destinationHolderModel)
+		if result.Error != nil {
+			if result.Error != gorm.ErrRecordNotFound {
+				return fmt.Errorf("unable to check destination balance '%s'", err)
+			}
+		}
+
+		// If the destination address has no tokens, we need to create a record
+		destinationHolderModel.ChainID = parsedURN.ChainID
+		destinationHolderModel.TokenID = tokenModel.ID
+		destinationHolderModel.Address = destinationAddress
+		destinationHolderModel.Amount = destinationHolderModel.Amount + amount
+		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+
+		// Update the sender's balance
+		holderModel.Amount = holderModel.Amount - amount
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update sender balance '%s'", err)
+		}
+
+		result = protocol.db.Save(&destinationHolderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update receiver balance '%s'", err)
+		}
+
+		// Record the transfer
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        sender,
+			Receiver:      destinationAddress,
+			Action:        "transfer",
+			Amount:        amount,
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
+		}
 	}
-
-	_ = height
-
-	_ = sender
 
 	return nil
 }

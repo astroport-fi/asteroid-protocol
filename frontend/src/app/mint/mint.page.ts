@@ -10,6 +10,8 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { interval } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mint',
@@ -23,6 +25,7 @@ export class MintPage {
   token: any;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
+  countdown: string = '';
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController) {
     this.tokenLaunchDate = new Date();
@@ -43,7 +46,9 @@ export class MintPage {
         }, {
           id: true,
           height: true,
-          transaction_hash: true,
+          transaction: {
+            hash: true
+          },
           creator: true,
           current_owner: true,
           name: true,
@@ -55,6 +60,7 @@ export class MintPage {
           content_path: true,
           content_size_bytes: true,
           date_created: true,
+          circulating_supply: true,
         }
       ]
     });
@@ -63,13 +69,13 @@ export class MintPage {
     this.tokenLaunchDate = new Date(this.token.launch_timestamp * 1000);
     if (this.tokenLaunchDate.getTime() < Date.now()) {
       this.tokenIsLaunched = true;
+    } else {
+      this.startCountdown();
     }
     this.isLoading = false;
   }
 
   async mint() {
-    console.log("MINT", this.token.per_wallet_limit, this.token.ticker);
-
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.token.ticker],
@@ -85,5 +91,30 @@ export class MintPage {
       }
     });
     modal.present();
+  }
+
+  startCountdown() {
+    interval(1000)
+      .pipe(
+        startWith(0),
+        map(() => {
+          const now = new Date();
+          const distance = this.tokenLaunchDate.getTime() - now.getTime();
+          if (distance < 0) {
+            return '00:00:00:00';
+          }
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
+            this.tokenIsLaunched = true;
+          }
+
+          return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        })
+      )
+      .subscribe(countdown => this.countdown = countdown);
   }
 }

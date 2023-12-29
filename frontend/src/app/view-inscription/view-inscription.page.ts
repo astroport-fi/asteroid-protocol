@@ -33,14 +33,18 @@ export class ViewInscriptionPage implements OnInit {
       inscription: [
         {
           where: {
-            transaction_hash: {
-              _eq: this.activatedRoute.snapshot.params["txhash"]
+            transaction: {
+              hash: {
+                _eq: this.activatedRoute.snapshot.params["txhash"]
+              }
             }
           }
         }, {
           id: true,
           height: true,
-          transaction_hash: true,
+          transaction: {
+            hash: true
+          },
           creator: true,
           current_owner: true,
           content_path: true,

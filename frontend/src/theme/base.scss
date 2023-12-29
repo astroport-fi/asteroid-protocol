@@ -194,3 +194,11 @@ ion-progress-bar::part(progress) {
 .color-danger {
     color: var(--ion-color-danger) !important;
 }
+
+a {
+    color: var(--color-teal) !important;
+
+    &:hover {
+        color: #8bbdbc !important;
+    }
+}
