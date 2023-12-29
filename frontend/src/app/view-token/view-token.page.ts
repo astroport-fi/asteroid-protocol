@@ -55,6 +55,7 @@ export class ViewTokenPage implements OnInit {
           launch_timestamp: true,
           content_path: true,
           content_size_bytes: true,
+          circulating_supply: true,
           date_created: true,
         }
       ]

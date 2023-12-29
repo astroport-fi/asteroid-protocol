@@ -109,6 +109,7 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 		return fmt.Errorf("unable to parse height '%s'", err)
 	}
 
+	// TODO: Rework the operation handling
 	switch parsedURN.Operation {
 	case "deploy":
 		name, err := url.QueryUnescape(strings.TrimSpace(parsedURN.KeyValuePairs["nam"]))
@@ -159,12 +160,9 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 			return fmt.Errorf("token per wallet limit must be less than supply of %d", protocol.maxSupplyMaxValue)
 		}
 
-		_ = openTimestamp
-		_ = name
-
 		// Check if this token has already been deployed
 		var tokenModel models.Token
-		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, name).First(&tokenModel)
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
 		if result.Error == nil {
 			return fmt.Errorf("token with ticker '%s' already exists", name)
 		}
@@ -210,42 +208,106 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 			}
 
 			contentLength = len(logoContent)
-
 		}
-
-		fmt.Println("DEPLOY TOKEN!", contentPath)
 
 		// Create the token model
 		tokenModel = models.Token{
-			ChainID:          parsedURN.ChainID,
-			Height:           height,
-			Version:          parsedURN.Version,
-			TransactionHash:  rawTransaction.TxResponse.Txhash,
-			Creator:          sender,
-			CurrentOwner:     sender,
-			Name:             name,
-			Ticker:           ticker,
-			Decimals:         decimals,
-			MaxSupply:        supply,
-			PerWalletLimit:   limit,
-			LaunchTimestamp:  openTimestamp,
-			ContentPath:      contentPath,
-			ContentSizeBytes: uint64(contentLength),
-			DateCreated:      rawTransaction.TxResponse.Timestamp,
+			ChainID:           parsedURN.ChainID,
+			Height:            height,
+			Version:           parsedURN.Version,
+			TransactionHash:   rawTransaction.TxResponse.Txhash,
+			Creator:           sender,
+			CurrentOwner:      sender,
+			Name:              name,
+			Ticker:            ticker,
+			Decimals:          decimals,
+			MaxSupply:         supply,
+			PerWalletLimit:    limit,
+			LaunchTimestamp:   openTimestamp,
+			ContentPath:       contentPath,
+			ContentSizeBytes:  uint64(contentLength),
+			DateCreated:       rawTransaction.TxResponse.Timestamp,
+			CirculatingSupply: 0,
 		}
 
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
-			// If the error is a duplicate key error, we ignore it
-			if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
+			return result.Error
+		}
+
+	case "mint":
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+		// Check if the minted <= max supply
+		if tokenModel.CirculatingSupply >= tokenModel.MaxSupply {
+			return fmt.Errorf("token with ticker '%s' has reached max supply", ticker)
+		}
+		// Check if opn time < transaction time
+		if tokenModel.LaunchTimestamp > uint64(rawTransaction.TxResponse.Timestamp.Unix()) {
+			return fmt.Errorf("token with ticker '%s' is not yet open for minting", ticker)
+		}
+
+		// TODO: Check if the sender has minted <= max per wallet
+		var addressMinted int64
+		row := protocol.db.Table("token_address_history").Where("chain_id = ? AND ticker = ? AND sender = ? AND action = 'mint'", parsedURN.ChainID, ticker, sender).Select("sum(amount)").Row()
+		row.Scan(&addressMinted)
+
+		mintAmount := tokenModel.PerWalletLimit
+
+		// TODO Check that minted + new mint <= max supply
+
+		// Add to tx history
+		historyModel := models.TokenAddressHistory{
+			ChainID:         parsedURN.ChainID,
+			Height:          height,
+			TransactionHash: rawTransaction.TxResponse.Txhash,
+			Ticker:          ticker,
+			Sender:          sender,
+			Action:          "mint",
+			Amount:          mintAmount,
+			DateCreated:     rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Update token circulating
+		tokenModel.CirculatingSupply = tokenModel.CirculatingSupply + tokenModel.PerWalletLimit
+		result = protocol.db.Save(&tokenModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Update user balance
+		var holderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND ticker = ? AND address = ?", parsedURN.ChainID, ticker, sender).First(&holderModel)
+		if result.Error != nil {
+			if result.Error != gorm.ErrRecordNotFound {
 				return result.Error
 			}
 		}
 
-	case "mint":
-		fmt.Println("MINT TOKEN!")
-	case "burn":
-		fmt.Println("BURN TOKEN!")
+		holderModel = models.TokenHolder{
+			ChainID:     parsedURN.ChainID,
+			Ticker:      ticker,
+			Address:     sender,
+			Amount:      holderModel.Amount + mintAmount,
+			DateUpdated: rawTransaction.TxResponse.Timestamp,
+		}
+
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
 	case "transfer":
 		fmt.Println("TRANSFER TOKEN!")
 	}
@@ -253,41 +315,6 @@ func (protocol *CFT20) Process(protocolURN *urn.URN, rawTransaction types.RawTra
 	_ = height
 
 	_ = sender
-
-	// // Store the content with the correct mime type on DO
-	// contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, content)
-	// if err != nil {
-	// 	return fmt.Errorf("unable to store content '%s'", err)
-	// }
-
-	// Create the token model
-	// tokenModel := models.Token{
-	// 	ChainID:         parsedURN.chainID,
-	// 	Height:          height,
-	// 	Version:         parsedURN.version,
-	// 	TransactionHash: rawTransaction.TxResponse.Txhash,
-	// 	Creator:         sender,
-	// 	CurrentOwner:    sender,
-	// 	Name:            name,
-	// 	Ticker:          ticker,
-	// 	Decimals:        decimals,
-	// 	MaxSupply:       supply,
-	// 	PerWalletLimit:  limit,
-	// 	LaunchTimestamp: openTimestamp,
-	// 	// MintPage: ,
-	// 	// Metadata:         datatypes.JSON(metadata),
-	// 	// ContentPath:      contentPath,
-	// 	// ContentSizeBytes: uint64(len(content)),
-	// 	DateCreated: rawTransaction.TxResponse.Timestamp,
-	// }
-
-	// result := protocol.db.Save(&tokenModel)
-	// if result.Error != nil {
-	// 	// If the error is a duplicate key error, we ignore it
-	// 	if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-	// 		return result.Error
-	// 	}
-	// }
 
 	return nil
 }

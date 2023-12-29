@@ -8,7 +8,6 @@ import (
 	"log"
 	"mime"
 	"strconv"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -167,10 +166,7 @@ func (protocol *Inscription) Process(protocolURN *urn.URN, rawTransaction types.
 
 	result := protocol.db.Save(&inscriptionModel)
 	if result.Error != nil {
-		// If the error is a duplicate key error, we ignore it
-		if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-			return result.Error
-		}
+		return result.Error
 	}
 
 	return nil

@@ -326,14 +326,6 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 	}).Debug("Fetched block")
 
 	for _, tx := range lcdBlock.Block.Data.Txs {
-		// decoder := cosmosutils.DefaultDecoder
-		// decodedTx, err := decoder.DecodeBase64(tx)
-		// if err != nil {
-		// 	// If we can't decode the base64, there is something wrong with the
-		// 	// transaction and we ignore it
-		// 	i.logger.Warn("Error decoding transaction base64:", err)
-		// 	continue
-		// }
 
 		// Get the transaction hash by converting the base64 to hex
 		// This is the same as the transaction hash in the block explorer
@@ -350,59 +342,6 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		s.Sum(nil)
 		txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
 		transactions = append(transactions, txHash)
-
-		// // Convert to a JSON format to make it easier to decode
-		// jsonBytes, err := decodedTx.MarshalToJSON()
-		// if err != nil {
-		// 	// If we can't marshal to JSON, we probably have invalid characters
-		// 	i.logger.Warn("Error encode transaction JSON:", err)
-		// 	continue
-		// }
-
-		// var cosmosTx cosmosutils.CosmosTx
-		// jsonDecoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-		// jsonDecoder.DisallowUnknownFields()
-		// err = jsonDecoder.Decode(&cosmosTx)
-		// if err != nil {
-		// 	// This indicates that the transaction doesn't follow the standard
-		// 	// Cosmos transaction format. We can safely ignore this transaction
-		// 	i.logger.Warn("Error decoding transaction:", err)
-		// }
-
-		// fmt.Println(cosmosTx.Body.NonCriticalExtensionOptions...)
-
-		// transactions = append(transactions, Tx{
-		// 	Hash:     txHash,
-		// 	RawTx:    tx,
-		// 	ParsedTx: string(jsonBytes),
-		// 	CosmosTx: cosmosTx,
-		// })
-
-		// for _, inscription := range cosmosTx.Body.NonCriticalExtensionOptions {
-		// 	inscriptionBytes, err := json.Marshal(inscription)
-		// 	if err != nil {
-		// 		// This indicates that the extension option contains something
-		// 		// invalid and we will ignore the inscription
-		// 		i.logger.Warn("Error marshalling inscription to bytes:", err)
-		// 		continue
-		// 	}
-		// 	var rawInscription RawInscription
-		// 	err = json.Unmarshal(inscriptionBytes, &rawInscription)
-		// 	if err != nil {
-		// 		// This indicates that the extension option doesn't follow the
-		// 		// predefined format. We will ignore this inscription
-		// 		i.logger.Warn("Error decoding into RawInscription:", err)
-		// 		continue
-		// 	}
-		// 	// Verify that this is a revoke message, if not, it doesn't follow
-		// 	// the spec
-		// 	if rawInscription.Type != "/cosmos.authz.v1beta1.MsgRevoke" {
-		// 		i.logger.Warn("Invalid inscription type:", rawInscription.Type)
-		// 		continue
-		// 	}
-
-		// 	rawInscriptions = append(rawInscriptions, rawInscription)
-		// }
 
 	}
 	return height, transactions, nil
@@ -423,87 +362,5 @@ func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, erro
 		"hash": hash,
 	}).Debug("Fetched transaction")
 
-	// for _, tx := range lcdBlock.Block.Data.Txs {
-	// // decoder := cosmosutils.DefaultDecoder
-	// // decodedTx, err := decoder.DecodeBase64(tx)
-	// // if err != nil {
-	// // 	// If we can't decode the base64, there is something wrong with the
-	// // 	// transaction and we ignore it
-	// // 	i.logger.Warn("Error decoding transaction base64:", err)
-	// // 	continue
-	// // }
-
-	// // Get the transaction hash by converting the base64 to hex
-	// // This is the same as the transaction hash in the block explorer
-	// txBytes, err := base64.StdEncoding.DecodeString(tx)
-	// if err != nil {
-	// 	// If we can't marshal to JSON, we probably have invalid characters
-	// 	i.logger.Warn("Error encode transaction JSON:", err)
-	// 	continue
-	// }
-
-	// // Create transaction hash
-	// s := sha256.New()
-	// s.Write(txBytes)
-	// s.Sum(nil)
-	// txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
-	// fmt.Println("Tx hash:", string(txHash))
-
-	// transactions = append(transactions, txHash)
-
-	// // Convert to a JSON format to make it easier to decode
-	// jsonBytes, err := decodedTx.MarshalToJSON()
-	// if err != nil {
-	// 	// If we can't marshal to JSON, we probably have invalid characters
-	// 	i.logger.Warn("Error encode transaction JSON:", err)
-	// 	continue
-	// }
-
-	// var cosmosTx cosmosutils.CosmosTx
-	// jsonDecoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-	// jsonDecoder.DisallowUnknownFields()
-	// err = jsonDecoder.Decode(&cosmosTx)
-	// if err != nil {
-	// 	// This indicates that the transaction doesn't follow the standard
-	// 	// Cosmos transaction format. We can safely ignore this transaction
-	// 	i.logger.Warn("Error decoding transaction:", err)
-	// }
-
-	// fmt.Println(cosmosTx.Body.NonCriticalExtensionOptions...)
-
-	// transactions = append(transactions, Tx{
-	// 	Hash:     txHash,
-	// 	RawTx:    tx,
-	// 	ParsedTx: string(jsonBytes),
-	// 	CosmosTx: cosmosTx,
-	// })
-
-	// for _, inscription := range cosmosTx.Body.NonCriticalExtensionOptions {
-	// 	inscriptionBytes, err := json.Marshal(inscription)
-	// 	if err != nil {
-	// 		// This indicates that the extension option contains something
-	// 		// invalid and we will ignore the inscription
-	// 		i.logger.Warn("Error marshalling inscription to bytes:", err)
-	// 		continue
-	// 	}
-	// 	var rawInscription RawInscription
-	// 	err = json.Unmarshal(inscriptionBytes, &rawInscription)
-	// 	if err != nil {
-	// 		// This indicates that the extension option doesn't follow the
-	// 		// predefined format. We will ignore this inscription
-	// 		i.logger.Warn("Error decoding into RawInscription:", err)
-	// 		continue
-	// 	}
-	// 	// Verify that this is a revoke message, if not, it doesn't follow
-	// 	// the spec
-	// 	if rawInscription.Type != "/cosmos.authz.v1beta1.MsgRevoke" {
-	// 		i.logger.Warn("Invalid inscription type:", rawInscription.Type)
-	// 		continue
-	// 	}
-
-	// 	rawInscriptions = append(rawInscriptions, rawInscription)
-	// }
-
-	// }
 	return rawTransaction.GetTxByteSize(), rawTransaction, nil
 }

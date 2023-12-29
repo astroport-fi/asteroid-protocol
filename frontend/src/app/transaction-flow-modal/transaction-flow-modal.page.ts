@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -21,6 +21,7 @@ import { Chain } from '../core/types/zeus';
 })
 export class TransactionFlowModalPage implements OnInit {
 
+  @Input() routerLink: string = '';
   @Input() urn: string = '';
   @Input() metadata: string;
   @Input() data: string;
@@ -31,7 +32,7 @@ export class TransactionFlowModalPage implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController) {
+  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router) {
     this.urn = '';
     this.metadata = '';
     this.data = '';
@@ -128,6 +129,11 @@ export class TransactionFlowModalPage implements OnInit {
     }
 
     return error;
+  }
+
+  viewInscription() {
+    this.router.navigate([this.routerLink, this.txHash]);
+    this.modalCtrl.dismiss();
   }
 
 }

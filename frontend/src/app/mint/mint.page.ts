@@ -75,7 +75,7 @@ export class MintPage {
       ["tic", this.token.ticker],
       ["amt", this.token.per_wallet_limit],
     ]);
-    const urn = this.protocolService.buildURN('cosmoshub-4', 'mint', params);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'mint', params);
     const modal = await this.modalCtrl.create({
       component: TransactionFlowModalPage,
       componentProps: {

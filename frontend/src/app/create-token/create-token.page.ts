@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, ViewDidLeave } from '@ionic/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { MaskitoModule } from '@maskito/angular';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { formatDate } from '../core/helpers/delay';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
@@ -21,7 +20,7 @@ import { InscriptionMetadata } from '../core/metaprotocol/inscription.service';
   providers: [DatePipe],
   imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink, MaskitoModule],
 })
-export class CreateTokenPage implements OnInit {
+export class CreateTokenPage implements OnInit, ViewDidLeave {
   createForm: FormGroup;
   precheckErrorText: string = '';
   minDate: Date;
@@ -61,10 +60,19 @@ export class CreateTokenPage implements OnInit {
     });
   }
 
-
-
   ngOnInit() {
+  }
 
+  ionViewDidLeave(): void {
+    this.createForm.patchValue({
+      basic: {
+        name: '',
+        ticker: '',
+      },
+      optional: {
+        imageUpload: null
+      }
+    });
   }
 
   submit() {
@@ -125,6 +133,7 @@ export class CreateTokenPage implements OnInit {
         urn,
         metadata: metadataBase64,
         data,
+        routerLink: '/app/token'
       }
     });
     modal.present();

@@ -1,23 +1,8 @@
-// import { Component, OnInit } from '@angular/core';
-// import { Router, RouterLink } from '@angular/router';
-// import { CommonModule } from '@angular/common';
-// import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-// import { AlertController, LoadingController, IonicModule } from '@ionic/angular';
-// import { WalletService } from '../core/service/wallet.service';
-// import { environment } from 'src/environments/environment';
-// import { Parent } from '../core/types/metadata/parent';
-// import { ContentInscription } from '../core/types/metadata/content-inscription';
-// import { hashValue } from '../core/helpers/crypto';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
-import { MaskitoModule } from '@maskito/angular';
-import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { formatDate } from '../core/helpers/delay';
-import { CFT20Service } from '../core/metaprotocol/cft20.service';
+import { IonicModule, ModalController, ViewDidLeave } from '@ionic/angular';
 import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { InscriptionMetadata, InscriptionService } from '../core/metaprotocol/inscription.service';
@@ -31,7 +16,7 @@ import { environment } from 'src/environments/environment';
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink]
 })
-export class CreateInscriptionPage implements OnInit {
+export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   createForm: FormGroup;
   originalFilename: string = '';
   inscriptionFileSize: number = 0;
@@ -50,6 +35,16 @@ export class CreateInscriptionPage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ionViewDidLeave(): void {
+    this.createForm.patchValue({
+      basic: {
+        name: '',
+        description: '',
+        contentUpload: null
+      }
+    });
   }
 
   submit() {
@@ -98,6 +93,7 @@ export class CreateInscriptionPage implements OnInit {
         urn,
         metadata: metadataBase64,
         data,
+        routerLink: '/app/inscription'
       }
     });
     modal.present();

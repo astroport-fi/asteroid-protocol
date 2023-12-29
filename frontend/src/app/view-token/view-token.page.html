@@ -54,7 +54,8 @@
               <ion-col size="6">
                 <div class="meta">
                   <span class="label">Circulating</span>
-                  <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}</span>
+                  <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply }}
+                    ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-2'}}%)</span>
                 </div>
               </ion-col>
               <ion-col size="6">
