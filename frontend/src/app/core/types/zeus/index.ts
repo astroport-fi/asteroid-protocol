@@ -1,7 +1,8 @@
 /* eslint-disable */
 
+import { environment } from 'src/environments/environment';
 import { AllTypesProps, ReturnTypes, Ops } from './const';
-export const HOST = "http://localhost:8080/v1/graphql"
+export const HOST = environment.api.endpoint;
 
 
 export const HEADERS = {}

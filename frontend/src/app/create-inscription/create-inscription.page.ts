@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController, ViewDidLeave } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController, ViewDidLeave } from '@ionic/angular';
 import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { InscriptionMetadata, InscriptionService } from '../core/metaprotocol/inscription.service';
@@ -24,7 +24,7 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   renderImagePreview = false;
   contentRequired = false;
 
-  constructor(private builder: FormBuilder, private protocolService: InscriptionService, private walletService: WalletService, private modalCtrl: ModalController) {
+  constructor(private builder: FormBuilder, private protocolService: InscriptionService, private walletService: WalletService, private modalCtrl: ModalController, private alertController: AlertController) {
     this.createForm = this.builder.group({
       basic: this.builder.group({
         name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
@@ -67,39 +67,65 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
     const mime = data.split(";")[0].split(":")[1];
     data = data.split(",")[1];
 
-    // Build the metadata for this inscription
-    const metadata: InscriptionMetadata = {
-      parent: {
-        type: "/cosmos.bank.Account",
-        identifier: (await this.walletService.getAccount()).address,
-      },
-      metadata: {
-        name: this.createForm.value.basic.name.trim(),
-        description: this.createForm.value.basic.description.trim(),
-        mime,
-      }
-    };
+    try {
+      // Build the metadata for this inscription
+      const metadata: InscriptionMetadata = {
+        parent: {
+          type: "/cosmos.bank.Account",
+          identifier: (await this.walletService.getAccount()).address,
+        },
+        metadata: {
+          name: this.createForm.value.basic.name.trim(),
+          description: this.createForm.value.basic.description.trim(),
+          mime,
+        }
+      };
 
-    const metadataBase64 = btoa(JSON.stringify(metadata));
-    const inscriptionHash = await hashValue(metadataBase64 + data);
-    const params = new Map([
-      ["h", inscriptionHash],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'inscribe', params);
+      const metadataBase64 = btoa(JSON.stringify(metadata));
+      const inscriptionHash = await hashValue(metadataBase64 + data);
+      const params = new Map([
+        ["h", inscriptionHash],
+      ]);
+      const urn = this.protocolService.buildURN(environment.chain.chainId, 'inscribe', params);
 
-    const modal = await this.modalCtrl.create({
-      component: TransactionFlowModalPage,
-      componentProps: {
-        urn,
-        metadata: metadataBase64,
-        data,
-        routerLink: '/app/inscription'
-      }
-    });
-    modal.present();
+      const modal = await this.modalCtrl.create({
+        component: TransactionFlowModalPage,
+        componentProps: {
+          urn,
+          metadata: metadataBase64,
+          data,
+          routerLink: '/app/inscription'
+        }
+      });
+      modal.present();
+    } catch (err) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const alert = await this.alertController.create({
+        header: 'Keplr wallet is required',
+        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
+        buttons: [
+          {
+            text: 'Get Keplr',
+            cssClass: 'alert-button-success',
+            handler: () => {
+              window.open('https://www.keplr.app/', '_blank');
+            }
+          },
+          {
+            text: 'Cancel',
+            cssClass: 'alert-button-cancel',
+            handler: () => {
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      await alert.present();
+    }
   }
 
   onFileSelected(event: any) {
+    this.contentRequired = false;
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();

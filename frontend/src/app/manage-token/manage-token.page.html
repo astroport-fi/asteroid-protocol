@@ -3,7 +3,7 @@
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
-        <ion-back-button [defaultHref]="'/app/tokens/' + address"></ion-back-button>
+        <ion-back-button [defaultHref]="'/app/wallet/' + address"></ion-back-button>
       </ion-buttons>
       <ion-title>
         Manage Token <span *ngIf="!isLoading">#{{ token.id }}</span>
@@ -56,7 +56,7 @@
                 <div class="meta">
                   <span class="label">Share of circulating supply</span>
                   <span class="value">
-                    {{token.circulating_supply / balance.amount | percent }}
+                    {{balance.amount / token.circulating_supply | percent }}
                   </span>
                 </div>
               </ion-col>

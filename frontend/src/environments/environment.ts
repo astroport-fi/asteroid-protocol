@@ -1,10 +1,6 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-  production: false,
-  domain: 'localhost:8100',
+  production: true,
+  domain: 'private-testnet.meteors.app',
   limits: {
     maxFileSize: 770000,
   },
@@ -27,14 +23,14 @@ export const environment = {
     }
   },
   api: {
-    endpoint: 'http://localhost:8080/v1/graphql',
-    explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    endpoint: 'https://private-testnet-api.meteors.app/v1/graphql',
+    explorer: 'https://private-testnet-api.meteors.app/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {
     chainId: "gaialocal-1",
     chainName: "Private Cosmos Hub",
-    rpc: "http://localhost:8665/chain/gaia/rpc",
-    rest: "http://localhost:8665/chain/gaia/lcd",
+    rpc: "https://private-testnet-api.meteors.app/chain/gaia/rpc",
+    rest: "https://private-testnet-api.meteors.app/chain/gaia/lcd",
     bip44: {
       coinType: 118
     },
@@ -63,5 +59,4 @@ export const environment = {
       coinDecimals: 6
     },
   },
-
 };

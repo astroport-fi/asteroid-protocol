@@ -1,0 +1,147 @@
+<ion-content class="shadowed">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        Wallet
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="aligned">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xl="8" size="12" class="text-center">
+          <div class="avatar">
+            <ion-avatar>
+              <img alt="Anon" src="../../assets/avatar.svg" />
+            </ion-avatar>
+            <ion-chip color="warning" [outline]="true">
+              <ion-icon name="key-sharp" color="warning"></ion-icon>
+              <ion-label>{{ selectedAddress }}</ion-label>
+            </ion-chip>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xl="8" size="12">
+          <ion-segment [value]="selectedSection" color="primary" (ionChange)="sectionChanged($event)">
+            <ion-segment-button value="balances">
+              <ion-label>Balances</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="tokens">
+              <ion-label>Tokens</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="inscriptions">
+              <ion-label>Inscriptions</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="!isLoading && selectedSection == 'balances'">
+        <ion-col size-xl="8" size="12" *ngIf="holdings.length > 0">
+          <ion-grid class="token-holdings-list">
+            <ion-row class="item">
+              <ion-col>
+                #
+              </ion-col>
+              <ion-col>
+                Ticker
+              </ion-col>
+              <ion-col>
+                Balance
+              </ion-col>
+              <ion-col>
+                Share of supply
+              </ion-col>
+              <ion-col>
+                &nbsp;
+              </ion-col>
+            </ion-row>
+            <ion-row class="item interactable" *ngFor="let item of holdings; index as i"
+              [routerLink]="['/app/manage/token', item.token.transaction.hash]">
+              <ion-col>
+                {{ i + 1 }}
+              </ion-col>
+              <ion-col>
+                {{ item.token.ticker }}
+              </ion-col>
+              <ion-col>
+                {{ item.amount | tokenDecimals:item.token.decimals }}
+              </ion-col>
+              <ion-col>
+                {{ item.amount / item.token.circulating_supply | percent }}
+              </ion-col>
+              <ion-col class="actions">
+                <ion-icon name="chevron-forward"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+        <ion-col size-xl="8" size="12" *ngIf="holdings.length == 0">
+          No tokens found
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="!isLoading && selectedSection == 'tokens'" class="p-4">
+        <ion-col size-xl="8" size="12" *ngIf="tokens.length > 0">
+          <a class="token-item" [routerLink]="['/app/token', item.transaction.hash]"
+            *ngFor="let item of tokens; let index">
+            <div class="content">
+              <div class="image" *ngIf="item.content_path">
+                <img [src]="item.content_path" />
+              </div>
+              <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
+            </div>
+            <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
+            <div class="detail">
+              <div class="detail-item">
+                <span>{{ item.name }}</span>
+              </div>
+              <div class="detail-item">
+                <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
+              </div>
+              <div class="detail-item">
+                <span>{{ item.date_created | dateAgo }}</span>
+              </div>
+            </div>
+          </a>
+        </ion-col>
+        <ion-col size-xl="8" size="12" *ngIf="tokens.length == 0">
+          No tokens found
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="!isLoading && selectedSection == 'inscriptions'" class="p-4">
+        <ion-col size-xl="8" size="12" *ngIf="inscriptions.length > 0">
+          <a class="inscription-item" [routerLink]="['/app/inscription', item.transaction.hash]"
+            *ngFor="let item of inscriptions; let index">
+            <!-- TODO: Do better here -->
+            <div class="content"
+              *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
+              <img [src]="item.content_path" />
+            </div>
+            <div class="content"
+              *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
+              <div class="mime">{{ item.mime | humanType }}</div>
+            </div>
+            <h4>#{{item.id - 1}} {{ item.name }}</h4>
+            <div class="detail">
+              <div class="detail-item">
+                <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }} kb)</span>
+              </div>
+              <div class="detail-item">
+                <span>{{ item.date_created | dateAgo }}</span>
+              </div>
+            </div>
+          </a>
+        </ion-col>
+        <ion-col size-xl="8" size="12" *ngIf="inscriptions.length == 0">
+          No inscriptions found
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>

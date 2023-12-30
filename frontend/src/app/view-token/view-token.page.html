@@ -6,7 +6,8 @@
         <ion-back-button defaultHref="/app/tokens"></ion-back-button>
       </ion-buttons>
       <ion-title>
-        Token <span *ngIf="!isLoading">#{{ token.id }}</span>
+        <!-- Less 1 because database starts at 1 and not 0 -->
+        Token <span *ngIf="!isLoading">#{{ token.id - 1 }}</span>
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -82,7 +83,7 @@
               <ion-col>
                 <div class="meta">
                   <span class="label">Created by</span>
-                  <a [routerLink]="['/app/tokens', token.creator ]">
+                  <a [routerLink]="['/app/wallet', token.creator ]" [queryParams]="{section: 'tokens'}">
                     <ion-chip>
                       <ion-avatar>
                         <img alt="Unknown avatar" src="../../assets/avatar.svg" />
@@ -95,7 +96,7 @@
               <ion-col>
                 <div class="meta">
                   <span class="label">Owned by</span>
-                  <a [routerLink]="['/app/tokens', token.current_owner ]">
+                  <a [routerLink]="['/app/wallet', token.current_owner ]" [queryParams]="{section: 'tokens'}">
                     <ion-chip>
                       <ion-avatar>
                         <img alt="Unknown avatar" src="../../assets/avatar.svg" />

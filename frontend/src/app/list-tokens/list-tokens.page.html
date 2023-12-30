@@ -26,7 +26,7 @@
           </div>
           <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
         </div>
-        <h4>#{{item.id}} {{ item.ticker }}</h4>
+        <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
         <div class="detail">
           <div class="detail-item">
             <span>{{ item.name }}</span>
@@ -48,51 +48,4 @@
       No tokens found
     </div>
   </div>
-
-  <div class="aligned no-shadow">
-    <h3>
-      Holdings
-    </h3>
-    <div class="list" *ngIf="!isLoading && holdings.length > 0">
-      <ion-grid class="token-holdings-list">
-        <ion-row class="item">
-          <ion-col>
-            #
-          </ion-col>
-          <ion-col>
-            Ticker
-          </ion-col>
-          <ion-col>
-            Balance
-          </ion-col>
-          <ion-col>
-            Share of supply
-          </ion-col>
-          <ion-col>
-            &nbsp;
-          </ion-col>
-        </ion-row>
-        <ion-row class="item interactable" *ngFor="let item of holdings; index as i"
-          [routerLink]="['/app/manage/token', item.token.transaction.hash]">
-          <ion-col>
-            {{ i + 1 }}
-          </ion-col>
-          <ion-col>
-            {{ item.token.ticker }}
-          </ion-col>
-          <ion-col>
-            {{ item.amount | tokenDecimals:item.token.decimals }}
-          </ion-col>
-          <ion-col>
-            {{ item.amount / item.token.circulating_supply | percent }}
-          </ion-col>
-          <ion-col class="actions">
-            <ion-icon name="chevron-forward"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div>
-    <div class="list" *ngIf="!isLoading && holdings.length == 0">
-      You don't hold any tokens
-    </div>
-  </div>
+</ion-content>

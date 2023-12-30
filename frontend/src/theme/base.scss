@@ -28,7 +28,6 @@ ion-modal {
     --border-width: 1px;
 }
 
-
 ion-content.shadowed {
     // background-color: #232f3d;
     // background-color: #363c41;
@@ -150,7 +149,7 @@ div.aligned {
 }
 
 ion-alert {
-    --background: #232f3d !important;
+    --background: rgba(53, 60, 66, 0.9) !important;
     --min-width: 300px !important;
     --backdrop-opacity: 0.6 !important;
 }
@@ -201,4 +200,14 @@ a {
     &:hover {
         color: #8bbdbc !important;
     }
+}
+
+.alert-button-success {
+    --color: var(--ion-color-success) !important;
+    color: var(--ion-color-success) !important;
+}
+
+.alert-button-cancel {
+    --color: var(--color-teal) !important;
+    color: var(--color-teal) !important;
 }

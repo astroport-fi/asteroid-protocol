@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController, ViewDidLeave } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController, ViewDidLeave } from '@ionic/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { MaskitoModule } from '@maskito/angular';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -30,7 +30,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
 
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private builder: FormBuilder, private datePipe: DatePipe, private protocolService: CFT20Service, private walletService: WalletService, private modalCtrl: ModalController) {
+  constructor(private builder: FormBuilder, private datePipe: DatePipe, private protocolService: CFT20Service, private walletService: WalletService, private modalCtrl: ModalController, private alertController: AlertController) {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
@@ -84,59 +84,85 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   }
 
   async createToken() {
-    const name = encodeURI(this.createForm.value.basic.name.trim());
-    const ticker = this.createForm.value.basic.ticker.replace(/\s/g, '');
-    const decimals = this.createForm.value.basic.decimals;
-    const maxSupply = this.createForm.value.basic.maxSupply.replace(/\s/g, '');
-    const mintLimit = this.createForm.value.basic.mintLimit.replace(/\s/g, '');
+    try {
+      const name = encodeURI(this.createForm.value.basic.name.trim());
+      const ticker = this.createForm.value.basic.ticker.replace(/\s/g, '');
+      const decimals = this.createForm.value.basic.decimals;
+      const maxSupply = this.createForm.value.basic.maxSupply.replace(/\s/g, '');
+      const mintLimit = this.createForm.value.basic.mintLimit.replace(/\s/g, '');
 
-    // Construct metaprotocol memo message
-    const params = new Map([
-      ["nam", name],
-      ["tic", ticker],
-      ["sup", maxSupply],
-      ["dec", decimals],
-      ["lim", mintLimit],
-      ["opn", Math.round((new Date().getTime()) / 1000)],
-    ]);
-    if (this.createForm.value.basic.launchImmediately === 'false') {
-      const launchDate = new Date(this.createForm.value.basic.launchDate);
-      params.set("opn", launchDate.getTime() / 1000);
-    }
-
-    let data = this.createForm.value.optional.imageUpload;
-    let metadataBase64 = null;
-    if (data) {
-      const mime = data.split(";")[0].split(":")[1];
-      data = data.split(",")[1];
-
-      // Build the metadata for this inscription
-      const metadata: InscriptionMetadata = {
-        parent: {
-          type: "/cosmos.bank.Account",
-          identifier: (await this.walletService.getAccount()).address,
-        },
-        metadata: {
-          name: "Token Logo",
-          description: "Token Logo",
-          mime,
-        }
-      };
-
-      metadataBase64 = btoa(JSON.stringify(metadata));
-    }
-
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'deploy', params);
-    const modal = await this.modalCtrl.create({
-      component: TransactionFlowModalPage,
-      componentProps: {
-        urn,
-        metadata: metadataBase64,
-        data,
-        routerLink: '/app/token'
+      // Construct metaprotocol memo message
+      const params = new Map([
+        ["nam", name],
+        ["tic", ticker],
+        ["sup", maxSupply],
+        ["dec", decimals],
+        ["lim", mintLimit],
+        ["opn", Math.round((new Date().getTime()) / 1000)],
+      ]);
+      if (this.createForm.value.basic.launchImmediately === 'false') {
+        const launchDate = new Date(this.createForm.value.basic.launchDate);
+        params.set("opn", launchDate.getTime() / 1000);
       }
-    });
-    modal.present();
+
+      let data = this.createForm.value.optional.imageUpload;
+      let sender = await this.walletService.getAccount();
+      let metadataBase64 = null;
+      if (data) {
+        const mime = data.split(";")[0].split(":")[1];
+        data = data.split(",")[1];
+
+        // Build the metadata for this inscription
+        const metadata: InscriptionMetadata = {
+          parent: {
+            type: "/cosmos.bank.Account",
+            identifier: sender.address,
+          },
+          metadata: {
+            name: "Token Logo",
+            description: "Token Logo",
+            mime,
+          }
+        };
+
+        metadataBase64 = btoa(JSON.stringify(metadata));
+      }
+
+      const urn = this.protocolService.buildURN(environment.chain.chainId, 'deploy', params);
+      const modal = await this.modalCtrl.create({
+        component: TransactionFlowModalPage,
+        componentProps: {
+          urn,
+          metadata: metadataBase64,
+          data,
+          routerLink: '/app/token'
+        }
+      });
+      modal.present();
+    } catch (err) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const alert = await this.alertController.create({
+        header: 'Keplr wallet is required',
+        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
+        buttons: [
+          {
+            text: 'Get Keplr',
+            cssClass: 'alert-button-success',
+            handler: () => {
+              window.open('https://www.keplr.app/', '_blank');
+            }
+          },
+          {
+            text: 'Cancel',
+            cssClass: 'alert-button-cancel',
+            handler: () => {
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      await alert.present();
+    }
   }
 
   onFileSelected(event: any) {

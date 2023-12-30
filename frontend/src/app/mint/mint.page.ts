@@ -8,10 +8,11 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { interval } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { WalletService } from '../core/service/wallet.service';
 
 @Component({
   selector: 'app-mint',
@@ -27,7 +28,7 @@ export class MintPage {
   tokenIsLaunched: boolean = false;
   countdown: string = '';
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService) {
     this.tokenLaunchDate = new Date();
   }
 
@@ -76,6 +77,32 @@ export class MintPage {
   }
 
   async mint() {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const alert = await this.alertController.create({
+        header: 'Keplr wallet is required',
+        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
+        buttons: [
+          {
+            text: 'Get Keplr',
+            cssClass: 'alert-button-success',
+            handler: () => {
+              window.open('https://www.keplr.app/', '_blank');
+            }
+          },
+          {
+            text: 'Cancel',
+            cssClass: 'alert-button-cancel',
+            handler: () => {
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      await alert.present();
+      return;
+    }
+
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.token.ticker],

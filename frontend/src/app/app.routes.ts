@@ -35,10 +35,6 @@ export const routes: Routes = [
         loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
       },
       {
-        path: 'inscriptions/:address',
-        loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
-      },
-      {
         path: 'inscriptions',
         loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
@@ -47,8 +43,8 @@ export const routes: Routes = [
         loadComponent: () => import('./manage-token/manage-token.page').then(m => m.ManageTokenPage)
       },
       {
-        path: 'tokens/:address',
-        loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
+        path: 'wallet/:address',
+        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
       },
       {
         path: 'tokens',

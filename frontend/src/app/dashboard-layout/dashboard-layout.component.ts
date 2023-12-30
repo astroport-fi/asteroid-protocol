@@ -24,8 +24,8 @@ import {
   IonAccordionGroup,
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp } from "ionicons/icons";
+import { AlertController } from '@ionic/angular';
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -73,13 +73,16 @@ export function playerFactory() {
   ],
 })
 export class DashboardLayoutComponent {
+  showWalletOptions = false;
   isWalletConnected = false;
   walletStatusText = "Connect wallet";
   connectedAccount: any = {};
 
-  constructor(private walletService: WalletService) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp });
+  constructor(private walletService: WalletService, private alertController: AlertController) {
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown });
+  }
 
+  async ngOnInit() {
     this.walletService.isConnected().then((isConnected) => {
       this.isWalletConnected = isConnected;
       this.walletService.getAccount().then((account) => {
@@ -91,10 +94,30 @@ export class DashboardLayoutComponent {
   }
 
   async connectWallet() {
-    if (!window.keplr) {
-      // TODO: Popup explaining that Keplr is needed and needs to be installed
-      // first
-      console.error('Keplr extension not found.');
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const alert = await this.alertController.create({
+        header: 'Keplr wallet is required',
+        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
+        buttons: [
+          {
+            text: 'Get Keplr',
+            cssClass: 'alert-button-success',
+            handler: () => {
+              window.open('https://www.keplr.app/', '_blank');
+            }
+          },
+          {
+            text: 'Cancel',
+            cssClass: 'alert-button-cancel',
+            handler: () => {
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      await alert.present();
+
       return;
     }
     this.walletStatusText = "Connecting...";
@@ -102,6 +125,12 @@ export class DashboardLayoutComponent {
     switch (walletStatus) {
       case WalletStatus.Connected:
         this.walletStatusText = "Connected";
+        this.walletService.getAccount().then((account) => {
+          this.isWalletConnected = true;
+          this.connectedAccount = account;
+        }).catch((err) => {
+          this.isWalletConnected = false;
+        });
         break;
       case WalletStatus.Rejected:
         // TODO: Popup to inform rejection and try again
@@ -112,5 +141,16 @@ export class DashboardLayoutComponent {
         this.walletStatusText = "Connect wallet";
         break;
     }
+  }
+
+  toggleWalletOptions() {
+    this.showWalletOptions = !this.showWalletOptions;
+  }
+
+  async disconnectWallet() {
+    this.walletService.disconnect();
+    this.isWalletConnected = false;
+    this.walletStatusText = "Connect wallet";
+    this.connectedAccount = {};
   }
 }

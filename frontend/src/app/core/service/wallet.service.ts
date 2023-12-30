@@ -22,6 +22,13 @@ export class WalletService {
 
   constructor(private chainService: ChainService) { }
 
+  hasWallet() {
+    if (!window.keplr) {
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Get the Keplr signer
    * @returns OfflineSigner
@@ -42,6 +49,7 @@ export class WalletService {
     if (!window.keplr) {
       throw new Error('Keplr extension is not available');
     }
+
     const signer = await this.getSigner();
     const accounts = await signer.getAccounts();
 
@@ -75,6 +83,14 @@ export class WalletService {
     } catch (error) {
       return WalletStatus.Rejected;
     }
+  }
+
+  async disconnect() {
+    if (!window.keplr) {
+      throw new Error('Keplr extension is not available');
+    }
+    console.log("DISCONNECTED");
+    await window.keplr.disable();
   }
 
   /**

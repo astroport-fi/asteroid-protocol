@@ -14,10 +14,21 @@
               <ion-icon name="key-sharp" color="warning"></ion-icon>
               <ion-label>{{ walletStatusText }}</ion-label>
             </ion-chip>
-            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected">
+            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
+              (click)="toggleWalletOptions()">
               <ion-icon name="key-sharp" color="warning"></ion-icon>
               <ion-label>{{ connectedAccount.address | shortenAddress }}</ion-label>
             </ion-chip>
+
+          </div>
+        </div>
+        <div class="wallet-options" *ngIf="showWalletOptions" (click)="toggleWalletOptions()">
+          <div class=" chip">
+            <ion-icon name="chevron-down" color="warning"></ion-icon>
+            <ion-label>{{ connectedAccount.address | shortenAddress }}</ion-label>
+            <div>
+              <ion-button fill="clear" color="danger" (click)="disconnectWallet()">Disconnect</ion-button>
+            </div>
           </div>
         </div>
         <ion-list lines="none">
@@ -30,15 +41,9 @@
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle autoHide="false">
-            <ion-item [button]="true" [routerLink]="['/app/inscriptions', connectedAccount.address]"
-              routerLinkActive="active" [disabled]="!isWalletConnected">
-              <ion-label>My inscriptions</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-menu-toggle autoHide="false">
-            <ion-item [button]="true" [routerLink]="['/app/tokens', connectedAccount.address]" routerLinkActive="active"
+            <ion-item [button]="true" [routerLink]="['/app/wallet', connectedAccount.address]" routerLinkActive="active"
               [disabled]="!isWalletConnected">
-              <ion-label>My tokens</ion-label>
+              <ion-label>Wallet</ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ion-list>

@@ -22,7 +22,7 @@
             <div class="uploaded text-center" *ngIf="this.createForm.value.basic.contentUpload">
               <div class="uploader no-style text-center">
                 <img class="rounded" [src]="this.createForm.value.basic.contentUpload" *ngIf="renderImagePreview" />
-                <span *ngIf="originalFilename">{{ originalFilename }}</span>
+                <div *ngIf="originalFilename">{{ originalFilename }}</div>
                 <div class="upload">
                   <label for='input-file'>Change file</label>
                   <input id='input-file' type='file' (change)="onFileSelected($event)" />

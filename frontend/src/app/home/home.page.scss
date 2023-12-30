@@ -47,7 +47,7 @@ ion-content {
   width: 60%;
   font-weight: 300;
   font-size: 22px;
-  line-height: 22px;
+  line-height: 24px;
 
   color: #aaa;
   text-transform: none;
@@ -73,7 +73,7 @@ ion-content {
 
 
 .button {
-  color: #bbb;
+  color: #bbb !important;
   text-decoration: none;
   /* border: 1px solid #006600; */
   border: 1px solid #ff9d15;
@@ -94,7 +94,7 @@ ion-content {
 }
 
 .a {
-  color: #777;
+  color: #777 !important;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   display: inline-block;
