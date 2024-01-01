@@ -31,8 +31,10 @@ export class ManageTokenPage implements OnInit {
   history: any;
   balance: any;
   address: string = '';
+  previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   showTransfer: boolean = false;
+
 
   transferForm: FormGroup;
 
@@ -59,97 +61,122 @@ export class ManageTokenPage implements OnInit {
   async ngOnInit() {
     this.isLoading = true;
 
-    const account = await this.walletService.getAccount();
-    this.address = account.address;
+    this.previousAddress = this.activatedRoute.snapshot.queryParams["address"];
 
-    const chain = Chain(environment.api.endpoint)
-    const result = await chain('query')({
-      token: [
-        {
-          where: {
-            transaction: {
-              hash: {
-                _eq: this.activatedRoute.snapshot.params["txhash"]
+    try {
+
+      const chain = Chain(environment.api.endpoint)
+      const result = await chain('query')({
+        token: [
+          {
+            where: {
+              transaction: {
+                hash: {
+                  _eq: this.activatedRoute.snapshot.params["txhash"]
+                }
               }
             }
-          }
-        }, {
-          id: true,
-          name: true,
-          ticker: true,
-          decimals: true,
-          content_path: true,
-          content_size_bytes: true,
-          circulating_supply: true,
-        }
-      ]
-    });
-
-    this.token = result.token[0];
-
-    const balanceResult = await chain('query')({
-      token_holder: [
-        {
-          where: {
-            address: {
-              _eq: account.address
-            },
-            token_id: {
-              _eq: this.token.id
-            }
-          },
-        }, {
-          id: true,
-          amount: true,
-          token: {
+          }, {
+            id: true,
+            name: true,
+            ticker: true,
             decimals: true,
+            content_path: true,
+            content_size_bytes: true,
+            circulating_supply: true,
           }
-        }
-      ],
-      token_address_history: [
-        {
-          where: {
-            _or: [
-              {
-                sender: {
-                  _eq: account.address
-                },
+        ]
+      });
+
+      this.token = result.token[0];
+
+
+      const account = await this.walletService.getAccount();
+      this.address = account.address;
+
+      const balanceResult = await chain('query')({
+        token_holder: [
+          {
+            where: {
+              address: {
+                _eq: account.address
               },
-              {
-                receiver: {
-                  _eq: account.address
+              token_id: {
+                _eq: this.token.id
+              }
+            },
+          }, {
+            id: true,
+            amount: true,
+            token: {
+              decimals: true,
+            }
+          }
+        ],
+        token_address_history: [
+          {
+            where: {
+              _or: [
+                {
+                  sender: {
+                    _eq: account.address
+                  },
                 },
+                {
+                  receiver: {
+                    _eq: account.address
+                  },
+                }
+              ],
+              token_id: {
+                _eq: this.token.id
+              }
+            },
+            order_by: [
+              {
+                height: order_by.desc
               }
             ],
-            token_id: {
-              _eq: this.token.id
-            }
-          },
-          order_by: [
-            {
-              height: order_by.desc
-            }
-          ],
-        }, {
-          id: true,
-          height: true,
-          token: {
-            decimals: true,
-          },
-          transaction: {
-            hash: true,
-          },
-          action: true,
-          amount: true,
-          sender: true,
-          receiver: true,
-          date_created: true,
-        }
-      ]
-    });
+          }, {
+            id: true,
+            height: true,
+            token: {
+              decimals: true,
+            },
+            transaction: {
+              hash: true,
+            },
+            action: true,
+            amount: true,
+            sender: true,
+            receiver: true,
+            date_created: true,
+          }
+        ]
+      });
 
-    this.history = balanceResult.token_address_history;
-    this.balance = balanceResult.token_holder[0];
+      this.history = balanceResult.token_address_history;
+      if (balanceResult.token_holder.length == 1) {
+        this.balance = balanceResult.token_holder[0];
+      } else {
+        this.balance = {
+          amount: 0,
+          token: {
+            decimals: 0,
+          }
+        };
+      }
+    } catch (err) {
+      this.balance = {
+        amount: 0,
+        token: {
+          decimals: 0,
+        }
+      };
+      this.history = [];
+    }
+
+
     this.isLoading = false;
   }
 

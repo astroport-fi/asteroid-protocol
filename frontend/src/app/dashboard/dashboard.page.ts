@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class DashboardPage implements OnInit {
+  errorText = "";
 
   constructor() {
 

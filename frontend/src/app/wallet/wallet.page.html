@@ -62,7 +62,8 @@
               </ion-col>
             </ion-row>
             <ion-row class="item interactable" *ngFor="let item of holdings; index as i"
-              [routerLink]="['/app/manage/token', item.token.transaction.hash]">
+              [routerLink]="['/app/manage/token', item.token.transaction.hash]"
+              [queryParams]="{address: selectedAddress}">
               <ion-col>
                 {{ i + 1 }}
               </ion-col>

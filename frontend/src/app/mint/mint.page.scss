@@ -25,7 +25,7 @@ ion-content {
 }
 
 .mint-container {
-  margin-top: 200px;
+  margin-top: 150px;
   max-width: 500px;
   // height: 200px;
   padding: 20px;
@@ -35,6 +35,10 @@ ion-content {
   border-radius: 10px;
   position: relative;
   border: 1px solid rgba(253, 135, 71, 0.1);
+
+  @media only screen and (max-width: 700px) {
+    margin-top: 100px;
+  }
 }
 
 .credit-container {

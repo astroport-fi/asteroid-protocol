@@ -3,7 +3,7 @@
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
-        <ion-back-button [defaultHref]="'/app/wallet/' + address"></ion-back-button>
+        <ion-back-button [defaultHref]="'/app/wallet/' + previousAddress"></ion-back-button>
       </ion-buttons>
       <ion-title>
         Manage Token <span *ngIf="!isLoading">#{{ token.id }}</span>
@@ -60,7 +60,7 @@
                   </span>
                 </div>
               </ion-col>
-              <ion-col size="12" class="pt-3" *ngIf="!showTransfer">
+              <ion-col size="12" class="pt-3" *ngIf="!showTransfer && balance.amount > 0">
                 <ion-button color="primary" (click)="openTransfer()">Transfer</ion-button>
               </ion-col>
               <ion-col size="12" class="pt-3 transfer-section" *ngIf="showTransfer">
@@ -140,6 +140,11 @@
               </td>
               <td>
                 <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="7" *ngIf="history.length == 0">
+                No transaction history
               </td>
             </tr>
           </table>
