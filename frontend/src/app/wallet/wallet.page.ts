@@ -42,7 +42,7 @@ export class WalletPage implements OnInit {
         token: [
           {
             offset: 0,
-            limit: 10,
+            limit: 50,
             order_by: [
               {
                 date_created: order_by.desc
@@ -104,7 +104,7 @@ export class WalletPage implements OnInit {
         inscription: [
           {
             offset: 0,
-            limit: 10,
+            limit: 100,
             order_by: [
               {
                 date_created: order_by.desc
@@ -157,18 +157,6 @@ export class WalletPage implements OnInit {
       this.isLoading = false;
     });
 
-
-
-
-
-  }
-
-  onIonInfinite(event: Event) {
-    console.log("LOAD MORE");
-    // this.generateItems();
-    // setTimeout(() => {
-    //   (ev as InfiniteScrollCustomEvent).target.complete();
-    // }, 500);
   }
 
   sectionChanged($event: any) {

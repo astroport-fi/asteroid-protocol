@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -23,8 +23,12 @@ export class ListTokensPage implements OnInit {
   selectedAddress: string = '';
   tokens: any = null;
   holdings: any = null;
+  offset = 0;
+  limit = 50;
+  lastFetchCount = 0;
 
   constructor(private activatedRoute: ActivatedRoute) {
+    this.lastFetchCount = this.limit;
   }
 
   async ngOnInit() {
@@ -37,8 +41,8 @@ export class ListTokensPage implements OnInit {
       const tokensResult = await chain('query')({
         token: [
           {
-            offset: 0,
-            limit: 10,
+            offset: this.offset,
+            limit: this.limit,
             order_by: [
               {
                 date_created: order_by.desc
@@ -97,19 +101,51 @@ export class ListTokensPage implements OnInit {
       this.holdings = holderResult.token_holder;
       this.isLoading = false;
     });
-
-
-
-
-
   }
 
-  onIonInfinite(event: Event) {
-    console.log("LOAD MORE");
-    // this.generateItems();
-    // setTimeout(() => {
-    //   (ev as InfiniteScrollCustomEvent).target.complete();
-    // }, 500);
-  }
+  async onIonInfinite(event: Event) {
+    if (this.lastFetchCount < this.limit) {
+      (event as InfiniteScrollCustomEvent).target.disabled = true;
+      return;
+    }
+    this.offset += this.limit;
 
+    const chain = Chain(environment.api.endpoint);
+    const tokensResult = await chain('query')({
+      token: [
+        {
+          offset: this.offset,
+          limit: this.limit,
+          order_by: [
+            {
+              date_created: order_by.desc
+            }
+          ],
+          where: {
+            current_owner: {
+              _eq: this.selectedAddress
+            }
+          }
+        }, {
+          id: true,
+          transaction: {
+            hash: true
+          },
+          current_owner: true,
+          content_path: true,
+          name: true,
+          ticker: true,
+          max_supply: true,
+          decimals: true,
+          launch_timestamp: true,
+          date_created: true
+        }
+      ]
+    });
+    this.tokens.push(...tokensResult.token);
+    this.lastFetchCount = tokensResult.token.length;
+    console.log(this.lastFetchCount);
+
+    (event as InfiniteScrollCustomEvent).target.complete();
+  }
 }
