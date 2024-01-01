@@ -115,6 +115,8 @@ export class MintPage {
         urn,
         metadata: null,
         data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction'
       }
     });
     modal.present();

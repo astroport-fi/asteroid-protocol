@@ -81,6 +81,9 @@ export class ManageTokenPage implements OnInit {
             name: true,
             ticker: true,
             decimals: true,
+            transaction: {
+              hash: true,
+            },
             content_path: true,
             content_size_bytes: true,
             circulating_supply: true,
@@ -200,6 +203,8 @@ export class ManageTokenPage implements OnInit {
         urn,
         metadata: null,
         data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction'
       }
     });
     modal.present();

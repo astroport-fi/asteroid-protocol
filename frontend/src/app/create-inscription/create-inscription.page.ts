@@ -94,7 +94,8 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
           urn,
           metadata: metadataBase64,
           data,
-          routerLink: '/app/inscription'
+          routerLink: '/app/inscription',
+          resultCTA: 'View inscription'
         }
       });
       modal.present();

@@ -135,7 +135,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
           urn,
           metadata: metadataBase64,
           data,
-          routerLink: '/app/token'
+          routerLink: '/app/token',
+          resultCTA: 'View token'
         }
       });
       modal.present();

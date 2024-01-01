@@ -113,6 +113,8 @@ export class ViewTokenPage implements OnInit {
         urn,
         metadata: null,
         data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction'
       }
     });
     modal.present();

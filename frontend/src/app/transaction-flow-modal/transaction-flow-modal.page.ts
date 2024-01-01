@@ -21,7 +21,8 @@ import { Chain } from '../core/types/zeus';
 })
 export class TransactionFlowModalPage implements OnInit {
 
-  @Input() routerLink: string = '';
+  @Input() resultCTA: string = 'View inscription';
+  @Input() routerLink: string | [] = '';
   @Input() urn: string = '';
   @Input() metadata: string;
   @Input() data: string;
@@ -132,7 +133,11 @@ export class TransactionFlowModalPage implements OnInit {
   }
 
   viewInscription() {
-    this.router.navigate([this.routerLink, this.txHash]);
+    if (typeof this.routerLink == 'string') {
+      this.router.navigate([this.routerLink, this.txHash]);
+    } else {
+      this.router.navigate(this.routerLink);
+    }
     this.modalCtrl.dismiss();
   }
 
