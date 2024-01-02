@@ -61,7 +61,7 @@
               </ion-col>
               <ion-col size="6">
                 <div class="meta">
-                  <span class="label">Per wallet mint limit</span>
+                  <span class="label">Limit per mint</span>
                   <span class="value">{{ token.per_wallet_limit | tokenDecimals:token.decimals }}</span>
                 </div>
               </ion-col>
@@ -72,11 +72,14 @@
                     date:'shortTime' }}</span>
                 </div>
               </ion-col>
-              <ion-col size="12" class="pt-3">
+              <ion-col size="12" class="pt-3" *ngIf="token.circulating_supply < token.max_supply">
                 <ion-button color="warning" (click)="mint()" *ngIf="tokenIsLaunched">Mint now</ion-button>
                 <ion-button color="primary" fill="clear" href="/mint/{{token.ticker}}" target="_blank">Open
                   mint
                   page</ion-button>
+              </ion-col>
+              <ion-col size="12" class="pt-3" *ngIf="token.circulating_supply >= token.max_supply">
+                <ion-text color="warning">All ${{ token.ticker }} tokens have been minted</ion-text>
               </ion-col>
             </ion-row>
             <ion-row class="break pt-3">

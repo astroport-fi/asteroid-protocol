@@ -254,19 +254,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return fmt.Errorf("token with ticker '%s' is not yet open for minting", ticker)
 		}
 
-		// Check if the sender has minted <= max per wallet
-		var addressMinted uint64
-		row := protocol.db.Table("token_address_history").Where("chain_id = ? AND token_id = ? AND sender = ? AND action = 'mint'", parsedURN.ChainID, tokenModel.ID, sender).Select("sum(amount)").Row()
-		row.Scan(&addressMinted)
-
-		// Minted more of equal to the allowed amount
-		if addressMinted >= tokenModel.PerWalletLimit {
-			return fmt.Errorf("sender has already minted the maximum of %d tokens", tokenModel.PerWalletLimit/uint64(math.Pow10(int(tokenModel.Decimals))))
-		}
-
-		// If the sender has minted some, we need to check if the new mint will exceed the limit
-		mintAmount := tokenModel.PerWalletLimit - addressMinted
-
+		mintAmount := tokenModel.PerWalletLimit
 		if tokenModel.CirculatingSupply+mintAmount > tokenModel.MaxSupply {
 			// Determine if there is anything left to mint
 			mintAmount = tokenModel.MaxSupply - tokenModel.CirculatingSupply
@@ -359,6 +347,13 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 		// At this point we know that the sender has enough tokens to transfer
+		// so update the sender's balance
+		holderModel.Amount = holderModel.Amount - amount
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update sender balance '%s'", err)
+		}
+
 		// Check if the destination address has any tokens
 		var destinationHolderModel models.TokenHolder
 		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, destinationAddress).First(&destinationHolderModel)
@@ -374,13 +369,6 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		destinationHolderModel.Address = destinationAddress
 		destinationHolderModel.Amount = destinationHolderModel.Amount + amount
 		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
-
-		// Update the sender's balance
-		holderModel.Amount = holderModel.Amount - amount
-		result = protocol.db.Save(&holderModel)
-		if result.Error != nil {
-			return fmt.Errorf("unable to update sender balance '%s'", err)
-		}
 
 		result = protocol.db.Save(&destinationHolderModel)
 		if result.Error != nil {

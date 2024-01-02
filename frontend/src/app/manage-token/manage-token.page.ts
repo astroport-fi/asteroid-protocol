@@ -198,6 +198,8 @@ export class ManageTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
     const modal = await this.modalCtrl.create({
+      keyboardClose: false,
+      backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {
         urn,

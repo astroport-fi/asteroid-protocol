@@ -108,6 +108,8 @@ export class ViewTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'mint', params);
     const modal = await this.modalCtrl.create({
+      keyboardClose: false,
+      backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {
         urn,
