@@ -138,7 +138,9 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
           metadata: metadataBase64,
           data,
           routerLink: '/app/token',
-          resultCTA: 'View token'
+          resultCTA: 'View token',
+          metaprotocol: 'cft20',
+          metaprotocolAction: 'deploy',
         }
       });
       modal.present();

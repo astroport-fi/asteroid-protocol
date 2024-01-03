@@ -9,6 +9,7 @@ import { BroadcastMode, Keplr } from "@keplr-wallet/types";
 import SignClient from "@walletconnect/sign-client";
 // import { KeplrQRCodeModalV2 } from "@keplr-wallet/wc-qrcode-modal";
 import { KeplrWalletConnectV2 } from "@keplr-wallet/wc-client";
+import { ChainService } from '../core/service/chain.service';
 
 
 @Component({
@@ -21,25 +22,25 @@ import { KeplrWalletConnectV2 } from "@keplr-wallet/wc-client";
 export class DashboardPage implements OnInit {
   errorText = "";
 
-  constructor() {
+  constructor(private chainService: ChainService) {
 
   }
 
   async ngOnInit() {
-    const chain = Chain(environment.api.endpoint)
+    // const chain = Chain(environment.api.endpoint)
 
-    const result = await chain('query')({
-      transaction: [
-        {}, {
-          id: true,
-          hash: true,
-        }
-      ]
-    });
+    // const result = await chain('query')({
+    //   transaction: [
+    //     {}, {
+    //       id: true,
+    //       hash: true,
+    //     }
+    //   ]
+    // });
 
-    for (const tx of result.transaction) {
-      console.log(tx.id, tx.hash);
-    }
+    // for (const tx of result.transaction) {
+    //   console.log(tx.id, tx.hash);
+    // }
 
   }
 
@@ -107,5 +108,13 @@ export class DashboardPage implements OnInit {
     } else {
       console.log("NONE?");
     }
+  }
+
+  async simulateTest() {
+    console.log("SIMULATE TEST");
+
+    const res = await this.chainService.simulateTransaction("{ \"tx\": {\"body\":{\"messages\":[{\"@type\":\"/cosmos.bank.v1beta1.MsgSend\",\"from_address\":\"cosmos1m857lgtjssgt0wm3crzfmt3v950vqnkqq29mmz\",\"to_address\":\"cosmos1m857lgtjssgt0wm3crzfmt3v950vqnkqq29mmz\",\"amount\":[{\"denom\":\"uatom\",\"amount\":\"1\"}]}],\"memo\":\"\",\"timeout_height\":\"0\",\"extension_options\":[],\"non_critical_extension_options\":[]},\"auth_info\":{\"signer_infos\":[{\"public_key\":{\"@type\":\"/cosmos.crypto.multisig.LegacyAminoPubKey\",\"threshold\":2,\"public_keys\":[{\"@type\":\"/cosmos.crypto.secp256k1.PubKey\",\"key\":\"ArBcL8oOtBWhFPx5CXRsBaTtPw1LZx/v+JVHKnujJepW\"},{\"@type\":\"/cosmos.crypto.secp256k1.PubKey\",\"key\":\"AjMfgqSc76d200P2Ce35WBWycvRn2zX6BDI9c/dD+2Lz\"},{\"@type\":\"/cosmos.crypto.secp256k1.PubKey\",\"key\":\"AssGhH5Eg22iog+mVylNX3jggGBTZohTupf1FvNZ35ox\"}]},\"mode_info\":{\"multi\":{\"bitarray\":{\"extra_bits_stored\":3,\"elems\":\"YA==\"},\"mode_infos\":[{\"single\":{\"mode\":\"SIGN_MODE_LEGACY_AMINO_JSON\"}},{\"single\":{\"mode\":\"SIGN_MODE_LEGACY_AMINO_JSON\"}}]}},\"sequence\":\"145\"}],\"fee\":{\"amount\":[{\"denom\":\"uatom\",\"amount\":\"1000\"}],\"gas_limit\":\"2529229\",\"payer\":\"\",\"granter\":\"\"}},\"signatures\":[\"CkCxlASNv9oCvIwZHOOkt8ZBQffC3WLoRrtdAZnqj23QvyTUyLvel4Uthq48ilPLaV+dqEowQjLGH24j502TiLtLCkAETnfqwloW+ljBrx5VdpDppIiOD0KK+yXAt50Q+M5d2xVxerU80cGIRGsPOIuV86IwZ29ajGo+a9SOOmSO6nLy\"]}}");
+
+    console.log(res.gas_used);
   }
 }

@@ -25,25 +25,35 @@
         <ion-col>
           <div class="fees">
             <h4>Estimated fee breakdown</h4>
-            <table>
+            <div *ngIf="isSimulating">
+              <ion-progress-bar type="indeterminate"></ion-progress-bar>
+              <div class="note">
+                Estimating...
+              </div>
+            </div>
+            <table *ngIf="!isSimulating">
+              <tr>
+                <td class="label">Gas</td>
+                <td>{{ gasEstimate | number: '1.0-0' }}</td>
+              </tr>
               <tr>
                 <td class="label">Chain</td>
-                <td>0.00 ATOM</td>
+                <td>{{ chainFee | number: '1.2-6' }} ATOM</td>
               </tr>
               <tr>
                 <td class="label">Metaprotocol</td>
-                <td>0.00 ATOM</td>
+                <td>{{ protocolFee | number: '1.2-6' }} ATOM</td>
               </tr>
               <tr>
                 <td class="label total">Estimated total</td>
-                <td class="total">0.00 ATOM</td>
+                <td class="total">{{(chainFee + protocolFee) | number: '1.2-6' }} ATOM</td>
               </tr>
             </table>
           </div>
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!isSimulating">
         <ion-col>
           <div class="text-center">
             <ion-button class="mt-3" color="success" (click)="submit()">{{ state == 'error' ? 'Retry' : 'Continue'

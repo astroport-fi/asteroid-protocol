@@ -13,10 +13,10 @@
   <div class="aligned">
     <ion-grid>
       <ion-row>
-        <ion-col size-xl="8" size="12" class="text-center">
+        <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">
           <div class="avatar">
             <ion-avatar>
-              <img alt="Anon" src="../../assets/avatar.svg" />
+              <img alt="Anon" src="../../assets/logo/icon.png" />
             </ion-avatar>
             <ion-chip color="warning" [outline]="true">
               <ion-icon name="key-sharp" color="warning"></ion-icon>
@@ -26,7 +26,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xl="8" size="12">
+        <ion-col offset-xl="1" size-xl="10" size="12">
           <ion-segment [value]="selectedSection" color="primary" (ionChange)="sectionChanged($event)">
             <ion-segment-button value="balances">
               <ion-label>Balances</ion-label>
@@ -42,7 +42,7 @@
       </ion-row>
 
       <ion-row *ngIf="!isLoading && selectedSection == 'balances'">
-        <ion-col size-xl="8" size="12" *ngIf="holdings.length > 0">
+        <ion-col offset-xl="1" size-xl="10" size="12" *ngIf="holdings.length > 0">
           <ion-grid class="token-holdings-list">
             <ion-row class="item">
               <ion-col>
@@ -88,7 +88,7 @@
       </ion-row>
 
       <ion-row *ngIf="!isLoading && selectedSection == 'tokens'" class="p-4">
-        <ion-col size-xl="8" size="12" *ngIf="tokens.length > 0">
+        <ion-col offset-xl="1" size-xl="10" size="12" *ngIf="tokens.length > 0">
           <a class="token-item" [routerLink]="['/app/token', item.transaction.hash]"
             *ngFor="let item of tokens; let index">
             <div class="content">
@@ -117,7 +117,7 @@
       </ion-row>
 
       <ion-row *ngIf="!isLoading && selectedSection == 'inscriptions'" class="p-4">
-        <ion-col size-xl="8" size="12" *ngIf="inscriptions.length > 0">
+        <ion-col offset-xl="1" size-xl="10" size="12" *ngIf="inscriptions.length > 0">
           <a class="inscription-item" [routerLink]="['/app/inscription', item.transaction.hash]"
             *ngFor="let item of inscriptions; let index">
             <!-- TODO: Do better here -->

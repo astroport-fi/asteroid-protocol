@@ -10,20 +10,33 @@ export const environment = {
   },
   fees: {
     protocol: {
-      receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
-      amount: [
-        {
+      inscription: {
+        inscribe: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "10000"
-        }
-      ]
+          amount: "5000"
+        },
+      },
+      cft20: {
+        deploy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "2000"
+        },
+        mint: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        transfer: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+      },
     },
     chain: {
-      gasLimit: "100000000",
-      amount: {
-        denom: "uatom",
-        amount: "10000",
-      },
+      gasLimit: "120000000"
     }
   },
   api: {
@@ -55,7 +68,7 @@ export const environment = {
       coinDenom: 'stake',
       coinMinimalDenom: 'stake',
       coinDecimals: 6,
-      gasPriceStep: { low: 0.01, average: 0.025, high: 0.04 }
+      gasPriceStep: { low: 0.005, average: 0.005, high: 0.008 }
     }],
     stakeCurrency: {
       coinDenom: 'atom',

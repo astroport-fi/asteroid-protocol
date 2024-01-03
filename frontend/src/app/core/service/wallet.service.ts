@@ -14,6 +14,7 @@ import { PubKey } from "cosmjs-types/cosmos/crypto/secp256k1/keys";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { Buffer } from "buffer";
 import Long from 'long';
+import { TxFee } from '../types/tx-fee';
 
 @Injectable({
   providedIn: 'root'
@@ -110,6 +111,98 @@ export class WalletService {
   }
 
   /**
+   * Create a simulation transaction to estimate Gas with
+   * @param urn The metaprotocol URN for the inscription
+   * @param metadata The metadata about the inscription
+   * @param data The inscription data
+   * @returns 
+   */
+  async createSimulated(urn: string, metadata: string | null, data: string | null, fees: TxFee) {
+
+    const account = await this.getAccount();
+
+    let nonCriticalExtensionOptions: any[] = [];
+    // We only add the nonCriticalExtensionOptions inscription if the protocol
+    // requires it
+    if (metadata && data) {
+      nonCriticalExtensionOptions = [
+        {
+          // This typeUrl isn't really important here as long as it is a type
+          // that the chain recognises it
+          '@type': "/cosmos.authz.v1beta1.MsgRevoke",
+          granter: metadata,
+          grantee: data,
+          msgTypeUrl: `${urn}`,
+        }
+      ];
+    }
+
+    try {
+      const accountInfo = await this.chainService.fetchAccountInfo(account.address);
+      const msgs = {
+        '@type': "/cosmos.bank.v1beta1.MsgSend",
+        from_address: account?.address as string,
+        to_address: fees.metaprotocol.receiver,
+        amount: [
+          {
+            denom: fees.metaprotocol.denom,
+            amount: fees.metaprotocol.amount,
+          },
+        ],
+      }
+
+      const signDoc = {
+        body: {
+          messages: [msgs],
+          memo: urn,
+          timeout_height: "0",
+          extension_options: [],
+          nonCriticalExtensionOptions,
+        },
+        auth_info: {
+          signer_infos: [
+            {
+              public_key: {
+                '@type': "/cosmos.crypto.secp256k1.PubKey",
+                key: Buffer.from(account.pubkey).toString('base64')
+              },
+              mode_info: {
+                single: {
+                  mode: "SIGN_MODE_DIRECT",
+                },
+              },
+              sequence: accountInfo.sequence,
+            },
+          ],
+          fee: {
+            amount: [],
+            gas_limit: environment.fees.chain.gasLimit,
+            payer: "",
+            granter: "",
+          }
+        },
+        chain_id: environment.chain.chainId,
+        account_number: accountInfo.account_number
+
+      };
+
+
+      const tx = {
+        tx: {
+          body: signDoc.body,
+          auth_info: signDoc.auth_info,
+          signatures: ["8jXh7aU3pIE07HBva+W/GLEO0xc5QMu5EXR6hglL2fFVP8AXsMbiNR5Et8POJXJZLWE58wc1ni8rzxF7d/cv5g=="], // Locally generated, doesn't matter
+        }
+      }
+      return JSON.stringify(tx);
+    }
+    catch (error) {
+      throw error;
+    }
+
+  }
+
+  /**
    * Sign the inscription transaction
    * 
    * @param urn The metaprotocol URN for the inscription
@@ -117,7 +210,7 @@ export class WalletService {
    * @param data The inscription data
    * @returns 
    */
-  async sign(urn: string, metadata: string | null, data: string | null) {
+  async sign(urn: string, metadata: string | null, data: string | null, fees: TxFee) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
 
@@ -147,9 +240,12 @@ export class WalletService {
         typeUrl: "/cosmos.bank.v1beta1.MsgSend",
         value: MsgSend.encode({
           fromAddress: account?.address as string,
-          toAddress: environment.fees.protocol.receiver,
+          toAddress: fees.metaprotocol.receiver,
           amount: [
-            ...environment.fees.protocol.amount,
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            }
           ],
         }).finish(),
       }
@@ -181,7 +277,10 @@ export class WalletService {
             },
           ],
           fee: Fee.fromJSON({
-            amount: environment.fees.chain.amount,
+            amount: {
+              denom: fees.chain.denom,
+              amount: fees.chain.amount,
+            },
             gasLimit: environment.fees.chain.gasLimit,
           }),
         }).finish(),
@@ -224,7 +323,7 @@ export class WalletService {
     try {
       const signer = await this.getSigner();
       const client = await SigningStargateClient.connectWithSigner(environment.chain.rpc, signer);
-      // console.log("sending", tx.length);
+
       if (tx.length >= 1048576) {
         console.error("tx too large");
         return "ERR: Transaction will be too large, multiple tx inscriptions not yet implemented";

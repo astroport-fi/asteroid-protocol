@@ -5,6 +5,7 @@ import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate';
 import { AccountResponse } from '../types/account-response';
 import { api } from '../helpers/api';
 import { TxQueryResponse } from '../types/tx-response';
+import { GasSimulateResponse } from '../types/gas-simulate-response';
 
 
 @Injectable({
@@ -33,6 +34,26 @@ export class ChainService {
       return response.tx_response;
     } catch (e) {
       throw new Error(`Transaction not found`);
+    }
+  }
+
+  async simulateTransaction(tx: string) {
+    try {
+
+      const call = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: tx
+      }
+
+      const uri = `${environment.chain.rest}/cosmos/tx/v1beta1/simulate`;
+      const response = await api<GasSimulateResponse>(uri, call);
+
+      return response.gas_info;
+    } catch (e) {
+      throw new Error(`Failed to simulate transaction` + e);
     }
   }
 

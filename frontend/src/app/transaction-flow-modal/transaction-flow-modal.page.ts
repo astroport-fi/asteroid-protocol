@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
 import { Chain } from '../core/types/zeus';
+import { TxFee } from '../core/types/tx-fee';
 
 @Component({
   selector: 'app-transaction-flow-modal',
@@ -27,11 +28,18 @@ export class TransactionFlowModalPage implements OnInit {
   @Input() metadata: string;
   @Input() data: string;
 
+  isSimulating: boolean = true;
   errorText: string = '';
   txHash: string = '';
   state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' | 'long' = 'sign';
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
+  currentChain = environment.chain;
+  gasEstimate: number = 10000000;
+  chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average;
+  protocolFee: number = 0.005;
+  metaprotocol: string = 'inscription';
+  metaprotocolAction: string = 'inscribe';
 
   constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router) {
     this.urn = '';
@@ -40,19 +48,64 @@ export class TransactionFlowModalPage implements OnInit {
     this.txHash = '';
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     addIcons({ checkmark, closeOutline, close });
     this.chain = Chain(environment.api.endpoint)
+
+    const fees: TxFee = {
+      metaprotocol: {
+        receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
+        denom: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].denom,
+        amount: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].amount,
+      },
+      chain: {
+        denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
+        amount: "0",
+      }
+    }
+    this.protocolFee = parseInt(fees.metaprotocol.amount) / 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+
+    this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
+    try {
+      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees);
+      const result = await this.chainService.simulateTransaction(simulateTx);
+
+      if (result) {
+        this.gasEstimate = parseInt(result.gas_used);
+        // Bump gas by 20% to account for any changes
+        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.2);
+
+        // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+        this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
+
+        // Bump the chain fee by 20% to account for extra storage needed
+        this.chainFee = this.chainFee + (this.chainFee * 0.2);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+    this.isSimulating = false;
+
   }
 
   async submit() {
     this.state = 'sign';
     this.errorText = '';
 
-    // this.walletService.simulate(this.urn, this.metadata, this.data);
+    const fees: TxFee = {
+      metaprotocol: {
+        receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
+        denom: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].denom,
+        amount: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].amount,
+      },
+      chain: {
+        denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
+        amount: this.chainFee.toString(),
+      }
+    }
 
     try {
-      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data);
+      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees);
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 
@@ -107,7 +160,7 @@ export class TransactionFlowModalPage implements OnInit {
           }
         }
         catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     } catch (error: any) {
