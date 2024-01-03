@@ -222,7 +222,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			Ticker:            ticker,
 			Decimals:          decimals,
 			MaxSupply:         supply,
-			PerWalletLimit:    limit,
+			PerMintLimit:      limit,
 			LaunchTimestamp:   openTimestamp,
 			ContentPath:       contentPath,
 			ContentSizeBytes:  uint64(contentLength),
@@ -254,7 +254,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return fmt.Errorf("token with ticker '%s' is not yet open for minting", ticker)
 		}
 
-		mintAmount := tokenModel.PerWalletLimit
+		mintAmount := tokenModel.PerMintLimit
 		if tokenModel.CirculatingSupply+mintAmount > tokenModel.MaxSupply {
 			// Determine if there is anything left to mint
 			mintAmount = tokenModel.MaxSupply - tokenModel.CirculatingSupply

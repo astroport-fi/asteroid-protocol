@@ -35,8 +35,8 @@ export class TransactionFlowModalPage implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
   currentChain = environment.chain;
-  gasEstimate: number = 10000000;
-  chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average;
+  gasEstimate: number = parseInt(environment.fees.chain.gasLimit);
+  chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average / 1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
   protocolFee: number = 0.005;
   metaprotocol: string = 'inscription';
   metaprotocolAction: string = 'inscribe';
@@ -46,6 +46,8 @@ export class TransactionFlowModalPage implements OnInit {
     this.metadata = '';
     this.data = '';
     this.txHash = '';
+
+    console.log("chainFee", this.chainFee);
   }
 
   async ngOnInit() {

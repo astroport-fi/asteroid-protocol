@@ -413,7 +413,7 @@ export const AllTypesProps: Record<string,any> = {
 		metadata:"String_comparison_exp",
 		mint_page:"String_comparison_exp",
 		name:"String_comparison_exp",
-		per_wallet_limit:"bigint_comparison_exp",
+		per_mint_limit:"bigint_comparison_exp",
 		ticker:"String_comparison_exp",
 		token_address_histories:"token_address_history_bool_exp",
 		token_holders:"token_holder_bool_exp",
@@ -536,7 +536,7 @@ export const AllTypesProps: Record<string,any> = {
 		metadata:"order_by",
 		mint_page:"order_by",
 		name:"order_by",
-		per_wallet_limit:"order_by",
+		per_mint_limit:"order_by",
 		ticker:"order_by",
 		token_address_histories_aggregate:"token_address_history_aggregate_order_by",
 		token_holders_aggregate:"token_holder_aggregate_order_by",
@@ -555,7 +555,7 @@ export const AllTypesProps: Record<string,any> = {
 		decimals:"smallint",
 		launch_timestamp:"bigint",
 		max_supply:"bigint",
-		per_wallet_limit:"bigint"
+		per_mint_limit:"bigint"
 	},
 	transaction_bool_exp:{
 		_and:"transaction_bool_exp",
@@ -679,7 +679,7 @@ export const ReturnTypes: Record<string,any> = {
 		metadata:"String",
 		mint_page:"String",
 		name:"String",
-		per_wallet_limit:"bigint",
+		per_mint_limit:"bigint",
 		ticker:"String",
 		token_address_histories:"token_address_history",
 		token_holders:"token_holder",

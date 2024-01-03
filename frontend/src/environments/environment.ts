@@ -36,7 +36,7 @@ export const environment = {
       },
     },
     chain: {
-      gasLimit: "120000000"
+      gasLimit: "12000000"
     }
   },
   api: {

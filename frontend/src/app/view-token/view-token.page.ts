@@ -57,7 +57,7 @@ export class ViewTokenPage implements OnInit {
           ticker: true,
           decimals: true,
           max_supply: true,
-          per_wallet_limit: true,
+          per_mint_limit: true,
           launch_timestamp: true,
           content_path: true,
           content_size_bytes: true,
@@ -104,7 +104,7 @@ export class ViewTokenPage implements OnInit {
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.token.ticker],
-      ["amt", this.token.per_wallet_limit],
+      ["amt", this.token.per_mint_limit],
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'mint', params);
     const modal = await this.modalCtrl.create({

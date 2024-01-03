@@ -1,8 +1,7 @@
 /* eslint-disable */
 
-import { environment } from 'src/environments/environment';
 import { AllTypesProps, ReturnTypes, Ops } from './const';
-export const HOST = environment.api.endpoint;
+export const HOST = "http://localhost:8080/v1/graphql"
 
 
 export const HEADERS = {}
@@ -551,6 +550,7 @@ export const ResolveFromPath = (props: AllTypesPropsType, returns: ReturnTypesTy
 					);
 				}
 			}
+
 		}
 		return 'not';
 	};
@@ -1216,7 +1216,7 @@ export type ValueTypes = {
 		metadata?: boolean | `@${string}`,
 		mint_page?: boolean | `@${string}`,
 		name?: boolean | `@${string}`,
-		per_wallet_limit?: boolean | `@${string}`,
+		per_mint_limit?: boolean | `@${string}`,
 		ticker?: boolean | `@${string}`,
 		token_address_histories?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["token_address_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -1435,7 +1435,7 @@ export type ValueTypes = {
 		metadata?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		mint_page?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-		per_wallet_limit?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		per_mint_limit?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		ticker?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token_address_histories?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
 		token_holders?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>,
@@ -1593,7 +1593,7 @@ export type ValueTypes = {
 		metadata?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		mint_page?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-		per_wallet_limit?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		per_mint_limit?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ticker?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_address_histories_aggregate?: ValueTypes["token_address_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		token_holders_aggregate?: ValueTypes["token_holder_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -1627,7 +1627,7 @@ export type ValueTypes = {
 		metadata?: string | undefined | null | Variable<any, string>,
 		mint_page?: string | undefined | null | Variable<any, string>,
 		name?: string | undefined | null | Variable<any, string>,
-		per_wallet_limit?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		per_mint_limit?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		ticker?: string | undefined | null | Variable<any, string>,
 		transaction_id?: number | undefined | null | Variable<any, string>,
 		version?: string | undefined | null | Variable<any, string>
@@ -2086,7 +2086,7 @@ export type ResolverInputTypes = {
 		metadata?: boolean | `@${string}`,
 		mint_page?: boolean | `@${string}`,
 		name?: boolean | `@${string}`,
-		per_wallet_limit?: boolean | `@${string}`,
+		per_mint_limit?: boolean | `@${string}`,
 		ticker?: boolean | `@${string}`,
 		token_address_histories?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["token_address_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -2305,7 +2305,7 @@ export type ResolverInputTypes = {
 		metadata?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		mint_page?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-		per_wallet_limit?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		per_mint_limit?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		ticker?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token_address_histories?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
 		token_holders?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null,
@@ -2463,7 +2463,7 @@ export type ResolverInputTypes = {
 		metadata?: ResolverInputTypes["order_by"] | undefined | null,
 		mint_page?: ResolverInputTypes["order_by"] | undefined | null,
 		name?: ResolverInputTypes["order_by"] | undefined | null,
-		per_wallet_limit?: ResolverInputTypes["order_by"] | undefined | null,
+		per_mint_limit?: ResolverInputTypes["order_by"] | undefined | null,
 		ticker?: ResolverInputTypes["order_by"] | undefined | null,
 		token_address_histories_aggregate?: ResolverInputTypes["token_address_history_aggregate_order_by"] | undefined | null,
 		token_holders_aggregate?: ResolverInputTypes["token_holder_aggregate_order_by"] | undefined | null,
@@ -2497,7 +2497,7 @@ export type ResolverInputTypes = {
 		metadata?: string | undefined | null,
 		mint_page?: string | undefined | null,
 		name?: string | undefined | null,
-		per_wallet_limit?: ResolverInputTypes["bigint"] | undefined | null,
+		per_mint_limit?: ResolverInputTypes["bigint"] | undefined | null,
 		ticker?: string | undefined | null,
 		transaction_id?: number | undefined | null,
 		version?: string | undefined | null
@@ -2879,7 +2879,7 @@ export type ModelTypes = {
 		metadata?: string | undefined,
 		mint_page: string,
 		name: string,
-		per_wallet_limit: ModelTypes["bigint"],
+		per_mint_limit: ModelTypes["bigint"],
 		ticker: string,
 		/** An array relationship */
 		token_address_histories: Array<ModelTypes["token_address_history"]>,
@@ -3085,7 +3085,7 @@ export type ModelTypes = {
 		metadata?: ModelTypes["String_comparison_exp"] | undefined,
 		mint_page?: ModelTypes["String_comparison_exp"] | undefined,
 		name?: ModelTypes["String_comparison_exp"] | undefined,
-		per_wallet_limit?: ModelTypes["bigint_comparison_exp"] | undefined,
+		per_mint_limit?: ModelTypes["bigint_comparison_exp"] | undefined,
 		ticker?: ModelTypes["String_comparison_exp"] | undefined,
 		token_address_histories?: ModelTypes["token_address_history_bool_exp"] | undefined,
 		token_holders?: ModelTypes["token_holder_bool_exp"] | undefined,
@@ -3241,7 +3241,7 @@ export type ModelTypes = {
 		metadata?: ModelTypes["order_by"] | undefined,
 		mint_page?: ModelTypes["order_by"] | undefined,
 		name?: ModelTypes["order_by"] | undefined,
-		per_wallet_limit?: ModelTypes["order_by"] | undefined,
+		per_mint_limit?: ModelTypes["order_by"] | undefined,
 		ticker?: ModelTypes["order_by"] | undefined,
 		token_address_histories_aggregate?: ModelTypes["token_address_history_aggregate_order_by"] | undefined,
 		token_holders_aggregate?: ModelTypes["token_holder_aggregate_order_by"] | undefined,
@@ -3274,7 +3274,7 @@ export type ModelTypes = {
 		metadata?: string | undefined,
 		mint_page?: string | undefined,
 		name?: string | undefined,
-		per_wallet_limit?: ModelTypes["bigint"] | undefined,
+		per_mint_limit?: ModelTypes["bigint"] | undefined,
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
 		version?: string | undefined
@@ -3659,7 +3659,7 @@ export type GraphQLTypes = {
 		metadata?: string | undefined,
 		mint_page: string,
 		name: string,
-		per_wallet_limit: GraphQLTypes["bigint"],
+		per_mint_limit: GraphQLTypes["bigint"],
 		ticker: string,
 		/** An array relationship */
 		token_address_histories: Array<GraphQLTypes["token_address_history"]>,
@@ -3867,7 +3867,7 @@ export type GraphQLTypes = {
 		metadata?: GraphQLTypes["String_comparison_exp"] | undefined,
 		mint_page?: GraphQLTypes["String_comparison_exp"] | undefined,
 		name?: GraphQLTypes["String_comparison_exp"] | undefined,
-		per_wallet_limit?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		per_mint_limit?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		ticker?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token_address_histories?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
 		token_holders?: GraphQLTypes["token_holder_bool_exp"] | undefined,
@@ -4025,7 +4025,7 @@ export type GraphQLTypes = {
 		metadata?: GraphQLTypes["order_by"] | undefined,
 		mint_page?: GraphQLTypes["order_by"] | undefined,
 		name?: GraphQLTypes["order_by"] | undefined,
-		per_wallet_limit?: GraphQLTypes["order_by"] | undefined,
+		per_mint_limit?: GraphQLTypes["order_by"] | undefined,
 		ticker?: GraphQLTypes["order_by"] | undefined,
 		token_address_histories_aggregate?: GraphQLTypes["token_address_history_aggregate_order_by"] | undefined,
 		token_holders_aggregate?: GraphQLTypes["token_holder_aggregate_order_by"] | undefined,
@@ -4059,7 +4059,7 @@ export type GraphQLTypes = {
 		metadata?: string | undefined,
 		mint_page?: string | undefined,
 		name?: string | undefined,
-		per_wallet_limit?: GraphQLTypes["bigint"] | undefined,
+		per_mint_limit?: GraphQLTypes["bigint"] | undefined,
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
 		version?: string | undefined
@@ -4214,7 +4214,7 @@ export const enum token_select_column {
 	metadata = "metadata",
 	mint_page = "mint_page",
 	name = "name",
-	per_wallet_limit = "per_wallet_limit",
+	per_mint_limit = "per_mint_limit",
 	ticker = "ticker",
 	transaction_id = "transaction_id",
 	version = "version"
