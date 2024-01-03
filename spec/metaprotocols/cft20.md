@@ -30,7 +30,7 @@ The required parameters are:
 |tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 3-5 characters|
 |sup|The max supply of the token|Must be less than uint32 max|
 |dec|The decimals for the token|Must be between 0 and 6 (inclusive)|
-|lim|The maximum tokens that an address can mint|Must be less than maximum supply|
+|lim|The maximum tokens that can be minted per transaction|Must be less than maximum supply|
 |opn|The Unix timestamp which after minting becomes possible|Must be a Unix timestamp in seconds|
 
 
@@ -51,7 +51,7 @@ The required parameters are:
 |Param|Description|Restrictions|
 |-----|-----------|------------|
 |tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 3-5 characters|
-|amt|The amount to mint|Must be less than the token's lim parameter|
+|amt|The amount to mint|Must be less than or equal to the token's lim parameter|
 
 
 **Transferring a token**
