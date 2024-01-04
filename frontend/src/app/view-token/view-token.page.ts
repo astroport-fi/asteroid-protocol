@@ -39,10 +39,8 @@ export class ViewTokenPage implements OnInit {
       token: [
         {
           where: {
-            transaction: {
-              hash: {
-                _eq: this.activatedRoute.snapshot.params["txhash"]
-              }
+            ticker: {
+              _eq: this.activatedRoute.snapshot.params["ticker"].toUpperCase()
             }
           }
         }, {

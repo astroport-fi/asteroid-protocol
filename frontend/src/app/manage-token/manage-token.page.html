@@ -68,7 +68,7 @@
                   <div formGroupName="basic">
                     <ion-item lines="none">
                       <ion-input label="Amount to transfer" labelPlacement="stacked" placeholder="10"
-                        [maskito]="numberMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
+                        [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
                     </ion-item>
                     <ion-item lines="none">
                       <ion-input label="Destination address" labelPlacement="stacked" placeholder="cosmos1xxxxxx"
@@ -78,6 +78,30 @@
                     <div class="action">
                       <ion-button color="success" type="submit">Transfer now</ion-button>
                       <ion-button color="primary" fill="clear" (click)="cancelTransfer()">Cancel</ion-button>
+                    </div>
+                  </div>
+                </form>
+              </ion-col>
+              <ion-col size="12" class="pt-3" *ngIf="!showSell && balance.amount > 0">
+                <ion-button color="primary" (click)="openSell()">Sell</ion-button>
+              </ion-col>
+              <ion-col size="12" class="pt-3 transfer-section" *ngIf="showSell">
+                <form class="form" [formGroup]="sellForm" (ngSubmit)="sell()">
+                  <div formGroupName="basic">
+                    <ion-item lines="none">
+                      <ion-input label="Amount to sell" labelPlacement="stacked" placeholder="10"
+                        [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none">
+                      <ion-input label="Price per token" labelPlacement="stacked" placeholder="10"
+                        [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="price"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none">
+                      {{ (sellForm.value.basic.amount * sellForm.value.basic.price) | number:'1.2-6' }} ATOM
+                    </ion-item>
+                    <div class="action">
+                      <ion-button color="success" type="submit">List for sale</ion-button>
+                      <ion-button color="primary" fill="clear" (click)="cancelSell()">Cancel</ion-button>
                     </div>
                   </div>
                 </form>

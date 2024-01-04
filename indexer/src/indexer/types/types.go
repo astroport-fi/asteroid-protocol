@@ -299,6 +299,7 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 func (tx RawTransaction) ValidateBasic() bool {
 	hasSend := false
 	for _, v := range tx.Tx.Body.Messages {
+		// TODO: This might need to be a IBC send
 		if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
 			hasSend = true
 			// TODO: In future we can ensure that the send amount if above

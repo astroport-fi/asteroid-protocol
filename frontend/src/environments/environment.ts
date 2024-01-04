@@ -33,6 +33,21 @@ export const environment = {
           denom: "uatom",
           amount: "1000"
         },
+        list: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        buy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        delist: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
       },
     },
     chain: {

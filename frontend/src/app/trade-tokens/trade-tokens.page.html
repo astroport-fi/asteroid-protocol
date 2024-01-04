@@ -5,20 +5,37 @@
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>
-        CFT-20 Tokens
+        CFT-20 Token Trading
       </ion-title>
     </ion-toolbar>
-    <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
-      created by {{ this.selectedAddress }}
-    </div>
   </ion-header>
 
   <div class="aligned">
     <div *ngIf="isLoading">
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
-    <div class="list" *ngIf="!isLoading && tokens.length > 0">
-      <a class="inscription-item" [routerLink]="['/app/token', item.ticker]" *ngFor="let item of tokens; let index">
+    <div class="list">
+      <table>
+        <tr>
+          <th>Ticker</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Market cap</th>
+          <th>Volume (24h)</th>
+        </tr>
+        <tr *ngFor="let item of tokens; let index">
+          <td><a [routerLink]="['/app/trade', item.ticker]">{{ item.ticker }}</a></td>
+          <td>{{ item.ticker }}</td>
+          <td>{{ item.name }}</td>
+          <td>$0.00</td>
+          <td>$0.00</td>
+          <td>$0.00</td>
+        </tr>
+      </table>
+    </div>
+    <!-- <div class="list" *ngIf="!isLoading && tokens.length > 0">
+      <a class="inscription-item" [routerLink]="['/app/token', item.transaction.hash]"
+        *ngFor="let item of tokens; let index">
         <div class="content">
           <div class="image" *ngIf="item.content_path">
             <img [src]="item.content_path" />
@@ -42,7 +59,7 @@
       <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
-    </div>
+    </div> -->
     <div class="list" *ngIf="!isLoading && tokens.length == 0">
       No tokens found
     </div>

@@ -27,6 +27,7 @@ export class TransactionFlowModalPage implements OnInit {
   @Input() urn: string = '';
   @Input() metadata: string;
   @Input() data: string;
+  @Input() messages: any[] = [];
 
   isSimulating: boolean = true;
   errorText: string = '';
@@ -69,7 +70,7 @@ export class TransactionFlowModalPage implements OnInit {
 
     this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
     try {
-      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees);
+      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees, this.messages);
       const result = await this.chainService.simulateTransaction(simulateTx);
 
       if (result) {
@@ -107,7 +108,7 @@ export class TransactionFlowModalPage implements OnInit {
     }
 
     try {
-      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees);
+      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 
@@ -182,6 +183,9 @@ export class TransactionFlowModalPage implements OnInit {
 
     if (error.includes('inscription_content_hash')) {
       return 'Your inscription contains content already inscribed. Duplicates are not allowed.';
+    }
+    if (error.includes('order by id') && error.includes('doesn\'t exist')) {
+      return 'The sell order has already been filled or removed';
     }
 
     return error;

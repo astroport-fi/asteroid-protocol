@@ -51,11 +51,19 @@ export const routes: Routes = [
         loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
       },
       {
+        path: 'trade/tokens',
+        loadComponent: () => import('./trade-tokens/trade-tokens.page').then(m => m.TradeTokensPage)
+      },
+      {
+        path: 'trade/:ticker',
+        loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)
+      },
+      {
         path: 'inscription/:txhash',
         loadComponent: () => import('./view-inscription/view-inscription.page').then(m => m.ViewInscriptionPage)
       },
       {
-        path: 'token/:txhash',
+        path: 'token/:ticker',
         loadComponent: () => import('./view-token/view-token.page').then(m => m.ViewTokenPage)
       },
     ]

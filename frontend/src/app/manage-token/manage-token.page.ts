@@ -34,19 +34,30 @@ export class ManageTokenPage implements OnInit {
   previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   showTransfer: boolean = false;
+  showSell: boolean = false;
 
 
   transferForm: FormGroup;
+  sellForm: FormGroup;
 
   readonly numberMask: MaskitoOptions;
+  readonly decimalMask: MaskitoOptions;
 
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder) {
     this.transferForm = this.builder.group({
       basic: this.builder.group({
         destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
-        amount: [10, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
+        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+      }),
+    });
+
+    this.sellForm = this.builder.group({
+      basic: this.builder.group({
+        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        price: [0.55, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
       }),
     });
 
@@ -55,6 +66,13 @@ export class ManageTokenPage implements OnInit {
       thousandSeparator: ' ',
       precision: 0,
       min: 1.000000,
+    });
+
+    this.decimalMask = maskitoNumberOptionsGenerator({
+      decimalSeparator: '.',
+      thousandSeparator: ' ',
+      precision: 6,
+      min: 0,
     });
   }
 
@@ -214,6 +232,37 @@ export class ManageTokenPage implements OnInit {
     modal.present();
   }
 
+  async sell() {
+
+    if (!this.sellForm.valid) {
+      this.sellForm.markAllAsTouched();
+      return;
+    }
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["tic", this.token.ticker],
+      ["amt", this.sellForm.value.basic.amount],
+      ["ppt", this.sellForm.value.basic.price],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: false,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction',
+        metaprotocol: 'cft20',
+        metaprotocolAction: 'list',
+      }
+    });
+    modal.present();
+  }
+
   openTransfer() {
     this.showTransfer = true;
   }
@@ -221,5 +270,15 @@ export class ManageTokenPage implements OnInit {
   cancelTransfer() {
     this.showTransfer = false;
   }
+
+  openSell() {
+    this.showSell = true;
+  }
+
+  cancelSell() {
+    this.showSell = false;
+  }
+
+
 
 }

@@ -391,6 +391,221 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if result.Error != nil {
 			return result.Error
 		}
+
+	case "list":
+		fmt.Println(protocolURN)
+
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+
+		// Set the destination address to the marketplace for transfer history
+		destinationAddress := "marketplace"
+
+		// Check required fields
+		amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+		// Convert amount to have the correct number of decimals
+		amount, err := strconv.ParseFloat(amountString, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse amount '%s'", err)
+		}
+
+		pptString := strings.TrimSpace(parsedURN.KeyValuePairs["ppt"])
+		// Convert amount to have the correct number of decimals
+		ppt, err := strconv.ParseFloat(pptString, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse ppt '%s'", err)
+		}
+		fmt.Println("ppt float", ppt)
+
+		fmt.Println("ppt decimals", ppt)
+
+		totalBase := float64(amount) * ppt
+		fmt.Println("totalForSale ", totalBase)
+
+		// 6 is the amount of ATOM decimals
+		ppt = ppt * math.Pow10(6)
+		amount = amount * math.Pow10(int(tokenModel.Decimals))
+		totalBase = totalBase * math.Pow10(6)
+
+		fmt.Println("totalForSale decimals ", fmt.Sprintf("%0.6f", totalBase))
+
+		// Check that the user has enough tokens to sell
+		var holderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("sender does not have any tokens to sell")
+		}
+
+		if holderModel.Amount < uint64(amount) {
+			return fmt.Errorf("sender does not have enough tokens to sell")
+		}
+
+		// At this point we know that the sender has enough tokens to sell
+		// so update the sender's balance
+		holderModel.Amount = holderModel.Amount - uint64(amount)
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update seller's balance '%s'", err)
+		}
+
+		// Create a sell position
+		positionModel := models.TokenOpenPosition{
+			ChainID:       parsedURN.ChainID,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			SellerAddress: sender,
+			Amount:        uint64(math.Round(amount)),
+			PPT:           uint64(math.Round(ppt)),
+			Total:         uint64(math.Round(totalBase)),
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+
+		result = protocol.db.Save(&positionModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to create sell position '%s'", err)
+		}
+
+		// Record the transfer
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        sender,
+			Receiver:      destinationAddress,
+			Action:        "list",
+			Amount:        uint64(math.Round(amount)),
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+	case "buy":
+		fmt.Println(protocolURN)
+
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+
+		orderNumber := strings.TrimSpace(parsedURN.KeyValuePairs["ord"])
+
+		// Check if the order still exists
+		var openOrderModel models.TokenOpenPosition
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND id = ? AND is_filled = ? AND is_cancelled = ?", parsedURN.ChainID, tokenModel.ID, orderNumber, false, false).First(&openOrderModel)
+		if result.Error != nil {
+			return fmt.Errorf("order by id '%s' doesn't exist", orderNumber)
+		}
+
+		// Check if the amount sent >= amount required
+		for _, v := range rawTransaction.Tx.Body.Messages {
+			if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
+				// The first send should hold the amount being used to buy the tokens with
+				if v.Amount[0].Amount != fmt.Sprintf("%d", openOrderModel.Total) {
+					return fmt.Errorf("incorrect amount sent to buy tokens")
+				}
+				if v.ToAddress != openOrderModel.SellerAddress {
+					return fmt.Errorf("attempting to buy from incorrect seller")
+				}
+				break
+			}
+		}
+
+		// Everything checks out, so we can mark the order as filled and transfer the tokens
+		openOrderModel.IsFilled = true
+		result = protocol.db.Save(&openOrderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update order '%s'", err)
+		}
+
+		// Update the buyer's balance
+		// Check if the destination address has any tokens
+		var destinationHolderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&destinationHolderModel)
+		if result.Error != nil {
+			if result.Error != gorm.ErrRecordNotFound {
+				return fmt.Errorf("unable to check destination balance '%s'", err)
+			}
+		}
+
+		// If the destination address has no tokens, we need to create a record
+		destinationHolderModel.ChainID = parsedURN.ChainID
+		destinationHolderModel.TokenID = tokenModel.ID
+		destinationHolderModel.Address = sender
+		destinationHolderModel.Amount = destinationHolderModel.Amount + openOrderModel.Amount
+		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+
+		result = protocol.db.Save(&destinationHolderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update receiver balance '%s'", err)
+		}
+
+		// Record the transfer
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        "marketplace",
+			Receiver:      sender,
+			Action:        "buy",
+			Amount:        openOrderModel.Amount,
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+	case "delist":
+		fmt.Println(protocolURN)
+
+		fmt.Println(protocolURN)
+
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+
+		orderNumber := strings.TrimSpace(parsedURN.KeyValuePairs["ord"])
+
+		// Check if the order still exists
+		var openOrderModel models.TokenOpenPosition
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND id = ? AND is_filled = ? AND is_cancelled = ?", parsedURN.ChainID, tokenModel.ID, orderNumber, false, false).First(&openOrderModel)
+		if result.Error != nil {
+			return fmt.Errorf("order by id '%s' doesn't exist", orderNumber)
+		}
+
+		// Check if the sender is the owner of the order
+		if openOrderModel.SellerAddress != sender {
+			return fmt.Errorf("only the seller can cancel an order")
+		}
+
+		// Everything checks out, so we can mark the order as cancelled
+		openOrderModel.IsCancelled = true
+		result = protocol.db.Save(&openOrderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update order '%s'", err)
+		}
 	}
 
 	return nil

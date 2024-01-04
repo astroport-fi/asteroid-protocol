@@ -117,7 +117,7 @@ export class WalletService {
    * @param data The inscription data
    * @returns 
    */
-  async createSimulated(urn: string, metadata: string | null, data: string | null, fees: TxFee) {
+  async createSimulated(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
 
     const account = await this.getAccount();
 
@@ -153,7 +153,7 @@ export class WalletService {
 
       const signDoc = {
         body: {
-          messages: [msgs],
+          messages: [...messages, msgs],
           memo: urn,
           timeout_height: "0",
           extension_options: [],
@@ -210,7 +210,7 @@ export class WalletService {
    * @param data The inscription data
    * @returns 
    */
-  async sign(urn: string, metadata: string | null, data: string | null, fees: TxFee) {
+  async sign(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[] = []) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
 
@@ -236,7 +236,7 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
-      const protoMsgs = {
+      const feeMessage = {
         typeUrl: "/cosmos.bank.v1beta1.MsgSend",
         value: MsgSend.encode({
           fromAddress: account?.address as string,
@@ -253,7 +253,7 @@ export class WalletService {
       const signDoc = {
         bodyBytes: TxBody.encode(
           TxBody.fromPartial({
-            messages: [protoMsgs],
+            messages: [...messages, feeMessage],
             memo: urn,
             nonCriticalExtensionOptions,
           })

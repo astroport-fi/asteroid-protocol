@@ -121,6 +121,14 @@ export const AllTypesProps: Record<string,any> = {
 		token_holder_by_pk:{
 
 		},
+		token_open_position:{
+			distinct_on:"token_open_position_select_column",
+			order_by:"token_open_position_order_by",
+			where:"token_open_position_bool_exp"
+		},
+		token_open_position_by_pk:{
+
+		},
 		transaction:{
 			distinct_on:"transaction_select_column",
 			order_by:"transaction_order_by",
@@ -220,6 +228,18 @@ export const AllTypesProps: Record<string,any> = {
 		token_holder_stream:{
 			cursor:"token_holder_stream_cursor_input",
 			where:"token_holder_bool_exp"
+		},
+		token_open_position:{
+			distinct_on:"token_open_position_select_column",
+			order_by:"token_open_position_order_by",
+			where:"token_open_position_bool_exp"
+		},
+		token_open_position_by_pk:{
+
+		},
+		token_open_position_stream:{
+			cursor:"token_open_position_stream_cursor_input",
+			where:"token_open_position_bool_exp"
 		},
 		token_stream:{
 			cursor:"token_stream_cursor_input",
@@ -520,6 +540,46 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		token_id:"order_by"
 	},
+	token_open_position_bool_exp:{
+		_and:"token_open_position_bool_exp",
+		_not:"token_open_position_bool_exp",
+		_or:"token_open_position_bool_exp",
+		amount:"bigint_comparison_exp",
+		chain_id:"String_comparison_exp",
+		date_created:"timestamp_comparison_exp",
+		id:"Int_comparison_exp",
+		ppt:"bigint_comparison_exp",
+		seller_address:"String_comparison_exp",
+		token:"token_bool_exp",
+		token_id:"Int_comparison_exp",
+		total:"bigint_comparison_exp",
+		transaction:"transaction_bool_exp",
+		transaction_id:"Int_comparison_exp"
+	},
+	token_open_position_order_by:{
+		amount:"order_by",
+		chain_id:"order_by",
+		date_created:"order_by",
+		id:"order_by",
+		ppt:"order_by",
+		seller_address:"order_by",
+		token:"token_order_by",
+		token_id:"order_by",
+		total:"order_by",
+		transaction:"transaction_order_by",
+		transaction_id:"order_by"
+	},
+	token_open_position_select_column: "enum" as const,
+	token_open_position_stream_cursor_input:{
+		initial_value:"token_open_position_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	token_open_position_stream_cursor_value_input:{
+		amount:"bigint",
+		date_created:"timestamp",
+		ppt:"bigint",
+		total:"bigint"
+	},
 	token_order_by:{
 		chain_id:"order_by",
 		circulating_supply:"order_by",
@@ -632,6 +692,8 @@ export const ReturnTypes: Record<string,any> = {
 		token_by_pk:"token",
 		token_holder:"token_holder",
 		token_holder_by_pk:"token_holder",
+		token_open_position:"token_open_position",
+		token_open_position_by_pk:"token_open_position",
 		transaction:"transaction",
 		transaction_by_pk:"transaction"
 	},
@@ -657,6 +719,9 @@ export const ReturnTypes: Record<string,any> = {
 		token_holder:"token_holder",
 		token_holder_by_pk:"token_holder",
 		token_holder_stream:"token_holder",
+		token_open_position:"token_open_position",
+		token_open_position_by_pk:"token_open_position",
+		token_open_position_stream:"token_open_position",
 		token_stream:"token",
 		transaction:"transaction",
 		transaction_by_pk:"transaction",
@@ -709,6 +774,19 @@ export const ReturnTypes: Record<string,any> = {
 		id:"Int",
 		token:"token",
 		token_id:"Int"
+	},
+	token_open_position:{
+		amount:"bigint",
+		chain_id:"String",
+		date_created:"timestamp",
+		id:"Int",
+		ppt:"bigint",
+		seller_address:"String",
+		token:"token",
+		token_id:"Int",
+		total:"bigint",
+		transaction:"transaction",
+		transaction_id:"Int"
 	},
 	transaction:{
 		content:"String",
