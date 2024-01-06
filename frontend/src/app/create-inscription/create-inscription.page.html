@@ -1,92 +1,102 @@
-<ion-content class="shadowed">
-  <ion-header class="no-shadow">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-        <ion-back-button defaultHref="/app/create"></ion-back-button>
-      </ion-buttons>
-      <ion-title>
-        New inscription
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
+        class="main-content">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/create"></ion-back-button>
+            </ion-buttons>
+            <ion-title>
+              New inscription
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
 
-  <div class="aligned">
-    <p class="note">
-      Details about content inscriptions
-    </p>
-    <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
-      <ion-grid>
-        <ion-row>
-          <ion-col size-xl="3" size-lg="5" size-xs="12">
-            <div class="uploaded text-center" *ngIf="this.createForm.value.basic.contentUpload">
-              <div class="uploader no-style text-center">
-                <img class="rounded" [src]="this.createForm.value.basic.contentUpload" *ngIf="renderImagePreview" />
-                <div *ngIf="originalFilename">{{ originalFilename }}</div>
-                <div class="upload">
-                  <label for='input-file'>Change file</label>
-                  <input id='input-file' type='file' (change)="onFileSelected($event)" />
-                </div>
-                <div *ngIf="contentRequired" class="info text-center color-danger">
-                  You must add content to inscribe
-                </div>
-              </div>
-            </div>
-            <div class="uploader text-center" *ngIf="!this.createForm.value.basic.contentUpload">
-              <p>Content</p>
-              <p class="info">Max file size<br />800kb</p>
-              <div class="upload">
-                <label for='input-file'>Select file</label>
-                <input id='input-file' type='file' (change)="onFileSelected($event)" />
-              </div>
-              <div *ngIf="contentRequired" class="info text-center color-danger">
-                You must add content to inscribe
-              </div>
-            </div>
-          </ion-col>
-          <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
-            <div class="section mt-3 mb-3" formGroupName="basic">
-              <h2>Inscription information</h2>
-              <p class="note">Add detail to your inscription</p>
-            </div>
-            <div class="form-group" formGroupName="basic">
-              <ion-item lines="none">
-                <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"
-                  formControlName="name" [counter]="true" [minlength]="3" [maxlength]="32"
-                  errorText="Please enter a name"></ion-input>
-              </ion-item>
-              <ion-item lines="none">
-                <ion-textarea class="no-border" label="Description" labelPlacement="stacked"
-                  placeholder="Describe you inscription" rows="4" formControlName="description"></ion-textarea>
-              </ion-item>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row *ngIf="inscriptionFileSize > maxFileSize">
-          <ion-col size-xl="3" size-lg="5" size-xs="12">
-            &nbsp;
-          </ion-col>
-          <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
-            <div class="section color-orange">
-              The content you are trying to inscribe exceeds the maximum file size of {{ maxFileSize / 1000 }}kb
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col size-xl="3" size-lg="5" size-xs="12">
-            &nbsp;
-          </ion-col>
-          <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
-            <div class="section">
-              <ion-button color="primary" fill="solid" type="submit" [disabled]="inscriptionFileSize > maxFileSize">
-                <ion-icon slot="start" name="checkmark"></ion-icon>
-                Inscribe
-              </ion-button>
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </form>
-  </div>
-  <div style="height: 100px;"></div>
+        <div class="aligned">
+          <p class="note">
+            Details about content inscriptions
+          </p>
+          <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
+            <ion-grid>
+              <ion-row>
+                <ion-col size-xl="5" size-lg="5" size-xs="12">
+                  <div class="uploaded text-center" *ngIf="this.createForm.value.basic.contentUpload">
+                    <div class="uploader no-style text-center">
+                      <img class="rounded" [src]="this.createForm.value.basic.contentUpload"
+                        *ngIf="renderImagePreview" />
+                      <div *ngIf="originalFilename">{{ originalFilename }}</div>
+                      <div class="upload">
+                        <label for='input-file'>Change file</label>
+                        <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                      </div>
+                      <div *ngIf="contentRequired" class="info text-center color-danger">
+                        You must add content to inscribe
+                      </div>
+                    </div>
+                  </div>
+                  <div class="uploader text-center" *ngIf="!this.createForm.value.basic.contentUpload">
+                    <p>Content</p>
+                    <p class="info">Max file size<br />800kb</p>
+                    <div class="upload">
+                      <label for='input-file'>Select file</label>
+                      <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                    </div>
+                    <div *ngIf="contentRequired" class="info text-center color-danger">
+                      You must add content to inscribe
+                    </div>
+                  </div>
+                </ion-col>
+                <ion-col size-xl="6" size-lg="6" size-sm="8" size-xs="12">
+                  <div class="section mt-3 mb-3" formGroupName="basic">
+                    <h2>Inscription information</h2>
+                    <p class="note">Add detail to your inscription</p>
+                  </div>
+                  <div class="form-group" formGroupName="basic">
+                    <ion-item lines="none">
+                      <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"
+                        formControlName="name" [counter]="true" [minlength]="3" [maxlength]="32"
+                        errorText="Please enter a name"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none">
+                      <ion-textarea class="no-border" label="Description" labelPlacement="stacked"
+                        placeholder="Describe you inscription" rows="4" formControlName="description"></ion-textarea>
+                    </ion-item>
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="inscriptionFileSize > maxFileSize">
+                <ion-col size-xl="3" size-lg="5" size-xs="12">
+                  &nbsp;
+                </ion-col>
+                <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
+                  <div class="section color-orange">
+                    The content you are trying to inscribe exceeds the maximum file size of {{ maxFileSize / 1000 }}kb
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xl="5" size-lg="5" size-xs="12">
+                  &nbsp;
+                </ion-col>
+                <ion-col size-xl="6" size-lg="6" size-sm="8" size-xs="12">
+                  <div class="section">
+                    <ion-button color="primary" fill="solid" type="submit"
+                      [disabled]="inscriptionFileSize > maxFileSize">
+                      <ion-icon slot="start" name="checkmark"></ion-icon>
+                      Inscribe
+                    </ion-button>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </form>
+        </div>
+        <div style="height: 100px;"></div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

@@ -106,7 +106,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       }
 
       let data = this.createForm.value.optional.imageUpload;
-      let sender = await this.walletService.getAccount();
+      // let sender = await this.walletService.getAccount();
+      let sender = await this.walletService.getAccountMobile();
       let metadataBase64 = null;
       if (data) {
         const mime = data.split(";")[0].split(":")[1];

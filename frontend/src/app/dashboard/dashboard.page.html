@@ -1,24 +1,22 @@
-<ion-header class="no-shadow">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <h1>Welcome to Meteors</h1>
-    <p>Meteors is the first metaprotocol framework that allows you to inscribe arbitrary content on the Cosmos Hub. <a
-        href="#" class="color-orange">Learn more</a></p>
-  </ion-toolbar>
-</ion-header>
-<ion-content class="shadowed">
-  <div>
-    <ion-button (click)="connectWC()">connect</ion-button>
-    <div>Content</div>
-    <div>{{errorText}}</div>
-  </div>
-
-  <div>
-    <ion-button (click)="simulateTest()">Simulate</ion-button>
-    <div>Content</div>
-    <div>{{errorText}}</div>
-  </div>
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <h1>Welcome to Asteroids</h1>
+            <p>Asteroids is the first metaprotocol framework that allows you to inscribe arbitrary content on the Cosmos
+              Hub. <a href="#" class="color-orange">Learn more</a></p>
+          </ion-toolbar>
+        </ion-header>
+        <div class="main-content">
+          No dashboard content yet
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

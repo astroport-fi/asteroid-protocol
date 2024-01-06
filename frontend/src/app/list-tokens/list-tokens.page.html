@@ -1,50 +1,58 @@
-<ion-content class="shadowed">
-  <ion-header class="no-shadow">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>
-        CFT-20 Tokens
-      </ion-title>
-    </ion-toolbar>
-    <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
-      created by {{ this.selectedAddress }}
-    </div>
-  </ion-header>
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+              CFT-20 Tokens
+            </ion-title>
+          </ion-toolbar>
+          <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
+            created by {{ this.selectedAddress }}
+          </div>
+        </ion-header>
 
-  <div class="aligned">
-    <div *ngIf="isLoading">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </div>
-    <div class="list" *ngIf="!isLoading && tokens.length > 0">
-      <a class="inscription-item" [routerLink]="['/app/token', item.ticker]" *ngFor="let item of tokens; let index">
-        <div class="content">
-          <div class="image" *ngIf="item.content_path">
-            <img [src]="item.content_path" />
+        <div class="aligned">
+          <div *ngIf="isLoading">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
-          <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
-        </div>
-        <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
-        <div class="detail">
-          <div class="detail-item">
-            <span>{{ item.name }}</span>
-          </div>
-          <div class="detail-item">
-            <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
-          </div>
-          <div class="detail-item">
-            <span>{{ item.date_created | dateAgo }}</span>
-          </div>
-        </div>
-      </a>
+          <div class="list" *ngIf="!isLoading && tokens.length > 0">
+            <a class="inscription-item main-content" [routerLink]="['/app/token', item.ticker]"
+              *ngFor="let item of tokens; let index">
+              <div class="content">
+                <div class="image" *ngIf="item.content_path">
+                  <img [src]="item.content_path" />
+                </div>
+                <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
+              </div>
+              <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
+              <div class="detail">
+                <div class="detail-item">
+                  <span>{{ item.name }}</span>
+                </div>
+                <div class="detail-item">
+                  <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
+                </div>
+                <div class="detail-item">
+                  <span>{{ item.date_created | dateAgo }}</span>
+                </div>
+              </div>
+            </a>
 
-      <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-      </ion-infinite-scroll>
-    </div>
-    <div class="list" *ngIf="!isLoading && tokens.length == 0">
-      No tokens found
-    </div>
-  </div>
+            <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+              <ion-infinite-scroll-content></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div>
+          <div class="list" *ngIf="!isLoading && tokens.length == 0">
+            No tokens found
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

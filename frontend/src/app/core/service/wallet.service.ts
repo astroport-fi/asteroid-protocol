@@ -15,6 +15,8 @@ import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { Buffer } from "buffer";
 import Long from 'long';
 import { TxFee } from '../types/tx-fee';
+import { SignClient } from '@walletconnect/sign-client';
+import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 
 @Injectable({
   providedIn: 'root'
@@ -307,6 +309,195 @@ export class WalletService {
     }
     catch (error) {
       throw error;
+    }
+  }
+
+  async getAccountMobile() {
+    return {
+      address: "cosmos1m857lgtjssgt0wm3crzfmt3v950vqnkqq29mmz",
+    }
+  }
+
+  async signMobile(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[] = []) {
+    const signClient = await SignClient.init({
+      // If do you have your own project id, you can set it.
+      projectId: "3a90436d11f4e6f16f47a9e2c7de2355",
+      metadata: {
+        name: "Asteroid Protocol",
+        description: "The metaprotocol standard for Cosmos",
+        url: "http://192.168.11.103:8100",
+        icons: [
+          "https://raw.githubusercontent.com/chainapsis/keplr-wallet/master/packages/extension/src/public/assets/logo-256.png",
+        ],
+      },
+    });
+
+
+    if (signClient.session.getAll().length <= 0) {
+      alert("connect now");
+      console.log("connect now");
+      // const modal = new KeplrQRCodeModalV2(signClient);
+
+      const { uri, approval } = await signClient.connect({
+        requiredNamespaces: {
+          cosmos: {
+            methods: [
+              "cosmos_getAccounts",
+              "cosmos_signDirect",
+              "cosmos_signAmino",
+              "keplr_getKey",
+              "keplr_signAmino",
+              "keplr_signDirect",
+              "keplr_signArbitrary",
+              "keplr_enable",
+            ],
+            chains: [`cosmos:cosmoshub-4`],
+            events: ["accountsChanged", "chainChanged", "keplr_accountsChanged"],
+          },
+        },
+      });
+
+      if (!uri) {
+        // this.errorText = "no uri";
+        alert("no sesh");
+        throw new Error("No uri");
+      } else {
+
+        try {
+          console.log("URI", uri);
+          // document.location.href = uri;
+          // this.errorText = uri;
+          document.location.href = `keplrwallet://wcV2?${uri}`;
+          const session = await approval();
+          console.log("SESSION", session);
+          alert("got sesh");
+        }
+        catch (error) {
+          alert("err" + error);
+        }
+
+        // this.errorText = JSON.stringify(session);
+
+        // Try to sign a transaction
+        // keplr = new KeplrWalletConnectV2(signClient, {
+        //   // sendTx,
+        // });
+      }
+
+      // You can pass the chain ids that you want to connect to the modal.
+      // const sessionProperties = await modal.connect(["cosmoshub-4"]);
+
+
+    }
+
+    // let account = {
+    //   address: "cosmos1",
+    //   pubkey: "",
+    // };
+
+    let nonCriticalExtensionOptions: any[] = [];
+    try {
+      const keplrWC2 = new KeplrWalletConnectV2(signClient, {
+        // sendTx,
+      });
+
+      const signer = keplrWC2.getOfflineSigner("cosmoshub-4");
+      const accounts = await signer.getAccounts();
+      const account = accounts[0];
+
+      // We only add the nonCriticalExtensionOptions inscription if the protocol
+      // requires it
+      if (metadata && data) {
+        nonCriticalExtensionOptions = [
+          {
+            // This typeUrl isn't really important here as long as it is a type
+            // that the chain recognises it
+            typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
+            value: MsgRevoke.encode(
+              MsgRevoke.fromPartial({
+                granter: metadata,
+                grantee: data,
+                msgTypeUrl: `${environment.domain} metaprotocol`,
+              })
+            ).finish(),
+          }
+        ];
+      }
+
+      const accountInfo = await this.chainService.fetchAccountInfo(account.address);
+      const feeMessage = {
+        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+        value: MsgSend.encode({
+          fromAddress: account?.address as string,
+          toAddress: fees.metaprotocol.receiver,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            }
+          ],
+        }).finish(),
+      }
+
+      const signDoc = {
+        bodyBytes: TxBody.encode(
+          TxBody.fromPartial({
+            messages: [...messages, feeMessage],
+            memo: urn,
+            nonCriticalExtensionOptions,
+          })
+        ).finish(),
+
+        authInfoBytes: AuthInfo.encode({
+          signerInfos: [
+            {
+              publicKey: {
+                typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+                value: PubKey.encode({
+                  key: account.pubkey,
+                }).finish(),
+              },
+              modeInfo: {
+                single: {
+                  mode: SignMode.SIGN_MODE_DIRECT,
+                },
+              },
+              sequence: BigInt(accountInfo.sequence),
+            },
+          ],
+          fee: Fee.fromJSON({
+            amount: {
+              denom: fees.chain.denom,
+              amount: fees.chain.amount,
+            },
+            gasLimit: environment.fees.chain.gasLimit,
+          }),
+        }).finish(),
+
+        chainId: environment.chain.chainId,
+        accountNumber: Long.fromNumber(accountInfo.account_number),
+      };
+
+      // We use the direct signer so that we can inscribe using 
+      // nonCriticalExtensionOptions
+      alert("signing");
+      const signed = await signer.signDirect(account.address, signDoc);
+
+
+      const signedTx = {
+        tx: TxRaw.encode({
+          bodyBytes: signed.signed.bodyBytes,
+          authInfoBytes: signed.signed.authInfoBytes,
+          signatures: [Buffer.from(signed.signature.signature, "base64")],
+        }).finish(),
+        signDoc: signed.signed,
+      }
+      return signedTx.tx;
+
+
+    }
+    catch (error) {
+      throw JSON.stringify(error);
     }
   }
 

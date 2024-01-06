@@ -22,6 +22,9 @@ import {
   IonMenuToggle,
   IonAccordion,
   IonAccordionGroup,
+  IonGrid,
+  IonRow,
+  IonCol
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
@@ -66,6 +69,9 @@ export function playerFactory() {
     IonMenuToggle,
     IonAccordion,
     IonAccordionGroup,
+    IonGrid,
+    IonRow,
+    IonCol,
     RouterLink,
     RouterLinkActive,
     ShortenAddressPipe,

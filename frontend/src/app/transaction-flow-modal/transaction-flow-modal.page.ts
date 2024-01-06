@@ -108,7 +108,9 @@ export class TransactionFlowModalPage implements OnInit {
     }
 
     try {
-      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
+      // const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
+
+      const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 

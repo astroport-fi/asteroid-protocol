@@ -9,16 +9,23 @@
 ion-content {
     // --background: var(--color-dark-teal);
     // border-radius: 10px !important;
+    --background: hsla(0, 0%, 100%, .05) !important;
+    background-color: hsla(0, 0%, 100%, .05) !important;
+    backdrop-filter: blur(50px);
+    height: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.2s ease-in-out;
 
-    --background: rgba(53, 60, 66, 1);
-    --background-rgb: rgba(53, 60, 66, 1);
+    // --background: rgba(53, 60, 66, 1);
+    // --background-rgb: rgba(53, 60, 66, 1);
 
-    backdrop-filter: blur(100px) !important;
-    border-radius: 10px !important;
+    // backdrop-filter: blur(100px) !important;
+    // border-radius: 10px !important;
 
-    -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    // box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
 }
 
 

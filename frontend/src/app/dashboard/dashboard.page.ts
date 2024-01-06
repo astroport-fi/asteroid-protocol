@@ -10,6 +10,7 @@ import SignClient from "@walletconnect/sign-client";
 // import { KeplrQRCodeModalV2 } from "@keplr-wallet/wc-qrcode-modal";
 import { KeplrWalletConnectV2 } from "@keplr-wallet/wc-client";
 import { ChainService } from '../core/service/chain.service';
+import { WalletService } from '../core/service/wallet.service';
 
 
 @Component({
@@ -22,7 +23,7 @@ import { ChainService } from '../core/service/chain.service';
 export class DashboardPage implements OnInit {
   errorText = "";
 
-  constructor(private chainService: ChainService) {
+  constructor(private chainService: ChainService, private walletService: WalletService) {
 
   }
 
@@ -52,7 +53,7 @@ export class DashboardPage implements OnInit {
       metadata: {
         name: "WC Test Dapp",
         description: "WC Test Dapp",
-        url: "http://localhost:1234/",
+        url: "http://localhost:8100/",
         icons: [
           "https://raw.githubusercontent.com/chainapsis/keplr-wallet/master/packages/extension/src/public/assets/logo-256.png",
         ],
@@ -92,7 +93,7 @@ export class DashboardPage implements OnInit {
         this.errorText = uri;
         document.location.href = `keplrwallet://wcV2?${uri}`;
         const session = await approval();
-        console.log("SESSION", session);
+        alert("SESSION");
         this.errorText = JSON.stringify(session);
       }
 
@@ -106,7 +107,7 @@ export class DashboardPage implements OnInit {
       console.log(keplr);
 
     } else {
-      console.log("NONE?");
+      alert("HAS");
     }
   }
 
