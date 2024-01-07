@@ -17,29 +17,29 @@ export const environment = {
         inscribe: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
       },
       cft20: {
         deploy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
         mint: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
         transfer: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
         list: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
         buy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
@@ -49,7 +49,7 @@ export const environment = {
         delist: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "1000"
         },
       },
     },

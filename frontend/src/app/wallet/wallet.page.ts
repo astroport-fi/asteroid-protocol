@@ -52,7 +52,7 @@ export class WalletPage implements OnInit {
 
     this.activatedRoute.params.subscribe(async params => {
       this.selectedAddress = params["address"] || this.connectedAccount.address;
-      this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'balances';
+      this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'tokens';
 
       this.isLoading = true;
 

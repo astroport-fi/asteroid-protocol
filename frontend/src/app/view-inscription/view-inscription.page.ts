@@ -21,34 +21,22 @@ export class ViewInscriptionPage implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
 
   constructor(private activatedRoute: ActivatedRoute) {
-
   }
 
   async ngOnInit() {
     this.isLoading = true;
 
-    console.log(this.activatedRoute.snapshot.params["txhash"]);
-    console.log(parseInt(this.activatedRoute.snapshot.params["txhash"]) - 1)
     const chain = Chain(environment.api.endpoint)
 
     const result = await chain('query')({
       inscription: [
         {
           where: {
-            _or: [
-              {
-                transaction: {
-                  hash: {
-                    _eq: this.activatedRoute.snapshot.params["txhash"]
-                  }
-                }
-              },
-              {
-                id: {
-                  _eq: parseInt(this.activatedRoute.snapshot.params["txhash"]) + 1 // Inscriptions are numbered from 0, searching for 28 should show db id 29
-                }
+            transaction: {
+              hash: {
+                _eq: this.activatedRoute.snapshot.params["txhash"]
               }
-            ]
+            }
           }
         }, {
           id: true,

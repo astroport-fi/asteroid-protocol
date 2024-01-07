@@ -16,19 +16,16 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     children: [
       {
+        path: 'wallet/token/:ticker',
+        loadComponent: () => import('./wallet-token/wallet-token.page').then(m => m.WalletTokenPage)
+      },
+      {
         path: 'wallet',
-        component: WalletPage,
-        pathMatch: 'prefix',
-        children: [
-          {
-            path: 'token/:ticker',
-            loadComponent: () => import('./wallet-token/wallet-token.page').then(m => m.WalletTokenPage)
-          },
-          {
-            path: ':address',
-            loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
-          },
-        ]
+        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+      },
+      {
+        path: 'wallet/:address',
+        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
       },
       {
         path: 'dashboard',

@@ -11,6 +11,16 @@
     color: #888;
 }
 
+.content {
+    .image {
+        img.no-logo {
+            max-width: 25%;
+            padding-top: 30px;
+            opacity: 0.7;
+        }
+    }
+}
+
 .avatar {
     margin-bottom: 50px;
     text-align: center;

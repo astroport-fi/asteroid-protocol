@@ -26,16 +26,19 @@
         <div class="aligned" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
-              <ion-col size-lg="5" size-xs="8" *ngIf="token.content_path">
+              <ion-col size-lg="5" size-xs="8">
                 <div class="text-center">
-                  <img class="rounded" [src]="token.content_path" />
+                  <img class="rounded" [src]="token.content_path" *ngIf="token.content_path" />
+                  <div class="ticker" *ngIf="!token.content_path">
+                    <img class="no-logo rounded" src="../../assets/logo/a-white-on-transparent-250.png" />
+                  </div>
                 </div>
               </ion-col>
-              <ion-col size-lg="5" size-xs="12" *ngIf="!token.content_path">
+              <!-- <ion-col size-lg="5" size-xs="12" *ngIf="!token.content_path">
                 <div class="text-center">
                   <div class="ticker mx-auto">{{ token.ticker }}<span>CFT-20 Token</span></div>
                 </div>
-              </ion-col>
+              </ion-col> -->
               <ion-col size-xl="6" size-lg="6" size-sm="8" size-xs="12">
                 <ion-grid>
                   <ion-row>
@@ -161,7 +164,7 @@
                   </ng-template>
                   <ng-template pTemplate="emptymessage">
                     <tr>
-                      <td colspan="4">No tokens found.</td>
+                      <td colspan="4">No trades found.</td>
                     </tr>
                   </ng-template>
                 </p-table>

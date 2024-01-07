@@ -36,8 +36,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       basic: this.builder.group({
         name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
         ticker: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
-        maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
-        mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
+        maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
         decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],
         launchImmediately: 'true',
         launchDate: this.datePipe.transform(new Date(this.minDate), 'yyyy-MM-ddTHH:mm:ss'),
