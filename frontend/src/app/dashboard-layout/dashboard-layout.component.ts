@@ -37,7 +37,7 @@ import { AccountData } from '@keplr-wallet/types';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { LottieComponent, LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
-import { ConenctedWallet } from '../core/types/connected-wallet';
+import { ConnectedWallet } from '../core/types/connected-wallet';
 import { WalletType } from '../core/enum/wallet-type';
 
 // Note we need a separate function as it's required
@@ -94,7 +94,7 @@ export class DashboardLayoutComponent {
 
     const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
     if (walletDataJSON) {
-      const walletData: ConenctedWallet = JSON.parse(walletDataJSON);
+      const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
       console.log("Lastknownwallet");
       console.log(walletData);
       this.walletService.getAccount().then((account) => {
@@ -151,7 +151,7 @@ export class DashboardLayoutComponent {
           this.isWalletConnected = true;
           this.connectedAccount = account;
 
-          const connectedWallet: ConenctedWallet = {
+          const connectedWallet: ConnectedWallet = {
             address: account.address,
             walletType: WalletType.Keplr // Only one supported for now
           }

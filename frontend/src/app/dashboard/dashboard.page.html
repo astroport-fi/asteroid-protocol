@@ -7,13 +7,34 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <h1>Welcome to Asteroids</h1>
-            <p>Asteroids is the first metaprotocol framework that allows you to inscribe arbitrary content on the Cosmos
+            <h1>Welcome to Asteroid Protocol</h1>
+            <p>Asteroid Protocol is the first metaprotocol framework that allows you to inscribe arbitrary content on
+              the Cosmos
               Hub. <a href="#" class="color-orange">Learn more</a></p>
           </ion-toolbar>
         </ion-header>
-        <div class="main-content">
-          No dashboard content yet
+        <div class="main-content text-center">
+          <div class="animation mx-auto">
+            <ng-lottie [options]="{path: '../assets/lottie/broken-connection.json'}"></ng-lottie>
+          </div>
+          <div>
+            <div class="title">
+              <h3>No wallet connected</h3>
+            </div>
+            <p></p>
+            <p>Connect your wallet to inscribe content, create tokens, trade and more</p>
+            <div>
+              <ion-button fill="solid" routerLink="/wallet">
+                Connect Wallet
+              </ion-button>
+
+            </div>
+          </div>
+
+          <div class="note mt-5 text-left">
+            <h4>Not ready yet?</h4>
+            <p>No problem, you can browse everything without restriction</p>
+          </div>
         </div>
       </ion-col>
     </ion-row>

@@ -9,13 +9,16 @@ import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ConnectedWallet } from '../core/types/connected-wallet';
+import { WalletService } from '../core/service/wallet.service';
+import { DashboardPage } from '../dashboard/dashboard.page';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage]
 })
 export class WalletPage implements OnInit {
 
@@ -25,13 +28,30 @@ export class WalletPage implements OnInit {
   tokens: any = null;
   holdings: any = null;
   inscriptions: any = null;
+  isWalletConnected = false;
+  connectedAccount: any;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private walletService: WalletService) {
   }
 
   async ngOnInit() {
+    const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
+    if (walletDataJSON) {
+      const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
+      console.log("Lastknownwallet");
+      console.log(walletData);
+      const account = await this.walletService.getAccount();
+      this.isWalletConnected = true;
+      this.connectedAccount = account;
+
+    } else {
+      console.log("NO WALLET");
+      return;
+
+    }
+
     this.activatedRoute.params.subscribe(async params => {
-      this.selectedAddress = params["address"];
+      this.selectedAddress = params["address"] || this.connectedAccount.address;
       this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'balances';
 
       this.isLoading = true;

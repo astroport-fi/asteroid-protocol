@@ -40,14 +40,13 @@
           <ion-list-header>
             <ion-label>Home</ion-label>
           </ion-list-header>
-          <ion-menu-toggle autoHide="false">
+          <!-- <ion-menu-toggle autoHide="false">
             <ion-item [button]="true" [routerLink]="['/app/dashboard']" routerLinkActive="active">
               <ion-label>Dashboard</ion-label>
             </ion-item>
-          </ion-menu-toggle>
+          </ion-menu-toggle> -->
           <ion-menu-toggle autoHide="false">
-            <ion-item [button]="true" [routerLink]="['/app/wallet', connectedAccount.address]" routerLinkActive="active"
-              [disabled]="!isWalletConnected">
+            <ion-item [button]="true" [routerLink]="['/app/wallet']" routerLinkActive="active">
               <ion-label>Wallet</ion-label>
             </ion-item>
           </ion-menu-toggle>
@@ -72,7 +71,7 @@
               <ion-item [button]="true" [routerLink]="['/app/inscriptions']" routerLinkActive="active" lines="none">
                 <ion-label>Browse</ion-label>
               </ion-item>
-            </ion-menu-toggle>
+            </ion-menu-toggle>app-dashboard'
           </ion-accordion>
           <ion-accordion value="second">
             <ion-item slot="header" lines="none">
