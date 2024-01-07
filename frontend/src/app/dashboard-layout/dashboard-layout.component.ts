@@ -37,6 +37,8 @@ import { AccountData } from '@keplr-wallet/types';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { LottieComponent, LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
+import { ConenctedWallet } from '../core/types/connected-wallet';
+import { WalletType } from '../core/enum/wallet-type';
 
 // Note we need a separate function as it's required
 // by the AOT compiler.
@@ -89,14 +91,28 @@ export class DashboardLayoutComponent {
   }
 
   async ngOnInit() {
-    this.walletService.isConnected().then((isConnected) => {
-      this.isWalletConnected = isConnected;
+
+    const walletDataJSON = localStorage.getItem(environment.storage.connectedWallet);;
+    if (walletDataJSON) {
+      const walletData: ConenctedWallet = JSON.parse(walletDataJSON);
+      console.log("Lastknownwallet");
+      console.log(walletData);
       this.walletService.getAccount().then((account) => {
+        this.isWalletConnected = true;
         this.connectedAccount = account;
-      }).catch((err) => {
-        this.isWalletConnected = false;
       });
-    });
+    } else {
+      console.log("No last known wallet");
+    }
+
+    // this.walletService.isConnected().then((isConnected) => {
+    //   this.isWalletConnected = isConnected;
+    //   this.walletService.getAccount().then((account) => {
+    //     this.connectedAccount = account;
+    //   }).catch((err) => {
+    //     this.isWalletConnected = false;
+    //   });
+    // });
   }
 
   async connectWallet() {
@@ -134,6 +150,13 @@ export class DashboardLayoutComponent {
         this.walletService.getAccount().then((account) => {
           this.isWalletConnected = true;
           this.connectedAccount = account;
+
+          const connectedWallet: ConenctedWallet = {
+            address: account.address,
+            walletType: WalletType.Keplr // Only one supported for now
+          }
+          localStorage.setItem(environment.storage.connectedWallet, JSON.stringify(connectedWallet));
+
         }).catch((err) => {
           this.isWalletConnected = false;
         });
@@ -141,10 +164,12 @@ export class DashboardLayoutComponent {
       case WalletStatus.Rejected:
         // TODO: Popup to inform rejection and try again
         this.walletStatusText = "Connect wallet";
+        localStorage.clear();
         break;
       case WalletStatus.NotInstalled:
         // TODO: Popup to install Keplr
         this.walletStatusText = "Connect wallet";
+        localStorage.clear();
         break;
     }
   }
@@ -158,5 +183,6 @@ export class DashboardLayoutComponent {
     this.isWalletConnected = false;
     this.walletStatusText = "Connect wallet";
     this.connectedAccount = {};
+    localStorage.clear();
   }
 }
