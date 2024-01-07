@@ -1,9 +1,9 @@
 {
-  "name": "meteors",
-  "description": "The Meteors inscriptions project",
+  "name": "asteroid-protocol",
+  "description": "The Asteroid Protocol inscriptions project",
   "version": "0.0.1",
-  "author": "The Meteors Developers",
-  "homepage": "https://meteors.art/",
+  "author": "The Asteroid Protocol Developers",
+  "homepage": "https://asteroidprotocol.io/",
   "scarfSettings": {
     "enabled": false
   },

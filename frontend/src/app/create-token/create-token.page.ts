@@ -34,8 +34,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
-        ticker: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(5), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
+        name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
+        ticker: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
         maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9 ]*$")]],
         decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],

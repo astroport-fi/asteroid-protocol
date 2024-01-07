@@ -314,6 +314,7 @@ a {
 
 .p-datatable-header {
     text-align: right;
+    border: none;
 }
 
 .p-paginator,
@@ -337,32 +338,46 @@ p-table {
     .p-datatable .p-datatable-thead>tr>th {
         font-size: 18px;
         padding-top: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         // background-color: transparent !important;
     }
 
     .p-datatable .p-datatable-tbody>tr>td {
         // padding: 10px;
-        padding: 10px;
+        padding: 12px;
     }
 
     .token-logo {
-        width: 120px;
-        padding: 10px !important;
+        width: 40px;
+        padding: 0px !important;
 
         .ticker {
             width: 100%;
-            height: 100px;
+            height: 40px;
             background-color: rgba(0, 0, 0, 0.3);
             text-align: center;
             text-transform: uppercase;
             border-radius: 10px;
-            font-size: 18px;
-            padding-top: 35px;
+            font-size: 9px;
+            padding-top: 12px;
         }
 
         .image {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            text-align: center;
+
             img {
                 border-radius: 10px;
+
+                &.no-logo {
+                    padding-top: 5px;
+                    max-width: 30px;
+                }
             }
         }
     }

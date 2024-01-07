@@ -21,16 +21,16 @@
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
 
-          <p-table #data [value]="tokens" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="10"
-            [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }"
+          <p-table #data [value]="tokens" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+            [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
             ['name', 'ticker' ]" styleClass="token-list">
             <ng-template pTemplate="caption">
               <div class="flex search">
                 <div>
-                  <ion-input #textInput label="Search" labelPlacement="floating" placeholder="Name or ticker"
-                    (input)="data.filterGlobal(textInput.value, 'contains')"><ion-icon slot="end" name="search-outline"
-                      aria-hidden="true"></ion-icon></ion-input>
+                  <ion-input fill="outline" #textInput label="Search" labelPlacement="stacked"
+                    placeholder="Name or ticker" (input)="data.filterGlobal(textInput.value, 'contains')"><ion-icon
+                      slot="end" name="search-outline" aria-hidden="true"></ion-icon></ion-input>
                 </div>
               </div>
             </ng-template>
@@ -47,11 +47,11 @@
             <ng-template pTemplate="body" let-token>
               <tr [routerLink]="['/app/token', token.ticker]">
                 <td class="token-logo">
-                  <div class="image" *ngIf="token.content_path">
-                    <img [src]="token.content_path" />
+                  <div class="image">
+                    <img [src]="token.content_path" *ngIf="token.content_path" />
+                    <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
+                      *ngIf="!token.content_path" />
                   </div>
-                  <div class="ticker" *ngIf="!token.content_path">{{ token.ticker }}</div>
-
                 </td>
                 <td pFrozenColumn>{{ token.ticker }}</td>
                 <td>{{ token.name }}</td>

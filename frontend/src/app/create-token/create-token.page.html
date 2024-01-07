@@ -62,13 +62,13 @@
                   <div class="form-group" formGroupName="basic">
                     <ion-item lines="none">
                       <ion-input label="Name (alphanumeric only)" labelPlacement="stacked" placeholder="Name your token"
-                        formControlName="name" [counter]="true" [minlength]="3" [maxlength]="32"
+                        formControlName="name" [counter]="true" [minlength]="1" [maxlength]="32"
                         errorText="Please enter a name"></ion-input>
                     </ion-item>
                     <ion-item lines="none">
                       <ion-input class="no-border" label="Ticker" labelPlacement="stacked" placeholder="TOKEN"
-                        label="Ticker (3 - 5 characters, alphanumeric only)" formControlName="ticker" [counter]="true"
-                        [minlength]="3" [maxlength]="5" oninput="this.value = this.value.toUpperCase()"></ion-input>
+                        label="Ticker (1 - 10 characters, alphanumeric only)" formControlName="ticker" [counter]="true"
+                        [minlength]="1" [maxlength]="10" oninput="this.value = this.value.toUpperCase()"></ion-input>
                     </ion-item>
                     <ion-item lines="none">
                       <ion-input label="Decimal places" labelPlacement="stacked" placeholder="Decimals"
