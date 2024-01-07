@@ -25,22 +25,24 @@ import (
 )
 
 type Config struct {
-	ChainID             string `envconfig:"CHAIN_ID" required:"true"`
-	DatabaseDSN         string `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoint         string `envconfig:"LCD_ENDPOINT" required:"true"`
-	BlockPollIntervalMS int    `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
+	BaseTokenBinanceEndpoint string `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
+	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
+	BlockPollIntervalMS      int    `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
 // Indexer implements the reference indexer service
 type Indexer struct {
-	chainID             string
-	lcdEndpoint         string
-	blockPollIntervalMS int
-	logger              *logrus.Entry
-	metaprotocols       map[string]metaprotocol.Processor
-	stopChannel         chan bool
-	db                  *gorm.DB
-	wg                  sync.WaitGroup
+	chainID                  string
+	baseTokenBinanceEndpoint string
+	lcdEndpoint              string
+	blockPollIntervalMS      int
+	logger                   *logrus.Entry
+	metaprotocols            map[string]metaprotocol.Processor
+	stopChannel              chan bool
+	db                       *gorm.DB
+	wg                       sync.WaitGroup
 }
 
 // New returns a new instance of the indexer service and returns an error if
@@ -68,13 +70,14 @@ func New(
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
 
 	return &Indexer{
-		chainID:             config.ChainID,
-		lcdEndpoint:         config.LCDEndpoint,
-		blockPollIntervalMS: config.BlockPollIntervalMS,
-		metaprotocols:       metaprotocols,
-		logger:              log,
-		stopChannel:         make(chan bool),
-		db:                  db,
+		chainID:                  config.ChainID,
+		baseTokenBinanceEndpoint: config.BaseTokenBinanceEndpoint,
+		lcdEndpoint:              config.LCDEndpoint,
+		blockPollIntervalMS:      config.BlockPollIntervalMS,
+		metaprotocols:            metaprotocols,
+		logger:                   log,
+		stopChannel:              make(chan bool),
+		db:                       db,
 	}, nil
 }
 
@@ -83,6 +86,10 @@ func (i *Indexer) Run() error {
 	i.logger.Info("Starting indexer")
 	i.wg.Add(1)
 	go i.indexBlocks()
+
+	i.wg.Add(1)
+	go i.updateBaseToken()
+
 	i.wg.Wait()
 
 	return nil
@@ -91,6 +98,7 @@ func (i *Indexer) Run() error {
 // Stop the indexer
 func (i *Indexer) Stop() error {
 	i.logger.Info("Stopping indexer")
+	i.stopChannel <- true
 	i.stopChannel <- true
 	return nil
 }
@@ -238,8 +246,61 @@ func (i *Indexer) indexBlocks() {
 
 			// All good, save last processed and increase height
 			status.LastProcessedHeight = currentHeight
-			i.db.Save(&status)
+			i.db.Model(&status).Where("chain_id = ?", i.chainID).UpdateColumns(map[string]interface{}{
+				"last_processed_height": currentHeight,
+				"date_updated":          time.Now(),
+			})
 			currentHeight = currentHeight + 1
+		}
+	}
+}
+
+// updateBaseToken updates the price of the base token every minute
+// via CoinGecko
+func (i *Indexer) updateBaseToken() {
+	// Fetch blocks interval
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-i.stopChannel:
+			i.logger.Info("Stop fetching price data")
+			i.wg.Done()
+			return
+		case <-ticker.C:
+			queryResult, err := http.Get(i.baseTokenBinanceEndpoint)
+			if err != nil {
+				i.logger.Error(err)
+			}
+			defer queryResult.Body.Close()
+
+			var response map[string]string
+			err = json.NewDecoder(queryResult.Body).Decode(&response)
+			if err != nil {
+				i.logger.Error(err)
+			}
+
+			// Store the price
+			price, err := strconv.ParseFloat(response["price"], 64)
+			if err != nil {
+				i.logger.Error(err)
+			}
+
+			var statusModel models.Status
+			result := i.db.Where("chain_id = ?", i.chainID).First(&statusModel)
+			if result.Error != nil {
+				i.logger.Error(result.Error)
+			}
+
+			result = i.db.Model(&statusModel).Where("chain_id = ?", i.chainID).Update("base_token_usd", price)
+			if result.Error != nil {
+				i.logger.Error(result.Error)
+			} else {
+				i.logger.WithFields(logrus.Fields{
+					"price": price,
+				}).Info("Updated base token price")
+			}
 		}
 	}
 }
