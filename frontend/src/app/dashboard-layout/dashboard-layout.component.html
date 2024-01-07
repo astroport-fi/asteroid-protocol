@@ -7,7 +7,7 @@
         <div class="logo">
           <a href="/app/dashboard">
             <!-- <span class="temp-logo">Asteroids</span> -->
-            <img src="../../assets/logo/astroport-icon-white.svg" />
+            <img src="../../assets/logo/a-white-on-transparent-250.png" />
           </a>
           <div class="outpost">
             Asteroid Protocol
@@ -59,36 +59,37 @@
         </ion-list>
         <ion-accordion-group>
           <ion-accordion value="first">
-            <ion-item slot="header">
+            <ion-item slot="header" lines="none">
               <ion-label>Inscriptions</ion-label>
             </ion-item>
             <ion-menu-toggle autoHide="false" slot="content">
-              <ion-item [button]="true" [routerLink]="['/app/create/inscription']" routerLinkActive="active">
+              <ion-item [button]="true" [routerLink]="['/app/create/inscription']" routerLinkActive="active"
+                lines="none">
                 <ion-label>Create</ion-label>
               </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle autoHide="false" slot="content">
-              <ion-item [button]="true" [routerLink]="['/app/inscriptions']" routerLinkActive="active">
+              <ion-item [button]="true" [routerLink]="['/app/inscriptions']" routerLinkActive="active" lines="none">
                 <ion-label>Browse</ion-label>
               </ion-item>
             </ion-menu-toggle>
           </ion-accordion>
           <ion-accordion value="second">
-            <ion-item slot="header">
+            <ion-item slot="header" lines="none">
               <ion-label>CFT-20 Tokens</ion-label>
             </ion-item>
             <ion-menu-toggle autoHide="false" slot="content">
-              <ion-item [button]="true" [routerLink]="['/app/create/token']" routerLinkActive="active">
+              <ion-item [button]="true" [routerLink]="['/app/create/token']" routerLinkActive="active" lines="none">
                 <ion-label>Create</ion-label>
               </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle autoHide="false" slot="content">
-              <ion-item [button]="true" [routerLink]="['/app/tokens']" routerLinkActive="active">
+              <ion-item [button]="true" [routerLink]="['/app/tokens']" routerLinkActive="active" lines="none">
                 <ion-label>Browse</ion-label>
               </ion-item>
             </ion-menu-toggle>
             <ion-menu-toggle autoHide="false" slot="content">
-              <ion-item [button]="true" [routerLink]="['/app/trade/tokens']" routerLinkActive="active">
+              <ion-item [button]="true" [routerLink]="['/app/trade/tokens']" routerLinkActive="active" lines="none">
                 <ion-label>Trade</ion-label>
               </ion-item>
             </ion-menu-toggle>

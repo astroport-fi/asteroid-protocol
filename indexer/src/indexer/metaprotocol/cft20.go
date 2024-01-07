@@ -469,7 +469,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 
 		result = protocol.db.Save(&positionModel)
 		if result.Error != nil {
-			return fmt.Errorf("unable to create sell position '%s'", err)
+			return fmt.Errorf("unable to create sell position '%s'", result.Error)
 		}
 
 		// Record the transfer
@@ -516,7 +516,10 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
 				// The first send should hold the amount being used to buy the tokens with
 				if v.Amount[0].Amount != fmt.Sprintf("%d", openOrderModel.Total) {
-					return fmt.Errorf("incorrect amount sent to buy tokens")
+					return fmt.Errorf("incorrect amount sent to buy tokens, got %s, expected %d", v.Amount[0].Amount, openOrderModel.Total)
+				}
+				if v.Amount[0].Denom != "uatom" {
+					return fmt.Errorf("incorrect denom sent to buy tokens, got %s, expected uatom", v.Amount[0].Denom)
 				}
 				if v.ToAddress != openOrderModel.SellerAddress {
 					return fmt.Errorf("attempting to buy from incorrect seller")

@@ -1,36 +1,64 @@
 export const environment = {
   production: true,
-  domain: 'private-testnet.meteors.app',
+  domain: 'private-testnet.asteroidprotocol.io',
   limits: {
     maxFileSize: 770000,
   },
   fees: {
     protocol: {
-      receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
-      amount: [
-        {
+      inscription: {
+        inscribe: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "10000"
-        }
-      ]
+          amount: "5000"
+        },
+      },
+      cft20: {
+        deploy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "2000"
+        },
+        mint: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        transfer: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        list: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        buy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        delist: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+      },
     },
     chain: {
-      gasLimit: "100000000",
-      amount: {
-        denom: "uatom",
-        amount: "10000",
-      },
+      gasLimit: "12000000"
     }
   },
   api: {
-    endpoint: 'https://private-testnet-api.meteors.app/v1/graphql',
-    explorer: 'https://private-testnet-api.meteors.app/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    endpoint: 'https://private-testnet-api.asteroidprotocol.io/v1/graphql',
+    explorer: 'https://private-testnet-api.asteroidprotocol.io/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {
     chainId: "gaialocal-1",
     chainName: "Private Cosmos Hub",
-    rpc: "https://private-testnet-api.meteors.app/chain/gaia/rpc",
-    rest: "https://private-testnet-api.meteors.app/chain/gaia/lcd",
+    rpc: "https://private-testnet-api.asteroidprotocol.io/chain/gaia/rpc",
+    rest: "https://private-testnet-api.asteroidprotocol.io/chain/gaia/lcd",
     bip44: {
       coinType: 118
     },

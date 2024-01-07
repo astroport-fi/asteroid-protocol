@@ -7,7 +7,7 @@
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
-              <ion-back-button defaultHref="/app/tokens"></ion-back-button>
+              <ion-back-button defaultHref="/app/trade/tokens"></ion-back-button>
             </ion-buttons>
             <ion-title>
               <!-- Less 1 because database starts at 1 and not 0 -->
@@ -81,65 +81,48 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-          <ion-grid>
-            <ion-row class="break pt-3">
-              <ion-col>
-                <ion-segment color="primary">
-                  <ion-segment-button value="trades">
-                    <ion-label>Buy {{ token.ticker }}</ion-label>
-                  </ion-segment-button>
-                  <ion-segment-button value="history">
-                    <ion-label>Trade history</ion-label>
-                  </ion-segment-button>
-                </ion-segment>
-              </ion-col>
-            </ion-row>
-            <ion-row class="pt-3">
-              <ion-col>
-                <table>
-                  <tr>
-                    <th>
-                      Order #
-                    </th>
-                    <th>
-                      Price per {{ token.ticker }}
-                    </th>
-                    <th>
-                      Amount
-                    </th>
-                    <th>
-                      Total
-                    </th>
-                    <th>
-                      &nbsp;
-                    </th>
-                  </tr>
-                  <tr *ngFor="let item of positions; let index">
-                    <td>
-                      {{ item.id }}
-                    </td>
-                    <td>
-                      {{ item.ppt | tokenDecimals:6 }}
-                    </td>
-                    <td>
-                      {{ item.amount | tokenDecimals:token.decimals }}
-                    </td>
-                    <td>
-                      {{ item.total | tokenDecimals:6 }}
-                    </td>
-                    <td>
-                      <ion-button (click)="buy(item.id)">Buy</ion-button>
-                      <ion-button (click)="cancel(item.id)" color="danger">Cancel</ion-button>
-                    </td>
-                  </tr>
-                </table>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <div class="list break">
+            <ion-grid class="token-holdings-list">
+              <ion-row class="item">
+                <ion-col>
+                  Order #
+                </ion-col>
+                <ion-col>
+                  ATOM per {{ token.ticker }}
+                </ion-col>
+                <ion-col>
+                  {{ token.ticker }} Amount
+                </ion-col>
+                <ion-col>
+                  Total ATOM
+                </ion-col>
+                <ion-col>
+                  &nbsp;
+                </ion-col>
+              </ion-row>
+              <ion-row class="item interactable" *ngFor="let item of positions; index as i">
+                <ion-col>
+                  {{ item.id }}
+                </ion-col>
+                <ion-col>
+                  {{ item.ppt | tokenDecimals:6 | number:'1.2-2' }}
+                </ion-col>
+                <ion-col>
+                  {{ item.amount | tokenDecimals:token.decimals | number:'1.2-2' }}
+                </ion-col>
+                <ion-col>
+                  {{ item.total | tokenDecimals:6 | number:'1.2-2'}}
+                </ion-col>
+                <ion-col class="actions">
+                  <ion-button (click)="buy(item.id)">Buy</ion-button>
+                  <!-- <ion-button (click)="cancel(item.id)" color="danger">Cancel</ion-button> -->
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
         </div>
         <div style="height: 100px;"></div>
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>

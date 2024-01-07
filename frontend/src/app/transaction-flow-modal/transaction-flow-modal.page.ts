@@ -28,6 +28,7 @@ export class TransactionFlowModalPage implements OnInit {
   @Input() metadata: string;
   @Input() data: string;
   @Input() messages: any[] = [];
+  @Input() messagesJSON: any[] = [];
 
   isSimulating: boolean = true;
   errorText: string = '';
@@ -70,7 +71,7 @@ export class TransactionFlowModalPage implements OnInit {
 
     this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
     try {
-      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees, this.messages);
+      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees, this.messagesJSON);
       const result = await this.chainService.simulateTransaction(simulateTx);
 
       if (result) {
@@ -108,9 +109,9 @@ export class TransactionFlowModalPage implements OnInit {
     }
 
     try {
-      // const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
+      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
 
-      const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
+      // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 

@@ -1,6 +1,9 @@
 /* eslint-disable */
 
 export const AllTypesProps: Record<string,any> = {
+	Boolean_comparison_exp:{
+
+	},
 	Int_comparison_exp:{
 
 	},
@@ -548,6 +551,8 @@ export const AllTypesProps: Record<string,any> = {
 		chain_id:"String_comparison_exp",
 		date_created:"timestamp_comparison_exp",
 		id:"Int_comparison_exp",
+		is_cancelled:"Boolean_comparison_exp",
+		is_filled:"Boolean_comparison_exp",
 		ppt:"bigint_comparison_exp",
 		seller_address:"String_comparison_exp",
 		token:"token_bool_exp",
@@ -561,6 +566,8 @@ export const AllTypesProps: Record<string,any> = {
 		chain_id:"order_by",
 		date_created:"order_by",
 		id:"order_by",
+		is_cancelled:"order_by",
+		is_filled:"order_by",
 		ppt:"order_by",
 		seller_address:"order_by",
 		token:"token_order_by",
@@ -780,6 +787,8 @@ export const ReturnTypes: Record<string,any> = {
 		chain_id:"String",
 		date_created:"timestamp",
 		id:"Int",
+		is_cancelled:"Boolean",
+		is_filled:"Boolean",
 		ppt:"bigint",
 		seller_address:"String",
 		token:"token",

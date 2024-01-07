@@ -77,9 +77,25 @@ export class TradeTokenPage implements OnInit {
       token_open_position: [
         {
           where: {
-            token_id: {
-              _eq: this.token.id
-            }
+            _and: [
+              {
+                token: {
+                  ticker: {
+                    _eq: this.activatedRoute.snapshot.params["ticker"].toUpperCase()
+                  }
+                }
+              },
+              {
+                is_cancelled: {
+                  _eq: false
+                }
+              },
+              {
+                is_filled: {
+                  _eq: false
+                }
+              }
+            ]
           }
         }, {
           id: true,
@@ -89,6 +105,8 @@ export class TradeTokenPage implements OnInit {
           ppt: true,
           amount: true,
           total: true,
+          is_cancelled: false,
+          is_filled: false,
         }
       ]
     });
@@ -150,8 +168,31 @@ export class TradeTokenPage implements OnInit {
   async buy(orderNumber: number) {
     console.log("buy" + orderNumber);
 
+    const chain = Chain(environment.api.endpoint)
+    const position = await chain('query')({
+      token_open_position: [
+        {
+          where: {
+            id: {
+              _eq: orderNumber
+            }
+          }
+        }, {
+          id: true,
+          token: {
+            ticker: true,
+          },
+          seller_address: true,
+          ppt: true,
+          amount: true,
+          total: true,
+          is_cancelled: true,
+          is_filled: true,
+        }
+      ]
+    });
 
-
+    // TODO: If cancelled or filled, show error message
 
 
     if (!this.walletService.hasWallet()) {
@@ -180,18 +221,32 @@ export class TradeTokenPage implements OnInit {
       return;
     }
 
+    const totaluatom: bigint = position.token_open_position[0].total as bigint;
+
     const purchaseMessage = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
       value: MsgSend.encode({
         fromAddress: (await this.walletService.getAccount()).address,
-        toAddress: "cosmos1m857lgtjssgt0wm3crzfmt3v950vqnkqq29mmz",
+        toAddress: position.token_open_position[0].seller_address,
         amount: [
           {
             denom: "uatom",
-            amount: "275000000",
+            amount: totaluatom.toString(),
           }
         ],
       }).finish(),
+    }
+
+    const purchaseMessageJSON = {
+      '@type': "/cosmos.bank.v1beta1.MsgSend",
+      from_address: (await this.walletService.getAccount()).address,
+      to_address: position.token_open_position[0].seller_address,
+      amount: [
+        {
+          denom: "uatom",
+          amount: totaluatom.toString(),
+        }
+      ],
     }
 
     // Construct metaprotocol memo message
@@ -212,7 +267,8 @@ export class TradeTokenPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'buy',
-        messages: [purchaseMessage]
+        messages: [purchaseMessage],
+        messagesJSON: [purchaseMessageJSON],
       }
     });
     modal.present();

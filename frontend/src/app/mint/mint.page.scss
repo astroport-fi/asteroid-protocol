@@ -55,12 +55,12 @@ ion-content {
     font-size: 14px;
     text-transform: uppercase;
     font-weight: bold;
-    color: rgba(253, 135, 71, 0.6);
+    color: rgba(253, 135, 71, 0.6) !important;
     transition: all 0.2s ease-in-out;
 
     &:hover {
       transition: all 0.2s ease-in-out;
-      color: rgba(253, 135, 71, 1);
+      color: rgba(253, 135, 71, 1) !important;
     }
   }
 }

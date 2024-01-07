@@ -10,20 +10,48 @@ export const environment = {
   },
   fees: {
     protocol: {
-      receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
-      amount: [
-        {
+      inscription: {
+        inscribe: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "10000"
-        }
-      ]
+          amount: "5000"
+        },
+      },
+      cft20: {
+        deploy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "2000"
+        },
+        mint: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        transfer: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        list: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        buy: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+        delist: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "1000"
+        },
+      },
     },
     chain: {
-      gasLimit: "100000000",
-      amount: {
-        denom: "uatom",
-        amount: "10000",
-      },
+      gasLimit: "12000000"
     }
   },
   api: {

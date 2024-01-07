@@ -842,6 +842,18 @@ export type ScalarCoders = {
 type ZEUS_UNIONS = never
 
 export type ValueTypes = {
+	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+	["Boolean_comparison_exp"]: {
+		_eq?: boolean | undefined | null | Variable<any, string>,
+		_gt?: boolean | undefined | null | Variable<any, string>,
+		_gte?: boolean | undefined | null | Variable<any, string>,
+		_in?: Array<boolean> | undefined | null | Variable<any, string>,
+		_is_null?: boolean | undefined | null | Variable<any, string>,
+		_lt?: boolean | undefined | null | Variable<any, string>,
+		_lte?: boolean | undefined | null | Variable<any, string>,
+		_neq?: boolean | undefined | null | Variable<any, string>,
+		_nin?: Array<boolean> | undefined | null | Variable<any, string>
+	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
 		_eq?: number | undefined | null | Variable<any, string>,
@@ -1602,6 +1614,8 @@ export type ValueTypes = {
 		chain_id?: boolean | `@${string}`,
 		date_created?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		is_cancelled?: boolean | `@${string}`,
+		is_filled?: boolean | `@${string}`,
 		ppt?: boolean | `@${string}`,
 		seller_address?: boolean | `@${string}`,
 		/** An object relationship */
@@ -1622,6 +1636,8 @@ export type ValueTypes = {
 		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_cancelled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_filled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
@@ -1636,6 +1652,8 @@ export type ValueTypes = {
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_cancelled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
@@ -1659,6 +1677,8 @@ export type ValueTypes = {
 		chain_id?: string | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
+		is_cancelled?: boolean | undefined | null | Variable<any, string>,
+		is_filled?: boolean | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		seller_address?: string | undefined | null | Variable<any, string>,
 		token_id?: number | undefined | null | Variable<any, string>,
@@ -1802,6 +1822,18 @@ export type ResolverInputTypes = {
 		subscription?: ResolverInputTypes["subscription_root"],
 		__typename?: boolean | `@${string}`
 	}>;
+	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+	["Boolean_comparison_exp"]: {
+		_eq?: boolean | undefined | null,
+		_gt?: boolean | undefined | null,
+		_gte?: boolean | undefined | null,
+		_in?: Array<boolean> | undefined | null,
+		_is_null?: boolean | undefined | null,
+		_lt?: boolean | undefined | null,
+		_lte?: boolean | undefined | null,
+		_neq?: boolean | undefined | null,
+		_nin?: Array<boolean> | undefined | null
+	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
 		_eq?: number | undefined | null,
@@ -2562,6 +2594,8 @@ export type ResolverInputTypes = {
 		chain_id?: boolean | `@${string}`,
 		date_created?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		is_cancelled?: boolean | `@${string}`,
+		is_filled?: boolean | `@${string}`,
 		ppt?: boolean | `@${string}`,
 		seller_address?: boolean | `@${string}`,
 		/** An object relationship */
@@ -2582,6 +2616,8 @@ export type ResolverInputTypes = {
 		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		is_cancelled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		is_filled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 		ppt?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		seller_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
@@ -2596,6 +2632,8 @@ export type ResolverInputTypes = {
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_created?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
+		is_cancelled?: ResolverInputTypes["order_by"] | undefined | null,
+		is_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
 		token?: ResolverInputTypes["token_order_by"] | undefined | null,
@@ -2619,6 +2657,8 @@ export type ResolverInputTypes = {
 		chain_id?: string | undefined | null,
 		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
 		id?: number | undefined | null,
+		is_cancelled?: boolean | undefined | null,
+		is_filled?: boolean | undefined | null,
 		ppt?: ResolverInputTypes["bigint"] | undefined | null,
 		seller_address?: string | undefined | null,
 		token_id?: number | undefined | null,
@@ -2760,6 +2800,18 @@ export type ModelTypes = {
 	["schema"]: {
 		query?: ModelTypes["query_root"] | undefined,
 		subscription?: ModelTypes["subscription_root"] | undefined
+	};
+	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+	["Boolean_comparison_exp"]: {
+		_eq?: boolean | undefined,
+		_gt?: boolean | undefined,
+		_gte?: boolean | undefined,
+		_in?: Array<boolean> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: boolean | undefined,
+		_lte?: boolean | undefined,
+		_neq?: boolean | undefined,
+		_nin?: Array<boolean> | undefined
 	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
@@ -3419,6 +3471,8 @@ export type ModelTypes = {
 		chain_id: string,
 		date_created: ModelTypes["timestamp"],
 		id: number,
+		is_cancelled: boolean,
+		is_filled: boolean,
 		ppt: ModelTypes["bigint"],
 		seller_address: string,
 		/** An object relationship */
@@ -3438,6 +3492,8 @@ export type ModelTypes = {
 		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
 		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		is_cancelled?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		is_filled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 		ppt?: ModelTypes["bigint_comparison_exp"] | undefined,
 		seller_address?: ModelTypes["String_comparison_exp"] | undefined,
 		token?: ModelTypes["token_bool_exp"] | undefined,
@@ -3452,6 +3508,8 @@ export type ModelTypes = {
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_created?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
+		is_cancelled?: ModelTypes["order_by"] | undefined,
+		is_filled?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
 		token?: ModelTypes["token_order_by"] | undefined,
@@ -3474,6 +3532,8 @@ export type ModelTypes = {
 		chain_id?: string | undefined,
 		date_created?: ModelTypes["timestamp"] | undefined,
 		id?: number | undefined,
+		is_cancelled?: boolean | undefined,
+		is_filled?: boolean | undefined,
 		ppt?: ModelTypes["bigint"] | undefined,
 		seller_address?: string | undefined,
 		token_id?: number | undefined,
@@ -3609,6 +3669,18 @@ export type ModelTypes = {
 }
 
 export type GraphQLTypes = {
+	/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+	["Boolean_comparison_exp"]: {
+		_eq?: boolean | undefined,
+		_gt?: boolean | undefined,
+		_gte?: boolean | undefined,
+		_in?: Array<boolean> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: boolean | undefined,
+		_lte?: boolean | undefined,
+		_neq?: boolean | undefined,
+		_nin?: Array<boolean> | undefined
+	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
 		_eq?: number | undefined,
@@ -4281,6 +4353,8 @@ export type GraphQLTypes = {
 		chain_id: string,
 		date_created: GraphQLTypes["timestamp"],
 		id: number,
+		is_cancelled: boolean,
+		is_filled: boolean,
 		ppt: GraphQLTypes["bigint"],
 		seller_address: string,
 		/** An object relationship */
@@ -4300,6 +4374,8 @@ export type GraphQLTypes = {
 		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		is_cancelled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		is_filled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 		ppt?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		seller_address?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token?: GraphQLTypes["token_bool_exp"] | undefined,
@@ -4314,6 +4390,8 @@ export type GraphQLTypes = {
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_created?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
+		is_cancelled?: GraphQLTypes["order_by"] | undefined,
+		is_filled?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
 		token?: GraphQLTypes["token_order_by"] | undefined,
@@ -4337,6 +4415,8 @@ export type GraphQLTypes = {
 		chain_id?: string | undefined,
 		date_created?: GraphQLTypes["timestamp"] | undefined,
 		id?: number | undefined,
+		is_cancelled?: boolean | undefined,
+		is_filled?: boolean | undefined,
 		ppt?: GraphQLTypes["bigint"] | undefined,
 		seller_address?: string | undefined,
 		token_id?: number | undefined,
@@ -4538,6 +4618,8 @@ export const enum token_open_position_select_column {
 	chain_id = "chain_id",
 	date_created = "date_created",
 	id = "id",
+	is_cancelled = "is_cancelled",
+	is_filled = "is_filled",
 	ppt = "ppt",
 	seller_address = "seller_address",
 	token_id = "token_id",
@@ -4580,6 +4662,7 @@ export const enum transaction_select_column {
 }
 
 type ZEUS_VARIABLES = {
+	["Boolean_comparison_exp"]: ValueTypes["Boolean_comparison_exp"];
 	["Int_comparison_exp"]: ValueTypes["Int_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
 	["bigint"]: ValueTypes["bigint"];

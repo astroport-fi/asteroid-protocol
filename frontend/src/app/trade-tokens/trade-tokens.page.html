@@ -19,23 +19,36 @@
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
           <div class="list">
-            <table>
-              <tr>
-                <th>Ticker</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Market cap</th>
-                <th>Volume (24h)</th>
-              </tr>
-              <tr *ngFor="let item of tokens; let index">
-                <td><a [routerLink]="['/app/trade', item.ticker]">{{ item.ticker }}</a></td>
-                <td>{{ item.ticker }}</td>
-                <td>{{ item.name }}</td>
-                <td>$0.00</td>
-                <td>$0.00</td>
-                <td>$0.00</td>
-              </tr>
-            </table>
+            <ion-grid class="token-holdings-list">
+              <ion-row class="item">
+                <ion-col>Ticker</ion-col>
+                <ion-col>Name</ion-col>
+                <ion-col>Price</ion-col>
+                <ion-col>Market cap</ion-col>
+                <ion-col>Volume (24h)</ion-col>
+                <ion-col>&nbsp;</ion-col>
+              </ion-row>
+              <ion-row class="item interactable" *ngFor="let item of tokens; index as i"
+                [routerLink]="['/app/trade/', item.ticker]">
+                <ion-col>
+                  {{ item.ticker }}
+                </ion-col>
+                <ion-col>
+                  {{ item.name }}
+                </ion-col>
+                <ion-col>
+                  $0.00
+                </ion-col>
+                <ion-col>
+                  $0.00
+                </ion-col><ion-col>
+                  $0.00
+                </ion-col>
+                <ion-col class="actions">
+                  <ion-icon name="chevron-forward"></ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </div>
 
           <div class="list" *ngIf="!isLoading && tokens.length == 0">

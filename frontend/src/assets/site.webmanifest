@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Asteroid Protocol",
+    "short_name": "Asteroids75_sei_maker_collect_03_signed_donovan_39.json",
     "icons": [
         {
             "src": "/icon/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#06011e",
+    "background_color": "#06011e",
     "display": "standalone"
 }
