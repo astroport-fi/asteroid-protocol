@@ -303,3 +303,74 @@ a {
 .break {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+.p-datatable {
+    background-color: transparent !important;
+}
+
+.p-paginator {
+    border: none;
+}
+
+.p-datatable-header {
+    text-align: right;
+}
+
+.p-paginator,
+.p-datatable-header,
+.p-datatable-tbody tr,
+.p-datatable-tbody td,
+.p-datatable-thead th {
+    background-color: transparent !important;
+}
+
+p-table {
+
+    .p-datatable .p-datatable-tbody>tr {
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+    }
+
+    .p-datatable .p-datatable-thead>tr>th {
+        font-size: 18px;
+        padding-top: 10px;
+        // background-color: transparent !important;
+    }
+
+    .p-datatable .p-datatable-tbody>tr>td {
+        // padding: 10px;
+        padding: 10px;
+    }
+
+    .token-logo {
+        width: 120px;
+        padding: 10px !important;
+
+        .ticker {
+            width: 100%;
+            height: 100px;
+            background-color: rgba(0, 0, 0, 0.3);
+            text-align: center;
+            text-transform: uppercase;
+            border-radius: 10px;
+            font-size: 18px;
+            padding-top: 35px;
+        }
+
+        .image {
+            img {
+                border-radius: 10px;
+            }
+        }
+    }
+
+    .search {
+        max-width: 200px;
+        text-align: right;
+        margin-right: 0;
+        margin-left: auto;
+    }
+}

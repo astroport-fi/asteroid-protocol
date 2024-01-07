@@ -33,6 +33,8 @@
             ],
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/primeng/resources/themes/lara-dark-teal/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "src/theme/variables.scss",
               "src/global.scss"
             ],
@@ -113,6 +115,8 @@
             ],
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/primeng/resources/themes/lara-dark-teal/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "src/theme/variables.scss",
               "src/global.scss"
             ],

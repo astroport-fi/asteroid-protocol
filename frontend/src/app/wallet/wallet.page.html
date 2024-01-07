@@ -20,7 +20,7 @@
               <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">
                 <div class="avatar">
                   <ion-avatar>
-                    <img alt="Anon" src="../../assets/logo/astroport-icon-white.svg" />
+                    <img alt="Anon" src="../../assets/logo/a-white-on-transparent-500.png" />
                   </ion-avatar>
                   <ion-chip color="warning" [outline]="true">
                     <ion-icon name="key-sharp" color="warning"></ion-icon>
@@ -66,8 +66,7 @@
                     </ion-col>
                   </ion-row>
                   <ion-row class="item interactable" *ngFor="let item of holdings; index as i"
-                    [routerLink]="['/app/manage/token', item.token.transaction.hash]"
-                    [queryParams]="{address: selectedAddress}">
+                    [routerLink]="['/app/wallet/token', item.token.ticker]" [queryParams]="{address: selectedAddress}">
                     <ion-col>
                       {{ i + 1 }}
                     </ion-col>
@@ -93,7 +92,7 @@
 
             <ion-row *ngIf="!isLoading && selectedSection == 'tokens'" class="p-4">
               <ion-col offset-xl="1" size-xl="10" size="12" *ngIf="tokens.length > 0">
-                <a class="inscription-item main-content" [routerLink]="['/app/token', item.transaction.hash]"
+                <a class="inscription-item main-content" [routerLink]="['/app/token', item.ticker]"
                   *ngFor="let item of tokens; let index">
                   <div class="content">
                     <div class="image" *ngIf="item.content_path">

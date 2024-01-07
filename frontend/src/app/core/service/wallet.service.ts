@@ -105,11 +105,16 @@ export class WalletService {
       return false
     }
 
-    const signer = await this.getSigner();
-    if (signer) {
+    if (localStorage.getItem(environment.storage.connectedWalletKey)) {
       return true;
     }
     return false;
+
+    // const signer = await this.getSigner();
+    // if (signer) {
+    //   return true;
+    // }
+    // return false;
   }
 
   /**

@@ -28,7 +28,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -87,12 +87,12 @@ export class DashboardLayoutComponent {
   connectedAccount: any = {};
 
   constructor(private walletService: WalletService, private alertController: AlertController) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown });
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline });
   }
 
   async ngOnInit() {
 
-    const walletDataJSON = localStorage.getItem(environment.storage.connectedWallet);;
+    const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
     if (walletDataJSON) {
       const walletData: ConenctedWallet = JSON.parse(walletDataJSON);
       console.log("Lastknownwallet");
@@ -155,7 +155,7 @@ export class DashboardLayoutComponent {
             address: account.address,
             walletType: WalletType.Keplr // Only one supported for now
           }
-          localStorage.setItem(environment.storage.connectedWallet, JSON.stringify(connectedWallet));
+          localStorage.setItem(environment.storage.connectedWalletKey, JSON.stringify(connectedWallet));
 
         }).catch((err) => {
           this.isWalletConnected = false;

@@ -11,6 +11,7 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletService } from '../core/service/wallet.service';
+import { TableModule } from 'primeng/table';
 
 
 @Component({
@@ -18,14 +19,17 @@ import { WalletService } from '../core/service/wallet.service';
   templateUrl: './view-token.page.html',
   styleUrls: ['./view-token.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe]
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule]
 })
 export class ViewTokenPage implements OnInit {
   isLoading = false;
   token: any;
+  positions: any;
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
+  selectedSection: string = 'trading';
+  walletConnected: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService) {
     this.tokenLaunchDate = new Date();
@@ -33,6 +37,8 @@ export class ViewTokenPage implements OnInit {
 
   async ngOnInit() {
     this.isLoading = true;
+    this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'trading';
+    this.walletConnected = await this.walletService.isConnected();
 
     const chain = Chain(environment.api.endpoint)
     const result = await chain('query')({
@@ -70,6 +76,44 @@ export class ViewTokenPage implements OnInit {
     if (this.tokenLaunchDate.getTime() < Date.now()) {
       this.tokenIsLaunched = true;
     }
+
+    const positionsResult = await chain('query')({
+      token_open_position: [
+        {
+          where: {
+            _and: [
+              {
+                token_id: {
+                  _eq: this.token.id
+                }
+              },
+              {
+                is_cancelled: {
+                  _eq: false
+                }
+              },
+              {
+                is_filled: {
+                  _eq: false
+                }
+              }
+            ]
+          }
+        }, {
+          id: true,
+          token: {
+            ticker: true,
+          },
+          ppt: true,
+          amount: true,
+          total: true,
+          is_cancelled: false,
+          is_filled: false,
+        }
+      ]
+    });
+
+    this.positions = positionsResult.token_open_position;
     this.isLoading = false;
   }
 
@@ -120,6 +164,10 @@ export class ViewTokenPage implements OnInit {
       }
     });
     modal.present();
+  }
+
+  sectionChanged($event: any) {
+    this.selectedSection = $event.detail.value;
   }
 
 }

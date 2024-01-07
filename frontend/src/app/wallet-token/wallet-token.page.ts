@@ -18,13 +18,13 @@ import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
 
 @Component({
-  selector: 'app-manage-token',
-  templateUrl: './manage-token.page.html',
-  styleUrls: ['./manage-token.page.scss'],
+  selector: 'app-wallet-token',
+  templateUrl: './wallet-token.page.html',
+  styleUrls: ['./wallet-token.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, ReactiveFormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, ShortenAddressPipe, MaskitoModule],
 })
-export class ManageTokenPage implements OnInit {
+export class WalletTokenPage implements OnInit {
 
   isLoading = false;
   token: any;
@@ -88,10 +88,8 @@ export class ManageTokenPage implements OnInit {
         token: [
           {
             where: {
-              transaction: {
-                hash: {
-                  _eq: this.activatedRoute.snapshot.params["txhash"]
-                }
+              ticker: {
+                _eq: this.activatedRoute.snapshot.params["ticker"]
               }
             }
           }, {

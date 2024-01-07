@@ -16,8 +16,59 @@
           </div>
         </ion-header>
 
-        <div class="aligned">
+        <div class="aligned main-content">
           <div *ngIf="isLoading">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          </div>
+
+          <p-table #data [value]="tokens" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="10"
+            [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
+            ['name', 'ticker' ]" styleClass="token-list">
+            <ng-template pTemplate="caption">
+              <div class="flex search">
+                <div>
+                  <ion-input #textInput label="Search" labelPlacement="floating" placeholder="Name or ticker"
+                    (input)="data.filterGlobal(textInput.value, 'contains')"><ion-icon slot="end" name="search-outline"
+                      aria-hidden="true"></ion-icon></ion-input>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>&nbsp;</th>
+                <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                <th pSortableColumn="volume">Volume <p-sortIcon field="volume"></p-sortIcon></th>
+                <th pSortableColumn="circulating">Minted <p-sortIcon field="circulating"></p-sortIcon></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-token>
+              <tr [routerLink]="['/app/token', token.ticker]">
+                <td class="token-logo">
+                  <div class="image" *ngIf="token.content_path">
+                    <img [src]="token.content_path" />
+                  </div>
+                  <div class="ticker" *ngIf="!token.content_path">{{ token.ticker }}</div>
+
+                </td>
+                <td pFrozenColumn>{{ token.ticker }}</td>
+                <td>{{ token.name }}</td>
+                <td>$0.00</td>
+                <td>$0.00</td>
+                <td>40%</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">No tokens found.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+
+          <!-- <div *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
           <div class="list" *ngIf="!isLoading && tokens.length > 0">
@@ -46,7 +97,7 @@
             <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
               <ion-infinite-scroll-content></ion-infinite-scroll-content>
             </ion-infinite-scroll>
-          </div>
+          </div> -->
           <div class="list" *ngIf="!isLoading && tokens.length == 0">
             No tokens found
           </div>

@@ -15,6 +15,20 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     children: [
       {
+        path: 'wallet',
+        pathMatch: 'prefix',
+        children: [
+          {
+            path: 'token/:ticker',
+            loadComponent: () => import('./wallet-token/wallet-token.page').then(m => m.WalletTokenPage)
+          },
+          {
+            path: ':address',
+            loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+          },
+        ]
+      },
+      {
         path: 'dashboard',
         loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
       },
@@ -39,24 +53,8 @@ export const routes: Routes = [
         loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
       {
-        path: 'manage/token/:txhash',
-        loadComponent: () => import('./manage-token/manage-token.page').then(m => m.ManageTokenPage)
-      },
-      {
-        path: 'wallet/:address',
-        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
-      },
-      {
         path: 'tokens',
         loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
-      },
-      {
-        path: 'trade/tokens',
-        loadComponent: () => import('./trade-tokens/trade-tokens.page').then(m => m.TradeTokensPage)
-      },
-      {
-        path: 'trade/:ticker',
-        loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)
       },
       {
         path: 'inscription/:txhash',

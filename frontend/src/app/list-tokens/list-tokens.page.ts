@@ -9,13 +9,14 @@ import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-list-tokens',
   templateUrl: './list-tokens.page.html',
   styleUrls: ['./list-tokens.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule]
 })
 export class ListTokensPage implements OnInit {
 
@@ -24,7 +25,7 @@ export class ListTokensPage implements OnInit {
   tokens: any = null;
   holdings: any = null;
   offset = 0;
-  limit = 50;
+  limit = 500;
   lastFetchCount = 0;
 
   constructor(private activatedRoute: ActivatedRoute) {
@@ -103,49 +104,49 @@ export class ListTokensPage implements OnInit {
     });
   }
 
-  async onIonInfinite(event: Event) {
-    if (this.lastFetchCount < this.limit) {
-      (event as InfiniteScrollCustomEvent).target.disabled = true;
-      return;
-    }
-    this.offset += this.limit;
+  // async onIonInfinite(event: Event) {
+  //   if (this.lastFetchCount < this.limit) {
+  //     (event as InfiniteScrollCustomEvent).target.disabled = true;
+  //     return;
+  //   }
+  //   this.offset += this.limit;
 
-    const chain = Chain(environment.api.endpoint);
-    const tokensResult = await chain('query')({
-      token: [
-        {
-          offset: this.offset,
-          limit: this.limit,
-          order_by: [
-            {
-              date_created: order_by.desc
-            }
-          ],
-          where: {
-            current_owner: {
-              _eq: this.selectedAddress
-            }
-          }
-        }, {
-          id: true,
-          transaction: {
-            hash: true
-          },
-          current_owner: true,
-          content_path: true,
-          name: true,
-          ticker: true,
-          max_supply: true,
-          decimals: true,
-          launch_timestamp: true,
-          date_created: true
-        }
-      ]
-    });
-    this.tokens.push(...tokensResult.token);
-    this.lastFetchCount = tokensResult.token.length;
-    console.log(this.lastFetchCount);
+  //   const chain = Chain(environment.api.endpoint);
+  //   const tokensResult = await chain('query')({
+  //     token: [
+  //       {
+  //         offset: this.offset,
+  //         limit: this.limit,
+  //         order_by: [
+  //           {
+  //             date_created: order_by.desc
+  //           }
+  //         ],
+  //         where: {
+  //           current_owner: {
+  //             _eq: this.selectedAddress
+  //           }
+  //         }
+  //       }, {
+  //         id: true,
+  //         transaction: {
+  //           hash: true
+  //         },
+  //         current_owner: true,
+  //         content_path: true,
+  //         name: true,
+  //         ticker: true,
+  //         max_supply: true,
+  //         decimals: true,
+  //         launch_timestamp: true,
+  //         date_created: true
+  //       }
+  //     ]
+  //   });
+  //   this.tokens.push(...tokensResult.token);
+  //   this.lastFetchCount = tokensResult.token.length;
+  //   console.log(this.lastFetchCount);
 
-    (event as InfiniteScrollCustomEvent).target.complete();
-  }
+  //   (event as InfiniteScrollCustomEvent).target.complete();
+  // }
 }

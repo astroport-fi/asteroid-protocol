@@ -9,7 +9,7 @@ export const environment = {
     maxFileSize: 770000,
   },
   storage: {
-    connectedWallet: "connectedWallet"
+    connectedWalletKey: "connectedWallet"
   },
   fees: {
     protocol: {
@@ -17,29 +17,29 @@ export const environment = {
         inscribe: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "5000"
+          amount: "0"
         },
       },
       cft20: {
         deploy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "2000"
+          amount: "0"
         },
         mint: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         transfer: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         list: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         buy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
@@ -49,7 +49,7 @@ export const environment = {
         delist: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
       },
     },
