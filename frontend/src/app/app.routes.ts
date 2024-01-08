@@ -40,10 +40,6 @@ export const routes: Routes = [
         loadComponent: () => import('./create-token/create-token.page').then(m => m.CreateTokenPage)
       },
       {
-        path: 'create/alter-ego',
-        loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
-      },
-      {
         path: 'inscriptions',
         loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
