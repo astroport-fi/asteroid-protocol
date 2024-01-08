@@ -107,6 +107,7 @@ export class WalletPage implements OnInit {
           {
             token: {
               ticker: true,
+              content_path: true,
               max_supply: true,
               circulating_supply: true,
               decimals: true,

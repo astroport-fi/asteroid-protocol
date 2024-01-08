@@ -1,13 +1,13 @@
 <ion-content fullscreen="true">
   <ng-scrollbar autoHeightDisabled="false" visibility="hover">
-    <ion-grid *ngIf="!isWalletConnected">
+    <ion-grid *ngIf="!isWalletConnected && !isLoading">
       <ion-row>
         <ion-col>
           <app-dashboard></app-dashboard>
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-grid *ngIf="isWalletConnected">
+    <ion-grid *ngIf="isWalletConnected && !isLoading">
       <ion-row>
         <ion-col></ion-col>
         <ion-header class="no-shadow">
@@ -30,7 +30,7 @@
                 <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">
                   <div class="avatar off-page">
                     <ion-avatar>
-                      <img alt="Anon" src="../../assets/logo/a-white-on-transparent-500.png" />
+                      <img alt="" src="../../assets/logo/a-white-on-transparent-500.png" />
                     </ion-avatar>
                     <ion-chip color="warning" [outline]="true">
                       <ion-icon name="key-sharp" color="warning"></ion-icon>

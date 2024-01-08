@@ -30,7 +30,7 @@
         <div class="aligned" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
-              <ion-col size-lg="5" size-xs="8">
+              <ion-col size-lg="2" size-xs="4">
                 <div class="text-center">
                   <img class="rounded" [src]="token.content_path" *ngIf="token.content_path" />
                   <div class="ticker" *ngIf="!token.content_path">
@@ -38,19 +38,14 @@
                   </div>
                 </div>
               </ion-col>
-              <!-- <ion-col size-lg="5" size-xs="12" *ngIf="!token.content_path">
-                <div class="text-center">
-                  <div class="ticker mx-auto">{{ token.ticker }}<span>CFT-20 Token</span></div>
-                </div>
-              </ion-col> -->
-              <ion-col size-xl="6" size-lg="6" size-sm="8" size-xs="12">
+              <ion-col size-xl="8" size-lg="6" size-sm="8" size-xs="8">
+                <h1 class="mt-0">{{ token.ticker }}</h1>
+                <p class="note">{{ token.name }}</p>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
                 <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                      <h1 class="mt-0">{{ token.ticker }}</h1>
-                      <p class="note">{{ token.name }}</p>
-                    </ion-col>
-                  </ion-row>
                   <ion-row class="break pb-3">
                     <ion-col size="12">
                       <div class="meta">

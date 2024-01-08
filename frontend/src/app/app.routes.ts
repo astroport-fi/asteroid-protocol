@@ -32,10 +32,6 @@ export const routes: Routes = [
         loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
       },
       {
-        path: 'create',
-        loadComponent: () => import('./create/create.page').then(m => m.CreatePage)
-      },
-      {
         path: 'create/inscription',
         loadComponent: () => import('./create-inscription/create-inscription.page').then(m => m.CreateInscriptionPage)
       },

@@ -33,7 +33,8 @@
                 <ion-col>
                   <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
                     [rows]="10" [showCurrentPageReport]="true"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
+                    [globalFilterFields]="
                                             ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
                     sortField="ppt">
                     <ng-template pTemplate="header">
