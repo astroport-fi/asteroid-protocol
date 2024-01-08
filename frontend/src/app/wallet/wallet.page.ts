@@ -14,13 +14,14 @@ import { WalletService } from '../core/service/wallet.service';
 import { DashboardPage } from '../dashboard/dashboard.page';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TableModule } from 'primeng/table';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe]
 })
 export class WalletPage implements OnInit {
 

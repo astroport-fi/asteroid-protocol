@@ -6,6 +6,25 @@
     }
 }
 
+
+.address {
+    display: inline-block;
+}
+
+.address-short {
+    display: none;
+}
+
+@media only screen and (max-width: 500px) {
+    .address {
+        display: none;
+    }
+
+    .address-short {
+        display: inline-block;
+    }
+}
+
 .filter {
     margin-top: -15px;
     color: #888;
