@@ -29,7 +29,7 @@ export class ViewTokenPage implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
-  selectedSection: string = 'trading';
+  selectedSection: string = 'holders';
   walletConnected: boolean = false;
   baseTokenUSD: number = 0.00;
 
@@ -39,7 +39,7 @@ export class ViewTokenPage implements OnInit {
 
   async ngOnInit() {
     this.isLoading = true;
-    this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'trading';
+    this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'holders';
     this.walletConnected = await this.walletService.isConnected();
 
     this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();

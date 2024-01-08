@@ -1,8 +1,7 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -15,6 +14,11 @@
             </ion-title>
           </ion-toolbar>
         </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
+        class="main-content">
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -45,20 +49,6 @@
                     <ion-col>
                       <h1 class="mt-0">{{ token.ticker }}</h1>
                       <p class="note">{{ token.name }}</p>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row class="break pt-3 pb-3 own-balance" *ngIf="walletConnected">
-                    <ion-col size="12">
-                      <div class="meta">
-                        <span class="label">Your balance</span>
-                        <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}
-                          ($0.0)</span>
-                      </div>
-                      <div>
-                        <ion-button color="primary" fill="clear">Transfer</ion-button>
-                        <ion-button color="primary" fill="clear">Sell</ion-button>
-                        <ion-button color="primary" fill="clear">History</ion-button>
-                      </div>
                     </ion-col>
                   </ion-row>
                   <ion-row class="break pb-3">
@@ -123,12 +113,28 @@
             </ion-row>
           </ion-grid>
           <ion-grid>
-            <ion-row class="break pt-3">
+            <ion-row class="own-balance" *ngIf="walletConnected">
+              <ion-col size="12" class="ps-3 pt-0">
+                <h4>Your balance</h4>
+                <div class="meta">
+                  <span class="label"></span>
+                  <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}
+                    ($0.0)</span>
+                </div>
+                <div class="mt-2 mb-3">
+                  <ion-button color="primary" fill="clear">Transfer</ion-button>
+                  <ion-button color="primary" fill="clear"
+                    [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
+                  <ion-button color="primary" fill="clear">History</ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row class="pt-3">
               <ion-col size="12">
-                <ion-segment value="trading" color="primary" (ionChange)="sectionChanged($event)">
-                  <ion-segment-button value="trading">
+                <ion-segment value="holders" color="primary" (ionChange)="sectionChanged($event)">
+                  <!-- <ion-segment-button value="trading">
                     <ion-label>Trading</ion-label>
-                  </ion-segment-button>
+                  </ion-segment-button> -->
                   <ion-segment-button value="holders">
                     <ion-label>Holders</ion-label>
                   </ion-segment-button>
@@ -136,40 +142,6 @@
                     <ion-label>Metadata</ion-label>
                   </ion-segment-button>
                 </ion-segment>
-              </ion-col>
-            </ion-row>
-
-            <ion-row *ngIf="selectedSection == 'trading'">
-              <ion-col>
-                <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
-                  [rows]="10" [showCurrentPageReport]="true"
-                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
-                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1" sortField="ppt">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
-                      <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
-                      <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
-                      </th>
-                      <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-position>
-                    <tr>
-                      <td pFrozenColumn>{{ position.id }}</td>
-                      <td>{{ position.ppt | tokenDecimals:6 | number:'1.2-2' }} (${{position.ppt * baseTokenUSD |
-                        tokenDecimals:6 | number:'1.2-2'}})</td>
-                      <td>{{ position.amount | tokenDecimals:token.decimals | number:'1.2-2'}}</td>
-                      <td>{{ position.total | tokenDecimals:6 | number:'1.2-2'}} (${{position.total * baseTokenUSD |
-                        tokenDecimals:6 | number:'1.2-2'}})</td>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="emptymessage">
-                    <tr>
-                      <td colspan="4">No trades found.</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
               </ion-col>
             </ion-row>
 

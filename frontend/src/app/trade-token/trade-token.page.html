@@ -1,20 +1,23 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
-              <ion-back-button defaultHref="/app/trade/tokens"></ion-back-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
             </ion-buttons>
             <ion-title>
-              <!-- Less 1 because database starts at 1 and not 0 -->
-              Trade Token <span *ngIf="!isLoading">#{{ token.id - 1 }}</span>
+              <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market
             </ion-title>
           </ion-toolbar>
         </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1"
+        class="main-content">
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -24,98 +27,47 @@
           </div>
         </div>
         <div class="aligned" *ngIf="!isLoading">
-          <ion-grid>
-            <ion-row>
-              <ion-col size-lg="4" size-xs="8" *ngIf="token.content_path">
-                <div class="text-center">
-                  <img class="rounded" [src]="token.content_path" />
-                </div>
-              </ion-col>
-              <ion-col size-lg="4" size-xs="12" *ngIf="!token.content_path">
-                <div class="text-center">
-                  <div class="ticker mx-auto">{{ token.ticker }}<span>CFT-20 Token</span></div>
-                </div>
-              </ion-col>
-              <ion-col size-xl="4" size-lg="6" size-sm="8" size-xs="12">
-                <ion-grid>
-                  <ion-row>
-                    <ion-col>
-                      <h1 class="mt-0">{{ token.ticker }}</h1>
-                      <p class="note">{{ token.name }}</p>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row class="break pb-3">
-                    <ion-col size="12">
-                      <div class="meta">
-                        <h4>Tokenomics</h4>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">Max supply</span>
-                        <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}</span>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">Circulating</span>
-                        <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply }}
-                          ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-2'}}%)</span>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">Limit per mint</span>
-                        <span class="value">{{ token.per_mint_limit | tokenDecimals:token.decimals }}</span>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">{{ tokenIsLaunched ? 'Launched at' : 'Launching'}}</span>
-                        <span class="value">{{ tokenLaunchDate | date:'longDate' }} {{ tokenLaunchDate |
-                          date:'shortTime' }}</span>
-                      </div>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-          <div class="list break">
+          <div class="list">
             <ion-grid class="token-holdings-list">
               <ion-row class="item">
                 <ion-col>
-                  Order #
-                </ion-col>
-                <ion-col>
-                  ATOM per {{ token.ticker }}
-                </ion-col>
-                <ion-col>
-                  {{ token.ticker }} Amount
-                </ion-col>
-                <ion-col>
-                  Total ATOM
-                </ion-col>
-                <ion-col>
-                  &nbsp;
-                </ion-col>
-              </ion-row>
-              <ion-row class="item interactable" *ngFor="let item of positions; index as i">
-                <ion-col>
-                  {{ item.id }}
-                </ion-col>
-                <ion-col>
-                  {{ item.ppt | tokenDecimals:6 | number:'1.2-2' }}
-                </ion-col>
-                <ion-col>
-                  {{ item.amount | tokenDecimals:token.decimals | number:'1.2-2' }}
-                </ion-col>
-                <ion-col>
-                  {{ item.total | tokenDecimals:6 | number:'1.2-2'}}
-                </ion-col>
-                <ion-col class="actions">
-                  <ion-button (click)="buy(item.id)">Buy</ion-button>
-                  <!-- <ion-button (click)="cancel(item.id)" color="danger">Cancel</ion-button> -->
+                  <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
+                    [rows]="10" [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
+                                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
+                    sortField="ppt">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                        <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-position>
+                      <tr class="no-click">
+                        <td pFrozenColumn>{{ position.id }}</td>
+                        <td class="mono">{{ position.ppt | tokenDecimals:6 | number:'1.2-6' }} (${{position.ppt *
+                          baseTokenUSD |
+                          tokenDecimals:6 | number:'1.2-6'}})</td>
+                        <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.2-6'}}</td>
+                        <td class="mono">{{ position.total | tokenDecimals:6 | number:'1.2-2'}} (${{position.total *
+                          baseTokenUSD |
+                          tokenDecimals:6 | number:'1.2-6'}})</td>
+                        <td>
+                          <ion-button fill="clear" color="success" (click)="buy(position.id)">Buy</ion-button>
+                          <ion-button fill="clear" color="warning" (click)="cancel(position.id)">Cancel</ion-button>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                        <td colspan="4">No listings found</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
                 </ion-col>
               </ion-row>
             </ion-grid>

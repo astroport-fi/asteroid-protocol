@@ -12,13 +12,15 @@ import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletService } from '../core/service/wallet.service';
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
+import { TableModule } from 'primeng/table';
+import { PriceService } from '../core/service/price.service';
 
 @Component({
   selector: 'app-trade-token',
   templateUrl: './trade-token.page.html',
   styleUrls: ['./trade-token.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe]
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule]
 })
 export class TradeTokenPage implements OnInit {
   isLoading = false;
@@ -27,13 +29,16 @@ export class TradeTokenPage implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
+  baseTokenUSD: number = 0.00;
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
   }
 
   async ngOnInit() {
     this.isLoading = true;
+
+    this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     const chain = Chain(environment.api.endpoint)
     const result = await chain('query')({
@@ -41,7 +46,7 @@ export class TradeTokenPage implements OnInit {
         {
           where: {
             ticker: {
-              _eq: this.activatedRoute.snapshot.params["ticker"].toUpperCase()
+              _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
             }
           }
         }, {
@@ -81,7 +86,7 @@ export class TradeTokenPage implements OnInit {
               {
                 token: {
                   ticker: {
-                    _eq: this.activatedRoute.snapshot.params["ticker"].toUpperCase()
+                    _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
                   }
                 }
               },
@@ -114,55 +119,6 @@ export class TradeTokenPage implements OnInit {
     this.positions = positionsResult.token_open_position;
 
     this.isLoading = false;
-  }
-
-  async mint() {
-    if (!this.walletService.hasWallet()) {
-      // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
-      });
-      await alert.present();
-      return;
-    }
-    // Construct metaprotocol memo message
-    const params = new Map([
-      ["tic", this.token.ticker],
-      ["amt", this.token.per_mint_limit],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'mint', params);
-    const modal = await this.modalCtrl.create({
-      keyboardClose: false,
-      backdropDismiss: false,
-      component: TransactionFlowModalPage,
-      componentProps: {
-        urn,
-        metadata: null,
-        data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
-        resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
-        metaprotocolAction: 'mint',
-      }
-    });
-    modal.present();
   }
 
   async buy(orderNumber: number) {

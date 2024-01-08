@@ -16,13 +16,14 @@ import { WalletService } from '../core/service/wallet.service';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-wallet-token',
   templateUrl: './wallet-token.page.html',
   styleUrls: ['./wallet-token.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, ShortenAddressPipe, MaskitoModule],
+  imports: [IonicModule, CommonModule, ReactiveFormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, ShortenAddressPipe, MaskitoModule, TableModule],
 })
 export class WalletTokenPage implements OnInit {
 

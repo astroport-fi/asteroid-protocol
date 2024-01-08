@@ -56,7 +56,7 @@
             <ion-label>Metaprotocols</ion-label>
           </ion-list-header>
         </ion-list>
-        <ion-accordion-group [value]="['first', 'second']">
+        <ion-accordion-group multiple="true" [value]="['first', 'second']">
           <ion-accordion value="first">
             <ion-item slot="header" lines="none">
               <ion-label>Inscriptions</ion-label>
@@ -85,6 +85,11 @@
             <ion-menu-toggle autoHide="false" slot="content">
               <ion-item [button]="true" [routerLink]="['/app/tokens']" routerLinkActive="active" lines="none">
                 <ion-label>Browse</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle autoHide="false" slot="content">
+              <ion-item [button]="true" [routerLink]="['/app/markets']" routerLinkActive="active" lines="none">
+                <ion-label>Markets</ion-label>
               </ion-item>
             </ion-menu-toggle>
           </ion-accordion>

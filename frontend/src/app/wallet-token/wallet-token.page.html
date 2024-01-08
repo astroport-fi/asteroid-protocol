@@ -1,8 +1,7 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -14,6 +13,11 @@
             </ion-title>
           </ion-toolbar>
         </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
+        class="main-content">
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -57,6 +61,14 @@
                       </div>
                     </ion-col>
                     <ion-col size="6">
+                      <div class="meta">
+                        <span class="label">Value</span>
+                        <span class="value">
+                          $-
+                        </span>
+                      </div>
+                    </ion-col>
+                    <ion-col size="12">
                       <div class="meta">
                         <span class="label">Share of circulating supply</span>
                         <span class="value">
@@ -124,59 +136,53 @@
             </ion-row>
             <ion-row class="break">
               <ion-col size="12">
-                <table>
-                  <tr>
-                    <th>
-                      Date
-                    </th>
-                    <th>
-                      Block
-                    </th>
-                    <th>
-                      Action
-                    </th>
-                    <th>
-                      Amount
-                    </th>
-                    <th>
-                      Sender
-                    </th>
-                    <th>
-                      Receiver
-                    </th>
-                    <th>
-                      &nbsp;
-                    </th>
-                  </tr>
-                  <tr *ngFor="let item of history; index as i">
-                    <td>
-                      {{ item.date_created | date }}
-                    </td>
-                    <td>
-                      {{ item.height | number }}
-                    </td>
-                    <td>
-                      {{ item.action }}
-                    </td>
-                    <td>
-                      {{ item.amount | tokenDecimals:item.token.decimals | number:"1.1-6" }}
-                    </td>
-                    <td>
-                      {{ item.sender | shortenAddress }}
-                    </td>
-                    <td>
-                      {{ item.receiver | shortenAddress }}
-                    </td>
-                    <td>
-                      <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="7" *ngIf="history.length == 0">
-                      No transaction history
-                    </td>
-                  </tr>
-                </table>
+                <p-table #data [value]="history" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+                  styleClass="token-list" sortField="date_created" [sortOrder]="-1">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="date_created">Date <p-sortIcon field="date_created"></p-sortIcon></th>
+                      <th pSortableColumn="height" pFrozenColumn>Block <p-sortIcon field="height"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="action">Action <p-sortIcon field="action"></p-sortIcon></th>
+                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
+                      <th pSortableColumn="sender">Sender <p-sortIcon field="sender"></p-sortIcon></th>
+                      <th pSortableColumn="receiver">Receiver <p-sortIcon field="receiver"></p-sortIcon></th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-item>
+                    <tr>
+                      <td>
+                        {{ item.date_created | date }}
+                      </td>
+                      <td>
+                        {{ item.height | number }}
+                      </td>
+                      <td>
+                        {{ item.action }}
+                      </td>
+                      <td>
+                        {{ item.amount | tokenDecimals:item.token.decimals | number:"1.1-6" }}
+                      </td>
+                      <td>
+                        {{ item.sender | shortenAddress }}
+                      </td>
+                      <td>
+                        {{ item.receiver | shortenAddress }}
+                      </td>
+                      <td>
+                        <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
+                      </td>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td colspan="4">No history yet</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
               </ion-col>
             </ion-row>
           </ion-grid>
