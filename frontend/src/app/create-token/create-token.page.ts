@@ -106,8 +106,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       }
 
       let data = this.createForm.value.optional.imageUpload;
-      // let sender = await this.walletService.getAccount();
-      let sender = await this.walletService.getAccountMobile();
+      let sender = await this.walletService.getAccount();
       let metadataBase64 = null;
       if (data) {
         const mime = data.split(";")[0].split(":")[1];
@@ -131,7 +130,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
 
       const urn = this.protocolService.buildURN(environment.chain.chainId, 'deploy', params);
       const modal = await this.modalCtrl.create({
-        keyboardClose: false,
+        keyboardClose: true,
         backdropDismiss: false,
         component: TransactionFlowModalPage,
         componentProps: {

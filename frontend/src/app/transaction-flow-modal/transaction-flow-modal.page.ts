@@ -49,12 +49,12 @@ export class TransactionFlowModalPage implements OnInit {
     this.data = '';
     this.txHash = '';
 
-    console.log("chainFee", this.chainFee);
+    addIcons({ checkmark, closeOutline, close });
+    this.chain = Chain(environment.api.endpoint)
+
   }
 
   async ngOnInit() {
-    addIcons({ checkmark, closeOutline, close });
-    this.chain = Chain(environment.api.endpoint)
 
     const fees: TxFee = {
       metaprotocol: {
@@ -89,7 +89,6 @@ export class TransactionFlowModalPage implements OnInit {
       console.error(error);
     }
     this.isSimulating = false;
-
   }
 
   async submit() {

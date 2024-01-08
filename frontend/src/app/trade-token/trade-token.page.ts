@@ -212,7 +212,7 @@ export class TradeTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'buy', params);
     const modal = await this.modalCtrl.create({
-      keyboardClose: false,
+      keyboardClose: true,
       backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {
@@ -264,7 +264,7 @@ export class TradeTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
     const modal = await this.modalCtrl.create({
-      keyboardClose: false,
+      keyboardClose: true,
       backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {

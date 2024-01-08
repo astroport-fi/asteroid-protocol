@@ -215,7 +215,7 @@ export class WalletTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
     const modal = await this.modalCtrl.create({
-      keyboardClose: false,
+      keyboardClose: true,
       backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {
@@ -246,7 +246,7 @@ export class WalletTokenPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
     const modal = await this.modalCtrl.create({
-      keyboardClose: false,
+      keyboardClose: true,
       backdropDismiss: false,
       component: TransactionFlowModalPage,
       componentProps: {

@@ -146,16 +146,36 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
-      const msgs = {
-        '@type': "/cosmos.bank.v1beta1.MsgSend",
-        from_address: account?.address as string,
-        to_address: fees.metaprotocol.receiver,
-        amount: [
-          {
-            denom: fees.metaprotocol.denom,
-            amount: fees.metaprotocol.amount,
-          },
-        ],
+
+      let msgs = {};
+
+      if (parseInt(fees.metaprotocol.amount) > 0) {
+        msgs = {
+          '@type': "/cosmos.bank.v1beta1.MsgSend",
+          from_address: account?.address as string,
+          to_address: fees.metaprotocol.receiver,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            },
+          ],
+        }
+      } else {
+        // If no fee is charged, we need to send the smallest amount possible
+        // to the sender to create a valid transaction
+        // For the Hub that would be 0.000001 ATOM or 1uatom
+        msgs = {
+          '@type': "/cosmos.bank.v1beta1.MsgSend",
+          from_address: account?.address as string,
+          to_address: account?.address as string,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: "1",
+            },
+          ],
+        }
       }
 
       const signDoc = {
@@ -243,19 +263,42 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
-      const feeMessage = {
-        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-        value: MsgSend.encode({
-          fromAddress: account?.address as string,
-          toAddress: fees.metaprotocol.receiver,
-          amount: [
-            {
-              denom: fees.metaprotocol.denom,
-              amount: fees.metaprotocol.amount,
-            }
-          ],
-        }).finish(),
+
+      let feeMessage = {};
+
+      if (parseInt(fees.metaprotocol.amount) > 0) {
+        feeMessage = {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: MsgSend.encode({
+            fromAddress: account?.address as string,
+            toAddress: fees.metaprotocol.receiver,
+            amount: [
+              {
+                denom: fees.metaprotocol.denom,
+                amount: fees.metaprotocol.amount,
+              }
+            ],
+          }).finish(),
+        }
+      } else {
+        // If no fee is charged, we need to send the smallest amount possible
+        // to the sender to create a valid transaction
+        // For the Hub that would be 0.000001 ATOM or 1uatom
+        feeMessage = {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: MsgSend.encode({
+            fromAddress: account?.address as string,
+            toAddress: account?.address as string,
+            amount: [
+              {
+                denom: fees.metaprotocol.denom,
+                amount: "1",
+              }
+            ],
+          }).finish(),
+        }
       }
+
 
       const signDoc = {
         bodyBytes: TxBody.encode(

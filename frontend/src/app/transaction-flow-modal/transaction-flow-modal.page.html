@@ -12,7 +12,12 @@
       <ion-row>
         <ion-col class="text-center">
           <h2>Sign and submit transaction</h2>
-          <p>Inscription transactions are typically larger than standard<br />transactions and require higher fees
+          <!-- <p>
+            Inscription transactions are typically larger than standard<br />transactions and require higher fees
+          </p> -->
+          <p>
+            This transaction will send 0.000001 ATOM to your<br />
+            connected wallet to create the inscription
           </p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
@@ -21,7 +26,7 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="errorText == ''">
         <ion-col>
           <div class="fees">
             <h4>Estimated fee breakdown</h4>
@@ -91,6 +96,13 @@
           <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
     </ion-grid>
     <ion-grid *ngIf="state == 'success-onchain' || state == 'success-indexer'">
       <ion-row>
@@ -111,6 +123,13 @@
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
           <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -136,6 +155,13 @@
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
           <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -165,6 +191,13 @@
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
           <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>

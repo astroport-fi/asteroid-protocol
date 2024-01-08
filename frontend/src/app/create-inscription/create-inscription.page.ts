@@ -89,7 +89,7 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
       const urn = this.protocolService.buildURN(environment.chain.chainId, 'inscribe', params);
 
       const modal = await this.modalCtrl.create({
-        keyboardClose: false,
+        keyboardClose: true,
         backdropDismiss: false,
         component: TransactionFlowModalPage,
         componentProps: {
