@@ -57,15 +57,15 @@
                     <p class="note">Add detail to your inscription</p>
                   </div>
                   <div class="form-group" formGroupName="basic">
-                    <ion-item lines="none">
-                      <ion-input label="Name" labelPlacement="stacked" placeholder="Name your inscription"
-                        formControlName="name" [counter]="true" [minlength]="3" [maxlength]="32"
-                        errorText="Please enter a name"></ion-input>
-                    </ion-item>
-                    <ion-item lines="none">
-                      <ion-textarea class="no-border" label="Description" labelPlacement="stacked"
+                    <div class="mt-2 ps-3">
+                      <ion-input label="Name" fill="outline" labelPlacement="stacked"
+                        placeholder="Name your inscription" formControlName="name" [counter]="true" [minlength]="3"
+                        [maxlength]="32" errorText="Please enter a name"></ion-input>
+                    </div>
+                    <div class="mt-2 ps-3">
+                      <ion-textarea class="no-border" fill="outline" label="Description" labelPlacement="stacked"
                         placeholder="Describe you inscription" rows="4" formControlName="description"></ion-textarea>
-                    </ion-item>
+                    </div>
                   </div>
                 </ion-col>
               </ion-row>

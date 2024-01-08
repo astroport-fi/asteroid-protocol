@@ -24,7 +24,6 @@ export class MarketsPage implements OnInit {
   isLoading = true;
   selectedAddress: string = '';
   tokens: any = null;
-  holdings: any = null;
   offset = 0;
   limit = 500;
   lastFetchCount = 0;
@@ -60,6 +59,21 @@ export class MarketsPage implements OnInit {
             transaction: {
               hash: true
             },
+            token_open_positions: [
+              {
+                where: {
+                  is_filled: {
+                    _eq: false
+                  },
+                  is_cancelled: {
+                    _eq: false
+                  }
+                }
+              },
+              {
+                id: true
+              }
+            ],
             current_owner: true,
             content_path: true,
             name: true,
@@ -74,81 +88,9 @@ export class MarketsPage implements OnInit {
       });
       this.tokens = tokensResult.token;
 
-      const holderResult = await chain('query')({
-        token_holder: [
-          {
-            offset: 0,
-            limit: 100,
-            where: {
-              address: {
-                _eq: this.selectedAddress
-              }
-            }
-          },
-          {
-            token: {
-              ticker: true,
-              max_supply: true,
-              circulating_supply: true,
-              decimals: true,
-              transaction: {
-                hash: true
-              }
-            },
-            amount: true,
-            date_updated: true,
-          }
-        ]
-      });
-
-      this.holdings = holderResult.token_holder;
       this.isLoading = false;
     });
   }
 
-  // async onIonInfinite(event: Event) {
-  //   if (this.lastFetchCount < this.limit) {
-  //     (event as InfiniteScrollCustomEvent).target.disabled = true;
-  //     return;
-  //   }
-  //   this.offset += this.limit;
 
-  //   const chain = Chain(environment.api.endpoint);
-  //   const tokensResult = await chain('query')({
-  //     token: [
-  //       {
-  //         offset: this.offset,
-  //         limit: this.limit,
-  //         order_by: [
-  //           {
-  //             date_created: order_by.desc
-  //           }
-  //         ],
-  //         where: {
-  //           current_owner: {
-  //             _eq: this.selectedAddress
-  //           }
-  //         }
-  //       }, {
-  //         id: true,
-  //         transaction: {
-  //           hash: true
-  //         },
-  //         current_owner: true,
-  //         content_path: true,
-  //         name: true,
-  //         ticker: true,
-  //         max_supply: true,
-  //         decimals: true,
-  //         launch_timestamp: true,
-  //         date_created: true
-  //       }
-  //     ]
-  //   });
-  //   this.tokens.push(...tokensResult.token);
-  //   this.lastFetchCount = tokensResult.token.length;
-  //   console.log(this.lastFetchCount);
-
-  //   (event as InfiniteScrollCustomEvent).target.complete();
-  // }
 }

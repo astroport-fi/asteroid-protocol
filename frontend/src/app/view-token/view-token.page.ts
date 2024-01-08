@@ -13,6 +13,8 @@ import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-
 import { WalletService } from '../core/service/wallet.service';
 import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
+import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
 
 
 @Component({
@@ -172,6 +174,34 @@ export class ViewTokenPage implements OnInit {
 
   sectionChanged($event: any) {
     this.selectedSection = $event.detail.value;
+  }
+
+  async listSale() {
+
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: SellModalPage,
+
+      componentProps: {
+        ticker: this.token.ticker
+      }
+    });
+    modal.present();
+  }
+
+  async transfer() {
+
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: TransferModalPage,
+
+      componentProps: {
+        ticker: this.token.ticker
+      }
+    });
+    modal.present();
   }
 
 }
