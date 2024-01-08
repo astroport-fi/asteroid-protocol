@@ -1,43 +1,41 @@
-<ion-content fullscreen="true">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
-        <ion-header class="no-shadow">
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-menu-button></ion-menu-button>
-            </ion-buttons>
-            <h1>Welcome to Asteroid Protocol</h1>
-            <p>Asteroid Protocol is the first metaprotocol framework that allows you to inscribe arbitrary content on
-              the Cosmos
-              Hub. <a href="#" class="color-orange">Learn more</a></p>
-          </ion-toolbar>
-        </ion-header>
-        <div class="main-content text-center">
-          <div class="animation mx-auto">
-            <ng-lottie [options]="{path: '../assets/lottie/broken-connection.json'}"></ng-lottie>
+<ion-grid>
+  <ion-row>
+    <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+      <ion-header class="no-shadow">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <div class="main-content">
+        <div class="text-left">
+          <h1>Welcome to Asteroid Protocol</h1>
+          <p>Asteroid Protocol is the first metaprotocol framework that allows you to inscribe arbitrary content on
+            the Cosmos
+            Hub. <a href="#" class="color-orange">Learn more</a></p>
+
+        </div>
+        <div class="animation mx-auto">
+          <ng-lottie [options]="{path: '../assets/lottie/broken-connection.json'}"></ng-lottie>
+        </div>
+        <div class="text-center">
+          <div class="title">
+            <h3>No wallet connected</h3>
           </div>
+          <p>Connect your wallet to inscribe content, create tokens, trade and more</p>
           <div>
-            <div class="title">
-              <h3>No wallet connected</h3>
-            </div>
-            <p></p>
-            <p>Connect your wallet to inscribe content, create tokens, trade and more</p>
-            <div>
-              <ion-button fill="solid" routerLink="/wallet">
-                Connect Wallet
-              </ion-button>
-
-            </div>
-          </div>
-
-          <div class="note mt-5 text-left">
-            <h4>Not ready yet?</h4>
-            <p>No problem, you can browse everything without restriction</p>
+            <ion-button fill="solid" routerLink="/wallet">
+              Connect Wallet
+            </ion-button>
           </div>
         </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 
-</ion-content>
+        <div class="note pt-5 text-center">
+          <h4>Not ready yet?</h4>
+          <p>No problem, you can browse everything without restriction</p>
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

@@ -141,10 +141,10 @@
 
             <ion-row *ngIf="selectedSection == 'trading'">
               <ion-col>
-                <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true"
-                  [rows]="10" [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '50rem' }"
+                <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
+                  [rows]="10" [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
-                            ['name', 'ticker' ]" styleClass="token-list">
+                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1" sortField="ppt">
                   <ng-template pTemplate="header">
                     <tr>
                       <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
@@ -157,9 +157,11 @@
                   <ng-template pTemplate="body" let-position>
                     <tr>
                       <td pFrozenColumn>{{ position.id }}</td>
-                      <td>{{ position.ppt | tokenDecimals:6 | number:'1.2-2' }}</td>
+                      <td>{{ position.ppt | tokenDecimals:6 | number:'1.2-2' }} (${{position.ppt * baseTokenUSD |
+                        tokenDecimals:6 | number:'1.2-2'}})</td>
                       <td>{{ position.amount | tokenDecimals:token.decimals | number:'1.2-2'}}</td>
-                      <td>{{ position.total | tokenDecimals:6 | number:'1.2-2'}}</td>
+                      <td>{{ position.total | tokenDecimals:6 | number:'1.2-2'}} (${{position.total * baseTokenUSD |
+                        tokenDecimals:6 | number:'1.2-2'}})</td>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="emptymessage">

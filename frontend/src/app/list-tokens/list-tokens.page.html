@@ -37,11 +37,11 @@
             <ng-template pTemplate="header">
               <tr>
                 <th>&nbsp;</th>
+                <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
                 <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                 <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
                 <th pSortableColumn="volume">Volume <p-sortIcon field="volume"></p-sortIcon></th>
-                <th pSortableColumn="circulating">Minted <p-sortIcon field="circulating"></p-sortIcon></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-token>
@@ -53,11 +53,11 @@
                       *ngIf="!token.content_path" />
                   </div>
                 </td>
+                <td>{{ token.id }}</td>
                 <td pFrozenColumn>{{ token.ticker }}</td>
                 <td>{{ token.name }}</td>
                 <td>$0.00</td>
                 <td>$0.00</td>
-                <td>40%</td>
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">

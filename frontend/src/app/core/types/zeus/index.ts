@@ -854,6 +854,18 @@ export type ValueTypes = {
 		_neq?: boolean | undefined | null | Variable<any, string>,
 		_nin?: Array<boolean> | undefined | null | Variable<any, string>
 	};
+	/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+	["Float_comparison_exp"]: {
+		_eq?: number | undefined | null | Variable<any, string>,
+		_gt?: number | undefined | null | Variable<any, string>,
+		_gte?: number | undefined | null | Variable<any, string>,
+		_in?: Array<number> | undefined | null | Variable<any, string>,
+		_is_null?: boolean | undefined | null | Variable<any, string>,
+		_lt?: number | undefined | null | Variable<any, string>,
+		_lte?: number | undefined | null | Variable<any, string>,
+		_neq?: number | undefined | null | Variable<any, string>,
+		_nin?: Array<number> | undefined | null | Variable<any, string>
+	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
 		_eq?: number | undefined | null | Variable<any, string>,
@@ -1085,6 +1097,8 @@ export type ValueTypes = {
 	};
 	/** columns and relationships of "status" */
 	["status"]: AliasType<{
+		base_token?: boolean | `@${string}`,
+		base_token_usd?: boolean | `@${string}`,
 		chain_id?: boolean | `@${string}`,
 		date_updated?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
@@ -1096,6 +1110,8 @@ export type ValueTypes = {
 		_and?: Array<ValueTypes["status_bool_exp"]> | undefined | null | Variable<any, string>,
 		_not?: ValueTypes["status_bool_exp"] | undefined | null | Variable<any, string>,
 		_or?: Array<ValueTypes["status_bool_exp"]> | undefined | null | Variable<any, string>,
+		base_token?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		base_token_usd?: ValueTypes["Float_comparison_exp"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1103,6 +1119,8 @@ export type ValueTypes = {
 	};
 	/** Ordering options when selecting data from "status". */
 	["status_order_by"]: {
+		base_token?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		base_token_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1119,6 +1137,8 @@ export type ValueTypes = {
 	};
 	/** Initial value of the column from where the streaming should start */
 	["status_stream_cursor_value_input"]: {
+		base_token?: string | undefined | null | Variable<any, string>,
+		base_token_usd?: number | undefined | null | Variable<any, string>,
 		chain_id?: string | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
@@ -1264,6 +1284,13 @@ export type ValueTypes = {
 			order_by?: Array<ValueTypes["token_holder_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["token_holder"]],
+		token_open_positions?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_open_position_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_open_position_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_open_position_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_open_position"]],
 		/** An object relationship */
 		transaction?: ValueTypes["transaction"],
 		transaction_id?: boolean | `@${string}`,
@@ -1471,6 +1498,7 @@ export type ValueTypes = {
 		ticker?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token_address_histories?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
 		token_holders?: ValueTypes["token_holder_bool_exp"] | undefined | null | Variable<any, string>,
+		token_open_positions?: ValueTypes["token_open_position_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
@@ -1627,6 +1655,29 @@ export type ValueTypes = {
 		transaction_id?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** order by aggregate values of table "token_open_position" */
+	["token_open_position_aggregate_order_by"]: {
+		avg?: ValueTypes["token_open_position_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["token_open_position_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["token_open_position_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["token_open_position_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["token_open_position_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["token_open_position_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["token_open_position_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["token_open_position_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["token_open_position_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["token_open_position_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "token_open_position" */
+	["token_open_position_avg_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Boolean expression to filter rows from the table "token_open_position". All fields are combined with a logical 'AND'. */
 	["token_open_position_bool_exp"]: {
 		_and?: Array<ValueTypes["token_open_position_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -1646,6 +1697,30 @@ export type ValueTypes = {
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
 	};
+	/** order by max() on columns of table "token_open_position" */
+	["token_open_position_max_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "token_open_position" */
+	["token_open_position_min_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Ordering options when selecting data from "token_open_position". */
 	["token_open_position_order_by"]: {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1664,6 +1739,33 @@ export type ValueTypes = {
 	};
 	/** select columns of table "token_open_position" */
 	["token_open_position_select_column"]: token_open_position_select_column;
+	/** order by stddev() on columns of table "token_open_position" */
+	["token_open_position_stddev_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "token_open_position" */
+	["token_open_position_stddev_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "token_open_position" */
+	["token_open_position_stddev_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Streaming cursor of the table "token_open_position" */
 	["token_open_position_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -1684,6 +1786,42 @@ export type ValueTypes = {
 		token_id?: number | undefined | null | Variable<any, string>,
 		total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		transaction_id?: number | undefined | null | Variable<any, string>
+	};
+	/** order by sum() on columns of table "token_open_position" */
+	["token_open_position_sum_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "token_open_position" */
+	["token_open_position_var_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "token_open_position" */
+	["token_open_position_var_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "token_open_position" */
+	["token_open_position_variance_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
@@ -1706,6 +1844,7 @@ export type ValueTypes = {
 		ticker?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_address_histories_aggregate?: ValueTypes["token_address_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		token_holders_aggregate?: ValueTypes["token_holder_aggregate_order_by"] | undefined | null | Variable<any, string>,
+		token_open_positions_aggregate?: ValueTypes["token_open_position_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1758,6 +1897,13 @@ export type ValueTypes = {
 		token?: ValueTypes["token"],
 		/** An object relationship */
 		token_address_history?: ValueTypes["token_address_history"],
+		token_open_positions?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["token_open_position_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["token_open_position_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["token_open_position_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["token_open_position"]],
 		__typename?: boolean | `@${string}`
 	}>;
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
@@ -1776,7 +1922,8 @@ export type ValueTypes = {
 		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
 		status_message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
-		token_address_history?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>
+		token_address_history?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
+		token_open_positions?: ValueTypes["token_open_position_bool_exp"] | undefined | null | Variable<any, string>
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -1791,7 +1938,8 @@ export type ValueTypes = {
 		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
 		status_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
-		token_address_history?: ValueTypes["token_address_history_order_by"] | undefined | null | Variable<any, string>
+		token_address_history?: ValueTypes["token_address_history_order_by"] | undefined | null | Variable<any, string>,
+		token_open_positions_aggregate?: ValueTypes["token_open_position_aggregate_order_by"] | undefined | null | Variable<any, string>
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -1833,6 +1981,18 @@ export type ResolverInputTypes = {
 		_lte?: boolean | undefined | null,
 		_neq?: boolean | undefined | null,
 		_nin?: Array<boolean> | undefined | null
+	};
+	/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+	["Float_comparison_exp"]: {
+		_eq?: number | undefined | null,
+		_gt?: number | undefined | null,
+		_gte?: number | undefined | null,
+		_in?: Array<number> | undefined | null,
+		_is_null?: boolean | undefined | null,
+		_lt?: number | undefined | null,
+		_lte?: number | undefined | null,
+		_neq?: number | undefined | null,
+		_nin?: Array<number> | undefined | null
 	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
@@ -2065,6 +2225,8 @@ export type ResolverInputTypes = {
 	};
 	/** columns and relationships of "status" */
 	["status"]: AliasType<{
+		base_token?: boolean | `@${string}`,
+		base_token_usd?: boolean | `@${string}`,
 		chain_id?: boolean | `@${string}`,
 		date_updated?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
@@ -2076,6 +2238,8 @@ export type ResolverInputTypes = {
 		_and?: Array<ResolverInputTypes["status_bool_exp"]> | undefined | null,
 		_not?: ResolverInputTypes["status_bool_exp"] | undefined | null,
 		_or?: Array<ResolverInputTypes["status_bool_exp"]> | undefined | null,
+		base_token?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		base_token_usd?: ResolverInputTypes["Float_comparison_exp"] | undefined | null,
 		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		date_updated?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -2083,6 +2247,8 @@ export type ResolverInputTypes = {
 	};
 	/** Ordering options when selecting data from "status". */
 	["status_order_by"]: {
+		base_token?: ResolverInputTypes["order_by"] | undefined | null,
+		base_token_usd?: ResolverInputTypes["order_by"] | undefined | null,
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2099,6 +2265,8 @@ export type ResolverInputTypes = {
 	};
 	/** Initial value of the column from where the streaming should start */
 	["status_stream_cursor_value_input"]: {
+		base_token?: string | undefined | null,
+		base_token_usd?: number | undefined | null,
 		chain_id?: string | undefined | null,
 		date_updated?: ResolverInputTypes["timestamp"] | undefined | null,
 		id?: number | undefined | null,
@@ -2244,6 +2412,13 @@ export type ResolverInputTypes = {
 			order_by?: Array<ResolverInputTypes["token_holder_order_by"]> | undefined | null,	/** filter the rows returned */
 			where?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null
 		}, ResolverInputTypes["token_holder"]],
+		token_open_positions?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_open_position_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_open_position_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_open_position_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_open_position"]],
 		/** An object relationship */
 		transaction?: ResolverInputTypes["transaction"],
 		transaction_id?: boolean | `@${string}`,
@@ -2451,6 +2626,7 @@ export type ResolverInputTypes = {
 		ticker?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token_address_histories?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
 		token_holders?: ResolverInputTypes["token_holder_bool_exp"] | undefined | null,
+		token_open_positions?: ResolverInputTypes["token_open_position_bool_exp"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
@@ -2607,6 +2783,29 @@ export type ResolverInputTypes = {
 		transaction_id?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** order by aggregate values of table "token_open_position" */
+	["token_open_position_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["token_open_position_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["token_open_position_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["token_open_position_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["token_open_position_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["token_open_position_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["token_open_position_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["token_open_position_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["token_open_position_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["token_open_position_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["token_open_position_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "token_open_position" */
+	["token_open_position_avg_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Boolean expression to filter rows from the table "token_open_position". All fields are combined with a logical 'AND'. */
 	["token_open_position_bool_exp"]: {
 		_and?: Array<ResolverInputTypes["token_open_position_bool_exp"]> | undefined | null,
@@ -2626,6 +2825,30 @@ export type ResolverInputTypes = {
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
 	};
+	/** order by max() on columns of table "token_open_position" */
+	["token_open_position_max_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "token_open_position" */
+	["token_open_position_min_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Ordering options when selecting data from "token_open_position". */
 	["token_open_position_order_by"]: {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2644,6 +2867,33 @@ export type ResolverInputTypes = {
 	};
 	/** select columns of table "token_open_position" */
 	["token_open_position_select_column"]: token_open_position_select_column;
+	/** order by stddev() on columns of table "token_open_position" */
+	["token_open_position_stddev_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "token_open_position" */
+	["token_open_position_stddev_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "token_open_position" */
+	["token_open_position_stddev_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Streaming cursor of the table "token_open_position" */
 	["token_open_position_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -2664,6 +2914,42 @@ export type ResolverInputTypes = {
 		token_id?: number | undefined | null,
 		total?: ResolverInputTypes["bigint"] | undefined | null,
 		transaction_id?: number | undefined | null
+	};
+	/** order by sum() on columns of table "token_open_position" */
+	["token_open_position_sum_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "token_open_position" */
+	["token_open_position_var_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "token_open_position" */
+	["token_open_position_var_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "token_open_position" */
+	["token_open_position_variance_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
@@ -2686,6 +2972,7 @@ export type ResolverInputTypes = {
 		ticker?: ResolverInputTypes["order_by"] | undefined | null,
 		token_address_histories_aggregate?: ResolverInputTypes["token_address_history_aggregate_order_by"] | undefined | null,
 		token_holders_aggregate?: ResolverInputTypes["token_holder_aggregate_order_by"] | undefined | null,
+		token_open_positions_aggregate?: ResolverInputTypes["token_open_position_aggregate_order_by"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null,
 		version?: ResolverInputTypes["order_by"] | undefined | null
@@ -2738,6 +3025,13 @@ export type ResolverInputTypes = {
 		token?: ResolverInputTypes["token"],
 		/** An object relationship */
 		token_address_history?: ResolverInputTypes["token_address_history"],
+		token_open_positions?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["token_open_position_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["token_open_position_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["token_open_position_bool_exp"] | undefined | null
+		}, ResolverInputTypes["token_open_position"]],
 		__typename?: boolean | `@${string}`
 	}>;
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
@@ -2756,7 +3050,8 @@ export type ResolverInputTypes = {
 		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
 		status_message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
-		token_address_history?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null
+		token_address_history?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
+		token_open_positions?: ResolverInputTypes["token_open_position_bool_exp"] | undefined | null
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -2771,7 +3066,8 @@ export type ResolverInputTypes = {
 		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
 		status_message?: ResolverInputTypes["order_by"] | undefined | null,
 		token?: ResolverInputTypes["token_order_by"] | undefined | null,
-		token_address_history?: ResolverInputTypes["token_address_history_order_by"] | undefined | null
+		token_address_history?: ResolverInputTypes["token_address_history_order_by"] | undefined | null,
+		token_open_positions_aggregate?: ResolverInputTypes["token_open_position_aggregate_order_by"] | undefined | null
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -2812,6 +3108,18 @@ export type ModelTypes = {
 		_lte?: boolean | undefined,
 		_neq?: boolean | undefined,
 		_nin?: Array<boolean> | undefined
+	};
+	/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+	["Float_comparison_exp"]: {
+		_eq?: number | undefined,
+		_gt?: number | undefined,
+		_gte?: number | undefined,
+		_in?: Array<number> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: number | undefined,
+		_lte?: number | undefined,
+		_neq?: number | undefined,
+		_nin?: Array<number> | undefined
 	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
@@ -3009,6 +3317,8 @@ export type ModelTypes = {
 	};
 	/** columns and relationships of "status" */
 	["status"]: {
+		base_token: string,
+		base_token_usd: number,
 		chain_id: string,
 		date_updated: ModelTypes["timestamp"],
 		id: number,
@@ -3019,6 +3329,8 @@ export type ModelTypes = {
 		_and?: Array<ModelTypes["status_bool_exp"]> | undefined,
 		_not?: ModelTypes["status_bool_exp"] | undefined,
 		_or?: Array<ModelTypes["status_bool_exp"]> | undefined,
+		base_token?: ModelTypes["String_comparison_exp"] | undefined,
+		base_token_usd?: ModelTypes["Float_comparison_exp"] | undefined,
 		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
 		date_updated?: ModelTypes["timestamp_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
@@ -3026,6 +3338,8 @@ export type ModelTypes = {
 	};
 	/** Ordering options when selecting data from "status". */
 	["status_order_by"]: {
+		base_token?: ModelTypes["order_by"] | undefined,
+		base_token_usd?: ModelTypes["order_by"] | undefined,
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_updated?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
@@ -3041,6 +3355,8 @@ export type ModelTypes = {
 	};
 	/** Initial value of the column from where the streaming should start */
 	["status_stream_cursor_value_input"]: {
+		base_token?: string | undefined,
+		base_token_usd?: number | undefined,
 		chain_id?: string | undefined,
 		date_updated?: ModelTypes["timestamp"] | undefined,
 		id?: number | undefined,
@@ -3126,6 +3442,8 @@ export type ModelTypes = {
 		token_address_histories: Array<ModelTypes["token_address_history"]>,
 		/** An array relationship */
 		token_holders: Array<ModelTypes["token_holder"]>,
+		/** An array relationship */
+		token_open_positions: Array<ModelTypes["token_open_position"]>,
 		/** An object relationship */
 		transaction: ModelTypes["transaction"],
 		transaction_id: number,
@@ -3330,6 +3648,7 @@ export type ModelTypes = {
 		ticker?: ModelTypes["String_comparison_exp"] | undefined,
 		token_address_histories?: ModelTypes["token_address_history_bool_exp"] | undefined,
 		token_holders?: ModelTypes["token_holder_bool_exp"] | undefined,
+		token_open_positions?: ModelTypes["token_open_position_bool_exp"] | undefined,
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
 		version?: ModelTypes["String_comparison_exp"] | undefined
@@ -3483,6 +3802,29 @@ export type ModelTypes = {
 		transaction: ModelTypes["transaction"],
 		transaction_id: number
 	};
+	/** order by aggregate values of table "token_open_position" */
+	["token_open_position_aggregate_order_by"]: {
+		avg?: ModelTypes["token_open_position_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["token_open_position_max_order_by"] | undefined,
+		min?: ModelTypes["token_open_position_min_order_by"] | undefined,
+		stddev?: ModelTypes["token_open_position_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["token_open_position_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["token_open_position_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["token_open_position_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["token_open_position_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["token_open_position_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["token_open_position_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_open_position" */
+	["token_open_position_avg_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Boolean expression to filter rows from the table "token_open_position". All fields are combined with a logical 'AND'. */
 	["token_open_position_bool_exp"]: {
 		_and?: Array<ModelTypes["token_open_position_bool_exp"]> | undefined,
@@ -3502,6 +3844,30 @@ export type ModelTypes = {
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
 	};
+	/** order by max() on columns of table "token_open_position" */
+	["token_open_position_max_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_open_position" */
+	["token_open_position_min_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "token_open_position". */
 	["token_open_position_order_by"]: {
 		amount?: ModelTypes["order_by"] | undefined,
@@ -3519,6 +3885,33 @@ export type ModelTypes = {
 		transaction_id?: ModelTypes["order_by"] | undefined
 	};
 	["token_open_position_select_column"]: token_open_position_select_column;
+	/** order by stddev() on columns of table "token_open_position" */
+	["token_open_position_stddev_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_open_position" */
+	["token_open_position_stddev_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_open_position" */
+	["token_open_position_stddev_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Streaming cursor of the table "token_open_position" */
 	["token_open_position_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -3539,6 +3932,42 @@ export type ModelTypes = {
 		token_id?: number | undefined,
 		total?: ModelTypes["bigint"] | undefined,
 		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_open_position" */
+	["token_open_position_sum_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_open_position" */
+	["token_open_position_var_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_open_position" */
+	["token_open_position_var_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_open_position" */
+	["token_open_position_variance_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
@@ -3561,6 +3990,7 @@ export type ModelTypes = {
 		ticker?: ModelTypes["order_by"] | undefined,
 		token_address_histories_aggregate?: ModelTypes["token_address_history_aggregate_order_by"] | undefined,
 		token_holders_aggregate?: ModelTypes["token_holder_aggregate_order_by"] | undefined,
+		token_open_positions_aggregate?: ModelTypes["token_open_position_aggregate_order_by"] | undefined,
 		transaction?: ModelTypes["transaction_order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined,
 		version?: ModelTypes["order_by"] | undefined
@@ -3611,7 +4041,9 @@ export type ModelTypes = {
 		/** An object relationship */
 		token?: ModelTypes["token"] | undefined,
 		/** An object relationship */
-		token_address_history?: ModelTypes["token_address_history"] | undefined
+		token_address_history?: ModelTypes["token_address_history"] | undefined,
+		/** An array relationship */
+		token_open_positions: Array<ModelTypes["token_open_position"]>
 	};
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
 	["transaction_bool_exp"]: {
@@ -3629,7 +4061,8 @@ export type ModelTypes = {
 		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
 		status_message?: ModelTypes["String_comparison_exp"] | undefined,
 		token?: ModelTypes["token_bool_exp"] | undefined,
-		token_address_history?: ModelTypes["token_address_history_bool_exp"] | undefined
+		token_address_history?: ModelTypes["token_address_history_bool_exp"] | undefined,
+		token_open_positions?: ModelTypes["token_open_position_bool_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -3644,7 +4077,8 @@ export type ModelTypes = {
 		inscription?: ModelTypes["inscription_order_by"] | undefined,
 		status_message?: ModelTypes["order_by"] | undefined,
 		token?: ModelTypes["token_order_by"] | undefined,
-		token_address_history?: ModelTypes["token_address_history_order_by"] | undefined
+		token_address_history?: ModelTypes["token_address_history_order_by"] | undefined,
+		token_open_positions_aggregate?: ModelTypes["token_open_position_aggregate_order_by"] | undefined
 	};
 	["transaction_select_column"]: transaction_select_column;
 	/** Streaming cursor of the table "transaction" */
@@ -3680,6 +4114,18 @@ export type GraphQLTypes = {
 		_lte?: boolean | undefined,
 		_neq?: boolean | undefined,
 		_nin?: Array<boolean> | undefined
+	};
+	/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+	["Float_comparison_exp"]: {
+		_eq?: number | undefined,
+		_gt?: number | undefined,
+		_gte?: number | undefined,
+		_in?: Array<number> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: number | undefined,
+		_lte?: number | undefined,
+		_neq?: number | undefined,
+		_nin?: Array<number> | undefined
 	};
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 	["Int_comparison_exp"]: {
@@ -3883,6 +4329,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "status" */
 	["status"]: {
 		__typename: "status",
+		base_token: string,
+		base_token_usd: number,
 		chain_id: string,
 		date_updated: GraphQLTypes["timestamp"],
 		id: number,
@@ -3893,6 +4341,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["status_bool_exp"]> | undefined,
 		_not?: GraphQLTypes["status_bool_exp"] | undefined,
 		_or?: Array<GraphQLTypes["status_bool_exp"]> | undefined,
+		base_token?: GraphQLTypes["String_comparison_exp"] | undefined,
+		base_token_usd?: GraphQLTypes["Float_comparison_exp"] | undefined,
 		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 		date_updated?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
@@ -3900,6 +4350,8 @@ export type GraphQLTypes = {
 	};
 	/** Ordering options when selecting data from "status". */
 	["status_order_by"]: {
+		base_token?: GraphQLTypes["order_by"] | undefined,
+		base_token_usd?: GraphQLTypes["order_by"] | undefined,
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_updated?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
@@ -3916,6 +4368,8 @@ export type GraphQLTypes = {
 	};
 	/** Initial value of the column from where the streaming should start */
 	["status_stream_cursor_value_input"]: {
+		base_token?: string | undefined,
+		base_token_usd?: number | undefined,
 		chain_id?: string | undefined,
 		date_updated?: GraphQLTypes["timestamp"] | undefined,
 		id?: number | undefined,
@@ -4003,6 +4457,8 @@ export type GraphQLTypes = {
 		token_address_histories: Array<GraphQLTypes["token_address_history"]>,
 		/** An array relationship */
 		token_holders: Array<GraphQLTypes["token_holder"]>,
+		/** An array relationship */
+		token_open_positions: Array<GraphQLTypes["token_open_position"]>,
 		/** An object relationship */
 		transaction: GraphQLTypes["transaction"],
 		transaction_id: number,
@@ -4209,6 +4665,7 @@ export type GraphQLTypes = {
 		ticker?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token_address_histories?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
 		token_holders?: GraphQLTypes["token_holder_bool_exp"] | undefined,
+		token_open_positions?: GraphQLTypes["token_open_position_bool_exp"] | undefined,
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		version?: GraphQLTypes["String_comparison_exp"] | undefined
@@ -4365,6 +4822,29 @@ export type GraphQLTypes = {
 		transaction: GraphQLTypes["transaction"],
 		transaction_id: number
 	};
+	/** order by aggregate values of table "token_open_position" */
+	["token_open_position_aggregate_order_by"]: {
+		avg?: GraphQLTypes["token_open_position_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["token_open_position_max_order_by"] | undefined,
+		min?: GraphQLTypes["token_open_position_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["token_open_position_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["token_open_position_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["token_open_position_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["token_open_position_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["token_open_position_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["token_open_position_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["token_open_position_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "token_open_position" */
+	["token_open_position_avg_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Boolean expression to filter rows from the table "token_open_position". All fields are combined with a logical 'AND'. */
 	["token_open_position_bool_exp"]: {
 		_and?: Array<GraphQLTypes["token_open_position_bool_exp"]> | undefined,
@@ -4384,6 +4864,30 @@ export type GraphQLTypes = {
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
 	};
+	/** order by max() on columns of table "token_open_position" */
+	["token_open_position_max_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "token_open_position" */
+	["token_open_position_min_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "token_open_position". */
 	["token_open_position_order_by"]: {
 		amount?: GraphQLTypes["order_by"] | undefined,
@@ -4402,6 +4906,33 @@ export type GraphQLTypes = {
 	};
 	/** select columns of table "token_open_position" */
 	["token_open_position_select_column"]: token_open_position_select_column;
+	/** order by stddev() on columns of table "token_open_position" */
+	["token_open_position_stddev_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "token_open_position" */
+	["token_open_position_stddev_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "token_open_position" */
+	["token_open_position_stddev_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Streaming cursor of the table "token_open_position" */
 	["token_open_position_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -4422,6 +4953,42 @@ export type GraphQLTypes = {
 		token_id?: number | undefined,
 		total?: GraphQLTypes["bigint"] | undefined,
 		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "token_open_position" */
+	["token_open_position_sum_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "token_open_position" */
+	["token_open_position_var_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "token_open_position" */
+	["token_open_position_var_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "token_open_position" */
+	["token_open_position_variance_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
 	};
 	/** Ordering options when selecting data from "token". */
 	["token_order_by"]: {
@@ -4444,6 +5011,7 @@ export type GraphQLTypes = {
 		ticker?: GraphQLTypes["order_by"] | undefined,
 		token_address_histories_aggregate?: GraphQLTypes["token_address_history_aggregate_order_by"] | undefined,
 		token_holders_aggregate?: GraphQLTypes["token_holder_aggregate_order_by"] | undefined,
+		token_open_positions_aggregate?: GraphQLTypes["token_open_position_aggregate_order_by"] | undefined,
 		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined,
 		version?: GraphQLTypes["order_by"] | undefined
@@ -4496,7 +5064,9 @@ export type GraphQLTypes = {
 		/** An object relationship */
 		token?: GraphQLTypes["token"] | undefined,
 		/** An object relationship */
-		token_address_history?: GraphQLTypes["token_address_history"] | undefined
+		token_address_history?: GraphQLTypes["token_address_history"] | undefined,
+		/** An array relationship */
+		token_open_positions: Array<GraphQLTypes["token_open_position"]>
 	};
 	/** Boolean expression to filter rows from the table "transaction". All fields are combined with a logical 'AND'. */
 	["transaction_bool_exp"]: {
@@ -4514,7 +5084,8 @@ export type GraphQLTypes = {
 		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
 		status_message?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token?: GraphQLTypes["token_bool_exp"] | undefined,
-		token_address_history?: GraphQLTypes["token_address_history_bool_exp"] | undefined
+		token_address_history?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
+		token_open_positions?: GraphQLTypes["token_open_position_bool_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "transaction". */
 	["transaction_order_by"]: {
@@ -4529,7 +5100,8 @@ export type GraphQLTypes = {
 		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
 		status_message?: GraphQLTypes["order_by"] | undefined,
 		token?: GraphQLTypes["token_order_by"] | undefined,
-		token_address_history?: GraphQLTypes["token_address_history_order_by"] | undefined
+		token_address_history?: GraphQLTypes["token_address_history_order_by"] | undefined,
+		token_open_positions_aggregate?: GraphQLTypes["token_open_position_aggregate_order_by"] | undefined
 	};
 	/** select columns of table "transaction" */
 	["transaction_select_column"]: transaction_select_column;
@@ -4585,6 +5157,8 @@ export const enum order_by {
 }
 /** select columns of table "status" */
 export const enum status_select_column {
+	base_token = "base_token",
+	base_token_usd = "base_token_usd",
 	chain_id = "chain_id",
 	date_updated = "date_updated",
 	id = "id",
@@ -4663,6 +5237,7 @@ export const enum transaction_select_column {
 
 type ZEUS_VARIABLES = {
 	["Boolean_comparison_exp"]: ValueTypes["Boolean_comparison_exp"];
+	["Float_comparison_exp"]: ValueTypes["Float_comparison_exp"];
 	["Int_comparison_exp"]: ValueTypes["Int_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
 	["bigint"]: ValueTypes["bigint"];
@@ -4718,11 +5293,22 @@ type ZEUS_VARIABLES = {
 	["token_holder_var_pop_order_by"]: ValueTypes["token_holder_var_pop_order_by"];
 	["token_holder_var_samp_order_by"]: ValueTypes["token_holder_var_samp_order_by"];
 	["token_holder_variance_order_by"]: ValueTypes["token_holder_variance_order_by"];
+	["token_open_position_aggregate_order_by"]: ValueTypes["token_open_position_aggregate_order_by"];
+	["token_open_position_avg_order_by"]: ValueTypes["token_open_position_avg_order_by"];
 	["token_open_position_bool_exp"]: ValueTypes["token_open_position_bool_exp"];
+	["token_open_position_max_order_by"]: ValueTypes["token_open_position_max_order_by"];
+	["token_open_position_min_order_by"]: ValueTypes["token_open_position_min_order_by"];
 	["token_open_position_order_by"]: ValueTypes["token_open_position_order_by"];
 	["token_open_position_select_column"]: ValueTypes["token_open_position_select_column"];
+	["token_open_position_stddev_order_by"]: ValueTypes["token_open_position_stddev_order_by"];
+	["token_open_position_stddev_pop_order_by"]: ValueTypes["token_open_position_stddev_pop_order_by"];
+	["token_open_position_stddev_samp_order_by"]: ValueTypes["token_open_position_stddev_samp_order_by"];
 	["token_open_position_stream_cursor_input"]: ValueTypes["token_open_position_stream_cursor_input"];
 	["token_open_position_stream_cursor_value_input"]: ValueTypes["token_open_position_stream_cursor_value_input"];
+	["token_open_position_sum_order_by"]: ValueTypes["token_open_position_sum_order_by"];
+	["token_open_position_var_pop_order_by"]: ValueTypes["token_open_position_var_pop_order_by"];
+	["token_open_position_var_samp_order_by"]: ValueTypes["token_open_position_var_samp_order_by"];
+	["token_open_position_variance_order_by"]: ValueTypes["token_open_position_variance_order_by"];
 	["token_order_by"]: ValueTypes["token_order_by"];
 	["token_select_column"]: ValueTypes["token_select_column"];
 	["token_stream_cursor_input"]: ValueTypes["token_stream_cursor_input"];

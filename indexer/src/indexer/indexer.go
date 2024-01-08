@@ -259,7 +259,7 @@ func (i *Indexer) indexBlocks() {
 // via CoinGecko
 func (i *Indexer) updateBaseToken() {
 	// Fetch blocks interval
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(1 * time.Minute)
 	defer ticker.Stop()
 
 	for {

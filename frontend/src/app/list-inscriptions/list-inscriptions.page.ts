@@ -9,6 +9,8 @@ import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+
 
 @Component({
   selector: 'app-list-inscriptions',
@@ -16,7 +18,7 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
   styleUrls: ['./list-inscriptions.page.scss'],
   standalone: true,
   // providers: [IonNav],
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink, ShortenAddressPipe]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink, ShortenAddressPipe, NgScrollbarModule]
 })
 export class ListInscriptionsPage implements OnInit {
 

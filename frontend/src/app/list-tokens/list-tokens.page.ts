@@ -10,6 +10,7 @@ import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
+import { PriceService } from '../core/service/price.service';
 
 @Component({
   selector: 'app-list-tokens',
@@ -28,7 +29,7 @@ export class ListTokensPage implements OnInit {
   limit = 500;
   lastFetchCount = 0;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
     this.lastFetchCount = this.limit;
   }
 
@@ -64,6 +65,7 @@ export class ListTokensPage implements OnInit {
             name: true,
             ticker: true,
             max_supply: true,
+            circulating_supply: true,
             decimals: true,
             launch_timestamp: true,
             date_created: true

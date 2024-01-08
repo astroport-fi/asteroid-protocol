@@ -150,9 +150,13 @@ div.aligned {
 }
 
 ion-alert {
-    --background: rgba(53, 60, 66, 0.9) !important;
+    --background: linear-gradient(84deg, rgba(40, 31, 67, 1) 0%, rgba(68, 45, 68, 1) 100%) !important;
+    // --background: hsla(0, 0%, 100%, .05) !important;
+    // --background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
+    // background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
+    backdrop-filter: blur(12px);
     --min-width: 300px !important;
-    --backdrop-opacity: 0.6 !important;
+    --backdrop-opacity: 0.8 !important;
 }
 
 ion-progress-bar::part(track) {

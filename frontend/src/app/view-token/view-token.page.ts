@@ -12,6 +12,7 @@ import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletService } from '../core/service/wallet.service';
 import { TableModule } from 'primeng/table';
+import { PriceService } from '../core/service/price.service';
 
 
 @Component({
@@ -30,8 +31,9 @@ export class ViewTokenPage implements OnInit {
   tokenIsLaunched: boolean = false;
   selectedSection: string = 'trading';
   walletConnected: boolean = false;
+  baseTokenUSD: number = 0.00;
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
   }
 
@@ -39,6 +41,8 @@ export class ViewTokenPage implements OnInit {
     this.isLoading = true;
     this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'trading';
     this.walletConnected = await this.walletService.isConnected();
+
+    this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     const chain = Chain(environment.api.endpoint)
     const result = await chain('query')({

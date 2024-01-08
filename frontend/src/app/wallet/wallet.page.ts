@@ -12,13 +12,14 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConnectedWallet } from '../core/types/connected-wallet';
 import { WalletService } from '../core/service/wallet.service';
 import { DashboardPage } from '../dashboard/dashboard.page';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule]
 })
 export class WalletPage implements OnInit {
 

@@ -1,57 +1,58 @@
 <ion-content fullscreen="true">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
-        <ion-header class="no-shadow">
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-menu-button></ion-menu-button>
-            </ion-buttons>
-            <ion-title>
-              Inscriptions
-            </ion-title>
-          </ion-toolbar>
-          <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
-            owned by {{ this.selectedAddress }}
-          </div>
-        </ion-header>
+  <ng-scrollbar autoHeightDisabled="false" visibility="hover">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+          <ion-header class="no-shadow">
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+              </ion-buttons>
+              <ion-title>
+                Inscriptions
+              </ion-title>
+            </ion-toolbar>
+            <div class="filter aligned mb-4" *ngIf="this.selectedAddress">
+              owned by {{ this.selectedAddress }}
+            </div>
+          </ion-header>
 
-        <div class="aligned">
-          <div *ngIf="isLoading">
-            <ion-progress-bar type="indeterminate"></ion-progress-bar>
-          </div>
-          <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
-            <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
-              *ngFor="let item of inscriptions; let index">
-              <!-- TODO: Do better here -->
-              <div class="content"
-                *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
-                <img [src]="item.content_path" />
-              </div>
-              <div class="content"
-                *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
-                <div class="mime">{{ item.mime | humanType }}</div>
-              </div>
-              <h4>#{{item.id-1}} {{ item.name }}</h4>
-              <div class="detail">
-                <div class="detail-item">
-                  <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }} kb)</span>
+          <div class="aligned">
+            <div *ngIf="isLoading">
+              <ion-progress-bar type="indeterminate"></ion-progress-bar>
+            </div>
+            <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
+              <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
+                *ngFor="let item of inscriptions; let index">
+                <!-- TODO: Do better here -->
+                <div class="content"
+                  *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
+                  <img [src]="item.content_path" />
                 </div>
-                <div class="detail-item">
-                  <span>{{ item.date_created | dateAgo }}</span>
+                <div class="content"
+                  *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
+                  <div class="mime">{{ item.mime | humanType }}</div>
                 </div>
-              </div>
-            </a>
-            <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-              <ion-infinite-scroll-content></ion-infinite-scroll-content>
-            </ion-infinite-scroll>
+                <h4>#{{item.id-1}} {{ item.name }}</h4>
+                <div class="detail">
+                  <div class="detail-item">
+                    <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }} kb)</span>
+                  </div>
+                  <div class="detail-item">
+                    <span>{{ item.date_created | dateAgo }}</span>
+                  </div>
+                </div>
+              </a>
+              <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+                <ion-infinite-scroll-content></ion-infinite-scroll-content>
+              </ion-infinite-scroll>
+            </div>
+            <div class="list" *ngIf="!isLoading && inscriptions.length == 0">
+              No inscriptions found
+            </div>
           </div>
-          <div class="list" *ngIf="!isLoading && inscriptions.length == 0">
-            No inscriptions found
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-scrollbar>
 </ion-content>
