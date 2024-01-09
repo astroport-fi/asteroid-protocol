@@ -19,6 +19,13 @@
       </ion-col>
     </ion-row>
     <ion-row>
+      <ion-col offset="3" size="6">
+        <div *ngIf="isLoading">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col size="12">
         <div class="viewer text-center" [ngSwitch]="humanType" *ngIf="!isLoading">
           <img class="rounded" [src]="inscription.content_path" *ngSwitchCase="'Image'" />
