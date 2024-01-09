@@ -17,6 +17,8 @@ import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
 import { TableModule } from 'primeng/table';
+import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
 
 @Component({
   selector: 'app-wallet-token',
@@ -30,12 +32,11 @@ export class WalletTokenPage implements OnInit {
   isLoading = false;
   token: any;
   history: any;
-  balance: any;
+  holding: any;
   address: string = '';
   previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
-  showTransfer: boolean = false;
-  showSell: boolean = false;
+  walletConnected: boolean = false;
 
 
   transferForm: FormGroup;
@@ -80,6 +81,7 @@ export class WalletTokenPage implements OnInit {
   async ngOnInit() {
     this.isLoading = true;
 
+    this.walletConnected = await this.walletService.isConnected();
     this.previousAddress = this.activatedRoute.snapshot.queryParams["address"];
 
     try {
@@ -176,18 +178,15 @@ export class WalletTokenPage implements OnInit {
       });
 
       this.history = balanceResult.token_address_history;
-      if (balanceResult.token_holder.length == 1) {
-        this.balance = balanceResult.token_holder[0];
+
+      if (balanceResult.token_holder.length > 0) {
+        this.holding = balanceResult.token_holder[0];
       } else {
-        this.balance = {
-          amount: 0,
-          token: {
-            decimals: 0,
-          }
-        };
+        this.holding = { amount: 0 };
       }
+
     } catch (err) {
-      this.balance = {
+      this.holding = {
         amount: 0,
         token: {
           decimals: 0,
@@ -200,84 +199,32 @@ export class WalletTokenPage implements OnInit {
     this.isLoading = false;
   }
 
+  async listSale() {
+
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: SellModalPage,
+
+      componentProps: {
+        ticker: this.token.ticker
+      }
+    });
+    modal.present();
+  }
+
   async transfer() {
 
-    if (!this.transferForm.valid) {
-      this.transferForm.markAllAsTouched();
-      return;
-    }
-
-    // Construct metaprotocol memo message
-    const params = new Map([
-      ["tic", this.token.ticker],
-      ["amt", this.transferForm.value.basic.amount],
-      ["dst", this.transferForm.value.basic.destination],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
-      backdropDismiss: false,
-      component: TransactionFlowModalPage,
+      backdropDismiss: true,
+      component: TransferModalPage,
+
       componentProps: {
-        urn,
-        metadata: null,
-        data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
-        resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
-        metaprotocolAction: 'transfer',
+        ticker: this.token.ticker
       }
     });
     modal.present();
   }
-
-  async sell() {
-
-    if (!this.sellForm.valid) {
-      this.sellForm.markAllAsTouched();
-      return;
-    }
-
-    // Construct metaprotocol memo message
-    const params = new Map([
-      ["tic", this.token.ticker],
-      ["amt", this.sellForm.value.basic.amount],
-      ["ppt", this.sellForm.value.basic.price],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
-    const modal = await this.modalCtrl.create({
-      keyboardClose: true,
-      backdropDismiss: false,
-      component: TransactionFlowModalPage,
-      componentProps: {
-        urn,
-        metadata: null,
-        data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
-        resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
-        metaprotocolAction: 'list',
-      }
-    });
-    modal.present();
-  }
-
-  openTransfer() {
-    this.showTransfer = true;
-  }
-
-  cancelTransfer() {
-    this.showTransfer = false;
-  }
-
-  openSell() {
-    this.showSell = true;
-  }
-
-  cancelSell() {
-    this.showSell = false;
-  }
-
-
 
 }

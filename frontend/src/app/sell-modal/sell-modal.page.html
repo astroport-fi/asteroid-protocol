@@ -1,24 +1,25 @@
 <ion-content class="main-content" mode="md">
-  <ion-grid class="p-3">
-    <ion-row>
-      <ion-col class="text-center">
-        <h2>List {{ ticker }} for sale</h2>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <p>
-          This transaction will list your tokens for sale<br />You'll only receive the ATOM
-          from the sale should someone purchase them
-        </p>
-        <p>
-          Sales are final and can't be refunded. You may cancel a listing at any time before a successful sale
-        </p>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-md="6" offset-md="3" size="12">
-        <form class="form" [formGroup]="sellForm" (ngSubmit)="submit()">
+  <form class="form" [formGroup]="sellForm" (ngSubmit)="submit()">
+    <ion-grid class="p-3">
+      <ion-row>
+        <ion-col class="text-center">
+          <h2>List {{ ticker }} for sale</h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <p>
+            This transaction will list your tokens for sale<br />You'll only receive the ATOM
+            from the sale should someone purchase them
+          </p>
+          <p>
+            Sales are final and can't be refunded. You may cancel a listing at any time before a successful sale
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-md="6" offset-md="3" size="12">
+
           <div formGroupName="basic">
             <div class="mt-4">
               <ion-input label="Amount to sell" labelPlacement="stacked" fill="outline" placeholder="10"
@@ -32,14 +33,17 @@
               You will be selling your tokens for a total of {{ (sellForm.value.basic.amount *
               sellForm.value.basic.price) | number:'1.2-6' }} ATOM
             </div>
-            <div class="action text-center">
-              <ion-button color="success" type="submit">Confirm and list</ion-button>
-              <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
-            </div>
           </div>
-        </form>
-      </ion-col>
-    </ion-row>
-
-  </ion-grid>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="action">
+            <ion-button color="success" type="submit">Confirm and list</ion-button>
+            <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

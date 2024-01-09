@@ -28,6 +28,7 @@ export class ViewTokenPage implements OnInit {
   isLoading = false;
   token: any;
   positions: any;
+  holding: any;
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
@@ -120,6 +121,47 @@ export class ViewTokenPage implements OnInit {
     });
 
     this.positions = positionsResult.token_open_position;
+
+    if (this.walletConnected) {
+      const holderResult = await chain('query')({
+        token_holder: [
+          {
+            offset: 0,
+            limit: 100,
+            where: {
+              address: {
+                _eq: (await this.walletService.getAccount()).address
+              },
+              token_id: {
+                _eq: this.token.id
+              }
+            }
+          },
+          {
+            token: {
+              ticker: true,
+              content_path: true,
+              max_supply: true,
+              circulating_supply: true,
+              decimals: true,
+              transaction: {
+                hash: true
+              }
+            },
+            amount: true,
+            date_updated: true,
+          }
+        ]
+      });
+      if (holderResult.token_holder.length > 0) {
+        this.holding = holderResult.token_holder[0];
+      } else {
+        this.holding = { amount: 0 };
+      }
+
+    }
+
+
     this.isLoading = false;
   }
 

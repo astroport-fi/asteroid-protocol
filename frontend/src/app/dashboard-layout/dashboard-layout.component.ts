@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EnvironmentInjector } from '@angular/core';
 import {
   RouterLink,
   RouterLinkActive
@@ -102,15 +102,6 @@ export class DashboardLayoutComponent {
     } else {
       console.log("No last known wallet");
     }
-
-    // this.walletService.isConnected().then((isConnected) => {
-    //   this.isWalletConnected = isConnected;
-    //   this.walletService.getAccount().then((account) => {
-    //     this.connectedAccount = account;
-    //   }).catch((err) => {
-    //     this.isWalletConnected = false;
-    //   });
-    // });
   }
 
   async connectWallet() {

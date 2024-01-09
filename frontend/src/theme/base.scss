@@ -415,3 +415,21 @@ p-table {
         margin-left: auto;
     }
 }
+
+.base-token-price {
+    background-color: rgba(0, 0, 0, 0.3);
+    display: block;
+    border-radius: 10px;
+    padding: 15px;
+    float: left;
+    margin-top: 15px;
+
+    .ticker {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .price {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}

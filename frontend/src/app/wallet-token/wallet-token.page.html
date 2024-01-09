@@ -42,81 +42,22 @@
                 <p class="note">{{ token.name }}</p>
               </ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col>
-                <ion-grid>
-                  <ion-row class="break pb-3">
-                    <ion-col size="12">
-                      <div class="meta">
-                        <h4>Your holdings</h4>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">Current balance</span>
-                        <span class="value">
-                          {{ balance.amount | tokenDecimals:balance.token.decimals | number:"1.6-6" }}
-                          ($-)
-                        </span>
-                      </div>
-                    </ion-col>
-                    <ion-col size="6">
-                      <div class="meta">
-                        <span class="label">Share of circulating supply</span>
-                        <span class="value">
-                          {{balance.amount / token.circulating_supply | percent }}
-                        </span>
-                      </div>
-                    </ion-col>
-                    <ion-col size="12" class="pt-3" *ngIf="!showTransfer && !showSell && balance.amount > 0">
-                      <ion-button color="primary" (click)="openTransfer()">Transfer</ion-button>
-                      <ion-button color="primary" (click)="openSell()">Sell</ion-button>
-                    </ion-col>
-                    <ion-col size="12" class="pt-3 transfer-section" *ngIf="showTransfer">
-                      <form class="form" [formGroup]="transferForm" (ngSubmit)="transfer()">
-                        <div formGroupName="basic">
-                          <ion-item lines="none">
-                            <ion-input label="Amount to transfer" labelPlacement="stacked" placeholder="10"
-                              [maskito]="decimalMask" [maskitoElement]="maskPredicate"
-                              formControlName="amount"></ion-input>
-                          </ion-item>
-                          <ion-item lines="none">
-                            <ion-input label="Destination address" labelPlacement="stacked" placeholder="cosmos1xxxxxx"
-                              formControlName="destination" [counter]="true" [minlength]="45" [maxlength]="45"
-                              errorText="Please enter a Cosmos Hub Address"></ion-input>
-                          </ion-item>
-                          <div class="action">
-                            <ion-button color="success" type="submit">Transfer now</ion-button>
-                            <ion-button color="primary" fill="clear" (click)="cancelTransfer()">Cancel</ion-button>
-                          </div>
-                        </div>
-                      </form>
-                    </ion-col>
-                    <ion-col size="12" class="pt-3 transfer-section" *ngIf="showSell">
-                      <form class="form" [formGroup]="sellForm" (ngSubmit)="sell()">
-                        <div formGroupName="basic">
-                          <ion-item lines="none">
-                            <ion-input label="Amount to sell" labelPlacement="stacked" placeholder="10"
-                              [maskito]="decimalMask" [maskitoElement]="maskPredicate"
-                              formControlName="amount"></ion-input>
-                          </ion-item>
-                          <ion-item lines="none">
-                            <ion-input label="Price per token" labelPlacement="stacked" placeholder="10"
-                              [maskito]="decimalMask" [maskitoElement]="maskPredicate"
-                              formControlName="price"></ion-input>
-                          </ion-item>
-                          <ion-item lines="none">
-                            {{ (sellForm.value.basic.amount * sellForm.value.basic.price) | number:'1.2-6' }} ATOM
-                          </ion-item>
-                          <div class="action">
-                            <ion-button color="success" type="submit">List for sale</ion-button>
-                            <ion-button color="primary" fill="clear" (click)="cancelSell()">Cancel</ion-button>
-                          </div>
-                        </div>
-                      </form>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
+            <ion-row class="own-balance mt-3" *ngIf="walletConnected">
+              <ion-col size="12" class="ps-3 pt-0">
+                <h4>Your balance</h4>
+                <div class="meta">
+                  <span class="label"></span>
+                  <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
+                    {{ token.ticker }} ($0.0)</span>
+                </div>
+                <div class="mt-2 mb-3">
+                  <ion-button color="primary" fill="clear" (click)="transfer()"
+                    [disabled]="holding.amount == 0">Send</ion-button>
+                  <ion-button color="primary" fill="clear" (click)="listSale()"
+                    [disabled]="holding.amount == 0">Sell</ion-button>
+                  <ion-button color="primary" fill="clear"
+                    [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>

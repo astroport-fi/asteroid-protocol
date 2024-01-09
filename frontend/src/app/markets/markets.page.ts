@@ -27,6 +27,7 @@ export class MarketsPage implements OnInit {
   offset = 0;
   limit = 500;
   lastFetchCount = 0;
+  baseToken: any;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
     this.lastFetchCount = this.limit;
@@ -84,9 +85,23 @@ export class MarketsPage implements OnInit {
             launch_timestamp: true,
             date_created: true
           }
+        ],
+        status: [
+          {
+            where: {
+              chain_id: {
+                _eq: environment.chain.chainId
+              }
+            }
+          },
+          {
+            base_token: true,
+            base_token_usd: true,
+          }
         ]
       });
       this.tokens = tokensResult.token;
+      this.baseToken = tokensResult.status[0];
 
       this.isLoading = false;
     });

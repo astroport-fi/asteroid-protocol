@@ -15,6 +15,8 @@ import { TxFee } from '../core/types/tx-fee';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 
 @Component({
   selector: 'app-sell-modal',
@@ -35,7 +37,7 @@ export class SellModalPage implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder) {
+  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: CFT20Service) {
     addIcons({ checkmark, closeOutline, close });
 
     this.sellForm = this.builder.group({
@@ -65,7 +67,36 @@ export class SellModalPage implements OnInit {
   }
 
   async submit() {
+    if (!this.sellForm.valid) {
+      this.sellForm.markAllAsTouched();
+      return;
+    }
 
+    // Close the sell modal
+    this.modalCtrl.dismiss();
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["tic", this.ticker],
+      ["amt", this.sellForm.value.basic.amount],
+      ["ppt", this.sellForm.value.basic.price],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/manage/token', this.ticker],
+        resultCTA: 'View transaction',
+        metaprotocol: 'cft20',
+        metaprotocolAction: 'list',
+      }
+    });
+    modal.present();
   }
 
   cancel() {

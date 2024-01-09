@@ -30,6 +30,7 @@ export class TradeTokenPage implements OnInit {
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
   baseTokenUSD: number = 0.00;
+  walletAddress: string = '';
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
@@ -37,6 +38,12 @@ export class TradeTokenPage implements OnInit {
 
   async ngOnInit() {
     this.isLoading = true;
+
+    const walletConnected = await this.walletService.isConnected();
+    if (walletConnected) {
+      this.walletAddress = (await this.walletService.getAccount()).address;
+    }
+    console.log(this.walletAddress);
 
     this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
@@ -107,6 +114,7 @@ export class TradeTokenPage implements OnInit {
           token: {
             ticker: true,
           },
+          seller_address: true,
           ppt: true,
           amount: true,
           total: true,

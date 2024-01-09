@@ -15,6 +15,8 @@ import { TxFee } from '../core/types/tx-fee';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 
 @Component({
   selector: 'app-transfer-modal',
@@ -27,7 +29,7 @@ export class TransferModalPage implements OnInit {
 
   @Input() ticker: string = 'tokens';
 
-  sellForm: FormGroup;
+  transferForm: FormGroup;
 
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
@@ -35,13 +37,13 @@ export class TransferModalPage implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder) {
+  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: CFT20Service) {
     addIcons({ checkmark, closeOutline, close });
 
-    this.sellForm = this.builder.group({
+    this.transferForm = this.builder.group({
       basic: this.builder.group({
+        destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
         amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        price: [0.55, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
       }),
     });
 
@@ -65,7 +67,36 @@ export class TransferModalPage implements OnInit {
   }
 
   async submit() {
+    if (!this.transferForm.valid) {
+      this.transferForm.markAllAsTouched();
+      return;
+    }
+    // Close the transfer modal
+    this.modalCtrl.dismiss();
 
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["tic", this.ticker],
+      ["amt", this.transferForm.value.basic.amount],
+      ["dst", this.transferForm.value.basic.destination],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/manage/token', this.ticker],
+        resultCTA: 'View transaction',
+        metaprotocol: 'cft20',
+        metaprotocolAction: 'transfer',
+      }
+    });
+
+    modal.present();
   }
 
   cancel() {

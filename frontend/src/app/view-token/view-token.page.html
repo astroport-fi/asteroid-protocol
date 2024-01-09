@@ -113,15 +113,18 @@
                 <h4>Your balance</h4>
                 <div class="meta">
                   <span class="label"></span>
-                  <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}
-                    ($0.0)</span>
+                  <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
+                    {{ token.ticker }} ($0.0)</span>
                 </div>
                 <div class="mt-2 mb-3">
-                  <ion-button color="primary" fill="clear" (click)="transfer()">Send</ion-button>
-                  <ion-button color="primary" fill="clear" (click)="listSale()">Sell</ion-button>
+                  <ion-button color="primary" fill="clear" (click)="transfer()"
+                    [disabled]="holding.amount == 0">Send</ion-button>
+                  <ion-button color="primary" fill="clear" (click)="listSale()"
+                    [disabled]="holding.amount == 0">Sell</ion-button>
                   <ion-button color="primary" fill="clear"
                     [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
-                  <ion-button color="primary" fill="clear">History</ion-button>
+                  <ion-button color="primary" fill="clear"
+                    [routerLink]="['/app/wallet/token', token.ticker]">History</ion-button>
                 </div>
               </ion-col>
             </ion-row>
