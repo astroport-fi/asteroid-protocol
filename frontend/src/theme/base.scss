@@ -279,12 +279,13 @@ a {
     .mime {
         width: 230px;
         height: 130px;
-        background-color: var(--color-dark-teal);
+        background-color: rgba(0, 0, 0, 0.3);
         text-align: center;
         text-transform: uppercase;
         padding-top: 50px;
         border-radius: 10px;
         font-size: 22px;
+        color: #999999;
     }
 
     .detail {

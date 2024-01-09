@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Chain } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
   templateUrl: './view-inscription.page.html',
   styleUrls: ['./view-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe]
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, GenericPreviewPage]
 })
 export class ViewInscriptionPage implements OnInit {
   isLoading = false;
@@ -77,6 +78,9 @@ export class ViewInscriptionPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
+
+    console.log(this.inscription.mime);
+
     this.isLoading = false;
   }
 

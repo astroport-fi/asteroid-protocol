@@ -23,7 +23,7 @@
           </p>
         </div>
         <div class="animation mx-auto">
-          <ng-lottie [options]="{path: '../assets/lottie/broken-connection.json'}"></ng-lottie>
+          <ng-lottie [options]="{path: '../assets/lottie/no-wallet.json'}"></ng-lottie>
         </div>
         <div class="text-center">
           <div class="title">
@@ -31,7 +31,7 @@
           </div>
           <p>Connect your wallet to inscribe content, create tokens, trade and more</p>
           <div>
-            <ion-button fill="solid" routerLink="/wallet">
+            <ion-button fill="solid" (click)="connectWallet()">
               Connect Wallet
             </ion-button>
           </div>

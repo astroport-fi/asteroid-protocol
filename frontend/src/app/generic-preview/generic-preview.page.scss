@@ -1,0 +1,16 @@
+video,
+audio {
+    width: 100%;
+}
+
+.no-preview {
+    width: 100%;
+    min-height: 200px;
+    background-color: rgba(0, 0, 0, 0.3);
+    text-align: center;
+    text-transform: uppercase;
+    padding-top: 80px;
+    border-radius: 10px;
+    font-size: 22px;
+    color: #999999;
+}
