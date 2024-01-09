@@ -4,9 +4,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class HumanSupplyPipe implements PipeTransform {
     transform(value: number) {
         if (value >= 1000000) {
-            return (value / 1000000).toFixed(2) + ' M';
+            return (value / 1000000).toFixed(4) + ' M';
         } else if (value >= 1000) {
-            return (value / 1000).toFixed(2) + 'k';
+            return (value / 1000).toFixed(6) + 'k';
         } else {
             return value.toString();
         }

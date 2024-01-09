@@ -119,7 +119,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
 
-		supply, err := strconv.ParseUint(parsedURN.KeyValuePairs["sup"], 10, 64)
+		supplyFloat, err := strconv.ParseFloat(parsedURN.KeyValuePairs["sup"], 64)
 		if err != nil {
 			return fmt.Errorf("unable to parse supply '%s'", err)
 		}
@@ -127,7 +127,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse decimals '%s'", err)
 		}
-		limit, err := strconv.ParseUint(parsedURN.KeyValuePairs["lim"], 10, 64)
+		limitFloat, err := strconv.ParseFloat(parsedURN.KeyValuePairs["lim"], 64)
 		if err != nil {
 			return fmt.Errorf("unable to parse limit '%s'", err)
 		}
@@ -139,8 +139,11 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 		// Add the decimals to the supply and limit
-		supply = supply * uint64(math.Pow10(int(decimals)))
-		limit = limit * uint64(math.Pow10(int(decimals)))
+		supplyFloat = supplyFloat * math.Pow10(int(decimals))
+		supply := uint64(math.Round(supplyFloat))
+
+		limitFloat = limitFloat * math.Pow10(int(decimals))
+		limit := uint64(math.Round(limitFloat))
 
 		// TODO: Rework validation
 		// Validate some fields
