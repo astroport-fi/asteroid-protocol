@@ -437,3 +437,10 @@ p-table {
 .text-muted {
     color: rgba(255, 255, 255, 0.5) !important;
 }
+
+.darken {
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.2) 100%);
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+}

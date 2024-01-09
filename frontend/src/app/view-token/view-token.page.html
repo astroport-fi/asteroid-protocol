@@ -146,7 +146,31 @@
 
             <ion-row *ngIf="selectedSection == 'holders'">
               <ion-col>
-                Holders
+                <p-table #data [value]="holders" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} holders"
+                  styleClass="token-list" [sortOrder]="-1" sortField="amount">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="id" pFrozenColumn>Holder # <p-sortIcon field="id"></p-sortIcon></th>
+                      <th pSortableColumn="address">Address <p-sortIcon field="address"></p-sortIcon></th>
+                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-holder>
+                    <tr [routerLink]="['/app/wallet', holder.address]">
+                      <td>{{ holder.id }}</td>
+                      <td class="mono">{{ holder.address | shortenAddress }}</td>
+                      <td class="mono">{{ holder.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td colspan="4">Token has no holders</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
               </ion-col>
             </ion-row>
 

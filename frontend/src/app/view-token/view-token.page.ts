@@ -29,6 +29,7 @@ export class ViewTokenPage implements OnInit {
   token: any;
   positions: any;
   holding: any;
+  holders: any;
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
@@ -160,6 +161,33 @@ export class ViewTokenPage implements OnInit {
       }
 
     }
+
+    const allHolderResult = await chain('query')({
+      token_holder: [
+        {
+          offset: 0,
+          limit: 100,
+          where: {
+            token_id: {
+              _eq: this.token.id
+            },
+            amount: {
+              _gt: 0
+            }
+          }
+        },
+        {
+          id: true,
+          address: true,
+          token: {
+            decimals: true,
+          },
+          amount: true,
+          date_updated: true,
+        }
+      ]
+    });
+    this.holders = allHolderResult.token_holder;
 
 
     this.isLoading = false;
