@@ -181,6 +181,10 @@ func (protocol *Inscription) storeContent(metadata InscriptionMetadata, txHash s
 		// We could not find the mime type, so we default to .bin
 		ext = []string{".bin"}
 	}
+	if len(ext) == 0 {
+		// We could not find the mime type, so we default to .bin
+		ext = []string{".bin"}
+	}
 
 	endpoint := protocol.s3Endpoint
 	region := protocol.s3Region

@@ -625,6 +625,10 @@ func (protocol *CFT20) storeContent(metadata InscriptionMetadata, txHash string,
 		// We could not find the mime type, so we default to .bin
 		ext = []string{".bin"}
 	}
+	if len(ext) == 0 {
+		// We could not find the mime type, so we default to .bin
+		ext = []string{".bin"}
+	}
 
 	endpoint := protocol.s3Endpoint
 	region := protocol.s3Region
