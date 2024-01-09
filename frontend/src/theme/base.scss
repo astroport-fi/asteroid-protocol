@@ -417,7 +417,7 @@ p-table {
 }
 
 .base-token-price {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
     display: block;
     border-radius: 10px;
     padding: 15px;
@@ -432,4 +432,8 @@ p-table {
     .price {
         color: rgba(255, 255, 255, 0.6);
     }
+}
+
+.text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
 }

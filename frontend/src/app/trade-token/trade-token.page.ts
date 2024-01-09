@@ -43,7 +43,6 @@ export class TradeTokenPage implements OnInit {
     if (walletConnected) {
       this.walletAddress = (await this.walletService.getAccount()).address;
     }
-    console.log(this.walletAddress);
 
     this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 

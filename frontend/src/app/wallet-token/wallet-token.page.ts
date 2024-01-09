@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -19,6 +19,7 @@ import { MaskitoModule } from '@maskito/angular';
 import { TableModule } from 'primeng/table';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
+import { PriceService } from '../core/service/price.service';
 
 @Component({
   selector: 'app-wallet-token',
@@ -34,10 +35,11 @@ export class WalletTokenPage implements OnInit {
   history: any;
   holding: any;
   address: string = '';
+  listings: any;
   previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   walletConnected: boolean = false;
-
+  baseTokenUSD: number = 0.00;
 
   transferForm: FormGroup;
   sellForm: FormGroup;
@@ -48,7 +50,7 @@ export class WalletTokenPage implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder, private priceService: PriceService, private alertController: AlertController) {
     this.transferForm = this.builder.group({
       basic: this.builder.group({
         destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
@@ -83,6 +85,7 @@ export class WalletTokenPage implements OnInit {
 
     this.walletConnected = await this.walletService.isConnected();
     this.previousAddress = this.activatedRoute.snapshot.queryParams["address"];
+    this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     try {
 
@@ -185,6 +188,36 @@ export class WalletTokenPage implements OnInit {
         this.holding = { amount: 0 };
       }
 
+      const listingsResult = await chain('query')({
+        token_open_position: [
+          {
+            where: {
+              token_id: {
+                _eq: this.token.id
+              },
+              seller_address: {
+                _eq: account.address
+              },
+              is_cancelled: {
+                _eq: false
+              },
+              is_filled: {
+                _eq: false
+              }
+            }
+          },
+          {
+            id: true,
+            ppt: true,
+            amount: true,
+            total: true,
+
+          }
+        ]
+      });
+
+      this.listings = listingsResult.token_open_position;
+
     } catch (err) {
       this.holding = {
         amount: 0,
@@ -225,6 +258,57 @@ export class WalletTokenPage implements OnInit {
       }
     });
     modal.present();
+  }
+
+  async cancel(orderNumber: number) {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const alert = await this.alertController.create({
+        header: 'Keplr wallet is required',
+        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
+        buttons: [
+          {
+            text: 'Get Keplr',
+            cssClass: 'alert-button-success',
+            handler: () => {
+              window.open('https://www.keplr.app/', '_blank');
+            }
+          },
+          {
+            text: 'Cancel',
+            cssClass: 'alert-button-cancel',
+            handler: () => {
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      await alert.present();
+      return;
+    }
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["tic", this.token.ticker],
+      ["ord", orderNumber],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction',
+        metaprotocol: 'cft20',
+        metaprotocolAction: 'delist',
+      }
+    });
+    modal.present();
+
   }
 
 }

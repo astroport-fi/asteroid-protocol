@@ -205,7 +205,7 @@ export class ViewTokenPage implements OnInit {
         urn,
         metadata: null,
         data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'mint',

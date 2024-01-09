@@ -22,22 +22,6 @@ h1 {
     }
 }
 
-.ticker {
-    width: 100%;
-    height: 250px;
-    background-color: rgba(0, 0, 0, 0.3);
-    text-align: center;
-    text-transform: uppercase;
-    padding-top: 90px;
-    border-radius: 10px;
-    font-size: 38px;
-
-    span {
-        display: block;
-        font-size: 12px;
-    }
-}
-
 .token-holdings-list {
     margin-left: 0;
     // max-width: 600px;
@@ -61,5 +45,22 @@ h1 {
 
     .actions {
         text-align: right;
+    }
+}
+
+.token-stats {
+    background-color: rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+
+    .key {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .value {
+        color: rgba(255, 255, 255, 0.6);
     }
 }
