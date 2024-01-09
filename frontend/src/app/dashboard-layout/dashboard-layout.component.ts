@@ -39,6 +39,7 @@ import { LottieComponent, LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
 import { ConnectedWallet } from '../core/types/connected-wallet';
 import { WalletType } from '../core/enum/wallet-type';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 // Note we need a separate function as it's required
 // by the AOT compiler.
@@ -76,6 +77,7 @@ export function playerFactory() {
     IonCol,
     RouterLink,
     RouterLinkActive,
+    NgScrollbarModule,
     ShortenAddressPipe,
     LottieComponent
   ],
