@@ -79,7 +79,6 @@ export class ViewInscriptionPage implements OnInit {
 
     this.inscription = result.inscription[0];
 
-    console.log(this.inscription.mime);
 
     this.isLoading = false;
   }

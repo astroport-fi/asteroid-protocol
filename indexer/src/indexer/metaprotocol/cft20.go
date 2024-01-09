@@ -638,10 +638,11 @@ func (protocol *CFT20) storeContent(metadata InscriptionMetadata, txHash string,
 	myBucket := protocol.s3Bucket
 	filename := txHash + ext[0]
 	uploadResult, err := uploader.Upload(&s3manager.UploadInput{
-		ACL:    aws.String("public-read"),
-		Bucket: aws.String(myBucket),
-		Key:    aws.String(filename),
-		Body:   bytes.NewReader(content),
+		ACL:         aws.String("public-read"),
+		Bucket:      aws.String(myBucket),
+		Key:         aws.String(filename),
+		Body:        bytes.NewReader(content),
+		ContentType: aws.String(metadata.Metadata.Mime),
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to upload file, %v", err)

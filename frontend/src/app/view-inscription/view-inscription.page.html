@@ -40,7 +40,8 @@
                   <img class="rounded" [src]="inscription.content_path" />
                 </div> -->
                 <div class="text-center p-2">
-                  <ion-button color="primary" fill="clear" href="{{ inscription.content_path }}" target="_blank">
+                  <ion-button color="primary" fill="clear" href="inscription/{{ inscription.transaction.hash }}"
+                    target="_blank">
                     Open in viewer <ion-icon name="open-outline" class="ps-2"></ion-icon>
                   </ion-button>
                 </div>

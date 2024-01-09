@@ -8,6 +8,10 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
+    path: 'inscription/:txhash',
+    loadComponent: () => import('./generic-viewer/generic-viewer.page').then((m) => m.GenericViewerPage),
+  },
+  {
     path: 'mint/:ticker',
     loadComponent: () => import('./mint/mint.page').then((m) => m.MintPage),
   },
