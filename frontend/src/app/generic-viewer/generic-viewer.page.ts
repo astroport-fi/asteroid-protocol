@@ -9,13 +9,14 @@ import { Chain } from '../core/types/zeus';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { cloudDownloadOutline } from "ionicons/icons";
 import { addIcons } from 'ionicons';
+import { MarkdownComponent, } from 'ngx-markdown'
 
 @Component({
   selector: 'app-generic-viewer',
   templateUrl: './generic-viewer.page.html',
   styleUrls: ['./generic-viewer.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HumanTypePipe]
+  imports: [IonicModule, CommonModule, FormsModule, HumanTypePipe, MarkdownComponent]
 })
 export class GenericViewerPage implements OnInit {
 
