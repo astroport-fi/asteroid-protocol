@@ -92,7 +92,6 @@ export class WalletService {
     if (!window.keplr) {
       throw new Error('Keplr extension is not available');
     }
-    console.log("DISCONNECTED");
     await window.keplr.disable();
   }
 
@@ -373,7 +372,7 @@ export class WalletService {
       metadata: {
         name: "Asteroid Protocol",
         description: "The metaprotocol standard for Cosmos",
-        url: "http://192.168.11.103:8100",
+        url: "http://127.0.0.1:8100",
         icons: [
           "https://raw.githubusercontent.com/chainapsis/keplr-wallet/master/packages/extension/src/public/assets/logo-256.png",
         ],
@@ -382,9 +381,6 @@ export class WalletService {
 
 
     if (signClient.session.getAll().length <= 0) {
-      alert("connect now");
-      console.log("connect now");
-      // const modal = new KeplrQRCodeModalV2(signClient);
 
       const { uri, approval } = await signClient.connect({
         requiredNamespaces: {
@@ -412,36 +408,16 @@ export class WalletService {
       } else {
 
         try {
-          console.log("URI", uri);
-          // document.location.href = uri;
-          // this.errorText = uri;
           document.location.href = `keplrwallet://wcV2?${uri}`;
           const session = await approval();
-          console.log("SESSION", session);
-          alert("got sesh");
         }
         catch (error) {
           alert("err" + error);
         }
 
-        // this.errorText = JSON.stringify(session);
-
-        // Try to sign a transaction
-        // keplr = new KeplrWalletConnectV2(signClient, {
-        //   // sendTx,
-        // });
       }
 
-      // You can pass the chain ids that you want to connect to the modal.
-      // const sessionProperties = await modal.connect(["cosmoshub-4"]);
-
-
     }
-
-    // let account = {
-    //   address: "cosmos1",
-    //   pubkey: "",
-    // };
 
     let nonCriticalExtensionOptions: any[] = [];
     try {
@@ -569,7 +545,6 @@ export class WalletService {
       } else {
 
         const txHash = await client.broadcastTxSync(tx);
-        // console.log(txHash);
         return txHash;
       }
     } catch (error) {

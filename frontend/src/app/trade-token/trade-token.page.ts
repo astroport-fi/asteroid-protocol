@@ -122,7 +122,6 @@ export class TradeTokenPage implements OnInit {
   }
 
   async buy(orderNumber: number) {
-    console.log("buy" + orderNumber);
 
     const chain = Chain(environment.api.endpoint)
     const position = await chain('query')({

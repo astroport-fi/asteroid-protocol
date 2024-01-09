@@ -41,20 +41,13 @@ export class WalletPage implements OnInit {
     const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
-      console.log("Lastknownwallet");
-      console.log(walletData);
       const account = await this.walletService.getAccount();
       this.isWalletConnected = true;
       this.connectedAccount = account;
-
-    } else {
-      console.log("NO WALLET");
-      return;
-
     }
 
     this.activatedRoute.params.subscribe(async params => {
-      this.selectedAddress = params["address"] || this.connectedAccount.address;
+      this.selectedAddress = params["address"] || this.connectedAccount?.address;
       this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'tokens';
 
       this.isLoading = true;

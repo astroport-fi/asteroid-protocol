@@ -95,8 +95,6 @@ export class DashboardLayoutComponent {
     const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
-      console.log("Lastknownwallet");
-      console.log(walletData);
       this.walletService.getAccount().then((account) => {
         this.isWalletConnected = true;
         this.connectedAccount = account;
@@ -157,6 +155,10 @@ export class DashboardLayoutComponent {
           }
           localStorage.setItem(environment.storage.connectedWalletKey, JSON.stringify(connectedWallet));
 
+          // Temp hack, reload to access wallet from all components
+          window.location.reload();
+
+
         }).catch((err) => {
           this.isWalletConnected = false;
         });
@@ -184,5 +186,7 @@ export class DashboardLayoutComponent {
     this.walletStatusText = "Connect wallet";
     this.connectedAccount = {};
     localStorage.clear();
+    // Temp hack, reload to disconnect wallet from all components
+    window.location.reload();
   }
 }

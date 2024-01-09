@@ -1,12 +1,12 @@
 <ion-content fullscreen="true">
-  <ion-grid *ngIf="!isWalletConnected && !isLoading">
+  <ion-grid *ngIf="!selectedAddress && !isLoading">
     <ion-row>
       <ion-col>
         <app-dashboard></app-dashboard>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="isWalletConnected && !isLoading">
+  <ion-grid *ngIf="selectedAddress && !isLoading">
     <ion-row>
       <ion-col></ion-col>
       <ion-header class="no-shadow">
