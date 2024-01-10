@@ -19,7 +19,6 @@
       </ion-row>
       <ion-row>
         <ion-col size-md="6" offset-md="3" size="12">
-
           <div formGroupName="basic">
             <div class="mt-4">
               <ion-input label="Amount to sell" labelPlacement="stacked" fill="outline" placeholder="10"
@@ -29,9 +28,19 @@
               <ion-input label="Price per token" labelPlacement="stacked" fill="outline" placeholder="10"
                 [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="price"></ion-input>
             </div>
-            <div class="p-3 mt-4 mb-4 confirmation">
-              You will be selling your tokens for a total of {{ (sellForm.value.basic.amount *
-              sellForm.value.basic.price) | number:'1.2-6' }} ATOM
+            <div class="p-3 mt-4 mb-4 confirmation"
+              *ngIf="((sellForm.value.basic.amount | stripSpaces) *
+              (sellForm.value.basic.price | stripSpaces)) >= minTradeSize && (sellForm.value.basic.amount | stripSpaces) <= senderBalance">
+              You will be selling your tokens for a total of {{ ((sellForm.value.basic.amount | stripSpaces) *
+              (sellForm.value.basic.price | stripSpaces)) | number:'1.2-6' }} ATOM
+            </div>
+            <div class="p-3 mt-4 mb-4 color-danger" *ngIf="((sellForm.value.basic.amount | stripSpaces) *
+                          (sellForm.value.basic.price | stripSpaces)) < minTradeSize">
+              The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
+            </div>
+            <div class="p-3 mt-4 mb-4 color-danger" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">
+              You are attempting to list more tokens than you have available. Your balance is
+              {{ senderBalance | number:'1.2-6' }} {{ ticker }}
             </div>
           </div>
         </ion-col>
@@ -39,7 +48,10 @@
       <ion-row>
         <ion-col>
           <div class="action">
-            <ion-button color="success" type="submit">Confirm and list</ion-button>
+            <ion-button color="success" type="submit"
+              [disabled]="((sellForm.value.basic.amount | stripSpaces) *
+              (sellForm.value.basic.price | stripSpaces)) < minTradeSize || (sellForm.value.basic.amount | stripSpaces) > senderBalance">Confirm and
+              list</ion-button>
             <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
           </div>
         </ion-col>

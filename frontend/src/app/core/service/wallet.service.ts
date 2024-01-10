@@ -77,6 +77,7 @@ export class WalletService {
       window.keplr.defaultOptions = {
         sign: {
           preferNoSetMemo: true,
+          preferNoSetFee: true,
         }
       }
 

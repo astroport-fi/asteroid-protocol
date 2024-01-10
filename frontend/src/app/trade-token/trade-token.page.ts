@@ -213,6 +213,14 @@ export class TradeTokenPage implements OnInit {
       ],
     }
 
+    // Calculate the trading fee
+    let overrideFee = environment.fees.protocol.cft20.buy.amount;
+    if (environment.fees.protocol.cft20.buy.type == 'dynamic-percent') {
+      const feePercentage = parseFloat(environment.fees.protocol.cft20.buy.amount);
+      const fee = parseInt(totaluatom.toString()) * feePercentage;
+      overrideFee = fee.toString();
+    }
+
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.token.ticker],
@@ -233,6 +241,7 @@ export class TradeTokenPage implements OnInit {
         metaprotocolAction: 'buy',
         messages: [purchaseMessage],
         messagesJSON: [purchaseMessageJSON],
+        overrideFee,
       }
     });
     modal.present();

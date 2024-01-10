@@ -17,19 +17,23 @@ import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
 
 @Component({
   selector: 'app-sell-modal',
   templateUrl: './sell-modal.page.html',
   styleUrls: ['./sell-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule]
+  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, StripSpacesPipe]
 })
 export class SellModalPage implements OnInit {
 
   @Input() ticker: string = 'tokens';
 
   sellForm: FormGroup;
+  minTradeSize: number = environment.fees.protocol.cft20.list.minTradeSize;
+  senderBalance: number = 0;
 
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
@@ -43,7 +47,7 @@ export class SellModalPage implements OnInit {
     this.sellForm = this.builder.group({
       basic: this.builder.group({
         amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        price: [0.55, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        price: [0.1, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
       }),
     });
 
@@ -63,6 +67,53 @@ export class SellModalPage implements OnInit {
   }
 
   async ngOnInit() {
+    const sender = await this.walletService.getAccount();
+
+    const chain = Chain(environment.api.endpoint)
+    const result = await chain('query')({
+      token: [
+        {
+          where: {
+            ticker: {
+              _eq: this.ticker
+            }
+          }
+        }, {
+          id: true,
+          decimals: true,
+          last_price_base: true,
+        }
+      ],
+    });
+    if (result.token.length > 0) {
+      this.sellForm.patchValue({
+        basic: {
+          price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base, 6)
+        }
+      });
+    }
+
+    const balanceResult = await chain('query')({
+      token_holder: [
+        {
+          where: {
+            address: {
+              _eq: sender.address
+            },
+            token_id: {
+              _eq: result.token[0].id
+            }
+          }
+        }, {
+          amount: true,
+        }
+      ]
+    });
+    if (balanceResult.token_holder.length > 0) {
+      // Get the sender's balance with decimals
+      this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
+    }
+
 
   }
 
@@ -78,8 +129,8 @@ export class SellModalPage implements OnInit {
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.ticker],
-      ["amt", this.sellForm.value.basic.amount],
-      ["ppt", this.sellForm.value.basic.price],
+      ["amt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString()],
+      ["ppt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
     const modal = await this.modalCtrl.create({

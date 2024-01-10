@@ -24,7 +24,8 @@ import {
   IonAccordionGroup,
   IonGrid,
   IonRow,
-  IonCol
+  IonCol,
+  ToastController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
@@ -88,7 +89,7 @@ export class DashboardLayoutComponent {
   walletStatusText = "Connect wallet";
   connectedAccount: any = {};
 
-  constructor(private walletService: WalletService, private alertController: AlertController) {
+  constructor(private walletService: WalletService, private alertController: AlertController, private toastController: ToastController) {
     addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline });
   }
 
@@ -101,6 +102,32 @@ export class DashboardLayoutComponent {
         this.isWalletConnected = true;
         this.connectedAccount = account;
       });
+
+      // Keep an eye out for changes in the connected wallet
+      // This would be the way to do it, but instead we're doing something simpler for now
+      // this.walletService.walletChanged.subscribe((account: AccountData) => {
+      //   this.connectedAccount = account;
+      // });
+
+      const checkInterval = setInterval(async () => {
+        const selectedAccount = await this.walletService.getAccount();
+        if (selectedAccount.address !== this.connectedAccount.address) {
+          clearInterval(checkInterval);
+          this.toastController.create({
+            message: 'Wallet change detected, reloading account...',
+            duration: 10000,
+            position: 'middle',
+            translucent: true,
+          }).then(async (toast) => {
+            await toast.present();
+            setTimeout(() => {
+              document.location.reload();
+            }, 1000);
+          });
+        }
+      }, 1000);
+
+
     } else {
       console.log("No last known wallet");
     }

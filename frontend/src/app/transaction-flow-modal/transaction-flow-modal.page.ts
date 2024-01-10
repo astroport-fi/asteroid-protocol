@@ -29,6 +29,7 @@ export class TransactionFlowModalPage implements OnInit {
   @Input() data: string;
   @Input() messages: any[] = [];
   @Input() messagesJSON: any[] = [];
+  @Input() overrideFee: number = 0;
 
   isSimulating: boolean = true;
   errorText: string = '';
@@ -67,6 +68,10 @@ export class TransactionFlowModalPage implements OnInit {
         amount: "0",
       }
     }
+    if (this.overrideFee > 0) {
+      fees.metaprotocol.amount = this.overrideFee.toString();
+    }
+
     this.protocolFee = parseInt(fees.metaprotocol.amount) / 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
 
     this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
@@ -82,8 +87,8 @@ export class TransactionFlowModalPage implements OnInit {
         // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
         this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
 
-        // Bump the chain fee by 20% to account for extra storage needed
-        this.chainFee = this.chainFee + (this.chainFee * 0.2);
+        // Bump the chain fee by 40% to account for extra storage needed
+        this.chainFee = this.chainFee + (this.chainFee * 0.4);
       }
     } catch (error: any) {
       console.error(error);
@@ -109,8 +114,8 @@ export class TransactionFlowModalPage implements OnInit {
 
     try {
       const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
-
       // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
+
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 

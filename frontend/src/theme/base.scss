@@ -444,3 +444,15 @@ p-table {
     height: 100% !important;
     position: absolute;
 }
+
+ion-toast {
+    --background: transparent !important;
+    --border-radius: 0px;
+    --border-style: none;
+    --border-color: transparent;
+    --border-width: 0px;
+    backdrop-filter: blur(12px) !important;
+    --color: var(--color-yellow);
+    box-shadow: none !important;
+    --box-shadow: none !important;
+}

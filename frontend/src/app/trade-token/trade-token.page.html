@@ -27,33 +27,39 @@
         <div class="aligned" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
-              <ion-col class="token-stats" *ngIf="!isLoading">
-                <span class="key">
-                  ATOM / USD
-                </span>
-                <span class="value ms-3">
-                  ${{ baseTokenUSD | number:"1.2-6" }}
-                </span>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    ATOM / USD
+                  </span>
+                  <span class="value ms-3">
+                    ${{ baseTokenUSD | number:"1.2-6" }}
+                  </span>
+                </div>
               </ion-col>
-              <ion-col class="token-stats" *ngIf="!isLoading">
-                <span class="key">
-                  {{ token.ticker }} / ATOM
-                </span>
-                <span class="value ms-3">
-                  {{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD *
-                  (token.last_price_base | tokenDecimals:token.decimals ) |
-                  number:"1.2-6" }})
-                </span>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    {{ token.ticker }} / ATOM
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD *
+                    (token.last_price_base | tokenDecimals:token.decimals ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
               </ion-col>
-              <ion-col class="token-stats" *ngIf="!isLoading">
-                <span class="key">
-                  24H Volume
-                </span>
-                <span class="value ms-3">
-                  {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseTokenUSD *
-                  (token.volume_24_base | tokenDecimals:6 ) |
-                  number:"1.2-6" }})
-                </span>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    24H Volume
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseTokenUSD *
+                    (token.volume_24_base | tokenDecimals:6 ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
               </ion-col>
             </ion-row>
           </ion-grid>
