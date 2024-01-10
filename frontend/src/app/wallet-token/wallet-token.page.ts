@@ -106,6 +106,7 @@ export class WalletTokenPage implements OnInit {
             transaction: {
               hash: true,
             },
+            last_price_base: true,
             content_path: true,
             content_size_bytes: true,
             circulating_supply: true,
@@ -135,6 +136,7 @@ export class WalletTokenPage implements OnInit {
             amount: true,
             token: {
               decimals: true,
+              last_price_base: true,
             }
           }
         ],

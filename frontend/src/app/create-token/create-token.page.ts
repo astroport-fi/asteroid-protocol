@@ -50,8 +50,9 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
     this.numberMask = maskitoNumberOptionsGenerator({
       decimalSeparator: '.',
       thousandSeparator: ' ',
-      precision: this.createForm.get('basic.decimals')?.value,
+      precision: 6,
       min: 1,
+      max: 10000000000000.000000,
     });
 
     this.maxDecimalsMask = maskitoNumberOptionsGenerator({
@@ -87,7 +88,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
     try {
       const name = encodeURI(this.createForm.value.basic.name.trim());
       const ticker = this.createForm.value.basic.ticker.replace(/\s/g, '');
-      const decimals = this.createForm.value.basic.decimals;
+      // const decimals = this.createForm.value.basic.decimals;
+      const decimals = 6;
       const maxSupply = this.createForm.value.basic.maxSupply.replace(/\s/g, '');
       const mintLimit = this.createForm.value.basic.mintLimit.replace(/\s/g, '');
 

@@ -21,7 +21,7 @@
             <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
               <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
                 *ngFor="let item of inscriptions; let index">
-                <!-- TODO: Do better here -->
+                <!-- TODO: Do better here, replace with previewer -->
                 <div class="content"
                   *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
                   <img [src]="item.content_path" />
@@ -30,11 +30,15 @@
                   *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
                   <div class="mime">{{ item.mime | humanType }}</div>
                 </div>
-                <h4>#{{item.id-1}} {{ item.name }}</h4>
+                <h4>{{ item.name }}</h4>
                 <div class="detail">
+                  <div class="detail-item">
+                    <span>#{{item.id-1}}</span>
+                  </div>
                   <div class="detail-item">
                     <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-1' }} kb)</span>
                   </div>
+
                   <div class="detail-item">
                     <span>{{ item.date_created | dateAgo }}</span>
                   </div>

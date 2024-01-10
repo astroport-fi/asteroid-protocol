@@ -8,45 +8,48 @@ export const environment = {
   limits: {
     maxFileSize: 770000,
   },
+  storage: {
+    connectedWalletKey: "connectedWallet"
+  },
   fees: {
     protocol: {
       inscription: {
         inscribe: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "5000"
+          amount: "0"
         },
       },
       cft20: {
         deploy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "2000"
+          amount: "0"
         },
         mint: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         transfer: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         list: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
         buy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "10000"
         },
         delist: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "1000"
+          amount: "0"
         },
       },
     },
@@ -55,14 +58,18 @@ export const environment = {
     }
   },
   api: {
-    endpoint: 'http://localhost:8080/v1/graphql',
-    explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    endpoint: 'http://192.168.11.103:8080/v1/graphql',
+    explorer: 'http://192.168.11.103:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    // endpoint: 'http://localhost:8080/v1/graphql',
+    // explorer: 'http://localhost:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {
     chainId: "gaialocal-1",
     chainName: "Private Cosmos Hub",
-    rpc: "http://localhost:8665/chain/gaia/rpc",
-    rest: "http://localhost:8665/chain/gaia/lcd",
+    rpc: "http://192.168.11.103:8665/chain/gaia/rpc",
+    rest: "http://192.168.11.103:8665/chain/gaia/lcd",
+    // rpc: "http://localhost:8665/chain/gaia/rpc",
+    // rest: "http://localhost:8665/chain/gaia/lcd",
     bip44: {
       coinType: 118
     },
@@ -83,7 +90,7 @@ export const environment = {
       coinDenom: 'stake',
       coinMinimalDenom: 'stake',
       coinDecimals: 6,
-      gasPriceStep: { low: 0.01, average: 0.025, high: 0.04 }
+      gasPriceStep: { low: 0.005, average: 0.005, high: 0.008 }
     }],
     stakeCurrency: {
       coinDenom: 'atom',

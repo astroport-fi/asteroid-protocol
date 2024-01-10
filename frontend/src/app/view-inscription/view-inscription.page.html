@@ -35,10 +35,6 @@
                   <app-generic-preview [mime]="inscription.mime"
                     [contentPath]="inscription.content_path"></app-generic-preview>
                 </div>
-                <!-- <div class="text-center"
-                  *ngIf="inscription.mime == 'image/png' || inscription.mime == 'image/jpg' || inscription.mime == 'image/jpeg' || inscription.mime == 'image/gif' || inscription.mime == 'image/webp'">
-                  <img class="rounded" [src]="inscription.content_path" />
-                </div> -->
                 <div class="text-center p-2">
                   <ion-button color="primary" fill="clear" href="inscription/{{ inscription.transaction.hash }}"
                     target="_blank">

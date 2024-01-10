@@ -29,6 +29,7 @@ export class MarketsPage implements OnInit {
   limit = 500;
   lastFetchCount = 0;
   baseToken: any;
+  baseTokenPrice: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
     this.lastFetchCount = this.limit;
@@ -38,6 +39,8 @@ export class MarketsPage implements OnInit {
     this.activatedRoute.params.subscribe(async params => {
       this.selectedAddress = params["address"];
       this.isLoading = true;
+
+      this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
 
       const chain = Chain(environment.api.endpoint);
 
@@ -84,7 +87,9 @@ export class MarketsPage implements OnInit {
             circulating_supply: true,
             decimals: true,
             launch_timestamp: true,
-            date_created: true
+            last_price_base: true,
+            volume_24_base: true,
+            date_created: true,
           }
         ],
         status: [

@@ -85,6 +85,17 @@ export const AllTypesProps: Record<string, any> = {
 		_neq: "json",
 		_nin: "json"
 	},
+	numeric: `scalar.numeric` as const,
+	numeric_comparison_exp: {
+		_eq: "numeric",
+		_gt: "numeric",
+		_gte: "numeric",
+		_in: "numeric",
+		_lt: "numeric",
+		_lte: "numeric",
+		_neq: "numeric",
+		_nin: "numeric"
+	},
 	order_by: "enum" as const,
 	query_root: {
 		inscription: {
@@ -443,8 +454,9 @@ export const AllTypesProps: Record<string, any> = {
 		decimals: "smallint_comparison_exp",
 		height: "Int_comparison_exp",
 		id: "Int_comparison_exp",
+		last_price_base: "Int_comparison_exp",
 		launch_timestamp: "bigint_comparison_exp",
-		max_supply: "bigint_comparison_exp",
+		max_supply: "numeric_comparison_exp",
 		metadata: "String_comparison_exp",
 		mint_page: "String_comparison_exp",
 		name: "String_comparison_exp",
@@ -455,7 +467,8 @@ export const AllTypesProps: Record<string, any> = {
 		token_open_positions: "token_open_position_bool_exp",
 		transaction: "transaction_bool_exp",
 		transaction_id: "Int_comparison_exp",
-		version: "String_comparison_exp"
+		version: "String_comparison_exp",
+		volume_24_base: "Int_comparison_exp"
 	},
 	token_holder_aggregate_order_by: {
 		avg: "token_holder_avg_order_by",
@@ -710,6 +723,7 @@ export const AllTypesProps: Record<string, any> = {
 		decimals: "order_by",
 		height: "order_by",
 		id: "order_by",
+		last_price_base: "order_by",
 		launch_timestamp: "order_by",
 		max_supply: "order_by",
 		metadata: "order_by",
@@ -722,7 +736,8 @@ export const AllTypesProps: Record<string, any> = {
 		token_open_positions_aggregate: "token_open_position_aggregate_order_by",
 		transaction: "transaction_order_by",
 		transaction_id: "order_by",
-		version: "order_by"
+		version: "order_by",
+		volume_24_base: "order_by"
 	},
 	token_select_column: "enum" as const,
 	token_stream_cursor_input: {
@@ -734,7 +749,7 @@ export const AllTypesProps: Record<string, any> = {
 		date_created: "timestamp",
 		decimals: "smallint",
 		launch_timestamp: "bigint",
-		max_supply: "bigint",
+		max_supply: "numeric",
 		per_mint_limit: "bigint"
 	},
 	transaction: {
@@ -810,6 +825,7 @@ export const ReturnTypes: Record<string, any> = {
 		version: "String"
 	},
 	json: `scalar.json` as const,
+	numeric: `scalar.numeric` as const,
 	query_root: {
 		inscription: "inscription",
 		inscription_by_pk: "inscription",
@@ -870,8 +886,9 @@ export const ReturnTypes: Record<string, any> = {
 		decimals: "smallint",
 		height: "Int",
 		id: "Int",
+		last_price_base: "Int",
 		launch_timestamp: "bigint",
-		max_supply: "bigint",
+		max_supply: "numeric",
 		metadata: "String",
 		mint_page: "String",
 		name: "String",
@@ -882,7 +899,8 @@ export const ReturnTypes: Record<string, any> = {
 		token_open_positions: "token_open_position",
 		transaction: "transaction",
 		transaction_id: "Int",
-		version: "String"
+		version: "String",
+		volume_24_base: "Int"
 	},
 	token_address_history: {
 		action: "String",

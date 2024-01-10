@@ -72,6 +72,8 @@ export class TradeTokenPage implements OnInit {
           content_path: true,
           content_size_bytes: true,
           circulating_supply: true,
+          last_price_base: true,
+          volume_24_base: true,
           date_created: true,
         }
       ]

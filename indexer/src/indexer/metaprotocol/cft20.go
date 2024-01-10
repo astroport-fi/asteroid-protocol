@@ -123,6 +123,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse supply '%s'", err)
 		}
+		fmt.Println("HERE")
 		decimals, err := strconv.ParseUint(parsedURN.KeyValuePairs["dec"], 10, 64)
 		if err != nil {
 			return fmt.Errorf("unable to parse decimals '%s'", err)
@@ -137,10 +138,12 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			// If this fails, we set the open time to the block time
 			openTimestamp = uint64(rawTransaction.TxResponse.Timestamp.Unix())
 		}
+		fmt.Println("HERE2")
 
 		// Add the decimals to the supply and limit
 		supplyFloat = supplyFloat * math.Pow10(int(decimals))
 		supply := uint64(math.Round(supplyFloat))
+		fmt.Println("HERE3")
 
 		limitFloat = limitFloat * math.Pow10(int(decimals))
 		limit := uint64(math.Round(limitFloat))
@@ -162,13 +165,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if limit > supply {
 			return fmt.Errorf("token per wallet limit must be less than supply of %d", protocol.maxSupplyMaxValue)
 		}
-
+		fmt.Println("HERE4")
 		// Check if this token has already been deployed
 		var tokenModel models.Token
 		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
 		if result.Error == nil {
 			return fmt.Errorf("token with ticker '%s' already exists", name)
 		}
+		fmt.Println("HERE5")
 
 		// TODO: Rework the content extraction
 		contentPath := ""
@@ -232,11 +236,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			DateCreated:       rawTransaction.TxResponse.Timestamp,
 			CirculatingSupply: 0,
 		}
+		fmt.Println("HERE6")
 
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
+			fmt.Println("HERE7")
 			return result.Error
 		}
+		fmt.Println("HERE8")
 
 	case "mint":
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
@@ -531,11 +538,26 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			}
 		}
 
+		// Get current USD price of the base
+		var statusModel models.Status
+		result = protocol.db.Where("chain_id = ?", parsedURN.ChainID).First(&statusModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to get current base currency price '%s'", err)
+		}
+
+		// Update token table with new price per token, no need to convert decimals, already included
+		tokenModel.LastPriceBase = openOrderModel.PPT
+		result = protocol.db.Save(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update token price '%s'", result.Error)
+		}
+
 		// Everything checks out, so we can mark the order as filled and transfer the tokens
 		openOrderModel.IsFilled = true
+		openOrderModel.DateFilled = rawTransaction.TxResponse.Timestamp
 		result = protocol.db.Save(&openOrderModel)
 		if result.Error != nil {
-			return fmt.Errorf("unable to update order '%s'", err)
+			return fmt.Errorf("unable to update order '%s'", result.Error)
 		}
 
 		// Update the buyer's balance
@@ -544,7 +566,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&destinationHolderModel)
 		if result.Error != nil {
 			if result.Error != gorm.ErrRecordNotFound {
-				return fmt.Errorf("unable to check destination balance '%s'", err)
+				return fmt.Errorf("unable to check destination balance '%s'", result.Error)
 			}
 		}
 
@@ -576,6 +598,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if result.Error != nil {
 			return result.Error
 		}
+
+		// TODO Capture USD value of the trade
+		// TODO Recalculate volume from filled trades for this token in past 24 hours
 
 	case "delist":
 		fmt.Println(protocolURN)
@@ -611,6 +636,45 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		result = protocol.db.Save(&openOrderModel)
 		if result.Error != nil {
 			return fmt.Errorf("unable to update order '%s'", err)
+		}
+
+		// Return funds to seller
+		// Check if the destination address has any tokens
+		var destinationHolderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&destinationHolderModel)
+		if result.Error != nil {
+			if result.Error != gorm.ErrRecordNotFound {
+				return fmt.Errorf("unable to check destination balance '%s'", err)
+			}
+		}
+
+		// If the destination address has no tokens, we need to create a record
+		destinationHolderModel.ChainID = parsedURN.ChainID
+		destinationHolderModel.TokenID = tokenModel.ID
+		destinationHolderModel.Address = sender
+		destinationHolderModel.Amount = destinationHolderModel.Amount + openOrderModel.Amount
+		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+
+		result = protocol.db.Save(&destinationHolderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update receiver balance '%s'", err)
+		}
+
+		// Record the transfer
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        "marketplace",
+			Receiver:      sender,
+			Action:        "transfer",
+			Amount:        openOrderModel.Amount,
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
 		}
 	}
 

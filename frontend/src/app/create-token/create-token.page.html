@@ -72,11 +72,11 @@
                         label="Ticker (1 - 10 characters, alphanumeric only)" formControlName="ticker" [counter]="true"
                         [minlength]="1" [maxlength]="10" oninput="this.value = this.value.toUpperCase()"></ion-input>
                     </div>
-                    <div class="mt-3 ps-3">
+                    <!-- <div class="mt-3 ps-3">
                       <ion-input label="Decimal places" fill="outline" labelPlacement="stacked" placeholder="Decimals"
                         [maskito]="maxDecimalsMask" [maskitoElement]="maskPredicate"
                         formControlName="decimals"></ion-input>
-                    </div>
+                    </div> -->
                     <div class="mt-3 ps-3">
                       <ion-input label="Maximum supply" fill="outline" labelPlacement="stacked"
                         placeholder="Maximum supply" [maskito]="numberMask" [maskitoElement]="maskPredicate"

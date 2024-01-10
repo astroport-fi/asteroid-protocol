@@ -32,7 +32,7 @@
                   ATOM / USD
                 </span>
                 <span class="value ms-3">
-                  $0.000000
+                  ${{ baseTokenUSD | number:"1.2-6" }}
                 </span>
               </ion-col>
               <ion-col class="token-stats" *ngIf="!isLoading">
@@ -40,7 +40,9 @@
                   {{ token.ticker }} / ATOM
                 </span>
                 <span class="value ms-3">
-                  0.000000
+                  {{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD *
+                  (token.last_price_base | tokenDecimals:token.decimals ) |
+                  number:"1.2-6" }})
                 </span>
               </ion-col>
               <ion-col class="token-stats" *ngIf="!isLoading">

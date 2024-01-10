@@ -11,9 +11,10 @@ type TokenOpenPosition struct {
 	Amount        uint64    `gorm:"column:amount"` // Amount of TokenID listed
 	PPT           uint64    `gorm:"column:ppt"`    // PPT = Price Per Token, in uatom
 	Total         uint64    `gorm:"column:total"`  // Amount * PPT
-	DateCreated   time.Time `gorm:"column:date_created"`
 	IsFilled      bool      `gorm:"column:is_filled"`
 	IsCancelled   bool      `gorm:"column:is_cancelled"`
+	DateFilled    time.Time `gorm:"column:date_filled"`
+	DateCreated   time.Time `gorm:"column:date_created"`
 }
 
 func (TokenOpenPosition) TableName() string {

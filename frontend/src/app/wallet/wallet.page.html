@@ -72,8 +72,8 @@
                       <th pSortableColumn="token.ticker" pFrozenColumn>Ticker <p-sortIcon
                           field="token.ticker"></p-sortIcon>
                       </th>
+                      <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
                       <th pSortableColumn="amount">Balance <p-sortIcon field="amount"></p-sortIcon></th>
-                      <th pSortableColumn="price">Value <p-sortIcon field="price"></p-sortIcon></th>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-item>
@@ -87,8 +87,15 @@
                         </div>
                       </td>
                       <td pFrozenColumn>{{ item.token.ticker }}</td>
-                      <td>{{ item.amount | tokenDecimals:item.token.decimals }} ($-)</td>
-                      <td>${{ item.amount | tokenDecimals:item.token.decimals | number:"1.2-2" }}</td>
+                      <td>{{ item.token.last_price_base | tokenDecimals:item.token.decimals }} ATOM (${{ baseTokenPrice
+                        *
+                        (item.token.last_price_base | tokenDecimals:item.token.decimals ) |
+                        number:"1.2-6" }})</td>
+                      <td>{{ item.amount | tokenDecimals:item.token.decimals | number:"1.2-6" }}
+                        (${{ (item.amount | tokenDecimals:item.token.decimals )* (baseTokenPrice *
+                        item.token.last_price_base |
+                        tokenDecimals:item.token.decimals) | number:"1.2-6" }})
+                      </td>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="emptymessage">
@@ -97,9 +104,6 @@
                     </tr>
                   </ng-template>
                 </p-table>
-              </ion-col>
-              <ion-col size-xl="8" size="12" *ngIf="holdings.length == 0">
-                No tokens found
               </ion-col>
             </ion-row>
 
@@ -117,8 +121,11 @@
                     *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
                     <div class="mime">{{ item.mime | humanType }}</div>
                   </div>
-                  <h4>#{{item.id - 1}} {{ item.name }}</h4>
-                  <div class="detail">
+                  <h4>{{ item.name }}</h4>
+                  <div class="detail text-start">
+                    <div class="detail-item">
+                      <span>#{{item.id - 1}}</span>
+                    </div>
                     <div class="detail-item">
                       <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }}
                         kb)</span>
@@ -147,7 +154,7 @@
                     <!-- <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div> -->
                   </div>
                   <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
-                  <div class="detail">
+                  <div class="detail text-start">
                     <div class="detail-item">
                       <span>{{ item.name }}</span>
                     </div>

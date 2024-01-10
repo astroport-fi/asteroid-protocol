@@ -15,6 +15,7 @@ import { DashboardPage } from '../dashboard/dashboard.page';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TableModule } from 'primeng/table';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { PriceService } from '../core/service/price.service';
 
 @Component({
   selector: 'app-wallet',
@@ -33,17 +34,25 @@ export class WalletPage implements OnInit {
   inscriptions: any = null;
   isWalletConnected = false;
   connectedAccount: any;
+  baseTokenPrice: number = 0;
 
-  constructor(private activatedRoute: ActivatedRoute, private walletService: WalletService) {
+  constructor(private activatedRoute: ActivatedRoute, private walletService: WalletService, private priceService: PriceService) {
   }
 
   async ngOnInit() {
     const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
-      const account = await this.walletService.getAccount();
-      this.isWalletConnected = true;
-      this.connectedAccount = account;
+      try {
+        const account = await this.walletService.getAccount();
+        if (account) {
+          this.isWalletConnected = true;
+          this.connectedAccount = account;
+        }
+      } catch (e) {
+        // Wallet connection rejected
+        localStorage.clear();
+      }
     }
 
     this.activatedRoute.params.subscribe(async params => {
@@ -51,6 +60,8 @@ export class WalletPage implements OnInit {
       this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'tokens';
 
       this.isLoading = true;
+
+      this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
 
       const chain = Chain(environment.api.endpoint);
 
@@ -81,6 +92,7 @@ export class WalletPage implements OnInit {
             max_supply: true,
             decimals: true,
             launch_timestamp: true,
+            last_price_base: true,
             date_created: true
           }
         ]
@@ -105,6 +117,7 @@ export class WalletPage implements OnInit {
               max_supply: true,
               circulating_supply: true,
               decimals: true,
+              last_price_base: true,
               transaction: {
                 hash: true
               }

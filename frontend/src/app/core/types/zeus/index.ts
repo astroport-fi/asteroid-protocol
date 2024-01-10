@@ -836,6 +836,7 @@ type ZEUS_INTERFACES = never
 export type ScalarCoders = {
 	bigint?: ScalarResolver;
 	json?: ScalarResolver;
+	numeric?: ScalarResolver;
 	smallint?: ScalarResolver;
 	timestamp?: ScalarResolver;
 }
@@ -1020,6 +1021,19 @@ export type ValueTypes = {
 		_lte?: ValueTypes["json"] | undefined | null | Variable<any, string>,
 		_neq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
 		_nin?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>
+	};
+	["numeric"]: unknown;
+	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+	["numeric_comparison_exp"]: {
+		_eq?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_gt?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_gte?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_in?: Array<ValueTypes["numeric"]> | undefined | null | Variable<any, string>,
+		_is_null?: boolean | undefined | null | Variable<any, string>,
+		_lt?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_lte?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_neq?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+		_nin?: Array<ValueTypes["numeric"]> | undefined | null | Variable<any, string>
 	};
 	/** column ordering options */
 	["order_by"]: order_by;
@@ -1263,6 +1277,7 @@ export type ValueTypes = {
 		decimals?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		last_price_base?: boolean | `@${string}`,
 		launch_timestamp?: boolean | `@${string}`,
 		max_supply?: boolean | `@${string}`,
 		metadata?: boolean | `@${string}`,
@@ -1295,6 +1310,7 @@ export type ValueTypes = {
 		transaction?: ValueTypes["transaction"],
 		transaction_id?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
+		volume_24_base?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
 	/** columns and relationships of "token_address_history" */
@@ -1489,8 +1505,9 @@ export type ValueTypes = {
 		decimals?: ValueTypes["smallint_comparison_exp"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		last_price_base?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		launch_timestamp?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
-		max_supply?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		max_supply?: ValueTypes["numeric_comparison_exp"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		mint_page?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1501,7 +1518,8 @@ export type ValueTypes = {
 		token_open_positions?: ValueTypes["token_open_position_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		volume_24_base?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: AliasType<{
@@ -1835,6 +1853,7 @@ export type ValueTypes = {
 		decimals?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		last_price_base?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		launch_timestamp?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		max_supply?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1847,7 +1866,8 @@ export type ValueTypes = {
 		token_open_positions_aggregate?: ValueTypes["token_open_position_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-		version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+		version?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		volume_24_base?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	/** select columns of table "token" */
 	["token_select_column"]: token_select_column;
@@ -1870,15 +1890,17 @@ export type ValueTypes = {
 		decimals?: ValueTypes["smallint"] | undefined | null | Variable<any, string>,
 		height?: number | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
+		last_price_base?: number | undefined | null | Variable<any, string>,
 		launch_timestamp?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
-		max_supply?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		max_supply?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
 		metadata?: string | undefined | null | Variable<any, string>,
 		mint_page?: string | undefined | null | Variable<any, string>,
 		name?: string | undefined | null | Variable<any, string>,
 		per_mint_limit?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		ticker?: string | undefined | null | Variable<any, string>,
 		transaction_id?: number | undefined | null | Variable<any, string>,
-		version?: string | undefined | null | Variable<any, string>
+		version?: string | undefined | null | Variable<any, string>,
+		volume_24_base?: number | undefined | null | Variable<any, string>
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: AliasType<{
@@ -2149,6 +2171,19 @@ export type ResolverInputTypes = {
 		_neq?: ResolverInputTypes["json"] | undefined | null,
 		_nin?: Array<ResolverInputTypes["json"]> | undefined | null
 	};
+	["numeric"]: unknown;
+	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+	["numeric_comparison_exp"]: {
+		_eq?: ResolverInputTypes["numeric"] | undefined | null,
+		_gt?: ResolverInputTypes["numeric"] | undefined | null,
+		_gte?: ResolverInputTypes["numeric"] | undefined | null,
+		_in?: Array<ResolverInputTypes["numeric"]> | undefined | null,
+		_is_null?: boolean | undefined | null,
+		_lt?: ResolverInputTypes["numeric"] | undefined | null,
+		_lte?: ResolverInputTypes["numeric"] | undefined | null,
+		_neq?: ResolverInputTypes["numeric"] | undefined | null,
+		_nin?: Array<ResolverInputTypes["numeric"]> | undefined | null
+	};
 	/** column ordering options */
 	["order_by"]: order_by;
 	["query_root"]: AliasType<{
@@ -2391,6 +2426,7 @@ export type ResolverInputTypes = {
 		decimals?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		last_price_base?: boolean | `@${string}`,
 		launch_timestamp?: boolean | `@${string}`,
 		max_supply?: boolean | `@${string}`,
 		metadata?: boolean | `@${string}`,
@@ -2423,6 +2459,7 @@ export type ResolverInputTypes = {
 		transaction?: ResolverInputTypes["transaction"],
 		transaction_id?: boolean | `@${string}`,
 		version?: boolean | `@${string}`,
+		volume_24_base?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
 	/** columns and relationships of "token_address_history" */
@@ -2617,8 +2654,9 @@ export type ResolverInputTypes = {
 		decimals?: ResolverInputTypes["smallint_comparison_exp"] | undefined | null,
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		last_price_base?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		launch_timestamp?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
-		max_supply?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		max_supply?: ResolverInputTypes["numeric_comparison_exp"] | undefined | null,
 		metadata?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		mint_page?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -2629,7 +2667,8 @@ export type ResolverInputTypes = {
 		token_open_positions?: ResolverInputTypes["token_open_position_bool_exp"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		volume_24_base?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: AliasType<{
@@ -2963,6 +3002,7 @@ export type ResolverInputTypes = {
 		decimals?: ResolverInputTypes["order_by"] | undefined | null,
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
+		last_price_base?: ResolverInputTypes["order_by"] | undefined | null,
 		launch_timestamp?: ResolverInputTypes["order_by"] | undefined | null,
 		max_supply?: ResolverInputTypes["order_by"] | undefined | null,
 		metadata?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2975,7 +3015,8 @@ export type ResolverInputTypes = {
 		token_open_positions_aggregate?: ResolverInputTypes["token_open_position_aggregate_order_by"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null,
-		version?: ResolverInputTypes["order_by"] | undefined | null
+		version?: ResolverInputTypes["order_by"] | undefined | null,
+		volume_24_base?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	/** select columns of table "token" */
 	["token_select_column"]: token_select_column;
@@ -2998,15 +3039,17 @@ export type ResolverInputTypes = {
 		decimals?: ResolverInputTypes["smallint"] | undefined | null,
 		height?: number | undefined | null,
 		id?: number | undefined | null,
+		last_price_base?: number | undefined | null,
 		launch_timestamp?: ResolverInputTypes["bigint"] | undefined | null,
-		max_supply?: ResolverInputTypes["bigint"] | undefined | null,
+		max_supply?: ResolverInputTypes["numeric"] | undefined | null,
 		metadata?: string | undefined | null,
 		mint_page?: string | undefined | null,
 		name?: string | undefined | null,
 		per_mint_limit?: ResolverInputTypes["bigint"] | undefined | null,
 		ticker?: string | undefined | null,
 		transaction_id?: number | undefined | null,
-		version?: string | undefined | null
+		version?: string | undefined | null,
+		volume_24_base?: number | undefined | null
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: AliasType<{
@@ -3271,6 +3314,19 @@ export type ModelTypes = {
 		_neq?: ModelTypes["json"] | undefined,
 		_nin?: Array<ModelTypes["json"]> | undefined
 	};
+	["numeric"]: any;
+	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+	["numeric_comparison_exp"]: {
+		_eq?: ModelTypes["numeric"] | undefined,
+		_gt?: ModelTypes["numeric"] | undefined,
+		_gte?: ModelTypes["numeric"] | undefined,
+		_in?: Array<ModelTypes["numeric"]> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: ModelTypes["numeric"] | undefined,
+		_lte?: ModelTypes["numeric"] | undefined,
+		_neq?: ModelTypes["numeric"] | undefined,
+		_nin?: Array<ModelTypes["numeric"]> | undefined
+	};
 	["order_by"]: order_by;
 	["query_root"]: {
 		/** fetch data from the table: "inscription" */
@@ -3431,8 +3487,9 @@ export type ModelTypes = {
 		decimals: ModelTypes["smallint"],
 		height: number,
 		id: number,
+		last_price_base: number,
 		launch_timestamp: ModelTypes["bigint"],
-		max_supply: ModelTypes["bigint"],
+		max_supply: ModelTypes["numeric"],
 		metadata?: string | undefined,
 		mint_page: string,
 		name: string,
@@ -3447,7 +3504,8 @@ export type ModelTypes = {
 		/** An object relationship */
 		transaction: ModelTypes["transaction"],
 		transaction_id: number,
-		version: string
+		version: string,
+		volume_24_base: number
 	};
 	/** columns and relationships of "token_address_history" */
 	["token_address_history"]: {
@@ -3639,8 +3697,9 @@ export type ModelTypes = {
 		decimals?: ModelTypes["smallint_comparison_exp"] | undefined,
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		last_price_base?: ModelTypes["Int_comparison_exp"] | undefined,
 		launch_timestamp?: ModelTypes["bigint_comparison_exp"] | undefined,
-		max_supply?: ModelTypes["bigint_comparison_exp"] | undefined,
+		max_supply?: ModelTypes["numeric_comparison_exp"] | undefined,
 		metadata?: ModelTypes["String_comparison_exp"] | undefined,
 		mint_page?: ModelTypes["String_comparison_exp"] | undefined,
 		name?: ModelTypes["String_comparison_exp"] | undefined,
@@ -3651,7 +3710,8 @@ export type ModelTypes = {
 		token_open_positions?: ModelTypes["token_open_position_bool_exp"] | undefined,
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
-		version?: ModelTypes["String_comparison_exp"] | undefined
+		version?: ModelTypes["String_comparison_exp"] | undefined,
+		volume_24_base?: ModelTypes["Int_comparison_exp"] | undefined
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: {
@@ -3981,6 +4041,7 @@ export type ModelTypes = {
 		decimals?: ModelTypes["order_by"] | undefined,
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
+		last_price_base?: ModelTypes["order_by"] | undefined,
 		launch_timestamp?: ModelTypes["order_by"] | undefined,
 		max_supply?: ModelTypes["order_by"] | undefined,
 		metadata?: ModelTypes["order_by"] | undefined,
@@ -3993,7 +4054,8 @@ export type ModelTypes = {
 		token_open_positions_aggregate?: ModelTypes["token_open_position_aggregate_order_by"] | undefined,
 		transaction?: ModelTypes["transaction_order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined,
-		version?: ModelTypes["order_by"] | undefined
+		version?: ModelTypes["order_by"] | undefined,
+		volume_24_base?: ModelTypes["order_by"] | undefined
 	};
 	["token_select_column"]: token_select_column;
 	/** Streaming cursor of the table "token" */
@@ -4015,15 +4077,17 @@ export type ModelTypes = {
 		decimals?: ModelTypes["smallint"] | undefined,
 		height?: number | undefined,
 		id?: number | undefined,
+		last_price_base?: number | undefined,
 		launch_timestamp?: ModelTypes["bigint"] | undefined,
-		max_supply?: ModelTypes["bigint"] | undefined,
+		max_supply?: ModelTypes["numeric"] | undefined,
 		metadata?: string | undefined,
 		mint_page?: string | undefined,
 		name?: string | undefined,
 		per_mint_limit?: ModelTypes["bigint"] | undefined,
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
-		version?: string | undefined
+		version?: string | undefined,
+		volume_24_base?: number | undefined
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: {
@@ -4280,6 +4344,19 @@ export type GraphQLTypes = {
 		_neq?: GraphQLTypes["json"] | undefined,
 		_nin?: Array<GraphQLTypes["json"]> | undefined
 	};
+	["numeric"]: "scalar" & { name: "numeric" };
+	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+	["numeric_comparison_exp"]: {
+		_eq?: GraphQLTypes["numeric"] | undefined,
+		_gt?: GraphQLTypes["numeric"] | undefined,
+		_gte?: GraphQLTypes["numeric"] | undefined,
+		_in?: Array<GraphQLTypes["numeric"]> | undefined,
+		_is_null?: boolean | undefined,
+		_lt?: GraphQLTypes["numeric"] | undefined,
+		_lte?: GraphQLTypes["numeric"] | undefined,
+		_neq?: GraphQLTypes["numeric"] | undefined,
+		_nin?: Array<GraphQLTypes["numeric"]> | undefined
+	};
 	/** column ordering options */
 	["order_by"]: order_by;
 	["query_root"]: {
@@ -4446,8 +4523,9 @@ export type GraphQLTypes = {
 		decimals: GraphQLTypes["smallint"],
 		height: number,
 		id: number,
+		last_price_base: number,
 		launch_timestamp: GraphQLTypes["bigint"],
-		max_supply: GraphQLTypes["bigint"],
+		max_supply: GraphQLTypes["numeric"],
 		metadata?: string | undefined,
 		mint_page: string,
 		name: string,
@@ -4462,7 +4540,8 @@ export type GraphQLTypes = {
 		/** An object relationship */
 		transaction: GraphQLTypes["transaction"],
 		transaction_id: number,
-		version: string
+		version: string,
+		volume_24_base: number
 	};
 	/** columns and relationships of "token_address_history" */
 	["token_address_history"]: {
@@ -4656,8 +4735,9 @@ export type GraphQLTypes = {
 		decimals?: GraphQLTypes["smallint_comparison_exp"] | undefined,
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		last_price_base?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		launch_timestamp?: GraphQLTypes["bigint_comparison_exp"] | undefined,
-		max_supply?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		max_supply?: GraphQLTypes["numeric_comparison_exp"] | undefined,
 		metadata?: GraphQLTypes["String_comparison_exp"] | undefined,
 		mint_page?: GraphQLTypes["String_comparison_exp"] | undefined,
 		name?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -4668,7 +4748,8 @@ export type GraphQLTypes = {
 		token_open_positions?: GraphQLTypes["token_open_position_bool_exp"] | undefined,
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
-		version?: GraphQLTypes["String_comparison_exp"] | undefined
+		version?: GraphQLTypes["String_comparison_exp"] | undefined,
+		volume_24_base?: GraphQLTypes["Int_comparison_exp"] | undefined
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: {
@@ -5002,6 +5083,7 @@ export type GraphQLTypes = {
 		decimals?: GraphQLTypes["order_by"] | undefined,
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
+		last_price_base?: GraphQLTypes["order_by"] | undefined,
 		launch_timestamp?: GraphQLTypes["order_by"] | undefined,
 		max_supply?: GraphQLTypes["order_by"] | undefined,
 		metadata?: GraphQLTypes["order_by"] | undefined,
@@ -5014,7 +5096,8 @@ export type GraphQLTypes = {
 		token_open_positions_aggregate?: GraphQLTypes["token_open_position_aggregate_order_by"] | undefined,
 		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined,
-		version?: GraphQLTypes["order_by"] | undefined
+		version?: GraphQLTypes["order_by"] | undefined,
+		volume_24_base?: GraphQLTypes["order_by"] | undefined
 	};
 	/** select columns of table "token" */
 	["token_select_column"]: token_select_column;
@@ -5037,15 +5120,17 @@ export type GraphQLTypes = {
 		decimals?: GraphQLTypes["smallint"] | undefined,
 		height?: number | undefined,
 		id?: number | undefined,
+		last_price_base?: number | undefined,
 		launch_timestamp?: GraphQLTypes["bigint"] | undefined,
-		max_supply?: GraphQLTypes["bigint"] | undefined,
+		max_supply?: GraphQLTypes["numeric"] | undefined,
 		metadata?: string | undefined,
 		mint_page?: string | undefined,
 		name?: string | undefined,
 		per_mint_limit?: GraphQLTypes["bigint"] | undefined,
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
-		version?: string | undefined
+		version?: string | undefined,
+		volume_24_base?: number | undefined
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: {
@@ -5212,6 +5297,7 @@ export const enum token_select_column {
 	decimals = "decimals",
 	height = "height",
 	id = "id",
+	last_price_base = "last_price_base",
 	launch_timestamp = "launch_timestamp",
 	max_supply = "max_supply",
 	metadata = "metadata",
@@ -5220,7 +5306,8 @@ export const enum token_select_column {
 	per_mint_limit = "per_mint_limit",
 	ticker = "ticker",
 	transaction_id = "transaction_id",
-	version = "version"
+	version = "version",
+	volume_24_base = "volume_24_base"
 }
 /** select columns of table "transaction" */
 export const enum transaction_select_column {
@@ -5250,6 +5337,8 @@ type ZEUS_VARIABLES = {
 	["inscription_stream_cursor_value_input"]: ValueTypes["inscription_stream_cursor_value_input"];
 	["json"]: ValueTypes["json"];
 	["json_comparison_exp"]: ValueTypes["json_comparison_exp"];
+	["numeric"]: ValueTypes["numeric"];
+	["numeric_comparison_exp"]: ValueTypes["numeric_comparison_exp"];
 	["order_by"]: ValueTypes["order_by"];
 	["smallint"]: ValueTypes["smallint"];
 	["smallint_comparison_exp"]: ValueTypes["smallint_comparison_exp"];

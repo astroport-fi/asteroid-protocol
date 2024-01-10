@@ -48,7 +48,9 @@
                 <div class="meta">
                   <span class="label"></span>
                   <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
-                    {{ token.ticker }} ($0.0)</span>
+                    {{ token.ticker }} (${{ (holding.amount | tokenDecimals:holding.token.decimals )* (baseTokenUSD *
+                    holding.token.last_price_base |
+                    tokenDecimals:holding.token.decimals) | number:"1.2-6" }})</span>
                 </div>
                 <div class="mt-2 mb-0">
                   <ion-button color="primary" fill="clear" (click)="transfer()"

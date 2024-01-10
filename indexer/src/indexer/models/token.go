@@ -24,8 +24,10 @@ type Token struct {
 	Metadata          datatypes.JSON `gorm:"column:metadata"`
 	ContentPath       string         `gorm:"column:content_path"`
 	ContentSizeBytes  uint64         `gorm:"column:content_size_bytes"`
-	DateCreated       time.Time      `gorm:"column:date_created"`
 	CirculatingSupply uint64         `gorm:"column:circulating_supply"`
+	LastPriceBase     uint64         `gorm:"column:last_price_base"`
+	Volume24Base      uint64         `gorm:"column:volume_24_base"`
+	DateCreated       time.Time      `gorm:"column:date_created"`
 }
 
 func (Token) TableName() string {

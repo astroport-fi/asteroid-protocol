@@ -42,7 +42,7 @@
                 <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
                 <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                <th pSortableColumn="price">Token Price <p-sortIcon field="price"></p-sortIcon></th>
                 <th pSortableColumn="minted">Minted <p-sortIcon field="minted"></p-sortIcon></th>
               </tr>
             </ng-template>
@@ -58,8 +58,11 @@
                 <td>{{ token.id }}</td>
                 <td pFrozenColumn>{{ token.ticker }}</td>
                 <td>{{ token.name }}</td>
-                <td>$0.00</td>
-                <td>40%</td>
+                <td>{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenPrice *
+                  (token.last_price_base | tokenDecimals:token.decimals ) |
+                  number:"1.2-6" }})
+                </td>
+                <td>{{token.circulating_supply / token.max_supply * 100 | number: '1.1-4'}}%</td>
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -68,41 +71,6 @@
               </tr>
             </ng-template>
           </p-table>
-
-
-          <!-- <div *ngIf="isLoading">
-            <ion-progress-bar type="indeterminate"></ion-progress-bar>
-          </div>
-          <div class="list" *ngIf="!isLoading && tokens.length > 0">
-            <a class="inscription-item main-content" [routerLink]="['/app/token', item.ticker]"
-              *ngFor="let item of tokens; let index">
-              <div class="content">
-                <div class="image" *ngIf="item.content_path">
-                  <img [src]="item.content_path" />
-                </div>
-                <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div>
-              </div>
-              <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
-              <div class="detail">
-                <div class="detail-item">
-                  <span>{{ item.name }}</span>
-                </div>
-                <div class="detail-item">
-                  <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
-                </div>
-                <div class="detail-item">
-                  <span>{{ item.date_created | dateAgo }}</span>
-                </div>
-              </div>
-            </a>
-
-            <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-              <ion-infinite-scroll-content></ion-infinite-scroll-content>
-            </ion-infinite-scroll>
-          </div> -->
-          <div class="list" *ngIf="!isLoading && tokens.length == 0">
-            No tokens found
-          </div>
         </div>
       </ion-col>
     </ion-row>
