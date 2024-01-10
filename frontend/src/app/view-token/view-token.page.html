@@ -71,20 +71,28 @@
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Price</span>
-                        <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}</span>
+                        <span class="value">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{
+                          baseTokenUSD
+                          *
+                          (token.last_price_base | tokenDecimals:token.decimals ) |
+                          number:"1.2-6" }})</span>
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Market cap</span>
-                        <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply }}
-                          ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-2'}}%)</span>
+                        <span class="value">
+                          ${{ (token.circulating_supply | tokenDecimals:token.decimals ) * (baseTokenUSD *
+                          token.last_price_base |
+                          tokenDecimals:token.decimals) | number:"1.2-6" }}
+                        </span>
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Limit per mint</span>
-                        <span class="value">{{ token.per_mint_limit | tokenDecimals:token.decimals }}</span>
+                        <span class="value">{{ token.per_mint_limit | tokenDecimals:token.decimals | number:"1.2-6"
+                          }}</span>
                       </div>
                     </ion-col>
                     <ion-col size="6">
@@ -117,7 +125,9 @@
                 <div class="meta">
                   <span class="label"></span>
                   <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
-                    {{ token.ticker }} ($0.0)</span>
+                    {{ token.ticker }} (${{ (holding.amount | tokenDecimals:token.decimals ) * (baseTokenUSD *
+                    token.last_price_base |
+                    tokenDecimals:token.decimals) | number:"1.2-6" }})</span>
                 </div>
                 <div class="mt-2 mb-3">
                   <ion-button color="primary" fill="clear" (click)="transfer()"

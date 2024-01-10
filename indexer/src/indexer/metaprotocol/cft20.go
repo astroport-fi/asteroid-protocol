@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -599,8 +600,44 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return result.Error
 		}
 
-		// TODO Capture USD value of the trade
-		// TODO Recalculate volume from filled trades for this token in past 24 hours
+		totalWithDecimals := float64(openOrderModel.Total) / math.Pow10(6)
+
+		// Capture the trade in the history for future charts
+		tradeHistory := models.TokenTradeHistory{
+			ChainID:       parsedURN.ChainID,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			SellerAddress: openOrderModel.SellerAddress,
+			BuyerAddress:  sender,
+			AmountQuote:   openOrderModel.Amount,
+			AmountBase:    openOrderModel.Total,
+			Rate:          openOrderModel.PPT,
+			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		result = protocol.db.Save(&tradeHistory)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Recalculate volume from filled trades for this token in past 24 hours
+		// SELECT sum(total_usd) from token_trade_history where date_Created >= now - 24 hours and token_id = this token id
+		var sum uint64
+		err = protocol.db.Model(&models.TokenTradeHistory{}).
+			Select("SUM(amount_base)").
+			Where("date_created >= ?", time.Now().Add(-24*time.Hour)).
+			Where("token_id = ?", tokenModel.ID).
+			Find(&sum).Error
+
+		if err != nil {
+			return result.Error
+		}
+
+		tokenModel.Volume24Base = sum
+		result = protocol.db.Save(&tokenModel)
+		if result.Error != nil {
+			return result.Error
+		}
 
 	case "delist":
 		fmt.Println(protocolURN)

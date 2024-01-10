@@ -71,6 +71,7 @@ export class ViewTokenPage implements OnInit {
           max_supply: true,
           per_mint_limit: true,
           launch_timestamp: true,
+          last_price_base: true,
           content_path: true,
           content_size_bytes: true,
           circulating_supply: true,
