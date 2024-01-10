@@ -705,7 +705,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			TokenID:       tokenModel.ID,
 			Sender:        "marketplace",
 			Receiver:      sender,
-			Action:        "transfer",
+			Action:        "delist",
 			Amount:        openOrderModel.Amount,
 			DateCreated:   rawTransaction.TxResponse.Timestamp,
 		}
