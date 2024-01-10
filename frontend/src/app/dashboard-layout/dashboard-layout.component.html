@@ -2,7 +2,7 @@
   <div class="darken"></div>
   <ion-split-pane contentId="primaryContent" class="menu-split-pane">
 
-    <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside">
+    <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside mb-5">
       <div class="menu">
         <div class="logo">
           <a href="/app/dashboard">
@@ -51,7 +51,7 @@
             <ion-label>Metaprotocols</ion-label>
           </ion-list-header>
         </ion-list>
-        <ion-accordion-group>
+        <ion-accordion-group [multiple]="true">
           <ion-accordion value="first">
             <ion-item slot="header" lines="none">
               <ion-label>Inscriptions</ion-label>

@@ -52,6 +52,8 @@ export class WalletPage implements OnInit {
       } catch (e) {
         // Wallet connection rejected
         localStorage.clear();
+        this.isWalletConnected = false;
+        this.selectedAddress = '';
       }
     }
 
@@ -61,128 +63,132 @@ export class WalletPage implements OnInit {
 
       this.isLoading = true;
 
-      this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
+      try {
+        this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
 
-      const chain = Chain(environment.api.endpoint);
+        const chain = Chain(environment.api.endpoint);
 
-      const tokensResult = await chain('query')({
-        token: [
-          {
-            offset: 0,
-            limit: 50,
-            order_by: [
-              {
-                date_created: order_by.desc
+        const tokensResult = await chain('query')({
+          token: [
+            {
+              offset: 0,
+              limit: 50,
+              order_by: [
+                {
+                  date_created: order_by.desc
+                }
+              ],
+              where: {
+                current_owner: {
+                  _eq: this.selectedAddress
+                }
               }
-            ],
-            where: {
-              current_owner: {
-                _eq: this.selectedAddress
-              }
-            }
-          }, {
-            id: true,
-            transaction: {
-              hash: true
-            },
-            current_owner: true,
-            content_path: true,
-            name: true,
-            ticker: true,
-            max_supply: true,
-            decimals: true,
-            launch_timestamp: true,
-            last_price_base: true,
-            date_created: true
-          }
-        ]
-      });
-      this.tokens = tokensResult.token;
-
-      const holderResult = await chain('query')({
-        token_holder: [
-          {
-            offset: 0,
-            limit: 100,
-            where: {
-              address: {
-                _eq: this.selectedAddress
-              }
-            }
-          },
-          {
-            token: {
-              ticker: true,
-              content_path: true,
-              max_supply: true,
-              circulating_supply: true,
-              decimals: true,
-              last_price_base: true,
+            }, {
+              id: true,
               transaction: {
                 hash: true
+              },
+              current_owner: true,
+              content_path: true,
+              name: true,
+              ticker: true,
+              max_supply: true,
+              decimals: true,
+              launch_timestamp: true,
+              last_price_base: true,
+              date_created: true
+            }
+          ]
+        });
+        this.tokens = tokensResult.token;
+
+        const holderResult = await chain('query')({
+          token_holder: [
+            {
+              offset: 0,
+              limit: 100,
+              where: {
+                address: {
+                  _eq: this.selectedAddress
+                }
               }
             },
-            amount: true,
-            date_updated: true,
-          }
-        ]
-      });
+            {
+              token: {
+                ticker: true,
+                content_path: true,
+                max_supply: true,
+                circulating_supply: true,
+                decimals: true,
+                last_price_base: true,
+                transaction: {
+                  hash: true
+                }
+              },
+              amount: true,
+              date_updated: true,
+            }
+          ]
+        });
 
-      this.holdings = holderResult.token_holder;
+        this.holdings = holderResult.token_holder;
 
-      const result = await chain('query')({
-        inscription: [
-          {
-            offset: 0,
-            limit: 100,
-            order_by: [
-              {
-                date_created: order_by.desc
+        const result = await chain('query')({
+          inscription: [
+            {
+              offset: 0,
+              limit: 100,
+              order_by: [
+                {
+                  date_created: order_by.desc
+                }
+              ],
+              where: {
+                current_owner: {
+                  _eq: this.selectedAddress
+                }
               }
-            ],
-            where: {
-              current_owner: {
-                _eq: this.selectedAddress
+            }, {
+              id: true,
+              transaction: {
+                hash: true
+              },
+              // transaction_hash: true,
+              current_owner: true,
+              content_path: true,
+              content_size_bytes: true,
+              date_created: true,
+              __alias: {
+                name: {
+                  metadata: [{
+                    path: '$.metadata.name'
+                  },
+                    true
+                  ]
+                },
+                description: {
+                  metadata: [{
+                    path: '$.metadata.description'
+                  },
+                    true
+                  ]
+                },
+                mime: {
+                  metadata: [{
+                    path: '$.metadata.mime'
+                  },
+                    true
+                  ]
+                }
               }
             }
-          }, {
-            id: true,
-            transaction: {
-              hash: true
-            },
-            // transaction_hash: true,
-            current_owner: true,
-            content_path: true,
-            content_size_bytes: true,
-            date_created: true,
-            __alias: {
-              name: {
-                metadata: [{
-                  path: '$.metadata.name'
-                },
-                  true
-                ]
-              },
-              description: {
-                metadata: [{
-                  path: '$.metadata.description'
-                },
-                  true
-                ]
-              },
-              mime: {
-                metadata: [{
-                  path: '$.metadata.mime'
-                },
-                  true
-                ]
-              }
-            }
-          }
-        ]
-      });
+          ]
+        });
 
-      this.inscriptions = result.inscription;
+        this.inscriptions = result.inscription;
+      } catch (e) {
+        console.log(e);
+      }
 
       this.isLoading = false;
     });
