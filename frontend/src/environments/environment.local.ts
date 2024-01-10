@@ -1,7 +1,3 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
   production: false,
   domain: 'localhost:8100',
@@ -39,12 +35,14 @@ export const environment = {
         list: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "0"
+          amount: "0",
+          minTradeSize: 0.000001,
         },
         buy: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
-          amount: "10000"
+          amount: "0.02", // Default 2%
+          type: "dynamic-percent"
         },
         delist: {
           receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
