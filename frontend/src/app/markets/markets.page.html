@@ -45,6 +45,7 @@
                 <th pSortableColumn="listings">Listings <p-sortIcon field="listings"></p-sortIcon></th>
                 <th pSortableColumn="price">Token Price <p-sortIcon field="price"></p-sortIcon></th>
                 <th pSortableColumn="volume">Volume <p-sortIcon field="volume"></p-sortIcon></th>
+                <th>&nbsp;</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-token>
@@ -60,11 +61,14 @@
                   (token.volume_24_base | tokenDecimals:6 ) |
                   number:"1.2-6" }})
                 </td>
+                <td><ion-button fill="clear" color="warning" (click)="listSale($event, token.ticker)"
+                    *ngIf="token.token_holders[0]?.amount">Sell</ion-button>
+                </td>
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
               <tr>
-                <td colspan="4">No tokens found.</td>
+                <td colspan="4">No markets found</td>
               </tr>
             </ng-template>
           </p-table>

@@ -51,8 +51,8 @@
             <ion-label>Metaprotocols</ion-label>
           </ion-list-header>
         </ion-list>
-        <ion-accordion-group [multiple]="true">
-          <ion-accordion value="first">
+        <ion-accordion-group [multiple]="false" value="inscriptions">
+          <ion-accordion value="inscriptions">
             <ion-item slot="header" lines="none">
               <ion-label>Inscriptions</ion-label>
             </ion-item>
@@ -68,7 +68,7 @@
               </ion-item>
             </ion-menu-toggle>app-dashboard'
           </ion-accordion>
-          <ion-accordion value="second">
+          <ion-accordion value="tokens">
             <ion-item slot="header" lines="none">
               <ion-label>CFT-20 Tokens</ion-label>
             </ion-item>

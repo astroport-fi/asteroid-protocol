@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -12,6 +12,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SortEvent } from 'primeng/api';
+import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { WalletService } from '../core/service/wallet.service';
 
 @Component({
   selector: 'app-markets',
@@ -23,7 +25,7 @@ import { SortEvent } from 'primeng/api';
 export class MarketsPage implements OnInit {
 
   isLoading = true;
-  selectedAddress: string = '';
+  userAddress: string = '';
   tokens: any = null;
   offset = 0;
   limit = 500;
@@ -31,13 +33,13 @@ export class MarketsPage implements OnInit {
   baseToken: any;
   baseTokenPrice: number = 0;
 
-  constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
+  constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     this.lastFetchCount = this.limit;
   }
 
   async ngOnInit() {
     this.activatedRoute.params.subscribe(async params => {
-      this.selectedAddress = params["address"];
+      this.userAddress = (await this.walletService.getAccount()).address;
       this.isLoading = true;
 
       this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
@@ -49,16 +51,6 @@ export class MarketsPage implements OnInit {
           {
             offset: this.offset,
             limit: this.limit,
-            order_by: [
-              {
-                date_created: order_by.desc
-              }
-            ],
-            where: {
-              current_owner: {
-                _eq: this.selectedAddress
-              }
-            }
           }, {
             id: true,
             transaction: {
@@ -77,6 +69,18 @@ export class MarketsPage implements OnInit {
               },
               {
                 id: true
+              }
+            ],
+            token_holders: [
+              {
+                where: {
+                  address: {
+                    _eq: this.userAddress
+                  }
+                }
+              },
+              {
+                amount: true
               }
             ],
             current_owner: true,
@@ -111,6 +115,20 @@ export class MarketsPage implements OnInit {
 
       this.isLoading = false;
     });
+  }
+
+  async listSale(event: any, ticker: string) {
+    event.stopPropagation();
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: SellModalPage,
+
+      componentProps: {
+        ticker: ticker
+      }
+    });
+    modal.present();
   }
 
   customSort(event: SortEvent) {
