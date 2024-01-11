@@ -14,7 +14,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts"
+    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts --subscriptions graphql-ws"
   },
   "private": true,
   "dependencies": {
@@ -46,6 +46,7 @@
     "@walletconnect/types": "^2.11.0",
     "bootstrap": "^5.3.2",
     "buffer": "^6.0.3",
+    "graphql-ws": "^5.14.3",
     "ionicons": "^7.2.1",
     "lottie-web": "^5.12.2",
     "marked": "^9.1.6",

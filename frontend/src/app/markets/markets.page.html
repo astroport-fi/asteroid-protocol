@@ -53,11 +53,12 @@
                 <td pFrozenColumn>{{ token.ticker }} / ATOM</td>
                 <td>{{ token.name }} / ATOM</td>
                 <td class="mono">{{ token.token_open_positions.length }}</td>
-                <td class="mono">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenPrice *
+                <td class="mono">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{
+                  baseToken.base_token_usd *
                   (token.last_price_base | tokenDecimals:token.decimals ) |
                   number:"1.2-6" }})</td>
                 <td class="mono">
-                  {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseTokenPrice *
+                  {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseToken.base_token_usd *
                   (token.volume_24_base | tokenDecimals:6 ) |
                   number:"1.2-6" }})
                 </td>

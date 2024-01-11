@@ -88,7 +88,7 @@ export class SellModalPage implements OnInit {
     if (result.token.length > 0) {
       this.sellForm.patchValue({
         basic: {
-          price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base, 6)
+          price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base as number, 6)
         }
       });
     }

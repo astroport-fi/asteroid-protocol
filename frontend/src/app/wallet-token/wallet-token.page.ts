@@ -3,7 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 // import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, ModalController, AlertController } from '@ionic/angular/standalone';
-import { Chain, order_by } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
@@ -217,6 +217,65 @@ export class WalletTokenPage implements OnInit {
 
           }
         ]
+      });
+
+      const wsChain = Subscription(environment.api.wss);
+      wsChain('subscription')({
+        token_holder: [
+          {
+            where: {
+              address: {
+                _eq: account.address
+              },
+              token_id: {
+                _eq: this.token.id
+              }
+            },
+          }, {
+            id: true,
+            amount: true,
+            token: {
+              decimals: true,
+              last_price_base: true,
+            }
+          }
+        ]
+      }).on(({ token_holder }) => {
+        if (token_holder.length > 0) {
+          this.holding = token_holder[0];
+        } else {
+          this.holding = { amount: 0 };
+        }
+      });
+
+      wsChain('subscription')({
+        token_open_position: [
+          {
+            where: {
+              token_id: {
+                _eq: this.token.id
+              },
+              seller_address: {
+                _eq: account.address
+              },
+              is_cancelled: {
+                _eq: false
+              },
+              is_filled: {
+                _eq: false
+              }
+            }
+          },
+          {
+            id: true,
+            ppt: true,
+            amount: true,
+            total: true,
+
+          }
+        ]
+      }).on(({ token_open_position }) => {
+        this.listings = token_open_position;
       });
 
       this.listings = listingsResult.token_open_position;

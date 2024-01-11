@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { Chain } from '../core/types/zeus';
+import { Chain, Subscription } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
@@ -44,7 +44,7 @@ export class TradeTokenPage implements OnInit {
       this.walletAddress = (await this.walletService.getAccount()).address;
     }
 
-    this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
+    // this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     const chain = Chain(environment.api.endpoint)
     const result = await chain('query')({
@@ -80,11 +80,6 @@ export class TradeTokenPage implements OnInit {
     });
 
     this.token = result.token[0];
-
-    this.tokenLaunchDate = new Date(this.token.launch_timestamp * 1000);
-    if (this.tokenLaunchDate.getTime() < Date.now()) {
-      this.tokenIsLaunched = true;
-    }
 
     const positionsResult = await chain('query')({
       token_open_position: [
@@ -126,6 +121,88 @@ export class TradeTokenPage implements OnInit {
     });
 
     this.positions = positionsResult.token_open_position;
+
+    const wsChain = Subscription(environment.api.wss);
+    wsChain('subscription')({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: environment.chain.chainId
+            }
+          }
+        },
+        {
+          base_token: true,
+          base_token_usd: true,
+        }
+      ]
+    }).on(({ status }) => {
+      this.baseTokenUSD = status[0].base_token_usd;
+    });
+
+    wsChain('subscription')({
+      token: [
+        {
+          where: {
+            ticker: {
+              _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
+            }
+          }
+        }, {
+          id: true,
+          name: true,
+          ticker: true,
+          decimals: true,
+          content_path: true,
+          last_price_base: true,
+          volume_24_base: true,
+        }
+      ]
+    }).on(({ token }) => {
+      this.token = token[0];
+    });
+
+    wsChain('subscription')({
+      token_open_position: [
+        {
+          where: {
+            _and: [
+              {
+                token: {
+                  ticker: {
+                    _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
+                  }
+                }
+              },
+              {
+                is_cancelled: {
+                  _eq: false
+                }
+              },
+              {
+                is_filled: {
+                  _eq: false
+                }
+              }
+            ]
+          }
+        }, {
+          id: true,
+          token: {
+            ticker: true,
+          },
+          seller_address: true,
+          ppt: true,
+          amount: true,
+          total: true,
+          is_cancelled: false,
+          is_filled: false,
+        }
+      ]
+    }).on(({ token_open_position }) => {
+      this.positions = token_open_position;
+    });
 
     this.isLoading = false;
   }
@@ -235,7 +312,7 @@ export class TradeTokenPage implements OnInit {
         urn,
         metadata: null,
         data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'buy',
@@ -288,7 +365,7 @@ export class TradeTokenPage implements OnInit {
         urn,
         metadata: null,
         data: null,
-        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'delist',

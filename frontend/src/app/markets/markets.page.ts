@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController, IonicModule } from '@ionic/angular';
-import { Chain, order_by } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
@@ -31,7 +31,6 @@ export class MarketsPage implements OnInit {
   limit = 500;
   lastFetchCount = 0;
   baseToken: any;
-  baseTokenPrice: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     this.lastFetchCount = this.limit;
@@ -42,10 +41,7 @@ export class MarketsPage implements OnInit {
       this.userAddress = (await this.walletService.getAccount()).address;
       this.isLoading = true;
 
-      this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
-
       const chain = Chain(environment.api.endpoint);
-
       const tokensResult = await chain('query')({
         token: [
           {
@@ -112,6 +108,67 @@ export class MarketsPage implements OnInit {
       });
       this.tokens = tokensResult.token;
       this.baseToken = tokensResult.status[0];
+
+      const wsChain = Subscription(environment.api.wss);
+      wsChain('subscription')({
+        status: [
+          {
+            where: {
+              chain_id: {
+                _eq: environment.chain.chainId
+              }
+            }
+          },
+          {
+            base_token: true,
+            base_token_usd: true,
+          }
+        ]
+      }).on(({ status }) => {
+        this.baseToken = status[0];
+      });
+
+      wsChain('subscription')({
+        token: [
+          {}, {
+            id: true,
+            token_open_positions: [
+              {
+                where: {
+                  is_filled: {
+                    _eq: false
+                  },
+                  is_cancelled: {
+                    _eq: false
+                  }
+                }
+              },
+              {
+                id: true
+              }
+            ],
+            token_holders: [
+              {
+                where: {
+                  address: {
+                    _eq: this.userAddress
+                  }
+                }
+              },
+              {
+                amount: true
+              }
+            ],
+            name: true,
+            ticker: true,
+            decimals: true,
+            last_price_base: true,
+            volume_24_base: true,
+          }
+        ]
+      }).on(({ token }) => {
+        this.tokens = token;
+      });
 
       this.isLoading = false;
     });

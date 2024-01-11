@@ -5,37 +5,62 @@ export const HOST = "http://localhost:8080/v1/graphql"
 
 
 export const HEADERS = {}
-export const apiSubscription = (options: chainOptions) => (query: string) => {
-	try {
-		const queryString = options[0] + '?query=' + encodeURIComponent(query);
-		const wsString = queryString.replace('http', 'ws');
-		const host = (options.length > 1 && options[1]?.websocket?.[0]) || wsString;
-		const webSocketOptions = options[1]?.websocket || [host];
-		const ws = new WebSocket(...webSocketOptions);
+import { createClient, type Sink } from 'graphql-ws'; // keep
+
+export const apiSubscription = (options: chainOptions) => {
+	const client = createClient({
+		url: String(options[0]),
+		connectionParams: Object.fromEntries((new Headers(options[1]?.headers) as any).entries()),
+	});
+
+	const ws = new Proxy(
+		{
+			close: () => client.dispose(),
+		} as WebSocket,
+		{
+			get(target, key) {
+				if (key === 'close') return target.close;
+				throw new Error(`Unimplemented property '${String(key)}', only 'close()' is available.`);
+			},
+		},
+	);
+
+	return (query: string) => {
+		let onMessage: ((event: any) => void) | undefined;
+		let onError: Sink['error'] | undefined;
+		let onClose: Sink['complete'] | undefined;
+
+		client.subscribe(
+			{ query },
+			{
+				next({ data }) {
+					onMessage && onMessage(data);
+				},
+				error(error) {
+					onError && onError(error);
+				},
+				complete() {
+					onClose && onClose();
+				},
+			},
+		);
+
 		return {
 			ws,
-			on: (e: (args: any) => void) => {
-				ws.onmessage = (event: any) => {
-					if (event.data) {
-						const parsed = JSON.parse(event.data);
-						const data = parsed.data;
-						return e(data);
-					}
-				};
+			on(listener: typeof onMessage) {
+				onMessage = listener;
 			},
-			off: (e: (args: any) => void) => {
-				ws.onclose = e;
+			error(listener: typeof onError) {
+				onError = listener;
 			},
-			error: (e: (args: any) => void) => {
-				ws.onerror = e;
+			open(listener: (socket: unknown) => void) {
+				client.on('opened', listener);
 			},
-			open: (e: () => void) => {
-				ws.onopen = e;
+			off(listener: typeof onClose) {
+				onClose = listener;
 			},
 		};
-	} catch {
-		throw new Error('No websockets implemented');
-	}
+	};
 };
 const handleFetchResponse = (response: Response): Promise<GraphQLResponse> => {
 	if (!response.ok) {
@@ -1505,7 +1530,7 @@ export type ValueTypes = {
 		decimals?: ValueTypes["smallint_comparison_exp"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-		last_price_base?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		last_price_base?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		launch_timestamp?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		max_supply?: ValueTypes["numeric_comparison_exp"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1519,7 +1544,7 @@ export type ValueTypes = {
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-		volume_24_base?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+		volume_24_base?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: AliasType<{
@@ -1890,7 +1915,7 @@ export type ValueTypes = {
 		decimals?: ValueTypes["smallint"] | undefined | null | Variable<any, string>,
 		height?: number | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
-		last_price_base?: number | undefined | null | Variable<any, string>,
+		last_price_base?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		launch_timestamp?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		max_supply?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
 		metadata?: string | undefined | null | Variable<any, string>,
@@ -1900,7 +1925,7 @@ export type ValueTypes = {
 		ticker?: string | undefined | null | Variable<any, string>,
 		transaction_id?: number | undefined | null | Variable<any, string>,
 		version?: string | undefined | null | Variable<any, string>,
-		volume_24_base?: number | undefined | null | Variable<any, string>
+		volume_24_base?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: AliasType<{
@@ -2654,7 +2679,7 @@ export type ResolverInputTypes = {
 		decimals?: ResolverInputTypes["smallint_comparison_exp"] | undefined | null,
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-		last_price_base?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		last_price_base?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		launch_timestamp?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		max_supply?: ResolverInputTypes["numeric_comparison_exp"] | undefined | null,
 		metadata?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -2668,7 +2693,7 @@ export type ResolverInputTypes = {
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-		volume_24_base?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+		volume_24_base?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: AliasType<{
@@ -3039,7 +3064,7 @@ export type ResolverInputTypes = {
 		decimals?: ResolverInputTypes["smallint"] | undefined | null,
 		height?: number | undefined | null,
 		id?: number | undefined | null,
-		last_price_base?: number | undefined | null,
+		last_price_base?: ResolverInputTypes["bigint"] | undefined | null,
 		launch_timestamp?: ResolverInputTypes["bigint"] | undefined | null,
 		max_supply?: ResolverInputTypes["numeric"] | undefined | null,
 		metadata?: string | undefined | null,
@@ -3049,7 +3074,7 @@ export type ResolverInputTypes = {
 		ticker?: string | undefined | null,
 		transaction_id?: number | undefined | null,
 		version?: string | undefined | null,
-		volume_24_base?: number | undefined | null
+		volume_24_base?: ResolverInputTypes["bigint"] | undefined | null
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: AliasType<{
@@ -3487,7 +3512,7 @@ export type ModelTypes = {
 		decimals: ModelTypes["smallint"],
 		height: number,
 		id: number,
-		last_price_base: number,
+		last_price_base: ModelTypes["bigint"],
 		launch_timestamp: ModelTypes["bigint"],
 		max_supply: ModelTypes["numeric"],
 		metadata?: string | undefined,
@@ -3505,7 +3530,7 @@ export type ModelTypes = {
 		transaction: ModelTypes["transaction"],
 		transaction_id: number,
 		version: string,
-		volume_24_base: number
+		volume_24_base: ModelTypes["bigint"]
 	};
 	/** columns and relationships of "token_address_history" */
 	["token_address_history"]: {
@@ -3697,7 +3722,7 @@ export type ModelTypes = {
 		decimals?: ModelTypes["smallint_comparison_exp"] | undefined,
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
-		last_price_base?: ModelTypes["Int_comparison_exp"] | undefined,
+		last_price_base?: ModelTypes["bigint_comparison_exp"] | undefined,
 		launch_timestamp?: ModelTypes["bigint_comparison_exp"] | undefined,
 		max_supply?: ModelTypes["numeric_comparison_exp"] | undefined,
 		metadata?: ModelTypes["String_comparison_exp"] | undefined,
@@ -3711,7 +3736,7 @@ export type ModelTypes = {
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
 		version?: ModelTypes["String_comparison_exp"] | undefined,
-		volume_24_base?: ModelTypes["Int_comparison_exp"] | undefined
+		volume_24_base?: ModelTypes["bigint_comparison_exp"] | undefined
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: {
@@ -4077,7 +4102,7 @@ export type ModelTypes = {
 		decimals?: ModelTypes["smallint"] | undefined,
 		height?: number | undefined,
 		id?: number | undefined,
-		last_price_base?: number | undefined,
+		last_price_base?: ModelTypes["bigint"] | undefined,
 		launch_timestamp?: ModelTypes["bigint"] | undefined,
 		max_supply?: ModelTypes["numeric"] | undefined,
 		metadata?: string | undefined,
@@ -4087,7 +4112,7 @@ export type ModelTypes = {
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
 		version?: string | undefined,
-		volume_24_base?: number | undefined
+		volume_24_base?: ModelTypes["bigint"] | undefined
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: {
@@ -4523,7 +4548,7 @@ export type GraphQLTypes = {
 		decimals: GraphQLTypes["smallint"],
 		height: number,
 		id: number,
-		last_price_base: number,
+		last_price_base: GraphQLTypes["bigint"],
 		launch_timestamp: GraphQLTypes["bigint"],
 		max_supply: GraphQLTypes["numeric"],
 		metadata?: string | undefined,
@@ -4541,7 +4566,7 @@ export type GraphQLTypes = {
 		transaction: GraphQLTypes["transaction"],
 		transaction_id: number,
 		version: string,
-		volume_24_base: number
+		volume_24_base: GraphQLTypes["bigint"]
 	};
 	/** columns and relationships of "token_address_history" */
 	["token_address_history"]: {
@@ -4735,7 +4760,7 @@ export type GraphQLTypes = {
 		decimals?: GraphQLTypes["smallint_comparison_exp"] | undefined,
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
-		last_price_base?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		last_price_base?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		launch_timestamp?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		max_supply?: GraphQLTypes["numeric_comparison_exp"] | undefined,
 		metadata?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -4749,7 +4774,7 @@ export type GraphQLTypes = {
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		version?: GraphQLTypes["String_comparison_exp"] | undefined,
-		volume_24_base?: GraphQLTypes["Int_comparison_exp"] | undefined
+		volume_24_base?: GraphQLTypes["bigint_comparison_exp"] | undefined
 	};
 	/** columns and relationships of "token_holder" */
 	["token_holder"]: {
@@ -5120,7 +5145,7 @@ export type GraphQLTypes = {
 		decimals?: GraphQLTypes["smallint"] | undefined,
 		height?: number | undefined,
 		id?: number | undefined,
-		last_price_base?: number | undefined,
+		last_price_base?: GraphQLTypes["bigint"] | undefined,
 		launch_timestamp?: GraphQLTypes["bigint"] | undefined,
 		max_supply?: GraphQLTypes["numeric"] | undefined,
 		metadata?: string | undefined,
@@ -5130,7 +5155,7 @@ export type GraphQLTypes = {
 		ticker?: string | undefined,
 		transaction_id?: number | undefined,
 		version?: string | undefined,
-		volume_24_base?: number | undefined
+		volume_24_base?: GraphQLTypes["bigint"] | undefined
 	};
 	/** columns and relationships of "transaction" */
 	["transaction"]: {
