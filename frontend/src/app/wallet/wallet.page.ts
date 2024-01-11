@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+// import { FormsModule } from '@angular/forms';
+// import { IonicModule } from '@ionic/angular';
+import { IonAvatar, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, ModalController, AlertController, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -22,7 +23,7 @@ import { PriceService } from '../core/service/price.service';
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe]
+  imports: [CommonModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, IonAvatar, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton]
 })
 export class WalletPage implements OnInit {
 

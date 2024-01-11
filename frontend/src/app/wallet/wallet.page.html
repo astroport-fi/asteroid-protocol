@@ -24,6 +24,12 @@
       <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
         class="main-content">
         <div class="aligned">
+          <div class="loading p-4" *ngIf="isLoading">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+            <p>
+              Loading wallet...
+            </p>
+          </div>
           <ion-grid>
             <ion-row>
               <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">
@@ -77,8 +83,7 @@
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-item>
-                    <tr [routerLink]="['/app/wallet/token', item.token.ticker]"
-                      [queryParams]="{address: selectedAddress}">
+                    <tr [routerLink]="['/app/wallet/token', item.token.ticker]">
                       <td class="token-logo">
                         <div class="image">
                           <img [src]="item.token.content_path" *ngIf="item.token.content_path" />

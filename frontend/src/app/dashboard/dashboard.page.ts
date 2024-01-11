@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+// import { IonicModule, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+import { IonGrid, IonRow, IonCol, IonButton, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 import { Chain, Gql } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 
@@ -22,7 +24,7 @@ import { WalletStatus } from '../core/enum/wallet-status.enum';
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, LottieComponent]
+  imports: [CommonModule, FormsModule, LottieComponent, IonGrid, IonRow, IonCol, IonButton, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle]
 })
 export class DashboardPage implements OnInit {
   errorText = "";

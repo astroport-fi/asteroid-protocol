@@ -6,7 +6,7 @@
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
-              <ion-back-button [defaultHref]="'/app/wallet/' + previousAddress"></ion-back-button>
+              <ion-back-button></ion-back-button>
             </ion-buttons>
             <ion-title>
               Manage Token <span *ngIf="!isLoading">#{{ token.id }}</span>
