@@ -38,9 +38,9 @@
                           (sellForm.value.basic.price | stripSpaces)) < minTradeSize">
               The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
             </div>
-            <div class="p-3 mt-4 mb-4 color-danger" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">
-              You are attempting to list more tokens than you have available. Your balance is
-              {{ senderBalance | number:'1.2-6' }} {{ ticker }}
+            <div class="p-3 mt-4 mb-4" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">
+              <ion-text color="warning">You can't list more tokens than you have available. Your balance is
+                {{ senderBalance | number:'1.2-6' }} {{ ticker }}</ion-text>
             </div>
           </div>
         </ion-col>

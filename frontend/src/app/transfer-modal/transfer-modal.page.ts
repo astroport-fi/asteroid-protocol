@@ -17,19 +17,22 @@ import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { MaskitoModule } from '@maskito/angular';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
 
 @Component({
   selector: 'app-transfer-modal',
   templateUrl: './transfer-modal.page.html',
   styleUrls: ['./transfer-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule]
+  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, TokenDecimalsPipe, StripSpacesPipe]
 })
 export class TransferModalPage implements OnInit {
 
   @Input() ticker: string = 'tokens';
 
   transferForm: FormGroup;
+  senderBalance: number = 0;
 
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
@@ -63,7 +66,45 @@ export class TransferModalPage implements OnInit {
   }
 
   async ngOnInit() {
+    const sender = await this.walletService.getAccount();
 
+    const chain = Chain(environment.api.endpoint);
+    const result = await chain('query')({
+      token: [
+        {
+          where: {
+            ticker: {
+              _eq: this.ticker
+            }
+          }
+        }, {
+          id: true,
+          decimals: true,
+          last_price_base: true,
+        }
+      ],
+    });
+
+    const balanceResult = await chain('query')({
+      token_holder: [
+        {
+          where: {
+            address: {
+              _eq: sender.address
+            },
+            token_id: {
+              _eq: result.token[0].id
+            }
+          }
+        }, {
+          amount: true,
+        }
+      ]
+    });
+    if (balanceResult.token_holder.length > 0) {
+      // Get the sender's balance with decimals
+      this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
+    }
   }
 
   async submit() {

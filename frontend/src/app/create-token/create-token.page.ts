@@ -11,6 +11,7 @@ import { WalletService } from '../core/service/wallet.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { environment } from 'src/environments/environment';
 import { InscriptionMetadata } from '../core/metaprotocol/inscription.service';
+import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
 
 @Component({
   selector: 'app-create-token',
@@ -24,6 +25,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   createForm: FormGroup;
   precheckErrorText: string = '';
   minDate: Date;
+  maxMintLimit: number = 0;
+  limitNumeric: number = 0;
 
   readonly numberMask: MaskitoOptions;
   readonly maxDecimalsMask: MaskitoOptions;
@@ -217,5 +220,17 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       reader.readAsDataURL(file);
     }
   }
+
+  supplyChanged(event: any) {
+    // The amount of tokens that can be minter per tx may not exceed 1% of the total supply
+    this.maxMintLimit = StripSpacesPipe.prototype.transform(event.detail.value) * 0.01;
+  }
+
+  limitChanged(event: any) {
+    this.limitNumeric = StripSpacesPipe.prototype.transform(event.detail.value);
+  }
+
+
+
 
 }

@@ -26,6 +26,10 @@
                 formControlName="destination" [counter]="true" [minlength]="45" [maxlength]="45"
                 errorText="Please enter a Cosmos Hub Address"></ion-input>
             </div>
+            <div class="p-3 mt-4 mb-4" *ngIf="(transferForm.value.basic.amount | stripSpaces) > senderBalance">
+              <ion-text color="warning">You can't send more tokens than you have available. Your balance is
+                {{ senderBalance | number:'1.2-6' }} {{ ticker }}</ion-text>
+            </div>
           </div>
 
         </ion-col>
@@ -33,7 +37,8 @@
       <ion-row>
         <ion-col>
           <div class="action">
-            <ion-button color="success" type="submit">Send now</ion-button>
+            <ion-button color="success" type="submit"
+              [disabled]="(transferForm.value.basic.amount | stripSpaces) > senderBalance">Send now</ion-button>
             <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
           </div>
         </ion-col>

@@ -69,7 +69,7 @@ export class SellModalPage implements OnInit {
   async ngOnInit() {
     const sender = await this.walletService.getAccount();
 
-    const chain = Chain(environment.api.endpoint)
+    const chain = Chain(environment.api.endpoint);
     const result = await chain('query')({
       token: [
         {

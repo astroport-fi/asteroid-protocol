@@ -57,6 +57,7 @@ export const environment = {
   },
   api: {
     endpoint: 'https://private-testnet-api.asteroidprotocol.io/v1/graphql',
+    wss: 'wss://private-testnet-api.asteroidprotocol.io/v1/graphql',
     explorer: 'https://private-testnet-api.asteroidprotocol.io/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
   },
   chain: {

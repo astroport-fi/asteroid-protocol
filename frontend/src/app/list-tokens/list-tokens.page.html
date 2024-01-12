@@ -40,8 +40,8 @@
               <tr>
                 <th>&nbsp;</th>
                 <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
-                <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="price">Token Price <p-sortIcon field="price"></p-sortIcon></th>
                 <th pSortableColumn="minted">Minted <p-sortIcon field="minted"></p-sortIcon></th>
               </tr>
@@ -56,8 +56,8 @@
                   </div>
                 </td>
                 <td>{{ token.id }}</td>
-                <td pFrozenColumn>{{ token.ticker }}</td>
                 <td>{{ token.name }}</td>
+                <td>{{ token.ticker }}</td>
                 <td>{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenPrice *
                   (token.last_price_base | tokenDecimals:token.decimals ) |
                   number:"1.2-6" }})

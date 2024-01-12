@@ -38,7 +38,10 @@ export class MarketsPage implements OnInit {
 
   async ngOnInit() {
     this.activatedRoute.params.subscribe(async params => {
-      this.userAddress = (await this.walletService.getAccount()).address;
+      if (await this.walletService.isConnected()) {
+        this.userAddress = (await this.walletService.getAccount()).address;
+      }
+
       this.isLoading = true;
 
       const chain = Chain(environment.api.endpoint);

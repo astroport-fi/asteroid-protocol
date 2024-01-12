@@ -1,4 +1,17 @@
 <ion-content fullscreen="true">
+  <ion-grid *ngIf="isLoading">
+    <ion-row>
+      <ion-col>
+        <div class="loading p-2 mx-auto">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          <p>
+            Loading wallet...
+          </p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <ion-grid *ngIf="!selectedAddress && !isLoading">
     <ion-row>
       <ion-col>
@@ -24,12 +37,6 @@
       <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
         class="main-content">
         <div class="aligned">
-          <div class="loading p-4" *ngIf="isLoading">
-            <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <p>
-              Loading wallet...
-            </p>
-          </div>
           <ion-grid>
             <ion-row>
               <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">

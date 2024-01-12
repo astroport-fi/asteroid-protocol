@@ -77,8 +77,8 @@ func NewCFT20Processor(chainID string, db *gorm.DB) *CFT20 {
 		tickerMinLength:        1,
 		tickerMaxLength:        10,
 		decimalsMaxValue:       6,
-		maxSupplyMaxValue:      math.MaxUint64,
-		perWalletLimitMaxValue: math.MaxUint64,
+		maxSupplyMaxValue:      10000000000000000000, // 10T
+		perWalletLimitMaxValue: 10000000000000000000, // 10T
 	}
 }
 
@@ -124,7 +124,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse supply '%s'", err)
 		}
-		fmt.Println("HERE")
+
 		decimals, err := strconv.ParseUint(parsedURN.KeyValuePairs["dec"], 10, 64)
 		if err != nil {
 			return fmt.Errorf("unable to parse decimals '%s'", err)
@@ -139,12 +139,10 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			// If this fails, we set the open time to the block time
 			openTimestamp = uint64(rawTransaction.TxResponse.Timestamp.Unix())
 		}
-		fmt.Println("HERE2")
 
 		// Add the decimals to the supply and limit
 		supplyFloat = supplyFloat * math.Pow10(int(decimals))
 		supply := uint64(math.Round(supplyFloat))
-		fmt.Println("HERE3")
 
 		limitFloat = limitFloat * math.Pow10(int(decimals))
 		limit := uint64(math.Round(limitFloat))
@@ -163,10 +161,16 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if supply > protocol.maxSupplyMaxValue {
 			return fmt.Errorf("token supply must be less than %d", protocol.maxSupplyMaxValue)
 		}
+		// Minting limit may be at most 1% of supply
+		maxMintLimit := supplyFloat * 0.01
+		if limitFloat > maxMintLimit {
+			return fmt.Errorf("the mint limit may not exceed 1%% of the total supply")
+		}
+
 		if limit > supply {
 			return fmt.Errorf("token per wallet limit must be less than supply of %d", protocol.maxSupplyMaxValue)
 		}
-		fmt.Println("HERE4")
+
 		// Check if this token has already been deployed
 		var tokenModel models.Token
 		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
