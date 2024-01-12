@@ -992,6 +992,75 @@ export type ValueTypes = {
 		type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		version?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 	};
+	/** columns and relationships of "inscription_history" */
+	["inscription_history"]: AliasType<{
+		action?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		height?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ValueTypes["inscription"],
+		inscription_id?: boolean | `@${string}`,
+		receiver?: boolean | `@${string}`,
+		sender?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
+	["inscription_history_bool_exp"]: {
+		_and?: Array<ValueTypes["inscription_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["inscription_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		action?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "inscription_history". */
+	["inscription_history_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "inscription_history" */
+	["inscription_history_select_column"]: inscription_history_select_column;
+	/** Streaming cursor of the table "inscription_history" */
+	["inscription_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["inscription_history_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_history_stream_cursor_value_input"]: {
+		action?: string | undefined | null | Variable<any, string>,
+		chain_id?: string | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		height?: number | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		inscription_id?: number | undefined | null | Variable<any, string>,
+		receiver?: string | undefined | null | Variable<any, string>,
+		sender?: string | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1071,6 +1140,14 @@ export type ValueTypes = {
 			where?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription"]],
 		inscription_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription"]],
+		inscription_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_history"]],
+		inscription_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_history"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -1192,6 +1269,19 @@ export type ValueTypes = {
 			where?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription"]],
 		inscription_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription"]],
+		inscription_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_history"]],
+		inscription_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_history"]],
+		inscription_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["inscription_history_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_history"]],
 		inscription_stream?: [{	/** maximum number of rows returned in a single batch */
 			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 			cursor: Array<ValueTypes["inscription_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
@@ -1684,6 +1774,7 @@ export type ValueTypes = {
 		amount?: boolean | `@${string}`,
 		chain_id?: boolean | `@${string}`,
 		date_created?: boolean | `@${string}`,
+		date_filled?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
 		is_cancelled?: boolean | `@${string}`,
 		is_filled?: boolean | `@${string}`,
@@ -1729,6 +1820,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_filled?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		is_cancelled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 		is_filled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1745,6 +1837,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1757,6 +1850,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1769,6 +1863,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		is_cancelled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		is_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1821,6 +1916,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 		chain_id?: string | undefined | null | Variable<any, string>,
 		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		date_filled?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
 		is_cancelled?: boolean | undefined | null | Variable<any, string>,
 		is_filled?: boolean | undefined | null | Variable<any, string>,
@@ -2141,6 +2237,75 @@ export type ResolverInputTypes = {
 		type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		version?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 	};
+	/** columns and relationships of "inscription_history" */
+	["inscription_history"]: AliasType<{
+		action?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		height?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ResolverInputTypes["inscription"],
+		inscription_id?: boolean | `@${string}`,
+		receiver?: boolean | `@${string}`,
+		sender?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
+	["inscription_history_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["inscription_history_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["inscription_history_bool_exp"]> | undefined | null,
+		action?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
+		inscription_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		receiver?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		sender?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** Ordering options when selecting data from "inscription_history". */
+	["inscription_history_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "inscription_history" */
+	["inscription_history_select_column"]: inscription_history_select_column;
+	/** Streaming cursor of the table "inscription_history" */
+	["inscription_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["inscription_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_history_stream_cursor_value_input"]: {
+		action?: string | undefined | null,
+		chain_id?: string | undefined | null,
+		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		height?: number | undefined | null,
+		id?: number | undefined | null,
+		inscription_id?: number | undefined | null,
+		receiver?: string | undefined | null,
+		sender?: string | undefined | null,
+		transaction_id?: number | undefined | null
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2220,6 +2385,14 @@ export type ResolverInputTypes = {
 			where?: ResolverInputTypes["inscription_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription"]],
 		inscription_by_pk?: [{ id: number }, ResolverInputTypes["inscription"]],
+		inscription_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_history"]],
+		inscription_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_history"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -2341,6 +2514,19 @@ export type ResolverInputTypes = {
 			where?: ResolverInputTypes["inscription_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription"]],
 		inscription_by_pk?: [{ id: number }, ResolverInputTypes["inscription"]],
+		inscription_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_history"]],
+		inscription_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_history"]],
+		inscription_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["inscription_history_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_history"]],
 		inscription_stream?: [{	/** maximum number of rows returned in a single batch */
 			batch_size: number,	/** cursor to stream the results returned by the query */
 			cursor: Array<ResolverInputTypes["inscription_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
@@ -2833,6 +3019,7 @@ export type ResolverInputTypes = {
 		amount?: boolean | `@${string}`,
 		chain_id?: boolean | `@${string}`,
 		date_created?: boolean | `@${string}`,
+		date_filled?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
 		is_cancelled?: boolean | `@${string}`,
 		is_filled?: boolean | `@${string}`,
@@ -2878,6 +3065,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		date_filled?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		is_cancelled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 		is_filled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -2894,6 +3082,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2906,6 +3095,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2918,6 +3108,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		is_cancelled?: ResolverInputTypes["order_by"] | undefined | null,
 		is_filled?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2970,6 +3161,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["bigint"] | undefined | null,
 		chain_id?: string | undefined | null,
 		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		date_filled?: ResolverInputTypes["timestamp"] | undefined | null,
 		id?: number | undefined | null,
 		is_cancelled?: boolean | undefined | null,
 		is_filled?: boolean | undefined | null,
@@ -3285,6 +3477,73 @@ export type ModelTypes = {
 		type?: ModelTypes["String_comparison_exp"] | undefined,
 		version?: ModelTypes["String_comparison_exp"] | undefined
 	};
+	/** columns and relationships of "inscription_history" */
+	["inscription_history"]: {
+		action: string,
+		chain_id: string,
+		date_created: ModelTypes["timestamp"],
+		height: number,
+		id: number,
+		/** An object relationship */
+		inscription: ModelTypes["inscription"],
+		inscription_id: number,
+		receiver?: string | undefined,
+		sender: string,
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number
+	};
+	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
+	["inscription_history_bool_exp"]: {
+		_and?: Array<ModelTypes["inscription_history_bool_exp"]> | undefined,
+		_not?: ModelTypes["inscription_history_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["inscription_history_bool_exp"]> | undefined,
+		action?: ModelTypes["String_comparison_exp"] | undefined,
+		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		height?: ModelTypes["Int_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
+		inscription_id?: ModelTypes["Int_comparison_exp"] | undefined,
+		receiver?: ModelTypes["String_comparison_exp"] | undefined,
+		sender?: ModelTypes["String_comparison_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** Ordering options when selecting data from "inscription_history". */
+	["inscription_history_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription?: ModelTypes["inscription_order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	["inscription_history_select_column"]: inscription_history_select_column;
+	/** Streaming cursor of the table "inscription_history" */
+	["inscription_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["inscription_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_history_stream_cursor_value_input"]: {
+		action?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		height?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		receiver?: string | undefined,
+		sender?: string | undefined,
+		transaction_id?: number | undefined
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ModelTypes["order_by"] | undefined,
@@ -3358,6 +3617,10 @@ export type ModelTypes = {
 		inscription: Array<ModelTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
 		inscription_by_pk?: ModelTypes["inscription"] | undefined,
+		/** fetch data from the table: "inscription_history" */
+		inscription_history: Array<ModelTypes["inscription_history"]>,
+		/** fetch data from the table: "inscription_history" using primary key columns */
+		inscription_history_by_pk?: ModelTypes["inscription_history"] | undefined,
 		/** fetch data from the table: "status" */
 		status: Array<ModelTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -3448,6 +3711,12 @@ export type ModelTypes = {
 		inscription: Array<ModelTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
 		inscription_by_pk?: ModelTypes["inscription"] | undefined,
+		/** fetch data from the table: "inscription_history" */
+		inscription_history: Array<ModelTypes["inscription_history"]>,
+		/** fetch data from the table: "inscription_history" using primary key columns */
+		inscription_history_by_pk?: ModelTypes["inscription_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "inscription_history" */
+		inscription_history_stream: Array<ModelTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<ModelTypes["inscription"]>,
 		/** fetch data from the table: "status" */
@@ -3874,6 +4143,7 @@ export type ModelTypes = {
 		amount: ModelTypes["bigint"],
 		chain_id: string,
 		date_created: ModelTypes["timestamp"],
+		date_filled?: ModelTypes["timestamp"] | undefined,
 		id: number,
 		is_cancelled: boolean,
 		is_filled: boolean,
@@ -3918,6 +4188,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["bigint_comparison_exp"] | undefined,
 		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
 		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		date_filled?: ModelTypes["timestamp_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		is_cancelled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 		is_filled?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -3934,6 +4205,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_created?: ModelTypes["order_by"] | undefined,
+		date_filled?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
@@ -3946,6 +4218,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_created?: ModelTypes["order_by"] | undefined,
+		date_filled?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
@@ -3958,6 +4231,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_created?: ModelTypes["order_by"] | undefined,
+		date_filled?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		is_cancelled?: ModelTypes["order_by"] | undefined,
 		is_filled?: ModelTypes["order_by"] | undefined,
@@ -4009,6 +4283,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["bigint"] | undefined,
 		chain_id?: string | undefined,
 		date_created?: ModelTypes["timestamp"] | undefined,
+		date_filled?: ModelTypes["timestamp"] | undefined,
 		id?: number | undefined,
 		is_cancelled?: boolean | undefined,
 		is_filled?: boolean | undefined,
@@ -4314,6 +4589,75 @@ export type GraphQLTypes = {
 		type?: GraphQLTypes["String_comparison_exp"] | undefined,
 		version?: GraphQLTypes["String_comparison_exp"] | undefined
 	};
+	/** columns and relationships of "inscription_history" */
+	["inscription_history"]: {
+		__typename: "inscription_history",
+		action: string,
+		chain_id: string,
+		date_created: GraphQLTypes["timestamp"],
+		height: number,
+		id: number,
+		/** An object relationship */
+		inscription: GraphQLTypes["inscription"],
+		inscription_id: number,
+		receiver?: string | undefined,
+		sender: string,
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number
+	};
+	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
+	["inscription_history_bool_exp"]: {
+		_and?: Array<GraphQLTypes["inscription_history_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["inscription_history_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["inscription_history_bool_exp"]> | undefined,
+		action?: GraphQLTypes["String_comparison_exp"] | undefined,
+		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
+		inscription_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		receiver?: GraphQLTypes["String_comparison_exp"] | undefined,
+		sender?: GraphQLTypes["String_comparison_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** Ordering options when selecting data from "inscription_history". */
+	["inscription_history_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "inscription_history" */
+	["inscription_history_select_column"]: inscription_history_select_column;
+	/** Streaming cursor of the table "inscription_history" */
+	["inscription_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["inscription_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_history_stream_cursor_value_input"]: {
+		action?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		height?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		receiver?: string | undefined,
+		sender?: string | undefined,
+		transaction_id?: number | undefined
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: GraphQLTypes["order_by"] | undefined,
@@ -4390,6 +4734,10 @@ export type GraphQLTypes = {
 		inscription: Array<GraphQLTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
 		inscription_by_pk?: GraphQLTypes["inscription"] | undefined,
+		/** fetch data from the table: "inscription_history" */
+		inscription_history: Array<GraphQLTypes["inscription_history"]>,
+		/** fetch data from the table: "inscription_history" using primary key columns */
+		inscription_history_by_pk?: GraphQLTypes["inscription_history"] | undefined,
 		/** fetch data from the table: "status" */
 		status: Array<GraphQLTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -4483,6 +4831,12 @@ export type GraphQLTypes = {
 		inscription: Array<GraphQLTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
 		inscription_by_pk?: GraphQLTypes["inscription"] | undefined,
+		/** fetch data from the table: "inscription_history" */
+		inscription_history: Array<GraphQLTypes["inscription_history"]>,
+		/** fetch data from the table: "inscription_history" using primary key columns */
+		inscription_history_by_pk?: GraphQLTypes["inscription_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "inscription_history" */
+		inscription_history_stream: Array<GraphQLTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<GraphQLTypes["inscription"]>,
 		/** fetch data from the table: "status" */
@@ -4915,6 +5269,7 @@ export type GraphQLTypes = {
 		amount: GraphQLTypes["bigint"],
 		chain_id: string,
 		date_created: GraphQLTypes["timestamp"],
+		date_filled?: GraphQLTypes["timestamp"] | undefined,
 		id: number,
 		is_cancelled: boolean,
 		is_filled: boolean,
@@ -4959,6 +5314,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		date_filled?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		is_cancelled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 		is_filled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -4975,6 +5331,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_filled?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
@@ -4987,6 +5344,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_filled?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
@@ -4999,6 +5357,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_filled?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		is_cancelled?: GraphQLTypes["order_by"] | undefined,
 		is_filled?: GraphQLTypes["order_by"] | undefined,
@@ -5051,6 +5410,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["bigint"] | undefined,
 		chain_id?: string | undefined,
 		date_created?: GraphQLTypes["timestamp"] | undefined,
+		date_filled?: GraphQLTypes["timestamp"] | undefined,
 		id?: number | undefined,
 		is_cancelled?: boolean | undefined,
 		is_filled?: boolean | undefined,
@@ -5240,6 +5600,18 @@ export const enum cursor_ordering {
 	ASC = "ASC",
 	DESC = "DESC"
 }
+/** select columns of table "inscription_history" */
+export const enum inscription_history_select_column {
+	action = "action",
+	chain_id = "chain_id",
+	date_created = "date_created",
+	height = "height",
+	id = "id",
+	inscription_id = "inscription_id",
+	receiver = "receiver",
+	sender = "sender",
+	transaction_id = "transaction_id"
+}
 /** select columns of table "inscription" */
 export const enum inscription_select_column {
 	chain_id = "chain_id",
@@ -5301,6 +5673,7 @@ export const enum token_open_position_select_column {
 	amount = "amount",
 	chain_id = "chain_id",
 	date_created = "date_created",
+	date_filled = "date_filled",
 	id = "id",
 	is_cancelled = "is_cancelled",
 	is_filled = "is_filled",
@@ -5356,6 +5729,11 @@ type ZEUS_VARIABLES = {
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["inscription_bool_exp"]: ValueTypes["inscription_bool_exp"];
+	["inscription_history_bool_exp"]: ValueTypes["inscription_history_bool_exp"];
+	["inscription_history_order_by"]: ValueTypes["inscription_history_order_by"];
+	["inscription_history_select_column"]: ValueTypes["inscription_history_select_column"];
+	["inscription_history_stream_cursor_input"]: ValueTypes["inscription_history_stream_cursor_input"];
+	["inscription_history_stream_cursor_value_input"]: ValueTypes["inscription_history_stream_cursor_value_input"];
 	["inscription_order_by"]: ValueTypes["inscription_order_by"];
 	["inscription_select_column"]: ValueTypes["inscription_select_column"];
 	["inscription_stream_cursor_input"]: ValueTypes["inscription_stream_cursor_input"];

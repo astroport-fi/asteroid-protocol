@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -96,9 +97,6 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 	}
 
 	// TODO: Rework validation
-	if parsedURN.Operation != "inscribe" {
-		return fmt.Errorf("invalid operation '%s'", parsedURN.Operation)
-	}
 	if parsedURN.KeyValuePairs["h"] == "" {
 		return fmt.Errorf("missing content hash")
 	}
@@ -106,71 +104,132 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		return fmt.Errorf("invalid chain ID '%s'", parsedURN.ChainID)
 	}
 
-	contentHash := parsedURN.KeyValuePairs["h"]
-
-	// Inscription metadata is stored in the non_critical_extension_options
-	// section of the transaction
-	var metadata []byte
-	var content []byte
-	for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
-		// The type of the option must be MsgRevoke
-		if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
-			// The granter field contains the metadata
-			metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
-			if err != nil {
-				return fmt.Errorf("unable to decode granter metadata '%s'", err)
-			}
-
-			// The grantee field contains the content base64
-			content, err = base64.StdEncoding.DecodeString(extension.Grantee)
-			if err != nil {
-				return fmt.Errorf("unable to decode grantee content '%s'", err)
-			}
-
-			// We only process the first extension option
-			break
-		}
-	}
-
-	var inscriptionMetadata InscriptionMetadata
-	err = json.Unmarshal(metadata, &inscriptionMetadata)
-	if err != nil {
-		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
-	}
-
 	height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 	if err != nil {
 		return fmt.Errorf("unable to parse height '%s'", err)
 	}
 
-	// Store the content with the correct mime type on DO
-	contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, content)
-	if err != nil {
-		return fmt.Errorf("unable to store content '%s'", err)
+	switch parsedURN.Operation {
+	case "inscribe":
+		contentHash := parsedURN.KeyValuePairs["h"]
+
+		// Inscription metadata is stored in the non_critical_extension_options
+		// section of the transaction
+		var metadata []byte
+		var content []byte
+		for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
+			// The type of the option must be MsgRevoke
+			if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
+				// The granter field contains the metadata
+				metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
+				if err != nil {
+					return fmt.Errorf("unable to decode granter metadata '%s'", err)
+				}
+
+				// The grantee field contains the content base64
+				content, err = base64.StdEncoding.DecodeString(extension.Grantee)
+				if err != nil {
+					return fmt.Errorf("unable to decode grantee content '%s'", err)
+				}
+
+				// We only process the first extension option
+				break
+			}
+		}
+
+		var inscriptionMetadata InscriptionMetadata
+		err = json.Unmarshal(metadata, &inscriptionMetadata)
+		if err != nil {
+			return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		}
+
+		// Store the content with the correct mime type on DO
+		contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, content)
+		if err != nil {
+			return fmt.Errorf("unable to store content '%s'", err)
+		}
+
+		fmt.Println("txid", transactionModel.ID)
+
+		inscriptionModel := models.Inscription{
+			ChainID:          parsedURN.ChainID,
+			Height:           height,
+			Version:          parsedURN.Version,
+			TransactionID:    transactionModel.ID,
+			ContentHash:      contentHash,
+			Creator:          sender,
+			CurrentOwner:     sender,
+			Type:             "content",
+			Metadata:         datatypes.JSON(metadata),
+			ContentPath:      contentPath,
+			ContentSizeBytes: uint64(len(content)),
+			DateCreated:      rawTransaction.TxResponse.Timestamp,
+		}
+
+		result := protocol.db.Save(&inscriptionModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		inscriptionHistory := models.InscriptionHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			InscriptionID: inscriptionModel.ID,
+			Sender:        "asteroids",
+			Receiver:      sender,
+			Action:        "inscribe",
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		// If we fail to save history, that's fine
+		protocol.db.Save(&inscriptionHistory)
+
+	case "transfer":
+		txHash := parsedURN.KeyValuePairs["h"]
+
+		// Fetch transaction from database with the given hash
+		var transaction models.Transaction
+		result := protocol.db.Where("hash = ?", txHash).First(&transaction)
+		if result.Error != nil {
+			// Invalid hash
+			return result.Error
+		}
+
+		// Fetch the inscription for this transaction ID
+		var inscription models.Inscription
+		result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&inscription)
+		if result.Error != nil {
+			// Invalid transaction ID
+			return result.Error
+		}
+
+		// Check that the sender is the current owner
+		if inscription.CurrentOwner != sender {
+			return fmt.Errorf("invalid sender, must be current owner")
+		}
+
+		// All good, transfer
+		destinationAddress := strings.TrimSpace(parsedURN.KeyValuePairs["dst"])
+		destinationAddress = strings.ToLower(destinationAddress)
+		inscription.CurrentOwner = destinationAddress
+		result = protocol.db.Save(&inscription)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update inscription owner '%s'", result.Error)
+		}
+
+		inscriptionHistory := models.InscriptionHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        height,
+			TransactionID: transactionModel.ID,
+			InscriptionID: inscription.ID,
+			Sender:        sender,
+			Receiver:      destinationAddress,
+			Action:        "transfer",
+			DateCreated:   rawTransaction.TxResponse.Timestamp,
+		}
+		// If we fail to save history, that's fine
+		protocol.db.Save(&inscriptionHistory)
 	}
-
-	fmt.Println("txid", transactionModel.ID)
-
-	inscriptionModel := models.Inscription{
-		ChainID:          parsedURN.ChainID,
-		Height:           height,
-		Version:          parsedURN.Version,
-		TransactionID:    transactionModel.ID,
-		ContentHash:      contentHash,
-		Creator:          sender,
-		CurrentOwner:     sender,
-		Type:             "content",
-		Metadata:         datatypes.JSON(metadata),
-		ContentPath:      contentPath,
-		ContentSizeBytes: uint64(len(content)),
-		DateCreated:      rawTransaction.TxResponse.Timestamp,
-	}
-
-	result := protocol.db.Save(&inscriptionModel)
-	if result.Error != nil {
-		return result.Error
-	}
-
 	return nil
 }
 

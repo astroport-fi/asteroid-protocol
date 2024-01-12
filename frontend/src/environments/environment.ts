@@ -11,29 +11,34 @@ export const environment = {
     protocol: {
       inscription: {
         inscribe: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+        transfer: {
+          receiver: "",
           denom: "uatom",
           amount: "0"
         },
       },
       cft20: {
         deploy: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
           denom: "uatom",
           amount: "0"
         },
         mint: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
           denom: "uatom",
           amount: "0"
         },
         transfer: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
           denom: "uatom",
           amount: "0"
         },
         list: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
           denom: "uatom",
           amount: "0",
           minTradeSize: 0.000001,
@@ -45,7 +50,7 @@ export const environment = {
           type: "dynamic-percent"
         },
         delist: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "",
           denom: "uatom",
           amount: "0"
         },

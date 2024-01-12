@@ -60,7 +60,9 @@
                             <ion-avatar>
                               <img alt="Unknown avatar" src="../../assets/avatar.svg" />
                             </ion-avatar>
-                            <ion-label>{{ inscription.creator | shortenAddress }}</ion-label>
+                            <ion-label *ngIf="inscription.creator == currentAddress">You</ion-label>
+                            <ion-label *ngIf="inscription.creator != currentAddress">{{ inscription.creator |
+                              shortenAddress }}</ion-label>
                           </ion-chip>
                         </a>
                       </div>
@@ -74,9 +76,21 @@
                             <ion-avatar>
                               <img alt="Unknown avatar" src="../../assets/avatar.svg" />
                             </ion-avatar>
-                            <ion-label>{{ inscription.current_owner | shortenAddress }}</ion-label>
+                            <ion-label *ngIf="inscription.current_owner == currentAddress">You</ion-label>
+                            <ion-label *ngIf="inscription.current_owner != currentAddress">{{ inscription.current_owner
+                              | shortenAddress }}</ion-label>
                           </ion-chip>
                         </a>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="is-owner mt-4" *ngIf="walletConnected && inscription.current_owner == currentAddress">
+                    <ion-col size="12" class="ps-3 pt-0">
+                      <div class="meta pt-4">
+                        <span class="label">You own this inscription</span>
+                      </div>
+                      <div class="mt-2 mb-3">
+                        <ion-button color="primary" fill="clear" (click)="transfer()">Transfer</ion-button>
                       </div>
                     </ion-col>
                   </ion-row>
@@ -102,6 +116,60 @@
                     </ion-col>
                   </ion-row>
                 </ion-grid>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-grid class="history">
+            <ion-row>
+              <ion-col size="6" class="header">
+                History
+              </ion-col>
+            </ion-row>
+            <ion-row class="break">
+              <ion-col size="12">
+                <p-table #data [value]="inscriptionHistory" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true"
+                  [rows]="10" [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+                  styleClass="token-list" sortField="date_created" [sortOrder]="-1">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="date_created">Date <p-sortIcon field="date_created"></p-sortIcon></th>
+                      <th pSortableColumn="height" pFrozenColumn>Block <p-sortIcon field="height"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="action">Action <p-sortIcon field="action"></p-sortIcon></th>
+                      <th pSortableColumn="sender">Sender <p-sortIcon field="sender"></p-sortIcon></th>
+                      <th pSortableColumn="receiver">Receiver <p-sortIcon field="receiver"></p-sortIcon></th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-item>
+                    <tr>
+                      <td>
+                        {{ item.date_created | date }}
+                      </td>
+                      <td>
+                        {{ item.height | number }}
+                      </td>
+                      <td>
+                        {{ item.action }}
+                      </td>
+                      <td>
+                        {{ item.sender | shortenAddress }}
+                      </td>
+                      <td>
+                        {{ item.receiver | shortenAddress }}
+                      </td>
+                      <td>
+                        <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
+                      </td>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="emptymessage">
+                    <tr>
+                      <td colspan="4">No history yet</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
               </ion-col>
             </ion-row>
           </ion-grid>
