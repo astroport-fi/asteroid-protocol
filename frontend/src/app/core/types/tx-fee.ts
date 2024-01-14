@@ -8,4 +8,5 @@ export type TxFee = {
         denom: string;
         amount: string;
     }
+    gasLimit: string;
 }

@@ -12,13 +12,14 @@ import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
 import { Chain } from '../core/types/zeus';
 import { TxFee } from '../core/types/tx-fee';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 
 @Component({
   selector: 'app-transaction-flow-modal',
   templateUrl: './transaction-flow-modal.page.html',
   styleUrls: ['./transaction-flow-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink, LottieComponent]
+  imports: [IonicModule, CommonModule, FormsModule, RouterLink, LottieComponent, TokenDecimalsPipe]
 })
 export class TransactionFlowModalPage implements OnInit {
 
@@ -66,7 +67,8 @@ export class TransactionFlowModalPage implements OnInit {
       chain: {
         denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
         amount: "0",
-      }
+      },
+      gasLimit: environment.fees.chain.gasLimit,
     }
     if (this.overrideFee > 0) {
       fees.metaprotocol.amount = this.overrideFee.toString();
@@ -82,13 +84,16 @@ export class TransactionFlowModalPage implements OnInit {
       if (result) {
         this.gasEstimate = parseInt(result.gas_used);
         // Bump gas by 20% to account for any changes
-        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.2);
+        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.4);
 
         // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
         this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
 
-        // Bump the chain fee by 40% to account for extra storage needed
+        // Bump the chain fee by 40% to account for extra storage needed on top of the 40% gas bump
         this.chainFee = this.chainFee + (this.chainFee * 0.4);
+
+        // Convert to uatom
+        this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
       }
     } catch (error: any) {
       console.error(error);
@@ -100,6 +105,7 @@ export class TransactionFlowModalPage implements OnInit {
     this.state = 'sign';
     this.errorText = '';
 
+
     const fees: TxFee = {
       metaprotocol: {
         receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
@@ -108,11 +114,13 @@ export class TransactionFlowModalPage implements OnInit {
       },
       chain: {
         denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
-        amount: this.chainFee.toString(),
-      }
+        amount: this.chainFee.toFixed(0),
+      },
+      gasLimit: this.gasEstimate.toFixed(0),
     }
 
     try {
+
       const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
       // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
 

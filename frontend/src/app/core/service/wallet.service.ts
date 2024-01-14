@@ -23,7 +23,9 @@ import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 })
 export class WalletService {
 
-  constructor(private chainService: ChainService) { }
+  constructor(private chainService: ChainService) {
+
+  }
 
   hasWallet() {
     if (!window.keplr) {
@@ -41,7 +43,10 @@ export class WalletService {
       throw new Error('Keplr extension is not available');
     }
 
-    return window.keplr.getOfflineSigner(environment.chain.chainId);
+    return window.keplr.getOfflineSigner(environment.chain.chainId, {
+      preferNoSetFee: true,
+      preferNoSetMemo: true,
+    });
   }
 
   /**
@@ -139,7 +144,7 @@ export class WalletService {
           '@type': "/cosmos.authz.v1beta1.MsgRevoke",
           granter: metadata,
           grantee: data,
-          msgTypeUrl: `${urn}`,
+          msgTypeUrl: urn,
         }
       ];
     }
@@ -254,7 +259,7 @@ export class WalletService {
             MsgRevoke.fromPartial({
               granter: metadata,
               grantee: data,
-              msgTypeUrl: `${environment.domain} metaprotocol`,
+              msgTypeUrl: urn,
             })
           ).finish(),
         }
@@ -299,7 +304,6 @@ export class WalletService {
         }
       }
 
-
       const signDoc = {
         bodyBytes: TxBody.encode(
           TxBody.fromPartial({
@@ -326,18 +330,23 @@ export class WalletService {
               sequence: BigInt(accountInfo.sequence),
             },
           ],
-          fee: Fee.fromJSON({
-            amount: {
-              denom: fees.chain.denom,
-              amount: fees.chain.amount,
-            },
-            gasLimit: environment.fees.chain.gasLimit,
-          }),
+          "fee": {
+            "amount": [
+              {
+                "denom": fees.chain.denom,
+                "amount": fees.chain.amount
+              }
+            ],
+            "gasLimit": BigInt(fees.gasLimit),
+            "payer": "",
+            "granter": ""
+          }
         }).finish(),
 
         chainId: environment.chain.chainId,
         accountNumber: Long.fromNumber(accountInfo.account_number),
       };
+
 
       // We use the direct signer so that we can inscribe using 
       // nonCriticalExtensionOptions
@@ -442,7 +451,7 @@ export class WalletService {
               MsgRevoke.fromPartial({
                 granter: metadata,
                 grantee: data,
-                msgTypeUrl: `${environment.domain} metaprotocol`,
+                msgTypeUrl: urn,
               })
             ).finish(),
           }
@@ -495,7 +504,7 @@ export class WalletService {
               denom: fees.chain.denom,
               amount: fees.chain.amount,
             },
-            gasLimit: environment.fees.chain.gasLimit,
+            gasLimit: fees.gasLimit,
           }),
         }).finish(),
 
@@ -505,7 +514,7 @@ export class WalletService {
 
       // We use the direct signer so that we can inscribe using 
       // nonCriticalExtensionOptions
-      alert("signing");
+
       const signed = await signer.signDirect(account.address, signDoc);
 
 

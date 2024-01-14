@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   domain: 'testnet.asteroidprotocol.io',
   limits: {
-    maxFileSize: 770000,
+    maxFileSize: 740000,
   },
   storage: {
     connectedWalletKey: "connectedWallet"
@@ -63,13 +63,14 @@ export const environment = {
   api: {
     endpoint: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
     wss: 'wss://testnet-api.asteroidprotocol.io/v1/graphql',
-    explorer: 'https://testnet-api.asteroidprotocol.io/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
+    txCheckEndpoint: "https://rest.sentry-01.theta-testnet.polypore.xyz",
   },
   chain: {
     chainId: "theta-testnet-001",
     chainName: "Cosmos Hub Testnet",
-    rpc: "https://rpc.sentry-01.theta-testnet.polypore.xyz",
-    rest: "https://rest.sentry-01.theta-testnet.polypore.xyz",
+    rpc: "https://corsproxy.io/?https://rpc.sentry-01.theta-testnet.polypore.xyz",
+    rest: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz",
     bip44: {
       coinType: 118
     },
@@ -81,21 +82,32 @@ export const environment = {
       bech32PrefixConsAddr: 'cosmosvalcons',
       bech32PrefixConsPub: 'cosmosvalconsconspub'
     },
-    currencies: [{
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
-    }],
-    feeCurrencies: [{
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6,
-      gasPriceStep: { low: 0.005, average: 0.005, high: 0.008 }
-    }],
+    currencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+        gasPriceStep: {
+          low: 0.005,
+          average: 0.005,
+          high: 0.005,
+        },
+      },
+    ],
     stakeCurrency: {
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
+      coinDenom: "ATOM",
+      coinMinimalDenom: "uatom",
+      coinDecimals: 6,
+      coinGeckoId: "cosmos",
     },
   },
 };

@@ -79,21 +79,32 @@ export const environment = {
       bech32PrefixConsAddr: 'cosmosvalcons',
       bech32PrefixConsPub: 'cosmosvalconsconspub'
     },
-    currencies: [{
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
-    }],
-    feeCurrencies: [{
-      coinDenom: 'stake',
-      coinMinimalDenom: 'stake',
-      coinDecimals: 6,
-      gasPriceStep: { low: 0.005, average: 0.005, high: 0.008 }
-    }],
+    currencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+        gasPriceStep: {
+          low: 0.005,
+          average: 0.005,
+          high: 0.005,
+        },
+      },
+    ],
     stakeCurrency: {
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
+      coinDenom: "ATOM",
+      coinMinimalDenom: "uatom",
+      coinDecimals: 6,
+      coinGeckoId: "cosmos",
     },
   },
 
