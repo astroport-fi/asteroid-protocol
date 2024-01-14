@@ -170,7 +170,8 @@ func (i *Indexer) indexBlocks() {
 				// and a JSON-only way to parse the content
 				txSize, rawTransaction, err := i.fetchTransaction(tx)
 				if err != nil {
-					i.logger.Fatal(err)
+					i.logger.Error(err)
+					continue
 				}
 
 				// Verify that this transaction is a metaprotocol inscription
