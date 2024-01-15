@@ -44,13 +44,16 @@
                   <ion-avatar>
                     <img alt="" src="../../assets/logo/a-white-on-transparent-500.png" />
                   </ion-avatar>
+                  <div class="stargaze-name mb-3">
+                    <ion-label>{{ selectedAddress | shortenAddress | async }}</ion-label>
+                  </div>
                   <ion-chip class="address" color="warning" [outline]="true">
                     <ion-icon name="key-sharp" color="warning"></ion-icon>
                     <ion-label>{{ selectedAddress }}</ion-label>
                   </ion-chip>
                   <ion-chip class="address-short" color="warning" [outline]="true">
                     <ion-icon name="key-sharp" color="warning"></ion-icon>
-                    <ion-label>{{ selectedAddress | shortenAddress }}</ion-label>
+                    <ion-label>{{ selectedAddress | shortenAddress | async}}</ion-label>
                   </ion-chip>
                 </div>
               </ion-col>

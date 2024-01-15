@@ -21,7 +21,7 @@
             <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
               (click)="toggleWalletOptions()">
               <ion-icon name="key-sharp" color="warning"></ion-icon>
-              <ion-label>{{ connectedAccount.address | shortenAddress }}</ion-label>
+              <ion-label>{{ connectedAccount.address | shortenAddress | async }}</ion-label>
             </ion-chip>
 
           </div>
@@ -29,7 +29,7 @@
         <div class="wallet-options" *ngIf="showWalletOptions" (click)="toggleWalletOptions()">
           <div class=" chip">
             <ion-icon name="chevron-down" color="warning"></ion-icon>
-            <ion-label>{{ connectedAccount.address | shortenAddress }}</ion-label>
+            <ion-label>{{ connectedAccount.address | shortenAddress | async }}</ion-label>
             <div>
               <ion-button fill="clear" color="danger" (click)="disconnectWallet()">Disconnect</ion-button>
             </div>

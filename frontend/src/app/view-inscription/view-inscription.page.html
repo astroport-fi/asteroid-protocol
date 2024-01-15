@@ -62,7 +62,7 @@
                             </ion-avatar>
                             <ion-label *ngIf="inscription.creator == currentAddress">You</ion-label>
                             <ion-label *ngIf="inscription.creator != currentAddress">{{ inscription.creator |
-                              shortenAddress }}</ion-label>
+                              shortenAddress | async}}</ion-label>
                           </ion-chip>
                         </a>
                       </div>
@@ -78,7 +78,7 @@
                             </ion-avatar>
                             <ion-label *ngIf="inscription.current_owner == currentAddress">You</ion-label>
                             <ion-label *ngIf="inscription.current_owner != currentAddress">{{ inscription.current_owner
-                              | shortenAddress }}</ion-label>
+                              | shortenAddress | async}}</ion-label>
                           </ion-chip>
                         </a>
                       </div>
@@ -154,10 +154,10 @@
                         {{ item.action }}
                       </td>
                       <td>
-                        {{ item.sender | shortenAddress }}
+                        {{ item.sender | shortenAddress | async}}
                       </td>
                       <td>
-                        {{ item.receiver | shortenAddress }}
+                        {{ item.receiver | shortenAddress | async}}
                       </td>
                       <td>
                         <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>

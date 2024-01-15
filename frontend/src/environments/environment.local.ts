@@ -59,7 +59,8 @@ export const environment = {
     endpoint: 'http://192.168.11.103:8080/v1/graphql',
     explorer: 'http://192.168.11.103:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
     // endpoint: 'http://localhost:8080/v1/graphql',
-    // explorer: 'http://localhost:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    // explorer: 'http://localhost:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',,
+    stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
     chainId: "gaialocal-1",

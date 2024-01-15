@@ -174,7 +174,7 @@
                   <ng-template pTemplate="body" let-holder>
                     <tr [routerLink]="['/app/wallet', holder.address]">
                       <td>{{ holder.id }}</td>
-                      <td class="mono">{{ holder.address | shortenAddress }}</td>
+                      <td class="mono">{{ holder.address | shortenAddress | async}}</td>
                       <td class="mono">{{ holder.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
                     </tr>
                   </ng-template>
@@ -199,7 +199,7 @@
                             <ion-avatar>
                               <img alt="Unknown avatar" src="../../assets/avatar.svg" />
                             </ion-avatar>
-                            <ion-label>{{ token.creator | shortenAddress }}</ion-label>
+                            <ion-label>{{ token.creator | shortenAddress | async}}</ion-label>
                           </ion-chip>
                         </a>
                       </div>
@@ -212,7 +212,7 @@
                             <ion-avatar>
                               <img alt="Unknown avatar" src="../../assets/avatar.svg" />
                             </ion-avatar>
-                            <ion-label>{{ token.current_owner | shortenAddress }}</ion-label>
+                            <ion-label>{{ token.current_owner | shortenAddress | async}}</ion-label>
                           </ion-chip>
                         </a>
                       </div>

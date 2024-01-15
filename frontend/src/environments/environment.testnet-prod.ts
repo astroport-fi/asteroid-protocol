@@ -64,7 +64,8 @@ export const environment = {
     endpoint: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
     wss: 'wss://testnet-api.asteroidprotocol.io/v1/graphql',
     explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
-    simulateEndpoint: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz"
+    simulateEndpoint: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz",
+    stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
     chainId: "theta-testnet-001",
