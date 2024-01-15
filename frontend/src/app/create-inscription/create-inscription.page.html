@@ -21,30 +21,32 @@
           <p class="note">
             Details about content inscriptions
           </p>
-          <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
+          <form class="form" [formGroup]="createInscriptionForm" (ngSubmit)="submit()">
             <ion-grid>
               <ion-row>
                 <ion-col size-xl="5" size-lg="5" size-xs="12">
-                  <div class="uploaded text-center" *ngIf="this.createForm.value.basic.contentUpload">
+                  <div class="uploaded text-center" *ngIf="this.createInscriptionForm.value.basic.contentUpload">
                     <div class="uploader no-style text-center">
-                      <img class="rounded" [src]="this.createForm.value.basic.contentUpload"
+                      <img class="rounded" [src]="this.createInscriptionForm.value.basic.contentUpload"
                         *ngIf="renderImagePreview" />
                       <div *ngIf="originalFilename">{{ originalFilename }}</div>
                       <div class="upload">
-                        <label for='input-file'>Change file</label>
-                        <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                        <label for='inpout_file_inscription_change'>Change file</label>
+                        <input id='inpout_file_inscription_change' type='file'
+                          (change)="onInscriptionFileSelected($event)" />
                       </div>
                       <div *ngIf="contentRequired" class="info text-center color-danger">
                         You must add content to inscribe
                       </div>
                     </div>
                   </div>
-                  <div class="uploader text-center" *ngIf="!this.createForm.value.basic.contentUpload">
+                  <div class="uploader text-center" *ngIf="!this.createInscriptionForm.value.basic.contentUpload">
                     <p>Content</p>
                     <p class="info">Max file size<br />800kb</p>
                     <div class="upload">
-                      <label for='input-file-inscription'>Select file</label>
-                      <input id='input-file-inscription' type='file' (change)="onFileSelected($event)" />
+                      <label for='input_file_inscription_select'>Select file</label>
+                      <input id='input_file_inscription_select' type='file'
+                        (change)="onInscriptionFileSelected($event)" />
                     </div>
                     <div *ngIf="contentRequired" class="info text-center color-danger">
                       You must add content to inscribe

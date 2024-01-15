@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
   imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink]
 })
 export class CreateInscriptionPage implements OnInit, ViewDidLeave {
-  createForm: FormGroup;
+  createInscriptionForm: FormGroup;
   originalFilename: string = '';
   inscriptionFileSize: number = 0;
   maxFileSize = environment.limits.maxFileSize;
@@ -25,7 +25,7 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   contentRequired = false;
 
   constructor(private builder: FormBuilder, private protocolService: InscriptionService, private walletService: WalletService, private modalCtrl: ModalController, private alertController: AlertController) {
-    this.createForm = this.builder.group({
+    this.createInscriptionForm = this.builder.group({
       basic: this.builder.group({
         name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(32)]],
         description: '',
@@ -35,10 +35,11 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   }
 
   ngOnInit() {
+    console.log("iunscripotions init");
   }
 
   ionViewDidLeave(): void {
-    this.createForm.patchValue({
+    this.createInscriptionForm.patchValue({
       basic: {
         name: '',
         description: '',
@@ -49,11 +50,11 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
 
   submit() {
     this.contentRequired = false;
-    if (this.createForm.valid) {
+    if (this.createInscriptionForm.valid) {
       this.createInscription();
     } else {
-      this.createForm.markAllAsTouched();
-      if (this.createForm.value.basic.contentUpload === null) {
+      this.createInscriptionForm.markAllAsTouched();
+      if (this.createInscriptionForm.value.basic.contentUpload === null) {
         this.contentRequired = true;
       }
     }
@@ -63,7 +64,7 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
     // The base64 data contains the mime type as well as the data itself
     // we need to strip the mime type from the data and store it in the metadata
     // Sample of the value "data:image/png;base64,iVBORw0Kbase64"
-    let data = this.createForm.value.basic.contentUpload;
+    let data = this.createInscriptionForm.value.basic.contentUpload;
     const mime = data.split(";")[0].split(":")[1];
     data = data.split(",")[1];
 
@@ -75,8 +76,8 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
           identifier: (await this.walletService.getAccount()).address,
         },
         metadata: {
-          name: this.createForm.value.basic.name.trim(),
-          description: this.createForm.value.basic.description.trim(),
+          name: this.createInscriptionForm.value.basic.name.trim(),
+          description: this.createInscriptionForm.value.basic.description.trim(),
           mime,
         }
       };
@@ -127,7 +128,8 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
     }
   }
 
-  onFileSelected(event: any) {
+  onInscriptionFileSelected(event: any) {
+    console.log("CALLED", "onInscriptionFileSelected");
     this.contentRequired = false;
     const file = event.target.files[0];
     if (file) {
@@ -144,7 +146,7 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
         this.originalFilename = file.name;
         this.inscriptionFileSize = file.size;
 
-        this.createForm.patchValue({
+        this.createInscriptionForm.patchValue({
           basic: {
             contentUpload: base64
           }

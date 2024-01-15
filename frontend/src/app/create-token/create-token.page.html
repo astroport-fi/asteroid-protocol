@@ -30,8 +30,8 @@
                     <div class="uploader no-style text-center">
                       <img class="rounded" [src]="this.createForm.value.optional.imageUpload" />
                       <div class="upload">
-                        <label for='input-file'>Change file</label>
-                        <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                        <label for='input_file_change'>Change file</label>
+                        <input id='input_file_change' type='file' (change)="onFileSelected($event)" />
                         <ion-button color="warning" fill="clear"
                           (click)="this.createForm.value.optional.imageUpload = ''">
                           Remove
@@ -48,8 +48,8 @@
                     <p class="info">Maximum dimensions<br />1024x1024</p>
                     <p class="info">Max file size<br />800kb</p>
                     <div class="upload">
-                      <label for='input-file'>Select file</label>
-                      <input id='input-file' type='file' (change)="onFileSelected($event)" />
+                      <label for='input_file_select'>Select file</label>
+                      <input id='input_file_select' type='file' (change)="onFileSelected($event)" />
                     </div>
                     <div class="section color-orange p-2">
                       {{ precheckErrorText }}
