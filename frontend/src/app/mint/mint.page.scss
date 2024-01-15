@@ -1,6 +1,6 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.5);
-  background-image: url("../../assets/background/landing/abstract-01.jpg");
+  background-image: url("../../assets/background/meteor-background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -30,11 +30,11 @@ ion-content {
   // height: 200px;
   padding: 20px;
   background-color: rgba(36, 43, 51, 0.4);
-  backdrop-filter: blur(100px);
+  backdrop-filter: blur(32px);
   opacity: 0.98;
   border-radius: 10px;
   position: relative;
-  border: 1px solid rgba(253, 135, 71, 0.1);
+  border: 1px solid rgba(6, 31, 39, 0.4);
 
   @media only screen and (max-width: 700px) {
     margin-top: 100px;
@@ -76,9 +76,9 @@ ion-content {
   padding-bottom: 0px;
 
   .inner {
-    border: 1px solid rgba(253, 135, 71, 0.1);
+    border: 1px solid rgba(6, 31, 39, 0.4);
     text-align: center;
-    background-color: #1d1a19;
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     width: 150px;
     height: 150px;
