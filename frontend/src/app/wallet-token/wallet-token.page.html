@@ -6,10 +6,11 @@
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
-              <ion-back-button></ion-back-button>
+              <ion-back-button defaultHref="/app/wallet"></ion-back-button>
             </ion-buttons>
             <ion-title>
-              Manage Token <span *ngIf="!isLoading">#{{ token.id }}</span>
+              <!-- Less 1 because database starts at 1 and not 0 -->
+              Manage Token <span *ngIf="!isLoading">#{{ token.id - 1}}</span>
             </ion-title>
           </ion-toolbar>
         </ion-header>
@@ -53,11 +54,11 @@
                     tokenDecimals:holding.token.decimals) | number:"1.2-6" }})</span>
                 </div>
                 <div class="mt-2 mb-0">
-                  <ion-button color="primary" fill="clear" (click)="transfer()"
+                  <ion-button color="primary" fill="outline" (click)="transfer()"
                     [disabled]="holding.amount == 0">Send</ion-button>
-                  <ion-button color="primary" fill="clear" (click)="listSale()"
+                  <ion-button color="primary" fill="outline" (click)="listSale()"
                     [disabled]="holding.amount == 0">Sell</ion-button>
-                  <ion-button color="primary" fill="clear"
+                  <ion-button color="primary" fill="outline"
                     [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
                 </div>
               </ion-col>
@@ -93,7 +94,7 @@
                           baseTokenUSD |
                           tokenDecimals:6 | number:'1.6-6'}})</td>
                         <td>
-                          <ion-button fill="clear" color="warning" (click)="cancel(position.id)">Cancel</ion-button>
+                          <ion-button fill="outline" color="warning" (click)="cancel(position.id)">Cancel</ion-button>
                         </td>
                       </tr>
                     </ng-template>

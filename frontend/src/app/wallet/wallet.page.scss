@@ -89,3 +89,29 @@ ion-segment-button {
     text-transform: initial;
     font-size: 16px;
 }
+
+@keyframes moveLeftRight {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(100px);
+    }
+}
+
+.animation-ghost {
+    opacity: 0.3;
+    animation: moveLeftRight 12s infinite;
+    max-width: 50px;
+
+    div.ghost {
+        margin-left: -100px;
+    }
+}
+
+div.title {
+    opacity: 0.5;
+}

@@ -64,13 +64,13 @@ export const environment = {
     endpoint: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
     wss: 'wss://testnet-api.asteroidprotocol.io/v1/graphql',
     explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
-    txCheckEndpoint: "https://rest.sentry-01.theta-testnet.polypore.xyz",
+    simulateEndpoint: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz"
   },
   chain: {
     chainId: "theta-testnet-001",
     chainName: "Cosmos Hub Testnet",
-    rpc: "https://corsproxy.io/?https://rpc.sentry-01.theta-testnet.polypore.xyz",
-    rest: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz",
+    rpc: "https://rpc.sentry-01.theta-testnet.polypore.xyz",
+    rest: "https://rest.sentry-01.theta-testnet.polypore.xyz",
     bip44: {
       coinType: 118
     },

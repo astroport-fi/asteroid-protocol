@@ -72,9 +72,35 @@
               </ion-col>
             </ion-row>
 
-            <ion-row *ngIf="!isLoading && selectedSection == 'tokens'">
-              <ion-col size="12" *ngIf="holdings.length > 0">
+            <ion-row *ngIf="!isLoading && selectedSection == 'tokens'" class="p-4">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="holdings.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary" [routerLink]="['/app/create/token']">
+                        <ion-label>Create a token</ion-label>
+                      </ion-button>
+                      <ion-button fill="outline" color="primary" [routerLink]="['/app/markets']">
+                        <ion-label>Buy tokens</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
 
+              <ion-col size="12" *ngIf="holdings.length > 0">
                 <p-table #data [value]="holdings" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
                   [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens"
@@ -110,28 +136,40 @@
                       </td>
                     </tr>
                   </ng-template>
-                  <ng-template pTemplate="emptymessage">
-                    <tr>
-                      <td colspan="4">No tokens found.</td>
-                    </tr>
-                  </ng-template>
                 </p-table>
               </ion-col>
             </ion-row>
 
-
             <ion-row *ngIf="!isLoading && selectedSection == 'inscriptions'" class="p-4 text-center">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="inscriptions.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary"
+                        [routerLink]="['/app/create/inscription']">
+                        <ion-label>Create inscription</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
               <ion-col size="12" *ngIf="inscriptions.length > 0">
                 <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
                   *ngFor="let item of inscriptions; let index">
-                  <!-- TODO: Do better here -->
-                  <div class="content"
-                    *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
-                    <img [src]="item.content_path" />
-                  </div>
-                  <div class="content"
-                    *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
-                    <div class="mime">{{ item.mime | humanType }}</div>
+                  <div class="content">
+                    <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"></app-generic-preview>
                   </div>
                   <h4>{{ item.name }}</h4>
                   <div class="detail text-start">
@@ -148,12 +186,35 @@
                   </div>
                 </a>
               </ion-col>
-              <ion-col size-xl="8" size="12" *ngIf="inscriptions.length == 0">
-                No inscriptions found
-              </ion-col>
             </ion-row>
 
             <ion-row *ngIf="!isLoading && selectedSection == 'creations'" class="p-4 text-center">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="tokens.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary" [routerLink]="['/app/create/token']">
+                        <ion-label>Create a token</ion-label>
+                      </ion-button>
+                      <ion-button fill="outline" color="primary" [routerLink]="['/app/markets']">
+                        <ion-label>Buy tokens</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
               <ion-col size="12" *ngIf="tokens.length > 0">
                 <a class="inscription-item main-content" [routerLink]="['/app/token', item.ticker]"
                   *ngFor="let item of tokens; let index">
@@ -163,7 +224,6 @@
                       <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
                         *ngIf="!item.content_path" />
                     </div>
-                    <!-- <div class="ticker" *ngIf="!item.content_path">{{ item.ticker }}</div> -->
                   </div>
                   <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
                   <div class="detail text-start">
@@ -178,9 +238,6 @@
                     </div>
                   </div>
                 </a>
-              </ion-col>
-              <ion-col size-xl="8" size="12" *ngIf="tokens.length == 0">
-                No tokens found
               </ion-col>
             </ion-row>
           </ion-grid>

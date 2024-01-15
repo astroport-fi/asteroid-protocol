@@ -184,11 +184,13 @@ export class DashboardLayoutComponent {
         });
         break;
       case WalletStatus.Rejected:
+        console.log("Keplr rejected")
         // TODO: Popup to inform rejection and try again
         this.walletStatusText = "Connect wallet";
         localStorage.clear();
         break;
       case WalletStatus.NotInstalled:
+        console.log("Keplr not installed")
         // TODO: Popup to install Keplr
         this.walletStatusText = "Connect wallet";
         localStorage.clear();

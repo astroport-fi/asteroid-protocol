@@ -10,6 +10,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
   styleUrls: ['./list-inscriptions.page.scss'],
   standalone: true,
   // providers: [IonNav],
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink, ShortenAddressPipe, NgScrollbarModule]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, RouterLink, ShortenAddressPipe, NgScrollbarModule, GenericPreviewPage]
 })
 export class ListInscriptionsPage implements OnInit {
 

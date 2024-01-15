@@ -89,9 +89,9 @@
                   baseTokenUSD |
                   tokenDecimals:6 | number:'1.6-6'}})</td>
                 <td>
-                  <ion-button fill="clear" color="success" (click)="buy(position.id)"
+                  <ion-button fill="outline" color="success" (click)="buy(position.id)"
                     *ngIf="position.seller_address != walletAddress">Buy</ion-button>
-                  <ion-button fill="clear" color="warning" (click)="cancel(position.id)"
+                  <ion-button fill="outline" color="warning" (click)="cancel(position.id)"
                     *ngIf="position.seller_address == walletAddress">Cancel</ion-button>
                 </td>
               </tr>

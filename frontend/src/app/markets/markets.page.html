@@ -41,7 +41,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="ticker" pFrozenColumn>Market <p-sortIcon field="ticker"></p-sortIcon></th>
-                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="name">Token <p-sortIcon field="name"></p-sortIcon></th>
                 <th pSortableColumn="listings">Listings <p-sortIcon field="listings"></p-sortIcon></th>
                 <th pSortableColumn="price">Token Price <p-sortIcon field="price"></p-sortIcon></th>
                 <th pSortableColumn="volume">Volume <p-sortIcon field="volume"></p-sortIcon></th>
@@ -51,7 +51,7 @@
             <ng-template pTemplate="body" let-token>
               <tr [routerLink]="['/app/market', token.ticker]">
                 <td pFrozenColumn>{{ token.ticker }} / ATOM</td>
-                <td>{{ token.name }} / ATOM</td>
+                <td>{{ token.name }}</td>
                 <td class="mono">{{ token.token_open_positions.length }}</td>
                 <td class="mono">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{
                   baseToken.base_token_usd *
@@ -62,7 +62,7 @@
                   (token.volume_24_base | tokenDecimals:6 ) |
                   number:"1.2-6" }})
                 </td>
-                <td><ion-button fill="clear" color="warning" (click)="listSale($event, token.ticker)"
+                <td><ion-button fill="outline" color="warning" (click)="listSale($event, token.ticker)"
                     *ngIf="token.token_holders[0]?.amount">Sell</ion-button>
                 </td>
               </tr>

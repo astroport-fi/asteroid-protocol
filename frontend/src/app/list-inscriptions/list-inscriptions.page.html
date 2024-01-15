@@ -21,14 +21,8 @@
             <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
               <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
                 *ngFor="let item of inscriptions; let index">
-                <!-- TODO: Do better here, replace with previewer -->
-                <div class="content"
-                  *ngIf="item.mime == 'image/png' || item.mime == 'image/jpg' || item.mime == 'image/gif'">
-                  <img [src]="item.content_path" />
-                </div>
-                <div class="content"
-                  *ngIf="item.mime != 'image/png' && item.mime != 'image/jpg' && item.mime != 'image/gif'">
-                  <div class="mime">{{ item.mime | humanType }}</div>
+                <div class="content">
+                  <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"></app-generic-preview>
                 </div>
                 <h4>{{ item.name }}</h4>
                 <div class="detail">

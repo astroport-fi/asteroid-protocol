@@ -82,7 +82,7 @@ export class WalletService {
       window.keplr.defaultOptions = {
         sign: {
           preferNoSetMemo: true,
-          preferNoSetFee: true,
+          preferNoSetFee: true
         }
       }
 
@@ -90,6 +90,7 @@ export class WalletService {
       await window.keplr.enable(environment.chain.chainId);
       return WalletStatus.Connected;
     } catch (error) {
+      console.error(error);
       return WalletStatus.Rejected;
     }
   }

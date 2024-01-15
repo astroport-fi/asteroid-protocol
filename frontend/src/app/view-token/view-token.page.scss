@@ -22,11 +22,6 @@ h1 {
     }
 }
 
-.own-balance {
-    text-align: left;
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
 .ticker {
     max-width: 250px;
     max-height: 250px;
@@ -35,6 +30,13 @@ h1 {
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
+
+.own-balance {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
 
 .no-logo {
     opacity: 0.7;

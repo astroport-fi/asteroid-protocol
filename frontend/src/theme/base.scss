@@ -18,6 +18,7 @@ ion-item.active {
 
 ion-button {
     text-transform: initial;
+
 }
 
 ion-modal {
@@ -62,6 +63,7 @@ ion-button[color="primary"] {
     --ion-color-primary-contrast-rgb: 255, 255, 255;
     --ion-color-primary-shade: #4e918e;
     --ion-color-primary-tint: #7bc9c6;
+
 }
 
 ion-button[color="warning"] {
@@ -72,6 +74,13 @@ ion-button[color="warning"] {
     --ion-color-warning-shade: #e0ac08;
     --ion-color-warning-tint: #ffca22;
 }
+
+
+
+ion-button[fill="outline"] {
+    --border-width: 1px;
+}
+
 
 ion-input,
 ion-textarea {
@@ -232,8 +241,8 @@ a {
     margin-right: 30px;
     margin-bottom: 40px;
     display: inline-block;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 300px;
     position: relative;
     padding: 10px;
     border: 1px solid transparent;
@@ -249,10 +258,13 @@ a {
     }
 
     .content {
-        max-width: 250px;
-        height: 60%;
+        max-width: 200px;
+        height: 65%;
         overflow: hidden;
         object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .image {

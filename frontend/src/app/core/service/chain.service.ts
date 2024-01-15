@@ -17,7 +17,7 @@ export class ChainService {
 
   async fetchAccountInfo(address: string) {
     try {
-      const uri = `${environment.api.txCheckEndpoint}/cosmos/auth/v1beta1/accounts/${address}`;
+      const uri = `${environment.chain.rest}/cosmos/auth/v1beta1/accounts/${address}`;
       const response = await api<AccountResponse>(uri);
 
       return response.account;
@@ -28,7 +28,7 @@ export class ChainService {
 
   async fetchTransaction(hash: string) {
     try {
-      const uri = `${environment.api.txCheckEndpoint}/cosmos/tx/v1beta1/txs/${hash}`;
+      const uri = `${environment.chain.rest}/cosmos/tx/v1beta1/txs/${hash}`;
       const response = await api<TxQueryResponse>(uri);
 
       return response.tx_response;
@@ -47,8 +47,8 @@ export class ChainService {
         },
         body: tx
       }
-
-      const uri = `${environment.chain.rest}/cosmos/tx/v1beta1/simulate`;
+      console.log("Using simulate endpoint");
+      const uri = `${environment.api.simulateEndpoint}/cosmos/tx/v1beta1/simulate`;
       const response = await api<GasSimulateResponse>(uri, call);
 
       return response.gas_info;
