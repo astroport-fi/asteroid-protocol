@@ -175,10 +175,13 @@ func (i *Indexer) indexBlocks() {
 				}
 
 				// Verify that this transaction is a metaprotocol inscription
-				if !rawTransaction.ValidateBasic() {
+				if err := rawTransaction.ValidateBasic(); err != nil {
 					i.logger.WithFields(logrus.Fields{
 						"hash": tx,
-					}).Debug("Transaction does not contain a valid metaprotocol memo")
+					}).Debug(err)
+
+					// TODO: Surface the error to the UI
+
 					continue
 				}
 

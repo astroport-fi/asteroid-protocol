@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -294,9 +295,15 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 	return "", errors.New("no sender address found")
 }
 
-// isValidMetaprotocol checks if the transaction contains a MsgSend as part of
+// ValidateBasic checks if the transaction contains a MsgSend as part of
 // messages a memo that contains "urn:"
-func (tx RawTransaction) ValidateBasic() bool {
+func (tx RawTransaction) ValidateBasic() error {
+
+	// Verify that the transaction succeeded
+	if tx.TxResponse.Code != 0 {
+		return fmt.Errorf("transaction failed: %s", tx.TxResponse.RawLog)
+	}
+
 	hasSend := false
 	for _, v := range tx.Tx.Body.Messages {
 		// TODO: This might need to be a IBC send
@@ -313,5 +320,9 @@ func (tx RawTransaction) ValidateBasic() bool {
 		hasInscriptionMemo = true
 	}
 
-	return hasSend && hasInscriptionMemo
+	if hasSend && hasInscriptionMemo {
+		return nil
+	}
+
+	return errors.New("transaction does not contain a valid metaprotocol memo")
 }
