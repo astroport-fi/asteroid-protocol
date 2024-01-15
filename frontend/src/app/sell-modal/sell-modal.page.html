@@ -34,8 +34,9 @@
               You will be selling your tokens for a total of {{ ((sellForm.value.basic.amount | stripSpaces) *
               (sellForm.value.basic.price | stripSpaces)) | number:'1.2-6' }} ATOM
             </div>
-            <div class="p-3 mt-4 mb-4 color-danger" *ngIf="((sellForm.value.basic.amount | stripSpaces) *
-                          (sellForm.value.basic.price | stripSpaces)) < minTradeSize">
+            <div class="p-3 mt-4 mb-4 color-danger"
+              *ngIf="((sellForm.value.basic.amount | stripSpaces) *
+                          (sellForm.value.basic.price | stripSpaces)) < minTradeSize && (sellForm.value.basic.amount | stripSpaces) < senderBalance">
               The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
             </div>
             <div class="p-3 mt-4 mb-4" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">

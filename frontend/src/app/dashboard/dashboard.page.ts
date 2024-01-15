@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // import { IonicModule, AlertController } from '@ionic/angular';
-import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { IonGrid, IonRow, IonCol, IonButton, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from '@ionic/angular/standalone';
 import { Chain, Gql } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
@@ -17,6 +17,7 @@ import { LottieComponent } from 'ngx-lottie';
 import { ConnectedWallet } from '../core/types/connected-wallet';
 import { WalletType } from '../core/enum/wallet-type';
 import { WalletStatus } from '../core/enum/wallet-status.enum';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 
 @Component({
@@ -29,7 +30,7 @@ import { WalletStatus } from '../core/enum/wallet-status.enum';
 export class DashboardPage implements OnInit {
   errorText = "";
 
-  constructor(private chainService: ChainService, private walletService: WalletService, private alertController: AlertController) {
+  constructor(private chainService: ChainService, private walletService: WalletService, private modalCtrl: ModalController) {
 
   }
 
@@ -40,27 +41,14 @@ export class DashboardPage implements OnInit {
   async connectWallet() {
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
       });
-      await alert.present();
+      modal.present();
+
 
       return;
     }

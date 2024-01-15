@@ -15,6 +15,7 @@ import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 
 @Component({
@@ -197,27 +198,14 @@ export class ViewTokenPage implements OnInit {
   async mint() {
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
       });
-      await alert.present();
+      modal.present();
+
       return;
     }
     // Construct metaprotocol memo message

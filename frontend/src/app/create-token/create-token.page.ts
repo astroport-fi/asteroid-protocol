@@ -12,6 +12,7 @@ import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-
 import { environment } from 'src/environments/environment';
 import { InscriptionMetadata } from '../core/metaprotocol/inscription.service';
 import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
   selector: 'app-create-token',
@@ -169,27 +170,14 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       modal.present();
     } catch (err) {
       // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
       });
-      await alert.present();
+      modal.present();
+
     }
   }
 

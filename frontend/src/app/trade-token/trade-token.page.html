@@ -62,6 +62,12 @@
                 </div>
               </ion-col>
             </ion-row>
+            <ion-row>
+              <ion-col size="12" class="text-end">
+                <ion-button color="primary" fill="outline" (click)="listSale()">Sell {{ token.ticker}}
+                  tokens</ion-button>
+              </ion-col>
+            </ion-row>
           </ion-grid>
           <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10"
             [showCurrentPageReport]="true"
@@ -88,7 +94,7 @@
                 <td class="mono">{{ position.total | tokenDecimals:6 | number:'1.6-6'}} (${{position.total *
                   baseTokenUSD |
                   tokenDecimals:6 | number:'1.6-6'}})</td>
-                <td>
+                <td class="text-end">
                   <ion-button fill="outline" color="success" (click)="buy(position.id)"
                     *ngIf="position.seller_address != walletAddress">Buy</ion-button>
                   <ion-button fill="outline" color="warning" (click)="cancel(position.id)"

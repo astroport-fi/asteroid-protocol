@@ -14,6 +14,8 @@ import { WalletService } from '../core/service/wallet.service';
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
+import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
   selector: 'app-trade-token',
@@ -43,8 +45,6 @@ export class TradeTokenPage implements OnInit {
     if (walletConnected) {
       this.walletAddress = (await this.walletService.getAccount()).address;
     }
-
-    // this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     const chain = Chain(environment.api.endpoint)
     const result = await chain('query')({
@@ -238,27 +238,13 @@ export class TradeTokenPage implements OnInit {
 
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
       });
-      await alert.present();
+      modal.present();
       return;
     }
 
@@ -327,27 +313,13 @@ export class TradeTokenPage implements OnInit {
   async cancel(orderNumber: number) {
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
-      const alert = await this.alertController.create({
-        header: 'Keplr wallet is required',
-        message: "We're working on adding more wallet support. Unfortunately, for now you'll need to install Keplr to use this app",
-        buttons: [
-          {
-            text: 'Get Keplr',
-            cssClass: 'alert-button-success',
-            handler: () => {
-              window.open('https://www.keplr.app/', '_blank');
-            }
-          },
-          {
-            text: 'Cancel',
-            cssClass: 'alert-button-cancel',
-            handler: () => {
-              alert.dismiss();
-            }
-          }
-        ],
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
       });
-      await alert.present();
+      modal.present();
       return;
     }
 
@@ -373,6 +345,20 @@ export class TradeTokenPage implements OnInit {
     });
     modal.present();
 
+  }
+
+  async listSale() {
+
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: SellModalPage,
+
+      componentProps: {
+        ticker: this.token.ticker
+      }
+    });
+    modal.present();
   }
 
 }
