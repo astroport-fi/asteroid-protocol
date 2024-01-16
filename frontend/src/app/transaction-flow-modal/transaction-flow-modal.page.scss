@@ -50,7 +50,7 @@ ion-col.note {
 div.fees {
     font-size: 14px;
     color: #a7a7a7;
-    max-width: 250px;
+    max-width: 270px;
     margin-left: auto;
     margin-right: auto;
 
@@ -76,4 +76,26 @@ div.fees {
             }
         }
     }
+}
+
+div.icon-trigger {
+    display: inline;
+    font-size: 18px;
+    position: relative;
+
+    ion-icon {
+        top: 8px;
+        position: relative;
+        padding: 5px;
+        cursor: pointer;
+    }
+}
+
+ion-popover {
+    --background: hsla(0, 0%, 100%, .05) !important;
+}
+
+.shifted {
+    position: relative;
+    top: -6px;
 }

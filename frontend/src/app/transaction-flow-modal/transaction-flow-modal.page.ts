@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, helpCircleOutline } from "ionicons/icons";
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -35,7 +35,7 @@ export class TransactionFlowModalPage implements OnInit {
   isSimulating: boolean = true;
   errorText: string = '';
   txHash: string = '';
-  state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' | 'long' = 'sign';
+  state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' = 'sign';
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
   currentChain = environment.chain;
@@ -51,7 +51,7 @@ export class TransactionFlowModalPage implements OnInit {
     this.data = '';
     this.txHash = '';
 
-    addIcons({ checkmark, closeOutline, close });
+    addIcons({ checkmark, closeOutline, close, helpCircleOutline });
     this.chain = Chain(environment.api.endpoint)
 
   }
@@ -128,15 +128,11 @@ export class TransactionFlowModalPage implements OnInit {
       this.txHash = await this.walletService.broadcast(signedTx);
 
       // Keep checking the chain is this TX is successful every second
-      // for 60 seconds. If the transaction isn't successful after 60 seconds 
-      // show a 'taking longer than usual' message, fail after 180 seconds
+      // for 180 seconds (3 minutes)
       for (let i = 0; i < 180; i++) {
         await delay(1000);
-        if (i >= 60) {
-          this.state = 'long';
-        }
         try {
-          if (this.state == 'submit' || this.state == 'long') {
+          if (this.state == 'submit') {
             const tx = await this.chainService.fetchTransaction(this.txHash);
             if (tx) {
               if (tx.code == 0) {
