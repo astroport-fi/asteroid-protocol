@@ -84,7 +84,8 @@ export class WalletService {
         }
       }
 
-      await window.keplr.experimentalSuggestChain(environment.chain);
+      // TODO: Add back for local development
+      // await window.keplr.experimentalSuggestChain(environment.chain);
       await window.keplr.enable(environment.chain.chainId);
       return WalletStatus.Connected;
     } catch (error) {
@@ -152,7 +153,10 @@ export class WalletService {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
 
       let msgs = {};
-      const currentTime = Math.round(new Date().getTime() / 1000);
+      // const currentTime = Math.round(new Date().getTime() / 1000) + (60 * 60);
+
+      let currentTime = new Date().getTime() + (60 * 60 * 1000);
+      currentTime = currentTime * 1000000;
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
         msgs = {
@@ -161,7 +165,7 @@ export class WalletService {
           sender: account?.address as string,
           source_channel: environment.fees.ibcChannel,
           source_port: "transfer",
-          timeout_timestamp: currentTime + (60 * 60),
+          timeout_timestamp: currentTime.toFixed(0),
           token: {
             amount: fees.metaprotocol.amount,
             denom: fees.metaprotocol.denom,
@@ -277,7 +281,9 @@ export class WalletService {
         msgs = [...messages];
       }
 
-      const currentTime = Math.round(new Date().getTime() / 1000);
+      let currentTime = new Date().getTime() + (60 * 60 * 1000);
+      currentTime = currentTime * 1000000;
+
       if (parseInt(fees.metaprotocol.amount) > 0) {
         feeMessage = {
           typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
@@ -286,10 +292,10 @@ export class WalletService {
             sender: account?.address as string,
             sourceChannel: environment.fees.ibcChannel,
             sourcePort: "transfer",
-            timeoutTimestamp: BigInt(currentTime + 60 * 60), // Now + 1hour for transfer
+            timeoutTimestamp: BigInt(currentTime),
             timeoutHeight: {
+              revisionNumber: BigInt(0),
               revisionHeight: BigInt(0),
-              revisionNumber: BigInt(1),
             },
             memo: "",
             token: {

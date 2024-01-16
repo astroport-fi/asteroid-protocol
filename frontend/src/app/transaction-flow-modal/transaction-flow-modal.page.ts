@@ -118,6 +118,9 @@ export class TransactionFlowModalPage implements OnInit {
       },
       gasLimit: this.gasEstimate.toFixed(0),
     }
+    if (this.overrideFee > 0) {
+      fees.metaprotocol.amount = this.overrideFee.toString();
+    }
 
     try {
 
