@@ -27,7 +27,7 @@ export type ContentInscription = {
     providedIn: 'root'
 })
 export class InscriptionService {
-    version: string = 'v1beta';
+    version: string = 'v1';
 
     constructor() { }
 

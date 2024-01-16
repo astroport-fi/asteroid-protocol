@@ -14,6 +14,14 @@
     border-radius: 30px;
     margin-bottom: 25px;
 
+    &.no-style {
+        padding: 0;
+        background: none;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+    }
+
     label {
         cursor: pointer;
         outline: 0;

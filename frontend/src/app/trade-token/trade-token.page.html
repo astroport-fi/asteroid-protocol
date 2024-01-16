@@ -1,0 +1,116 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
+            </ion-buttons>
+            <ion-title>
+              <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1"
+        class="main-content">
+        <div class="loading p-4" *ngIf="isLoading">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          <p>
+            Loading market...
+          </p>
+        </div>
+        <div class="aligned" *ngIf="!isLoading">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    ATOM / USD
+                  </span>
+                  <span class="value ms-3">
+                    ${{ baseTokenUSD | number:"1.2-6" }}
+                  </span>
+                </div>
+              </ion-col>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    {{ token.ticker }} / ATOM
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD *
+                    (token.last_price_base | tokenDecimals:token.decimals ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
+              </ion-col>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    24H Volume
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseTokenUSD *
+                    (token.volume_24_base | tokenDecimals:6 ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" class="text-end">
+                <ion-button color="primary" fill="outline" (click)="listSale()">Sell {{ token.ticker}}
+                  tokens</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <p-table #data [value]="positions" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
+                                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
+            sortField="ppt">
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                </th>
+                <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                <th>&nbsp;</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-position>
+              <tr class="no-click">
+                <td pFrozenColumn>{{ position.id }}</td>
+                <td class="mono">{{ position.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{position.ppt *
+                  baseTokenUSD |
+                  tokenDecimals:6 | number:'1.6-6'}})</td>
+                <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                <td class="mono">{{ position.total | tokenDecimals:6 | number:'1.6-6'}} (${{position.total *
+                  baseTokenUSD |
+                  tokenDecimals:6 | number:'1.6-6'}})</td>
+                <td class="text-end">
+                  <ion-button fill="outline" color="success" (click)="buy(position.id)"
+                    *ngIf="position.seller_address != walletAddress">Buy</ion-button>
+                  <ion-button fill="outline" color="warning" (click)="cancel(position.id)"
+                    *ngIf="position.seller_address == walletAddress">Cancel</ion-button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">No listings found</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div style="height: 100px;"></div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,69 +1,138 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, helpCircleOutline } from "ionicons/icons";
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
 import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
 import { Chain } from '../core/types/zeus';
+import { TxFee } from '../core/types/tx-fee';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 
 @Component({
   selector: 'app-transaction-flow-modal',
   templateUrl: './transaction-flow-modal.page.html',
   styleUrls: ['./transaction-flow-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink, LottieComponent]
+  imports: [IonicModule, CommonModule, FormsModule, RouterLink, LottieComponent, TokenDecimalsPipe]
 })
 export class TransactionFlowModalPage implements OnInit {
 
+  @Input() resultCTA: string = 'View inscription';
+  @Input() routerLink: string | [] = '';
   @Input() urn: string = '';
   @Input() metadata: string;
   @Input() data: string;
+  @Input() messages: any[] = [];
+  @Input() messagesJSON: any[] = [];
+  @Input() overrideFee: number = 0;
 
+  isSimulating: boolean = true;
   errorText: string = '';
   txHash: string = '';
-  state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' | 'long' = 'sign';
+  state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' = 'sign';
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
+  currentChain = environment.chain;
+  gasEstimate: number = parseInt(environment.fees.chain.gasLimit);
+  chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average / 1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+  protocolFee: number = 0.005;
+  metaprotocol: string = 'inscription';
+  metaprotocolAction: string = 'inscribe';
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController) {
+  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router) {
     this.urn = '';
     this.metadata = '';
     this.data = '';
     this.txHash = '';
+
+    addIcons({ checkmark, closeOutline, close, helpCircleOutline });
+    this.chain = Chain(environment.api.endpoint)
+
   }
 
-  ngOnInit() {
-    addIcons({ checkmark, closeOutline, close });
-    this.chain = Chain(environment.api.endpoint)
+  async ngOnInit() {
+
+    const fees: TxFee = {
+      metaprotocol: {
+        receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
+        denom: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].denom,
+        amount: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].amount,
+      },
+      chain: {
+        denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
+        amount: "0",
+      },
+      gasLimit: environment.fees.chain.gasLimit,
+    }
+    if (this.overrideFee > 0) {
+      fees.metaprotocol.amount = this.overrideFee.toString();
+    }
+
+    this.protocolFee = parseInt(fees.metaprotocol.amount) / 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+
+    this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
+    try {
+      const simulateTx = await this.walletService.createSimulated(this.urn, this.metadata, this.data, fees, this.messagesJSON);
+      const result = await this.chainService.simulateTransaction(simulateTx);
+
+      if (result) {
+        this.gasEstimate = parseInt(result.gas_used);
+        // Bump gas by 20% to account for any changes
+        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.4);
+
+        // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+        this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
+
+        // Bump the chain fee by 40% to account for extra storage needed on top of the 40% gas bump
+        this.chainFee = this.chainFee + (this.chainFee * 0.4);
+
+        // Convert to uatom
+        this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+    this.isSimulating = false;
   }
 
   async submit() {
     this.state = 'sign';
     this.errorText = '';
 
-    // this.walletService.simulate(this.urn, this.metadata, this.data);
+
+    const fees: TxFee = {
+      metaprotocol: {
+        receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
+        denom: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].denom,
+        amount: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].amount,
+      },
+      chain: {
+        denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
+        amount: this.chainFee.toFixed(0),
+      },
+      gasLimit: this.gasEstimate.toFixed(0),
+    }
 
     try {
-      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data);
+
+      const signedTx = await this.walletService.sign(this.urn, this.metadata, this.data, fees, this.messages);
+      // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
+
       this.state = 'submit';
       this.txHash = await this.walletService.broadcast(signedTx);
 
       // Keep checking the chain is this TX is successful every second
-      // for 60 seconds. If the transaction isn't successful after 60 seconds 
-      // show a 'taking longer than usual' message, fail after 180 seconds
+      // for 180 seconds (3 minutes)
       for (let i = 0; i < 180; i++) {
         await delay(1000);
-        if (i >= 60) {
-          this.state = 'long';
-        }
         try {
-          if (this.state == 'submit' || this.state == 'long') {
+          if (this.state == 'submit') {
             const tx = await this.chainService.fetchTransaction(this.txHash);
             if (tx) {
               if (tx.code == 0) {
@@ -105,7 +174,7 @@ export class TransactionFlowModalPage implements OnInit {
           }
         }
         catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     } catch (error: any) {
@@ -126,8 +195,20 @@ export class TransactionFlowModalPage implements OnInit {
     if (error.includes('inscription_content_hash')) {
       return 'Your inscription contains content already inscribed. Duplicates are not allowed.';
     }
+    if (error.includes('order by id') && error.includes('doesn\'t exist')) {
+      return 'The sell order has already been filled or removed';
+    }
 
     return error;
+  }
+
+  viewInscription() {
+    if (typeof this.routerLink == 'string') {
+      this.router.navigate([this.routerLink, this.txHash]);
+    } else {
+      this.router.navigate(this.routerLink);
+    }
+    this.modalCtrl.dismiss();
   }
 
 }

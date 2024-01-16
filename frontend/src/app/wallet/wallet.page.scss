@@ -1,0 +1,121 @@
+.list {
+    text-align: left;
+
+    @media only screen and (max-width: 900px) {
+        text-align: center;
+    }
+}
+
+
+.address {
+    display: inline-block;
+}
+
+.address-short {
+    display: none;
+}
+
+@media only screen and (max-width: 500px) {
+    .address {
+        display: none;
+    }
+
+    .address-short {
+        display: inline-block;
+    }
+}
+
+.filter {
+    margin-top: -15px;
+    color: #888;
+}
+
+.content {
+    .image {
+        img.no-logo {
+            max-width: 25%;
+            padding-top: 30px;
+            opacity: 0.7;
+        }
+    }
+}
+
+.avatar {
+    margin-bottom: 50px;
+    text-align: center;
+
+    ion-avatar {
+        width: 200px;
+        height: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        // border: 1px solid var(--color-yellow);
+        margin-bottom: 20px;
+        --border-radius: 4px;
+    }
+
+}
+
+.off-page {
+    margin-top: -100px;
+}
+
+.token-holdings-list {
+    margin-left: 0;
+    margin-bottom: 50px;
+
+    .item {
+        padding: 5px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba($color: #777777, $alpha: 0.2);
+
+        &.interactable {
+            color: #cccccc;
+
+            &:hover {
+                color: #57AAA7;
+            }
+        }
+
+
+    }
+
+    .actions {
+        text-align: right;
+    }
+}
+
+ion-segment-button {
+    text-transform: initial;
+    font-size: 16px;
+}
+
+@keyframes moveLeftRight {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(100px);
+    }
+}
+
+.animation-ghost {
+    opacity: 0.3;
+    animation: moveLeftRight 12s infinite;
+    max-width: 50px;
+
+    div.ghost {
+        margin-left: -100px;
+    }
+}
+
+div.title {
+    opacity: 0.5;
+}
+
+.stargaze-name {
+    opacity: 0.6;
+}

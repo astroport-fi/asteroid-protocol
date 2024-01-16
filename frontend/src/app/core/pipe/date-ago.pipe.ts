@@ -6,7 +6,10 @@ export class DateAgoPipe implements PipeTransform {
         if (!(value instanceof Date))
             value = new Date(value);
 
-        let seconds: number = Math.floor(((new Date()).getTime() - value.getTime()) / 1000);
+        const now = new Date();
+        const localTime = new Date(value.getTime() - value.getTimezoneOffset() * 60000);
+
+        let seconds: number = Math.floor((now.getTime() - localTime.getTime()) / 1000);
         let interval: number = Math.floor(seconds / 31536000);
 
         if (interval > 1) {

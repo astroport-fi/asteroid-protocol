@@ -3,19 +3,35 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({ name: 'humanType', standalone: true })
 export class HumanTypePipe implements PipeTransform {
     transform(value: string) {
+        // Cover all image types
+        if (value.startsWith('image/')) {
+            return 'Image';
+        }
+        // Cover all video types
+        if (value.startsWith('video/')) {
+            return 'Video';
+        }
+        // Cover all audio types
+        if (value.startsWith('audio/')) {
+            return 'Audio';
+        }
+        if (value.startsWith('text/html')) {
+            return 'HTML';
+        }
+        // Cover all text types
+        if (value.startsWith('text/markdown')) {
+            return 'Markdown';
+        }
+        // Cover all text types
+        if (value.startsWith('text/')) {
+            return 'Text';
+        }
+        // Cover all text types
+        if (value.startsWith('application/json')) {
+            return 'JSON';
+        }
+
         switch (value) {
-            case 'image/png':
-            case 'image/jpeg':
-            case 'image/gif':
-                return 'Image'
-            case 'video/mp4':
-                return 'Video'
-            case 'audio/mpeg':
-                return 'Audio'
-            case 'audio/wav':
-                return 'Audio'
-            case 'text/markdown':
-                return 'Markdown'
             case 'application/pdf':
                 return 'PDF'
             case 'application/zip':

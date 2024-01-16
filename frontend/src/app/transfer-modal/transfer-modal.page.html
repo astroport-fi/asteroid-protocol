@@ -1,0 +1,49 @@
+<ion-content class="main-content" mode="md">
+  <form class="form" [formGroup]="transferForm" (ngSubmit)="submit()">
+    <ion-grid class="p-3">
+      <ion-row>
+        <ion-col class="text-center">
+          <h2>Send {{ ticker }} tokens</h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <p>
+            Transfers are final and can't be cancelled
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-md="8" offset-md="2" size="12">
+
+          <div formGroupName="basic">
+            <div class="mt-4">
+              <ion-input label="Amount to transfer" labelPlacement="stacked" fill="outline" placeholder="10"
+                [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
+            </div>
+            <div class="mt-4">
+              <ion-input label="Destination address" labelPlacement="stacked" fill="outline" placeholder="cosmos1xxxxxx"
+                formControlName="destination" [counter]="true" [minlength]="45" [maxlength]="45"
+                errorText="Please enter a Cosmos Hub Address"></ion-input>
+            </div>
+            <div class="p-3 mt-4 mb-4" *ngIf="(transferForm.value.basic.amount | stripSpaces) > senderBalance">
+              <ion-text color="warning">You can't send more tokens than you have available. Your balance is
+                {{ senderBalance | number:'1.2-6' }} {{ ticker }}</ion-text>
+            </div>
+          </div>
+
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="action">
+            <ion-button color="success" type="submit"
+              [disabled]="(transferForm.value.basic.amount | stripSpaces) > senderBalance">Send now</ion-button>
+            <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+</ion-content>

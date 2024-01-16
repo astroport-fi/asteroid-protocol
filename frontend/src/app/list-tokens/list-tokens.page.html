@@ -1,0 +1,79 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+              CFT-20 Tokens
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+
+
+        <div class="aligned main-content">
+          <div *ngIf="isLoading">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          </div>
+
+          <p-table #data [value]="tokens" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
+            ['name', 'ticker' ]" styleClass="token-list">
+            <ng-template pTemplate="caption">
+              <div class="flex search">
+                <div>
+                  <ion-input fill="outline" #textInput label="Search" labelPlacement="stacked"
+                    placeholder="Name or ticker" (input)="data.filterGlobal(textInput.value, 'contains')"><ion-icon
+                      slot="end" name="search-outline" aria-hidden="true"></ion-icon></ion-input>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th>&nbsp;</th>
+                <th pSortableColumn="id" pFrozenColumn># <p-sortIcon field="id"></p-sortIcon></th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
+                <th pSortableColumn="price">Token Price <p-sortIcon field="price"></p-sortIcon></th>
+                <th pSortableColumn="minted">Minted <p-sortIcon field="minted"></p-sortIcon></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-token>
+              <tr [routerLink]="['/app/token', token.ticker]">
+                <td class="token-logo">
+                  <div class="image">
+                    <img [src]="token.content_path" *ngIf="token.content_path" />
+                    <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
+                      *ngIf="!token.content_path" />
+                  </div>
+                </td>
+                <td>{{ token.id }}</td>
+                <td>{{ token.name }}</td>
+                <td>{{ token.ticker }}</td>
+                <td>{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenPrice *
+                  (token.last_price_base | tokenDecimals:token.decimals ) |
+                  number:"1.2-6" }})
+                </td>
+                <td>{{token.circulating_supply / token.max_supply * 100 | number: '1.1-4'}}%</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">No tokens found.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

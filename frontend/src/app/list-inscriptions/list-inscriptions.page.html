@@ -1,0 +1,68 @@
+<ion-content fullscreen="true">
+  <ng-scrollbar autoHeightDisabled="false" visibility="hover">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+          <ion-header class="no-shadow me-5">
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-menu-button></ion-menu-button>
+              </ion-buttons>
+              <ion-title>
+                Inscriptions
+              </ion-title>
+            </ion-toolbar>
+          </ion-header>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+          <div class="aligned">
+            <ion-item>
+              <ion-select interface="popover" placeholder="Order">
+                <ion-select-option value="apple">Latest</ion-select-option>
+                <ion-select-option value="banana">Oldest</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+          <div class="aligned">
+            <div *ngIf="isLoading">
+              <ion-progress-bar type="indeterminate"></ion-progress-bar>
+            </div>
+            <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
+              <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
+                *ngFor="let item of inscriptions; let index">
+                <div class="content">
+                  <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"></app-generic-preview>
+                </div>
+                <h4>{{ item.name }}</h4>
+                <div class="detail">
+                  <div class="detail-item">
+                    <span>#{{item.id-1}}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-1' }} kb)</span>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>{{ item.date_created | dateAgo }}</span>
+                  </div>
+                </div>
+              </a>
+              <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+                <ion-infinite-scroll-content></ion-infinite-scroll-content>
+              </ion-infinite-scroll>
+            </div>
+            <div class="list" *ngIf="!isLoading && inscriptions.length == 0">
+              No inscriptions found
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-scrollbar>
+</ion-content>

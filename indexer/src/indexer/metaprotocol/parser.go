@@ -8,9 +8,9 @@ import (
 )
 
 type ProtocolURN struct {
-	chainID       string
-	version       string
-	operation     string
+	ChainID       string
+	Version       string
+	Operation     string
 	KeyValuePairs map[string]string
 }
 
@@ -29,18 +29,15 @@ func ParseProtocolString(protocolURN *urn.URN) (ProtocolURN, error) {
 	if len(sourceVersioning) != 2 {
 		return parsedProtocolURN, fmt.Errorf("incorrect source versioning parts: %s", protocolURN.SS)
 	}
-	parsedProtocolURN.chainID = sourceVersioning[0]
-	parsedProtocolURN.version = sourceVersioning[1]
+	parsedProtocolURN.ChainID = sourceVersioning[0]
+	parsedProtocolURN.Version = sourceVersioning[1]
 
 	// Parse inscribe$h=...contenthash...
 	opContent := strings.Split(sourceContent[1], "$")
 	if len(opContent) != 2 {
 		return parsedProtocolURN, fmt.Errorf("invalid op/content parts: %s", protocolURN.SS)
 	}
-	parsedProtocolURN.operation = opContent[0]
-
-	// TODO: Split off based on operation
-	fmt.Println("Got operation: ", parsedProtocolURN.operation)
+	parsedProtocolURN.Operation = opContent[0]
 
 	// Parse h=...contenthash...
 	// Parse key=value,key=value

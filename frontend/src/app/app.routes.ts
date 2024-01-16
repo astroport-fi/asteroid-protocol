@@ -7,6 +7,10 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
   },
   {
+    path: 'inscription/:txhash',
+    loadComponent: () => import('./generic-viewer/generic-viewer.page').then((m) => m.GenericViewerPage),
+  },
+  {
     path: 'mint/:ticker',
     loadComponent: () => import('./mint/mint.page').then((m) => m.MintPage),
   },
@@ -15,12 +19,20 @@ export const routes: Routes = [
     component: DashboardLayoutComponent,
     children: [
       {
-        path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
+        path: 'wallet/token/:ticker',
+        loadComponent: () => import('./wallet-token/wallet-token.page').then(m => m.WalletTokenPage)
       },
       {
-        path: 'create',
-        loadComponent: () => import('./create/create.page').then(m => m.CreatePage)
+        path: 'wallet',
+        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+      },
+      {
+        path: 'wallet/:address',
+        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
       },
       {
         path: 'create/inscription',
@@ -31,31 +43,27 @@ export const routes: Routes = [
         loadComponent: () => import('./create-token/create-token.page').then(m => m.CreateTokenPage)
       },
       {
-        path: 'create/alter-ego',
-        loadComponent: () => import('./create-alter-ego/create-alter-ego.page').then(m => m.CreateAlterEgoPage)
-      },
-      {
-        path: 'inscriptions/:address',
-        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
-      },
-      {
         path: 'inscriptions',
-        loadComponent: () => import('./browse-inscriptions/browse-inscriptions.page').then(m => m.BrowseInscriptionsPage)
-      },
-      {
-        path: 'tokens/:address',
-        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
+        loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
       },
       {
         path: 'tokens',
-        loadComponent: () => import('./browse-tokens/browse-tokens.page').then(m => m.BrowseTokensPage)
+        loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
+      },
+      {
+        path: 'markets',
+        loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
+      },
+      {
+        path: 'market/:quote',
+        loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)
       },
       {
         path: 'inscription/:txhash',
         loadComponent: () => import('./view-inscription/view-inscription.page').then(m => m.ViewInscriptionPage)
       },
       {
-        path: 'token/:txhash',
+        path: 'token/:ticker',
         loadComponent: () => import('./view-token/view-token.page').then(m => m.ViewTokenPage)
       },
     ]

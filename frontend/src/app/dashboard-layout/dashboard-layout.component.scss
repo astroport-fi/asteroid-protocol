@@ -9,6 +9,7 @@
     }
 }
 
+
 .menu-split-pane {
     --side-width: 310px;
     --side-max-width: 310px;
@@ -17,33 +18,42 @@
 .menu-aside {
     --width: 310px;
     border: none !important;
+    height: 100vh;
 }
 
 .layout {
 
     --ion-background-color: transparent;
 
-    background: url("../../assets/background/ui-background-flipped.png") no-repeat 50% center fixed;
+    // background: linear-gradient(120deg, #030e14, #030e14, #030f16, #041017, #051119, #06131b, #07141d, #08151f, #091621, #0a1623, #0b1724, #0b1724);
 
-    @media only screen and (max-width: 2000px) and (min-width: 1501px) {
-        background: url("../../assets/background/ui-background-flipped.png") no-repeat 35% center fixed;
-    }
+    // background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 50% center fixed;
 
-    @media only screen and (max-width: 1500px) and (min-width: 1001px) {
-        background: url("../../assets/background/ui-background-flipped.png") no-repeat 25% center fixed;
-    }
+    // @media only screen and (max-width: 2000px) and (min-width: 1501px) {
+    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 35% center fixed;
+    // }
 
-    @media only screen and (max-width: 1000px) and (min-width: 501px) {
-        background: url("../../assets/background/ui-background-flipped.png") no-repeat 15% center fixed;
-    }
+    // @media only screen and (max-width: 1500px) and (min-width: 1001px) {
+    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 25% center fixed;
+    // }
 
-    @media only screen and (max-width: 500px) {
-        background: url("../../assets/background/ui-background-flipped.png") no-repeat 15% center fixed;
-    }
+    // @media only screen and (max-width: 1000px) and (min-width: 501px) {
+    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
+    // }
+
+    // @media only screen and (max-width: 500px) {
+    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
+    // }
 
     // background: rgb(58, 75, 89);
-    // background: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
+
+    background: url("../../assets/background/flow.png") no-repeat;
+    // background: url("../../assets/background/violet.jpg") no-repeat;
+    background-size: cover;
+    // background-image: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
 }
+
+
 
 ion-list,
 ion-item,
@@ -105,36 +115,52 @@ ion-item {
 
 .menu {
     position: relative;
-    // background-color: #232f3d;
-    // background-color: #242b33;
-    background-color: rgba(36, 43, 51, 0.1);
+    overflow-y: auto;
+    backdrop-filter: blur(10px) !important;
+    background-color: hsla(0, 0%, 100%, .1);
 
-    // 3a4045
-    background: linear-gradient(0deg, rgba(58, 64, 69, 0.1) 0%, rgba(58, 64, 69, 0) 60%);
-    // opacity: 0.9;
-    backdrop-filter: blur(100px) !important;
     opacity: 0.95;
     margin: 30px;
     border-radius: 10px;
-    height: 100vh;
-
-    // -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    // -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
-    // box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
+    padding-bottom: 30px;
+    height: 100%;
 
 
     img {
         border-radius: 10px 10px 0px 0px;
     }
+
+
 }
 
 
 .logo {
     margin-left: auto;
     margin-right: auto;
-    width: 150px;
+
     margin-bottom: 20px;
     margin-top: 20px;
+    text-align: center;
+
+    img {
+        margin-top: 20px;
+        width: 100px;
+        margin-bottom: 15px;
+    }
+
+    .outpost {
+        margin-left: auto;
+        margin-right: auto;
+        width: 180px;
+        color: hsla(0, 0%, 100%, .6);
+        background-color: hsla(0, 0%, 100%, .05);
+        border-radius: 0.375rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        font-size: 1.0rem;
+    }
 }
 
 .profile {
@@ -171,3 +197,54 @@ ion-item {
     border-radius: 10px;
 
 }
+
+.wallet-options {
+    text-align: center;
+
+    .chip {
+        display: inline-block;
+        text-align: center;
+        line-height: 21px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+        min-height: 32px;
+        border-top: 1px solid rgba(224, 187, 46, 0.8);
+        border-bottom: 1px solid rgba(224, 187, 46, 0.8);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-inline-start: 12px;
+        padding-inline-end: 12px;
+        vertical-align: middle;
+        border-radius: 16px;
+        color: rgb(224, 187, 46);
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(255, 213, 52, 0.12);
+        }
+    }
+
+    ion-icon {
+        top: 3px;
+        position: relative;
+        padding-right: 6px;
+    }
+}
+
+// .chip {
+//     display: inline-flex;
+//     line-height: 21px;
+//     margin-top: 4px;
+//     margin-bottom: 4px;
+//     min-height: 32px;
+//     border: 1px solid rgba(224, 187, 46, 0.6);
+//     padding-top: 6px;
+//     padding-bottom: 6px;
+//     padding-inline-start: 12px;
+//     padding-inline-end: 12px;
+//     vertical-align: middle;
+//     border-radius: 16px;
+//     color: rgb(224, 187, 46);
+//     font-size: 14px;
+// }

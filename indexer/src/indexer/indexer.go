@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -26,24 +26,24 @@ import (
 )
 
 type Config struct {
-	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
-	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
-	BlockPollIntervalSeconds int    `envconfig:"BLOCK_POLL_INTERVAL_SECONDS" required:"true"`
+	ChainID                  string   `envconfig:"CHAIN_ID" required:"true"`
+	BaseTokenBinanceEndpoint string   `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
+	DatabaseDSN              string   `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoints             []string `envconfig:"LCD_ENDPOINTS" required:"true"`
+	BlockPollIntervalMS      int      `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
 // Indexer implements the reference indexer service
 type Indexer struct {
 	chainID                  string
-	lcdEndpoint              string
-	blockPollIntervalSeconds int
+	baseTokenBinanceEndpoint string
+	lcdEndpoints             []string
+	blockPollIntervalMS      int
 	logger                   *logrus.Entry
-
-	metaprotocols map[string]metaprotocol.Processor
-
-	stopChannel chan bool
-	db          *gorm.DB
-	wg          sync.WaitGroup
+	metaprotocols            map[string]metaprotocol.Processor
+	stopChannel              chan bool
+	db                       *gorm.DB
+	wg                       sync.WaitGroup
 }
 
 // New returns a new instance of the indexer service and returns an error if
@@ -67,13 +67,14 @@ func New(
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor()
-	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor()
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
+	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
 
 	return &Indexer{
 		chainID:                  config.ChainID,
-		lcdEndpoint:              config.LCDEndpoint,
-		blockPollIntervalSeconds: config.BlockPollIntervalSeconds,
+		baseTokenBinanceEndpoint: config.BaseTokenBinanceEndpoint,
+		lcdEndpoints:             config.LCDEndpoints,
+		blockPollIntervalMS:      config.BlockPollIntervalMS,
 		metaprotocols:            metaprotocols,
 		logger:                   log,
 		stopChannel:              make(chan bool),
@@ -81,27 +82,36 @@ func New(
 	}, nil
 }
 
+// Run the indexer service forever
 func (i *Indexer) Run() error {
 	i.logger.Info("Starting indexer")
 	i.wg.Add(1)
 	go i.indexBlocks()
+
+	i.wg.Add(1)
+	go i.updateBaseToken()
+
 	i.wg.Wait()
 
 	return nil
 }
 
+// Stop the indexer
 func (i *Indexer) Stop() error {
 	i.logger.Info("Stopping indexer")
+	i.stopChannel <- true
 	i.stopChannel <- true
 	return nil
 }
 
+// indexBlocks fetches blocks from the chain, indexes them and stores a
+// record of the last processed block
 func (i *Indexer) indexBlocks() {
 	var err error
 	var currentHeight uint64
 	// Fetch the latest processed height from the database
 	var status models.Status
-	result := i.db.First(&status, "chain_id = ?", i.chainID)
+	result := i.db.Where("chain_id = ?", i.chainID).First(&status)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			// if the record doesn't exist, find the current height from the chain
@@ -124,8 +134,7 @@ func (i *Indexer) indexBlocks() {
 	}).Info("Starting to fetch blocks")
 
 	// Fetch blocks interval
-	// ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Second)
-	ticker := time.NewTicker(time.Duration(i.blockPollIntervalSeconds) * time.Millisecond)
+	ticker := time.NewTicker(time.Duration(i.blockPollIntervalMS) * time.Millisecond)
 	defer ticker.Stop()
 
 	for {
@@ -136,13 +145,8 @@ func (i *Indexer) indexBlocks() {
 			return
 		case <-ticker.C:
 
-			// TODO: Check if the block even exists?!?!?!
 			maxHeight, err := i.fetchCurrentHeight()
 			if err != nil {
-				// TODO: What do we do here if this fails?
-				// Check specific types
-				// If total failure, try again
-				// If only partial, continue?
 				i.logger.Fatal(err)
 			}
 
@@ -154,36 +158,35 @@ func (i *Indexer) indexBlocks() {
 				"current_height": currentHeight,
 				"max_height":     maxHeight,
 				"lag":            maxHeight - currentHeight,
-			}).Debug("Fetching block")
+			}).Info("Fetching block")
 
-			// TODO: Remove height?
 			_, transactions, err := i.fetchTransactions(currentHeight)
 			if err != nil {
-				// TODO: What do we do here if this fails?
-				// Check specific types
-				// If total failure, try again
-				// If only partial, continue?
 				i.logger.Fatal(err)
 			}
 
 			for _, tx := range transactions {
-
 				// Get the full transaction from the LCD
 				// We do this because we want more information, such as gas used
 				// and a JSON-only way to parse the content
 				txSize, rawTransaction, err := i.fetchTransaction(tx)
 				if err != nil {
-					i.logger.Fatal(err)
-				}
-
-				// Verify that this transaction is a metaprotocol inscription
-				if !rawTransaction.ValidateBasic() {
-					i.logger.WithFields(logrus.Fields{
-						"hash": tx,
-					}).Debug("Transaction does not contain a valid metaprotocol memo")
+					i.logger.Error(err)
 					continue
 				}
 
+				// Verify that this transaction is a metaprotocol inscription
+				if err := rawTransaction.ValidateBasic(); err != nil {
+					i.logger.WithFields(logrus.Fields{
+						"hash": tx,
+					}).Debug(err)
+
+					// TODO: Surface the error to the UI
+
+					continue
+				}
+
+				// Extract some commonly used values
 				height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
 				if err != nil {
 					i.logger.Fatal(err)
@@ -198,6 +201,7 @@ func (i *Indexer) indexBlocks() {
 					i.logger.Fatal(err)
 				}
 
+				// Store the transaction
 				txModel := models.Transaction{
 					Hash:          tx,
 					Height:        height,
@@ -210,30 +214,27 @@ func (i *Indexer) indexBlocks() {
 				}
 				result := i.db.Save(&txModel)
 				if result.Error != nil {
-					i.logger.WithFields(logrus.Fields{
-						"hash": rawTransaction.TxResponse.Txhash,
-						"err":  result.Error,
-					}).Warning("Unable to store transaction")
-
+					// If the error is a duplicate key error, we ignore it
 					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-						i.logger.Fatal(result.Error)
+						i.logger.WithFields(logrus.Fields{
+							"hash": rawTransaction.TxResponse.Txhash,
+							"err":  result.Error,
+						}).Fatal("Unable to store transaction")
 					}
-
-					// TODO: No, we shouldn't continue, as that breaks the FE flow
-					// Even if we are unable to store the transaction, we can
-					// still try to handle the metaprotocol
 				}
 
 				// Process metaprotocol memo
 				statusMessage := types.TransactionStateSuccess
-				err = i.processMetaprotocolMemo(rawTransaction)
+				err = i.processMetaprotocolMemo(txModel, rawTransaction)
 				if err != nil {
-					i.logger.Error(err)
+					i.logger.WithFields(logrus.Fields{
+						"hash": rawTransaction.TxResponse.Txhash,
+					}).Error(err)
 					statusMessage = fmt.Sprintf("%s: %s", types.TransactionStateError, err)
 				}
 
 				// If there is an error in processing the metaprotocol,
-				// store the error in the transaction for debugging
+				// store the error in the transaction for frontend feedback
 				txModel.StatusMessage = statusMessage
 				result = i.db.Save(&txModel)
 				if result.Error != nil {
@@ -248,24 +249,73 @@ func (i *Indexer) indexBlocks() {
 				}).Info("Transaction processed")
 			}
 
-			// Apply rules for state
-			// Store state
-
-			// TODO: All good, increase height
+			// All good, save last processed and increase height
+			status.LastProcessedHeight = currentHeight
+			i.db.Model(&status).Where("chain_id = ?", i.chainID).UpdateColumns(map[string]interface{}{
+				"last_processed_height": currentHeight,
+				"date_updated":          time.Now(),
+			})
 			currentHeight = currentHeight + 1
+		}
+	}
+}
 
-			os.Exit(0)
+// updateBaseToken updates the price of the base token every minute
+// via CoinGecko
+func (i *Indexer) updateBaseToken() {
+	// Fetch blocks interval
+	ticker := time.NewTicker(1 * time.Minute)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-i.stopChannel:
+			i.logger.Info("Stop fetching price data")
+			i.wg.Done()
+			return
+		case <-ticker.C:
+			queryResult, err := http.Get(i.baseTokenBinanceEndpoint)
+			if err != nil {
+				i.logger.Error(err)
+			}
+			defer queryResult.Body.Close()
+
+			var response map[string]string
+			err = json.NewDecoder(queryResult.Body).Decode(&response)
+			if err != nil {
+				i.logger.Error(err)
+			}
+
+			// Store the price
+			price, err := strconv.ParseFloat(response["price"], 64)
+			if err != nil {
+				i.logger.Error(err)
+			}
+
+			var statusModel models.Status
+			result := i.db.Where("chain_id = ?", i.chainID).First(&statusModel)
+			if result.Error != nil {
+				i.logger.Error(result.Error)
+			}
+
+			result = i.db.Model(&statusModel).Where("chain_id = ?", i.chainID).Update("base_token_usd", price)
+			if result.Error != nil {
+				i.logger.Error(result.Error)
+			} else {
+				i.logger.WithFields(logrus.Fields{
+					"price": price,
+				}).Info("Updated base token price")
+			}
 		}
 	}
 }
 
 // processMetaprotocolMemo handles the processing of different metaprotocols
-func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) error {
+func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, rawTransaction types.RawTransaction) error {
 	i.logger.WithFields(logrus.Fields{
 		"hash": rawTransaction.TxResponse.Txhash,
 	}).Debug("Processing memo")
 
-	fmt.Println(rawTransaction.Tx.Body.Memo)
 	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Tx.Body.Memo))
 	if !ok {
 		return errors.New("invalid metaprotocol URN")
@@ -282,7 +332,7 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 		"hash":      rawTransaction.TxResponse.Txhash,
 	}).Info("Processing metaprotocol")
 
-	dataModels, err := processor.Process(metaprotocolURN, rawTransaction)
+	err := processor.Process(transactionModel, metaprotocolURN, rawTransaction)
 	if err != nil {
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,
@@ -292,69 +342,14 @@ func (i *Indexer) processMetaprotocolMemo(rawTransaction types.RawTransaction) e
 		return err
 	}
 
-	i.logger.WithFields(logrus.Fields{
-		"processor": processor.Name(),
-		"hash":      rawTransaction.TxResponse.Txhash,
-		"db_ops":    len(dataModels),
-	}).Info("Saving processed data")
-
-	for _, model := range dataModels {
-		switch v := model.(type) {
-		case models.Inscription:
-			result := i.db.Save(&v)
-			if result.Error != nil {
-
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-					"err":       result.Error,
-				}).Warning("Unable to store processed data")
-
-				// Do we need to panic here? If we can't update the
-				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-					i.logger.Fatal(result.Error)
-				}
-				return result.Error
-			}
-			i.logger.WithFields(logrus.Fields{
-				"processor": processor.Name(),
-				"hash":      rawTransaction.TxResponse.Txhash,
-			}).Debug("Data stored successfully")
-
-		case models.Token:
-			result := i.db.Save(&v)
-			if result.Error != nil {
-
-				i.logger.WithFields(logrus.Fields{
-					"processor": processor.Name(),
-					"hash":      rawTransaction.TxResponse.Txhash,
-					"err":       result.Error,
-				}).Warning("Unable to store processed data")
-
-				// Do we need to panic here? If we can't update the
-				// owner or something critical like that we shouldd retry
-				if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
-					i.logger.Fatal(result.Error)
-				}
-				return result.Error
-
-			}
-			i.logger.WithFields(logrus.Fields{
-				"processor": processor.Name(),
-				"hash":      rawTransaction.TxResponse.Txhash,
-			}).Debug("Data stored successfully")
-
-		}
-	}
-
 	return nil
 }
 
 // fetchCurrentHeight fetches the current height from the chain by using the
 // RPC /status endpoint
 func (i *Indexer) fetchCurrentHeight() (uint64, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", i.lcdEndpoint))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", endpoint))
 	if err != nil {
 		return 0, err
 	}
@@ -363,6 +358,10 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+	i.logger.WithFields(logrus.Fields{
+		"height":   block.Block.Header.Height,
+		"endpoint": endpoint,
+	}).Debug("Fetched current height")
 	return strconv.ParseUint(block.Block.Header.Height, 10, 64)
 }
 
@@ -370,7 +369,8 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 	var transactions []string
 
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", i.lcdEndpoint, height))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", endpoint, height))
 	if err != nil {
 		return height, transactions, err
 	}
@@ -380,19 +380,12 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		return height, transactions, err
 	}
 	i.logger.WithFields(logrus.Fields{
-		"height": height,
-		"txs":    len(lcdBlock.Block.Data.Txs),
+		"height":   height,
+		"txs":      len(lcdBlock.Block.Data.Txs),
+		"endpoint": endpoint,
 	}).Debug("Fetched block")
 
 	for _, tx := range lcdBlock.Block.Data.Txs {
-		// decoder := cosmosutils.DefaultDecoder
-		// decodedTx, err := decoder.DecodeBase64(tx)
-		// if err != nil {
-		// 	// If we can't decode the base64, there is something wrong with the
-		// 	// transaction and we ignore it
-		// 	i.logger.Warn("Error decoding transaction base64:", err)
-		// 	continue
-		// }
 
 		// Get the transaction hash by converting the base64 to hex
 		// This is the same as the transaction hash in the block explorer
@@ -410,66 +403,14 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
 		transactions = append(transactions, txHash)
 
-		// // Convert to a JSON format to make it easier to decode
-		// jsonBytes, err := decodedTx.MarshalToJSON()
-		// if err != nil {
-		// 	// If we can't marshal to JSON, we probably have invalid characters
-		// 	i.logger.Warn("Error encode transaction JSON:", err)
-		// 	continue
-		// }
-
-		// var cosmosTx cosmosutils.CosmosTx
-		// jsonDecoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-		// jsonDecoder.DisallowUnknownFields()
-		// err = jsonDecoder.Decode(&cosmosTx)
-		// if err != nil {
-		// 	// This indicates that the transaction doesn't follow the standard
-		// 	// Cosmos transaction format. We can safely ignore this transaction
-		// 	i.logger.Warn("Error decoding transaction:", err)
-		// }
-
-		// fmt.Println(cosmosTx.Body.NonCriticalExtensionOptions...)
-
-		// transactions = append(transactions, Tx{
-		// 	Hash:     txHash,
-		// 	RawTx:    tx,
-		// 	ParsedTx: string(jsonBytes),
-		// 	CosmosTx: cosmosTx,
-		// })
-
-		// for _, inscription := range cosmosTx.Body.NonCriticalExtensionOptions {
-		// 	inscriptionBytes, err := json.Marshal(inscription)
-		// 	if err != nil {
-		// 		// This indicates that the extension option contains something
-		// 		// invalid and we will ignore the inscription
-		// 		i.logger.Warn("Error marshalling inscription to bytes:", err)
-		// 		continue
-		// 	}
-		// 	var rawInscription RawInscription
-		// 	err = json.Unmarshal(inscriptionBytes, &rawInscription)
-		// 	if err != nil {
-		// 		// This indicates that the extension option doesn't follow the
-		// 		// predefined format. We will ignore this inscription
-		// 		i.logger.Warn("Error decoding into RawInscription:", err)
-		// 		continue
-		// 	}
-		// 	// Verify that this is a revoke message, if not, it doesn't follow
-		// 	// the spec
-		// 	if rawInscription.Type != "/cosmos.authz.v1beta1.MsgRevoke" {
-		// 		i.logger.Warn("Invalid inscription type:", rawInscription.Type)
-		// 		continue
-		// 	}
-
-		// 	rawInscriptions = append(rawInscriptions, rawInscription)
-		// }
-
 	}
 	return height, transactions, nil
 }
 
 // fetchTransaction fetches a single transaction from the LCD
 func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", i.lcdEndpoint, hash))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, hash))
 	if err != nil {
 		return 0, types.RawTransaction{}, err
 	}
@@ -479,90 +420,15 @@ func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, erro
 		return 0, types.RawTransaction{}, err
 	}
 	i.logger.WithFields(logrus.Fields{
-		"hash": hash,
+		"hash":     hash,
+		"endpoint": endpoint,
 	}).Debug("Fetched transaction")
 
-	// for _, tx := range lcdBlock.Block.Data.Txs {
-	// // decoder := cosmosutils.DefaultDecoder
-	// // decodedTx, err := decoder.DecodeBase64(tx)
-	// // if err != nil {
-	// // 	// If we can't decode the base64, there is something wrong with the
-	// // 	// transaction and we ignore it
-	// // 	i.logger.Warn("Error decoding transaction base64:", err)
-	// // 	continue
-	// // }
-
-	// // Get the transaction hash by converting the base64 to hex
-	// // This is the same as the transaction hash in the block explorer
-	// txBytes, err := base64.StdEncoding.DecodeString(tx)
-	// if err != nil {
-	// 	// If we can't marshal to JSON, we probably have invalid characters
-	// 	i.logger.Warn("Error encode transaction JSON:", err)
-	// 	continue
-	// }
-
-	// // Create transaction hash
-	// s := sha256.New()
-	// s.Write(txBytes)
-	// s.Sum(nil)
-	// txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
-	// fmt.Println("Tx hash:", string(txHash))
-
-	// transactions = append(transactions, txHash)
-
-	// // Convert to a JSON format to make it easier to decode
-	// jsonBytes, err := decodedTx.MarshalToJSON()
-	// if err != nil {
-	// 	// If we can't marshal to JSON, we probably have invalid characters
-	// 	i.logger.Warn("Error encode transaction JSON:", err)
-	// 	continue
-	// }
-
-	// var cosmosTx cosmosutils.CosmosTx
-	// jsonDecoder := json.NewDecoder(bytes.NewReader(jsonBytes))
-	// jsonDecoder.DisallowUnknownFields()
-	// err = jsonDecoder.Decode(&cosmosTx)
-	// if err != nil {
-	// 	// This indicates that the transaction doesn't follow the standard
-	// 	// Cosmos transaction format. We can safely ignore this transaction
-	// 	i.logger.Warn("Error decoding transaction:", err)
-	// }
-
-	// fmt.Println(cosmosTx.Body.NonCriticalExtensionOptions...)
-
-	// transactions = append(transactions, Tx{
-	// 	Hash:     txHash,
-	// 	RawTx:    tx,
-	// 	ParsedTx: string(jsonBytes),
-	// 	CosmosTx: cosmosTx,
-	// })
-
-	// for _, inscription := range cosmosTx.Body.NonCriticalExtensionOptions {
-	// 	inscriptionBytes, err := json.Marshal(inscription)
-	// 	if err != nil {
-	// 		// This indicates that the extension option contains something
-	// 		// invalid and we will ignore the inscription
-	// 		i.logger.Warn("Error marshalling inscription to bytes:", err)
-	// 		continue
-	// 	}
-	// 	var rawInscription RawInscription
-	// 	err = json.Unmarshal(inscriptionBytes, &rawInscription)
-	// 	if err != nil {
-	// 		// This indicates that the extension option doesn't follow the
-	// 		// predefined format. We will ignore this inscription
-	// 		i.logger.Warn("Error decoding into RawInscription:", err)
-	// 		continue
-	// 	}
-	// 	// Verify that this is a revoke message, if not, it doesn't follow
-	// 	// the spec
-	// 	if rawInscription.Type != "/cosmos.authz.v1beta1.MsgRevoke" {
-	// 		i.logger.Warn("Invalid inscription type:", rawInscription.Type)
-	// 		continue
-	// 	}
-
-	// 	rawInscriptions = append(rawInscriptions, rawInscription)
-	// }
-
-	// }
 	return rawTransaction.GetTxByteSize(), rawTransaction, nil
+}
+
+// randomEndpoint returns a random LCD endpoint to use
+// We do this to balance the load across multiple endpoints very naively
+func (i *Indexer) randomEndpoint() string {
+	return i.lcdEndpoints[rand.Intn(len(i.lcdEndpoints))]
 }

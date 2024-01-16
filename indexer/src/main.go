@@ -52,8 +52,6 @@ func main() {
 
 	// Construct the service
 	logger.Info("Init service")
-
-	// Set up collector
 	service, err := indexer.New(
 		logger,
 	)

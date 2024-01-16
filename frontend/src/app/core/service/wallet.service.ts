@@ -8,19 +8,29 @@ import { SignDoc, AuthInfo } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { MsgRevoke } from "cosmjs-types/cosmos/authz/v1beta1/tx";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw, TxBody, Fee } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { Any } from "cosmjs-types/google/protobuf/any";
-import { fromBase64 } from "@cosmjs/encoding";
 import { PubKey } from "cosmjs-types/cosmos/crypto/secp256k1/keys";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
+import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
 import { Buffer } from "buffer";
 import Long from 'long';
+import { TxFee } from '../types/tx-fee';
+import { SignClient } from '@walletconnect/sign-client';
+import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletService {
 
-  constructor(private chainService: ChainService) { }
+  constructor(private chainService: ChainService) {
+  }
+
+  hasWallet() {
+    if (!window.keplr) {
+      return false;
+    }
+    return true;
+  }
 
   /**
    * Get the Keplr signer
@@ -31,7 +41,10 @@ export class WalletService {
       throw new Error('Keplr extension is not available');
     }
 
-    return window.keplr.getOfflineSigner(environment.chain.chainId);
+    return window.keplr.getOfflineSigner(environment.chain.chainId, {
+      preferNoSetFee: true,
+      preferNoSetMemo: true,
+    });
   }
 
   /**
@@ -42,6 +55,7 @@ export class WalletService {
     if (!window.keplr) {
       throw new Error('Keplr extension is not available');
     }
+
     const signer = await this.getSigner();
     const accounts = await signer.getAccounts();
 
@@ -66,6 +80,7 @@ export class WalletService {
       window.keplr.defaultOptions = {
         sign: {
           preferNoSetMemo: true,
+          preferNoSetFee: true
         }
       }
 
@@ -73,8 +88,16 @@ export class WalletService {
       await window.keplr.enable(environment.chain.chainId);
       return WalletStatus.Connected;
     } catch (error) {
+      console.error(error);
       return WalletStatus.Rejected;
     }
+  }
+
+  async disconnect() {
+    if (!window.keplr) {
+      throw new Error('Keplr extension is not available');
+    }
+    await window.keplr.disable();
   }
 
   /**
@@ -86,11 +109,130 @@ export class WalletService {
       return false
     }
 
-    const signer = await this.getSigner();
-    if (signer) {
+    if (localStorage.getItem(environment.storage.connectedWalletKey)) {
       return true;
     }
     return false;
+
+    // const signer = await this.getSigner();
+    // if (signer) {
+    //   return true;
+    // }
+    // return false;
+  }
+
+  /**
+   * Create a simulation transaction to estimate Gas with
+   * @param urn The metaprotocol URN for the inscription
+   * @param metadata The metadata about the inscription
+   * @param data The inscription data
+   * @returns 
+   */
+  async createSimulated(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
+
+    const account = await this.getAccount();
+
+    let nonCriticalExtensionOptions: any[] = [];
+    // We only add the nonCriticalExtensionOptions inscription if the protocol
+    // requires it
+    if (metadata && data) {
+      nonCriticalExtensionOptions = [
+        {
+          // This typeUrl isn't really important here as long as it is a type
+          // that the chain recognises it
+          '@type': "/cosmos.authz.v1beta1.MsgRevoke",
+          granter: metadata,
+          grantee: data,
+          msgTypeUrl: urn,
+        }
+      ];
+    }
+
+    try {
+      const accountInfo = await this.chainService.fetchAccountInfo(account.address);
+
+      let msgs = {};
+      const currentTime = Math.round(new Date().getTime() / 1000);
+
+      if (parseInt(fees.metaprotocol.amount) > 0) {
+        msgs = {
+          '@type': '/ibc.applications.transfer.v1.MsgTransfer',
+          receiver: fees.metaprotocol.receiver,
+          sender: account?.address as string,
+          source_channel: environment.fees.ibcChannel,
+          source_port: "transfer",
+          timeout_timestamp: currentTime + (60 * 60),
+          token: {
+            amount: fees.metaprotocol.amount,
+            denom: fees.metaprotocol.denom,
+          }
+        }
+      } else {
+        // If no fee is charged, we need to send the smallest amount possible
+        // to the sender to create a valid transaction
+        // For the Hub that would be 0.000001 ATOM or 1uatom
+        msgs = {
+          '@type': "/cosmos.bank.v1beta1.MsgSend",
+          from_address: account?.address as string,
+          to_address: account?.address as string,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: "1",
+            },
+          ],
+        }
+      }
+
+      const signDoc = {
+        body: {
+          messages: [...messages, msgs],
+          memo: urn,
+          timeout_height: "0",
+          extension_options: [],
+          nonCriticalExtensionOptions,
+        },
+        auth_info: {
+          signer_infos: [
+            {
+              public_key: {
+                '@type': "/cosmos.crypto.secp256k1.PubKey",
+                key: Buffer.from(account.pubkey).toString('base64')
+              },
+              mode_info: {
+                single: {
+                  mode: "SIGN_MODE_DIRECT",
+                },
+              },
+              sequence: accountInfo.sequence,
+            },
+          ],
+          fee: {
+            amount: [],
+            gas_limit: environment.fees.chain.gasLimit,
+            payer: "",
+            granter: "",
+          }
+        },
+        chain_id: environment.chain.chainId,
+        account_number: accountInfo.account_number
+
+      };
+
+
+      const tx = {
+        tx: {
+          body: signDoc.body,
+          auth_info: signDoc.auth_info,
+          signatures: ["8jXh7aU3pIE07HBva+W/GLEO0xc5QMu5EXR6hglL2fFVP8AXsMbiNR5Et8POJXJZLWE58wc1ni8rzxF7d/cv5g=="], // Locally generated, doesn't matter
+        }
+      }
+      return JSON.stringify(tx);
+    }
+    catch (error) {
+      throw error;
+    }
+
   }
 
   /**
@@ -101,7 +243,7 @@ export class WalletService {
    * @param data The inscription data
    * @returns 
    */
-  async sign(urn: string, metadata: string | null, data: string | null) {
+  async sign(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[] = []) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
 
@@ -118,7 +260,7 @@ export class WalletService {
             MsgRevoke.fromPartial({
               granter: metadata,
               grantee: data,
-              msgTypeUrl: `${environment.domain} metaprotocol`,
+              msgTypeUrl: urn,
             })
           ).finish(),
         }
@@ -127,13 +269,222 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
-      const protoMsgs = {
+
+      let msgs: any[] = [];
+      let feeMessage = {};
+
+      if (messages.length > 0) {
+        msgs = [...messages];
+      }
+
+      const currentTime = Math.round(new Date().getTime() / 1000);
+      if (parseInt(fees.metaprotocol.amount) > 0) {
+        feeMessage = {
+          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+          value: MsgTransfer.encode({
+            receiver: fees.metaprotocol.receiver,
+            sender: account?.address as string,
+            sourceChannel: environment.fees.ibcChannel,
+            sourcePort: "transfer",
+            timeoutTimestamp: BigInt(currentTime + 60 * 60), // Now + 1hour for transfer
+            timeoutHeight: {
+              revisionHeight: BigInt(0),
+              revisionNumber: BigInt(1),
+            },
+            memo: "",
+            token: {
+              amount: fees.metaprotocol.amount,
+              denom: fees.metaprotocol.denom,
+            }
+          }).finish(),
+        }
+        msgs.push(feeMessage);
+      } else if (messages.length == 0) {
+        // If no fee is charged, we need to send the smallest amount possible
+        // to the sender to create a valid transaction
+        // For the Hub that would be 0.000001 ATOM or 1uatom
+        // We only do this if there are no messages present
+        feeMessage = {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: MsgSend.encode({
+            fromAddress: account?.address as string,
+            toAddress: account?.address as string,
+            amount: [
+              {
+                denom: fees.metaprotocol.denom,
+                amount: "1",
+              }
+            ],
+          }).finish(),
+        }
+        msgs.push(feeMessage);
+      }
+
+      const signDoc = {
+        bodyBytes: TxBody.encode(
+          TxBody.fromPartial({
+            messages: msgs,
+            memo: urn,
+            nonCriticalExtensionOptions,
+          })
+        ).finish(),
+
+        authInfoBytes: AuthInfo.encode({
+          signerInfos: [
+            {
+              publicKey: {
+                typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+                value: PubKey.encode({
+                  key: account.pubkey,
+                }).finish(),
+              },
+              modeInfo: {
+                single: {
+                  mode: SignMode.SIGN_MODE_DIRECT,
+                },
+              },
+              sequence: BigInt(accountInfo.sequence),
+            },
+          ],
+          "fee": {
+            "amount": [
+              {
+                "denom": fees.chain.denom,
+                "amount": fees.chain.amount
+              }
+            ],
+            "gasLimit": BigInt(fees.gasLimit),
+            "payer": "",
+            "granter": ""
+          }
+        }).finish(),
+
+        chainId: environment.chain.chainId,
+        accountNumber: Long.fromNumber(accountInfo.account_number),
+      };
+
+
+      // We use the direct signer so that we can inscribe using 
+      // nonCriticalExtensionOptions
+      const signed = await signer.signDirect(account.address, signDoc);
+
+      const signedTx = {
+        tx: TxRaw.encode({
+          bodyBytes: signed.signed.bodyBytes,
+          authInfoBytes: signed.signed.authInfoBytes,
+          signatures: [Buffer.from(signed.signature.signature, "base64")],
+        }).finish(),
+        signDoc: signed.signed,
+      }
+      return signedTx.tx;
+
+
+    }
+    catch (error) {
+      throw error;
+    }
+  }
+
+  async getAccountMobile() {
+    return {
+      address: "cosmos1m857lgtjssgt0wm3crzfmt3v950vqnkqq29mmz",
+    }
+  }
+
+  async signMobile(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[] = []) {
+    const signClient = await SignClient.init({
+      // If do you have your own project id, you can set it.
+      projectId: "3a90436d11f4e6f16f47a9e2c7de2355",
+      metadata: {
+        name: "Asteroid Protocol",
+        description: "The metaprotocol standard for Cosmos",
+        url: "http://127.0.0.1:8100",
+        icons: [
+          "https://raw.githubusercontent.com/chainapsis/keplr-wallet/master/packages/extension/src/public/assets/logo-256.png",
+        ],
+      },
+    });
+
+
+    if (signClient.session.getAll().length <= 0) {
+
+      const { uri, approval } = await signClient.connect({
+        requiredNamespaces: {
+          cosmos: {
+            methods: [
+              "cosmos_getAccounts",
+              "cosmos_signDirect",
+              "cosmos_signAmino",
+              "keplr_getKey",
+              "keplr_signAmino",
+              "keplr_signDirect",
+              "keplr_signArbitrary",
+              "keplr_enable",
+            ],
+            chains: [`cosmos:cosmoshub-4`],
+            events: ["accountsChanged", "chainChanged", "keplr_accountsChanged"],
+          },
+        },
+      });
+
+      if (!uri) {
+        // this.errorText = "no uri";
+        alert("no sesh");
+        throw new Error("No uri");
+      } else {
+
+        try {
+          document.location.href = `keplrwallet://wcV2?${uri}`;
+          const session = await approval();
+        }
+        catch (error) {
+          alert("err" + error);
+        }
+
+      }
+
+    }
+
+    let nonCriticalExtensionOptions: any[] = [];
+    try {
+      const keplrWC2 = new KeplrWalletConnectV2(signClient, {
+        // sendTx,
+      });
+
+      const signer = keplrWC2.getOfflineSigner("cosmoshub-4");
+      const accounts = await signer.getAccounts();
+      const account = accounts[0];
+
+      // We only add the nonCriticalExtensionOptions inscription if the protocol
+      // requires it
+      if (metadata && data) {
+        nonCriticalExtensionOptions = [
+          {
+            // This typeUrl isn't really important here as long as it is a type
+            // that the chain recognises it
+            typeUrl: "/cosmos.authz.v1beta1.MsgRevoke",
+            value: MsgRevoke.encode(
+              MsgRevoke.fromPartial({
+                granter: metadata,
+                grantee: data,
+                msgTypeUrl: urn,
+              })
+            ).finish(),
+          }
+        ];
+      }
+
+      const accountInfo = await this.chainService.fetchAccountInfo(account.address);
+      const feeMessage = {
         typeUrl: "/cosmos.bank.v1beta1.MsgSend",
         value: MsgSend.encode({
           fromAddress: account?.address as string,
-          toAddress: environment.fees.protocol.receiver,
+          toAddress: fees.metaprotocol.receiver,
           amount: [
-            ...environment.fees.protocol.amount,
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            }
           ],
         }).finish(),
       }
@@ -141,7 +492,7 @@ export class WalletService {
       const signDoc = {
         bodyBytes: TxBody.encode(
           TxBody.fromPartial({
-            messages: [protoMsgs],
+            messages: [...messages, feeMessage],
             memo: urn,
             nonCriticalExtensionOptions,
           })
@@ -165,8 +516,11 @@ export class WalletService {
             },
           ],
           fee: Fee.fromJSON({
-            amount: environment.fees.chain.amount,
-            gasLimit: environment.fees.chain.gasLimit,
+            amount: {
+              denom: fees.chain.denom,
+              amount: fees.chain.amount,
+            },
+            gasLimit: fees.gasLimit,
           }),
         }).finish(),
 
@@ -176,7 +530,9 @@ export class WalletService {
 
       // We use the direct signer so that we can inscribe using 
       // nonCriticalExtensionOptions
+
       const signed = await signer.signDirect(account.address, signDoc);
+
 
       const signedTx = {
         tx: TxRaw.encode({
@@ -191,7 +547,7 @@ export class WalletService {
 
     }
     catch (error) {
-      throw error;
+      throw JSON.stringify(error);
     }
   }
 
@@ -208,14 +564,13 @@ export class WalletService {
     try {
       const signer = await this.getSigner();
       const client = await SigningStargateClient.connectWithSigner(environment.chain.rpc, signer);
-      // console.log("sending", tx.length);
+
       if (tx.length >= 1048576) {
         console.error("tx too large");
         return "ERR: Transaction will be too large, multiple tx inscriptions not yet implemented";
       } else {
 
         const txHash = await client.broadcastTxSync(tx);
-        // console.log(txHash);
         return txHash;
       }
     } catch (error) {

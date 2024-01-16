@@ -11,7 +11,7 @@ type Inscription struct {
 	ChainID          string         `gorm:"column:chain_id"`
 	Height           uint64         `gorm:"column:height"`
 	Version          string         `gorm:"column:version"`
-	TransactionHash  string         `gorm:"column:transaction_hash"`
+	TransactionID    uint64         `gorm:"column:transaction_id"`
 	ContentHash      string         `gorm:"column:content_hash"`
 	Creator          string         `gorm:"column:creator"`
 	CurrentOwner     string         `gorm:"column:current_owner"`

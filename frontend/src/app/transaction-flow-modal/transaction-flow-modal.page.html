@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content class="main-content" mode="md">
   <div>
     <ion-grid *ngIf="state == 'sign' || state == 'error'">
       <ion-row>
@@ -12,7 +12,15 @@
       <ion-row>
         <ion-col class="text-center">
           <h2>Sign and submit transaction</h2>
-          <p>Inscription transactions are typically larger than standard<br />transactions and require higher fees
+          <!-- <p>
+            Inscription transactions are typically larger than standard<br />transactions and require higher fees
+          </p> -->
+          <!-- <p>
+            This transaction will send 0.000001 ATOM to your<br />
+            connected wallet to create the inscription
+          </p> -->
+          <p>
+            You are about to inscribe permanently on the Cosmos Hub.<br />This can <b>not</b> be undone.
           </p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
@@ -21,33 +29,54 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="errorText == ''">
         <ion-col>
           <div class="fees">
             <h4>Estimated fee breakdown</h4>
-            <table>
-              <tr>
+            <div *ngIf="isSimulating">
+              <ion-progress-bar type="indeterminate"></ion-progress-bar>
+              <div class="note">
+                Estimating...
+              </div>
+            </div>
+            <table *ngIf="!isSimulating">
+              <!-- <tr>
                 <td class="label">Gas</td>
-                <td>0.50 ATOM</td>
-              </tr>
+                <td>{{ gasEstimate | number: '1.0-0' }}</td>
+              </tr> -->
               <tr>
-                <td class="label">Chain</td>
-                <td>0.24 ATOM</td>
+                <td class="label">Cosmos Hub</td>
+                <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td>
               </tr>
               <tr>
                 <td class="label">Metaprotocol</td>
-                <td>0.10 ATOM</td>
+                <td>{{ protocolFee | number: '1.6-6' }} ATOM</td>
               </tr>
               <tr>
                 <td class="label total">Estimated total</td>
-                <td class="total">0.85 ATOM</td>
+                <td class="total shifted">
+                  {{(chainFee + protocolFee) | tokenDecimals:6 | number: '1.6-6' }} ATOM
+                  <div class="icon-trigger">
+                    <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
+                    <!-- <ion-button>Left-Click Me</ion-button> -->
+                    <ion-popover trigger="click-trigger" triggerAction="click">
+                      <ng-template>
+                        <ion-content class="main-content ion-padding">You are required to complete a transfer of ATOM to
+                          generate an inscription. This self-transaction will send 0.000001
+                          ATOM from the inscribing address back to the same address. Since the amount is refunded, it is
+                          not listed as a fee</ion-content>
+                      </ng-template>
+                    </ion-popover>
+                  </div>
+
+                </td>
               </tr>
             </table>
           </div>
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!isSimulating">
         <ion-col>
           <div class="text-center">
             <ion-button class="mt-3" color="success" (click)="submit()">{{ state == 'error' ? 'Retry' : 'Continue'
@@ -58,7 +87,7 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-grid *ngIf="state == 'submit' || state == 'long'" class="mt-5">
+    <ion-grid *ngIf="state == 'submit'" class="mt-5">
       <ion-row>
         <ion-col>
           <div class="animation mx-auto">
@@ -70,7 +99,6 @@
         <ion-col class="text-center mt-5">
           <h2>Waiting for transaction</h2>
           <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
-          <p *ngIf="state == 'long'" class="color-orange">This transaction is taking longer than usual</p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
             <p>{{ errorText }}</p>
@@ -82,7 +110,14 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -104,7 +139,14 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -119,7 +161,7 @@
       <ion-row>
         <ion-col class="text-center">
           <h2>Inscription failed</h2>
-          <p>Your inscription was created on-chain, but failed to be added to Meteors.<br />The reason for the failure
+          <p>Your inscription was created on-chain, but failed to be added to Asteroid.<br />The reason for the failure
             was:
           </p>
           <p class="color-orange">{{ errorText }}</p>
@@ -129,7 +171,14 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -144,13 +193,13 @@
       <ion-row>
         <ion-col class="text-center">
           <h2>Transaction complete</h2>
-          <p>Your inscription is now on-chain and viewable on Meteors</p>
+          <p>Your inscription is now on-chain and viewable on Asteroid</p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="text-center">
           <div>
-            <ion-button color="primary">View inscription</ion-button>
+            <ion-button color="primary" (click)="viewInscription()">{{ resultCTA }}</ion-button>
           </div>
         </ion-col>
       </ion-row>
@@ -158,7 +207,14 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="text-center">
+            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>

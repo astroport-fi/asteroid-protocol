@@ -1,33 +1,78 @@
 export const environment = {
   production: true,
-  domain: 'localhost:8100',
+  domain: 'testnet.asteroidprotocol.io',
+  limits: {
+    maxFileSize: 740000,
+  },
+  storage: {
+    connectedWalletKey: "connectedWallet"
+  },
   fees: {
+    ibcChannel: "channel-99",
     protocol: {
-      receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
-      amount: [
-        {
+      inscription: {
+        inscribe: {
+          receiver: "",
           denom: "uatom",
-          amount: "10000"
-        }
-      ]
+          amount: "0"
+        },
+        transfer: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+      },
+      cft20: {
+        deploy: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+        mint: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+        transfer: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+        list: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0",
+          minTradeSize: 0.000001,
+        },
+        buy: {
+          receiver: "neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p",
+          denom: "uatom",
+          amount: "0.02", // Default 2%
+          type: "dynamic-percent"
+        },
+        delist: {
+          receiver: "",
+          denom: "uatom",
+          amount: "0"
+        },
+      },
     },
     chain: {
-      gasLimit: "100000000",
-      amount: {
-        denom: "uatom",
-        amount: "10000",
-      },
+      gasLimit: "12000000"
     }
   },
   api: {
-    endpoint: 'http://localhost:8080',
-    explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    endpoint: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
+    wss: 'wss://testnet-api.asteroidprotocol.io/v1/graphql',
+    explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
+    simulateEndpoint: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz",
+    stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
-    chainId: "gaialocal-1",
-    chainName: "Private Cosmos Hub",
-    rpc: "http://localhost:8665/chain/gaia/rpc",
-    rest: "http://localhost:8665/chain/gaia/lcd",
+    chainId: "theta-testnet-001",
+    chainName: "Cosmos Hub Testnet",
+    rpc: "https://rpc.sentry-01.theta-testnet.polypore.xyz",
+    rest: "https://rest.sentry-01.theta-testnet.polypore.xyz",
     bip44: {
       coinType: 118
     },
@@ -39,21 +84,32 @@ export const environment = {
       bech32PrefixConsAddr: 'cosmosvalcons',
       bech32PrefixConsPub: 'cosmosvalconsconspub'
     },
-    currencies: [{
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
-    }],
-    feeCurrencies: [{
-      coinDenom: 'stake',
-      coinMinimalDenom: 'stake',
-      coinDecimals: 6,
-      gasPriceStep: { low: 0.01, average: 0.025, high: 0.04 }
-    }],
+    currencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "ATOM",
+        coinMinimalDenom: "uatom",
+        coinDecimals: 6,
+        coinGeckoId: "cosmos",
+        gasPriceStep: {
+          low: 0.005,
+          average: 0.005,
+          high: 0.005,
+        },
+      },
+    ],
     stakeCurrency: {
-      coinDenom: 'atom',
-      coinMinimalDenom: 'uatom',
-      coinDecimals: 6
+      coinDenom: "ATOM",
+      coinMinimalDenom: "uatom",
+      coinDecimals: 6,
+      coinGeckoId: "cosmos",
     },
   },
 };

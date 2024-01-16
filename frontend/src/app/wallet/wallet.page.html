@@ -1,0 +1,252 @@
+<ion-content fullscreen="true">
+  <ion-grid *ngIf="isLoading">
+    <ion-row>
+      <ion-col>
+        <div class="loading p-2 mx-auto">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          <p>
+            Loading wallet...
+          </p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="!selectedAddress && !isLoading">
+    <ion-row>
+      <ion-col>
+        <app-dashboard></app-dashboard>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="selectedAddress && !isLoading">
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-header class="no-shadow">
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>
+            <!-- Wallet -->
+          </ion-title>
+        </ion-toolbar>
+      </ion-header>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
+        class="main-content">
+        <div class="aligned">
+          <ion-grid>
+            <ion-row>
+              <ion-col offset-xl="1" size-xl="10" size="12" class="text-center">
+                <div class="avatar off-page">
+                  <ion-avatar>
+                    <img alt="" src="../../assets/logo/a-white-on-transparent-500.png" />
+                  </ion-avatar>
+                  <div class="stargaze-name mb-3">
+                    <ion-label>{{ selectedAddress | shortenAddress | async | shortenAddressHidden }}</ion-label>
+                  </div>
+                  <ion-chip class="address" color="warning" [outline]="true">
+                    <ion-icon name="key-sharp" color="warning"></ion-icon>
+                    <ion-label>{{ selectedAddress }}</ion-label>
+                  </ion-chip>
+                  <ion-chip class="address-short" color="warning" [outline]="true">
+                    <ion-icon name="key-sharp" color="warning"></ion-icon>
+                    <ion-label>{{ selectedAddress | shortenAddress | async}}</ion-label>
+                  </ion-chip>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <ion-segment value="tokens" color="primary" (ionChange)="sectionChanged($event)">
+                  <ion-segment-button value="tokens">
+                    <ion-label>Tokens</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="inscriptions">
+                    <ion-label>Inscriptions</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="deployed">
+                    <ion-label>Deployed</ion-label>
+                  </ion-segment-button>
+
+                </ion-segment>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="!isLoading && selectedSection == 'tokens'" class="p-4">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="holdings.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary" [routerLink]="['/app/create/token']">
+                        <ion-label>Create a token</ion-label>
+                      </ion-button>
+                      <ion-button fill="outline" color="primary" [routerLink]="['/app/markets']">
+                        <ion-label>Buy tokens</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+
+              <ion-col size="12" *ngIf="holdings.length > 0">
+                <p-table #data [value]="holdings" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens"
+                  styleClass="token-list">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th pSortableColumn="token.ticker" pFrozenColumn>Ticker <p-sortIcon
+                          field="token.ticker"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="token.last_price_base">Price <p-sortIcon
+                          field="token.last_price_base"></p-sortIcon></th>
+                      <th pSortableColumn="amount">Balance <p-sortIcon field="amount"></p-sortIcon></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-item>
+                    <tr [routerLink]="['/app/wallet/token', item.token.ticker]">
+                      <td class="token-logo">
+                        <div class="image">
+                          <img [src]="item.token.content_path" *ngIf="item.token.content_path" />
+                          <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
+                            *ngIf="!item.token.content_path" />
+                        </div>
+                      </td>
+                      <td pFrozenColumn>{{ item.token.ticker }}</td>
+                      <td>{{ item.token.last_price_base | tokenDecimals:item.token.decimals }} ATOM (${{ baseTokenPrice
+                        *
+                        (item.token.last_price_base | tokenDecimals:item.token.decimals ) |
+                        number:"1.2-6" }})</td>
+                      <td>{{ item.amount | tokenDecimals:item.token.decimals | number:"1.2-6" }}
+                        (${{ (item.amount | tokenDecimals:item.token.decimals )* (baseTokenPrice *
+                        item.token.last_price_base |
+                        tokenDecimals:item.token.decimals) | number:"1.2-6" }})
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="!isLoading && selectedSection == 'inscriptions'" class="p-4 text-center">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="inscriptions.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary"
+                        [routerLink]="['/app/create/inscription']">
+                        <ion-label>Create inscription</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+              <ion-col size="12" *ngIf="inscriptions.length > 0">
+                <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
+                  *ngFor="let item of inscriptions; let index">
+                  <div class="content">
+                    <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"></app-generic-preview>
+                  </div>
+                  <h4>{{ item.name }}</h4>
+                  <div class="detail text-start">
+                    <div class="detail-item">
+                      <span>#{{item.id - 1}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>{{ item.mime | humanType }} ({{ item.content_size_bytes / 1024 | number: '1.0-0' }}
+                        kb)</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>{{ item.date_created | dateAgo }}</span>
+                    </div>
+                  </div>
+                </a>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="!isLoading && selectedSection == 'deployed'" class="p-4 text-center">
+              <ion-col size="12" class="mx-auto mb-4" *ngIf="tokens.length == 0">
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="12">
+                      <div class="animation-ghost mx-auto">
+                        <div class="ghost">
+                          <ng-lottie [options]="{path: '../assets/lottie/ghost.json'}"></ng-lottie>
+                        </div>
+                      </div>
+                      <div class="title text-center p-3">
+                        it's a bit empty here...
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col class="text-center">
+                      <ion-button fill="outline" class="me-2" color="primary" [routerLink]="['/app/create/token']">
+                        <ion-label>Create a token</ion-label>
+                      </ion-button>
+                      <ion-button fill="outline" color="primary" [routerLink]="['/app/markets']">
+                        <ion-label>Buy tokens</ion-label>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+              <ion-col size="12" *ngIf="tokens.length > 0">
+                <a class="inscription-item main-content" [routerLink]="['/app/token', item.ticker]"
+                  *ngFor="let item of tokens; let index">
+                  <div class="content">
+                    <div class="image">
+                      <img [src]="item.content_path" *ngIf="item.content_path" />
+                      <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
+                        *ngIf="!item.content_path" />
+                    </div>
+                  </div>
+                  <h4>#{{item.id - 1}} {{ item.ticker }}</h4>
+                  <div class="detail text-start">
+                    <div class="detail-item">
+                      <span>{{ item.name }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>Max Supply: {{ item.max_supply | tokenDecimals:item.decimals | humanSupply }}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>{{ item.date_created | dateAgo }}</span>
+                    </div>
+                  </div>
+                </a>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

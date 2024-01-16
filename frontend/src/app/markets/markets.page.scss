@@ -1,0 +1,36 @@
+.list {
+    text-align: left;
+
+    @media only screen and (max-width: 900px) {
+        text-align: center;
+    }
+}
+
+.filter {
+    margin-top: -15px;
+    color: #888;
+}
+
+.token-holdings-list {
+    margin-left: 0;
+    max-width: 600px;
+    margin-bottom: 50px;
+
+    .item {
+        padding: 5px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba($color: #777777, $alpha: 0.2);
+
+        &.interactable {
+            color: #cccccc;
+
+            &:hover {
+                color: #57AAA7;
+            }
+        }
+    }
+
+    .actions {
+        text-align: right;
+    }
+}

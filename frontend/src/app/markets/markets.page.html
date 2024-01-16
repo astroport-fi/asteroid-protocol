@@ -1,0 +1,81 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+              CFT-20 Trading Markets
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+
+        <div class="aligned main-content">
+          <div *ngIf="isLoading">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          </div>
+          <div class="base-token-price" *ngIf="!isLoading">
+            <span class="ticker">
+              {{ baseToken.base_token }}/USD
+            </span>
+            <span class="price">
+              ${{ baseToken.base_token_usd | number:'1.2-2'}}
+            </span>
+          </div>
+          <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="tokens"
+            [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} markets" [globalFilterFields]="
+            ['name', 'ticker' ]" styleClass="token-list" sortField="volume" [sortOrder]="-1">
+            <ng-template pTemplate="caption">
+              <div class="flex search">
+                <div>
+                  <ion-input fill="outline" #textInput label="Search" labelPlacement="stacked"
+                    placeholder="Name or ticker" (input)="data.filterGlobal(textInput.value, 'contains')"><ion-icon
+                      slot="end" name="search-outline" aria-hidden="true"></ion-icon></ion-input>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="ticker" pFrozenColumn>Market <p-sortIcon field="ticker"></p-sortIcon></th>
+                <th pSortableColumn="name">Token <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="listings">Listings <p-sortIcon field="listings"></p-sortIcon></th>
+                <th pSortableColumn="last_price_base">Token Price <p-sortIcon field="last_price_base"></p-sortIcon></th>
+                <th pSortableColumn="volume_24_base">Volume <p-sortIcon field="volume_24_base"></p-sortIcon></th>
+                <th>&nbsp;</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-token>
+              <tr [routerLink]="['/app/market', token.ticker]">
+                <td pFrozenColumn>{{ token.ticker }} / ATOM</td>
+                <td>{{ token.name }}</td>
+                <td class="mono">{{ token.token_open_positions.length }}</td>
+                <td class="mono">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{
+                  baseToken.base_token_usd *
+                  (token.last_price_base | tokenDecimals:token.decimals ) |
+                  number:"1.2-6" }})</td>
+                <td class="mono">
+                  {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseToken.base_token_usd *
+                  (token.volume_24_base | tokenDecimals:6 ) |
+                  number:"1.2-6" }})
+                </td>
+                <td><ion-button fill="outline" color="warning" (click)="listSale($event, token.ticker)"
+                    *ngIf="token.token_holders[0]?.amount">Sell</ion-button>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4">No markets found</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
