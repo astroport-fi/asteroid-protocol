@@ -8,6 +8,7 @@ export const environment = {
     connectedWalletKey: "connectedWallet"
   },
   fees: {
+    ibcChannel: "channel-181",
     protocol: {
       inscription: {
         inscribe: {
@@ -44,7 +45,7 @@ export const environment = {
           minTradeSize: 0.000001,
         },
         buy: {
-          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          receiver: "neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p",
           denom: "uatom",
           amount: "0.02", // Default 2%
           type: "dynamic-percent"
