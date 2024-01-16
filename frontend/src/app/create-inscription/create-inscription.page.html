@@ -19,7 +19,12 @@
         class="main-content">
         <div class="aligned">
           <p class="note">
-            Details about content inscriptions
+            Inscriptions allow you to permanently write arbitrary data to the blockchain. The maximum size of an
+            inscription
+            is currently {{maxFileSize/1000}}kb.
+          </p>
+          <p class="note">
+            Learn more in the <a href="#" target="_blank">inscription metaprotocol</a> documentation
           </p>
           <form class="form" [formGroup]="createInscriptionForm" (ngSubmit)="submit()">
             <ion-grid>
