@@ -9,8 +9,11 @@
               <a href="/">
                 <img src="../../assets/logo/asteroid-white-transparent-narrow.png" />
               </a>
-              <span class="ms-3" *ngIf="!isLoading">Inscription #{{ inscription.id-1 }} </span>
-              <span class="m-0 p-0">
+              <div class="ms-3 d-inline-block" *ngIf="!isLoading">Inscription #{{ inscription.id-1 }}: {{
+                inscription.name }}
+                <span class="mime-note">{{ inscription.mime }}</span>
+              </div>
+              <span class="m-0 p-0 ps-3">
                 <ion-button fill="clear" [href]="inscription.content_path" class="m-0" *ngIf="!isLoading">
                   Download <ion-icon name="cloud-download-outline" class="ps-2"></ion-icon></ion-button>
                 <ion-button fill="clear" [routerLink]="['/app/inscription', inscription.transaction.hash]" class="m-0"
@@ -50,6 +53,8 @@
             </ng-scrollbar>
           </div>
           <markdown lineNumbers [src]="inscription.content_path" *ngSwitchCase="'Text'">
+          </markdown>
+          <markdown lineNumbers [src]="inscription.content_path" *ngSwitchCase="'JSON'">
           </markdown>
           <div class="no-preview" *ngSwitchDefault>
             <p>No viewer available for {{ humanType }} content.</p>

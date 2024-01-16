@@ -26,6 +26,10 @@ export class HumanTypePipe implements PipeTransform {
         if (value.startsWith('text/')) {
             return 'Text';
         }
+        // Cover all text types
+        if (value.startsWith('application/json')) {
+            return 'JSON';
+        }
 
         switch (value) {
             case 'application/pdf':

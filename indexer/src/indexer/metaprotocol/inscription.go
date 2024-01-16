@@ -244,6 +244,10 @@ func (protocol *Inscription) storeContent(metadata InscriptionMetadata, txHash s
 		// We could not find the mime type, so we default to .bin
 		ext = []string{".bin"}
 	}
+	// The mimetype gives us ".markdown" as extension when it should be .md
+	if ext[0] == ".markdown" {
+		ext[0] = ".md"
+	}
 
 	endpoint := protocol.s3Endpoint
 	region := protocol.s3Region
