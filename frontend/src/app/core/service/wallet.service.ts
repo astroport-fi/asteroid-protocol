@@ -152,6 +152,7 @@ export class WalletService {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
 
       let msgs = {};
+      const currentTime = Math.round(new Date().getTime() / 1000);
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
         msgs = {
@@ -160,6 +161,7 @@ export class WalletService {
           sender: account?.address as string,
           source_channel: environment.fees.ibcChannel,
           source_port: "transfer",
+          timeout_timestamp: currentTime + (60 * 60),
           token: {
             amount: fees.metaprotocol.amount,
             denom: fees.metaprotocol.denom,
