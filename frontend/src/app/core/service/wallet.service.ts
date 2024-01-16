@@ -8,10 +8,9 @@ import { SignDoc, AuthInfo } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { MsgRevoke } from "cosmjs-types/cosmos/authz/v1beta1/tx";
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw, TxBody, Fee } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { Any } from "cosmjs-types/google/protobuf/any";
-import { fromBase64 } from "@cosmjs/encoding";
 import { PubKey } from "cosmjs-types/cosmos/crypto/secp256k1/keys";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
+import { MsgTransfer } from "cosmjs-types/ibc/applications/transfer/v1/tx";
 import { Buffer } from "buffer";
 import Long from 'long';
 import { TxFee } from '../types/tx-fee';
@@ -24,7 +23,6 @@ import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 export class WalletService {
 
   constructor(private chainService: ChainService) {
-
   }
 
   hasWallet() {
@@ -157,15 +155,25 @@ export class WalletService {
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
         msgs = {
-          '@type': "/cosmos.bank.v1beta1.MsgSend",
-          from_address: account?.address as string,
-          to_address: fees.metaprotocol.receiver,
-          amount: [
-            {
-              denom: fees.metaprotocol.denom,
-              amount: fees.metaprotocol.amount,
-            },
-          ],
+          // '@type': "/cosmos.bank.v1beta1.MsgSend",
+          // from_address: account?.address as string,
+          // to_address: fees.metaprotocol.receiver,
+          // amount: [
+          //   {
+          //     denom: fees.metaprotocol.denom,
+          //     amount: fees.metaprotocol.amount,
+          //   },
+          // ],
+
+          '@type': '/ibc.applications.transfer.v1.MsgTransfer',
+          receiver: fees.metaprotocol.receiver,
+          sender: account?.address as string,
+          source_channel: environment.fees.ibcChannel,
+          source_port: "transfer",
+          token: {
+            amount: fees.metaprotocol.amount,
+            denom: fees.metaprotocol.denom,
+          }
         }
       } else {
         // If no fee is charged, we need to send the smallest amount possible
@@ -272,24 +280,32 @@ export class WalletService {
 
       let feeMessage = {};
 
+      const currentTime = Math.round(new Date().getTime() / 1000);
       if (parseInt(fees.metaprotocol.amount) > 0) {
         feeMessage = {
-          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-          value: MsgSend.encode({
-            fromAddress: account?.address as string,
-            toAddress: fees.metaprotocol.receiver,
-            amount: [
-              {
-                denom: fees.metaprotocol.denom,
-                amount: fees.metaprotocol.amount,
-              }
-            ],
+          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+          value: MsgTransfer.encode({
+            receiver: fees.metaprotocol.receiver,
+            sender: account?.address as string,
+            sourceChannel: environment.fees.ibcChannel,
+            sourcePort: "transfer",
+            timeoutTimestamp: BigInt(currentTime + 60 * 60), // Now + 1hour for transfer
+            timeoutHeight: {
+              revisionHeight: BigInt(0),
+              revisionNumber: BigInt(1),
+            },
+            memo: "",
+            token: {
+              amount: fees.metaprotocol.amount,
+              denom: fees.metaprotocol.denom,
+            }
           }).finish(),
         }
-      } else {
+      } else if (messages.length == 0) {
         // If no fee is charged, we need to send the smallest amount possible
         // to the sender to create a valid transaction
         // For the Hub that would be 0.000001 ATOM or 1uatom
+        // We only do this if there are no messages present
         feeMessage = {
           typeUrl: "/cosmos.bank.v1beta1.MsgSend",
           value: MsgSend.encode({
