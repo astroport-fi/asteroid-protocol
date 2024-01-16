@@ -8,7 +8,7 @@ export const environment = {
     connectedWalletKey: "connectedWallet"
   },
   fees: {
-    ibcChannel: "channel-181",
+    ibcChannel: "channel-99",
     protocol: {
       inscription: {
         inscribe: {
