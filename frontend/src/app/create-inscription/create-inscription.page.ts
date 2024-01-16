@@ -36,7 +36,6 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   }
 
   ngOnInit() {
-    console.log("iunscripotions init");
   }
 
   ionViewDidLeave(): void {
@@ -117,7 +116,6 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   }
 
   onInscriptionFileSelected(event: any) {
-    console.log("CALLED", "onInscriptionFileSelected");
     this.contentRequired = false;
     const file = event.target.files[0];
     if (file) {

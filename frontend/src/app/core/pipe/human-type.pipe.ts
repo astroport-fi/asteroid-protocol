@@ -19,6 +19,10 @@ export class HumanTypePipe implements PipeTransform {
             return 'HTML';
         }
         // Cover all text types
+        if (value.startsWith('text/markdown')) {
+            return 'Markdown';
+        }
+        // Cover all text types
         if (value.startsWith('text/')) {
             return 'Text';
         }

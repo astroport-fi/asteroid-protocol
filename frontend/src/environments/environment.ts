@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   domain: 'testnet.asteroidprotocol.io',
   limits: {
-    maxFileSize: 740000,
+    maxFileSize: 720000,
   },
   storage: {
     connectedWalletKey: "connectedWallet"

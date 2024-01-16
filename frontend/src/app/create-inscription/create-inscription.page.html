@@ -42,7 +42,7 @@
                   </div>
                   <div class="uploader text-center" *ngIf="!this.createInscriptionForm.value.basic.contentUpload">
                     <p>Content</p>
-                    <p class="info">Max file size<br />800kb</p>
+                    <p class="info">Max file size<br />{{maxFileSize/1000}}kb</p>
                     <div class="upload">
                       <label for='input_file_inscription_select'>Select file</label>
                       <input id='input_file_inscription_select' type='file'

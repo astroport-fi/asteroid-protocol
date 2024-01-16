@@ -3,20 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Chain } from '../core/types/zeus';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { cloudDownloadOutline } from "ionicons/icons";
+import { cloudDownloadOutline, linkOutline } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { MarkdownComponent, } from 'ngx-markdown'
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @Component({
   selector: 'app-generic-viewer',
   templateUrl: './generic-viewer.page.html',
   styleUrls: ['./generic-viewer.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HumanTypePipe, MarkdownComponent]
+  imports: [IonicModule, CommonModule, FormsModule, HumanTypePipe, MarkdownComponent, RouterLink, NgScrollbarModule]
 })
 export class GenericViewerPage implements OnInit {
 
@@ -26,7 +27,7 @@ export class GenericViewerPage implements OnInit {
   untrustedURL: any;
 
   constructor(private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer) {
-    addIcons({ cloudDownloadOutline });
+    addIcons({ cloudDownloadOutline, linkOutline });
   }
 
   async ngOnInit() {

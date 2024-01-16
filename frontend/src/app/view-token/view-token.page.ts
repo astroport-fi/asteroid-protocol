@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { Chain } from '../core/types/zeus';
+import { Chain, Subscription } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
@@ -126,11 +126,10 @@ export class ViewTokenPage implements OnInit {
     this.positions = positionsResult.token_open_position;
 
     if (this.walletConnected) {
-      const holderResult = await chain('query')({
+      const wsChain = Subscription(environment.api.wss);
+      wsChain('subscription')({
         token_holder: [
           {
-            offset: 0,
-            limit: 100,
             where: {
               address: {
                 _eq: (await this.walletService.getAccount()).address
@@ -138,9 +137,9 @@ export class ViewTokenPage implements OnInit {
               token_id: {
                 _eq: this.token.id
               }
-            }
-          },
-          {
+            },
+          }, {
+            id: true,
             token: {
               ticker: true,
               content_path: true,
@@ -155,12 +154,13 @@ export class ViewTokenPage implements OnInit {
             date_updated: true,
           }
         ]
+      }).on(({ token_holder }) => {
+        if (token_holder.length > 0) {
+          this.holding = token_holder[0];
+        } else {
+          this.holding = { amount: 0 };
+        }
       });
-      if (holderResult.token_holder.length > 0) {
-        this.holding = holderResult.token_holder[0];
-      } else {
-        this.holding = { amount: 0 };
-      }
 
     }
 

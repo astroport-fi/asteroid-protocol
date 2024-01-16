@@ -43,13 +43,16 @@
                     </div>
                   </div>
                   <div class="uploader text-center" *ngIf="!this.createForm.value.optional.imageUpload">
-                    <p>Content</p>
+                    <p>Logo</p>
                     <p class="info">Minimum dimensions<br />250x250</p>
                     <p class="info">Maximum dimensions<br />1024x1024</p>
-                    <p class="info">Max file size<br />800kb</p>
+                    <p class="info">Max file size<br />{{maxFilesSize/1000}}kb</p>
                     <div class="upload">
                       <label for='input_file_select'>Select file</label>
                       <input id='input_file_select' type='file' (change)="onFileSelected($event)" />
+                    </div>
+                    <div *ngIf="contentRequired" class="info text-center color-danger">
+                      You must add a logo to your token
                     </div>
                     <div class="section color-orange p-2">
                       {{ precheckErrorText }}
@@ -166,7 +169,8 @@
                 </ion-col>
                 <ion-col size-xl="6" size-lg="8" size-sm="8" size-xs="12">
                   <div class="section">
-                    <ion-button color="primary" fill="solid" type="submit" [disabled]="limitNumeric > maxMintLimit">
+                    <ion-button color="primary" fill="solid" type="submit"
+                      [disabled]="limitNumeric > maxMintLimit || precheckErrorText != ''">
                       <ion-icon slot="start" name="checkmark"></ion-icon>
                       Create token
                     </ion-button>

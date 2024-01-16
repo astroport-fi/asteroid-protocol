@@ -28,6 +28,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   minDate: Date;
   maxMintLimit: number = 0;
   limitNumeric: number = 0;
+  maxFilesSize: number = environment.limits.maxFileSize;
+  contentRequired: boolean = false;
 
   readonly numberMask: MaskitoOptions;
   readonly maxDecimalsMask: MaskitoOptions;
@@ -66,7 +68,6 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   }
 
   ngOnInit() {
-    console.log("token init");
 
     this.minDate = new Date();
     this.createForm = this.builder.group({
@@ -80,7 +81,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
         launchDate: this.datePipe.transform(new Date(this.minDate), 'yyyy-MM-ddTHH:mm:ss'),
       }),
       optional: this.builder.group({
-        imageUpload: null
+        imageUpload: [null, [Validators.required]]
       }),
     });
 
@@ -103,6 +104,9 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       this.createToken();
     } else {
       this.createForm.markAllAsTouched();
+      if (this.createForm.value.optional.imageUpload === null) {
+        this.contentRequired = true;
+      }
     }
   }
 
@@ -182,8 +186,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   }
 
   onFileSelected(event: any) {
-    console.log("CALLED", "onFileSelected");
     this.precheckErrorText = '';
+    this.contentRequired = false;
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -221,6 +225,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
               imageUpload: base64
             }
           });
+          this.contentRequired = false;
         };
 
       };

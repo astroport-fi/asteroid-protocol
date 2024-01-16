@@ -208,6 +208,7 @@ export class MarketsPage implements OnInit {
       });
 
     }
+
     event.data?.sort((data1, data2) => {
       let value1 = data1[event.field as string];
       let value2 = data2[event.field as string];
