@@ -155,16 +155,6 @@ export class WalletService {
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
         msgs = {
-          // '@type': "/cosmos.bank.v1beta1.MsgSend",
-          // from_address: account?.address as string,
-          // to_address: fees.metaprotocol.receiver,
-          // amount: [
-          //   {
-          //     denom: fees.metaprotocol.denom,
-          //     amount: fees.metaprotocol.amount,
-          //   },
-          // ],
-
           '@type': '/ibc.applications.transfer.v1.MsgTransfer',
           receiver: fees.metaprotocol.receiver,
           sender: account?.address as string,
@@ -278,7 +268,12 @@ export class WalletService {
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(account.address);
 
+      let msgs: any[] = [];
       let feeMessage = {};
+
+      if (messages.length > 0) {
+        msgs = [...messages];
+      }
 
       const currentTime = Math.round(new Date().getTime() / 1000);
       if (parseInt(fees.metaprotocol.amount) > 0) {
@@ -301,6 +296,7 @@ export class WalletService {
             }
           }).finish(),
         }
+        msgs.push(feeMessage);
       } else if (messages.length == 0) {
         // If no fee is charged, we need to send the smallest amount possible
         // to the sender to create a valid transaction
@@ -319,12 +315,13 @@ export class WalletService {
             ],
           }).finish(),
         }
+        msgs.push(feeMessage);
       }
 
       const signDoc = {
         bodyBytes: TxBody.encode(
           TxBody.fromPartial({
-            messages: [...messages, feeMessage],
+            messages: msgs,
             memo: urn,
             nonCriticalExtensionOptions,
           })
