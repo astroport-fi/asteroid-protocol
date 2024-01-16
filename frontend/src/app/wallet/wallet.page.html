@@ -67,8 +67,8 @@
                   <ion-segment-button value="inscriptions">
                     <ion-label>Inscriptions</ion-label>
                   </ion-segment-button>
-                  <ion-segment-button value="creations">
-                    <ion-label>Creations</ion-label>
+                  <ion-segment-button value="deployed">
+                    <ion-label>Deployed</ion-label>
                   </ion-segment-button>
 
                 </ion-segment>
@@ -192,7 +192,7 @@
               </ion-col>
             </ion-row>
 
-            <ion-row *ngIf="!isLoading && selectedSection == 'creations'" class="p-4 text-center">
+            <ion-row *ngIf="!isLoading && selectedSection == 'deployed'" class="p-4 text-center">
               <ion-col size="12" class="mx-auto mb-4" *ngIf="tokens.length == 0">
                 <ion-grid>
                   <ion-row>
