@@ -45,7 +45,7 @@
                     <img alt="" src="../../assets/logo/a-white-on-transparent-500.png" />
                   </ion-avatar>
                   <div class="stargaze-name mb-3">
-                    <ion-label>{{ selectedAddress | shortenAddress | async }}</ion-label>
+                    <ion-label>{{ selectedAddress | shortenAddress | async | shortenAddressHidden }}</ion-label>
                   </div>
                   <ion-chip class="address" color="warning" [outline]="true">
                     <ion-icon name="key-sharp" color="warning"></ion-icon>

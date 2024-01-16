@@ -19,13 +19,14 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { PriceService } from '../core/service/price.service';
 import { LottieComponent } from 'ngx-lottie';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
+import { ShortenAddressHiddenPipe } from '../core/pipe/shorten-address-hidden.pipe';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [CommonModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, IonAvatar, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton, LottieComponent, GenericPreviewPage]
+  imports: [CommonModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, IonAvatar, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton, LottieComponent, GenericPreviewPage, ShortenAddressHiddenPipe]
 })
 export class WalletPage implements OnInit {
 
