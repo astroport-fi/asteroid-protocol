@@ -29,7 +29,7 @@ run: build ## Build and run the service binary
 	BASE_TOKEN_BINANCE_ENDPOINT="https://api.binance.com/api/v3/ticker/price?symbol=ATOMUSDT" \
 	DATABASE_DSN="local:local@tcp(127.0.0.1)/inscriptions?charset=utf8mb4&parseTime=True" \
 	DATABASE_DSN="host=localhost user=admin password=admin1 dbname=meteors port=5432 sslmode=disable TimeZone=UTC" \
-	LCD_ENDPOINT="http://127.0.0.1:8665/chain/gaia/lcd" \
+	LCD_ENDPOINTS="http://127.0.0.1:8665/chain/gaia/lcd,http://localhost:8665/chain/gaia/lcd" \
 	BLOCK_POLL_INTERVAL_MS=100 \
 	S3_ENDPOINT="ams3.digitaloceanspaces.com" \
 	S3_REGION="ams3" \

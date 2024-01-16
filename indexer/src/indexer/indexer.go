@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,18 +26,18 @@ import (
 )
 
 type Config struct {
-	ChainID                  string `envconfig:"CHAIN_ID" required:"true"`
-	BaseTokenBinanceEndpoint string `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
-	DatabaseDSN              string `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoint              string `envconfig:"LCD_ENDPOINT" required:"true"`
-	BlockPollIntervalMS      int    `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	ChainID                  string   `envconfig:"CHAIN_ID" required:"true"`
+	BaseTokenBinanceEndpoint string   `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
+	DatabaseDSN              string   `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoints             []string `envconfig:"LCD_ENDPOINTS" required:"true"`
+	BlockPollIntervalMS      int      `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
 // Indexer implements the reference indexer service
 type Indexer struct {
 	chainID                  string
 	baseTokenBinanceEndpoint string
-	lcdEndpoint              string
+	lcdEndpoints             []string
 	blockPollIntervalMS      int
 	logger                   *logrus.Entry
 	metaprotocols            map[string]metaprotocol.Processor
@@ -72,7 +73,7 @@ func New(
 	return &Indexer{
 		chainID:                  config.ChainID,
 		baseTokenBinanceEndpoint: config.BaseTokenBinanceEndpoint,
-		lcdEndpoint:              config.LCDEndpoint,
+		lcdEndpoints:             config.LCDEndpoints,
 		blockPollIntervalMS:      config.BlockPollIntervalMS,
 		metaprotocols:            metaprotocols,
 		logger:                   log,
@@ -157,7 +158,7 @@ func (i *Indexer) indexBlocks() {
 				"current_height": currentHeight,
 				"max_height":     maxHeight,
 				"lag":            maxHeight - currentHeight,
-			}).Debug("Fetching block")
+			}).Info("Fetching block")
 
 			_, transactions, err := i.fetchTransactions(currentHeight)
 			if err != nil {
@@ -347,7 +348,8 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 // fetchCurrentHeight fetches the current height from the chain by using the
 // RPC /status endpoint
 func (i *Indexer) fetchCurrentHeight() (uint64, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", i.lcdEndpoint))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", endpoint))
 	if err != nil {
 		return 0, err
 	}
@@ -356,6 +358,10 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+	i.logger.WithFields(logrus.Fields{
+		"height":   block.Block.Header.Height,
+		"endpoint": endpoint,
+	}).Debug("Fetched current height")
 	return strconv.ParseUint(block.Block.Header.Height, 10, 64)
 }
 
@@ -363,7 +369,8 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 	var transactions []string
 
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", i.lcdEndpoint, height))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", endpoint, height))
 	if err != nil {
 		return height, transactions, err
 	}
@@ -373,8 +380,9 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		return height, transactions, err
 	}
 	i.logger.WithFields(logrus.Fields{
-		"height": height,
-		"txs":    len(lcdBlock.Block.Data.Txs),
+		"height":   height,
+		"txs":      len(lcdBlock.Block.Data.Txs),
+		"endpoint": endpoint,
 	}).Debug("Fetched block")
 
 	for _, tx := range lcdBlock.Block.Data.Txs {
@@ -401,7 +409,8 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 
 // fetchTransaction fetches a single transaction from the LCD
 func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", i.lcdEndpoint, hash))
+	endpoint := i.randomEndpoint()
+	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, hash))
 	if err != nil {
 		return 0, types.RawTransaction{}, err
 	}
@@ -411,8 +420,15 @@ func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, erro
 		return 0, types.RawTransaction{}, err
 	}
 	i.logger.WithFields(logrus.Fields{
-		"hash": hash,
+		"hash":     hash,
+		"endpoint": endpoint,
 	}).Debug("Fetched transaction")
 
 	return rawTransaction.GetTxByteSize(), rawTransaction, nil
+}
+
+// randomEndpoint returns a random LCD endpoint to use
+// We do this to balance the load across multiple endpoints very naively
+func (i *Indexer) randomEndpoint() string {
+	return i.lcdEndpoints[rand.Intn(len(i.lcdEndpoints))]
 }
