@@ -11,6 +11,7 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-list-tokens',
@@ -26,7 +27,7 @@ export class ListTokensPage implements OnInit {
   tokens: any = null;
   holdings: any = null;
   offset = 0;
-  limit = 500;
+  limit = 2000;
   lastFetchCount = 0;
   baseTokenPrice: number = 0;
 
@@ -110,5 +111,40 @@ export class ListTokensPage implements OnInit {
       this.isLoading = false;
     });
   }
+
+  customSort(event: SortEvent) {
+    if (event.field == 'minted') {
+      event.data?.sort((data1, data2) => {
+
+        let value1 = parseInt(data1["circulating_supply"]) / parseInt(data1["max_supply"]);
+        let value2 = parseInt(data2["circulating_supply"]) / parseInt(data2["max_supply"]);
+        let result = null;
+
+        if (value1 == null && value2 != null) result = -1;
+        else if (value1 != null && value2 == null) result = 1;
+        else if (value1 == null && value2 == null) result = 0;
+        else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+        return event.order as number * result;
+      });
+
+    }
+
+    event.data?.sort((data1, data2) => {
+      let value1 = data1[event.field as string];
+      let value2 = data2[event.field as string];
+      let result = null;
+
+      if (value1 == null && value2 != null) result = -1;
+      else if (value1 != null && value2 == null) result = 1;
+      else if (value1 == null && value2 == null) result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
+      else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+      return event.order as number * result;
+    });
+  }
+
+
 
 }
