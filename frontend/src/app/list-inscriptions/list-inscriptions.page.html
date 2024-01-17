@@ -12,23 +12,29 @@
             </ion-title>
           </ion-toolbar>
         </ion-header>
-        <ion-row>
-
-          <ion-item  class="ion-padding-start">
-            <ion-select interface="popover" placeholder="Order" [(ngModel)]="order" (ionChange)="onChangeOrder()">
-              <ion-select-option value="desc">Latest</ion-select-option>
-              <ion-select-option value="asc">Oldest</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-
-            <ion-searchbar [debounce]="500" (ionInput)="onChangeSearch($event.target.value)"  placeholder="Search for #">
-            </ion-searchbar>
-
-          </ion-item>
-        </ion-row>
-
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-searchbar [debounce]="500" (ionInput)="onChangeSearch($event.target.value)"
+                  placeholder="Search for #">
+                </ion-searchbar>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12" size-md="3">
+              <ion-item class="ion-padding-start" lines="none">
+                <ion-select interface="popover" placeholder="Order" [(ngModel)]="order" (ionChange)="onChangeOrder()">
+                  <ion-select-option value="desc">Latest</ion-select-option>
+                  <ion-select-option value="asc">Oldest</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
 
@@ -40,7 +46,7 @@
           </div>
           <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
             <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
-               *ngFor="let item of inscriptions; let index">
+              *ngFor="let item of inscriptions; let index">
               <div class="content">
                 <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"></app-generic-preview>
               </div>
