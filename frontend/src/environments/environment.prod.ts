@@ -1,14 +1,14 @@
 export const environment = {
   production: true,
-  domain: 'testnet.asteroidprotocol.io',
+  domain: 'asteroidprotocol.io',
   limits: {
-    maxFileSize: 740000,
+    maxFileSize: 550000,
   },
   storage: {
     connectedWalletKey: "connectedWallet"
   },
   fees: {
-    ibcChannel: "channel-99",
+    ibcChannel: "channel-569",
     protocol: {
       inscription: {
         inscribe: {
@@ -62,17 +62,17 @@ export const environment = {
     }
   },
   api: {
-    endpoint: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
-    wss: 'wss://testnet-api.asteroidprotocol.io/v1/graphql',
-    explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
-    simulateEndpoint: "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz",
+    endpoint: 'https://api.asteroidprotocol.io/v1/graphql',
+    wss: 'wss://api.asteroidprotocol.io/v1/graphql',
+    explorer: 'https://www.mintscan.io/cosmos/tx/',
+    simulateEndpoint: "https://nodes.asteroidprotocol.io",
     stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
-    chainId: "theta-testnet-001",
-    chainName: "Cosmos Hub Testnet",
-    rpc: "https://rpc.sentry-01.theta-testnet.polypore.xyz",
-    rest: "https://rest.sentry-01.theta-testnet.polypore.xyz",
+    chainId: "cosmoshub-4",
+    chainName: "Cosmos Hub",
+    rpc: "https://rpc-nodes.asteroidprotocol.io",
+    rest: "https://nodes.asteroidprotocol.io",
     bip44: {
       coinType: 118
     },
