@@ -85,7 +85,7 @@ export class WalletService {
       }
 
       // TODO: Add back for local development
-      await window.keplr.experimentalSuggestChain(environment.chain);
+      // await window.keplr.experimentalSuggestChain(environment.chain);
       await window.keplr.enable(environment.chain.chainId);
       return WalletStatus.Connected;
     } catch (error) {

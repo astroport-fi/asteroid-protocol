@@ -50,7 +50,7 @@ export class ListTokensPage implements OnInit {
             limit: this.limit,
             order_by: [
               {
-                id: order_by.asc
+                date_created: order_by.desc
               }
             ],
             where: {

@@ -1,14 +1,14 @@
 export const environment = {
   production: true,
-  domain: 'asteroidprotocol.io',
+  domain: 'testnet.asteroidprotocol.io',
   limits: {
-    maxFileSize: 550000,
+    maxFileSize: 720000,
   },
   storage: {
     connectedWalletKey: "connectedWallet"
   },
   fees: {
-    ibcChannel: "channel-569",
+    ibcChannel: "channel-181",
     protocol: {
       inscription: {
         inscribe: {
@@ -62,17 +62,17 @@ export const environment = {
     }
   },
   api: {
-    endpoint: 'https://api.asteroidprotocol.io/v1/graphql',
-    wss: 'wss://api.asteroidprotocol.io/v1/graphql',
-    explorer: 'https://www.mintscan.io/cosmos/tx/',
-    simulateEndpoint: "https://asteroids-rest-vkjug.ondigitalocean.app/https://rest-cosmoshub.goldenratiostaking.net",
+    endpoint: 'http://192.168.11.103:8080/v1/graphql',
+    wss: 'ws://192.168.11.103:8080/v1/graphql',
+    explorer: 'http://192.168.11.103:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    simulateEndpoint: "http://192.168.11.103:8665/chain/gaia/lcd",
     stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
-    chainId: "cosmoshub-4",
-    chainName: "Cosmos Hub",
-    rpc: "https://rpc-cosmoshub.blockapsis.com",
-    rest: "https://lcd-cosmoshub.blockapsis.com",
+    chainId: "gaialocal-1",
+    chainName: "Private Cosmos Hub",
+    rpc: "http://192.168.11.103:8665/chain/gaia/rpc",
+    rest: "http://192.168.11.103:8665/chain/gaia/lcd",
     bip44: {
       coinType: 118
     },
@@ -94,8 +94,8 @@ export const environment = {
     ],
     feeCurrencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
         coinDecimals: 6,
         coinGeckoId: "cosmos",
         gasPriceStep: {
