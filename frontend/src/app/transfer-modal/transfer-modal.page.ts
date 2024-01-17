@@ -118,7 +118,7 @@ export class TransferModalPage implements OnInit {
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.ticker],
-      ["amt", this.transferForm.value.basic.amount],
+      ["amt", this.transferForm.value.basic.amount.replace(/\s/g, '')],
       ["dst", this.transferForm.value.basic.destination],
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
