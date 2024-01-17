@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"mime"
-	"strconv"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -104,11 +103,6 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		return fmt.Errorf("invalid chain ID '%s'", parsedURN.ChainID)
 	}
 
-	height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-	if err != nil {
-		return fmt.Errorf("unable to parse height '%s'", err)
-	}
-
 	switch parsedURN.Operation {
 	case "inscribe":
 		contentHash := parsedURN.KeyValuePairs["h"]
@@ -117,7 +111,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		// section of the transaction
 		var metadata []byte
 		var content []byte
-		for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
+		for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
 			// The type of the option must be MsgRevoke
 			if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
 				// The granter field contains the metadata
@@ -144,16 +138,14 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// Store the content with the correct mime type on DO
-		contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, content)
+		contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, content)
 		if err != nil {
 			return fmt.Errorf("unable to store content '%s'", err)
 		}
 
-		fmt.Println("txid", transactionModel.ID)
-
 		inscriptionModel := models.Inscription{
 			ChainID:          parsedURN.ChainID,
-			Height:           height,
+			Height:           transactionModel.Height,
 			Version:          parsedURN.Version,
 			TransactionID:    transactionModel.ID,
 			ContentHash:      contentHash,
@@ -163,7 +155,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			Metadata:         datatypes.JSON(metadata),
 			ContentPath:      contentPath,
 			ContentSizeBytes: uint64(len(content)),
-			DateCreated:      rawTransaction.TxResponse.Timestamp,
+			DateCreated:      transactionModel.DateCreated,
 		}
 
 		result := protocol.db.Save(&inscriptionModel)
@@ -173,13 +165,13 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		inscriptionHistory := models.InscriptionHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			InscriptionID: inscriptionModel.ID,
 			Sender:        "asteroids",
 			Receiver:      sender,
 			Action:        "inscribe",
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)
@@ -219,13 +211,13 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		inscriptionHistory := models.InscriptionHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			InscriptionID: inscription.ID,
 			Sender:        sender,
 			Receiver:      destinationAddress,
 			Action:        "transfer",
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)

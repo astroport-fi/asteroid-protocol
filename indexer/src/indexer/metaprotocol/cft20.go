@@ -105,11 +105,6 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		return fmt.Errorf("chain ID in protocol string does not match transaction chain ID")
 	}
 
-	height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-	if err != nil {
-		return fmt.Errorf("unable to parse height '%s'", err)
-	}
-
 	// TODO: Rework the operation handling
 	switch parsedURN.Operation {
 	case "deploy":
@@ -137,7 +132,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		openTimestamp, err := strconv.ParseUint(parsedURN.KeyValuePairs["opn"], 10, 64)
 		if err != nil {
 			// If this fails, we set the open time to the block time
-			openTimestamp = uint64(rawTransaction.TxResponse.Timestamp.Unix())
+			openTimestamp = uint64(transactionModel.DateCreated.Unix())
 		}
 
 		// Add the decimals to the supply and limit
@@ -177,18 +172,17 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if result.Error == nil {
 			return fmt.Errorf("token with ticker '%s' already exists", name)
 		}
-		fmt.Println("HERE5")
 
 		// TODO: Rework the content extraction
 		contentPath := ""
 		contentLength := 0
 		// If this token includes content, we need to store it and add to the record
-		if len(rawTransaction.Tx.Body.NonCriticalExtensionOptions) == 1 {
+		if len(rawTransaction.Body.NonCriticalExtensionOptions) == 1 {
 			// Logo is stored in the non_critical_extension_options
 			// section of the transaction
 			var logoContent []byte
 			var metadata []byte
-			for _, extension := range rawTransaction.Tx.Body.NonCriticalExtensionOptions {
+			for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
 				// The type of the option must be MsgRevoke
 				if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
 					// The granter field contains the metadata
@@ -214,7 +208,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			}
 
 			// Store the content with the correct mime type on DO
-			contentPath, err = protocol.storeContent(inscriptionMetadata, rawTransaction.TxResponse.Txhash, logoContent)
+			contentPath, err = protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, logoContent)
 			if err != nil {
 				return fmt.Errorf("unable to store content '%s'", err)
 			}
@@ -225,7 +219,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// Create the token model
 		tokenModel = models.Token{
 			ChainID:           parsedURN.ChainID,
-			Height:            height,
+			Height:            transactionModel.Height,
 			Version:           parsedURN.Version,
 			TransactionID:     transactionModel.ID,
 			Creator:           sender,
@@ -238,17 +232,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			LaunchTimestamp:   openTimestamp,
 			ContentPath:       contentPath,
 			ContentSizeBytes:  uint64(contentLength),
-			DateCreated:       rawTransaction.TxResponse.Timestamp,
+			DateCreated:       transactionModel.DateCreated,
 			CirculatingSupply: 0,
 		}
-		fmt.Println("HERE6")
 
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
-			fmt.Println("HERE7")
 			return result.Error
 		}
-		fmt.Println("HERE8")
 
 	case "mint":
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
@@ -265,7 +256,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return fmt.Errorf("token with ticker '%s' has reached max supply", ticker)
 		}
 		// Check if opn time < transaction time
-		if tokenModel.LaunchTimestamp > uint64(rawTransaction.TxResponse.Timestamp.Unix()) {
+		if tokenModel.LaunchTimestamp > uint64(transactionModel.DateCreated.Unix()) {
 			return fmt.Errorf("token with ticker '%s' is not yet open for minting", ticker)
 		}
 
@@ -279,14 +270,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// we don't alter anything else
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        tokenModel.Ticker,
 			Receiver:      sender,
 			Action:        "mint",
 			Amount:        mintAmount,
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -313,7 +304,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		holderModel.TokenID = tokenModel.ID
 		holderModel.Address = sender
 		holderModel.Amount = holderModel.Amount + mintAmount
-		holderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+		holderModel.DateUpdated = transactionModel.DateCreated
 
 		result = protocol.db.Save(&holderModel)
 		if result.Error != nil {
@@ -321,7 +312,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 	case "transfer":
-		fmt.Println(protocolURN)
+
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
 
@@ -383,7 +374,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		destinationHolderModel.TokenID = tokenModel.ID
 		destinationHolderModel.Address = destinationAddress
 		destinationHolderModel.Amount = destinationHolderModel.Amount + amount
-		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+		destinationHolderModel.DateUpdated = transactionModel.DateCreated
 
 		result = protocol.db.Save(&destinationHolderModel)
 		if result.Error != nil {
@@ -393,14 +384,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// Record the transfer
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        sender,
 			Receiver:      destinationAddress,
 			Action:        "transfer",
 			Amount:        amount,
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -408,7 +399,6 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 	case "list":
-		fmt.Println(protocolURN)
 
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
@@ -437,19 +427,12 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse ppt '%s'", err)
 		}
-		fmt.Println("ppt float", ppt)
-
-		fmt.Println("ppt decimals", ppt)
-
 		totalBase := float64(amount) * ppt
-		fmt.Println("totalForSale ", totalBase)
 
 		// 6 is the amount of ATOM decimals
 		ppt = ppt * math.Pow10(6)
 		amount = amount * math.Pow10(int(tokenModel.Decimals))
 		totalBase = totalBase * math.Pow10(6)
-
-		fmt.Println("totalForSale decimals ", fmt.Sprintf("%0.6f", totalBase))
 
 		// Check that the user has enough tokens to sell
 		var holderModel models.TokenHolder
@@ -479,7 +462,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			Amount:        uint64(math.Round(amount)),
 			PPT:           uint64(math.Round(ppt)),
 			Total:         uint64(math.Round(totalBase)),
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 
 		result = protocol.db.Save(&positionModel)
@@ -490,14 +473,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// Record the transfer
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        sender,
 			Receiver:      destinationAddress,
 			Action:        "list",
 			Amount:        uint64(math.Round(amount)),
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -505,7 +488,6 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 	case "buy":
-		fmt.Println(protocolURN)
 
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
@@ -527,7 +509,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 		// Check if the amount sent >= amount required
-		for _, v := range rawTransaction.Tx.Body.Messages {
+		for _, v := range rawTransaction.Body.Messages {
 			if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
 				// The first send should hold the amount being used to buy the tokens with
 				if v.Amount[0].Amount != fmt.Sprintf("%d", openOrderModel.Total) {
@@ -559,7 +541,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 
 		// Everything checks out, so we can mark the order as filled and transfer the tokens
 		openOrderModel.IsFilled = true
-		openOrderModel.DateFilled = rawTransaction.TxResponse.Timestamp
+		openOrderModel.DateFilled = transactionModel.DateCreated
 		result = protocol.db.Save(&openOrderModel)
 		if result.Error != nil {
 			return fmt.Errorf("unable to update order '%s'", result.Error)
@@ -580,7 +562,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		destinationHolderModel.TokenID = tokenModel.ID
 		destinationHolderModel.Address = sender
 		destinationHolderModel.Amount = destinationHolderModel.Amount + openOrderModel.Amount
-		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+		destinationHolderModel.DateUpdated = transactionModel.DateCreated
 
 		result = protocol.db.Save(&destinationHolderModel)
 		if result.Error != nil {
@@ -590,14 +572,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// Record the transfer
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        "marketplace",
 			Receiver:      sender,
 			Action:        "buy",
 			Amount:        openOrderModel.Amount,
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -617,7 +599,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			AmountBase:    openOrderModel.Total,
 			Rate:          openOrderModel.PPT,
 			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&tradeHistory)
 		if result.Error != nil {
@@ -644,9 +626,6 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		}
 
 	case "delist":
-		fmt.Println(protocolURN)
-
-		fmt.Println(protocolURN)
 
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
@@ -694,7 +673,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		destinationHolderModel.TokenID = tokenModel.ID
 		destinationHolderModel.Address = sender
 		destinationHolderModel.Amount = destinationHolderModel.Amount + openOrderModel.Amount
-		destinationHolderModel.DateUpdated = rawTransaction.TxResponse.Timestamp
+		destinationHolderModel.DateUpdated = transactionModel.DateCreated
 
 		result = protocol.db.Save(&destinationHolderModel)
 		if result.Error != nil {
@@ -704,14 +683,14 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// Record the transfer
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        height,
+			Height:        transactionModel.Height,
 			TransactionID: transactionModel.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        "marketplace",
 			Receiver:      sender,
 			Action:        "delist",
 			Amount:        openOrderModel.Amount,
-			DateCreated:   rawTransaction.TxResponse.Timestamp,
+			DateCreated:   transactionModel.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
