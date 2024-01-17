@@ -1,59 +1,55 @@
 .split-pane-main {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin-right: 30px;
-    border-radius: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-right: 30px;
+  border-radius: 10px;
 
-    @media only screen and (max-width: 994px) {
-        margin-right: 0px;
-    }
+  @media only screen and (max-width: 994px) {
+    margin-right: 0px;
+  }
 }
 
-
 .menu-split-pane {
-    --side-width: 310px;
-    --side-max-width: 310px;
+  --side-width: 310px;
+  --side-max-width: 310px;
 }
 
 .menu-aside {
-    --width: 310px;
-    border: none !important;
-    height: 100vh;
+  --width: 310px;
+  border: none !important;
+  height: 100vh;
 }
 
 .layout {
+  --ion-background-color: transparent;
 
-    --ion-background-color: transparent;
+  // background: linear-gradient(120deg, #030e14, #030e14, #030f16, #041017, #051119, #06131b, #07141d, #08151f, #091621, #0a1623, #0b1724, #0b1724);
 
-    // background: linear-gradient(120deg, #030e14, #030e14, #030f16, #041017, #051119, #06131b, #07141d, #08151f, #091621, #0a1623, #0b1724, #0b1724);
+  // background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 50% center fixed;
 
-    // background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 50% center fixed;
+  // @media only screen and (max-width: 2000px) and (min-width: 1501px) {
+  //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 35% center fixed;
+  // }
 
-    // @media only screen and (max-width: 2000px) and (min-width: 1501px) {
-    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 35% center fixed;
-    // }
+  // @media only screen and (max-width: 1500px) and (min-width: 1001px) {
+  //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 25% center fixed;
+  // }
 
-    // @media only screen and (max-width: 1500px) and (min-width: 1001px) {
-    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 25% center fixed;
-    // }
+  // @media only screen and (max-width: 1000px) and (min-width: 501px) {
+  //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
+  // }
 
-    // @media only screen and (max-width: 1000px) and (min-width: 501px) {
-    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
-    // }
+  // @media only screen and (max-width: 500px) {
+  //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
+  // }
 
-    // @media only screen and (max-width: 500px) {
-    //     background: url("../../assets/background/ui-background-flipped.jpg") no-repeat 15% center fixed;
-    // }
+  // background: rgb(58, 75, 89);
 
-    // background: rgb(58, 75, 89);
-
-    background: url("../../assets/background/flow.png") no-repeat;
-    // background: url("../../assets/background/violet.jpg") no-repeat;
-    background-size: cover;
-    // background-image: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
+  background: url("../../assets/background/flow.png") no-repeat;
+  // background: url("../../assets/background/violet.jpg") no-repeat;
+  background-size: cover;
+  // background-image: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);
 }
-
-
 
 ion-list,
 ion-item,
@@ -61,190 +57,194 @@ ion-list-header,
 ion-label,
 ion-accordion,
 ion-accordion-group {
-    --background: transparent;
-    --ion-background-color: transparent !important;
-    --background-color: transparent !important;
-    background-color: transparent !important;
+  --background: transparent;
+  --ion-background-color: transparent !important;
+  --background-color: transparent !important;
+  background-color: transparent !important;
 }
 
-ion-item[slot=header] {
-    color: #ffffff;
-    // border-left: 1px solid #ff0000;
+ion-item[slot="header"] {
+  color: #ffffff;
+  // border-left: 1px solid #ff0000;
 
-    ion-label {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
+  ion-label {
+    padding: 0px !important;
+    margin: 0px !important;
+  }
 }
-
 
 ion-accordion::part(expanded) {
-    // --background: #ff0000 !important;
-    background-color: rgba(30, 30, 30, 0.1) !important;
+  // --background: #ff0000 !important;
+  background-color: rgba(30, 30, 30, 0.1) !important;
 }
 
-
-
 ion-list-header {
-    ion-label {
-        text-transform: uppercase;
-        color: #ffffff;
-        padding: 0px;
-        margin: 0px;
-    }
+  ion-label {
+    text-transform: uppercase;
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px;
+  }
 }
 
 ion-item {
+  --min-height: 25px;
+  // min-height: 20px;
+  // max-height: 20px;
+  // height: 40px;
+  padding: 0px;
+  --padding-bottom: 0px;
+  --inner-padding-bottom: 0px;
+
+  ion-label {
+    margin-left: 10px;
     --min-height: 25px;
-    // min-height: 20px;
-    // max-height: 20px;
-    // height: 40px;
+    height: 20px;
     padding: 0px;
-    --padding-bottom: 0px;
-    --inner-padding-bottom: 0px;
-
-    ion-label {
-        margin-left: 10px;
-        --min-height: 25px;
-        height: 20px;
-        padding: 0px;
-        color: #ccc;
-    }
+    color: #ccc;
+  }
 }
-
 
 .menu {
-    position: relative;
-    overflow-y: auto;
-    backdrop-filter: blur(10px) !important;
-    background-color: hsla(0, 0%, 100%, .1);
+  position: relative;
+  overflow-y: auto;
+  backdrop-filter: blur(10px) !important;
+  background-color: hsla(0, 0%, 100%, 0.1);
 
-    opacity: 0.95;
-    margin: 30px;
-    border-radius: 10px;
-    padding-bottom: 30px;
-    height: 100%;
+  opacity: 0.95;
+  margin: 30px;
+  border-radius: 10px;
+  padding-bottom: 10px;
+  height: 100%;
 
-
-    img {
-        border-radius: 10px 10px 0px 0px;
-    }
-
-
+  img {
+    border-radius: 10px 10px 0px 0px;
+  }
 }
 
-
 .logo {
+  margin-left: auto;
+  margin-right: auto;
+
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-align: center;
+
+  img {
+    margin-top: 20px;
+    width: 100px;
+    margin-bottom: 15px;
+  }
+
+  .outpost {
     margin-left: auto;
     margin-right: auto;
-
-    margin-bottom: 20px;
-    margin-top: 20px;
-    text-align: center;
-
-    img {
-        margin-top: 20px;
-        width: 100px;
-        margin-bottom: 15px;
-    }
-
-    .outpost {
-        margin-left: auto;
-        margin-right: auto;
-        width: 180px;
-        color: hsla(0, 0%, 100%, .6);
-        background-color: hsla(0, 0%, 100%, .05);
-        border-radius: 0.375rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        padding-top: 0.25rem;
-        padding-bottom: 0.25rem;
-        font-size: 1.0rem;
-    }
+    width: 180px;
+    color: hsla(0, 0%, 100%, 0.6);
+    background-color: hsla(0, 0%, 100%, 0.05);
+    border-radius: 0.375rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 1rem;
+  }
 }
 
 .profile {
-    &.disconnected {
-        .alter-ego {
-            img {
-                opacity: 0.4;
-            }
-        }
-
-        .connect-wallet {
-            // position: absolute;
-            position: relative;
-            // top: 220px;
-            // left: 45px;
-            width: 100%;
-            z-index: 99;
-            text-align: center;
-
-            // ion-chip {
-            //     backdrop-filter: blur(10px);
-            // }
-        }
+  &.disconnected {
+    .alter-ego {
+      img {
+        opacity: 0.4;
+      }
     }
+
+    .connect-wallet {
+      // position: absolute;
+      position: relative;
+      // top: 220px;
+      // left: 45px;
+      width: 100%;
+      z-index: 99;
+      text-align: center;
+
+      // ion-chip {
+      //     backdrop-filter: blur(10px);
+      // }
+    }
+  }
 }
 
 .about {
-    position: absolute;
-    bottom: 20px;
-    margin: 10px;
-    text-transform: uppercase;
+  position: absolute;
+  bottom: 20px;
+  margin: 10px;
+  text-transform: uppercase;
 
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .wallet-options {
+  text-align: center;
+
+  .chip {
+    display: inline-block;
     text-align: center;
+    line-height: 21px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    min-height: 32px;
+    border-top: 1px solid rgba(224, 187, 46, 0.8);
+    border-bottom: 1px solid rgba(224, 187, 46, 0.8);
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-inline-start: 12px;
+    padding-inline-end: 12px;
+    vertical-align: middle;
+    border-radius: 16px;
+    color: rgb(224, 187, 46);
+    font-size: 14px;
+    cursor: pointer;
 
-    .chip {
-        display: inline-block;
-        text-align: center;
-        line-height: 21px;
-        margin-top: 4px;
-        margin-bottom: 4px;
-        min-height: 32px;
-        border-top: 1px solid rgba(224, 187, 46, 0.8);
-        border-bottom: 1px solid rgba(224, 187, 46, 0.8);
-        padding-top: 6px;
-        padding-bottom: 6px;
-        padding-inline-start: 12px;
-        padding-inline-end: 12px;
-        vertical-align: middle;
-        border-radius: 16px;
-        color: rgb(224, 187, 46);
-        font-size: 14px;
-        cursor: pointer;
-
-        &:hover {
-            background-color: rgba(255, 213, 52, 0.12);
-        }
+    &:hover {
+      background-color: rgba(255, 213, 52, 0.12);
     }
+  }
 
-    ion-icon {
-        top: 3px;
-        position: relative;
-        padding-right: 6px;
-    }
+  ion-icon {
+    top: 3px;
+    position: relative;
+    padding-right: 6px;
+  }
 }
 
-// .chip {
-//     display: inline-flex;
-//     line-height: 21px;
-//     margin-top: 4px;
-//     margin-bottom: 4px;
-//     min-height: 32px;
-//     border: 1px solid rgba(224, 187, 46, 0.6);
-//     padding-top: 6px;
-//     padding-bottom: 6px;
-//     padding-inline-start: 12px;
-//     padding-inline-end: 12px;
-//     vertical-align: middle;
-//     border-radius: 16px;
-//     color: rgb(224, 187, 46);
-//     font-size: 14px;
-// }
+.menu-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.social-wrapper {
+  padding-top: 10px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  img {
+    border-radius: 0;
+  }
+}
