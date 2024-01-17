@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/decoder"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
@@ -30,6 +31,7 @@ type Config struct {
 	BaseTokenBinanceEndpoint string   `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
 	DatabaseDSN              string   `envconfig:"DATABASE_DSN" required:"true"`
 	LCDEndpoints             []string `envconfig:"LCD_ENDPOINTS" required:"true"`
+	RPCEndpoints             []string `envconfig:"RPC_ENDPOINTS" required:"true"`
 	BlockPollIntervalMS      int      `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
@@ -38,6 +40,7 @@ type Indexer struct {
 	chainID                  string
 	baseTokenBinanceEndpoint string
 	lcdEndpoints             []string
+	rpcEndpoints             []string
 	blockPollIntervalMS      int
 	logger                   *logrus.Entry
 	metaprotocols            map[string]metaprotocol.Processor
@@ -74,6 +77,7 @@ func New(
 		chainID:                  config.ChainID,
 		baseTokenBinanceEndpoint: config.BaseTokenBinanceEndpoint,
 		lcdEndpoints:             config.LCDEndpoints,
+		rpcEndpoints:             config.RPCEndpoints,
 		blockPollIntervalMS:      config.BlockPollIntervalMS,
 		metaprotocols:            metaprotocols,
 		logger:                   log,
@@ -160,56 +164,42 @@ func (i *Indexer) indexBlocks() {
 				"lag":            maxHeight - currentHeight,
 			}).Info("Fetching block")
 
-			_, transactions, err := i.fetchTransactions(currentHeight)
+			// Instead of fetching each transaction individually
+			// fetch the block and decode the protobuf contents
+			// All metaprotocols require a MsgSend transaction
+			block, transactions, err := i.fetchTransactions(currentHeight)
+			if err != nil {
+				i.logger.Fatal(err)
+			}
+
+			// Extract some commonly used values
+			height, err := strconv.ParseUint(block.Block.Header.Height, 10, 64)
 			if err != nil {
 				i.logger.Fatal(err)
 			}
 
 			for _, tx := range transactions {
-				// Get the full transaction from the LCD
-				// We do this because we want more information, such as gas used
-				// and a JSON-only way to parse the content
-				txSize, rawTransaction, err := i.fetchTransaction(tx)
-				if err != nil {
-					i.logger.Error(err)
-					continue
-				}
-
-				// Verify that this transaction is a metaprotocol inscription
-				if err := rawTransaction.ValidateBasic(); err != nil {
-					i.logger.WithFields(logrus.Fields{
-						"hash": tx,
-					}).Debug(err)
-
-					// TODO: Surface the error to the UI
-
-					continue
-				}
-
-				// Extract some commonly used values
-				height, err := strconv.ParseUint(rawTransaction.TxResponse.Height, 10, 64)
-				if err != nil {
-					i.logger.Fatal(err)
-				}
-				gasUsed, err := strconv.ParseUint(rawTransaction.TxResponse.GasUsed, 10, 64)
+				gasUsed, err := strconv.ParseUint(tx.AuthInfo.Fee.GasLimit, 10, 64)
 				if err != nil {
 					i.logger.Fatal(err)
 				}
 
-				fees, err := json.Marshal(rawTransaction.Tx.AuthInfo.Fee.Amount)
+				fees, err := json.Marshal(tx.AuthInfo.Fee.Amount)
 				if err != nil {
 					i.logger.Fatal(err)
 				}
+
+				contentLength := len(tx.ToJSON())
 
 				// Store the transaction
 				txModel := models.Transaction{
-					Hash:          tx,
+					Hash:          tx.Hash,
 					Height:        height,
-					Content:       rawTransaction.ToJSON(),
+					Content:       tx.ToJSON(),
 					GasUsed:       gasUsed,
 					Fees:          string(fees),
-					ContentLength: uint64(txSize),
-					DateCreated:   rawTransaction.TxResponse.Timestamp,
+					ContentLength: uint64(contentLength),
+					DateCreated:   block.Block.Header.Time,
 					StatusMessage: types.TransactionStatePending,
 				}
 				result := i.db.Save(&txModel)
@@ -217,7 +207,7 @@ func (i *Indexer) indexBlocks() {
 					// If the error is a duplicate key error, we ignore it
 					if result.Error != gorm.ErrDuplicatedKey && !strings.Contains(result.Error.Error(), "duplicate key value") {
 						i.logger.WithFields(logrus.Fields{
-							"hash": rawTransaction.TxResponse.Txhash,
+							"hash": tx.Hash,
 							"err":  result.Error,
 						}).Fatal("Unable to store transaction")
 					}
@@ -225,10 +215,10 @@ func (i *Indexer) indexBlocks() {
 
 				// Process metaprotocol memo
 				statusMessage := types.TransactionStateSuccess
-				err = i.processMetaprotocolMemo(txModel, rawTransaction)
+				err = i.processMetaprotocolMemo(txModel, tx)
 				if err != nil {
 					i.logger.WithFields(logrus.Fields{
-						"hash": rawTransaction.TxResponse.Txhash,
+						"hash": tx.Hash,
 					}).Error(err)
 					statusMessage = fmt.Sprintf("%s: %s", types.TransactionStateError, err)
 				}
@@ -239,15 +229,19 @@ func (i *Indexer) indexBlocks() {
 				result = i.db.Save(&txModel)
 				if result.Error != nil {
 					i.logger.WithFields(logrus.Fields{
-						"hash": rawTransaction.TxResponse.Txhash,
+						"hash": tx.Hash,
 						"err":  result.Error,
 					}).Warning("Unable to update transaction status")
 				}
 
 				i.logger.WithFields(logrus.Fields{
-					"hash": rawTransaction.TxResponse.Txhash,
+					"hash": tx.Hash,
 				}).Info("Transaction processed")
 			}
+
+			i.logger.WithFields(logrus.Fields{
+				"height": height,
+			}).Info("Block processed")
 
 			// All good, save last processed and increase height
 			status.LastProcessedHeight = currentHeight
@@ -313,10 +307,10 @@ func (i *Indexer) updateBaseToken() {
 // processMetaprotocolMemo handles the processing of different metaprotocols
 func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, rawTransaction types.RawTransaction) error {
 	i.logger.WithFields(logrus.Fields{
-		"hash": rawTransaction.TxResponse.Txhash,
+		"hash": rawTransaction.Hash,
 	}).Debug("Processing memo")
 
-	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Tx.Body.Memo))
+	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Body.Memo))
 	if !ok {
 		return errors.New("invalid metaprotocol URN")
 	}
@@ -329,7 +323,7 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 
 	i.logger.WithFields(logrus.Fields{
 		"processor": processor.Name(),
-		"hash":      rawTransaction.TxResponse.Txhash,
+		"hash":      rawTransaction.Hash,
 	}).Info("Processing metaprotocol")
 
 	err := processor.Process(transactionModel, metaprotocolURN, rawTransaction)
@@ -337,7 +331,7 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,
 			"err":          err,
-			"hash":         rawTransaction.TxResponse.Txhash,
+			"hash":         rawTransaction.Hash,
 		}).Error("failed to process, skipping")
 		return err
 	}
@@ -348,7 +342,7 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 // fetchCurrentHeight fetches the current height from the chain by using the
 // RPC /status endpoint
 func (i *Indexer) fetchCurrentHeight() (uint64, error) {
-	endpoint := i.randomEndpoint()
+	endpoint := i.randomLCDEndpoint()
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", endpoint))
 	if err != nil {
 		return 0, err
@@ -366,18 +360,20 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 }
 
 // fetchTransactions fetches all the transaction hashes in a block
-func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
-	var transactions []string
+func (i *Indexer) fetchTransactions(height uint64) (types.LCDBlock, []types.RawTransaction, error) {
+	var transactions []types.RawTransaction
+	var lcdBlock types.LCDBlock
 
-	endpoint := i.randomEndpoint()
+	endpoint := i.randomLCDEndpoint()
 	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", endpoint, height))
 	if err != nil {
-		return height, transactions, err
+		return lcdBlock, transactions, err
 	}
-	var lcdBlock types.LCDBlock
+	defer resp.Body.Close()
+
 	err = json.NewDecoder(resp.Body).Decode(&lcdBlock)
 	if err != nil {
-		return height, transactions, err
+		return lcdBlock, transactions, err
 	}
 	i.logger.WithFields(logrus.Fields{
 		"height":   height,
@@ -385,7 +381,33 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		"endpoint": endpoint,
 	}).Debug("Fetched block")
 
-	for _, tx := range lcdBlock.Block.Data.Txs {
+	// TODO: Fetch block results for this height as well to determine if the
+	// transaction was successful or not based on ID
+	rpcEndpoint := i.randomRPCEndpoint()
+	rpcResp, err := http.Get(fmt.Sprintf("%s/block_results?height=%d", rpcEndpoint, height))
+	if err != nil {
+		return lcdBlock, transactions, err
+	}
+	defer rpcResp.Body.Close()
+
+	var rpcBlock types.RPCBlockResult
+	err = json.NewDecoder(rpcResp.Body).Decode(&rpcBlock)
+	if err != nil {
+		return lcdBlock, transactions, err
+	}
+	i.logger.WithFields(logrus.Fields{
+		"height":   height,
+		"txs":      len(rpcBlock.Result.TxsResults),
+		"endpoint": endpoint,
+	}).Debug("Fetched block results")
+
+	// The result of the transaction is stored in the block results in order
+	transactionResultIndex := make(map[int]types.TxResult)
+	for index, txResult := range rpcBlock.Result.TxsResults {
+		transactionResultIndex[index] = txResult
+	}
+
+	for index, tx := range lcdBlock.Block.Data.Txs {
 
 		// Get the transaction hash by converting the base64 to hex
 		// This is the same as the transaction hash in the block explorer
@@ -401,34 +423,90 @@ func (i *Indexer) fetchTransactions(height uint64) (uint64, []string, error) {
 		s.Write(txBytes)
 		s.Sum(nil)
 		txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
-		transactions = append(transactions, txHash)
+
+		// Check if the transaction was a success, if not, skip
+		if transactionResultIndex[index].Code != 0 {
+			i.logger.WithFields(logrus.Fields{
+				"hash": txHash,
+				"log":  transactionResultIndex[index].Log,
+			}).Warn("Transaction failed, skipping")
+			continue
+		}
+
+		// Decode the protobuf encoded transaction
+		decoder := decoder.DefaultDecoder
+		decodedTx, err := decoder.DecodeBase64(tx)
+		if err != nil {
+			// Unable to decode the protobuf, we'll need to skip
+			i.logger.WithFields(logrus.Fields{
+				"height": height,
+				"txs":    txHash,
+				"err":    err,
+			}).Warn("unable to decode protobuf transaction")
+			continue
+		}
+
+		// The rest of the indexer is looking for JSON. For now we'll continue
+		// with that and refactor at a later stage
+		// TODO: Refactor how transactions are handled internally
+		jsonTx, err := decodedTx.MarshalToJSON()
+		if err != nil {
+			// If we can't marshal to JSON, we can't use it
+			i.logger.WithFields(logrus.Fields{
+				"height": height,
+				"txs":    txHash,
+				"err":    err,
+			}).Warn("unable to JSON encode transaction")
+			continue
+		}
+
+		// To RawTransaction as is expected
+		var rawTransaction types.RawTransaction
+		err = json.Unmarshal(jsonTx, &rawTransaction)
+		if err != nil {
+			// If we can't git it in the RawTransaction format, we can't use it
+			i.logger.WithFields(logrus.Fields{
+				"height": height,
+				"txs":    txHash,
+				"err":    err,
+			}).Warn("unable to JSON encode transaction")
+			continue
+		}
+
+		// Add the hash as it isn't there by default
+		rawTransaction.Hash = txHash
+		transactions = append(transactions, rawTransaction)
+
+		// TODO: Add hash somehow?
+
+		// // Get the transaction hash by converting the base64 to hex
+		// // This is the same as the transaction hash in the block explorer
+		// txBytes, err := base64.StdEncoding.DecodeString(tx)
+		// if err != nil {
+		// 	// If we can't marshal to JSON, we probably have invalid characters
+		// 	i.logger.Warn("Error encode transaction JSON:", err)
+		// 	continue
+		// }
+
+		// // Create transaction hash
+		// s := sha256.New()
+		// s.Write(txBytes)
+		// s.Sum(nil)
+		// txHash := strings.ToUpper(hex.EncodeToString(s.Sum(nil)))
+		// transactions = append(transactions, txHash)
 
 	}
-	return height, transactions, nil
-}
-
-// fetchTransaction fetches a single transaction from the LCD
-func (i *Indexer) fetchTransaction(hash string) (int, types.RawTransaction, error) {
-	endpoint := i.randomEndpoint()
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", endpoint, hash))
-	if err != nil {
-		return 0, types.RawTransaction{}, err
-	}
-	var rawTransaction types.RawTransaction
-	err = json.NewDecoder(resp.Body).Decode(&rawTransaction)
-	if err != nil {
-		return 0, types.RawTransaction{}, err
-	}
-	i.logger.WithFields(logrus.Fields{
-		"hash":     hash,
-		"endpoint": endpoint,
-	}).Debug("Fetched transaction")
-
-	return rawTransaction.GetTxByteSize(), rawTransaction, nil
+	return lcdBlock, transactions, nil
 }
 
 // randomEndpoint returns a random LCD endpoint to use
 // We do this to balance the load across multiple endpoints very naively
-func (i *Indexer) randomEndpoint() string {
+func (i *Indexer) randomLCDEndpoint() string {
 	return i.lcdEndpoints[rand.Intn(len(i.lcdEndpoints))]
+}
+
+// randomEndpoint returns a random RPC endpoint to use
+// We do this to balance the load across multiple endpoints very naively
+func (i *Indexer) randomRPCEndpoint() string {
+	return i.rpcEndpoints[rand.Intn(len(i.rpcEndpoints))]
 }

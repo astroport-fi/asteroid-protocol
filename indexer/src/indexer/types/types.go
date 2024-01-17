@@ -3,11 +3,9 @@ package types
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
-
-	"github.com/calvinlauyh/cosmosutils"
+	// "github.com/calvinlauyh/cosmosutils"
 )
 
 const InscriptionTypeContentGeneric = "inscriptions.v1.content.generic"
@@ -43,7 +41,7 @@ type Tx struct {
 	Hash     string
 	RawTx    string
 	ParsedTx string
-	CosmosTx cosmosutils.CosmosTx
+	// CosmosTx cosmosutils.CosmosTx
 }
 
 type RPCStatus struct {
@@ -153,122 +151,51 @@ type RPCBlock struct {
 }
 
 type RawTransaction struct {
-	Tx struct {
-		Body struct {
-			Messages []struct {
-				Type        string `json:"@type"`
-				FromAddress string `json:"from_address"`
-				ToAddress   string `json:"to_address"`
-				Amount      []struct {
-					Denom  string `json:"denom"`
-					Amount string `json:"amount"`
-				} `json:"amount"`
-			} `json:"messages"`
-			Memo                        string `json:"memo"`
-			TimeoutHeight               string `json:"timeout_height"`
-			ExtensionOptions            []any  `json:"extension_options"`
-			NonCriticalExtensionOptions []struct {
-				Type       string `json:"@type"`
-				Granter    string `json:"granter"`
-				Grantee    string `json:"grantee"`
-				MsgTypeURL string `json:"msg_type_url"`
-			} `json:"non_critical_extension_options"`
-		} `json:"body"`
-		AuthInfo struct {
-			SignerInfos []struct {
-				PublicKey struct {
-					Type string `json:"@type"`
-					Key  string `json:"key"`
-				} `json:"public_key"`
-				ModeInfo struct {
-					Single struct {
-						Mode string `json:"mode"`
-					} `json:"single"`
-				} `json:"mode_info"`
-				Sequence string `json:"sequence"`
-			} `json:"signer_infos"`
-			Fee struct {
-				Amount []struct {
-					Denom  string `json:"denom"`
-					Amount string `json:"amount"`
-				} `json:"amount"`
-				GasLimit string `json:"gas_limit"`
-				Payer    string `json:"payer"`
-				Granter  string `json:"granter"`
-			} `json:"fee"`
-		} `json:"auth_info"`
-		Signatures []string `json:"signatures"`
-	} `json:"tx"`
-	TxResponse struct {
-		Height    string `json:"height"`
-		Txhash    string `json:"txhash"`
-		Codespace string `json:"codespace"`
-		Code      int    `json:"code"`
-		Data      string `json:"data"`
-		RawLog    string `json:"raw_log"`
-		Logs      []struct {
-			MsgIndex int    `json:"msg_index"`
-			Log      string `json:"log"`
-			Events   []struct {
-				Type       string `json:"type"`
-				Attributes []struct {
-					Key   string `json:"key"`
-					Value string `json:"value"`
-				} `json:"attributes"`
-			} `json:"events"`
-		} `json:"logs"`
-		Info      string `json:"info"`
-		GasWanted string `json:"gas_wanted"`
-		GasUsed   string `json:"gas_used"`
-		Tx        struct {
-			Type string `json:"@type"`
-			Body struct {
-				Messages []struct {
-					Type        string `json:"@type"`
-					FromAddress string `json:"from_address"`
-					ToAddress   string `json:"to_address"`
-					Amount      []struct {
-						Denom  string `json:"denom"`
-						Amount string `json:"amount"`
-					} `json:"amount"`
-				} `json:"messages"`
-				Memo                        string           `json:"memo"`
-				TimeoutHeight               string           `json:"timeout_height"`
-				ExtensionOptions            []any            `json:"extension_options"`
-				NonCriticalExtensionOptions []RawInscription `json:"non_critical_extension_options"`
-			} `json:"body"`
-			AuthInfo struct {
-				SignerInfos []struct {
-					PublicKey struct {
-						Type string `json:"@type"`
-						Key  string `json:"key"`
-					} `json:"public_key"`
-					ModeInfo struct {
-						Single struct {
-							Mode string `json:"mode"`
-						} `json:"single"`
-					} `json:"mode_info"`
-					Sequence string `json:"sequence"`
-				} `json:"signer_infos"`
-				Fee struct {
-					Amount   []any  `json:"amount"`
-					GasLimit string `json:"gas_limit"`
-					Payer    string `json:"payer"`
-					Granter  string `json:"granter"`
-				} `json:"fee"`
-			} `json:"auth_info"`
-			Signatures []string `json:"signatures"`
-		} `json:"tx"`
-		Timestamp time.Time `json:"timestamp"`
-		Events    []struct {
-			Type       string `json:"type"`
-			Attributes []struct {
-				Key   string `json:"key"`
-				Value any    `json:"value"`
-				Index bool   `json:"index"`
-			} `json:"attributes"`
-		} `json:"events"`
-	} `json:"tx_response"`
+	Hash string `json:"hash"`
+	Body struct {
+		Messages []struct {
+			Type        string `json:"@type"`
+			FromAddress string `json:"from_address"`
+			ToAddress   string `json:"to_address"`
+			Amount      []struct {
+				Denom  string `json:"denom"`
+				Amount string `json:"amount"`
+			} `json:"amount"`
+		} `json:"messages"`
+		Memo                        string `json:"memo"`
+		TimeoutHeight               string `json:"timeout_height"`
+		ExtensionOptions            []any  `json:"extension_options"`
+		NonCriticalExtensionOptions []struct {
+			Type       string `json:"@type"`
+			Granter    string `json:"granter"`
+			Grantee    string `json:"grantee"`
+			MsgTypeURL string `json:"msg_type_url"`
+		} `json:"non_critical_extension_options"`
+	} `json:"body"`
+	AuthInfo struct {
+		SignerInfos []struct {
+			PublicKey struct {
+				Type string `json:"@type"`
+				Key  string `json:"key"`
+			} `json:"public_key"`
+			ModeInfo struct {
+				Single struct {
+					Mode string `json:"mode"`
+				} `json:"single"`
+			} `json:"mode_info"`
+			Sequence string `json:"sequence"`
+		} `json:"signer_infos"`
+		Fee struct {
+			Amount []struct {
+				Denom  string `json:"denom"`
+				Amount string `json:"amount"`
+			} `json:"amount"`
+			GasLimit string `json:"gas_limit"`
+			Payer    string `json:"payer"`
+			Granter  string `json:"granter"`
+		} `json:"fee"`
+	} `json:"auth_info"`
+	Signatures []string `json:"signatures"`
 }
 
 type RawInscription struct {
@@ -284,12 +211,12 @@ func (tx RawTransaction) ToJSON() string {
 }
 
 func (tx RawTransaction) GetTxByteSize() int {
-	jsonBytes, _ := json.Marshal(tx.Tx)
+	jsonBytes, _ := json.Marshal(tx)
 	return len(jsonBytes)
 }
 
 func (tx RawTransaction) GetSenderAddress() (string, error) {
-	for _, message := range tx.Tx.Body.Messages {
+	for _, message := range tx.Body.Messages {
 		return message.FromAddress, nil
 	}
 	return "", errors.New("no sender address found")
@@ -300,12 +227,12 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 func (tx RawTransaction) ValidateBasic() error {
 
 	// Verify that the transaction succeeded
-	if tx.TxResponse.Code != 0 {
-		return fmt.Errorf("transaction failed: %s", tx.TxResponse.RawLog)
-	}
+	// if tx.TxResponse.Code != 0 {
+	// 	return fmt.Errorf("transaction failed: %s", tx.TxResponse.RawLog)
+	// }
 
 	hasSend := false
-	for _, v := range tx.Tx.Body.Messages {
+	for _, v := range tx.Body.Messages {
 		// TODO: This might need to be a IBC send
 		if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
 			hasSend = true
@@ -316,7 +243,7 @@ func (tx RawTransaction) ValidateBasic() error {
 	}
 
 	hasInscriptionMemo := false
-	if strings.Contains(strings.ToLower(tx.Tx.Body.Memo), "urn:") {
+	if strings.Contains(strings.ToLower(tx.Body.Memo), "urn:") {
 		hasInscriptionMemo = true
 	}
 
