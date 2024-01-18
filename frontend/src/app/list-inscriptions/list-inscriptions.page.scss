@@ -1,12 +1,30 @@
 .list {
-    text-align: left;
+  text-align: left;
 
-    @media only screen and (max-width: 900px) {
-        text-align: center;
-    }
+  @media only screen and (max-width: 900px) {
+    text-align: center;
+  }
 }
 
 .filter {
-    margin-top: -15px;
-    color: #888;
+  margin-top: -15px;
+  color: #888;
+}
+
+.name {
+  width: 100%;
+  overflow: hidden;
+  height: 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.detail-item {
+  width: 100%;
+  overflow: hidden;
+  height: 16px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
