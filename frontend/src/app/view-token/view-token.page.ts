@@ -169,6 +169,9 @@ export class ViewTokenPage implements OnInit {
         {
           offset: 0,
           limit: 100,
+          order_by: {
+            amount: "desc_nulls_last"
+          },
           where: {
             token_id: {
               _eq: this.token.id
