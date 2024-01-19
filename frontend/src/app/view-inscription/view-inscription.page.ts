@@ -132,6 +132,22 @@ export class ViewInscriptionPage implements OnInit {
       name: 'description',
       content: description,
     });
+    this.meta.updateTag({
+      property: 'twitter:url',
+      content: `https://asteroidprotocol.io/app/inscription/${transaction.hash}`,
+    });
+    this.meta.updateTag({
+      property: 'twitter:title',
+      content: `${name} Inscription #${id} on Asteroid Protocol`,
+    });
+    this.meta.updateTag({
+      property: 'twitter:image',
+      content: content_path,
+    });
+    this.meta.updateTag({
+      property: 'twitter:description',
+      content: description,
+    });
 
     const resultHistory = await chain('query')({
       inscription_history: [
