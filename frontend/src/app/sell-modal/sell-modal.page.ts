@@ -19,6 +19,7 @@ import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 
 @Component({
   selector: 'app-sell-modal',
@@ -41,7 +42,7 @@ export class SellModalPage implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: CFT20Service) {
+  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: MarketplaceService) {
     addIcons({ checkmark, closeOutline, close });
 
     this.sellForm = this.builder.group({
@@ -130,9 +131,11 @@ export class SellModalPage implements OnInit {
     const params = new Map([
       ["tic", this.ticker],
       ["amt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString()],
-      ["ppt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
+      ["total", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
+      ["mindep", "0.1"],
+      ["to", "10"],
     ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list', params);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -143,8 +146,8 @@ export class SellModalPage implements OnInit {
         data: null,
         routerLink: ['/app/manage/token', this.ticker],
         resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
-        metaprotocolAction: 'list',
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'list.cft20',
       }
     });
     modal.present();
