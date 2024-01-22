@@ -32,12 +32,12 @@
             <ion-row>
               <ion-col size-lg="6" size-xs="12">
                 <div class="text-center">
-                  <app-generic-preview [mime]="inscription.mime"
-                    [contentPath]="inscription.content_path"></app-generic-preview>
+                  <app-generic-preview [mime]="inscription.mime" [contentPath]="inscription.content_path"
+                    [isExplicit]="inscription.is_explicit"></app-generic-preview>
                 </div>
                 <div class="text-center p-2">
                   <ion-button color="primary" fill="clear" href="inscription/{{ inscription.transaction.hash }}"
-                    target="_blank">
+                    target="_blank" *ngIf="!inscription.is_explicit">
                     Open in viewer <ion-icon name="open-outline" class="ps-2"></ion-icon>
                   </ion-button>
                 </div>

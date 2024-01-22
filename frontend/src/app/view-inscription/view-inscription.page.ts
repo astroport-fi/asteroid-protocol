@@ -60,6 +60,7 @@ export class ViewInscriptionPage implements OnInit {
           current_owner: true,
           content_path: true,
           content_size_bytes: true,
+          is_explicit: true,
           date_created: true,
           __alias: {
             name: {
@@ -118,57 +119,6 @@ export class ViewInscriptionPage implements OnInit {
       ]
     });
     this.inscriptionHistory = resultHistory.inscription_history;
-
-    const wsChain = Subscription(environment.api.wss);
-    wsChain('subscription')({
-      inscription: [
-        {
-          where: {
-            transaction: {
-              hash: {
-                _eq: this.activatedRoute.snapshot.params["txhash"]
-              }
-            }
-          }
-        }, {
-          id: true,
-          height: true,
-          transaction: {
-            hash: true
-          },
-          creator: true,
-          current_owner: true,
-          content_path: true,
-          content_size_bytes: true,
-          date_created: true,
-          __alias: {
-            name: {
-              metadata: [{
-                path: '$.metadata.name'
-              },
-                true
-              ]
-            },
-            description: {
-              metadata: [{
-                path: '$.metadata.description'
-              },
-                true
-              ]
-            },
-            mime: {
-              metadata: [{
-                path: '$.metadata.mime'
-              },
-                true
-              ]
-            }
-          }
-        }
-      ]
-    }).on(({ inscription }) => {
-      this.inscription = inscription[0];
-    });
 
     this.isLoading = false;
   }
