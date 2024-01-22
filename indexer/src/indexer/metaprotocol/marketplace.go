@@ -145,6 +145,9 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		// Calculate the ATOM amount of the minimum deposit by checking against
 		// totalBase
 		minDepositBase := minDeposit * totalBase
+		if minDepositBase < 1 {
+			minDepositBase = 20
+		}
 
 		// Get the listing timeout
 		timeoutString := strings.TrimSpace(parsedURN.KeyValuePairs["to"])
@@ -289,8 +292,11 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 
 		// Check if sender has enough ATOM to buy the listing
 		balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom")
-		if balance < listingModel.Total-listingModel.DepositTotal {
-			return fmt.Errorf("sender does not have enough ATOM to complete the purchase after deposit")
+
+		if listingModel.Total >= listingModel.DepositTotal {
+			if balance < listingModel.Total-listingModel.DepositTotal {
+				return fmt.Errorf("sender does not have enough ATOM to complete the purchase after deposit")
+			}
 		}
 
 		// Check that the correct amount was sent with the deposit
