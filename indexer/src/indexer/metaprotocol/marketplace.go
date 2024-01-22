@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 
@@ -17,6 +16,9 @@ import (
 
 type MarketplaceConfig struct {
 	MinimumTimeoutBlocks uint64 `envconfig:"MARKET_MIN_TIMEOUT" required:"true"`
+
+	LCDEndpoints    []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
+	EndpointHeaders map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
 }
 
 type Marketplace struct {
@@ -25,6 +27,9 @@ type Marketplace struct {
 	virtualAddress       string
 	minimumTimeoutBlocks uint64
 	db                   *gorm.DB
+
+	lcdEndpoints    []string
+	endpointHeaders map[string]string
 }
 
 func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
@@ -41,6 +46,8 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		virtualAddress:       "marketplace-v2",
 		minimumTimeoutBlocks: config.MinimumTimeoutBlocks,
 		db:                   db,
+		lcdEndpoints:         config.LCDEndpoints,
+		endpointHeaders:      config.EndpointHeaders,
 	}
 }
 
@@ -225,18 +232,40 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
-			return result.Error
+			// If we can't store the history, that ED39F0355A87799E603E0E646A174B860C222E757807833E87036CF2846F9F45is fine, we shouldn't fail
+			return nil
+		}
+
+		// Record the listing history
+		listingHistory := models.MarketplaceListingHistory{
+			ListingID:     listing.ID,
+			SenderAddress: sender,
+			Action:        "list",
+			DateCreated:   transactionModel.DateCreated,
+		}
+		result = protocol.db.Save(&listingHistory)
+		if result.Error != nil {
+			// If we can't store the history, that is fine, we shouldn't fail
+			return nil
 		}
 
 	case "list.inscription":
 		// TODO: Implement
 	case "deposit":
-
+		action := "deposit"
 		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
+
+		// Deposits are based on the listing transaction hash, find the transaction
+		// and matching listing
+		var transactionModel models.Transaction
+		result := protocol.db.Debug().Where("hash = ?", hash).First(&transactionModel)
+		if result.Error != nil {
+			return fmt.Errorf("no listing transaction with hash '%s'", hash)
+		}
 
 		// Fetch listing based on hash
 		var listingModel models.MarketplaceListing
-		result := protocol.db.Where("chain_id = ? AND hash = ?", parsedURN.ChainID, hash).First(&listingModel)
+		result = protocol.db.Where("chain_id = ? AND transaction_id = ?", parsedURN.ChainID, transactionModel.ID).First(&listingModel)
 		if result.Error != nil {
 			return fmt.Errorf("no listing with hash '%s'", hash)
 		}
@@ -246,15 +275,48 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 				return fmt.Errorf("listing already has a deposit")
 			}
 			// Has deposit, but expired, so we continue
+			action = "deposit after expiry"
 		}
 
-		// Check if use has enough ATOM buy the listing
+		// Check if sender has enough ATOM to buy the listing
+		balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom")
+		if balance < listingModel.Total-listingModel.DepositTotal {
+			return fmt.Errorf("sender does not have enough ATOM to complete the purchase after deposit")
+		}
 
-		// TODO: Update the listing to deposited, add the depositor address
+		// Check that the correct amount was sent with the deposit
+		amountSent, err := GetBaseTokensSent(rawTransaction)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
 
-		fmt.Println("We have deposit", hash)
+		if amountSent < listingModel.DepositTotal {
+			return fmt.Errorf("sender did not send enough tokens to cover the deposit")
+		}
 
-		os.Exit(0)
+		// Everything checks out, add this as the depositor
+		listingModel.IsDeposited = true
+		listingModel.DepositorAddress = sender
+		// Timed-out block is the first block after the expiry period when the
+		// listing is deemed expired
+		listingModel.DepositorTimeoutBlock = currentHeight + listingModel.DepositTimeout + 1
+		result = protocol.db.Save(&listingModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Record the listing history
+		listingHistory := models.MarketplaceListingHistory{
+			ListingID:     listingModel.ID,
+			SenderAddress: sender,
+			Action:        action,
+			DateCreated:   transactionModel.DateCreated,
+		}
+		result = protocol.db.Save(&listingHistory)
+		if result.Error != nil {
+			// If we can't store the history, that is fine, we shouldn't fail
+			return nil
+		}
 
 	case "delist":
 		fmt.Println("DELIST")

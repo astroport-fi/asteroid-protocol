@@ -119,6 +119,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse supply '%s'", err)
 		}
+		if supplyFloat <= 0 {
+			return fmt.Errorf("token supply must be greater than 0")
+		}
 
 		decimals, err := strconv.ParseUint(parsedURN.KeyValuePairs["dec"], 10, 64)
 		if err != nil {
@@ -127,6 +130,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		limitFloat, err := strconv.ParseFloat(parsedURN.KeyValuePairs["lim"], 64)
 		if err != nil {
 			return fmt.Errorf("unable to parse limit '%s'", err)
+		}
+		if limitFloat <= 0 {
+			return fmt.Errorf("token supply must be greater than 0")
 		}
 
 		openTimestamp, err := strconv.ParseUint(parsedURN.KeyValuePairs["opn"], 10, 64)
@@ -339,6 +345,10 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse amount '%s'", err)
 		}
+		if amount == 0 {
+			return fmt.Errorf("amount must be greater than 0")
+		}
+
 		amount = amount * uint64(math.Pow10(int(tokenModel.Decimals)))
 
 		// Check that the user has enough tokens to transfer
@@ -420,6 +430,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse amount '%s'", err)
 		}
+		if amount <= 0 {
+			return fmt.Errorf("amount must be greater than 0")
+		}
 
 		pptString := strings.TrimSpace(parsedURN.KeyValuePairs["ppt"])
 		// Convert amount to have the correct number of decimals
@@ -427,6 +440,10 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if err != nil {
 			return fmt.Errorf("unable to parse ppt '%s'", err)
 		}
+		if ppt <= 0 {
+			return fmt.Errorf("price per token must be greater than 0")
+		}
+
 		totalBase := float64(amount) * ppt
 
 		// 6 is the amount of ATOM decimals
