@@ -155,6 +155,10 @@ export class SellModalPage implements OnInit {
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
     let listingFee = parseFloat(amount) * parseFloat(ppt) * minDeposit;
+    // Avoid very small listing fees
+    if (listingFee < 0.000001) {
+      listingFee = 0.00002;
+    }
     // Convert to uatom
     listingFee = listingFee * Math.pow(10, 6);
     listingFee = Math.floor(listingFee);

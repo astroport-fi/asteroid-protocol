@@ -1,6 +1,6 @@
 <ion-content fullscreen="true">
   <ion-grid>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col size="12">
         <ion-header class="no-shadow">
           <ion-toolbar>
@@ -14,7 +14,7 @@
           </ion-toolbar>
         </ion-header>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
     <ion-row>
       <ion-col size="12" class="main-content">
         <div class="loading p-4" *ngIf="isLoading">
@@ -27,7 +27,22 @@
           <ion-grid>
             <ion-row>
               <ion-col size="12">
-                overview
+                <!-- <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market -->
+                <p-dropdown *ngIf="!isLoading" [options]="markets" [(ngModel)]="selectedMarket" optionLabel="market"
+                  [filter]="true" filterBy="ticker" [showClear]="true" placeholder="Select a market">
+                  <ng-template pTemplate="selectedItem">
+                    <div class="flex align-items-center gap-2" *ngIf="selectedMarket">
+                      <img [src]="selectedMarket.content_path" style="width: 18px" />
+                      <div>{{ selectedMarket.ticker }} / ATOM</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-market pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <img [src]="market.content_path" style="width: 18px" />
+                      <div>{{ market.ticker }} / ATOM</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
               </ion-col>
             </ion-row>
             <ion-row>

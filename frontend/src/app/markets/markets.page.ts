@@ -192,8 +192,8 @@ export class MarketsPage implements OnInit {
   customSort(event: SortEvent) {
     if (event.field == 'listings') {
       event.data?.sort((data1, data2) => {
-        let value1 = data1["token_open_positions"].length;
-        let value2 = data2["token_open_positions"].length;
+        let value1 = data1["marketplace_cft20_details"].length;
+        let value2 = data2["marketplace_cft20_details"].length;
         let result = null;
 
         if (value1 == null && value2 != null) result = -1;

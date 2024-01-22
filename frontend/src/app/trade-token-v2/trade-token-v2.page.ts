@@ -34,6 +34,7 @@ export class TradeTokenV2Page implements OnInit {
   tokenIsLaunched: boolean = false;
   baseTokenUSD: number = 0.00;
   walletAddress: string = '';
+  currentBlock: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
@@ -106,6 +107,7 @@ export class TradeTokenV2Page implements OnInit {
             total: true,
             depositor_address: true,
             is_deposited: true,
+            depositor_timedout_block: true,
             transaction: {
               hash: true
             },
@@ -130,10 +132,12 @@ export class TradeTokenV2Page implements OnInit {
         {
           base_token: true,
           base_token_usd: true,
+          last_processed_height: true,
         }
       ]
     }).on(({ status }) => {
       this.baseTokenUSD = status[0].base_token_usd;
+      this.currentBlock = status[0].last_processed_height;
     });
 
     wsChain('subscription')({
@@ -149,7 +153,8 @@ export class TradeTokenV2Page implements OnInit {
               },
               is_filled: {
                 _eq: false
-              }
+              },
+
             }
           }
         },
@@ -160,6 +165,7 @@ export class TradeTokenV2Page implements OnInit {
             total: true,
             depositor_address: true,
             is_deposited: true,
+            depositor_timedout_block: true,
             transaction: {
               hash: true
             },
@@ -171,69 +177,6 @@ export class TradeTokenV2Page implements OnInit {
     }).on(({ marketplace_cft20_detail }) => {
       this.listings = marketplace_cft20_detail;
     });
-
-    // wsChain('subscription')({
-    //   token: [
-    //     {
-    //       where: {
-    //         ticker: {
-    //           _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
-    //         }
-    //       }
-    //     }, {
-    //       id: true,
-    //       name: true,
-    //       ticker: true,
-    //       decimals: true,
-    //       content_path: true,
-    //       last_price_base: true,
-    //       volume_24_base: true,
-    //     }
-    //   ]
-    // }).on(({ token }) => {
-    //   this.token = token[0];
-    // });
-
-    // wsChain('subscription')({
-    //   token_open_position: [
-    //     {
-    //       where: {
-    //         _and: [
-    //           {
-    //             token: {
-    //               ticker: {
-    //                 _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
-    //               }
-    //             }
-    //           },
-    //           {
-    //             is_cancelled: {
-    //               _eq: false
-    //             }
-    //           },
-    //           {
-    //             is_filled: {
-    //               _eq: false
-    //             }
-    //           }
-    //         ]
-    //       }
-    //     }, {
-    //       id: true,
-    //       token: {
-    //         ticker: true,
-    //       },
-    //       seller_address: true,
-    //       ppt: true,
-    //       amount: true,
-    //       total: true,
-    //       is_cancelled: false,
-    //       is_filled: false,
-    //     }
-    //   ]
-    // }).on(({ token_open_position }) => {
-    //   this.positions = token_open_position;
-    // });
 
     this.isLoading = false;
   }
@@ -268,7 +211,6 @@ export class TradeTokenV2Page implements OnInit {
     const listing = listingResult.marketplace_listing[0];
 
     const deposit: bigint = listing.deposit_total as bigint;
-    console.log(deposit);
 
     const purchaseMessage = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",

@@ -17,13 +17,14 @@ import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-trade-token-tv',
   templateUrl: './trade-token-tv.page.html',
   styleUrls: ['./trade-token-tv.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule]
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule, DropdownModule]
 })
 export class TradeTokenTVPage implements OnInit {
   isLoading = false;
@@ -34,6 +35,8 @@ export class TradeTokenTVPage implements OnInit {
   tokenIsLaunched: boolean = false;
   baseTokenUSD: number = 0.00;
   walletAddress: string = '';
+  markets: any[] = [];
+  selectedMarket: any;
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
@@ -48,6 +51,23 @@ export class TradeTokenTVPage implements OnInit {
     }
 
     const chain = Chain(environment.api.endpoint)
+    const marketsResult = await chain('query')({
+      token: [
+        {
+
+        }, {
+          id: true,
+          name: true,
+          ticker: true,
+          decimals: true,
+          content_path: true,
+        }
+      ]
+    });
+    this.markets = marketsResult.token;
+    this.selectedMarket = this.markets[2];
+
+
     const result = await chain('query')({
       token: [
         {

@@ -98,12 +98,19 @@
                 <td class="text-end">
                   <ion-button fill="outline" color="success"
                     (click)="deposit(listing.marketplace_listing.transaction.hash)"
-                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && !listing.marketplace_listing.is_deposited">Deposit</ion-button>
+                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Deposit</ion-button>
                   <ion-button fill="outline" color="success" (click)="buy(listing.marketplace_listing.transaction.hash)"
-                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress">Buy</ion-button>
+                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">Buy
+                    ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-button>
+                  <ion-text
+                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                    ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
                   <ion-button fill="outline" color="warning"
                     (click)="cancel(listing.marketplace_listing.transaction.hash)"
-                    *ngIf="listing.marketplace_listing.seller_address == walletAddress">Cancel</ion-button>
+                    *ngIf="listing.marketplace_listing.seller_address == walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Cancel</ion-button>
+                  <ion-text
+                    *ngIf="listing.marketplace_listing.seller_address == walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                    ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
                 </td>
               </tr>
             </ng-template>
