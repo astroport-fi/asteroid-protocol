@@ -55,7 +55,7 @@ func (protocol *Marketplace) Name() string {
 	return "marketplace"
 }
 
-func (protocol *Marketplace) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		return fmt.Errorf("version in protocol string does not match transaction version")
 	}
 
-	currentHeight := transactionModel.Height
+	currentHeight := currentTransaction.Height
 
 	// TODO: Rework the operation handling
 	switch parsedURN.Operation {
@@ -189,7 +189,7 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Create a listing position
 		listing := models.MarketplaceListing{
 			ChainID:          parsedURN.ChainID,
-			TransactionID:    transactionModel.ID,
+			TransactionID:    currentTransaction.ID,
 			SellerAddress:    sender,
 			Total:            uint64(math.Round(totalBase)),
 			DepositTotal:     uint64(math.Round(minDepositBase)),
@@ -198,8 +198,8 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 			IsDeposited:      false,
 			IsFilled:         false,
 			IsCancelled:      false,
-			DateUpdated:      transactionModel.DateCreated,
-			DateCreated:      transactionModel.DateCreated,
+			DateUpdated:      currentTransaction.DateCreated,
+			DateCreated:      currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&listing)
 		if result.Error != nil {
@@ -211,7 +211,7 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 			TokenID:     tokenModel.ID,
 			Amount:      uint64(math.Round(amount)),
 			PPT:         uint64(math.Round(ppt)),
-			DateCreated: transactionModel.DateCreated,
+			DateCreated: currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&listingDetail)
 		if result.Error != nil {
@@ -221,14 +221,14 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Record the transfer
 		historyModel := models.TokenAddressHistory{
 			ChainID:       parsedURN.ChainID,
-			Height:        transactionModel.Height,
-			TransactionID: transactionModel.ID,
+			Height:        currentTransaction.Height,
+			TransactionID: currentTransaction.ID,
 			TokenID:       tokenModel.ID,
 			Sender:        sender,
 			Receiver:      destinationAddress,
 			Action:        "list",
 			Amount:        uint64(math.Round(amount)),
-			DateCreated:   transactionModel.DateCreated,
+			DateCreated:   currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
@@ -239,9 +239,10 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Record the listing history
 		listingHistory := models.MarketplaceListingHistory{
 			ListingID:     listing.ID,
+			TransactionID: currentTransaction.ID,
 			SenderAddress: sender,
 			Action:        "list",
-			DateCreated:   transactionModel.DateCreated,
+			DateCreated:   currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&listingHistory)
 		if result.Error != nil {
@@ -258,7 +259,7 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Deposits are based on the listing transaction hash, find the transaction
 		// and matching listing
 		var transactionModel models.Transaction
-		result := protocol.db.Debug().Where("hash = ?", hash).First(&transactionModel)
+		result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
 		if result.Error != nil {
 			return fmt.Errorf("no listing transaction with hash '%s'", hash)
 		}
@@ -297,6 +298,7 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Everything checks out, add this as the depositor
 		listingModel.IsDeposited = true
 		listingModel.DepositorAddress = sender
+		listingModel.DateUpdated = currentTransaction.DateCreated
 		// Timed-out block is the first block after the expiry period when the
 		// listing is deemed expired
 		listingModel.DepositorTimeoutBlock = currentHeight + listingModel.DepositTimeout + 1
@@ -308,9 +310,10 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		// Record the listing history
 		listingHistory := models.MarketplaceListingHistory{
 			ListingID:     listingModel.ID,
+			TransactionID: currentTransaction.ID,
 			SenderAddress: sender,
 			Action:        action,
-			DateCreated:   transactionModel.DateCreated,
+			DateCreated:   currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&listingHistory)
 		if result.Error != nil {
@@ -319,9 +322,70 @@ func (protocol *Marketplace) Process(transactionModel models.Transaction, protoc
 		}
 
 	case "delist":
-		fmt.Println("DELIST")
+		action := "delist"
+		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
+
+		// Deposits are based on the listing transaction hash, find the transaction
+		// and matching listing
+		var transactionModel models.Transaction
+		result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
+		if result.Error != nil {
+			return fmt.Errorf("no listing transaction with hash '%s'", hash)
+		}
+
+		// Fetch listing based on hash
+		var listingModel models.MarketplaceListing
+		result = protocol.db.Where("chain_id = ? AND transaction_id = ?", parsedURN.ChainID, transactionModel.ID).First(&listingModel)
+		if result.Error != nil {
+			return fmt.Errorf("no listing with hash '%s'", hash)
+		}
+
+		if listingModel.SellerAddress != sender {
+			return fmt.Errorf("sender is not the seller of the listing")
+		}
+
+		if listingModel.IsDeposited {
+			if listingModel.DepositorTimeoutBlock > currentHeight {
+				return fmt.Errorf("listing already has a deposit, cannot be cancelled until expiry")
+			}
+			// Has deposit, but expired, so we continue
+			action = "delist after expiry"
+		}
+
+		if listingModel.IsFilled {
+			return fmt.Errorf("listing has already been filled, cannot be cancelled")
+		}
+		if listingModel.IsCancelled {
+			return fmt.Errorf("listing has already been cancelled")
+		}
+
+		listingModel.IsDeposited = false
+		listingModel.DepositorAddress = ""
+		listingModel.DepositorTimeoutBlock = 0
+		listingModel.IsCancelled = true
+		listingModel.DateUpdated = currentTransaction.DateCreated
+		result = protocol.db.Save(&listingModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to cancel listing: %s", result.Error)
+		}
+
+		// Update listing history
+		listingHistory := models.MarketplaceListingHistory{
+			ListingID:     listingModel.ID,
+			TransactionID: currentTransaction.ID,
+			SenderAddress: sender,
+			Action:        action,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&listingHistory)
+		if result.Error != nil {
+			// If we can't store the history, that is fine, we shouldn't fail
+			return nil
+		}
+
 	case "buy":
 		fmt.Println("BUY")
+
 	}
 
 	return nil

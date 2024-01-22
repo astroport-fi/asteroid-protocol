@@ -273,7 +273,7 @@ export class TradeTokenV2Page implements OnInit {
         data: null,
         routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
+        metaprotocol: 'marketplace',
         metaprotocolAction: 'deposit',
         messages: [purchaseMessage],
         messagesJSON: [purchaseMessageJSON],
@@ -375,7 +375,7 @@ export class TradeTokenV2Page implements OnInit {
         data: null,
         routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
+        metaprotocol: 'marketplace',
         metaprotocolAction: 'buy',
         messages: [purchaseMessage],
         messagesJSON: [purchaseMessageJSON],
@@ -385,7 +385,7 @@ export class TradeTokenV2Page implements OnInit {
     modal.present();
   }
 
-  async cancel(orderNumber: number) {
+  async cancel(listingHash: string) {
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
       const modal = await this.modalCtrl.create({
@@ -400,8 +400,7 @@ export class TradeTokenV2Page implements OnInit {
 
     // Construct metaprotocol memo message
     const params = new Map([
-      ["tic", this.token.ticker],
-      ["ord", orderNumber],
+      ["h", listingHash],
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
     const modal = await this.modalCtrl.create({
@@ -414,7 +413,7 @@ export class TradeTokenV2Page implements OnInit {
         data: null,
         routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
-        metaprotocol: 'cft20',
+        metaprotocol: 'marketplace',
         metaprotocolAction: 'delist',
       }
     });
