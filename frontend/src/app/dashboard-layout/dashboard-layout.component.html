@@ -99,7 +99,17 @@
               </ion-accordion-group>
             </ion-col>
           </ion-row>
-          <ion-row class="social-wrapper">
+          <ion-row class="info-wrapper">
+            <ion-col size="12" class="status text-center mb-2">
+              <div class="title">Current indexer block</div>
+              <div>
+                {{ currentHeight }}/{{maxHeight}}
+                <span *ngIf="lag <= 1" class="text-success">In sync</span>
+                <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
+                <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
+                <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+              </div>
+            </ion-col>
             <ion-col class="social-link">
               <a href="https://t.me/asteroidxyz" title="Astroid Protocol Telegram Group" target="_blank"><img
                   src="../../assets/socials/telegram.svg" width="24" /></a>

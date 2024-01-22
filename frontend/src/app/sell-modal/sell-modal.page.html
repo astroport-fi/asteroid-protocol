@@ -13,36 +13,76 @@
             from the sale should someone purchase them
           </p>
           <p>
-            Sales are final and can't be refunded. You may cancel a listing at any time before a successful sale
+            Sales are final and can't be refunded. You may cancel a listing at any time before a successful reservation
           </p>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-md="6" offset-md="3" size="12">
+        <ion-col size-md="6" size="12">
           <div formGroupName="basic">
             <div class="mt-4">
               <ion-input label="Amount to sell" labelPlacement="stacked" fill="outline" placeholder="10"
                 [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
             </div>
+          </div>
+        </ion-col>
+        <ion-col size-md="6" size="12">
+          <div formGroupName="basic">
             <div class="mt-4">
               <ion-input label="Price per token" labelPlacement="stacked" fill="outline" placeholder="10"
                 [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="price"></ion-input>
             </div>
-            <div class="p-3 mt-4 mb-4 confirmation"
-              *ngIf="((sellForm.value.basic.amount | stripSpaces) *
-              (sellForm.value.basic.price | stripSpaces)) >= minTradeSize && (sellForm.value.basic.amount | stripSpaces) <= senderBalance">
-              You will be selling your tokens for a total of {{ ((sellForm.value.basic.amount | stripSpaces) *
-              (sellForm.value.basic.price | stripSpaces)) | number:'1.2-6' }} ATOM
-            </div>
-            <div class="p-3 mt-4 mb-4 color-danger"
-              *ngIf="((sellForm.value.basic.amount | stripSpaces) *
-                          (sellForm.value.basic.price | stripSpaces)) < minTradeSize && (sellForm.value.basic.amount | stripSpaces) < senderBalance">
-              The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
-            </div>
-            <div class="p-3 mt-4 mb-4" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">
-              <ion-text color="warning">You can't list more tokens than you have available. Your balance is
-                {{ senderBalance | number:'1.2-6' }} {{ ticker }}</ion-text>
-            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-accordion-group>
+            <ion-accordion toggleIconSlot="start">
+              <ion-item slot="header">
+                <ion-label>Advanced</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">
+                <p class="note">
+                  You do not need to adjust these parameters. The defaults should suffice.
+                </p>
+                <div formGroupName="basic">
+                  <div class="mt-4 w-50">
+                    <ion-input label="Minimum deposit required" labelPlacement="stacked" fill="outline" placeholder="10"
+                      [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="minDeposit"></ion-input>
+                    <span class="note">This is the minimum percent someone needs to pay to reserve the listing,
+                      {{minDeposit}}% -
+                      {{maxDeposit}}%</span>
+                  </div>
+                  <div class="mt-4 w-50">
+                    <ion-input label="Timout in blocks" labelPlacement="stacked" fill="outline" placeholder="5"
+                      [maskito]="decimalMask" [maskitoElement]="maskPredicate"
+                      formControlName="timeoutBlocks"></ion-input>
+                    <span class="note">How long a reservation will be valid for, {{minTimeout}} - {{maxTimeout}}
+                      blocks</span>
+                  </div>
+                </div>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="p-3 mt-4 mb-4 confirmation"
+            *ngIf="((sellForm.value.basic.amount | stripSpaces) *
+                        (sellForm.value.basic.price | stripSpaces)) >= minTradeSize && (sellForm.value.basic.amount | stripSpaces) <= senderBalance">
+            You will be selling your tokens for a total of {{ ((sellForm.value.basic.amount | stripSpaces) *
+            (sellForm.value.basic.price | stripSpaces)) | number:'1.2-6' }} ATOM
+          </div>
+          <div class="p-3 mt-4 mb-4 color-danger"
+            *ngIf="((sellForm.value.basic.amount | stripSpaces) *
+                                    (sellForm.value.basic.price | stripSpaces)) < minTradeSize && (sellForm.value.basic.amount | stripSpaces) < senderBalance">
+            The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
+          </div>
+          <div class="p-3 mt-4 mb-4" *ngIf="(sellForm.value.basic.amount | stripSpaces) > senderBalance">
+            <ion-text color="warning">You can't list more tokens than you have available. Your balance is
+              {{ senderBalance | number:'1.2-6' }} {{ ticker }}</ion-text>
           </div>
         </ion-col>
       </ion-row>

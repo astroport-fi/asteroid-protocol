@@ -38,7 +38,7 @@ run: build ## Build and run the service binary
 	S3_BUCKET="inscriptions-mvp" \
 	S3_ID="DO00HXJJQVNBTGA62TV7" \
 	S3_SECRET="4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU" \
-	MARKET_MIN_TIMEOUT=200 \
+	MARKET_MIN_TIMEOUT=50 \
 	MARKET_MIN_DEPOSIT=0.0001 \
 	./bin/${APP_NAME}
 

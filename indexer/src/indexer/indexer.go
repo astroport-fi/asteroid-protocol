@@ -250,6 +250,7 @@ func (i *Indexer) indexBlocks() {
 			// All good, save last processed and increase height
 			status.LastProcessedHeight = currentHeight
 			i.db.Model(&status).Where("chain_id = ?", i.chainID).UpdateColumns(map[string]interface{}{
+				"last_known_height":     maxHeight,
 				"last_processed_height": currentHeight,
 				"date_updated":          time.Now(),
 			})

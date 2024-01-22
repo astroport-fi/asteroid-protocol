@@ -36,6 +36,11 @@ export class SellModalPage implements OnInit {
   minTradeSize: number = environment.fees.protocol.cft20.list.minTradeSize;
   senderBalance: number = 0;
 
+  minDeposit: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDeposit;
+  maxDeposit: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxDeposit;
+  minTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout;
+  maxTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxTimeout;
+
 
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
@@ -50,6 +55,8 @@ export class SellModalPage implements OnInit {
       basic: this.builder.group({
         amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
         price: [0.1, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        minDeposit: [this.minDeposit, [Validators.required, Validators.min(this.minDeposit), Validators.max(this.maxDeposit), Validators.pattern("^[0-9. ]*$")]],
+        timeoutBlocks: [this.minTimeout, [Validators.required, Validators.min(this.minTimeout), Validators.max(this.maxTimeout), Validators.pattern("^[0-9 ]*$")]],
       }),
     });
 
@@ -131,18 +138,23 @@ export class SellModalPage implements OnInit {
     const amount = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString();
     const ppt = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString();
 
+    let minDeposit = parseFloat(StripSpacesPipe.prototype.transform(this.sellForm.value.basic.minDeposit).toString());
+    // We represent the percentage as a multiplier
+    minDeposit = minDeposit / 100;
+    const timeoutBlocks = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.timeoutBlocks).toString();
+
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.ticker],
       ["amt", amount],
       ["ppt", ppt],
-      ["mindep", (environment.fees.protocol.marketplace["list.cft20"] as any).minDeposit.toString()],
-      ["to", (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout.toString()],
+      ["mindep", minDeposit.toString()],
+      ["to", timeoutBlocks],
     ]);
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = parseFloat(amount) * parseFloat(ppt) * (environment.fees.protocol.marketplace["list.cft20"] as any).minDeposit;
+    let listingFee = parseFloat(amount) * parseFloat(ppt) * minDeposit;
     // Convert to uatom
     listingFee = listingFee * Math.pow(10, 6);
     listingFee = Math.floor(listingFee);

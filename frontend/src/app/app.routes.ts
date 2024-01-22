@@ -54,14 +54,14 @@ export const routes: Routes = [
         path: 'markets',
         loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
       },
-      {
-        path: 'market/:quote',
-        loadComponent: () => import('./trade-token-tv/trade-token-tv.page').then(m => m.TradeTokenTVPage)
-      },
       // {
       //   path: 'market/:quote',
-      //   loadComponent: () => import('./trade-token-v2/trade-token-v2.page').then(m => m.TradeTokenV2Page)
+      //   loadComponent: () => import('./trade-token-tv/trade-token-tv.page').then(m => m.TradeTokenTVPage)
       // },
+      {
+        path: 'market/:quote',
+        loadComponent: () => import('./trade-token-v2/trade-token-v2.page').then(m => m.TradeTokenV2Page)
+      },
       // {
       //   path: 'market/:quote',
       //   loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)

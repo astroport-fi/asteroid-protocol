@@ -11,6 +11,7 @@ import { CLIPBOARD_OPTIONS, MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { markedOptionsFactory } from './app/core/types/marked-options';
 import { AnchorService } from './app/core/service/anchor.service';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 if (environment.production) {
   enableProdMode();
@@ -39,5 +40,6 @@ bootstrapApplication(AppComponent, {
     provideLottieOptions({
       player: () => import('lottie-web'),
     }),
+    provideAnimations(),
   ],
 });

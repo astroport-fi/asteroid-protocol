@@ -55,19 +55,21 @@ export class MarketsPage implements OnInit {
             transaction: {
               hash: true
             },
-            token_open_positions: [
+            marketplace_cft20_details: [
               {
                 where: {
-                  is_filled: {
-                    _eq: false
-                  },
-                  is_cancelled: {
-                    _eq: false
+                  marketplace_listing: {
+                    is_cancelled: {
+                      _eq: false
+                    },
+                    is_filled: {
+                      _eq: false
+                    }
                   }
                 }
               },
               {
-                id: true
+                id: true,
               }
             ],
             token_holders: [
@@ -82,17 +84,11 @@ export class MarketsPage implements OnInit {
                 amount: true
               }
             ],
-            current_owner: true,
             content_path: true,
             name: true,
             ticker: true,
-            max_supply: true,
-            circulating_supply: true,
-            decimals: true,
-            launch_timestamp: true,
             last_price_base: true,
             volume_24_base: true,
-            date_created: true,
           }
         ],
         status: [
@@ -135,19 +131,21 @@ export class MarketsPage implements OnInit {
         token: [
           {}, {
             id: true,
-            token_open_positions: [
+            marketplace_cft20_details: [
               {
                 where: {
-                  is_filled: {
-                    _eq: false
-                  },
-                  is_cancelled: {
-                    _eq: false
+                  marketplace_listing: {
+                    is_cancelled: {
+                      _eq: false
+                    },
+                    is_filled: {
+                      _eq: false
+                    }
                   }
                 }
               },
               {
-                id: true
+                id: true,
               }
             ],
             token_holders: [

@@ -136,6 +136,42 @@ export class TradeTokenV2Page implements OnInit {
       this.baseTokenUSD = status[0].base_token_usd;
     });
 
+    wsChain('subscription')({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: this.token.id
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false
+              },
+              is_filled: {
+                _eq: false
+              }
+            }
+          }
+        },
+        {
+          id: true,
+          marketplace_listing: {
+            seller_address: true,
+            total: true,
+            depositor_address: true,
+            is_deposited: true,
+            transaction: {
+              hash: true
+            },
+          },
+          ppt: true,
+          amount: true,
+        }
+      ]
+    }).on(({ marketplace_cft20_detail }) => {
+      this.listings = marketplace_cft20_detail;
+    });
+
     // wsChain('subscription')({
     //   token: [
     //     {
