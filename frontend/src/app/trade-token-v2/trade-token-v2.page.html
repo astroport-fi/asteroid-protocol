@@ -98,7 +98,9 @@
                 <td class="text-end">
                   <ion-button fill="outline" color="success"
                     (click)="deposit(listing.marketplace_listing.transaction.hash)"
-                    *ngIf="listing.marketplace_listing.seller_address != walletAddress">Deposit</ion-button>
+                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && !listing.marketplace_listing.is_deposited">Deposit</ion-button>
+                  <ion-button fill="outline" color="success" (click)="buy(listing.marketplace_listing.transaction.hash)"
+                    *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress">Buy</ion-button>
                   <ion-button fill="outline" color="warning"
                     (click)="cancel(listing.marketplace_listing.transaction.hash)"
                     *ngIf="listing.marketplace_listing.seller_address == walletAddress">Cancel</ion-button>

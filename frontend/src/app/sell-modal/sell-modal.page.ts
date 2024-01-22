@@ -128,21 +128,24 @@ export class SellModalPage implements OnInit {
     // Close the sell modal
     this.modalCtrl.dismiss();
 
+    const amount = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString();
+    const ppt = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString();
+
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.ticker],
-      ["amt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString()],
-      ["ppt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
-      ["mindep", "0.01"],
-      ["to", "10"],
+      ["amt", amount],
+      ["ppt", ppt],
+      ["mindep", (environment.fees.protocol.marketplace["list.cft20"] as any).minDeposit.toString()],
+      ["to", (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout.toString()],
     ]);
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = parseFloat(this.sellForm.value.basic.amount) * parseFloat(this.sellForm.value.basic.price) * environment.fees.protocol.cft20.list.minDeposit;
+    let listingFee = parseFloat(amount) * parseFloat(ppt) * (environment.fees.protocol.marketplace["list.cft20"] as any).minDeposit;
     // Convert to uatom
     listingFee = listingFee * Math.pow(10, 6);
-
+    listingFee = Math.floor(listingFee);
 
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
     const modal = await this.modalCtrl.create({

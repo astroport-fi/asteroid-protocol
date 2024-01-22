@@ -104,6 +104,7 @@ export class TradeTokenV2Page implements OnInit {
           marketplace_listing: {
             seller_address: true,
             total: true,
+            depositor_address: true,
             is_deposited: true,
             transaction: {
               hash: true
@@ -231,6 +232,7 @@ export class TradeTokenV2Page implements OnInit {
     const listing = listingResult.marketplace_listing[0];
 
     const deposit: bigint = listing.deposit_total as bigint;
+    console.log(deposit);
 
     const purchaseMessage = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
@@ -282,30 +284,34 @@ export class TradeTokenV2Page implements OnInit {
     modal.present();
   }
 
-  async buy(orderNumber: number) {
+  async buy(listingHash: string) {
     const chain = Chain(environment.api.endpoint)
-    const position = await chain('query')({
-      token_open_position: [
+    const listingResult = await chain('query')({
+      marketplace_listing: [
         {
           where: {
-            id: {
-              _eq: orderNumber
+            transaction: {
+              hash: {
+                _eq: listingHash
+              }
             }
           }
         }, {
-          id: true,
-          token: {
-            ticker: true,
-          },
           seller_address: true,
-          ppt: true,
-          amount: true,
           total: true,
+          deposit_total: true,
+          is_deposited: true,
           is_cancelled: true,
           is_filled: true,
         }
       ]
     });
+
+    if (listingResult.marketplace_listing.length == 0) {
+      alert("Listing not found");
+      return;
+    }
+    const listing = listingResult.marketplace_listing[0];
 
     // TODO: If cancelled or filled, show error message
 
@@ -322,13 +328,16 @@ export class TradeTokenV2Page implements OnInit {
       return;
     }
 
-    const totaluatom: bigint = position.token_open_position[0].total as bigint;
+    let totaluatom: bigint = listing.total as bigint;
+    const deposit: bigint = listing.deposit_total as bigint;
+    // Subtract deposit amount already sent
+    totaluatom -= deposit;
 
     const purchaseMessage = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
       value: MsgSend.encode({
         fromAddress: (await this.walletService.getAccount()).address,
-        toAddress: position.token_open_position[0].seller_address,
+        toAddress: listing.seller_address,
         amount: [
           {
             denom: "uatom",
@@ -341,7 +350,7 @@ export class TradeTokenV2Page implements OnInit {
     const purchaseMessageJSON = {
       '@type': "/cosmos.bank.v1beta1.MsgSend",
       from_address: (await this.walletService.getAccount()).address,
-      to_address: position.token_open_position[0].seller_address,
+      to_address: listing.seller_address,
       amount: [
         {
           denom: "uatom",
@@ -361,10 +370,9 @@ export class TradeTokenV2Page implements OnInit {
 
     // Construct metaprotocol memo message
     const params = new Map([
-      ["tic", this.token.ticker],
-      ["ord", orderNumber],
+      ["h", listingHash],
     ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'buy', params);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'buy.cft20', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -376,7 +384,7 @@ export class TradeTokenV2Page implements OnInit {
         routerLink: ['/app/wallet/token', this.token.ticker],
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
-        metaprotocolAction: 'buy',
+        metaprotocolAction: 'buy.cft20',
         messages: [purchaseMessage],
         messagesJSON: [purchaseMessageJSON],
         overrideFee,
