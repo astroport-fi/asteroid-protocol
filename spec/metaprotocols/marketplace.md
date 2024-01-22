@@ -57,7 +57,7 @@ The required parameters are:
 |-----|-----------|------------|
 |tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 1-10 characters|
 |amt|The amount being sold|Must be less then the sellers holdings|
-|total|The amount of uatom to buy this listing|Must be less than uint32 max|
+|ppt|The price per token in uatom|Must be less than uint32 max|
 |mindep|The minimum deposit expressed as a percentage of total|Must be between 0.1% and 1%|
 |to|The block this reservation expires|Must be between 50 and 500 (roughly 5-50 minutes)|
 

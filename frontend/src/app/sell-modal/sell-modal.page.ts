@@ -36,6 +36,7 @@ export class SellModalPage implements OnInit {
   minTradeSize: number = environment.fees.protocol.cft20.list.minTradeSize;
   senderBalance: number = 0;
 
+
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
 
@@ -131,10 +132,18 @@ export class SellModalPage implements OnInit {
     const params = new Map([
       ["tic", this.ticker],
       ["amt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString()],
-      ["total", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
-      ["mindep", "0.1"],
+      ["ppt", StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString()],
+      ["mindep", "0.01"],
       ["to", "10"],
     ]);
+
+    // Calculate the amount of ATOM for the listing fee
+    // The listing fee is mindep % of amount * ppt
+    let listingFee = parseFloat(this.sellForm.value.basic.amount) * parseFloat(this.sellForm.value.basic.price) * environment.fees.protocol.cft20.list.minDeposit;
+    // Convert to uatom
+    listingFee = listingFee * Math.pow(10, 6);
+
+
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
@@ -148,6 +157,7 @@ export class SellModalPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
         metaprotocolAction: 'list.cft20',
+        overrideFee: listingFee,
       }
     });
     modal.present();

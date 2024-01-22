@@ -159,17 +159,30 @@ export class WalletService {
       currentTime = currentTime * 1000000;
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
+        // TODO: Add back
+        // msgs = {
+        //   '@type': '/ibc.applications.transfer.v1.MsgTransfer',
+        //   receiver: fees.metaprotocol.receiver,
+        //   sender: account?.address as string,
+        //   source_channel: environment.fees.ibcChannel,
+        //   source_port: "transfer",
+        //   timeout_timestamp: currentTime.toFixed(0),
+        //   token: {
+        //     amount: fees.metaprotocol.amount,
+        //     denom: fees.metaprotocol.denom,
+        //   }
+        // }
+        // Temporary testing
         msgs = {
-          '@type': '/ibc.applications.transfer.v1.MsgTransfer',
-          receiver: fees.metaprotocol.receiver,
-          sender: account?.address as string,
-          source_channel: environment.fees.ibcChannel,
-          source_port: "transfer",
-          timeout_timestamp: currentTime.toFixed(0),
-          token: {
-            amount: fees.metaprotocol.amount,
-            denom: fees.metaprotocol.denom,
-          }
+          '@type': "/cosmos.bank.v1beta1.MsgSend",
+          from_address: account?.address as string,
+          to_address: account?.address as string,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            },
+          ],
         }
       } else {
         // If no fee is charged, we need to send the smallest amount possible
@@ -285,23 +298,39 @@ export class WalletService {
       currentTime = currentTime * 1000000;
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
+        // Temporary testing
+        // feeMessage = {
+        //   typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+        //   value: MsgTransfer.encode({
+        //     receiver: fees.metaprotocol.receiver,
+        //     sender: account?.address as string,
+        //     sourceChannel: environment.fees.ibcChannel,
+        //     sourcePort: "transfer",
+        //     timeoutTimestamp: BigInt(currentTime),
+        //     timeoutHeight: {
+        //       revisionNumber: BigInt(0),
+        //       revisionHeight: BigInt(0),
+        //     },
+        //     memo: "",
+        //     token: {
+        //       amount: fees.metaprotocol.amount,
+        //       denom: fees.metaprotocol.denom,
+        //     }
+        //   }).finish(),
+        // }
+        // msgs.push(feeMessage);
+        // TODO: Add back IBC
         feeMessage = {
-          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-          value: MsgTransfer.encode({
-            receiver: fees.metaprotocol.receiver,
-            sender: account?.address as string,
-            sourceChannel: environment.fees.ibcChannel,
-            sourcePort: "transfer",
-            timeoutTimestamp: BigInt(currentTime),
-            timeoutHeight: {
-              revisionNumber: BigInt(0),
-              revisionHeight: BigInt(0),
-            },
-            memo: "",
-            token: {
-              amount: fees.metaprotocol.amount,
-              denom: fees.metaprotocol.denom,
-            }
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: MsgSend.encode({
+            fromAddress: account?.address as string,
+            toAddress: account?.address as string,
+            amount: [
+              {
+                denom: fees.metaprotocol.denom,
+                amount: fees.metaprotocol.amount,
+              }
+            ],
           }).finish(),
         }
         msgs.push(feeMessage);

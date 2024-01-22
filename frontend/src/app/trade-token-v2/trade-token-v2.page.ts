@@ -16,25 +16,26 @@ import { TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 
 @Component({
-  selector: 'app-trade-token',
-  templateUrl: './trade-token.page.html',
-  styleUrls: ['./trade-token.page.scss'],
+  selector: 'app-trade-token-v2',
+  templateUrl: './trade-token-v2.page.html',
+  styleUrls: ['./trade-token-v2.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule]
 })
-export class TradeTokenPage implements OnInit {
+export class TradeTokenV2Page implements OnInit {
   isLoading = false;
   token: any;
-  positions: any;
+  listings: any;
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
   baseTokenUSD: number = 0.00;
   walletAddress: string = '';
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
   }
 
@@ -81,46 +82,39 @@ export class TradeTokenPage implements OnInit {
 
     this.token = result.token[0];
 
-    const positionsResult = await chain('query')({
-      token_open_position: [
+    const listingsResult = await chain('query')({
+      marketplace_cft20_detail: [
         {
           where: {
-            _and: [
-              {
-                token: {
-                  ticker: {
-                    _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
-                  }
-                }
+            token_id: {
+              _eq: this.token.id
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false
               },
-              {
-                is_cancelled: {
-                  _eq: false
-                }
-              },
-              {
-                is_filled: {
-                  _eq: false
-                }
+              is_filled: {
+                _eq: false
               }
-            ]
+            }
           }
-        }, {
+        },
+        {
           id: true,
-          token: {
-            ticker: true,
+          marketplace_listing: {
+            seller_address: true,
+            total: true,
+            is_deposited: true,
+            transaction: {
+              hash: true
+            },
           },
-          seller_address: true,
           ppt: true,
           amount: true,
-          total: true,
-          is_cancelled: false,
-          is_filled: false,
         }
       ]
     });
-
-    this.positions = positionsResult.token_open_position;
+    this.listings = listingsResult.marketplace_cft20_detail;
 
     const wsChain = Subscription(environment.api.wss);
     wsChain('subscription')({
@@ -141,74 +135,154 @@ export class TradeTokenPage implements OnInit {
       this.baseTokenUSD = status[0].base_token_usd;
     });
 
-    wsChain('subscription')({
-      token: [
-        {
-          where: {
-            ticker: {
-              _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
-            }
-          }
-        }, {
-          id: true,
-          name: true,
-          ticker: true,
-          decimals: true,
-          content_path: true,
-          last_price_base: true,
-          volume_24_base: true,
-        }
-      ]
-    }).on(({ token }) => {
-      this.token = token[0];
-    });
+    // wsChain('subscription')({
+    //   token: [
+    //     {
+    //       where: {
+    //         ticker: {
+    //           _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
+    //         }
+    //       }
+    //     }, {
+    //       id: true,
+    //       name: true,
+    //       ticker: true,
+    //       decimals: true,
+    //       content_path: true,
+    //       last_price_base: true,
+    //       volume_24_base: true,
+    //     }
+    //   ]
+    // }).on(({ token }) => {
+    //   this.token = token[0];
+    // });
 
-    wsChain('subscription')({
-      token_open_position: [
-        {
-          where: {
-            _and: [
-              {
-                token: {
-                  ticker: {
-                    _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
-                  }
-                }
-              },
-              {
-                is_cancelled: {
-                  _eq: false
-                }
-              },
-              {
-                is_filled: {
-                  _eq: false
-                }
-              }
-            ]
-          }
-        }, {
-          id: true,
-          token: {
-            ticker: true,
-          },
-          seller_address: true,
-          ppt: true,
-          amount: true,
-          total: true,
-          is_cancelled: false,
-          is_filled: false,
-        }
-      ]
-    }).on(({ token_open_position }) => {
-      this.positions = token_open_position;
-    });
+    // wsChain('subscription')({
+    //   token_open_position: [
+    //     {
+    //       where: {
+    //         _and: [
+    //           {
+    //             token: {
+    //               ticker: {
+    //                 _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
+    //               }
+    //             }
+    //           },
+    //           {
+    //             is_cancelled: {
+    //               _eq: false
+    //             }
+    //           },
+    //           {
+    //             is_filled: {
+    //               _eq: false
+    //             }
+    //           }
+    //         ]
+    //       }
+    //     }, {
+    //       id: true,
+    //       token: {
+    //         ticker: true,
+    //       },
+    //       seller_address: true,
+    //       ppt: true,
+    //       amount: true,
+    //       total: true,
+    //       is_cancelled: false,
+    //       is_filled: false,
+    //     }
+    //   ]
+    // }).on(({ token_open_position }) => {
+    //   this.positions = token_open_position;
+    // });
 
     this.isLoading = false;
   }
 
-  async buy(orderNumber: number) {
+  async deposit(listingHash: string) {
+    const chain = Chain(environment.api.endpoint)
+    const listingResult = await chain('query')({
+      marketplace_listing: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: listingHash
+              }
+            }
+          }
+        }, {
+          seller_address: true,
+          total: true,
+          deposit_total: true,
+          is_deposited: true,
+          is_cancelled: true,
+          is_filled: true,
+        }
+      ]
+    });
 
+    if (listingResult.marketplace_listing.length == 0) {
+      alert("Listing not found");
+      return;
+    }
+    const listing = listingResult.marketplace_listing[0];
+
+    const deposit: bigint = listing.deposit_total as bigint;
+
+    const purchaseMessage = {
+      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      value: MsgSend.encode({
+        fromAddress: (await this.walletService.getAccount()).address,
+        toAddress: listing.seller_address,
+        amount: [
+          {
+            denom: "uatom",
+            amount: deposit.toString(),
+          }
+        ],
+      }).finish(),
+    }
+
+    const purchaseMessageJSON = {
+      '@type': "/cosmos.bank.v1beta1.MsgSend",
+      from_address: (await this.walletService.getAccount()).address,
+      to_address: listing.seller_address,
+      amount: [
+        {
+          denom: "uatom",
+          amount: deposit.toString(),
+        }
+      ],
+    }
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'deposit', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/wallet/token', this.token.ticker],
+        resultCTA: 'View transaction',
+        metaprotocol: 'cft20',
+        metaprotocolAction: 'deposit',
+        messages: [purchaseMessage],
+        messagesJSON: [purchaseMessageJSON],
+      }
+    });
+    modal.present();
+  }
+
+  async buy(orderNumber: number) {
     const chain = Chain(environment.api.endpoint)
     const position = await chain('query')({
       token_open_position: [

@@ -50,10 +50,14 @@ export const routes: Routes = [
         path: 'tokens',
         loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
       },
-      // {
-      //   path: 'markets',
-      //   loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
-      // },
+      {
+        path: 'markets',
+        loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
+      },
+      {
+        path: 'market/:quote',
+        loadComponent: () => import('./trade-token-v2/trade-token-v2.page').then(m => m.TradeTokenV2Page)
+      },
       // {
       //   path: 'market/:quote',
       //   loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)

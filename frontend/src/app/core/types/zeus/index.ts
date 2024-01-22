@@ -962,6 +962,13 @@ export type ValueTypes = {
 		date_created?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		inscription_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_history"]],
 		metadata?: [{	/** JSON select path */
 			path?: string | undefined | null | Variable<any, string>
 		}, boolean | `@${string}`],
@@ -986,6 +993,7 @@ export type ValueTypes = {
 		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		inscription_histories?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["json_comparison_exp"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1009,6 +1017,27 @@ export type ValueTypes = {
 		transaction_id?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** order by aggregate values of table "inscription_history" */
+	["inscription_history_aggregate_order_by"]: {
+		avg?: ValueTypes["inscription_history_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["inscription_history_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["inscription_history_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["inscription_history_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["inscription_history_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["inscription_history_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["inscription_history_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["inscription_history_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["inscription_history_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["inscription_history_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "inscription_history" */
+	["inscription_history_avg_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
 	["inscription_history_bool_exp"]: {
 		_and?: Array<ValueTypes["inscription_history_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -1026,6 +1055,30 @@ export type ValueTypes = {
 		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
 	};
+	/** order by max() on columns of table "inscription_history" */
+	["inscription_history_max_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "inscription_history" */
+	["inscription_history_min_order_by"]: {
+		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		receiver?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		sender?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Ordering options when selecting data from "inscription_history". */
 	["inscription_history_order_by"]: {
 		action?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1042,6 +1095,27 @@ export type ValueTypes = {
 	};
 	/** select columns of table "inscription_history" */
 	["inscription_history_select_column"]: inscription_history_select_column;
+	/** order by stddev() on columns of table "inscription_history" */
+	["inscription_history_stddev_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "inscription_history" */
+	["inscription_history_stddev_pop_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "inscription_history" */
+	["inscription_history_stddev_samp_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Streaming cursor of the table "inscription_history" */
 	["inscription_history_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -1061,6 +1135,34 @@ export type ValueTypes = {
 		sender?: string | undefined | null | Variable<any, string>,
 		transaction_id?: number | undefined | null | Variable<any, string>
 	};
+	/** order by sum() on columns of table "inscription_history" */
+	["inscription_history_sum_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "inscription_history" */
+	["inscription_history_var_pop_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "inscription_history" */
+	["inscription_history_var_samp_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "inscription_history" */
+	["inscription_history_variance_order_by"]: {
+		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1072,6 +1174,7 @@ export type ValueTypes = {
 		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_histories_aggregate?: ValueTypes["inscription_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1116,6 +1219,349 @@ export type ValueTypes = {
 		_neq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
 		_nin?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>
 	};
+	/** columns and relationships of "marketplace_cft20_detail" */
+	["marketplace_cft20_detail"]: AliasType<{
+		amount?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		listing_id?: boolean | `@${string}`,
+		/** An object relationship */
+		marketplace_listing?: ValueTypes["marketplace_listing"],
+		ppt?: boolean | `@${string}`,
+		token_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_aggregate_order_by"]: {
+		avg?: ValueTypes["marketplace_cft20_detail_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["marketplace_cft20_detail_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["marketplace_cft20_detail_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["marketplace_cft20_detail_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["marketplace_cft20_detail_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["marketplace_cft20_detail_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["marketplace_cft20_detail_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["marketplace_cft20_detail_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["marketplace_cft20_detail_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["marketplace_cft20_detail_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_avg_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Boolean expression to filter rows from the table "marketplace_cft20_detail". All fields are combined with a logical 'AND'. */
+	["marketplace_cft20_detail_bool_exp"]: {
+		_and?: Array<ValueTypes["marketplace_cft20_detail_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["marketplace_cft20_detail_bool_exp"]> | undefined | null | Variable<any, string>,
+		amount?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		marketplace_listing?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** order by max() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_max_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_min_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "marketplace_cft20_detail". */
+	["marketplace_cft20_detail_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		marketplace_listing?: ValueTypes["marketplace_listing_order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_select_column"]: marketplace_cft20_detail_select_column;
+	/** order by stddev() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Streaming cursor of the table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["marketplace_cft20_detail_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_cft20_detail_stream_cursor_value_input"]: {
+		amount?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		listing_id?: number | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		token_id?: number | undefined | null | Variable<any, string>
+	};
+	/** order by sum() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_sum_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_pop_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_samp_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_variance_order_by"]: {
+		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		listing_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** columns and relationships of "marketplace_listing" */
+	["marketplace_listing"]: AliasType<{
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		date_updated?: boolean | `@${string}`,
+		deposit_timeout?: boolean | `@${string}`,
+		deposit_total?: boolean | `@${string}`,
+		depositor_address?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		is_cancelled?: boolean | `@${string}`,
+		is_deposited?: boolean | `@${string}`,
+		is_filled?: boolean | `@${string}`,
+		marketplace_cft20_details?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_cft20_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_cft20_detail_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_cft20_detail"]],
+		seller_address?: boolean | `@${string}`,
+		total?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "marketplace_listing" */
+	["marketplace_listing_aggregate_order_by"]: {
+		avg?: ValueTypes["marketplace_listing_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["marketplace_listing_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["marketplace_listing_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["marketplace_listing_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["marketplace_listing_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["marketplace_listing_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["marketplace_listing_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["marketplace_listing_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["marketplace_listing_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["marketplace_listing_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by avg() on columns of table "marketplace_listing" */
+	["marketplace_listing_avg_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Boolean expression to filter rows from the table "marketplace_listing". All fields are combined with a logical 'AND'. */
+	["marketplace_listing_bool_exp"]: {
+		_and?: Array<ValueTypes["marketplace_listing_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["marketplace_listing_bool_exp"]> | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		deposit_timeout?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		depositor_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_cancelled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_deposited?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_filled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		marketplace_cft20_details?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** order by max() on columns of table "marketplace_listing" */
+	["marketplace_listing_max_order_by"]: {
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		depositor_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by min() on columns of table "marketplace_listing" */
+	["marketplace_listing_min_order_by"]: {
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		depositor_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "marketplace_listing". */
+	["marketplace_listing_order_by"]: {
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		depositor_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_cancelled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_deposited?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		marketplace_cft20_details_aggregate?: ValueTypes["marketplace_cft20_detail_aggregate_order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "marketplace_listing" */
+	["marketplace_listing_select_column"]: marketplace_listing_select_column;
+	/** order by stddev() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_pop_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by stddev_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_samp_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Streaming cursor of the table "marketplace_listing" */
+	["marketplace_listing_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["marketplace_listing_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_listing_stream_cursor_value_input"]: {
+		chain_id?: string | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		date_updated?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		deposit_timeout?: number | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		depositor_address?: string | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		is_cancelled?: boolean | undefined | null | Variable<any, string>,
+		is_deposited?: boolean | undefined | null | Variable<any, string>,
+		is_filled?: boolean | undefined | null | Variable<any, string>,
+		seller_address?: string | undefined | null | Variable<any, string>,
+		total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>
+	};
+	/** order by sum() on columns of table "marketplace_listing" */
+	["marketplace_listing_sum_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_pop_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by var_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_samp_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** order by variance() on columns of table "marketplace_listing" */
+	["marketplace_listing_variance_order_by"]: {
+		deposit_timeout?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		deposit_total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	["numeric"]: unknown;
 	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 	["numeric_comparison_exp"]: {
@@ -1148,6 +1594,22 @@ export type ValueTypes = {
 			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription_history"]],
 		inscription_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_history"]],
+		marketplace_cft20_detail?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_cft20_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_cft20_detail_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["marketplace_cft20_detail"]],
+		marketplace_listing?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_listing_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_listing_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_listing"]],
+		marketplace_listing_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["marketplace_listing"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -1218,6 +1680,7 @@ export type ValueTypes = {
 		chain_id?: boolean | `@${string}`,
 		date_updated?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		last_known_height?: boolean | `@${string}`,
 		last_processed_height?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
@@ -1231,6 +1694,7 @@ export type ValueTypes = {
 		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		last_known_height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		last_processed_height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
 	};
 	/** Ordering options when selecting data from "status". */
@@ -1240,6 +1704,7 @@ export type ValueTypes = {
 		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		last_known_height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		last_processed_height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	/** select columns of table "status" */
@@ -1258,6 +1723,7 @@ export type ValueTypes = {
 		chain_id?: string | undefined | null | Variable<any, string>,
 		date_updated?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
 		id?: number | undefined | null | Variable<any, string>,
+		last_known_height?: number | undefined | null | Variable<any, string>,
 		last_processed_height?: number | undefined | null | Variable<any, string>
 	};
 	["subscription_root"]: AliasType<{
@@ -1287,6 +1753,32 @@ export type ValueTypes = {
 			cursor: Array<ValueTypes["inscription_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription"]],
+		marketplace_cft20_detail?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_cft20_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_cft20_detail_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["marketplace_cft20_detail_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_cft20_detail_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_cft20_detail"]],
+		marketplace_listing?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_listing_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_listing_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_listing"]],
+		marketplace_listing_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["marketplace_listing"]],
+		marketplace_listing_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["marketplace_listing_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_listing"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -1778,7 +2270,10 @@ export type ValueTypes = {
 		id?: boolean | `@${string}`,
 		is_cancelled?: boolean | `@${string}`,
 		is_filled?: boolean | `@${string}`,
+		is_reserved?: boolean | `@${string}`,
 		ppt?: boolean | `@${string}`,
+		reserve_expires_block?: boolean | `@${string}`,
+		reserved_by?: boolean | `@${string}`,
 		seller_address?: boolean | `@${string}`,
 		/** An object relationship */
 		token?: ValueTypes["token"],
@@ -1808,6 +2303,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1824,7 +2320,10 @@ export type ValueTypes = {
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		is_cancelled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 		is_filled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_reserved?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		reserved_by?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1840,6 +2339,8 @@ export type ValueTypes = {
 		date_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserved_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1853,6 +2354,8 @@ export type ValueTypes = {
 		date_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserved_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1867,7 +2370,10 @@ export type ValueTypes = {
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		is_cancelled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		is_filled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_reserved?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserved_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1882,6 +2388,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1891,6 +2398,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1900,6 +2408,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1920,7 +2429,10 @@ export type ValueTypes = {
 		id?: number | undefined | null | Variable<any, string>,
 		is_cancelled?: boolean | undefined | null | Variable<any, string>,
 		is_filled?: boolean | undefined | null | Variable<any, string>,
+		is_reserved?: boolean | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: number | undefined | null | Variable<any, string>,
+		reserved_by?: string | undefined | null | Variable<any, string>,
 		seller_address?: string | undefined | null | Variable<any, string>,
 		token_id?: number | undefined | null | Variable<any, string>,
 		total?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -1931,6 +2443,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1940,6 +2453,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1949,6 +2463,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -1958,6 +2473,7 @@ export type ValueTypes = {
 		amount?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		ppt?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		reserve_expires_block?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		total?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -2035,6 +2551,15 @@ export type ValueTypes = {
 		id?: boolean | `@${string}`,
 		/** An object relationship */
 		inscription?: ValueTypes["inscription"],
+		/** An object relationship */
+		inscription_history?: ValueTypes["inscription_history"],
+		marketplace_listings?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["marketplace_listing_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["marketplace_listing_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["marketplace_listing"]],
 		status_message?: boolean | `@${string}`,
 		/** An object relationship */
 		token?: ValueTypes["token"],
@@ -2063,6 +2588,8 @@ export type ValueTypes = {
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_history?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>,
+		marketplace_listings?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>,
 		status_message?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_bool_exp"] | undefined | null | Variable<any, string>,
 		token_address_history?: ValueTypes["token_address_history_bool_exp"] | undefined | null | Variable<any, string>,
@@ -2079,6 +2606,8 @@ export type ValueTypes = {
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
+		inscription_history?: ValueTypes["inscription_history_order_by"] | undefined | null | Variable<any, string>,
+		marketplace_listings_aggregate?: ValueTypes["marketplace_listing_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		status_message?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		token?: ValueTypes["token_order_by"] | undefined | null | Variable<any, string>,
 		token_address_history?: ValueTypes["token_address_history_order_by"] | undefined | null | Variable<any, string>,
@@ -2207,6 +2736,13 @@ export type ResolverInputTypes = {
 		date_created?: boolean | `@${string}`,
 		height?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		inscription_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_history"]],
 		metadata?: [{	/** JSON select path */
 			path?: string | undefined | null
 		}, boolean | `@${string}`],
@@ -2231,6 +2767,7 @@ export type ResolverInputTypes = {
 		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		inscription_histories?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null,
 		metadata?: ResolverInputTypes["json_comparison_exp"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -2254,6 +2791,27 @@ export type ResolverInputTypes = {
 		transaction_id?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
+	/** order by aggregate values of table "inscription_history" */
+	["inscription_history_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["inscription_history_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["inscription_history_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["inscription_history_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["inscription_history_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["inscription_history_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["inscription_history_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["inscription_history_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["inscription_history_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["inscription_history_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["inscription_history_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "inscription_history" */
+	["inscription_history_avg_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
 	["inscription_history_bool_exp"]: {
 		_and?: Array<ResolverInputTypes["inscription_history_bool_exp"]> | undefined | null,
@@ -2271,6 +2829,30 @@ export type ResolverInputTypes = {
 		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
 		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
 	};
+	/** order by max() on columns of table "inscription_history" */
+	["inscription_history_max_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "inscription_history" */
+	["inscription_history_min_order_by"]: {
+		action?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		receiver?: ResolverInputTypes["order_by"] | undefined | null,
+		sender?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Ordering options when selecting data from "inscription_history". */
 	["inscription_history_order_by"]: {
 		action?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2287,6 +2869,27 @@ export type ResolverInputTypes = {
 	};
 	/** select columns of table "inscription_history" */
 	["inscription_history_select_column"]: inscription_history_select_column;
+	/** order by stddev() on columns of table "inscription_history" */
+	["inscription_history_stddev_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "inscription_history" */
+	["inscription_history_stddev_pop_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "inscription_history" */
+	["inscription_history_stddev_samp_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Streaming cursor of the table "inscription_history" */
 	["inscription_history_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -2306,6 +2909,34 @@ export type ResolverInputTypes = {
 		sender?: string | undefined | null,
 		transaction_id?: number | undefined | null
 	};
+	/** order by sum() on columns of table "inscription_history" */
+	["inscription_history_sum_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "inscription_history" */
+	["inscription_history_var_pop_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "inscription_history" */
+	["inscription_history_var_samp_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "inscription_history" */
+	["inscription_history_variance_order_by"]: {
+		height?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2317,6 +2948,7 @@ export type ResolverInputTypes = {
 		date_created?: ResolverInputTypes["order_by"] | undefined | null,
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_histories_aggregate?: ResolverInputTypes["inscription_history_aggregate_order_by"] | undefined | null,
 		metadata?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -2361,6 +2993,349 @@ export type ResolverInputTypes = {
 		_neq?: ResolverInputTypes["json"] | undefined | null,
 		_nin?: Array<ResolverInputTypes["json"]> | undefined | null
 	};
+	/** columns and relationships of "marketplace_cft20_detail" */
+	["marketplace_cft20_detail"]: AliasType<{
+		amount?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		listing_id?: boolean | `@${string}`,
+		/** An object relationship */
+		marketplace_listing?: ResolverInputTypes["marketplace_listing"],
+		ppt?: boolean | `@${string}`,
+		token_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["marketplace_cft20_detail_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["marketplace_cft20_detail_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["marketplace_cft20_detail_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["marketplace_cft20_detail_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["marketplace_cft20_detail_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["marketplace_cft20_detail_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["marketplace_cft20_detail_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["marketplace_cft20_detail_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["marketplace_cft20_detail_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["marketplace_cft20_detail_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_avg_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Boolean expression to filter rows from the table "marketplace_cft20_detail". All fields are combined with a logical 'AND'. */
+	["marketplace_cft20_detail_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["marketplace_cft20_detail_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["marketplace_cft20_detail_bool_exp"]> | undefined | null,
+		amount?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		listing_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		marketplace_listing?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null,
+		ppt?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		token_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** order by max() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_max_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_min_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Ordering options when selecting data from "marketplace_cft20_detail". */
+	["marketplace_cft20_detail_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		marketplace_listing?: ResolverInputTypes["marketplace_listing_order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_select_column"]: marketplace_cft20_detail_select_column;
+	/** order by stddev() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Streaming cursor of the table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["marketplace_cft20_detail_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_cft20_detail_stream_cursor_value_input"]: {
+		amount?: ResolverInputTypes["bigint"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		id?: number | undefined | null,
+		listing_id?: number | undefined | null,
+		ppt?: ResolverInputTypes["bigint"] | undefined | null,
+		token_id?: number | undefined | null
+	};
+	/** order by sum() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_sum_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_pop_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_samp_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_variance_order_by"]: {
+		amount?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		listing_id?: ResolverInputTypes["order_by"] | undefined | null,
+		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		token_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** columns and relationships of "marketplace_listing" */
+	["marketplace_listing"]: AliasType<{
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		date_updated?: boolean | `@${string}`,
+		deposit_timeout?: boolean | `@${string}`,
+		deposit_total?: boolean | `@${string}`,
+		depositor_address?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		is_cancelled?: boolean | `@${string}`,
+		is_deposited?: boolean | `@${string}`,
+		is_filled?: boolean | `@${string}`,
+		marketplace_cft20_details?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_cft20_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_cft20_detail_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_cft20_detail"]],
+		seller_address?: boolean | `@${string}`,
+		total?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "marketplace_listing" */
+	["marketplace_listing_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["marketplace_listing_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["marketplace_listing_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["marketplace_listing_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["marketplace_listing_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["marketplace_listing_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["marketplace_listing_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["marketplace_listing_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["marketplace_listing_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["marketplace_listing_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["marketplace_listing_variance_order_by"] | undefined | null
+	};
+	/** order by avg() on columns of table "marketplace_listing" */
+	["marketplace_listing_avg_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Boolean expression to filter rows from the table "marketplace_listing". All fields are combined with a logical 'AND'. */
+	["marketplace_listing_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["marketplace_listing_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["marketplace_listing_bool_exp"]> | undefined | null,
+		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		date_updated?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		deposit_timeout?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		deposit_total?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		depositor_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		is_cancelled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		is_deposited?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		is_filled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		marketplace_cft20_details?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null,
+		seller_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		total?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** order by max() on columns of table "marketplace_listing" */
+	["marketplace_listing_max_order_by"]: {
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		depositor_address?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by min() on columns of table "marketplace_listing" */
+	["marketplace_listing_min_order_by"]: {
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		depositor_address?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Ordering options when selecting data from "marketplace_listing". */
+	["marketplace_listing_order_by"]: {
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		depositor_address?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		is_cancelled?: ResolverInputTypes["order_by"] | undefined | null,
+		is_deposited?: ResolverInputTypes["order_by"] | undefined | null,
+		is_filled?: ResolverInputTypes["order_by"] | undefined | null,
+		marketplace_cft20_details_aggregate?: ResolverInputTypes["marketplace_cft20_detail_aggregate_order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "marketplace_listing" */
+	["marketplace_listing_select_column"]: marketplace_listing_select_column;
+	/** order by stddev() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_pop_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by stddev_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_samp_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Streaming cursor of the table "marketplace_listing" */
+	["marketplace_listing_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["marketplace_listing_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_listing_stream_cursor_value_input"]: {
+		chain_id?: string | undefined | null,
+		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		date_updated?: ResolverInputTypes["timestamp"] | undefined | null,
+		deposit_timeout?: number | undefined | null,
+		deposit_total?: ResolverInputTypes["bigint"] | undefined | null,
+		depositor_address?: string | undefined | null,
+		id?: number | undefined | null,
+		is_cancelled?: boolean | undefined | null,
+		is_deposited?: boolean | undefined | null,
+		is_filled?: boolean | undefined | null,
+		seller_address?: string | undefined | null,
+		total?: ResolverInputTypes["bigint"] | undefined | null,
+		transaction_id?: number | undefined | null
+	};
+	/** order by sum() on columns of table "marketplace_listing" */
+	["marketplace_listing_sum_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_pop_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by var_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_samp_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** order by variance() on columns of table "marketplace_listing" */
+	["marketplace_listing_variance_order_by"]: {
+		deposit_timeout?: ResolverInputTypes["order_by"] | undefined | null,
+		deposit_total?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		total?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	["numeric"]: unknown;
 	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 	["numeric_comparison_exp"]: {
@@ -2393,6 +3368,22 @@ export type ResolverInputTypes = {
 			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription_history"]],
 		inscription_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_history"]],
+		marketplace_cft20_detail?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_cft20_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_cft20_detail_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_by_pk?: [{ id: number }, ResolverInputTypes["marketplace_cft20_detail"]],
+		marketplace_listing?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_listing_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_listing_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_listing"]],
+		marketplace_listing_by_pk?: [{ id: number }, ResolverInputTypes["marketplace_listing"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -2463,6 +3454,7 @@ export type ResolverInputTypes = {
 		chain_id?: boolean | `@${string}`,
 		date_updated?: boolean | `@${string}`,
 		id?: boolean | `@${string}`,
+		last_known_height?: boolean | `@${string}`,
 		last_processed_height?: boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 	}>;
@@ -2476,6 +3468,7 @@ export type ResolverInputTypes = {
 		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		date_updated?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		last_known_height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		last_processed_height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
 	};
 	/** Ordering options when selecting data from "status". */
@@ -2485,6 +3478,7 @@ export type ResolverInputTypes = {
 		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
 		date_updated?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
+		last_known_height?: ResolverInputTypes["order_by"] | undefined | null,
 		last_processed_height?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	/** select columns of table "status" */
@@ -2503,6 +3497,7 @@ export type ResolverInputTypes = {
 		chain_id?: string | undefined | null,
 		date_updated?: ResolverInputTypes["timestamp"] | undefined | null,
 		id?: number | undefined | null,
+		last_known_height?: number | undefined | null,
 		last_processed_height?: number | undefined | null
 	};
 	["subscription_root"]: AliasType<{
@@ -2532,6 +3527,32 @@ export type ResolverInputTypes = {
 			cursor: Array<ResolverInputTypes["inscription_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 			where?: ResolverInputTypes["inscription_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription"]],
+		marketplace_cft20_detail?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_cft20_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_cft20_detail_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_by_pk?: [{ id: number }, ResolverInputTypes["marketplace_cft20_detail"]],
+		marketplace_cft20_detail_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["marketplace_cft20_detail_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_cft20_detail_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_cft20_detail"]],
+		marketplace_listing?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_listing_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_listing_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_listing"]],
+		marketplace_listing_by_pk?: [{ id: number }, ResolverInputTypes["marketplace_listing"]],
+		marketplace_listing_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["marketplace_listing_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_listing"]],
 		status?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -3023,7 +4044,10 @@ export type ResolverInputTypes = {
 		id?: boolean | `@${string}`,
 		is_cancelled?: boolean | `@${string}`,
 		is_filled?: boolean | `@${string}`,
+		is_reserved?: boolean | `@${string}`,
 		ppt?: boolean | `@${string}`,
+		reserve_expires_block?: boolean | `@${string}`,
+		reserved_by?: boolean | `@${string}`,
 		seller_address?: boolean | `@${string}`,
 		/** An object relationship */
 		token?: ResolverInputTypes["token"],
@@ -3053,6 +4077,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3069,7 +4094,10 @@ export type ResolverInputTypes = {
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		is_cancelled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 		is_filled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		is_reserved?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 		ppt?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		reserved_by?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		seller_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
 		token_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -3085,6 +4113,8 @@ export type ResolverInputTypes = {
 		date_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
+		reserved_by?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
@@ -3098,6 +4128,8 @@ export type ResolverInputTypes = {
 		date_filled?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
+		reserved_by?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
@@ -3112,7 +4144,10 @@ export type ResolverInputTypes = {
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		is_cancelled?: ResolverInputTypes["order_by"] | undefined | null,
 		is_filled?: ResolverInputTypes["order_by"] | undefined | null,
+		is_reserved?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
+		reserved_by?: ResolverInputTypes["order_by"] | undefined | null,
 		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
 		token?: ResolverInputTypes["token_order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -3127,6 +4162,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3136,6 +4172,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3145,6 +4182,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3165,7 +4203,10 @@ export type ResolverInputTypes = {
 		id?: number | undefined | null,
 		is_cancelled?: boolean | undefined | null,
 		is_filled?: boolean | undefined | null,
+		is_reserved?: boolean | undefined | null,
 		ppt?: ResolverInputTypes["bigint"] | undefined | null,
+		reserve_expires_block?: number | undefined | null,
+		reserved_by?: string | undefined | null,
 		seller_address?: string | undefined | null,
 		token_id?: number | undefined | null,
 		total?: ResolverInputTypes["bigint"] | undefined | null,
@@ -3176,6 +4217,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3185,6 +4227,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3194,6 +4237,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3203,6 +4247,7 @@ export type ResolverInputTypes = {
 		amount?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		ppt?: ResolverInputTypes["order_by"] | undefined | null,
+		reserve_expires_block?: ResolverInputTypes["order_by"] | undefined | null,
 		token_id?: ResolverInputTypes["order_by"] | undefined | null,
 		total?: ResolverInputTypes["order_by"] | undefined | null,
 		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -3280,6 +4325,15 @@ export type ResolverInputTypes = {
 		id?: boolean | `@${string}`,
 		/** An object relationship */
 		inscription?: ResolverInputTypes["inscription"],
+		/** An object relationship */
+		inscription_history?: ResolverInputTypes["inscription_history"],
+		marketplace_listings?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["marketplace_listing_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["marketplace_listing_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null
+		}, ResolverInputTypes["marketplace_listing"]],
 		status_message?: boolean | `@${string}`,
 		/** An object relationship */
 		token?: ResolverInputTypes["token"],
@@ -3308,6 +4362,8 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
+		inscription_history?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null,
+		marketplace_listings?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null,
 		status_message?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 		token?: ResolverInputTypes["token_bool_exp"] | undefined | null,
 		token_address_history?: ResolverInputTypes["token_address_history_bool_exp"] | undefined | null,
@@ -3324,6 +4380,8 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
+		inscription_history?: ResolverInputTypes["inscription_history_order_by"] | undefined | null,
+		marketplace_listings_aggregate?: ResolverInputTypes["marketplace_listing_aggregate_order_by"] | undefined | null,
 		status_message?: ResolverInputTypes["order_by"] | undefined | null,
 		token?: ResolverInputTypes["token_order_by"] | undefined | null,
 		token_address_history?: ResolverInputTypes["token_address_history_order_by"] | undefined | null,
@@ -3450,6 +4508,8 @@ export type ModelTypes = {
 		date_created: ModelTypes["timestamp"],
 		height: number,
 		id: number,
+		/** An array relationship */
+		inscription_histories: Array<ModelTypes["inscription_history"]>,
 		metadata: ModelTypes["json"],
 		/** An object relationship */
 		transaction: ModelTypes["transaction"],
@@ -3471,6 +4531,7 @@ export type ModelTypes = {
 		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		inscription_histories?: ModelTypes["inscription_history_bool_exp"] | undefined,
 		metadata?: ModelTypes["json_comparison_exp"] | undefined,
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined,
@@ -3493,6 +4554,27 @@ export type ModelTypes = {
 		transaction: ModelTypes["transaction"],
 		transaction_id: number
 	};
+	/** order by aggregate values of table "inscription_history" */
+	["inscription_history_aggregate_order_by"]: {
+		avg?: ModelTypes["inscription_history_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["inscription_history_max_order_by"] | undefined,
+		min?: ModelTypes["inscription_history_min_order_by"] | undefined,
+		stddev?: ModelTypes["inscription_history_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["inscription_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["inscription_history_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["inscription_history_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["inscription_history_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["inscription_history_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["inscription_history_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "inscription_history" */
+	["inscription_history_avg_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
 	["inscription_history_bool_exp"]: {
 		_and?: Array<ModelTypes["inscription_history_bool_exp"]> | undefined,
@@ -3510,6 +4592,30 @@ export type ModelTypes = {
 		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
 	};
+	/** order by max() on columns of table "inscription_history" */
+	["inscription_history_max_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "inscription_history" */
+	["inscription_history_min_order_by"]: {
+		action?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		receiver?: ModelTypes["order_by"] | undefined,
+		sender?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "inscription_history". */
 	["inscription_history_order_by"]: {
 		action?: ModelTypes["order_by"] | undefined,
@@ -3525,6 +4631,27 @@ export type ModelTypes = {
 		transaction_id?: ModelTypes["order_by"] | undefined
 	};
 	["inscription_history_select_column"]: inscription_history_select_column;
+	/** order by stddev() on columns of table "inscription_history" */
+	["inscription_history_stddev_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "inscription_history" */
+	["inscription_history_stddev_pop_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "inscription_history" */
+	["inscription_history_stddev_samp_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Streaming cursor of the table "inscription_history" */
 	["inscription_history_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -3544,6 +4671,34 @@ export type ModelTypes = {
 		sender?: string | undefined,
 		transaction_id?: number | undefined
 	};
+	/** order by sum() on columns of table "inscription_history" */
+	["inscription_history_sum_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "inscription_history" */
+	["inscription_history_var_pop_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "inscription_history" */
+	["inscription_history_var_samp_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "inscription_history" */
+	["inscription_history_variance_order_by"]: {
+		height?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: ModelTypes["order_by"] | undefined,
@@ -3555,6 +4710,7 @@ export type ModelTypes = {
 		date_created?: ModelTypes["order_by"] | undefined,
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
+		inscription_histories_aggregate?: ModelTypes["inscription_history_aggregate_order_by"] | undefined,
 		metadata?: ModelTypes["order_by"] | undefined,
 		transaction?: ModelTypes["transaction_order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined,
@@ -3598,6 +4754,340 @@ export type ModelTypes = {
 		_neq?: ModelTypes["json"] | undefined,
 		_nin?: Array<ModelTypes["json"]> | undefined
 	};
+	/** columns and relationships of "marketplace_cft20_detail" */
+	["marketplace_cft20_detail"]: {
+		amount: ModelTypes["bigint"],
+		date_created: ModelTypes["timestamp"],
+		id: number,
+		listing_id: number,
+		/** An object relationship */
+		marketplace_listing: ModelTypes["marketplace_listing"],
+		ppt: ModelTypes["bigint"],
+		token_id: number
+	};
+	/** order by aggregate values of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_aggregate_order_by"]: {
+		avg?: ModelTypes["marketplace_cft20_detail_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["marketplace_cft20_detail_max_order_by"] | undefined,
+		min?: ModelTypes["marketplace_cft20_detail_min_order_by"] | undefined,
+		stddev?: ModelTypes["marketplace_cft20_detail_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["marketplace_cft20_detail_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["marketplace_cft20_detail_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["marketplace_cft20_detail_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["marketplace_cft20_detail_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["marketplace_cft20_detail_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["marketplace_cft20_detail_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_avg_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "marketplace_cft20_detail". All fields are combined with a logical 'AND'. */
+	["marketplace_cft20_detail_bool_exp"]: {
+		_and?: Array<ModelTypes["marketplace_cft20_detail_bool_exp"]> | undefined,
+		_not?: ModelTypes["marketplace_cft20_detail_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["marketplace_cft20_detail_bool_exp"]> | undefined,
+		amount?: ModelTypes["bigint_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		listing_id?: ModelTypes["Int_comparison_exp"] | undefined,
+		marketplace_listing?: ModelTypes["marketplace_listing_bool_exp"] | undefined,
+		ppt?: ModelTypes["bigint_comparison_exp"] | undefined,
+		token_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_max_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_min_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "marketplace_cft20_detail". */
+	["marketplace_cft20_detail_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		marketplace_listing?: ModelTypes["marketplace_listing_order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	["marketplace_cft20_detail_select_column"]: marketplace_cft20_detail_select_column;
+	/** order by stddev() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["marketplace_cft20_detail_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_cft20_detail_stream_cursor_value_input"]: {
+		amount?: ModelTypes["bigint"] | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		listing_id?: number | undefined,
+		ppt?: ModelTypes["bigint"] | undefined,
+		token_id?: number | undefined
+	};
+	/** order by sum() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_sum_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_pop_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_samp_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_variance_order_by"]: {
+		amount?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		listing_id?: ModelTypes["order_by"] | undefined,
+		ppt?: ModelTypes["order_by"] | undefined,
+		token_id?: ModelTypes["order_by"] | undefined
+	};
+	/** columns and relationships of "marketplace_listing" */
+	["marketplace_listing"]: {
+		chain_id: string,
+		date_created: ModelTypes["timestamp"],
+		date_updated?: ModelTypes["timestamp"] | undefined,
+		deposit_timeout: number,
+		deposit_total: ModelTypes["bigint"],
+		depositor_address?: string | undefined,
+		id: number,
+		is_cancelled: boolean,
+		is_deposited: boolean,
+		is_filled: boolean,
+		/** An array relationship */
+		marketplace_cft20_details: Array<ModelTypes["marketplace_cft20_detail"]>,
+		seller_address: string,
+		total: ModelTypes["bigint"],
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number
+	};
+	/** order by aggregate values of table "marketplace_listing" */
+	["marketplace_listing_aggregate_order_by"]: {
+		avg?: ModelTypes["marketplace_listing_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["marketplace_listing_max_order_by"] | undefined,
+		min?: ModelTypes["marketplace_listing_min_order_by"] | undefined,
+		stddev?: ModelTypes["marketplace_listing_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["marketplace_listing_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["marketplace_listing_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["marketplace_listing_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["marketplace_listing_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["marketplace_listing_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["marketplace_listing_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "marketplace_listing" */
+	["marketplace_listing_avg_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "marketplace_listing". All fields are combined with a logical 'AND'. */
+	["marketplace_listing_bool_exp"]: {
+		_and?: Array<ModelTypes["marketplace_listing_bool_exp"]> | undefined,
+		_not?: ModelTypes["marketplace_listing_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["marketplace_listing_bool_exp"]> | undefined,
+		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		date_updated?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		deposit_timeout?: ModelTypes["Int_comparison_exp"] | undefined,
+		deposit_total?: ModelTypes["bigint_comparison_exp"] | undefined,
+		depositor_address?: ModelTypes["String_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		is_cancelled?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		is_deposited?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		is_filled?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		marketplace_cft20_details?: ModelTypes["marketplace_cft20_detail_bool_exp"] | undefined,
+		seller_address?: ModelTypes["String_comparison_exp"] | undefined,
+		total?: ModelTypes["bigint_comparison_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "marketplace_listing" */
+	["marketplace_listing_max_order_by"]: {
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		depositor_address?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "marketplace_listing" */
+	["marketplace_listing_min_order_by"]: {
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		depositor_address?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "marketplace_listing". */
+	["marketplace_listing_order_by"]: {
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		date_updated?: ModelTypes["order_by"] | undefined,
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		depositor_address?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		is_cancelled?: ModelTypes["order_by"] | undefined,
+		is_deposited?: ModelTypes["order_by"] | undefined,
+		is_filled?: ModelTypes["order_by"] | undefined,
+		marketplace_cft20_details_aggregate?: ModelTypes["marketplace_cft20_detail_aggregate_order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	["marketplace_listing_select_column"]: marketplace_listing_select_column;
+	/** order by stddev() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_pop_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_samp_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "marketplace_listing" */
+	["marketplace_listing_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["marketplace_listing_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_listing_stream_cursor_value_input"]: {
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		date_updated?: ModelTypes["timestamp"] | undefined,
+		deposit_timeout?: number | undefined,
+		deposit_total?: ModelTypes["bigint"] | undefined,
+		depositor_address?: string | undefined,
+		id?: number | undefined,
+		is_cancelled?: boolean | undefined,
+		is_deposited?: boolean | undefined,
+		is_filled?: boolean | undefined,
+		seller_address?: string | undefined,
+		total?: ModelTypes["bigint"] | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "marketplace_listing" */
+	["marketplace_listing_sum_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_pop_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_samp_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "marketplace_listing" */
+	["marketplace_listing_variance_order_by"]: {
+		deposit_timeout?: ModelTypes["order_by"] | undefined,
+		deposit_total?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		total?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
 	["numeric"]: any;
 	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 	["numeric_comparison_exp"]: {
@@ -3621,6 +5111,14 @@ export type ModelTypes = {
 		inscription_history: Array<ModelTypes["inscription_history"]>,
 		/** fetch data from the table: "inscription_history" using primary key columns */
 		inscription_history_by_pk?: ModelTypes["inscription_history"] | undefined,
+		/** fetch data from the table: "marketplace_cft20_detail" */
+		marketplace_cft20_detail: Array<ModelTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
+		marketplace_cft20_detail_by_pk?: ModelTypes["marketplace_cft20_detail"] | undefined,
+		/** fetch data from the table: "marketplace_listing" */
+		marketplace_listing: Array<ModelTypes["marketplace_listing"]>,
+		/** fetch data from the table: "marketplace_listing" using primary key columns */
+		marketplace_listing_by_pk?: ModelTypes["marketplace_listing"] | undefined,
 		/** fetch data from the table: "status" */
 		status: Array<ModelTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -3666,6 +5164,7 @@ export type ModelTypes = {
 		chain_id: string,
 		date_updated: ModelTypes["timestamp"],
 		id: number,
+		last_known_height: number,
 		last_processed_height: number
 	};
 	/** Boolean expression to filter rows from the table "status". All fields are combined with a logical 'AND'. */
@@ -3678,6 +5177,7 @@ export type ModelTypes = {
 		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
 		date_updated?: ModelTypes["timestamp_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		last_known_height?: ModelTypes["Int_comparison_exp"] | undefined,
 		last_processed_height?: ModelTypes["Int_comparison_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "status". */
@@ -3687,6 +5187,7 @@ export type ModelTypes = {
 		chain_id?: ModelTypes["order_by"] | undefined,
 		date_updated?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
+		last_known_height?: ModelTypes["order_by"] | undefined,
 		last_processed_height?: ModelTypes["order_by"] | undefined
 	};
 	["status_select_column"]: status_select_column;
@@ -3704,6 +5205,7 @@ export type ModelTypes = {
 		chain_id?: string | undefined,
 		date_updated?: ModelTypes["timestamp"] | undefined,
 		id?: number | undefined,
+		last_known_height?: number | undefined,
 		last_processed_height?: number | undefined
 	};
 	["subscription_root"]: {
@@ -3719,6 +5221,18 @@ export type ModelTypes = {
 		inscription_history_stream: Array<ModelTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<ModelTypes["inscription"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" */
+		marketplace_cft20_detail: Array<ModelTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
+		marketplace_cft20_detail_by_pk?: ModelTypes["marketplace_cft20_detail"] | undefined,
+		/** fetch data from the table in a streaming manner: "marketplace_cft20_detail" */
+		marketplace_cft20_detail_stream: Array<ModelTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_listing" */
+		marketplace_listing: Array<ModelTypes["marketplace_listing"]>,
+		/** fetch data from the table: "marketplace_listing" using primary key columns */
+		marketplace_listing_by_pk?: ModelTypes["marketplace_listing"] | undefined,
+		/** fetch data from the table in a streaming manner: "marketplace_listing" */
+		marketplace_listing_stream: Array<ModelTypes["marketplace_listing"]>,
 		/** fetch data from the table: "status" */
 		status: Array<ModelTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -4147,7 +5661,10 @@ export type ModelTypes = {
 		id: number,
 		is_cancelled: boolean,
 		is_filled: boolean,
+		is_reserved: boolean,
 		ppt: ModelTypes["bigint"],
+		reserve_expires_block?: number | undefined,
+		reserved_by?: string | undefined,
 		seller_address: string,
 		/** An object relationship */
 		token: ModelTypes["token"],
@@ -4176,6 +5693,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4192,7 +5710,10 @@ export type ModelTypes = {
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		is_cancelled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 		is_filled?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		is_reserved?: ModelTypes["Boolean_comparison_exp"] | undefined,
 		ppt?: ModelTypes["bigint_comparison_exp"] | undefined,
+		reserve_expires_block?: ModelTypes["Int_comparison_exp"] | undefined,
+		reserved_by?: ModelTypes["String_comparison_exp"] | undefined,
 		seller_address?: ModelTypes["String_comparison_exp"] | undefined,
 		token?: ModelTypes["token_bool_exp"] | undefined,
 		token_id?: ModelTypes["Int_comparison_exp"] | undefined,
@@ -4208,6 +5729,8 @@ export type ModelTypes = {
 		date_filled?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
+		reserved_by?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
@@ -4221,6 +5744,8 @@ export type ModelTypes = {
 		date_filled?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
+		reserved_by?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
@@ -4235,7 +5760,10 @@ export type ModelTypes = {
 		id?: ModelTypes["order_by"] | undefined,
 		is_cancelled?: ModelTypes["order_by"] | undefined,
 		is_filled?: ModelTypes["order_by"] | undefined,
+		is_reserved?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
+		reserved_by?: ModelTypes["order_by"] | undefined,
 		seller_address?: ModelTypes["order_by"] | undefined,
 		token?: ModelTypes["token_order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
@@ -4249,6 +5777,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4258,6 +5787,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4267,6 +5797,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4287,7 +5818,10 @@ export type ModelTypes = {
 		id?: number | undefined,
 		is_cancelled?: boolean | undefined,
 		is_filled?: boolean | undefined,
+		is_reserved?: boolean | undefined,
 		ppt?: ModelTypes["bigint"] | undefined,
+		reserve_expires_block?: number | undefined,
+		reserved_by?: string | undefined,
 		seller_address?: string | undefined,
 		token_id?: number | undefined,
 		total?: ModelTypes["bigint"] | undefined,
@@ -4298,6 +5832,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4307,6 +5842,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4316,6 +5852,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4325,6 +5862,7 @@ export type ModelTypes = {
 		amount?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		ppt?: ModelTypes["order_by"] | undefined,
+		reserve_expires_block?: ModelTypes["order_by"] | undefined,
 		token_id?: ModelTypes["order_by"] | undefined,
 		total?: ModelTypes["order_by"] | undefined,
 		transaction_id?: ModelTypes["order_by"] | undefined
@@ -4401,6 +5939,10 @@ export type ModelTypes = {
 		id: number,
 		/** An object relationship */
 		inscription?: ModelTypes["inscription"] | undefined,
+		/** An object relationship */
+		inscription_history?: ModelTypes["inscription_history"] | undefined,
+		/** An array relationship */
+		marketplace_listings: Array<ModelTypes["marketplace_listing"]>,
 		status_message?: string | undefined,
 		/** An object relationship */
 		token?: ModelTypes["token"] | undefined,
@@ -4423,6 +5965,8 @@ export type ModelTypes = {
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
+		inscription_history?: ModelTypes["inscription_history_bool_exp"] | undefined,
+		marketplace_listings?: ModelTypes["marketplace_listing_bool_exp"] | undefined,
 		status_message?: ModelTypes["String_comparison_exp"] | undefined,
 		token?: ModelTypes["token_bool_exp"] | undefined,
 		token_address_history?: ModelTypes["token_address_history_bool_exp"] | undefined,
@@ -4439,6 +5983,8 @@ export type ModelTypes = {
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		inscription?: ModelTypes["inscription_order_by"] | undefined,
+		inscription_history?: ModelTypes["inscription_history_order_by"] | undefined,
+		marketplace_listings_aggregate?: ModelTypes["marketplace_listing_aggregate_order_by"] | undefined,
 		status_message?: ModelTypes["order_by"] | undefined,
 		token?: ModelTypes["token_order_by"] | undefined,
 		token_address_history?: ModelTypes["token_address_history_order_by"] | undefined,
@@ -4562,6 +6108,8 @@ export type GraphQLTypes = {
 		date_created: GraphQLTypes["timestamp"],
 		height: number,
 		id: number,
+		/** An array relationship */
+		inscription_histories: Array<GraphQLTypes["inscription_history"]>,
 		metadata: GraphQLTypes["json"],
 		/** An object relationship */
 		transaction: GraphQLTypes["transaction"],
@@ -4583,6 +6131,7 @@ export type GraphQLTypes = {
 		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		inscription_histories?: GraphQLTypes["inscription_history_bool_exp"] | undefined,
 		metadata?: GraphQLTypes["json_comparison_exp"] | undefined,
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
@@ -4606,6 +6155,27 @@ export type GraphQLTypes = {
 		transaction: GraphQLTypes["transaction"],
 		transaction_id: number
 	};
+	/** order by aggregate values of table "inscription_history" */
+	["inscription_history_aggregate_order_by"]: {
+		avg?: GraphQLTypes["inscription_history_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["inscription_history_max_order_by"] | undefined,
+		min?: GraphQLTypes["inscription_history_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["inscription_history_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["inscription_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["inscription_history_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["inscription_history_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["inscription_history_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["inscription_history_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["inscription_history_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "inscription_history" */
+	["inscription_history_avg_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Boolean expression to filter rows from the table "inscription_history". All fields are combined with a logical 'AND'. */
 	["inscription_history_bool_exp"]: {
 		_and?: Array<GraphQLTypes["inscription_history_bool_exp"]> | undefined,
@@ -4623,6 +6193,30 @@ export type GraphQLTypes = {
 		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
 		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
 	};
+	/** order by max() on columns of table "inscription_history" */
+	["inscription_history_max_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "inscription_history" */
+	["inscription_history_min_order_by"]: {
+		action?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		receiver?: GraphQLTypes["order_by"] | undefined,
+		sender?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "inscription_history". */
 	["inscription_history_order_by"]: {
 		action?: GraphQLTypes["order_by"] | undefined,
@@ -4639,6 +6233,27 @@ export type GraphQLTypes = {
 	};
 	/** select columns of table "inscription_history" */
 	["inscription_history_select_column"]: inscription_history_select_column;
+	/** order by stddev() on columns of table "inscription_history" */
+	["inscription_history_stddev_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "inscription_history" */
+	["inscription_history_stddev_pop_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "inscription_history" */
+	["inscription_history_stddev_samp_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Streaming cursor of the table "inscription_history" */
 	["inscription_history_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -4658,6 +6273,34 @@ export type GraphQLTypes = {
 		sender?: string | undefined,
 		transaction_id?: number | undefined
 	};
+	/** order by sum() on columns of table "inscription_history" */
+	["inscription_history_sum_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "inscription_history" */
+	["inscription_history_var_pop_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "inscription_history" */
+	["inscription_history_var_samp_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "inscription_history" */
+	["inscription_history_variance_order_by"]: {
+		height?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	/** Ordering options when selecting data from "inscription". */
 	["inscription_order_by"]: {
 		chain_id?: GraphQLTypes["order_by"] | undefined,
@@ -4669,6 +6312,7 @@ export type GraphQLTypes = {
 		date_created?: GraphQLTypes["order_by"] | undefined,
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_histories_aggregate?: GraphQLTypes["inscription_history_aggregate_order_by"] | undefined,
 		metadata?: GraphQLTypes["order_by"] | undefined,
 		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined,
@@ -4713,6 +6357,344 @@ export type GraphQLTypes = {
 		_neq?: GraphQLTypes["json"] | undefined,
 		_nin?: Array<GraphQLTypes["json"]> | undefined
 	};
+	/** columns and relationships of "marketplace_cft20_detail" */
+	["marketplace_cft20_detail"]: {
+		__typename: "marketplace_cft20_detail",
+		amount: GraphQLTypes["bigint"],
+		date_created: GraphQLTypes["timestamp"],
+		id: number,
+		listing_id: number,
+		/** An object relationship */
+		marketplace_listing: GraphQLTypes["marketplace_listing"],
+		ppt: GraphQLTypes["bigint"],
+		token_id: number
+	};
+	/** order by aggregate values of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_aggregate_order_by"]: {
+		avg?: GraphQLTypes["marketplace_cft20_detail_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["marketplace_cft20_detail_max_order_by"] | undefined,
+		min?: GraphQLTypes["marketplace_cft20_detail_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["marketplace_cft20_detail_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["marketplace_cft20_detail_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["marketplace_cft20_detail_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["marketplace_cft20_detail_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["marketplace_cft20_detail_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["marketplace_cft20_detail_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["marketplace_cft20_detail_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_avg_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "marketplace_cft20_detail". All fields are combined with a logical 'AND'. */
+	["marketplace_cft20_detail_bool_exp"]: {
+		_and?: Array<GraphQLTypes["marketplace_cft20_detail_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["marketplace_cft20_detail_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["marketplace_cft20_detail_bool_exp"]> | undefined,
+		amount?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		listing_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		marketplace_listing?: GraphQLTypes["marketplace_listing_bool_exp"] | undefined,
+		ppt?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		token_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_max_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_min_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "marketplace_cft20_detail". */
+	["marketplace_cft20_detail_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		marketplace_listing?: GraphQLTypes["marketplace_listing_order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_select_column"]: marketplace_cft20_detail_select_column;
+	/** order by stddev() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stddev_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["marketplace_cft20_detail_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_cft20_detail_stream_cursor_value_input"]: {
+		amount?: GraphQLTypes["bigint"] | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		listing_id?: number | undefined,
+		ppt?: GraphQLTypes["bigint"] | undefined,
+		token_id?: number | undefined
+	};
+	/** order by sum() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_sum_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_pop_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_var_samp_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "marketplace_cft20_detail" */
+	["marketplace_cft20_detail_variance_order_by"]: {
+		amount?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		listing_id?: GraphQLTypes["order_by"] | undefined,
+		ppt?: GraphQLTypes["order_by"] | undefined,
+		token_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** columns and relationships of "marketplace_listing" */
+	["marketplace_listing"]: {
+		__typename: "marketplace_listing",
+		chain_id: string,
+		date_created: GraphQLTypes["timestamp"],
+		date_updated?: GraphQLTypes["timestamp"] | undefined,
+		deposit_timeout: number,
+		deposit_total: GraphQLTypes["bigint"],
+		depositor_address?: string | undefined,
+		id: number,
+		is_cancelled: boolean,
+		is_deposited: boolean,
+		is_filled: boolean,
+		/** An array relationship */
+		marketplace_cft20_details: Array<GraphQLTypes["marketplace_cft20_detail"]>,
+		seller_address: string,
+		total: GraphQLTypes["bigint"],
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number
+	};
+	/** order by aggregate values of table "marketplace_listing" */
+	["marketplace_listing_aggregate_order_by"]: {
+		avg?: GraphQLTypes["marketplace_listing_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["marketplace_listing_max_order_by"] | undefined,
+		min?: GraphQLTypes["marketplace_listing_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["marketplace_listing_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["marketplace_listing_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["marketplace_listing_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["marketplace_listing_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["marketplace_listing_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["marketplace_listing_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["marketplace_listing_variance_order_by"] | undefined
+	};
+	/** order by avg() on columns of table "marketplace_listing" */
+	["marketplace_listing_avg_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "marketplace_listing". All fields are combined with a logical 'AND'. */
+	["marketplace_listing_bool_exp"]: {
+		_and?: Array<GraphQLTypes["marketplace_listing_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["marketplace_listing_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["marketplace_listing_bool_exp"]> | undefined,
+		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		date_updated?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		deposit_timeout?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		deposit_total?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		depositor_address?: GraphQLTypes["String_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		is_cancelled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		is_deposited?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		is_filled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		marketplace_cft20_details?: GraphQLTypes["marketplace_cft20_detail_bool_exp"] | undefined,
+		seller_address?: GraphQLTypes["String_comparison_exp"] | undefined,
+		total?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** order by max() on columns of table "marketplace_listing" */
+	["marketplace_listing_max_order_by"]: {
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		depositor_address?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by min() on columns of table "marketplace_listing" */
+	["marketplace_listing_min_order_by"]: {
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		depositor_address?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "marketplace_listing". */
+	["marketplace_listing_order_by"]: {
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		date_updated?: GraphQLTypes["order_by"] | undefined,
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		depositor_address?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		is_cancelled?: GraphQLTypes["order_by"] | undefined,
+		is_deposited?: GraphQLTypes["order_by"] | undefined,
+		is_filled?: GraphQLTypes["order_by"] | undefined,
+		marketplace_cft20_details_aggregate?: GraphQLTypes["marketplace_cft20_detail_aggregate_order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "marketplace_listing" */
+	["marketplace_listing_select_column"]: marketplace_listing_select_column;
+	/** order by stddev() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_pop_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by stddev_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_stddev_samp_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "marketplace_listing" */
+	["marketplace_listing_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["marketplace_listing_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["marketplace_listing_stream_cursor_value_input"]: {
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		date_updated?: GraphQLTypes["timestamp"] | undefined,
+		deposit_timeout?: number | undefined,
+		deposit_total?: GraphQLTypes["bigint"] | undefined,
+		depositor_address?: string | undefined,
+		id?: number | undefined,
+		is_cancelled?: boolean | undefined,
+		is_deposited?: boolean | undefined,
+		is_filled?: boolean | undefined,
+		seller_address?: string | undefined,
+		total?: GraphQLTypes["bigint"] | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "marketplace_listing" */
+	["marketplace_listing_sum_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_pop() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_pop_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by var_samp() on columns of table "marketplace_listing" */
+	["marketplace_listing_var_samp_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** order by variance() on columns of table "marketplace_listing" */
+	["marketplace_listing_variance_order_by"]: {
+		deposit_timeout?: GraphQLTypes["order_by"] | undefined,
+		deposit_total?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		total?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
 	["numeric"]: "scalar" & { name: "numeric" };
 	/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
 	["numeric_comparison_exp"]: {
@@ -4738,6 +6720,14 @@ export type GraphQLTypes = {
 		inscription_history: Array<GraphQLTypes["inscription_history"]>,
 		/** fetch data from the table: "inscription_history" using primary key columns */
 		inscription_history_by_pk?: GraphQLTypes["inscription_history"] | undefined,
+		/** fetch data from the table: "marketplace_cft20_detail" */
+		marketplace_cft20_detail: Array<GraphQLTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
+		marketplace_cft20_detail_by_pk?: GraphQLTypes["marketplace_cft20_detail"] | undefined,
+		/** fetch data from the table: "marketplace_listing" */
+		marketplace_listing: Array<GraphQLTypes["marketplace_listing"]>,
+		/** fetch data from the table: "marketplace_listing" using primary key columns */
+		marketplace_listing_by_pk?: GraphQLTypes["marketplace_listing"] | undefined,
 		/** fetch data from the table: "status" */
 		status: Array<GraphQLTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -4784,6 +6774,7 @@ export type GraphQLTypes = {
 		chain_id: string,
 		date_updated: GraphQLTypes["timestamp"],
 		id: number,
+		last_known_height: number,
 		last_processed_height: number
 	};
 	/** Boolean expression to filter rows from the table "status". All fields are combined with a logical 'AND'. */
@@ -4796,6 +6787,7 @@ export type GraphQLTypes = {
 		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 		date_updated?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		last_known_height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		last_processed_height?: GraphQLTypes["Int_comparison_exp"] | undefined
 	};
 	/** Ordering options when selecting data from "status". */
@@ -4805,6 +6797,7 @@ export type GraphQLTypes = {
 		chain_id?: GraphQLTypes["order_by"] | undefined,
 		date_updated?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
+		last_known_height?: GraphQLTypes["order_by"] | undefined,
 		last_processed_height?: GraphQLTypes["order_by"] | undefined
 	};
 	/** select columns of table "status" */
@@ -4823,6 +6816,7 @@ export type GraphQLTypes = {
 		chain_id?: string | undefined,
 		date_updated?: GraphQLTypes["timestamp"] | undefined,
 		id?: number | undefined,
+		last_known_height?: number | undefined,
 		last_processed_height?: number | undefined
 	};
 	["subscription_root"]: {
@@ -4839,6 +6833,18 @@ export type GraphQLTypes = {
 		inscription_history_stream: Array<GraphQLTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<GraphQLTypes["inscription"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" */
+		marketplace_cft20_detail: Array<GraphQLTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
+		marketplace_cft20_detail_by_pk?: GraphQLTypes["marketplace_cft20_detail"] | undefined,
+		/** fetch data from the table in a streaming manner: "marketplace_cft20_detail" */
+		marketplace_cft20_detail_stream: Array<GraphQLTypes["marketplace_cft20_detail"]>,
+		/** fetch data from the table: "marketplace_listing" */
+		marketplace_listing: Array<GraphQLTypes["marketplace_listing"]>,
+		/** fetch data from the table: "marketplace_listing" using primary key columns */
+		marketplace_listing_by_pk?: GraphQLTypes["marketplace_listing"] | undefined,
+		/** fetch data from the table in a streaming manner: "marketplace_listing" */
+		marketplace_listing_stream: Array<GraphQLTypes["marketplace_listing"]>,
 		/** fetch data from the table: "status" */
 		status: Array<GraphQLTypes["status"]>,
 		/** fetch data from the table: "status" using primary key columns */
@@ -5273,7 +7279,10 @@ export type GraphQLTypes = {
 		id: number,
 		is_cancelled: boolean,
 		is_filled: boolean,
+		is_reserved: boolean,
 		ppt: GraphQLTypes["bigint"],
+		reserve_expires_block?: number | undefined,
+		reserved_by?: string | undefined,
 		seller_address: string,
 		/** An object relationship */
 		token: GraphQLTypes["token"],
@@ -5302,6 +7311,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5318,7 +7328,10 @@ export type GraphQLTypes = {
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		is_cancelled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 		is_filled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		is_reserved?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 		ppt?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		reserve_expires_block?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		reserved_by?: GraphQLTypes["String_comparison_exp"] | undefined,
 		seller_address?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token?: GraphQLTypes["token_bool_exp"] | undefined,
 		token_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
@@ -5334,6 +7347,8 @@ export type GraphQLTypes = {
 		date_filled?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
+		reserved_by?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
@@ -5347,6 +7362,8 @@ export type GraphQLTypes = {
 		date_filled?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
+		reserved_by?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
@@ -5361,7 +7378,10 @@ export type GraphQLTypes = {
 		id?: GraphQLTypes["order_by"] | undefined,
 		is_cancelled?: GraphQLTypes["order_by"] | undefined,
 		is_filled?: GraphQLTypes["order_by"] | undefined,
+		is_reserved?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
+		reserved_by?: GraphQLTypes["order_by"] | undefined,
 		seller_address?: GraphQLTypes["order_by"] | undefined,
 		token?: GraphQLTypes["token_order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
@@ -5376,6 +7396,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5385,6 +7406,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5394,6 +7416,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5414,7 +7437,10 @@ export type GraphQLTypes = {
 		id?: number | undefined,
 		is_cancelled?: boolean | undefined,
 		is_filled?: boolean | undefined,
+		is_reserved?: boolean | undefined,
 		ppt?: GraphQLTypes["bigint"] | undefined,
+		reserve_expires_block?: number | undefined,
+		reserved_by?: string | undefined,
 		seller_address?: string | undefined,
 		token_id?: number | undefined,
 		total?: GraphQLTypes["bigint"] | undefined,
@@ -5425,6 +7451,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5434,6 +7461,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5443,6 +7471,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5452,6 +7481,7 @@ export type GraphQLTypes = {
 		amount?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		ppt?: GraphQLTypes["order_by"] | undefined,
+		reserve_expires_block?: GraphQLTypes["order_by"] | undefined,
 		token_id?: GraphQLTypes["order_by"] | undefined,
 		total?: GraphQLTypes["order_by"] | undefined,
 		transaction_id?: GraphQLTypes["order_by"] | undefined
@@ -5530,6 +7560,10 @@ export type GraphQLTypes = {
 		id: number,
 		/** An object relationship */
 		inscription?: GraphQLTypes["inscription"] | undefined,
+		/** An object relationship */
+		inscription_history?: GraphQLTypes["inscription_history"] | undefined,
+		/** An array relationship */
+		marketplace_listings: Array<GraphQLTypes["marketplace_listing"]>,
 		status_message?: string | undefined,
 		/** An object relationship */
 		token?: GraphQLTypes["token"] | undefined,
@@ -5552,6 +7586,8 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
+		inscription_history?: GraphQLTypes["inscription_history_bool_exp"] | undefined,
+		marketplace_listings?: GraphQLTypes["marketplace_listing_bool_exp"] | undefined,
 		status_message?: GraphQLTypes["String_comparison_exp"] | undefined,
 		token?: GraphQLTypes["token_bool_exp"] | undefined,
 		token_address_history?: GraphQLTypes["token_address_history_bool_exp"] | undefined,
@@ -5568,6 +7604,8 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
+		inscription_history?: GraphQLTypes["inscription_history_order_by"] | undefined,
+		marketplace_listings_aggregate?: GraphQLTypes["marketplace_listing_aggregate_order_by"] | undefined,
 		status_message?: GraphQLTypes["order_by"] | undefined,
 		token?: GraphQLTypes["token_order_by"] | undefined,
 		token_address_history?: GraphQLTypes["token_address_history_order_by"] | undefined,
@@ -5628,6 +7666,31 @@ export const enum inscription_select_column {
 	type = "type",
 	version = "version"
 }
+/** select columns of table "marketplace_cft20_detail" */
+export const enum marketplace_cft20_detail_select_column {
+	amount = "amount",
+	date_created = "date_created",
+	id = "id",
+	listing_id = "listing_id",
+	ppt = "ppt",
+	token_id = "token_id"
+}
+/** select columns of table "marketplace_listing" */
+export const enum marketplace_listing_select_column {
+	chain_id = "chain_id",
+	date_created = "date_created",
+	date_updated = "date_updated",
+	deposit_timeout = "deposit_timeout",
+	deposit_total = "deposit_total",
+	depositor_address = "depositor_address",
+	id = "id",
+	is_cancelled = "is_cancelled",
+	is_deposited = "is_deposited",
+	is_filled = "is_filled",
+	seller_address = "seller_address",
+	total = "total",
+	transaction_id = "transaction_id"
+}
 /** column ordering options */
 export const enum order_by {
 	asc = "asc",
@@ -5644,6 +7707,7 @@ export const enum status_select_column {
 	chain_id = "chain_id",
 	date_updated = "date_updated",
 	id = "id",
+	last_known_height = "last_known_height",
 	last_processed_height = "last_processed_height"
 }
 /** select columns of table "token_address_history" */
@@ -5677,7 +7741,10 @@ export const enum token_open_position_select_column {
 	id = "id",
 	is_cancelled = "is_cancelled",
 	is_filled = "is_filled",
+	is_reserved = "is_reserved",
 	ppt = "ppt",
+	reserve_expires_block = "reserve_expires_block",
+	reserved_by = "reserved_by",
 	seller_address = "seller_address",
 	token_id = "token_id",
 	total = "total",
@@ -5729,17 +7796,60 @@ type ZEUS_VARIABLES = {
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["inscription_bool_exp"]: ValueTypes["inscription_bool_exp"];
+	["inscription_history_aggregate_order_by"]: ValueTypes["inscription_history_aggregate_order_by"];
+	["inscription_history_avg_order_by"]: ValueTypes["inscription_history_avg_order_by"];
 	["inscription_history_bool_exp"]: ValueTypes["inscription_history_bool_exp"];
+	["inscription_history_max_order_by"]: ValueTypes["inscription_history_max_order_by"];
+	["inscription_history_min_order_by"]: ValueTypes["inscription_history_min_order_by"];
 	["inscription_history_order_by"]: ValueTypes["inscription_history_order_by"];
 	["inscription_history_select_column"]: ValueTypes["inscription_history_select_column"];
+	["inscription_history_stddev_order_by"]: ValueTypes["inscription_history_stddev_order_by"];
+	["inscription_history_stddev_pop_order_by"]: ValueTypes["inscription_history_stddev_pop_order_by"];
+	["inscription_history_stddev_samp_order_by"]: ValueTypes["inscription_history_stddev_samp_order_by"];
 	["inscription_history_stream_cursor_input"]: ValueTypes["inscription_history_stream_cursor_input"];
 	["inscription_history_stream_cursor_value_input"]: ValueTypes["inscription_history_stream_cursor_value_input"];
+	["inscription_history_sum_order_by"]: ValueTypes["inscription_history_sum_order_by"];
+	["inscription_history_var_pop_order_by"]: ValueTypes["inscription_history_var_pop_order_by"];
+	["inscription_history_var_samp_order_by"]: ValueTypes["inscription_history_var_samp_order_by"];
+	["inscription_history_variance_order_by"]: ValueTypes["inscription_history_variance_order_by"];
 	["inscription_order_by"]: ValueTypes["inscription_order_by"];
 	["inscription_select_column"]: ValueTypes["inscription_select_column"];
 	["inscription_stream_cursor_input"]: ValueTypes["inscription_stream_cursor_input"];
 	["inscription_stream_cursor_value_input"]: ValueTypes["inscription_stream_cursor_value_input"];
 	["json"]: ValueTypes["json"];
 	["json_comparison_exp"]: ValueTypes["json_comparison_exp"];
+	["marketplace_cft20_detail_aggregate_order_by"]: ValueTypes["marketplace_cft20_detail_aggregate_order_by"];
+	["marketplace_cft20_detail_avg_order_by"]: ValueTypes["marketplace_cft20_detail_avg_order_by"];
+	["marketplace_cft20_detail_bool_exp"]: ValueTypes["marketplace_cft20_detail_bool_exp"];
+	["marketplace_cft20_detail_max_order_by"]: ValueTypes["marketplace_cft20_detail_max_order_by"];
+	["marketplace_cft20_detail_min_order_by"]: ValueTypes["marketplace_cft20_detail_min_order_by"];
+	["marketplace_cft20_detail_order_by"]: ValueTypes["marketplace_cft20_detail_order_by"];
+	["marketplace_cft20_detail_select_column"]: ValueTypes["marketplace_cft20_detail_select_column"];
+	["marketplace_cft20_detail_stddev_order_by"]: ValueTypes["marketplace_cft20_detail_stddev_order_by"];
+	["marketplace_cft20_detail_stddev_pop_order_by"]: ValueTypes["marketplace_cft20_detail_stddev_pop_order_by"];
+	["marketplace_cft20_detail_stddev_samp_order_by"]: ValueTypes["marketplace_cft20_detail_stddev_samp_order_by"];
+	["marketplace_cft20_detail_stream_cursor_input"]: ValueTypes["marketplace_cft20_detail_stream_cursor_input"];
+	["marketplace_cft20_detail_stream_cursor_value_input"]: ValueTypes["marketplace_cft20_detail_stream_cursor_value_input"];
+	["marketplace_cft20_detail_sum_order_by"]: ValueTypes["marketplace_cft20_detail_sum_order_by"];
+	["marketplace_cft20_detail_var_pop_order_by"]: ValueTypes["marketplace_cft20_detail_var_pop_order_by"];
+	["marketplace_cft20_detail_var_samp_order_by"]: ValueTypes["marketplace_cft20_detail_var_samp_order_by"];
+	["marketplace_cft20_detail_variance_order_by"]: ValueTypes["marketplace_cft20_detail_variance_order_by"];
+	["marketplace_listing_aggregate_order_by"]: ValueTypes["marketplace_listing_aggregate_order_by"];
+	["marketplace_listing_avg_order_by"]: ValueTypes["marketplace_listing_avg_order_by"];
+	["marketplace_listing_bool_exp"]: ValueTypes["marketplace_listing_bool_exp"];
+	["marketplace_listing_max_order_by"]: ValueTypes["marketplace_listing_max_order_by"];
+	["marketplace_listing_min_order_by"]: ValueTypes["marketplace_listing_min_order_by"];
+	["marketplace_listing_order_by"]: ValueTypes["marketplace_listing_order_by"];
+	["marketplace_listing_select_column"]: ValueTypes["marketplace_listing_select_column"];
+	["marketplace_listing_stddev_order_by"]: ValueTypes["marketplace_listing_stddev_order_by"];
+	["marketplace_listing_stddev_pop_order_by"]: ValueTypes["marketplace_listing_stddev_pop_order_by"];
+	["marketplace_listing_stddev_samp_order_by"]: ValueTypes["marketplace_listing_stddev_samp_order_by"];
+	["marketplace_listing_stream_cursor_input"]: ValueTypes["marketplace_listing_stream_cursor_input"];
+	["marketplace_listing_stream_cursor_value_input"]: ValueTypes["marketplace_listing_stream_cursor_value_input"];
+	["marketplace_listing_sum_order_by"]: ValueTypes["marketplace_listing_sum_order_by"];
+	["marketplace_listing_var_pop_order_by"]: ValueTypes["marketplace_listing_var_pop_order_by"];
+	["marketplace_listing_var_samp_order_by"]: ValueTypes["marketplace_listing_var_samp_order_by"];
+	["marketplace_listing_variance_order_by"]: ValueTypes["marketplace_listing_variance_order_by"];
 	["numeric"]: ValueTypes["numeric"];
 	["numeric_comparison_exp"]: ValueTypes["numeric_comparison_exp"];
 	["order_by"]: ValueTypes["order_by"];
