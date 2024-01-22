@@ -612,8 +612,8 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			TokenID:       tokenModel.ID,
 			SellerAddress: openOrderModel.SellerAddress,
 			BuyerAddress:  sender,
-			AmountQuote:   openOrderModel.Amount,
-			AmountBase:    openOrderModel.Total,
+			AmountQuote:   openOrderModel.Total,  // ATOM
+			AmountBase:    openOrderModel.Amount, // CFT-20
 			Rate:          openOrderModel.PPT,
 			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
 			DateCreated:   transactionModel.DateCreated,
@@ -627,7 +627,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// SELECT sum(total_usd) from token_trade_history where date_Created >= now - 24 hours and token_id = this token id
 		var sum uint64
 		err = protocol.db.Model(&models.TokenTradeHistory{}).
-			Select("SUM(amount_base)").
+			Select("SUM(amount_quote)").
 			Where("date_created >= ?", time.Now().Add(-24*time.Hour)).
 			Where("token_id = ?", tokenModel.ID).
 			Find(&sum).Error
