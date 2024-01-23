@@ -28,7 +28,7 @@
           <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="tokens"
             [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="50" [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} markets" [globalFilterFields]="
-            ['name', 'ticker' ]" styleClass="token-list" sortField="volume" [sortOrder]="-1">
+            ['name', 'ticker' ]" styleClass="token-list" sortField="volume_24_base" [sortOrder]="-1">
             <ng-template pTemplate="caption">
               <div class="flex search">
                 <div>
