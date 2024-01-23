@@ -46,6 +46,9 @@
   // background: rgb(58, 75, 89);
 
   background: url("../../assets/background/flow.png") no-repeat;
+  @supports (background-image: url("../../assets/background/flow.webp")) {
+    background-image: url("../../assets/background/flow.webp");
+  }
   // background: url("../../assets/background/violet.jpg") no-repeat;
   background-size: cover;
   // background-image: linear-gradient(184deg, rgba(58, 75, 89, 1) 0%, rgba(26, 38, 53, 1) 100%);

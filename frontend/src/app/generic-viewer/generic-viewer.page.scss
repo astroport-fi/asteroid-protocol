@@ -1,33 +1,36 @@
 ion-content {
-    --ion-background-color: transparent;
-    background: url("../../assets/background/flow.png") no-repeat;
-    background-size: cover;
+  --ion-background-color: transparent;
+  background: url("../../assets/background/flow.png") no-repeat;
+  @supports (background-image: url("../../assets/background/flow.webp")) {
+    background-image: url("../../assets/background/flow.webp");
+  }
+  background-size: cover;
 }
 
 .branding {
-    img {
-        max-width: 100px;
-    }
+  img {
+    max-width: 100px;
+  }
 }
 
 .viewer {
-    width: 100%;
-    height: 90vh;
-    backdrop-filter: blur(10px);
+  width: 100%;
+  height: 90vh;
+  backdrop-filter: blur(10px);
 
-    img {
-        max-width: 100%;
-    }
+  img {
+    max-width: 100%;
+  }
 }
 
 .full {
-    height: 90vh;
+  height: 90vh;
 }
 
 .mime-note {
-    display: inline-block;
-    font-size: 12px;
-    position: relative;
-    opacity: 0.6;
-    margin-top: -15px;
+  display: inline-block;
+  font-size: 12px;
+  position: relative;
+  opacity: 0.6;
+  margin-top: -15px;
 }

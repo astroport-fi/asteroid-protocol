@@ -1,6 +1,11 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.2);
-  background-image: url("../../assets/background/inscriptions-landscape.jpg");
+  background-image: url("../../assets/background/inscriptions-landscape.png");
+  @supports (
+    background-image: url("../../assets/background/inscriptions-landscape.webp")
+  ) {
+    background-image: url("../../assets/background/inscriptions-landscape.webp");
+  }
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center 30%;
@@ -8,7 +13,6 @@ ion-content {
   @media only screen and (max-width: 700px) {
     // background: url("../../assets/background/ui-background-flipped.png") no-repeat 35% center fixed;
   }
-
 }
 
 .logo {
@@ -57,7 +61,6 @@ ion-content {
   @media only screen and (max-width: 700px) {
     width: 90%;
   }
-
 }
 
 .cta {
@@ -72,7 +75,6 @@ ion-content {
   //   bottom: 30px;
   // }
 }
-
 
 .button {
   color: #bbb !important;
