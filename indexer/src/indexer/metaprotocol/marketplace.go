@@ -18,6 +18,8 @@ import (
 type MarketplaceConfig struct {
 	MinimumTimeoutBlocks uint64  `envconfig:"MARKET_MIN_TIMEOUT" required:"true"`
 	MinimumDeposit       float64 `envconfig:"MARKET_MIN_DEPOSIT" required:"true"`
+	MinimumTradeSize     float64 `envconfig:"MARKET_MIN_TRADE" required:"true"`
+	TradeFee             float64 `envconfig:"MARKET_TRADE_FEE" required:"true"`
 
 	LCDEndpoints    []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
 	EndpointHeaders map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
@@ -29,6 +31,8 @@ type Marketplace struct {
 	virtualAddress       string
 	minimumTimeoutBlocks uint64
 	minimumDeposit       float64
+	minimumTradeSize     float64
+	tradeFee             float64
 	db                   *gorm.DB
 
 	lcdEndpoints    []string
@@ -49,6 +53,8 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		virtualAddress:       "marketplace-v2",
 		minimumTimeoutBlocks: config.MinimumTimeoutBlocks,
 		minimumDeposit:       config.MinimumDeposit,
+		minimumTradeSize:     config.MinimumTradeSize,
+		tradeFee:             config.TradeFee,
 		db:                   db,
 		lcdEndpoints:         config.LCDEndpoints,
 		endpointHeaders:      config.EndpointHeaders,
@@ -122,6 +128,9 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("price per token must be greater than 0")
 		}
 		totalBase := float64(amount) * ppt
+		if totalBase < protocol.minimumTradeSize {
+			return fmt.Errorf("total trade size must be greater than %.6f", protocol.minimumTradeSize)
+		}
 
 		// 6 is the amount of ATOM decimals
 		ppt = ppt * math.Pow10(6)
@@ -146,7 +155,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		// totalBase
 		minDepositBase := minDeposit * totalBase
 		if minDepositBase < 1 {
-			minDepositBase = 20
+			minDepositBase = 1
 		}
 
 		// Get the listing timeout
@@ -482,6 +491,17 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		if amountSent < amountOwed {
 			return fmt.Errorf("sender did not send enough tokens to complete the buy")
 		}
+
+		// Verify that the sender sent enough to cover the feee
+		// Get amount owed with decimals
+		amountOwedWithDecimals := float64(amountOwed) / math.Pow10(6)
+		requiredFee := amountOwedWithDecimals * protocol.tradeFee
+		requiredFeeAbsolute := requiredFee * math.Pow10(6)
+		if requiredFeeAbsolute < 1 {
+			requiredFeeAbsolute = 1
+		}
+		fmt.Println("\n\nREQUIRED FEE", requiredFeeAbsolute)
+		fmt.Println("\n\n")
 
 		// // Verify that the sender has sent enough tokens to cover the fee fee
 		// amountSent, err := GetBaseTokensSentIBC(rawTransaction)

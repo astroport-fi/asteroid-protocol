@@ -166,6 +166,7 @@ export class TradeTokenV2Page implements OnInit {
             depositor_address: true,
             is_deposited: true,
             depositor_timedout_block: true,
+            deposit_total: true,
             transaction: {
               hash: true
             },
@@ -291,8 +292,6 @@ export class TradeTokenV2Page implements OnInit {
     }
     const listing = listingResult.marketplace_listing[0];
 
-    // TODO: If cancelled or filled, show error message
-
 
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
@@ -308,8 +307,14 @@ export class TradeTokenV2Page implements OnInit {
 
     let totaluatom: bigint = listing.total as bigint;
     const deposit: bigint = listing.deposit_total as bigint;
-    // Subtract deposit amount already sent
-    totaluatom -= deposit;
+    if (deposit > totaluatom) {
+      // If deposit is greater than total, then just sent 1uatom to complete the transaction
+      totaluatom = BigInt(1);
+    } else {
+      // Subtract deposit amount already sent
+      totaluatom -= deposit;
+    }
+    let decimalTotal = parseFloat(totaluatom.toString()) / 10 ** this.token.decimals;
 
     const purchaseMessage = {
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
@@ -338,12 +343,15 @@ export class TradeTokenV2Page implements OnInit {
     }
 
     // Calculate the trading fee
-    let overrideFee = environment.fees.protocol.cft20.buy.amount;
-    if (environment.fees.protocol.cft20.buy.type == 'dynamic-percent') {
-      const feePercentage = parseFloat(environment.fees.protocol.cft20.buy.amount);
-      const fee = parseInt(totaluatom.toString()) * feePercentage;
-      overrideFee = fee.toString();
-      console.log("overrideFee", overrideFee);
+    let overrideFee = (environment.fees.protocol.marketplace["buy.cft20"] as any).amount;
+    if ((environment.fees.protocol.marketplace["buy.cft20"] as any).type == 'dynamic-percent') {
+      const feePercentage = parseFloat((environment.fees.protocol.marketplace["buy.cft20"] as any).amount);
+      let fee = decimalTotal * feePercentage;
+      if (fee < 0.000001) {
+        fee = 0.000001;
+      }
+      fee = fee * 10 ** this.token.decimals;
+      overrideFee = fee.toFixed(0);
     }
 
     // Construct metaprotocol memo message

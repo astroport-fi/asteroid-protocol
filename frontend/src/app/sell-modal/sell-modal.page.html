@@ -51,8 +51,8 @@
                     <ion-input label="Minimum deposit required" labelPlacement="stacked" fill="outline" placeholder="10"
                       [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="minDeposit"></ion-input>
                     <span class="note">This is the minimum percent someone needs to pay to reserve the listing,
-                      {{minDeposit}}% -
-                      {{maxDeposit}}%</span>
+                      {{minDepositPercent}}% -
+                      {{maxDepositPercent}}%</span>
                   </div>
                   <div class="mt-4 w-50">
                     <ion-input label="Timout in blocks" labelPlacement="stacked" fill="outline" placeholder="5"

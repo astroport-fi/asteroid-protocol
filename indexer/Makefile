@@ -40,6 +40,8 @@ run: build ## Build and run the service binary
 	S3_SECRET="4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU" \
 	MARKET_MIN_TIMEOUT=50 \
 	MARKET_MIN_DEPOSIT=0.0001 \
+	MARKET_MIN_TRADE=0.000002 \
+	MARKET_TRADE_FEE=0.02 \
 	./bin/${APP_NAME}
 
 run_race: ## Run the service with race condition checking enabled
