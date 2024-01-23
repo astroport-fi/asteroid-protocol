@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { Chain, Subscription } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
@@ -132,6 +132,9 @@ export class ViewTokenPage implements OnInit {
         {
           offset: 0,
           limit: 100,
+          order_by: [{
+            amount: order_by.desc_nulls_last
+          }],
           where: {
             token_id: {
               _eq: this.token.id

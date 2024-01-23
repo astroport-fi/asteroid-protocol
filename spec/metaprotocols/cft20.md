@@ -27,10 +27,10 @@ The required parameters are:
 |Param|Description|Restrictions|
 |-----|-----------|------------|
 |nam|The name of the token|Must be 3-32 characters|
-|tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 3-5 characters|
+|tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 1-10 alphanumeric characters|
 |sup|The max supply of the token|Must be less than uint32 max|
 |dec|The decimals for the token|Must be between 0 and 6 (inclusive)|
-|lim|The maximum tokens that can be minted per transaction|Must be less than maximum supply|
+|lim|The maximum tokens that can be minted per transaction|Must be 1% or less than maximum supply|
 |opn|The Unix timestamp which after minting becomes possible|Must be a Unix timestamp in seconds|
 
 
@@ -50,7 +50,7 @@ The required parameters are:
 
 |Param|Description|Restrictions|
 |-----|-----------|------------|
-|tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 3-5 characters|
+|tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 1-10 alphanumeric characters|
 |amt|The amount to mint|Must be less than or equal to the token's lim parameter|
 
 
@@ -73,6 +73,10 @@ The required parameters are:
 |tic|The token ticker, must be unique across all tokens on the same chain-id|Must be 3-5 characters|
 |amt|The amount to transfer|Must be less or equal to the sender's balance|
 |dst|The address to transfer to|Any address on the chain-id, the address is _not_ validated|
+
+**The first CFT-20 token**
+
+All indexers should register Asteroids (ROIDS) as the first CFT-20 token (Token #0). Other CFT-20 tokens are numbered in order, starting at #1, in the order in which they are inscribed.
 
 
 **Trading tokens**
