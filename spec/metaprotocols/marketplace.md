@@ -161,3 +161,6 @@ The required parameters are:
 Marketplace transactions carry minimal fees to deter spamming of listings and reduce double-deposits. 
 These fees must be enforced by the indexer when implementing this metaprotocol in order for the mitigations to remain effective against bots.
 The fees are sent to the Astroport Maker contract on Neutron via IBC in ATOM.
+
+The address of the contract is neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p
+and the IBC channel to verify is channel-569
