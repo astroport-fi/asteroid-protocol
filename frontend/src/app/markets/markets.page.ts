@@ -56,11 +56,33 @@ export class MarketsPage implements OnInit {
       this.isLoading = true;
 
       const chain = Chain(environment.api.endpoint);
+      const statusResult = await chain('query')({
+        status: [
+          {
+            where: {
+              chain_id: {
+                _eq: environment.chain.chainId
+              }
+            }
+          },
+          {
+            base_token: true,
+            base_token_usd: true,
+          }
+        ]
+      });
+      this.baseToken = statusResult.status[0];
+
       const tokensResult = await chain('query')({
         token: [
           {
             offset: this.offset,
             limit: this.limit,
+            order_by: [
+              {
+                volume_24_base: order_by.desc
+              }
+            ]
           }, {
             id: true,
             transaction: {
@@ -98,26 +120,13 @@ export class MarketsPage implements OnInit {
             content_path: true,
             name: true,
             ticker: true,
+            decimals: true,
             last_price_base: true,
             volume_24_base: true,
-          }
-        ],
-        status: [
-          {
-            where: {
-              chain_id: {
-                _eq: environment.chain.chainId
-              }
-            }
-          },
-          {
-            base_token: true,
-            base_token_usd: true,
           }
         ]
       });
       this.tokens = tokensResult.token;
-      this.baseToken = tokensResult.status[0];
 
       const wsChain = Subscription(environment.api.wss);
       wsChain('subscription')({

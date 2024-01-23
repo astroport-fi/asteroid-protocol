@@ -27,7 +27,7 @@ export class ListTokensPage implements OnInit {
   tokens: any = null;
   holdings: any = null;
   offset = 0;
-  limit = 2000;
+  limit = 6000;
   lastFetchCount = 0;
   baseTokenPrice: number = 0;
 

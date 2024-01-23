@@ -162,6 +162,7 @@ type RawTransaction struct {
 				Amount string `json:"amount"`
 			} `json:"amount"`
 			Receiver      string `json:"receiver"`
+			Sender        string `json:"sender"`
 			SourceChannel string `json:"source_channel"`
 			Token         struct {
 				Amount string `json:"amount"`
@@ -223,7 +224,12 @@ func (tx RawTransaction) GetTxByteSize() int {
 
 func (tx RawTransaction) GetSenderAddress() (string, error) {
 	for _, message := range tx.Body.Messages {
-		return message.FromAddress, nil
+		if message.FromAddress != "" {
+			return message.FromAddress, nil
+		}
+		if message.Sender != "" {
+			return message.Sender, nil
+		}
 	}
 	return "", errors.New("no sender address found")
 }
