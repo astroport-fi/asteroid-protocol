@@ -90,7 +90,8 @@
                           baseTokenUSD |
                           tokenDecimals:6 | number:'1.6-6'}})</td>
                         <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
-                        <td class="mono">{{ position.total | tokenDecimals:6 | number:'1.6-6'}} (${{position.total *
+                        <td class="mono">{{ position.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
+                          (${{position.marketplace_listing.total *
                           baseTokenUSD |
                           tokenDecimals:6 | number:'1.6-6'}})</td>
                         <td>
