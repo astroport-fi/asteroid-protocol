@@ -17,6 +17,7 @@ import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-trade-token-v2',
@@ -108,6 +109,7 @@ export class TradeTokenV2Page implements OnInit {
             depositor_address: true,
             is_deposited: true,
             depositor_timedout_block: true,
+            deposit_total: true,
             transaction: {
               hash: true
             },
@@ -427,6 +429,56 @@ export class TradeTokenV2Page implements OnInit {
       }
     });
     modal.present();
+  }
+
+  customSort(event: SortEvent) {
+    console.log(event.field);
+    if (event.field == 'marketplace_listing.total') {
+      event.data?.sort((data1, data2) => {
+
+        let value1 = parseInt(data1["marketplace_listing"].total);
+        let value2 = parseInt(data2["marketplace_listing"].total);
+        let result = null;
+
+        if (value1 == null && value2 != null) result = -1;
+        else if (value1 != null && value2 == null) result = 1;
+        else if (value1 == null && value2 == null) result = 0;
+        else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+        return event.order as number * result;
+      });
+
+    }
+    if (event.field == 'marketplace_listing.deposit_total') {
+      event.data?.sort((data1, data2) => {
+
+        let value1 = parseInt(data1["marketplace_listing"].deposit_total) / parseInt(data1["marketplace_listing"].total);
+        let value2 = parseInt(data2["marketplace_listing"].deposit_total) / parseInt(data2["marketplace_listing"].total);
+        let result = null;
+
+        if (value1 == null && value2 != null) result = -1;
+        else if (value1 != null && value2 == null) result = 1;
+        else if (value1 == null && value2 == null) result = 0;
+        else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+        return event.order as number * result;
+      });
+
+    }
+
+    event.data?.sort((data1, data2) => {
+      let value1 = data1[event.field as string];
+      let value2 = data2[event.field as string];
+      let result = null;
+
+      if (value1 == null && value2 != null) result = -1;
+      else if (value1 != null && value2 == null) result = 1;
+      else if (value1 == null && value2 == null) result = 0;
+      else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
+      else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+
+      return event.order as number * result;
+    });
   }
 
 }

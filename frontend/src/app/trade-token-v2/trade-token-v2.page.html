@@ -69,8 +69,8 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-          <p-table #data [value]="listings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10"
-            [showCurrentPageReport]="true"
+          <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="listings"
+            [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
                                             ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="-1"
             sortField="id">
@@ -80,8 +80,9 @@
                 <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
                 <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
                 </th>
-                <th pSortableColumn="total">Total ATOM <p-sortIcon field="marketplace_listing.total"></p-sortIcon></th>
-                <th pSortableColumn="deposit_total">Minimum Deposit <p-sortIcon
+                <th pSortableColumn="marketplace_listing.total">Total ATOM <p-sortIcon
+                    field="marketplace_listing.total"></p-sortIcon></th>
+                <th pSortableColumn="marketplace_listing.deposit_total">Minimum Deposit <p-sortIcon
                     field="marketplace_listing.deposit_total"></p-sortIcon></th>
                 <th>&nbsp;</th>
               </tr>
