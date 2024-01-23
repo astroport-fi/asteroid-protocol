@@ -2,8 +2,7 @@
 
 ## Introduction
 
-While the CFT-20 standard added support to list, buy and delist tokens for sale, it is flawed in that it can cause double-spending from the buyers side. We thus removed the marketplace from the frontend while we figure things out.
-
+While the CFT-20 standard added support to list, buy and delist tokens for sale, it is flawed in that it can cause double-spending from the buyers side.
 This metaprotocol aims to solve that to a large extent as well as enable trading of any metaprotocol item. 
 
 ## Technical details
@@ -157,4 +156,8 @@ The required parameters are:
 1. The listing must be reserved by the sender.
 1. The sender must send the balance of the total ask for the listing, that is total - deposit
 
+## Processing of marketplace transactions
 
+Marketplace transactions carry minimal fees to deter spamming of listings and reduce double-deposits. 
+These fees must be enforced by the indexer when implementing this metaprotocol in order for the mitigations to remain effective against bots.
+The fees are sent to the Astroport Maker contract on Neutron via IBC in ATOM.
