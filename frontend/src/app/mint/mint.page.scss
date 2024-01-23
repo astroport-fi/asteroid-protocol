@@ -1,10 +1,14 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.5);
   background-image: url("../../assets/background/meteor-background.jpg");
+  @supports (
+    background-image: url("../../assets/background/meteor-background.webp")
+  ) {
+    background-image: url("../../assets/background/meteor-background.webp");
+  }
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
-
 }
 
 .cover {
@@ -49,7 +53,6 @@ ion-content {
   position: relative;
   text-align: right;
   color: rgba(255, 255, 255, 0.3);
-
 
   a {
     font-size: 14px;
@@ -102,7 +105,6 @@ ion-content {
 
 div.content {
   margin-top: -60px;
-
 }
 
 div.title {

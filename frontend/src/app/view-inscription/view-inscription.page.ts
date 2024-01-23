@@ -148,6 +148,10 @@ export class ViewInscriptionPage implements OnInit {
       property: 'twitter:description',
       content: description,
     });
+    this.meta.updateTag({
+      property: 'twitter:card',
+      content: 'summary',
+    });
 
     const resultHistory = await chain('query')({
       inscription_history: [
