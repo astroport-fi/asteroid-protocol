@@ -14,16 +14,18 @@ ion-content {
 .wallet-row {
     display: flex;
     align-items: center;
+    background-color: hsla(0, 0%, 100%, .15) !important;
     border-radius: 10px;
     margin: 0 1.5rem;
+    margin-top: 0.75rem;
+    padding: 1.5rem;
     cursor: pointer;
+
+    &:hover {
+        background-color: hsla(0, 0%, 100%, .25) !important;
+    }
 
     & > .name {
         margin-left: 0.75rem;
     } 
-}
-
-.bottom {
-    display: flex;
-    justify-content: flex-end;
 }
