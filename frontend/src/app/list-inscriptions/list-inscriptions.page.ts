@@ -91,7 +91,7 @@ export class ListInscriptionsPage implements OnInit {
             }
           ],
           where: {
-            ...(id ? {id: {_eq: id}} : {}),
+            ...(id ? { id: { _eq: id } } : {}),
             current_owner: {
               _eq: this.selectedAddress
             }
@@ -106,6 +106,7 @@ export class ListInscriptionsPage implements OnInit {
           content_path: true,
           content_size_bytes: true,
           date_created: true,
+          is_explicit: true,
           __alias: {
             name: {
               metadata: [{

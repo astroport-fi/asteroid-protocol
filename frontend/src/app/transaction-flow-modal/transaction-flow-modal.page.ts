@@ -42,6 +42,7 @@ export class TransactionFlowModalPage implements OnInit {
   gasEstimate: number = parseInt(environment.fees.chain.gasLimit);
   chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average / 1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
   protocolFee: number = 0.005;
+  protocolFeeAbsolute: number = 0.005;
   metaprotocol: string = 'inscription';
   metaprotocolAction: string = 'inscribe';
 
@@ -75,6 +76,7 @@ export class TransactionFlowModalPage implements OnInit {
     }
 
     this.protocolFee = parseInt(fees.metaprotocol.amount) / 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+    this.protocolFeeAbsolute = parseInt(fees.metaprotocol.amount);
 
     this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
     try {
@@ -83,8 +85,8 @@ export class TransactionFlowModalPage implements OnInit {
 
       if (result) {
         this.gasEstimate = parseInt(result.gas_used);
-        // Bump gas by 20% to account for any changes
-        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.4);
+        // Bump gas by 60% to account for any changes
+        this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.6);
 
         // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
         this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
@@ -118,8 +120,8 @@ export class TransactionFlowModalPage implements OnInit {
       },
       gasLimit: this.gasEstimate.toFixed(0),
     }
-    if (this.overrideFee > 0) {
-      fees.metaprotocol.amount = this.overrideFee.toString();
+    if (this.protocolFeeAbsolute > 0) {
+      fees.metaprotocol.amount = this.protocolFeeAbsolute.toString();
     }
 
     try {

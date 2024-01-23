@@ -30,7 +30,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -43,6 +43,7 @@ import { ConnectedWallet } from '../core/types/connected-wallet';
 import { WalletType } from '../core/enum/wallet-type';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { Subscription } from '../core/types/zeus';
 
 // Note we need a separate function as it's required
 // by the AOT compiler.
@@ -82,7 +83,7 @@ export function playerFactory() {
     RouterLinkActive,
     NgScrollbarModule,
     ShortenAddressPipe,
-    LottieComponent
+    LottieComponent,
   ],
 })
 export class DashboardLayoutComponent {
@@ -90,9 +91,12 @@ export class DashboardLayoutComponent {
   isWalletConnected = false;
   walletStatusText = "Connect wallet";
   connectedAccount: any = {};
+  maxHeight: number = 0;
+  currentHeight: number = 0;
+  lag: number = 0;
 
   constructor(private walletService: WalletService, private alertController: AlertController, private toastController: ToastController, private modalCtrl: ModalController) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline });
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline });
   }
 
   async ngOnInit() {
@@ -133,6 +137,28 @@ export class DashboardLayoutComponent {
     } else {
       console.log("No last known wallet");
     }
+
+    // Subscribe to indexer updates
+    const wsChain = Subscription(environment.api.wss);
+    wsChain('subscription')({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: environment.chain.chainId
+            }
+          }
+        },
+        {
+          last_processed_height: true,
+          last_known_height: true,
+        }
+      ]
+    }).on(({ status }) => {
+      this.maxHeight = status[0].last_known_height;
+      this.currentHeight = status[0].last_processed_height;
+      this.lag = this.maxHeight - this.currentHeight;
+    });
 
   }
 

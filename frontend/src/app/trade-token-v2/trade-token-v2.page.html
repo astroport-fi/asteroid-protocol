@@ -1,0 +1,211 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
+            </ion-buttons>
+            <ion-title>
+              <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1"
+        class="main-content">
+        <div class="loading p-4" *ngIf="isLoading">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          <p>
+            Loading market...
+          </p>
+        </div>
+        <div class="aligned" *ngIf="!isLoading">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    ATOM / USD
+                  </span>
+                  <span class="value ms-3">
+                    ${{ baseTokenUSD | number:"1.2-6" }}
+                  </span>
+                </div>
+              </ion-col>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    {{ token.ticker }} / ATOM
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD *
+                    (token.last_price_base | tokenDecimals:token.decimals ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
+              </ion-col>
+              <ion-col size="12" size-lg="4">
+                <div class="token-stats">
+                  <span class="key">
+                    24H Volume
+                  </span>
+                  <span class="value ms-3">
+                    {{ token.volume_24_base | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ baseTokenUSD *
+                    (token.volume_24_base | tokenDecimals:6 ) |
+                    number:"1.2-6" }})
+                  </span>
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" class="text-end">
+                <ion-button color="primary" fill="outline" (click)="listSale()">Sell {{ token.ticker}}
+                  tokens</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <div *ngIf="depositedListings.length > 0">
+            <div class="mb-3">
+              <h4>Your reserved listings</h4>
+            </div>
+            <p-table #data [value]="depositedListings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
+              [rows]="10" [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
+                                                      ['name', 'ticker' ]" styleClass="token-list"
+              [defaultSortOrder]="-1" sortField="id">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                  <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                  <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="marketplace_listing.total">Total ATOM <p-sortIcon
+                      field="marketplace_listing.total"></p-sortIcon></th>
+                  <th pSortableColumn="marketplace_listing.deposit_total">Minimum Deposit <p-sortIcon
+                      field="marketplace_listing.deposit_total"></p-sortIcon></th>
+                  <th pSortableColumn="date_created">Listed <p-sortIcon field="date_created"></p-sortIcon></th>
+                  <th>&nbsp;</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-listing>
+                <tr class="no-click">
+                  <td pFrozenColumn>{{ listing.id }}</td>
+                  <td class="mono">{{ listing.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{listing.ppt *
+                    baseTokenUSD |
+                    tokenDecimals:6 | number:'1.6-6'}})</td>
+                  <td class="mono">{{ listing.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                  <td class="mono">{{ listing.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
+                    (${{listing.marketplace_listing.total *
+                    baseTokenUSD |
+                    tokenDecimals:6 | number:'1.6-6'}})</td>
+                  <td class="mono">{{ listing.marketplace_listing.deposit_total / listing.marketplace_listing.total *
+                    100
+                    |
+                    number:'1.1-3'}}%
+                  </td>
+                  <td> {{ listing.date_created | dateAgo }}</td>
+                  <td class="text-end">
+                    <ion-button fill="outline" color="success"
+                      (click)="deposit(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Reserve</ion-button>
+                    <ion-button fill="outline" color="success"
+                      (click)="buy(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">Buy
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-button>
+                    <ion-text
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
+                    <ion-button fill="outline" color="warning"
+                      (click)="cancel(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address == walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Cancel</ion-button>
+                    <ion-text
+                      *ngIf="listing.marketplace_listing.seller_address == walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="4">No listings found</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <div>
+            <div class="mb-3" *ngIf="depositedListings.length > 0">
+              <h4>All listings</h4>
+            </div>
+            <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="listings"
+              [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
+                                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="-1"
+              sortField="id">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                  <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                  <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="marketplace_listing.total">Total ATOM <p-sortIcon
+                      field="marketplace_listing.total"></p-sortIcon></th>
+                  <th pSortableColumn="marketplace_listing.deposit_total">Minimum Deposit <p-sortIcon
+                      field="marketplace_listing.deposit_total"></p-sortIcon></th>
+                  <th pSortableColumn="date_created">Listed <p-sortIcon field="date_created"></p-sortIcon></th>
+                  <th>&nbsp;</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-listing>
+                <tr class="no-click">
+                  <td pFrozenColumn>{{ listing.id }}</td>
+                  <td class="mono">{{ listing.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{listing.ppt *
+                    baseTokenUSD |
+                    tokenDecimals:6 | number:'1.6-6'}})</td>
+                  <td class="mono">{{ listing.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                  <td class="mono">{{ listing.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
+                    (${{listing.marketplace_listing.total *
+                    baseTokenUSD |
+                    tokenDecimals:6 | number:'1.6-6'}})</td>
+                  <td class="mono">{{ listing.marketplace_listing.deposit_total / listing.marketplace_listing.total *
+                    100
+                    |
+                    number:'1.1-6'}}%
+                  </td>
+                  <td> {{ listing.date_created | dateAgo }}</td>
+                  <td class="text-end">
+                    <ion-button fill="outline" color="success"
+                      (click)="deposit(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Reserve</ion-button>
+                    <ion-button fill="outline" color="success"
+                      (click)="buy(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">Buy
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-button>
+                    <ion-text
+                      *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
+                    <ion-button fill="outline" color="warning"
+                      (click)="cancel(listing.marketplace_listing.transaction.hash)"
+                      *ngIf="listing.marketplace_listing.seller_address == walletAddress && (!listing.marketplace_listing.is_deposited || listing.marketplace_listing.depositor_timedout_block < currentBlock)">Cancel</ion-button>
+                    <ion-text
+                      *ngIf="listing.marketplace_listing.seller_address == walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address != walletAddress && listing.marketplace_listing.depositor_timedout_block > currentBlock">RESERVED
+                      ({{listing.marketplace_listing.depositor_timedout_block - currentBlock}})</ion-text>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="4">No listings found</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+        <div style="height: 100px;"></div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

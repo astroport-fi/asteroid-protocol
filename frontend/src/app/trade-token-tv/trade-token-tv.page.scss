@@ -1,0 +1,76 @@
+h1 {
+    font-size: 36px;
+}
+
+.meta {
+    .label {
+        font-size: 14px;
+        color: #dddddd;
+        font-weight: 600;
+        display: block;
+    }
+
+    .value {
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: normal;
+        display: block;
+    }
+
+    a {
+        color: var(--color-teal);
+    }
+}
+
+.token-holdings-list {
+    margin-left: 0;
+    // max-width: 600px;
+    margin-bottom: 50px;
+
+    .item {
+        padding: 5px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba($color: #777777, $alpha: 0.2);
+
+        &.interactable {
+            color: #cccccc;
+
+            &:hover {
+                color: #57AAA7;
+            }
+        }
+
+
+    }
+
+    .actions {
+        text-align: right;
+    }
+}
+
+.token-stats {
+    background-color: rgba(0, 0, 0, 0.2);
+    // display: inline-flex;
+    border-radius: 10px;
+    padding: 10px;
+    // margin: 5px;
+
+    .key {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .value {
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+.chart {}
+
+.markets {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.listings {
+    background-color: rgba(0, 0, 0, 0.2);
+}

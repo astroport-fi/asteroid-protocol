@@ -38,9 +38,8 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
 export class ViewTokenPage implements OnInit {
   isLoading = false;
   token: any;
-  positions: any;
   holding: any;
-  holders: any;
+  holders: any[] = [];
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
@@ -154,45 +153,6 @@ export class ViewTokenPage implements OnInit {
       this.tokenIsLaunched = true;
     }
 
-    const positionsResult = await chain('query')({
-      token_open_position: [
-        {
-          where: {
-            _and: [
-              {
-                token_id: {
-                  _eq: this.token.id,
-                },
-              },
-              {
-                is_cancelled: {
-                  _eq: false,
-                },
-              },
-              {
-                is_filled: {
-                  _eq: false,
-                },
-              },
-            ],
-          },
-        },
-        {
-          id: true,
-          token: {
-            ticker: true,
-          },
-          ppt: true,
-          amount: true,
-          total: true,
-          is_cancelled: false,
-          is_filled: false,
-        },
-      ],
-    });
-
-    this.positions = positionsResult.token_open_position;
-
     if (this.walletConnected) {
       const wsChain = Subscription(environment.api.wss);
       wsChain('subscription')({
@@ -232,6 +192,8 @@ export class ViewTokenPage implements OnInit {
       });
     }
 
+    this.isLoading = false;
+
     const allHolderResult = await chain('query')({
       token_holder: [
         {
@@ -263,8 +225,6 @@ export class ViewTokenPage implements OnInit {
       ],
     });
     this.holders = allHolderResult.token_holder;
-
-    this.isLoading = false;
   }
 
   async mint() {

@@ -16,6 +16,7 @@ export class GenericPreviewPage implements OnInit {
 
   @Input() mime: string = 'text/plain';
   @Input() contentPath: string = '';
+  @Input() isExplicit: boolean = false;
 
   humanType: string = '';
 

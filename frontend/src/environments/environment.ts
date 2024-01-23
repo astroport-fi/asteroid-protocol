@@ -1,6 +1,6 @@
 export const environment = {
-  production: true,
-  domain: 'asteroidprotocol.io',
+  production: false,
+  domain: 'localhost:8100',
   limits: {
     maxFileSize: 550000,
   },
@@ -12,7 +12,7 @@ export const environment = {
     protocol: {
       inscription: {
         inscribe: {
-          receiver: "",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0"
         },
@@ -24,55 +24,68 @@ export const environment = {
       },
       cft20: {
         deploy: {
-          receiver: "",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0"
         },
         mint: {
-          receiver: "",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0"
         },
         transfer: {
-          receiver: "",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0"
         },
         list: {
-          receiver: "",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0",
           minTradeSize: 0.000001,
         },
         buy: {
-          receiver: "neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p",
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0.02", // Default 2%
           type: "dynamic-percent"
         },
-        delist: {
+        reserve: {
           receiver: "",
+          denom: "uatom",
+          amount: "0",
+        },
+        delist: {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
           denom: "uatom",
           amount: "0"
         },
       },
+      marketplace: {
+        "list.cft20": {
+          receiver: "cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv",
+          denom: "uatom",
+          amount: "0",
+          minTradeSize: 0.000001,
+        },
+      }
     },
     chain: {
       gasLimit: "12000000"
     }
   },
   api: {
-    endpoint: 'https://api.asteroidprotocol.io/v1/graphql',
-    wss: 'wss://api.asteroidprotocol.io/v1/graphql',
-    explorer: 'https://www.mintscan.io/cosmos/tx/',
-    simulateEndpoint: "https://asteroids-rest-vkjug.ondigitalocean.app/https://rest-cosmoshub.goldenratiostaking.net",
+    endpoint: 'http://127.0.0.1:8080/v1/graphql',
+    explorer: 'http://127.0.0.1:8665/chain/gaia/lcd/cosmos/tx/v1beta1/txs/',
+    wss: 'ws://127.0.0.1:8080/v1/graphql',
+    simulateEndpoint: "http://127.0.0.1:8665/chain/gaia/lcd",
     stargazeNameEndpoint: "https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/"
   },
   chain: {
-    chainId: "cosmoshub-4",
-    chainName: "Cosmos Hub",
-    rpc: "https://rpc-cosmoshub.blockapsis.com",
-    rest: "https://lcd-cosmoshub.blockapsis.com",
+    chainId: "gaialocal-1",
+    chainName: "Private Cosmos Hub",
+    rpc: "http://127.0.0.1:8665/chain/gaia/rpc",
+    rest: "http://127.0.0.1:8665/chain/gaia/lcd",
     bip44: {
       coinType: 118
     },
@@ -94,8 +107,8 @@ export const environment = {
     ],
     feeCurrencies: [
       {
-        coinDenom: "ATOM",
-        coinMinimalDenom: "uatom",
+        coinDenom: "STAKE",
+        coinMinimalDenom: "stake",
         coinDecimals: 6,
         coinGeckoId: "cosmos",
         gasPriceStep: {
@@ -112,4 +125,5 @@ export const environment = {
       coinGeckoId: "cosmos",
     },
   },
+
 };
