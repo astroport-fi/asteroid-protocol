@@ -1,0 +1,33 @@
+ion-content {
+    // --background: var(--color-dark-teal);
+    // border-radius: 10px !important;
+    --background: hsla(0, 0%, 100%, .05) !important;
+    background-color: hsla(0, 0%, 100%, .05) !important;
+    backdrop-filter: blur(50px);
+    height: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.confirmation {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid var(--color-teal);
+}
+
+.action {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.alert {
+    border: 1px solid var(--color-orange);
+
+    b {
+        color: var(--color-orange);
+    }
+}

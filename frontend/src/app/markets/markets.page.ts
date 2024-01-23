@@ -14,6 +14,7 @@ import { PriceService } from '../core/service/price.service';
 import { SortEvent } from 'primeng/api';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletService } from '../core/service/wallet.service';
+import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-notice-modal.page';
 
 @Component({
   selector: 'app-markets',
@@ -37,6 +38,16 @@ export class MarketsPage implements OnInit {
   }
 
   async ngOnInit() {
+
+    // Check if tis use has seen the notice
+    // if (localStorage.getItem('marketplace-notice') != 'shown') {
+    this.modalCtrl.create({
+      component: MarketplaceNoticeModalPage,
+    }).then(modal => {
+      modal.present();
+    });
+    // }
+
     this.activatedRoute.params.subscribe(async params => {
       if (await this.walletService.isConnected()) {
         this.userAddress = (await this.walletService.getAccount()).address;

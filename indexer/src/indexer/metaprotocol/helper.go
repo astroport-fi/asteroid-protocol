@@ -37,8 +37,8 @@ func GetBaseTokensSentIBC(rawTransaction types.RawTransaction) (uint64, error) {
 			if v.Token.Denom != "uatom" {
 				return 0, fmt.Errorf("incorrect denom sent, got %s, expected uatom", v.Amount[0].Denom)
 			}
-			if v.SourceChannel != "channel-181" {
-				return 0, fmt.Errorf("incorrect IBC channel, got %s, expected channel-181", v.SourceChannel)
+			if v.SourceChannel != "channel-569" {
+				return 0, fmt.Errorf("incorrect IBC channel, got %s, expected channel-569", v.SourceChannel)
 			}
 			if v.Receiver != "neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p" {
 				return 0, fmt.Errorf("incorrect IBC receiver, got %s, expected neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p", v.Receiver)

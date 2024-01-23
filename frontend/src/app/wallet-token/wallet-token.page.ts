@@ -101,7 +101,8 @@ export class WalletTokenPage implements OnInit {
               ticker: {
                 _eq: this.activatedRoute.snapshot.params["ticker"]
               }
-            }
+            },
+            limit: 500
           }, {
             id: true,
             name: true,
@@ -135,6 +136,7 @@ export class WalletTokenPage implements OnInit {
                 _eq: this.token.id
               }
             },
+            limit: 500
           }, {
             id: true,
             amount: true,
@@ -210,7 +212,8 @@ export class WalletTokenPage implements OnInit {
               is_filled: {
                 _eq: false
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,
@@ -240,7 +243,8 @@ export class WalletTokenPage implements OnInit {
                   _eq: account.address
                 },
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,
@@ -269,6 +273,7 @@ export class WalletTokenPage implements OnInit {
                 _eq: this.token.id
               }
             },
+            limit: 500
           }, {
             id: true,
             amount: true,
@@ -302,7 +307,8 @@ export class WalletTokenPage implements OnInit {
               is_filled: {
                 _eq: false
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,
@@ -335,7 +341,8 @@ export class WalletTokenPage implements OnInit {
                   _eq: false
                 }
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,

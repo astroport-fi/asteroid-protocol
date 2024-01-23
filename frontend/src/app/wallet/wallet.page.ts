@@ -76,7 +76,7 @@ export class WalletPage implements OnInit {
           token: [
             {
               offset: 0,
-              limit: 50,
+              limit: 500,
               order_by: [
                 {
                   date_created: order_by.desc
@@ -110,7 +110,7 @@ export class WalletPage implements OnInit {
           token_holder: [
             {
               offset: 0,
-              limit: 100,
+              limit: 500,
               where: {
                 address: {
                   _eq: this.selectedAddress
@@ -141,7 +141,7 @@ export class WalletPage implements OnInit {
           inscription: [
             {
               offset: 0,
-              limit: 100,
+              limit: 500,
               order_by: [
                 {
                   date_created: order_by.desc

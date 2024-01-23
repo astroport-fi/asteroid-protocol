@@ -1,0 +1,49 @@
+<ion-content class="main-content" mode="md">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="text-center">
+          <h1 class="mt-4">Welcome, voyager!</h1>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="p-3">
+        <div>
+          <p>
+            Buying tokens on the Asteroid marketplace requires 2 transactions.
+          </p>
+          <p>
+            First, you must click the Reserve button
+            on a
+            specific listing and submit a nominal deposit fee. Once your reservation is confirmed, you'll have 100
+            blocks (~10
+            minutes) to click the Buy button and send the full purchase amount.
+          </p>
+          <p>
+            If you do not complete your purchase
+            within 100
+            blocks, your reservation will be cancelled, and other traders will be able to initiate the buying process on
+            that
+            listing.
+          </p>
+        </div>
+        <div class="alert">
+          <b>Important note</b> The marketplace reservation process is designed to combat spam listings and potential
+          "double-buy" transactions (<a target="_blank"
+            href="https://medium.com/@asteroidprotocol/asteroid-market-double-buy-solution-1a1312216f37">learn
+            more</a>). However,
+          it's still possible to lose your deposit in two ways: 1) if another user's deposit arrives seconds before
+          yours; or 2)
+          you successfully reserve a listing but do not finalize the purchase by sending the full amount within 100
+          blocks.
+        </div>
+        <div class="text-center">
+          <ion-button class="mt-4" color="success" fill="outline" (click)="closeAndHide()">
+            I understand
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

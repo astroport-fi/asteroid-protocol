@@ -104,7 +104,7 @@
               </ion-col>
 
               <ion-col size="12" *ngIf="holdings.length > 0">
-                <p-table #data [value]="holdings" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+                <p-table #data [value]="holdings" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="30"
                   [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens"
                   styleClass="token-list">
