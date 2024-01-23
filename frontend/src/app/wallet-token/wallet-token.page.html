@@ -62,12 +62,65 @@
                     [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
                 </div>
               </ion-col>
+
               <ion-col size="12" class="ps-3 pt-0 mb-0">
                 <h4>Your listings</h4>
               </ion-col>
               <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="listings.length > 0">
                 <div class="mt-2 mb-3">
                   <p-table #data [value]="listings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
+                    [rows]="10" [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
+                    [globalFilterFields]="['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
+                    sortField="ppt">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                        <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-position>
+                      <tr class="no-click">
+                        <td pFrozenColumn>{{ position.id }}</td>
+                        <td class="mono">{{ position.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{position.ppt *
+                          baseTokenUSD |
+                          tokenDecimals:6 | number:'1.6-6'}})</td>
+                        <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                        <td class="mono">{{ position.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
+                          (${{position.marketplace_listing.total *
+                          baseTokenUSD |
+                          tokenDecimals:6 | number:'1.6-6'}})</td>
+                        <td>
+                          <ion-button fill="outline" color="warning"
+                            (click)="cancel(position.marketplace_listing.transaction.hash)">Cancel</ion-button>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                        <td colspan="4">No listings found</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </ion-col>
+              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="listings.length == 0">
+                <div class=" mt-2 mb-3 text-muted">
+                  You have no listings for {{ token.ticker }}
+                </div>
+              </ion-col>
+
+              <ion-col size="12" class="ps-3 pt-0 mb-0">
+                <h4>Your old market listings</h4>
+              </ion-col>
+              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="oldlistings.length > 0">
+                <p class="text-warning">These listings should be cancelled and reopened under the new marketplace</p>
+                <div class="mt-2 mb-3">
+                  <p-table #data [value]="oldlistings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
                     [rows]="10" [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
                     [globalFilterFields]="
@@ -94,7 +147,8 @@
                           baseTokenUSD |
                           tokenDecimals:6 | number:'1.6-6'}})</td>
                         <td>
-                          <ion-button fill="outline" color="warning" (click)="cancel(position.id)">Cancel</ion-button>
+                          <ion-button fill="outline" color="warning"
+                            (click)="cancelcft(position.id)">Cancel</ion-button>
                         </td>
                       </tr>
                     </ng-template>
@@ -121,7 +175,7 @@
             </ion-row>
             <ion-row class="break">
               <ion-col size="12">
-                <p-table #data [value]="history" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="10"
+                <p-table #data [value]="history" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="30"
                   [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
                   styleClass="token-list" sortField="date_created" [sortOrder]="-1">

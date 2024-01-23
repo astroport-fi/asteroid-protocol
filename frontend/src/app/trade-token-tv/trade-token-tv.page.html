@@ -1,0 +1,122 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <!-- <ion-row>
+      <ion-col size="12">
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
+            </ion-buttons>
+            <ion-title>
+              <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row> -->
+    <ion-row>
+      <ion-col size="12" class="main-content">
+        <div class="loading p-4" *ngIf="isLoading">
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          <p>
+            Loading market...
+          </p>
+        </div>
+        <div class="aligned" *ngIf="!isLoading">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="12">
+                <!-- <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market -->
+                <p-dropdown *ngIf="!isLoading" [options]="markets" [(ngModel)]="selectedMarket" optionLabel="market"
+                  [filter]="true" filterBy="ticker" [showClear]="true" placeholder="Select a market">
+                  <ng-template pTemplate="selectedItem">
+                    <div class="flex align-items-center gap-2" *ngIf="selectedMarket">
+                      <img [src]="selectedMarket.content_path" style="width: 18px" />
+                      <div>{{ selectedMarket.ticker }} / ATOM</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-market pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <img [src]="market.content_path" style="width: 18px" />
+                      <div>{{ market.ticker }} / ATOM</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="9" class="chart">
+                Chart
+              </ion-col>
+              <ion-col size="3" class="markets">
+                Markets
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="m-0 p-0">
+                <ion-grid class="m-0 p-0">
+                  <ion-row>
+                    <ion-col size="2">
+                      Filters
+                    </ion-col>
+                    <ion-col size="10" class="listings">
+                      <p-table #data [value]="listings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
+                        [rows]="10" [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
+                        [globalFilterFields]="
+                                                                  ['name', 'ticker' ]" styleClass="token-list"
+                        [defaultSortOrder]="1" sortField="ppt">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
+                            <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
+                            <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon
+                                field="amount"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                            <th>&nbsp;</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-listing>
+                          <tr class="no-click">
+                            <td pFrozenColumn>{{ listing.id }}</td>
+                            <td class="mono">{{ listing.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{listing.ppt *
+                              baseTokenUSD |
+                              tokenDecimals:6 | number:'1.6-6'}})</td>
+                            <td class="mono">{{ listing.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                            <td class="mono">{{ listing.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
+                              (${{listing.marketplace_listing.total *
+                              baseTokenUSD |
+                              tokenDecimals:6 | number:'1.6-6'}})</td>
+                            <td class="text-end">
+                              <ion-button fill="outline" color="success"
+                                (click)="deposit(listing.marketplace_listing.transaction.hash)"
+                                *ngIf="listing.marketplace_listing.seller_address != walletAddress && !listing.marketplace_listing.is_deposited">Deposit</ion-button>
+                              <ion-button fill="outline" color="success"
+                                (click)="buy(listing.marketplace_listing.transaction.hash)"
+                                *ngIf="listing.marketplace_listing.seller_address != walletAddress && listing.marketplace_listing.is_deposited && listing.marketplace_listing.depositor_address == walletAddress">Buy</ion-button>
+                              <ion-button fill="outline" color="warning"
+                                (click)="cancel(listing.marketplace_listing.transaction.hash)"
+                                *ngIf="listing.marketplace_listing.seller_address == walletAddress">Cancel</ion-button>
+                            </td>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                          <tr>
+                            <td colspan="4">No listings found</td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+        <div style="height: 100px;"></div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

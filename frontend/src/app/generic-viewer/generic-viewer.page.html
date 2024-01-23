@@ -34,7 +34,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <div class="viewer text-center" [ngSwitch]="humanType" *ngIf="!isLoading">
+        <div class="viewer text-center" [ngSwitch]="humanType" *ngIf="!isLoading && !inscription.is_explicit">
           <img class="rounded" [src]="inscription.content_path" *ngSwitchCase="'Image'" />
           <video class="rounded" controls *ngSwitchCase="'Video'">
             <source [src]="inscription.content_path" [type]="inscription.mime">
@@ -61,6 +61,12 @@
             <p>No viewer available for {{ humanType }} content.</p>
             <ion-button fill="clear" [href]="inscription.content_path"> Download <ion-icon name="cloud-download-outline"
                 class="ps-2"></ion-icon></ion-button>
+          </div>
+        </div>
+        <div class="viewer text-center" *ngIf="!isLoading && inscription.is_explicit">
+          <div class="explicit mx-auto">
+            <ion-icon name="eye-off-outline"></ion-icon>
+            <div class="note">Explicit content</div>
           </div>
         </div>
       </ion-col>

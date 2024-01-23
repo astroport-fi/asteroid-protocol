@@ -31,12 +31,17 @@ run: build ## Build and run the service binary
 	DATABASE_DSN="host=localhost user=admin password=admin1 dbname=meteors port=5432 sslmode=disable TimeZone=UTC" \
 	LCD_ENDPOINTS="http://127.0.0.1:8665/chain/gaia/lcd,http://localhost:8665/chain/gaia/lcd" \
 	RPC_ENDPOINTS="http://127.0.0.1:8665/chain/gaia/rpc,http://localhost:8665/chain/gaia/rpc" \
+	ENDPOINT_HEADERS="x-private:true" \
 	BLOCK_POLL_INTERVAL_MS=50 \
 	S3_ENDPOINT="ams3.digitaloceanspaces.com" \
 	S3_REGION="ams3" \
 	S3_BUCKET="inscriptions-mvp" \
 	S3_ID="DO00HXJJQVNBTGA62TV7" \
 	S3_SECRET="4YPA8WqAOgWRgotafeArld4oVjOhhnra21zmFw07PGU" \
+	MARKET_MIN_TIMEOUT=50 \
+	MARKET_MIN_DEPOSIT=0.0001 \
+	MARKET_MIN_TRADE=0.000002 \
+	MARKET_TRADE_FEE=0.02 \
 	./bin/${APP_NAME}
 
 run_race: ## Run the service with race condition checking enabled

@@ -22,6 +22,7 @@ import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
 import { PriceService } from '../core/service/price.service';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 
 @Component({
   selector: 'app-wallet-token',
@@ -38,6 +39,7 @@ export class WalletTokenPage implements OnInit {
   holding: any;
   address: string = '';
   listings: any;
+  oldlistings: any;
   previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   walletConnected: boolean = false;
@@ -52,7 +54,7 @@ export class WalletTokenPage implements OnInit {
   readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
   readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder, private priceService: PriceService, private alertController: AlertController) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private protocolServiceCFT: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder, private priceService: PriceService, private alertController: AlertController) {
     this.transferForm = this.builder.group({
       basic: this.builder.group({
         destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
@@ -99,7 +101,8 @@ export class WalletTokenPage implements OnInit {
               ticker: {
                 _eq: this.activatedRoute.snapshot.params["ticker"]
               }
-            }
+            },
+            limit: 500
           }, {
             id: true,
             name: true,
@@ -133,6 +136,7 @@ export class WalletTokenPage implements OnInit {
                 _eq: this.token.id
               }
             },
+            limit: 500
           }, {
             id: true,
             amount: true,
@@ -192,7 +196,7 @@ export class WalletTokenPage implements OnInit {
         this.holding = { amount: 0 };
       }
 
-      const listingsResult = await chain('query')({
+      const oldlistingsResult = await chain('query')({
         token_open_position: [
           {
             where: {
@@ -208,13 +212,50 @@ export class WalletTokenPage implements OnInit {
               is_filled: {
                 _eq: false
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,
             ppt: true,
             amount: true,
             total: true,
+
+          }
+        ]
+      });
+
+      const listingsResult = await chain('query')({
+        marketplace_cft20_detail: [
+          {
+            where: {
+              token_id: {
+                _eq: this.token.id
+              },
+              marketplace_listing: {
+                is_cancelled: {
+                  _eq: false
+                },
+                is_filled: {
+                  _eq: false
+                },
+                seller_address: {
+                  _eq: account.address
+                },
+              }
+            },
+            limit: 500
+          },
+          {
+            id: true,
+            ppt: true,
+            amount: true,
+            marketplace_listing: {
+              total: true,
+              transaction: {
+                hash: true,
+              }
+            }
 
           }
         ]
@@ -232,6 +273,7 @@ export class WalletTokenPage implements OnInit {
                 _eq: this.token.id
               }
             },
+            limit: 500
           }, {
             id: true,
             amount: true,
@@ -265,7 +307,8 @@ export class WalletTokenPage implements OnInit {
               is_filled: {
                 _eq: false
               }
-            }
+            },
+            limit: 500
           },
           {
             id: true,
@@ -276,10 +319,47 @@ export class WalletTokenPage implements OnInit {
           }
         ]
       }).on(({ token_open_position }) => {
-        this.listings = token_open_position;
+        this.oldlistings = token_open_position;
       });
+      this.oldlistings = oldlistingsResult.token_open_position;
 
-      this.listings = listingsResult.token_open_position;
+      wsChain('subscription')({
+        marketplace_cft20_detail: [
+          {
+            where: {
+              token_id: {
+                _eq: this.token.id
+              },
+              marketplace_listing: {
+                seller_address: {
+                  _eq: account.address
+                },
+                is_cancelled: {
+                  _eq: false
+                },
+                is_filled: {
+                  _eq: false
+                }
+              }
+            },
+            limit: 500
+          },
+          {
+            id: true,
+            ppt: true,
+            amount: true,
+            marketplace_listing: {
+              total: true,
+              transaction: {
+                hash: true,
+              }
+            }
+          }
+        ]
+      }).on(({ marketplace_cft20_detail }) => {
+        this.listings = marketplace_cft20_detail;
+      });
+      this.listings = listingsResult.marketplace_cft20_detail;
 
     } catch (err) {
       this.holding = {
@@ -323,7 +403,43 @@ export class WalletTokenPage implements OnInit {
     modal.present();
   }
 
-  async cancel(orderNumber: number) {
+  async cancel(listingHash: string) {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
+      });
+      modal.present();
+      return;
+    }
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/manage/token', this.token.transaction.hash],
+        resultCTA: 'View transaction',
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'delist',
+      }
+    });
+    modal.present();
+
+  }
+
+  async cancelcft(orderNumber: number) {
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
       const modal = await this.modalCtrl.create({
@@ -341,7 +457,7 @@ export class WalletTokenPage implements OnInit {
       ["tic", this.token.ticker],
       ["ord", orderNumber],
     ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const urn = this.protocolServiceCFT.buildURN(environment.chain.chainId, 'delist', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,

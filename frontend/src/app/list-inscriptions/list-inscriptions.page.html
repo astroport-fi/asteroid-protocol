@@ -84,10 +84,8 @@
               *ngFor="let item of inscriptions; let index"
             >
               <div class="content">
-                <app-generic-preview
-                  [mime]="item.mime"
-                  [contentPath]="item.content_path"
-                ></app-generic-preview>
+                <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"
+                  [isExplicit]="item.is_explicit"></app-generic-preview>
               </div>
               <h4 class="name">{{ item.name }}</h4>
               <div class="detail">

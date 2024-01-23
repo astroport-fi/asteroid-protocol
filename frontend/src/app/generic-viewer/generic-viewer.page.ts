@@ -7,7 +7,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { Chain } from '../core/types/zeus';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { cloudDownloadOutline, linkOutline } from "ionicons/icons";
+import { cloudDownloadOutline, eyeOffOutline, linkOutline } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { MarkdownComponent, } from 'ngx-markdown'
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -27,7 +27,7 @@ export class GenericViewerPage implements OnInit {
   untrustedURL: any;
 
   constructor(private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer) {
-    addIcons({ cloudDownloadOutline, linkOutline });
+    addIcons({ cloudDownloadOutline, linkOutline, eyeOffOutline });
   }
 
   async ngOnInit() {
@@ -55,6 +55,7 @@ export class GenericViewerPage implements OnInit {
           content_path: true,
           content_size_bytes: true,
           date_created: true,
+          is_explicit: true,
           __alias: {
             name: {
               metadata: [{

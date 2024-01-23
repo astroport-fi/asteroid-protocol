@@ -27,12 +27,13 @@ import (
 )
 
 type Config struct {
-	ChainID                  string   `envconfig:"CHAIN_ID" required:"true"`
-	BaseTokenBinanceEndpoint string   `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
-	DatabaseDSN              string   `envconfig:"DATABASE_DSN" required:"true"`
-	LCDEndpoints             []string `envconfig:"LCD_ENDPOINTS" required:"true"`
-	RPCEndpoints             []string `envconfig:"RPC_ENDPOINTS" required:"true"`
-	BlockPollIntervalMS      int      `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	ChainID                  string            `envconfig:"CHAIN_ID" required:"true"`
+	BaseTokenBinanceEndpoint string            `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
+	DatabaseDSN              string            `envconfig:"DATABASE_DSN" required:"true"`
+	LCDEndpoints             []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
+	RPCEndpoints             []string          `envconfig:"RPC_ENDPOINTS" required:"true"`
+	EndpointHeaders          map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
+	BlockPollIntervalMS      int               `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
 }
 
 // Indexer implements the reference indexer service
@@ -41,6 +42,7 @@ type Indexer struct {
 	baseTokenBinanceEndpoint string
 	lcdEndpoints             []string
 	rpcEndpoints             []string
+	endpointHeaders          map[string]string
 	blockPollIntervalMS      int
 	logger                   *logrus.Entry
 	metaprotocols            map[string]metaprotocol.Processor
@@ -72,12 +74,14 @@ func New(
 	metaprotocols := make(map[string]metaprotocol.Processor)
 	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
+	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db)
 
 	return &Indexer{
 		chainID:                  config.ChainID,
 		baseTokenBinanceEndpoint: config.BaseTokenBinanceEndpoint,
 		lcdEndpoints:             config.LCDEndpoints,
 		rpcEndpoints:             config.RPCEndpoints,
+		endpointHeaders:          config.EndpointHeaders,
 		blockPollIntervalMS:      config.BlockPollIntervalMS,
 		metaprotocols:            metaprotocols,
 		logger:                   log,
@@ -246,6 +250,7 @@ func (i *Indexer) indexBlocks() {
 			// All good, save last processed and increase height
 			status.LastProcessedHeight = currentHeight
 			i.db.Model(&status).Where("chain_id = ?", i.chainID).UpdateColumns(map[string]interface{}{
+				"last_known_height":     maxHeight,
 				"last_processed_height": currentHeight,
 				"date_updated":          time.Now(),
 			})
@@ -343,10 +348,22 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 // RPC /status endpoint
 func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 	endpoint := i.randomLCDEndpoint()
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", endpoint))
+
+	// Add support for custom endpoint headers
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/latest", endpoint), nil)
 	if err != nil {
 		return 0, err
 	}
+	for key, value := range i.endpointHeaders {
+		req.Header.Add(key, value)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
 	var block types.LCDBlock
 	err = json.NewDecoder(resp.Body).Decode(&block)
 	if err != nil {
@@ -365,10 +382,20 @@ func (i *Indexer) fetchTransactions(height uint64) (types.LCDBlock, []types.RawT
 	var lcdBlock types.LCDBlock
 
 	endpoint := i.randomLCDEndpoint()
-	resp, err := http.Get(fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", endpoint, height))
+	// Add support for custom endpoint headers
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/blocks/%d", endpoint, height), nil)
 	if err != nil {
 		return lcdBlock, transactions, err
 	}
+	for key, value := range i.endpointHeaders {
+		req.Header.Add(key, value)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return lcdBlock, transactions, err
+	}
+
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&lcdBlock)
@@ -384,10 +411,21 @@ func (i *Indexer) fetchTransactions(height uint64) (types.LCDBlock, []types.RawT
 	// TODO: Fetch block results for this height as well to determine if the
 	// transaction was successful or not based on ID
 	rpcEndpoint := i.randomRPCEndpoint()
-	rpcResp, err := http.Get(fmt.Sprintf("%s/block_results?height=%d", rpcEndpoint, height))
+
+	// Add support for custom endpoint headers
+	req, err = http.NewRequest("GET", fmt.Sprintf("%s/block_results?height=%d", rpcEndpoint, height), nil)
 	if err != nil {
 		return lcdBlock, transactions, err
 	}
+	for key, value := range i.endpointHeaders {
+		req.Header.Add(key, value)
+	}
+	client = &http.Client{}
+	rpcResp, err := client.Do(req)
+	if err != nil {
+		return lcdBlock, transactions, err
+	}
+
 	defer rpcResp.Body.Close()
 
 	var rpcBlock types.RPCBlockResult

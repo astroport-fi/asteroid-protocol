@@ -161,6 +161,12 @@ type RawTransaction struct {
 				Denom  string `json:"denom"`
 				Amount string `json:"amount"`
 			} `json:"amount"`
+			Receiver      string `json:"receiver"`
+			SourceChannel string `json:"source_channel"`
+			Token         struct {
+				Amount string `json:"amount"`
+				Denom  string `json:"denom"`
+			} `json:"token"`
 		} `json:"messages"`
 		Memo                        string `json:"memo"`
 		TimeoutHeight               string `json:"timeout_height"`

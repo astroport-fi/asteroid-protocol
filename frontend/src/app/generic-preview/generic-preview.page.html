@@ -1,4 +1,4 @@
-<div [ngSwitch]="humanType">
+<div [ngSwitch]="humanType" *ngIf="!isExplicit">
   <img class="rounded" [src]="contentPath" *ngSwitchCase="'Image'" />
   <video class="rounded" controls *ngSwitchCase="'Video'">
     <source [src]="contentPath" [type]="mime">
@@ -11,5 +11,11 @@
   </audio>
   <div class="no-preview mx-auto" *ngSwitchDefault>
     {{ humanType }}
+  </div>
+</div>
+<div *ngIf="isExplicit">
+  <div class="explicit mx-auto">
+    <ion-icon name="eye-off-outline"></ion-icon>
+    <div class="note">Explicit content</div>
   </div>
 </div>

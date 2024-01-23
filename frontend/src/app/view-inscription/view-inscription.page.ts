@@ -75,6 +75,7 @@ export class ViewInscriptionPage implements OnInit {
           current_owner: true,
           content_path: true,
           content_size_bytes: true,
+          is_explicit: true,
           date_created: true,
           __alias: {
             name: {
