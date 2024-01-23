@@ -430,7 +430,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 				ChainID:       parsedURN.ChainID,
 				Height:        currentTransaction.Height,
 				TransactionID: currentTransaction.ID,
-				TokenID:       listingDetailModel.ID,
+				TokenID:       listingDetailModel.TokenID,
 				Sender:        protocol.virtualAddress,
 				Receiver:      sender,
 				Action:        action,
@@ -524,7 +524,8 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		var holderModel models.TokenHolder
 		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, listingDetailModel.TokenID, sender).First(&holderModel)
 		if result.Error != nil {
-			return fmt.Errorf("sender does not have any tokens to sell")
+			// Just means this buyer doesn't have the tokens in their wallet yet
+			_ = result
 		}
 
 		holderModel.ChainID = parsedURN.ChainID
@@ -551,11 +552,49 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
+		// Record the transfer from marketplace to buyer
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        currentTransaction.Height,
+			TransactionID: currentTransaction.ID,
+			TokenID:       listingDetailModel.TokenID,
+			Sender:        protocol.virtualAddress,
+			Receiver:      sender,
+			Action:        "buy",
+			Amount:        listingDetailModel.Amount,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			// If we can't store the history, that fine, we shouldn't fail
+			return nil
+		}
+
+		// Record the sale of the tokens for the seller
+		historyModel = models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        currentTransaction.Height,
+			TransactionID: currentTransaction.ID,
+			TokenID:       listingDetailModel.TokenID,
+			Sender:        listingModel.SellerAddress,
+			Receiver:      sender,
+			Action:        "sell",
+			Amount:        listingDetailModel.Amount,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			// If we can't store the history, that fine, we shouldn't fail
+			// return nil
+			_ = result
+		}
+
 		// Get current USD price of the base
 		var statusModel models.Status
 		result = protocol.db.Where("chain_id = ?", parsedURN.ChainID).First(&statusModel)
 		if result.Error != nil {
-			return fmt.Errorf("unable to get current base currency price '%s'", err)
+			return nil
+			// return fmt.Errorf("unable to get current base currency price '%s'", err)
 		}
 
 		// Capture the trade in the history for future charts
@@ -574,7 +613,8 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 		result = protocol.db.Save(&tradeHistory)
 		if result.Error != nil {
-			return result.Error
+			return nil
+			// return result.Error
 		}
 
 		// Check if the ticker exists
