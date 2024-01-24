@@ -12,7 +12,7 @@ import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletService } from '../core/service/wallet.service';
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
@@ -39,9 +39,13 @@ export class TradeTokenV2Page implements OnInit {
   walletAddress: string = '';
   currentBlock: number = 0;
   limit: number = 2000;
+  isTableLoading: boolean = false;
+  chain: any;
+  total: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
+    this.chain = Chain(environment.api.endpoint)
   }
 
   async ngOnInit() {
@@ -51,9 +55,7 @@ export class TradeTokenV2Page implements OnInit {
     if (walletConnected) {
       this.walletAddress = (await this.walletService.getAccount()).address;
     }
-
-    const chain = Chain(environment.api.endpoint)
-    const result = await chain('query')({
+    const result = await this.chain('query')({
       token: [
         {
           where: {
@@ -62,21 +64,11 @@ export class TradeTokenV2Page implements OnInit {
             }
           }
         }, {
-          id: true,
-          height: true,
-          transaction: {
-            hash: true
-          },
-          creator: true,
-          current_owner: true,
           name: true,
           ticker: true,
           decimals: true,
-          max_supply: true,
-          per_mint_limit: true,
           launch_timestamp: true,
           content_path: true,
-          content_size_bytes: true,
           circulating_supply: true,
           last_price_base: true,
           volume_24_base: true,
@@ -84,54 +76,10 @@ export class TradeTokenV2Page implements OnInit {
         }
       ]
     });
-
     this.token = result.token[0];
 
-    const listingsResult = await chain('query')({
-      marketplace_cft20_detail: [
-        {
-          where: {
-            token_id: {
-              _eq: this.token.id
-            },
-            marketplace_listing: {
-              is_cancelled: {
-                _eq: false
-              },
-              is_filled: {
-                _eq: false
-              }
-            }
-          },
-          limit: this.limit,
-          order_by: [
-            {
-              ppt: order_by.asc
-            }
-          ]
-        },
-        {
-          id: true,
-          marketplace_listing: {
-            seller_address: true,
-            total: true,
-            depositor_address: true,
-            is_deposited: true,
-            depositor_timedout_block: true,
-            deposit_total: true,
-            transaction: {
-              hash: true
-            },
-          },
-          ppt: true,
-          amount: true,
-          date_created: true,
-        }
-      ]
-    });
-    this.listings = listingsResult.marketplace_cft20_detail;
 
-    const statusResult = await chain('query')({
+    const statusResult = await this.chain('query')({
       status: [
         {
           where: {
@@ -150,7 +98,7 @@ export class TradeTokenV2Page implements OnInit {
     this.baseTokenUSD = statusResult.status[0].base_token_usd;
     this.currentBlock = statusResult.status[0].last_processed_height;
 
-    const depositListingsResult = await chain('query')({
+    const depositListingsResult = await this.chain('query')({
       marketplace_cft20_detail: [
         {
           where: {
@@ -198,118 +146,100 @@ export class TradeTokenV2Page implements OnInit {
     });
     this.depositedListings = depositListingsResult.marketplace_cft20_detail;
 
-    const wsChain = Subscription(environment.api.wss);
-    wsChain('subscription')({
-      status: [
-        {
-          where: {
-            chain_id: {
-              _eq: environment.chain.chainId
-            }
-          }
-        },
-        {
-          base_token: true,
-          base_token_usd: true,
-          last_processed_height: true,
-        }
-      ]
-    }).on(({ status }) => {
-      this.baseTokenUSD = status[0].base_token_usd;
-      this.currentBlock = status[0].last_processed_height;
-    });
 
-    wsChain('subscription')({
-      marketplace_cft20_detail: [
-        {
-          where: {
-            token_id: {
-              _eq: this.token.id
-            },
-            marketplace_listing: {
-              is_cancelled: {
-                _eq: false
-              },
-              is_filled: {
-                _eq: false
-              },
 
-            }
-          },
-          limit: this.limit,
-        },
-        {
-          id: true,
-          marketplace_listing: {
-            seller_address: true,
-            total: true,
-            depositor_address: true,
-            is_deposited: true,
-            depositor_timedout_block: true,
-            deposit_total: true,
-            transaction: {
-              hash: true
-            },
-          },
-          ppt: true,
-          amount: true,
-          date_created: true,
-        }
-      ]
-    }).on(({ marketplace_cft20_detail }) => {
-      this.listings = marketplace_cft20_detail;
-    });
+    // const wsChain = Subscription(environment.api.wss);
+    // wsChain('subscription')({
+    //   marketplace_cft20_detail: [
+    //     {
+    //       where: {
+    //         token_id: {
+    //           _eq: this.token.id
+    //         },
+    //         marketplace_listing: {
+    //           is_cancelled: {
+    //             _eq: false
+    //           },
+    //           is_filled: {
+    //             _eq: false
+    //           },
 
-    wsChain('subscription')({
-      marketplace_cft20_detail: [
-        {
-          where: {
-            token_id: {
-              _eq: this.token.id
-            },
-            marketplace_listing: {
-              is_cancelled: {
-                _eq: false
-              },
-              is_filled: {
-                _eq: false
-              },
-              is_deposited: {
-                _eq: true
-              },
-              depositor_address: {
-                _eq: this.walletAddress
-              },
-              depositor_timedout_block: {
-                _gt: this.currentBlock
-              }
-            }
-          },
-          limit: this.limit,
-        },
-        {
-          id: true,
-          marketplace_listing: {
-            seller_address: true,
-            total: true,
-            depositor_address: true,
-            is_deposited: true,
-            depositor_timedout_block: true,
-            deposit_total: true,
-            transaction: {
-              hash: true
-            },
-          },
-          ppt: true,
-          amount: true,
-          date_created: true,
-        }
-      ]
-    }).on(({ marketplace_cft20_detail }) => {
-      this.depositedListings = marketplace_cft20_detail;
-    });
+    //         }
+    //       },
+    //       // limit: this.limit,
+    //     },
+    //     {
+    //       id: true,
+    //       marketplace_listing: {
+    //         seller_address: true,
+    //         total: true,
+    //         depositor_address: true,
+    //         is_deposited: true,
+    //         depositor_timedout_block: true,
+    //         deposit_total: true,
+    //         transaction: {
+    //           hash: true
+    //         },
+    //       },
+    //       ppt: true,
+    //       amount: true,
+    //       date_created: true,
+    //     }
+    //   ]
+    // }).on(({ marketplace_cft20_detail }) => {
+    //   this.listings = marketplace_cft20_detail;
+    // });
 
-    this.isLoading = false;
+    // wsChain('subscription')({
+    //   marketplace_cft20_detail: [
+    //     {
+    //       where: {
+    //         token_id: {
+    //           _eq: this.token.id
+    //         },
+    //         marketplace_listing: {
+    //           is_cancelled: {
+    //             _eq: false
+    //           },
+    //           is_filled: {
+    //             _eq: false
+    //           },
+    //           is_deposited: {
+    //             _eq: true
+    //           },
+    //           depositor_address: {
+    //             _eq: this.walletAddress
+    //           },
+    //           depositor_timedout_block: {
+    //             _gt: this.currentBlock
+    //           }
+    //         }
+    //       },
+    //       limit: this.limit,
+    //     },
+    //     {
+    //       id: true,
+    //       marketplace_listing: {
+    //         seller_address: true,
+    //         total: true,
+    //         depositor_address: true,
+    //         is_deposited: true,
+    //         depositor_timedout_block: true,
+    //         deposit_total: true,
+    //         transaction: {
+    //           hash: true
+    //         },
+    //       },
+    //       ppt: true,
+    //       amount: true,
+    //       date_created: true,
+    //     }
+    //   ]
+    // }).on(({ marketplace_cft20_detail }) => {
+    //   this.depositedListings = marketplace_cft20_detail;
+    // });
+
+
   }
 
   async deposit(listingHash: string) {
@@ -607,6 +537,71 @@ export class TradeTokenV2Page implements OnInit {
 
       return event.order as number * result;
     });
+  }
+
+  async load(event: TableLazyLoadEvent) {
+    console.log(event);
+    this.isTableLoading = true;
+
+    // Determine the sort order
+    let sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
+
+    // Build the order_by clause based on the event.sortField and sortOrder
+    let orderByClause: any = {};
+    if (event.sortField) {
+      orderByClause[event.sortField as string] = sortOrder;
+    } else {
+      // Default sorting, if no sortField is provided
+      orderByClause = { id: 'asc' };
+    }
+
+    const listingsResult = await this.chain('query')({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: this.token.id
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false
+              },
+              is_filled: {
+                _eq: false
+              }
+            }
+          },
+          limit: this.limit,
+          order_by: [
+            {
+              ppt: order_by.asc
+            }
+          ]
+        },
+        {
+          id: true,
+          marketplace_listing: {
+            seller_address: true,
+            total: true,
+            depositor_address: true,
+            is_deposited: true,
+            depositor_timedout_block: true,
+            deposit_total: true,
+            transaction: {
+              hash: true
+            },
+          },
+          ppt: true,
+          amount: true,
+          date_created: true,
+        }
+      ]
+    });
+    this.listings = listingsResult.marketplace_cft20_detail;
+
+
+
+    this.isTableLoading = false;
   }
 
 }
