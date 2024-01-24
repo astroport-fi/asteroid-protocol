@@ -23,8 +23,9 @@
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
 
-          <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="tokens"
-            [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="50" [showCurrentPageReport]="true"
+          <p-table #data (sortFunction)="customSort($event)" [lazy]="true" dataKey="id" (onLazyLoad)="load($event)"
+            [totalRecords]="total" [customSort]="true" [value]="tokens" [tableStyle]="{ 'min-width': '40rem' }"
+            [paginator]="true" [rows]="20" [showCurrentPageReport]="true" [loading]="isTableLoading"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tokens" [globalFilterFields]="
             ['name', 'ticker' ]" styleClass="token-list">
             <ng-template pTemplate="caption">
@@ -43,7 +44,7 @@
                 <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                 <th pSortableColumn="ticker" pFrozenColumn>Ticker <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="last_price_base">Token Price <p-sortIcon field="last_price_base"></p-sortIcon></th>
-                <th pSortableColumn="minted">Minted <p-sortIcon field="minted"></p-sortIcon></th>
+                <th>Minted</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-token>

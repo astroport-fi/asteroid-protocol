@@ -9,7 +9,7 @@ import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SortEvent } from 'primeng/api';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
@@ -26,15 +26,19 @@ import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-no
 export class MarketsPage implements OnInit {
 
   isLoading = true;
+  isTableLoading: boolean = false;
   userAddress: string = '';
   tokens: any = null;
   offset = 0;
-  limit = 6000;
+  limit = 20;
+  total: number = 20000;
   lastFetchCount = 0;
   baseToken: any;
+  chain: any;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     this.lastFetchCount = this.limit;
+    this.chain = Chain(environment.api.endpoint);
   }
 
   async ngOnInit() {
@@ -55,8 +59,8 @@ export class MarketsPage implements OnInit {
 
       this.isLoading = true;
 
-      const chain = Chain(environment.api.endpoint);
-      const statusResult = await chain('query')({
+
+      const statusResult = await this.chain('query')({
         status: [
           {
             where: {
@@ -73,60 +77,20 @@ export class MarketsPage implements OnInit {
       });
       this.baseToken = statusResult.status[0];
 
-      const tokensResult = await chain('query')({
+      const tokensResult = await this.chain('query')({
         token: [
           {
-            offset: this.offset,
-            limit: this.limit,
             order_by: [
-              {
-                volume_24_base: order_by.desc
-              }
-            ]
+              { id: order_by.desc }
+            ],
+            limit: 1
           }, {
             id: true,
-            transaction: {
-              hash: true
-            },
-            marketplace_cft20_details: [
-              {
-                where: {
-                  marketplace_listing: {
-                    is_cancelled: {
-                      _eq: false
-                    },
-                    is_filled: {
-                      _eq: false
-                    }
-                  }
-                }
-              },
-              {
-                id: true,
-              }
-            ],
-            token_holders: [
-              {
-                where: {
-                  address: {
-                    _eq: this.userAddress
-                  }
-                }
-              },
-              {
-                amount: true
-              }
-            ],
-            content_path: true,
-            name: true,
-            ticker: true,
-            decimals: true,
-            last_price_base: true,
-            volume_24_base: true,
           }
         ]
       });
-      this.tokens = tokensResult.token;
+      this.total = tokensResult.token[0].id;
+
 
       const wsChain = Subscription(environment.api.wss);
       wsChain('subscription')({
@@ -145,50 +109,6 @@ export class MarketsPage implements OnInit {
         ]
       }).on(({ status }) => {
         this.baseToken = status[0];
-      });
-
-      wsChain('subscription')({
-        token: [
-          {}, {
-            id: true,
-            marketplace_cft20_details: [
-              {
-                where: {
-                  marketplace_listing: {
-                    is_cancelled: {
-                      _eq: false
-                    },
-                    is_filled: {
-                      _eq: false
-                    }
-                  }
-                }
-              },
-              {
-                id: true,
-              }
-            ],
-            token_holders: [
-              {
-                where: {
-                  address: {
-                    _eq: this.userAddress
-                  }
-                }
-              },
-              {
-                amount: true
-              }
-            ],
-            name: true,
-            ticker: true,
-            decimals: true,
-            last_price_base: true,
-            volume_24_base: true,
-          }
-        ]
-      }).on(({ token }) => {
-        this.tokens = token;
       });
 
       this.isLoading = false;
@@ -240,6 +160,91 @@ export class MarketsPage implements OnInit {
 
       return event.order as number * result;
     });
+  }
+
+  async load(event: TableLazyLoadEvent) {
+    this.isTableLoading = true;
+
+    // Determine the sort order
+    let sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
+
+    // Build the order_by clause based on the event.sortField and sortOrder
+    let orderByClause: any = {};
+    if (event.sortField) {
+      orderByClause[event.sortField as string] = sortOrder;
+    } else {
+      // Default sorting, if no sortField is provided
+      orderByClause = { id: 'asc' };
+    }
+
+    let whereClause: any = {};
+    if (event.globalFilter) {
+      const globalFilter = event.globalFilter as string;
+      whereClause = {
+        _or: [
+          { name: { _like: `%${globalFilter}%` } },
+          { name: { _like: `%${globalFilter.toUpperCase()}%` } },
+          { ticker: { _like: `%${globalFilter}%` } },
+          { ticker: { _like: `%${globalFilter.toUpperCase()}%` } },
+        ]
+      };
+    }
+
+
+    const tokensResult = await this.chain('query')({
+      token: [
+        {
+          offset: event.first,
+          limit: event.rows,
+          order_by: [
+            orderByClause
+          ],
+          where: whereClause
+        }, {
+          id: true,
+          transaction: {
+            hash: true
+          },
+          marketplace_cft20_details: [
+            {
+              where: {
+                marketplace_listing: {
+                  is_cancelled: {
+                    _eq: false
+                  },
+                  is_filled: {
+                    _eq: false
+                  }
+                }
+              }
+            },
+            {
+              id: true,
+            }
+          ],
+          token_holders: [
+            {
+              where: {
+                address: {
+                  _eq: this.userAddress
+                }
+              }
+            },
+            {
+              amount: true
+            }
+          ],
+          content_path: true,
+          name: true,
+          ticker: true,
+          decimals: true,
+          last_price_base: true,
+          volume_24_base: true,
+        }
+      ]
+    });
+    this.tokens = tokensResult.token;
+    this.isTableLoading = false;
   }
 
 

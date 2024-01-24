@@ -140,9 +140,10 @@
             <div class="mb-3" *ngIf="depositedListings.length > 0">
               <h4>All listings</h4>
             </div>
-            <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="listings"
-              [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
+            <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [lazy]="true" dataKey="id"
+              (onLazyLoad)="load($event)" [totalRecords]="total" [value]="listings" [loading]="isTableLoading"
+              [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of many" [globalFilterFields]="
                                             ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
               sortField="ppt">
               <ng-template pTemplate="header">
