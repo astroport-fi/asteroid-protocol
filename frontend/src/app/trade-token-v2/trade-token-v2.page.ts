@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { Chain, Subscription } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
@@ -38,7 +38,7 @@ export class TradeTokenV2Page implements OnInit {
   baseTokenUSD: number = 0.00;
   walletAddress: string = '';
   currentBlock: number = 0;
-  limit: number = 500;
+  limit: number = 2000;
 
   constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
@@ -104,6 +104,11 @@ export class TradeTokenV2Page implements OnInit {
             }
           },
           limit: this.limit,
+          order_by: [
+            {
+              ppt: order_by.asc
+            }
+          ]
         },
         {
           id: true,

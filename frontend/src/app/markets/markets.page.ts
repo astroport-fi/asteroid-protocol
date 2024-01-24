@@ -29,7 +29,7 @@ export class MarketsPage implements OnInit {
   userAddress: string = '';
   tokens: any = null;
   offset = 0;
-  limit = 500;
+  limit = 6000;
   lastFetchCount = 0;
   baseToken: any;
 
