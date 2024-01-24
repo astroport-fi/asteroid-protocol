@@ -143,8 +143,8 @@
             <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="listings"
               [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings" [globalFilterFields]="
-                                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="-1"
-              sortField="id">
+                                            ['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
+              sortField="ppt">
               <ng-template pTemplate="header">
                 <tr>
                   <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
