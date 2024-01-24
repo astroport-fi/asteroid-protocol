@@ -9,9 +9,9 @@ import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
-import { SortEvent } from 'primeng/api';
+import { LazyLoadEvent, SortEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-list-tokens',
@@ -23,16 +23,20 @@ import { SortEvent } from 'primeng/api';
 export class ListTokensPage implements OnInit {
 
   isLoading = true;
+  isTableLoading: boolean = false;
   selectedAddress: string = '';
   tokens: any = null;
   holdings: any = null;
   offset = 0;
-  limit = 6000;
+  limit = 20;
   lastFetchCount = 0;
   baseTokenPrice: number = 0;
+  total: number = 2000;
+  chain: any;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
     this.lastFetchCount = this.limit;
+    this.chain = Chain(environment.api.endpoint);
   }
 
   async ngOnInit() {
@@ -42,45 +46,7 @@ export class ListTokensPage implements OnInit {
 
       this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
 
-      const chain = Chain(environment.api.endpoint);
-
-      const tokensResult = await chain('query')({
-        token: [
-          {
-            offset: this.offset,
-            limit: this.limit,
-            order_by: [
-              {
-                id: order_by.asc
-              }
-            ],
-            where: {
-              current_owner: {
-                _eq: this.selectedAddress
-              }
-            }
-          }, {
-            id: true,
-            transaction: {
-              hash: true
-            },
-            current_owner: true,
-            content_path: true,
-            name: true,
-            ticker: true,
-            max_supply: true,
-            circulating_supply: true,
-            decimals: true,
-            launch_timestamp: true,
-            last_price_base: true,
-            volume_24_base: true,
-            date_created: true
-          }
-        ]
-      });
-      this.tokens = tokensResult.token;
-
-      const holderResult = await chain('query')({
+      const holderResult = await this.chain('query')({
         token_holder: [
           {
             offset: 0,
@@ -143,6 +109,59 @@ export class ListTokensPage implements OnInit {
 
       return event.order as number * result;
     });
+  }
+
+  async load(event: TableLazyLoadEvent) {
+    console.log(event);
+    this.isTableLoading = true;
+
+    // Determine the sort order
+    let sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
+
+    // Build the order_by clause based on the event.sortField and sortOrder
+    let orderByClause: any = {};
+    if (event.sortField) {
+      orderByClause[event.sortField as string] = sortOrder;
+    } else {
+      // Default sorting, if no sortField is provided
+      orderByClause = { id: 'asc' };
+    }
+
+
+    const tokensResult = await this.chain('query')({
+      token: [
+        {
+          offset: event.first,
+          limit: event.rows,
+          order_by: [
+            orderByClause
+          ],
+          where: {
+            current_owner: {
+              _eq: this.selectedAddress
+            }
+          }
+        }, {
+          id: true,
+          transaction: {
+            hash: true
+          },
+          current_owner: true,
+          content_path: true,
+          name: true,
+          ticker: true,
+          max_supply: true,
+          circulating_supply: true,
+          decimals: true,
+          launch_timestamp: true,
+          last_price_base: true,
+          volume_24_base: true,
+          date_created: true
+        }
+      ]
+    });
+    this.tokens = tokensResult.token;
+    this.isTableLoading = false;
   }
 
 
