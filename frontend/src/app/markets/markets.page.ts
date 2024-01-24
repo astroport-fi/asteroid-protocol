@@ -31,7 +31,7 @@ export class MarketsPage implements OnInit {
   tokens: any = null;
   offset = 0;
   limit = 20;
-  total: number = 2000;
+  total: number = 20000;
   lastFetchCount = 0;
   baseToken: any;
   chain: any;
@@ -77,6 +77,19 @@ export class MarketsPage implements OnInit {
       });
       this.baseToken = statusResult.status[0];
 
+      const tokensResult = await this.chain('query')({
+        token: [
+          {
+            order_by: [
+              { id: order_by.desc }
+            ],
+            limit: 1
+          }, {
+            id: true,
+          }
+        ]
+      });
+      this.total = tokensResult.token[0].id;
 
 
       const wsChain = Subscription(environment.api.wss);
@@ -150,7 +163,6 @@ export class MarketsPage implements OnInit {
   }
 
   async load(event: TableLazyLoadEvent) {
-    console.log(event);
     this.isTableLoading = true;
 
     // Determine the sort order
@@ -165,6 +177,19 @@ export class MarketsPage implements OnInit {
       orderByClause = { id: 'asc' };
     }
 
+    let whereClause: any = {};
+    if (event.globalFilter) {
+      const globalFilter = event.globalFilter as string;
+      whereClause = {
+        _or: [
+          { name: { _like: `%${globalFilter}%` } },
+          { name: { _like: `%${globalFilter.toUpperCase()}%` } },
+          { ticker: { _like: `%${globalFilter}%` } },
+          { ticker: { _like: `%${globalFilter.toUpperCase()}%` } },
+        ]
+      };
+    }
+
 
     const tokensResult = await this.chain('query')({
       token: [
@@ -173,7 +198,8 @@ export class MarketsPage implements OnInit {
           limit: event.rows,
           order_by: [
             orderByClause
-          ]
+          ],
+          where: whereClause
         }, {
           id: true,
           transaction: {

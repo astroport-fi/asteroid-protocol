@@ -26,12 +26,11 @@ export class ListTokensPage implements OnInit {
   isTableLoading: boolean = false;
   selectedAddress: string = '';
   tokens: any = null;
-  holdings: any = null;
   offset = 0;
   limit = 20;
   lastFetchCount = 0;
   baseTokenPrice: number = 0;
-  total: number = 2000;
+  total: number = 0;
   chain: any;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService) {
@@ -46,34 +45,20 @@ export class ListTokensPage implements OnInit {
 
       this.baseTokenPrice = await this.priceService.fetchBaseTokenUSDPrice();
 
-      const holderResult = await this.chain('query')({
-        token_holder: [
+      const tokensResult = await this.chain('query')({
+        token: [
           {
-            offset: 0,
-            limit: 100,
-            where: {
-              address: {
-                _eq: this.selectedAddress
-              }
-            }
-          },
-          {
-            token: {
-              ticker: true,
-              max_supply: true,
-              circulating_supply: true,
-              decimals: true,
-              transaction: {
-                hash: true
-              }
-            },
-            amount: true,
-            date_updated: true,
+            order_by: [
+              { id: order_by.desc }
+            ],
+            limit: 1
+          }, {
+            id: true,
           }
         ]
       });
+      this.total = tokensResult.token[0].id;
 
-      this.holdings = holderResult.token_holder;
       this.isLoading = false;
     });
   }
@@ -127,6 +112,18 @@ export class ListTokensPage implements OnInit {
       orderByClause = { id: 'asc' };
     }
 
+    let whereClause: any = {};
+    if (event.globalFilter) {
+      const globalFilter = event.globalFilter as string;
+      whereClause = {
+        _or: [
+          { name: { _like: `%${globalFilter}%` } },
+          { name: { _like: `%${globalFilter.toUpperCase()}%` } },
+          { ticker: { _like: `%${globalFilter}%` } },
+          { ticker: { _like: `%${globalFilter.toUpperCase()}%` } },
+        ]
+      };
+    }
 
     const tokensResult = await this.chain('query')({
       token: [
@@ -136,11 +133,10 @@ export class ListTokensPage implements OnInit {
           order_by: [
             orderByClause
           ],
-          where: {
-            current_owner: {
-              _eq: this.selectedAddress
-            }
-          }
+          where: whereClause
+          // where: [
+          //   whereClause
+          // ]
         }, {
           id: true,
           transaction: {

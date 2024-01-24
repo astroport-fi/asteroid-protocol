@@ -28,7 +28,7 @@
           <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [lazy]="true" dataKey="id"
             (onLazyLoad)="load($event)" [totalRecords]="total" [value]="tokens" [tableStyle]="{ 'min-width': '40rem' }"
             [paginator]="true" [rows]="20" [showCurrentPageReport]="true" [loading]="isTableLoading"
-            currentPageReportTemplate="Showing {first} to {last} of many" [globalFilterFields]="
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} markets" [globalFilterFields]="
             ['name', 'ticker' ]" styleClass="token-list" sortField="volume_24_base" [sortOrder]="-1">
             <ng-template pTemplate="caption">
               <div class="flex search">
