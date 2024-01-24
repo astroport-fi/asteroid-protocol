@@ -25,9 +25,10 @@
               ${{ baseToken.base_token_usd | number:'1.2-2'}}
             </span>
           </div>
-          <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [value]="tokens"
-            [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="50" [showCurrentPageReport]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} markets" [globalFilterFields]="
+          <p-table #data (sortFunction)="customSort($event)" [customSort]="true" [lazy]="true" dataKey="id"
+            (onLazyLoad)="load($event)" [totalRecords]="total" [value]="tokens" [tableStyle]="{ 'min-width': '40rem' }"
+            [paginator]="true" [rows]="20" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of many" [globalFilterFields]="
             ['name', 'ticker' ]" styleClass="token-list" sortField="volume_24_base" [sortOrder]="-1">
             <ng-template pTemplate="caption">
               <div class="flex search">
@@ -42,7 +43,7 @@
               <tr>
                 <th pSortableColumn="ticker" pFrozenColumn>Market <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="name">Token <p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="listings">Listings <p-sortIcon field="listings"></p-sortIcon></th>
+                <th>Listings</th>
                 <th pSortableColumn="last_price_base">Token Price <p-sortIcon field="last_price_base"></p-sortIcon></th>
                 <th pSortableColumn="volume_24_base">Volume <p-sortIcon field="volume_24_base"></p-sortIcon></th>
                 <th>&nbsp;</th>
