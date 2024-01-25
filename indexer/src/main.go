@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer"
+	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,9 +20,15 @@ type Config struct {
 }
 
 func main() {
+	// load ENV vars from .env
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// Parse config environment variables
 	var config Config
-	err := envconfig.Process("", &config)
+	err = envconfig.Process("", &config)
 	if err != nil {
 		log.Fatalf("Unable to process config: %s", err)
 	}
