@@ -36,6 +36,7 @@
     "@cosmjs/encoding": "^0.32.1",
     "@cosmjs/proto-signing": "^0.32.1",
     "@cosmjs/stargate": "^0.32.1",
+    "@cosmsnap/snapper": "^0.1.29",
     "@ionic/angular": "^7.5.0",
     "@keplr-wallet/wc-client": "^0.12.55",
     "@keplr-wallet/wc-qrcode-modal": "^0.12.55",

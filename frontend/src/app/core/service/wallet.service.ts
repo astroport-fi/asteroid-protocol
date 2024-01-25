@@ -18,6 +18,15 @@ import { SignClient } from '@walletconnect/sign-client';
 import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 import { Keplr } from '@keplr-wallet/types';
 import { WalletType } from '../enum/wallet-type';
+import { CosmosSnap } from '@cosmsnap/snapper';
+
+declare global {
+  interface Window {
+    cosmosSnap?: Keplr;
+  }
+}
+
+window.cosmosSnap = new CosmosSnap() as any as Keplr;
 
 interface WalletProvider {
   id: string;
@@ -59,6 +68,15 @@ const LeapProvider: WalletProvider = {
   },
 };
 
+const CosmosSnapProvider: WalletProvider = {
+  id: 'cosmos-snap',
+  name: 'Cosmos Snap',
+  walletType: WalletType.CosmosSnap,
+  extensionResolver() {
+    return window.cosmosSnap;
+  },
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -81,6 +99,8 @@ export class WalletService {
   setProvider(walletType: WalletType) {
     if (walletType == WalletType.Leap) {
       this.provider = LeapProvider;
+    } else if (walletType == WalletType.CosmosSnap) {
+      this.provider = CosmosSnapProvider;
     } else {
       this.provider = KeplrProvider;
     }
@@ -133,7 +153,7 @@ export class WalletService {
 
     try {
       // TODO: Add back for local development
-      await this.extension.experimentalSuggestChain(environment.chain);
+      // await this.extension.experimentalSuggestChain(environment.chain);
       await this.extension.enable(environment.chain.chainId);
       return WalletStatus.Connected;
     } catch (error) {

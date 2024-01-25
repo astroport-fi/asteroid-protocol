@@ -17,5 +17,11 @@
         <span class="name">Leap Cosmos</span>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="!isWalletConnecting">
+      <ion-col class="wallet-row" (click)="connectSelectedWallet(WalletType.CosmosSnap)">
+        <img src="../../assets/metamask.svg" height="48" />
+        <span class="name">Cosmos MetaMask Snap</span>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>
