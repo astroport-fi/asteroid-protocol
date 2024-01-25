@@ -1,0 +1,37 @@
+<ion-content class="main-content" mode="md">
+  <ion-grid class="p-3">
+    <ion-row>
+      <ion-col class="text-center">
+        <h2>List {{ ticker }} for sale</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <p>
+          This transaction will list your tokens for sale<br />You'll only receive the ATOM
+          from the sale should someone purchase them
+        </p>
+        <p>
+          Sales are final and can't be refunded. You may cancel a listing at any time before a successful reservation
+        </p>
+      </ion-col>
+    </ion-row>
+
+
+
+    <ion-row>
+      <ion-col>
+        <div class="action">
+          <!-- <ion-button color="success" type="submit"
+              [disabled]="((sellForm.value.basic.amount | stripSpaces) *
+              (sellForm.value.basic.price | stripSpaces)) < minTradeSize || (sellForm.value.basic.amount | stripSpaces) > senderBalance">Confirm and
+              list</ion-button>
+            <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button> -->
+
+          <ion-button color="success" fill="clear" (click)="cancel()">Next</ion-button>
+          <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
