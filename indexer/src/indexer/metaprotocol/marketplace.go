@@ -173,7 +173,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
-		if amountSent < uint64(math.Round(minDepositBase)) {
+		if amountSent < uint64(math.Floor(minDepositBase)) {
 			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
 		}
 
@@ -252,7 +252,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
 			// If we can't store the history, that fine, we shouldn't fail
-			return nil
+			_ = result
 		}
 
 		// Record the listing history
@@ -505,7 +505,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
-		if amountSent < uint64(math.Round(requiredFeeAbsolute)) {
+		if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
 			return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
 		}
 
@@ -564,7 +564,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
 			// If we can't store the history, that fine, we shouldn't fail
-			return nil
+			_ = result
 		}
 
 		// Record the sale of the tokens for the seller
@@ -582,7 +582,6 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		result = protocol.db.Save(&historyModel)
 		if result.Error != nil {
 			// If we can't store the history, that fine, we shouldn't fail
-			// return nil
 			_ = result
 		}
 
@@ -590,15 +589,15 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		var statusModel models.Status
 		result = protocol.db.Where("chain_id = ?", parsedURN.ChainID).First(&statusModel)
 		if result.Error != nil {
+			// If this fails we just don't update the history
 			return nil
-			// return fmt.Errorf("unable to get current base currency price '%s'", err)
 		}
 
 		// Capture the trade in the history for future charts
 		totalWithDecimals := float64(listingModel.Total) / math.Pow10(6)
 		tradeHistory := models.TokenTradeHistory{
 			ChainID:       parsedURN.ChainID,
-			TransactionID: transactionModel.ID,
+			TransactionID: currentTransaction.ID,
 			TokenID:       listingDetailModel.TokenID,
 			SellerAddress: listingModel.SellerAddress,
 			BuyerAddress:  sender,
@@ -606,12 +605,12 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			AmountBase:    listingDetailModel.Amount, // CFT-20
 			Rate:          listingDetailModel.PPT,
 			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
-			DateCreated:   transactionModel.DateCreated,
+			DateCreated:   currentTransaction.DateCreated,
 		}
 		result = protocol.db.Save(&tradeHistory)
 		if result.Error != nil {
-			return nil
-			// return result.Error
+			// Continue, this is not critical
+			_ = result
 		}
 
 		// Check if the ticker exists
