@@ -21,4 +21,12 @@ Then, begin exploring the protocol's pre-existing metaprotocols:
 - [Arbitrary inscriptions (i.e. JPGs, HTML files, text and more)](https://github.com/astroport-fi/asteroid-protocol/blob/main/spec/metaprotocols/inscriptions.md)
 - [The Marketplace Metaprotocol](https://github.com/astroport-fi/asteroid-protocol/blob/main/spec/metaprotocols/marketplace.md)
 
-Remember, all software and specifications are experimental, unaudited and not "endorsed" by any entity including Delphi Labs and the Astroport Foundation. Use at your own risk.
+## Key links
+
+- Website: [https://asteroidprotocol.io/](https://asteroidprotocol.io/)
+- Telegram Group: [https://t.me/asteroidxyz](https://t.me/asteroidxyz)
+- Github/docs: [https://github.com/astroport-fi/asteroid-protocol](https://github.com/astroport-fi/asteroid-protocol)
+- Email Updates: [https://medium.com/@asteroidprotocol/subscribe](https://medium.com/@asteroidprotocol/subscribe)
+- Launch article: [https://delphilabs.medium.com/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1](https://delphilabs.medium.com/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1)
+
+*Remember, all software and specifications are experimental, unaudited and not "endorsed" by any entity including Delphi Labs and the Astroport Foundation. Use at your own risk.*
