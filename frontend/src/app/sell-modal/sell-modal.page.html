@@ -68,7 +68,12 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
+        <ion-col *ngIf="senderBalance === undefined">
+          <div class="p-3 mt-4 mb-4">
+            <ion-text color="warning">Loading balance...</ion-text>
+          </div>
+        </ion-col>
+        <ion-col *ngIf="senderBalance !== undefined">
           <div class="p-3 mt-4 mb-4 confirmation"
             *ngIf="((sellForm.value.basic.amount | stripSpaces) *
                         (sellForm.value.basic.price | stripSpaces)) >= minTradeSize && (sellForm.value.basic.amount | stripSpaces) <= senderBalance">
@@ -90,7 +95,7 @@
         <ion-col>
           <div class="action">
             <ion-button color="success" type="submit"
-              [disabled]="((sellForm.value.basic.amount | stripSpaces) *
+              [disabled]="senderBalance === undefined || ((sellForm.value.basic.amount | stripSpaces) *
               (sellForm.value.basic.price | stripSpaces)) < minTradeSize || (sellForm.value.basic.amount | stripSpaces) > senderBalance">Confirm and
               list</ion-button>
             <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>

@@ -34,7 +34,7 @@ export class SellModalPage implements OnInit {
 
   sellForm: FormGroup;
   minTradeSize: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTradeSize;
-  senderBalance: number = 0;
+  senderBalance?: number;
 
   minDepositAbsolute: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositAbsolute;
   minDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositPercent;
