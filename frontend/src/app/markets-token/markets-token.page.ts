@@ -17,13 +17,13 @@ import { WalletService } from '../core/service/wallet.service';
 import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-notice-modal.page';
 
 @Component({
-  selector: 'app-markets',
-  templateUrl: './markets.page.html',
-  styleUrls: ['./markets.page.scss'],
+  selector: 'app-markets-token',
+  templateUrl: './markets-token.page.html',
+  styleUrls: ['./markets-token.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule]
 })
-export class MarketsPage implements OnInit {
+export class MarketsTokenPage implements OnInit {
 
   isLoading = true;
   isTableLoading: boolean = false;

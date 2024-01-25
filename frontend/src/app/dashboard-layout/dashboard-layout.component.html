@@ -95,6 +95,12 @@
                       <ion-label>CFT-20 Tokens</ion-label>
                     </ion-item>
                   </ion-menu-toggle>
+                  <ion-menu-toggle autoHide="false" slot="content">
+                    <ion-item [button]="true" [routerLink]="['/app/inscription-markets']" routerLinkActive="active"
+                      lines="none">
+                      <ion-label>Inscriptions</ion-label>
+                    </ion-item>
+                  </ion-menu-toggle>
                 </ion-accordion>
               </ion-accordion-group>
             </ion-col>

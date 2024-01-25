@@ -52,7 +52,11 @@ export const routes: Routes = [
       },
       {
         path: 'markets',
-        loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
+        loadComponent: () => import('./markets-token/markets-token.page').then(m => m.MarketsTokenPage)
+      },
+      {
+        path: 'inscription-markets',
+        loadComponent: () => import('./markets-inscription/markets-inscription.page').then(m => m.MarketsInscriptionPage)
       },
       // {
       //   path: 'market/:quote',
