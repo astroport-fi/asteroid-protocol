@@ -115,10 +115,12 @@ export class TransferModalPage implements OnInit {
     // Close the transfer modal
     this.modalCtrl.dismiss();
 
+
+    const amt = this.transferForm.value.basic.amount.toString().replace(/\s/g, '');
     // Construct metaprotocol memo message
     const params = new Map([
       ["tic", this.ticker],
-      ["amt", this.transferForm.value.basic.amount.replace(/\s/g, '')],
+      ["amt", amt],
       ["dst", this.transferForm.value.basic.destination],
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
