@@ -176,7 +176,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		var tokenModel models.Token
 		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
 		if result.Error == nil {
-			return fmt.Errorf("token with ticker '%s' already exists", name)
+			return fmt.Errorf("token with ticker '%s' already exists", ticker)
 		}
 
 		// TODO: Rework the content extraction
