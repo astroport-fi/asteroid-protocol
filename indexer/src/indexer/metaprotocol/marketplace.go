@@ -621,6 +621,22 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
+		var avgPrice uint64
+		dberr := protocol.db.Raw(`
+		SELECT round(AVG(rate)) AS average_price 
+		FROM (
+			SELECT rate 
+			FROM token_trade_history tth 
+			WHERE token_id = ? 
+			AND amount_quote > 1000000 
+			ORDER BY id 
+			DESC LIMIT 100
+		) AS last_records`, tokenModel.ID).Scan(&avgPrice)
+		if dberr.Error != nil {
+			// No need to alert the buyer
+			return nil
+		}
+
 		// Recalculate volume from filled trades for this token in past 24 hours
 		// SELECT sum(total_usd) from token_trade_history where date_Created >= now - 24 hours and token_id = this token id
 		var sum uint64
@@ -635,7 +651,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
-		tokenModel.LastPriceBase = listingDetailModel.PPT
+		tokenModel.LastPriceBase = avgPrice
 		tokenModel.Volume24Base = sum
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
