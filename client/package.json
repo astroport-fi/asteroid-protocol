@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "format": "eslint . --fix",
     "prettify": "prettier . --write",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install client/.husky",
     "prepublishOnly": "npm run build",
     "build": "tsc --build",
     "clean": "tsc --build --clean"
