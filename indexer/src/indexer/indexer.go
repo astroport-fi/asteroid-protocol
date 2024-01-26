@@ -34,6 +34,7 @@ type Config struct {
 	RPCEndpoints             []string          `envconfig:"RPC_ENDPOINTS" required:"true"`
 	EndpointHeaders          map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
 	BlockPollIntervalMS      int               `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	AutoMigrate              bool              `envconfig:"AUTO_MIGRATE" default:"false"`
 }
 
 // Indexer implements the reference indexer service
@@ -69,6 +70,26 @@ func New(
 	if err != nil {
 		return nil, err
 
+	}
+
+	if config.AutoMigrate {
+		err = db.AutoMigrate(
+			&models.Status{},
+			&models.Inscription{},
+			&models.InscriptionHistory{},
+			&models.Token{},
+			&models.Transaction{},
+			&models.TokenAddressHistory{},
+			&models.TokenHolder{},
+			&models.TokenOpenPosition{},
+			&models.TokenTradeHistory{},
+			&models.MarketplaceListing{},
+			&models.MarketplaceListingHistory{},
+			&models.MarketplaceCFT20Detail{},
+		)
+		if err != nil {
+			log.Fatalf("Unable to AutoMigrate: %s", err)
+		}
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
