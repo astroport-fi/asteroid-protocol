@@ -32,10 +32,9 @@ export class TransactionFlowModalPage implements OnInit {
   @Input() messagesJSON: any[] = [];
   @Input() overrideFee: number = 0;
 
-  isSimulating: boolean = true;
   errorText: string = '';
   txHash: string = '';
-  state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' = 'sign';
+  state?: 'simulate' | 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed';
   explorerTxUrl: string = environment.api.explorer;
   chain: any = null;
   currentChain = environment.chain;
@@ -58,6 +57,8 @@ export class TransactionFlowModalPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.state = 'simulate';
+    this.errorText = '';
 
     const fees: TxFee = {
       metaprotocol: {
@@ -96,11 +97,11 @@ export class TransactionFlowModalPage implements OnInit {
 
         // Convert to uatom
         this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+        this.state = 'sign';
       }
-    } catch (error: any) {
-      console.error(error);
+    } catch (e: any) {
+      this.errorText = e?.message ?? e;
     }
-    this.isSimulating = false;
   }
 
   async submit() {
@@ -183,16 +184,16 @@ export class TransactionFlowModalPage implements OnInit {
         }
       }
     } catch (error: any) {
-      this.state = 'error';
-
-      if (error instanceof Error) {
-        this.errorText = error.message;
-      }
+      this.errorText = error?.message ?? error;
     }
   }
 
   cancel() {
     this.modalCtrl.dismiss();
+  }
+
+  async retry() {
+    await this.ngOnInit()
   }
 
   mapToHumanError(error: string) {

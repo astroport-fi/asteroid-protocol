@@ -1,6 +1,6 @@
 <ion-content class="main-content" mode="md">
   <div>
-    <ion-grid *ngIf="state == 'sign' || state == 'error'">
+    <ion-grid *ngIf="state == 'simulate' || state == 'sign'">
       <ion-row>
         <ion-col>
           <div class="animation mx-auto">
@@ -22,24 +22,23 @@
           <p>
             You are about to inscribe permanently on the Cosmos Hub.<br />This can <b>not</b> be undone.
           </p>
-          <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
-            <b>Unable to sign transaction</b>
+          <div class="mt-3 warning-box text-left" *ngIf="errorText">
+            <b>Unable to {{state}} the transaction</b>
             <p>{{ errorText }}</p>
-            <p>You must sign and submit the transaction in order to inscribe content</p>
           </div>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="errorText == ''">
+      <ion-row *ngIf="!errorText">
         <ion-col>
           <div class="fees">
             <h4>Estimated fee breakdown</h4>
-            <div *ngIf="isSimulating">
+            <div *ngIf="state == 'simulate'">
               <ion-progress-bar type="indeterminate"></ion-progress-bar>
               <div class="note">
                 Estimating...
               </div>
             </div>
-            <table *ngIf="!isSimulating">
+            <table *ngIf="state == 'sign'">
               <!-- <tr>
                 <td class="label">Gas</td>
                 <td>{{ gasEstimate | number: '1.0-0' }}</td>
@@ -76,11 +75,11 @@
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="!isSimulating">
+      <ion-row>
         <ion-col>
           <div class="text-center">
-            <ion-button class="mt-3" color="success" (click)="submit()">{{ state == 'error' ? 'Retry' : 'Continue'
-              }}</ion-button>
+            <ion-button *ngIf="state == 'sign' && !errorText" class="mt-3" color="success" (click)="submit()">Continue</ion-button>
+            <ion-button *ngIf="errorText" class="mt-3" color="success" (click)="retry()">Retry</ion-button>
             <br />
             <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Cancel</ion-button>
           </div>
@@ -96,17 +95,18 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col class="text-center mt-5">
-          <h2>Waiting for transaction</h2>
-          <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
-          <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
-            <b>Unable to sign transaction</b>
+        <ion-col class="text-center">
+          <div *ngIf="!errorText">
+            <h2>Waiting for transaction</h2>
+            <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
+          </div>
+          <div *ngIf="errorText" class="mt-3 warning-box text-left" >
+            <b>Unable to submit the transaction</b>
             <p>{{ errorText }}</p>
-            <p>You must sign and submit the transaction in order to inscribe content</p>
           </div>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="!errorText">
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
@@ -116,6 +116,8 @@
       <ion-row>
         <ion-col>
           <div class="text-center">
+            <ion-button *ngIf="errorText" class="mt-3" color="success" (click)="retry()">Retry</ion-button>
+            <br />
             <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
           </div>
         </ion-col>

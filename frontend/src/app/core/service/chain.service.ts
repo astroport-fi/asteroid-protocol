@@ -52,8 +52,8 @@ export class ChainService {
       const response = await api<GasSimulateResponse>(uri, call);
 
       return response.gas_info;
-    } catch (e) {
-      throw new Error(`Failed to simulate transaction` + e);
+    } catch (e: any) {
+      throw new Error(`Failed to simulate transaction` + (e?.message ?? e));
     }
   }
 

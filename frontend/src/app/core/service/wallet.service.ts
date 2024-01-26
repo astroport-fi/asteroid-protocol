@@ -592,7 +592,7 @@ export class WalletService {
   /**
    * Broadcast the inscription transaction
    * @param tx The inscription transaction
-   * @returns 
+   * @returns the hash of the broadcasted transaction
    */
   async broadcast(tx: Uint8Array) {
     try {
@@ -601,7 +601,7 @@ export class WalletService {
 
       if (tx.length >= 1048576) {
         console.error("tx too large");
-        return "ERR: Transaction will be too large, multiple tx inscriptions not yet implemented";
+        throw "ERR: Transaction will be too large, multiple tx inscriptions not yet implemented";
       } else {
 
         const txHash = await client.broadcastTxSync(tx);
@@ -609,7 +609,7 @@ export class WalletService {
       }
     } catch (error) {
       console.error('Error in sendTransaction:', error);
-      return "ERROR";
+      throw error;
     }
 
   }
