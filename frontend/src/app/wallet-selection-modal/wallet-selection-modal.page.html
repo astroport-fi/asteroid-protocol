@@ -1,0 +1,21 @@
+<ion-content class="main-content" mode="md">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="text-center">
+        <h1 class="mt-4">{{ walletStatusText }}</h1>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!isWalletConnecting">
+      <ion-col class="wallet-row" (click)="connectSelectedWallet(WalletType.Keplr)">
+        <img src="../../assets/keplr.svg" height="48" />
+        <span class="name">Keplr</span>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="!isWalletConnecting">
+      <ion-col class="wallet-row" (click)="connectSelectedWallet(WalletType.Leap)">
+        <img src="../../assets/leap-cosmos.svg" height="48" />
+        <span class="name">Leap Cosmos</span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

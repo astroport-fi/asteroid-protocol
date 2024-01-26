@@ -1,28 +1,34 @@
 <ion-content class="main-content" mode="md">
   <ion-grid>
     <ion-row>
-      <ion-col class="text-center">
-        <div class="mt-4">
-          <img src="../../assets/keplr.svg" />
+      <ion-col>
+        <div class="text-center">
+          <h1 class="mt-4">Wallet Required</h1>
+          <p class="mt-2">We're working on adding more wallet support. Unfortunately, for now you'll need to install
+            Keplr or Leap on your <b>desktop</b> or <b>laptop</b> to use the app </p>
         </div>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <div class="text-center">
-          <h1 class="mt-4">Keplr Wallet Required</h1>
-          <p class="mt-2">We're working on adding more wallet support. Unfortunately, for now you'll need to install
-            Keplr on your <b>desktop</b> or <b>laptop</b> to use the app </p>
-        </div>
-        <div class="text-center">
-          <ion-button class="mt-4" color="primary" fill="clear" href="https://www.keplr.app/" target="_blank">
-            Get Keplr
-          </ion-button>
-          <ion-button class="mt-4" color="medium" fill="clear" (click)="cancel()">
-            Cancel
-          </ion-button>
-        </div>
+      <ion-col class="wallet-row">
+        <img src="../../assets/keplr.svg" height="48" />
+        <ion-button color="primary" fill="clear" href="https://www.keplr.app/" target="_blank">
+          Get Keplr
+        </ion-button>
       </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="wallet-row">
+        <img src="../../assets/leap-cosmos.svg" height="48" />
+        <ion-button color="primary" fill="clear" href="https://www.leapwallet.io/" target="_blank">
+          Get Leap Cosmos
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="bottom">
+      <ion-button class="mt-4" color="medium" fill="clear" (click)="cancel()">
+        Cancel
+      </ion-button>
     </ion-row>
   </ion-grid>
 </ion-content>
