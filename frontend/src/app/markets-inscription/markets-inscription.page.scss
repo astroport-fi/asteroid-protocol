@@ -62,3 +62,40 @@
         font-size: 14px;
     }
 }
+
+.price {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    font-size: 18px;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    color: rgba(255, 255, 255, 0.9);
+
+    .label {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 12px;
+        text-transform: uppercase;
+        display: block;
+        position: relative;
+        top: -5px;
+    }
+
+    .value {
+        span {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+
+    // background-color: #ff0000;
+}
+
+.inscription-item {
+    height: 350px;
+
+    .content {
+        height: 60%;
+    }
+}

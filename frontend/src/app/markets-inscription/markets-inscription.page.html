@@ -89,16 +89,16 @@
 
               </div>
               <div class="detail-item">
-                <span>{{ item.date_created | dateAgo }}</span>
+                <a href="/">{{ item.current_owner |
+                  shortenAddress | async}}</a>
               </div>
               <!-- <div class="price mt-1"
                 style="position: relative; left: -10px; background-color: var(--color-teal); width: 200px; text-align: center; font-size: 16px; color: #333">
                 12 ATOM
               </div> -->
               <div class="price text-center">
-                <ion-chip color="warning">
-                  <ion-label>12.12 ATOM</ion-label>
-                </ion-chip>
+                <ion-label class="value">12.12 <span>ATOM</span></ion-label>
+                <ion-label class="label">Price</ion-label>
               </div>
             </div>
           </a>

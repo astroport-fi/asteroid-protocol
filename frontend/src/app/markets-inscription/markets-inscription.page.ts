@@ -18,13 +18,14 @@ import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-no
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { DropdownModule } from 'primeng/dropdown';
 import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 
 @Component({
   selector: 'app-markets-inscription',
   templateUrl: './markets-inscription.page.html',
   styleUrls: ['./markets-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule, GenericPreviewPage, DropdownModule]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule, GenericPreviewPage, DropdownModule, ShortenAddressPipe]
 })
 export class MarketsInscriptionPage implements OnInit {
 
