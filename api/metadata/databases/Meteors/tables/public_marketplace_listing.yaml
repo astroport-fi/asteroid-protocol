@@ -1,0 +1,13 @@
+table:
+  name: marketplace_listing
+  schema: public
+object_relationships:
+  - name: transaction
+    using:
+      manual_configuration:
+        column_mapping:
+          transaction_id: id
+        insertion_order: null
+        remote_table:
+          name: transaction
+          schema: public

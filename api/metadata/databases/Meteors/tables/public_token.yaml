@@ -1,0 +1,32 @@
+table:
+  name: token
+  schema: public
+object_relationships:
+  - name: transaction
+    using:
+      manual_configuration:
+        column_mapping:
+          transaction_id: id
+        insertion_order: null
+        remote_table:
+          name: transaction
+          schema: public
+array_relationships:
+  - name: marketplace_cft20_details
+    using:
+      manual_configuration:
+        column_mapping:
+          id: token_id
+        insertion_order: null
+        remote_table:
+          name: marketplace_cft20_detail
+          schema: public
+  - name: token_holders
+    using:
+      manual_configuration:
+        column_mapping:
+          id: token_id
+        insertion_order: null
+        remote_table:
+          name: token_holder
+          schema: public

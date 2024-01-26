@@ -1,0 +1,22 @@
+table:
+  name: marketplace_cft20_detail
+  schema: public
+object_relationships:
+  - name: marketplace_listing
+    using:
+      manual_configuration:
+        column_mapping:
+          listing_id: id
+        insertion_order: null
+        remote_table:
+          name: marketplace_listing
+          schema: public
+  - name: token
+    using:
+      manual_configuration:
+        column_mapping:
+          token_id: id
+        insertion_order: null
+        remote_table:
+          name: token
+          schema: public

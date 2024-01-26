@@ -1,0 +1,13 @@
+table:
+  name: token_holder
+  schema: public
+object_relationships:
+  - name: token
+    using:
+      manual_configuration:
+        column_mapping:
+          token_id: id
+        insertion_order: null
+        remote_table:
+          name: token
+          schema: public

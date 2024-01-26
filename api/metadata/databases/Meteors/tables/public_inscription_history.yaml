@@ -1,0 +1,22 @@
+table:
+  name: inscription_history
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      manual_configuration:
+        column_mapping:
+          inscription_id: id
+        insertion_order: null
+        remote_table:
+          name: inscription
+          schema: public
+  - name: transaction
+    using:
+      manual_configuration:
+        column_mapping:
+          transaction_id: id
+        insertion_order: null
+        remote_table:
+          name: transaction
+          schema: public
