@@ -27,6 +27,7 @@ ion-popover {
   --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6);
   --color: white;
   --width: 300px;
+  backdrop-filter: blur(50px) !important;
 }
 
 ion-popover ion-content {
@@ -488,4 +489,9 @@ ion-toast {
 .wallet-required-modal {
   --width: 375px;
   --height: 350px;
+}
+
+
+.sc-ion-select-popover-md-h ion-list.sc-ion-select-popover-md {
+  backdrop-filter: blur(10px) !important;
 }

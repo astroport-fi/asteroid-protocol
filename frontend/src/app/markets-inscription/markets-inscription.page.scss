@@ -34,3 +34,31 @@
         text-align: right;
     }
 }
+
+.sidebar {
+    position: static;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    max-height: 700px;
+    overflow-y: scroll;
+    width: 250px;
+}
+
+.section-container {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section {
+    margin-right: 40px;
+    min-width: 200px;
+    display: inline-block;
+
+    h4.header {
+        text-transform: uppercase;
+        color: #999999;
+        padding: 0px;
+        margin: 0px;
+        font-size: 14px;
+    }
+}
