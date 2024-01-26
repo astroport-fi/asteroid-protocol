@@ -635,6 +635,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
+		tokenModel.LastPriceBase = listingDetailModel.PPT
 		tokenModel.Volume24Base = sum
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
