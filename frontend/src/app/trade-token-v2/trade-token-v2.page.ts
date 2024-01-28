@@ -19,6 +19,7 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { SortEvent } from 'primeng/api';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
 
 @Component({
   selector: 'app-trade-token-v2',
@@ -270,84 +271,94 @@ export class TradeTokenV2Page implements OnInit {
   }
 
   async deposit(listingHash: string) {
-    const chain = Chain(environment.api.endpoint)
-    const listingResult = await chain('query')({
-      marketplace_listing: [
-        {
-          where: {
-            transaction: {
-              hash: {
-                _eq: listingHash
-              }
-            }
-          }
-        }, {
-          seller_address: true,
-          total: true,
-          deposit_total: true,
-          is_deposited: true,
-          is_cancelled: true,
-          is_filled: true,
-        }
-      ]
-    });
-
-    if (listingResult.marketplace_listing.length == 0) {
-      alert("Listing not found");
-      return;
-    }
-    const listing = listingResult.marketplace_listing[0];
-
-    const deposit: bigint = listing.deposit_total as bigint;
-
-    const purchaseMessage = {
-      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-      value: MsgSend.encode({
-        fromAddress: (await this.walletService.getAccount()).address,
-        toAddress: listing.seller_address,
-        amount: [
-          {
-            denom: "uatom",
-            amount: deposit.toString(),
-          }
-        ],
-      }).finish(),
-    }
-
-    const purchaseMessageJSON = {
-      '@type': "/cosmos.bank.v1beta1.MsgSend",
-      from_address: (await this.walletService.getAccount()).address,
-      to_address: listing.seller_address,
-      amount: [
-        {
-          denom: "uatom",
-          amount: deposit.toString(),
-        }
-      ],
-    }
-
-    // Construct metaprotocol memo message
-    const params = new Map([
-      ["h", listingHash],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'deposit', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
-      component: TransactionFlowModalPage,
+      component: BuyWizardModalPage,
       componentProps: {
-        urn,
-        metadata: null,
-        data: null,
-        routerLink: ['/app/market', this.token.ticker],
-        resultCTA: 'Back to market',
-        metaprotocol: 'marketplace',
-        metaprotocolAction: 'deposit',
-        messages: [purchaseMessage],
-        messagesJSON: [purchaseMessageJSON],
+
       }
     });
     modal.present();
+
+    // const chain = Chain(environment.api.endpoint)
+    // const listingResult = await chain('query')({
+    //   marketplace_listing: [
+    //     {
+    //       where: {
+    //         transaction: {
+    //           hash: {
+    //             _eq: listingHash
+    //           }
+    //         }
+    //       }
+    //     }, {
+    //       seller_address: true,
+    //       total: true,
+    //       deposit_total: true,
+    //       is_deposited: true,
+    //       is_cancelled: true,
+    //       is_filled: true,
+    //     }
+    //   ]
+    // });
+
+    // if (listingResult.marketplace_listing.length == 0) {
+    //   alert("Listing not found");
+    //   return;
+    // }
+    // const listing = listingResult.marketplace_listing[0];
+
+    // const deposit: bigint = listing.deposit_total as bigint;
+
+    // const purchaseMessage = {
+    //   typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+    //   value: MsgSend.encode({
+    //     fromAddress: (await this.walletService.getAccount()).address,
+    //     toAddress: listing.seller_address,
+    //     amount: [
+    //       {
+    //         denom: "uatom",
+    //         amount: deposit.toString(),
+    //       }
+    //     ],
+    //   }).finish(),
+    // }
+
+    // const purchaseMessageJSON = {
+    //   '@type': "/cosmos.bank.v1beta1.MsgSend",
+    //   from_address: (await this.walletService.getAccount()).address,
+    //   to_address: listing.seller_address,
+    //   amount: [
+    //     {
+    //       denom: "uatom",
+    //       amount: deposit.toString(),
+    //     }
+    //   ],
+    // }
+
+    // // Construct metaprotocol memo message
+    // const params = new Map([
+    //   ["h", listingHash],
+    // ]);
+    // const urn = this.protocolService.buildURN(environment.chain.chainId, 'deposit', params);
+    // const modal = await this.modalCtrl.create({
+    //   keyboardClose: true,
+    //   backdropDismiss: false,
+    //   component: TransactionFlowModalPage,
+    //   componentProps: {
+    //     urn,
+    //     metadata: null,
+    //     data: null,
+    //     routerLink: ['/app/market', this.token.ticker],
+    //     resultCTA: 'Back to market',
+    //     metaprotocol: 'marketplace',
+    //     metaprotocolAction: 'deposit',
+    //     messages: [purchaseMessage],
+    //     messagesJSON: [purchaseMessageJSON],
+    //   }
+    // });
+    // modal.present();
   }
 
   async buy(listingHash: string) {
