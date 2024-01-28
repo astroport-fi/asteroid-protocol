@@ -11,6 +11,7 @@ import { WalletService } from '../core/service/wallet.service';
 import { Chain, order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
+import { SellInscriptionModalPage } from '../sell-inscription-modal/sell-inscription-modal.page';
 
 @Component({
   selector: 'app-view-inscription',
@@ -42,7 +43,7 @@ export class ViewInscriptionPage implements OnInit {
     private modalCtrl: ModalController,
     private titleService: Title,
     private meta: Meta
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.isLoading = true;
@@ -193,6 +194,19 @@ export class ViewInscriptionPage implements OnInit {
       keyboardClose: true,
       backdropDismiss: true,
       component: TransferInscriptionModalPage,
+
+      componentProps: {
+        hash: this.inscription.transaction.hash,
+      },
+    });
+    modal.present();
+  }
+
+  async listSale() {
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      component: SellInscriptionModalPage,
 
       componentProps: {
         hash: this.inscription.transaction.hash,
