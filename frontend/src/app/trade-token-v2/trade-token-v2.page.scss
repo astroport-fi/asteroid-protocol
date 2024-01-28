@@ -64,3 +64,12 @@ h1 {
         color: rgba(255, 255, 255, 0.6);
     }
 }
+
+ion-title {
+    .token-logo img {
+        width: 40px;
+        height: 40px;
+        border-radius: 7px;
+        margin-right: 10px;
+    }
+}

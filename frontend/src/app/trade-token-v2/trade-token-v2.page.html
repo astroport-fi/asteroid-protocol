@@ -9,7 +9,12 @@
               <ion-back-button defaultHref="/app/markets"></ion-back-button>
             </ion-buttons>
             <ion-title>
-              <span *ngIf="!isLoading">{{ token.ticker }}</span> / ATOM Market
+              <span class="token-logo" *ngIf="token?.content_path">
+                <span class="image">
+                  <img [src]="token.content_path"  />
+                </span>
+              </span>
+              <span *ngIf="token">{{ token.ticker }}</span> / ATOM Market
             </ion-title>
           </ion-toolbar>
         </ion-header>
