@@ -41,6 +41,7 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
+                <th>&nbsp;</th>
                 <th pSortableColumn="ticker" pFrozenColumn>Market <p-sortIcon field="ticker"></p-sortIcon></th>
                 <th pSortableColumn="name">Token <p-sortIcon field="name"></p-sortIcon></th>
                 <th>Listings</th>
@@ -51,6 +52,13 @@
             </ng-template>
             <ng-template pTemplate="body" let-token>
               <tr [routerLink]="['/app/market', token.ticker]">
+                <td class="token-logo">
+                  <div class="image">
+                    <img [src]="token.content_path" *ngIf="token.content_path" />
+                    <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
+                      *ngIf="!token.content_path" />
+                  </div>
+                </td>
                 <td pFrozenColumn>{{ token.ticker }} / ATOM</td>
                 <td>{{ token.name }}</td>
                 <td class="mono">{{ token.marketplace_cft20_details.length }}</td>
