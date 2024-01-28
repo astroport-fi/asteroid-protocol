@@ -33,14 +33,14 @@ export class SellInscriptionModalPage implements OnInit {
   @Input() hash: string = '';
 
   sellForm: FormGroup;
-  minTradeSize: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTradeSize;
+  minTradeSize: number = (environment.fees.protocol.marketplace["list.inscription"] as any).minTradeSize;
   senderBalance: number = 0;
 
-  minDepositAbsolute: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositAbsolute;
-  minDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositPercent;
-  maxDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxDepositPercent;
-  minTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout;
-  maxTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxTimeout;
+  minDepositAbsolute: number = (environment.fees.protocol.marketplace["list.inscription"] as any).minDepositAbsolute;
+  minDepositPercent: number = (environment.fees.protocol.marketplace["list.inscription"] as any).minDepositPercent;
+  maxDepositPercent: number = (environment.fees.protocol.marketplace["list.inscription"] as any).maxDepositPercent;
+  minTimeout: number = (environment.fees.protocol.marketplace["list.inscription"] as any).minTimeout;
+  maxTimeout: number = (environment.fees.protocol.marketplace["list.inscription"] as any).maxTimeout;
 
 
   readonly numberMask: MaskitoOptions;
@@ -55,7 +55,6 @@ export class SellInscriptionModalPage implements OnInit {
     this.sellForm = this.builder.group({
       basic: this.builder.group({
         amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        price: [0.1, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
         minDeposit: [this.minDepositPercent, [Validators.required, Validators.min(this.minDepositPercent), Validators.max(this.maxDepositPercent), Validators.pattern("^[0-9. ]*$")]],
         timeoutBlocks: [this.minTimeout, [Validators.required, Validators.min(this.minTimeout), Validators.max(this.maxTimeout), Validators.pattern("^[0-9 ]*$")]],
       }),
@@ -77,54 +76,7 @@ export class SellInscriptionModalPage implements OnInit {
   }
 
   async ngOnInit() {
-    const sender = await this.walletService.getAccount();
-
-    // const chain = Chain(environment.api.endpoint);
-    // const result = await chain('query')({
-    //   token: [
-    //     {
-    //       where: {
-    //         ticker: {
-    //           _eq: this.ticker
-    //         }
-    //       }
-    //     }, {
-    //       id: true,
-    //       decimals: true,
-    //       last_price_base: true,
-    //     }
-    //   ],
-    // });
-    // if (result.token.length > 0) {
-    //   this.sellForm.patchValue({
-    //     basic: {
-    //       price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base as number, 6)
-    //     }
-    //   });
-    // }
-
-    // const balanceResult = await chain('query')({
-    //   token_holder: [
-    //     {
-    //       where: {
-    //         address: {
-    //           _eq: sender.address
-    //         },
-    //         token_id: {
-    //           _eq: result.token[0].id
-    //         }
-    //       }
-    //     }, {
-    //       amount: true,
-    //     }
-    //   ]
-    // });
-    // if (balanceResult.token_holder.length > 0) {
-    //   // Get the sender's balance with decimals
-    //   this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
-    // }
-
-
+    // const sender = await this.walletService.getAccount();
   }
 
   async submit() {
@@ -137,7 +89,6 @@ export class SellInscriptionModalPage implements OnInit {
     this.modalCtrl.dismiss();
 
     const amount = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString();
-    const ppt = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString();
 
     let minDepositPercent = parseFloat(StripSpacesPipe.prototype.transform(this.sellForm.value.basic.minDeposit).toString());
     // We represent the percentage as a multiplier
@@ -148,14 +99,13 @@ export class SellInscriptionModalPage implements OnInit {
     const params = new Map([
       // ["tic", this.ticker],
       ["amt", amount],
-      ["ppt", ppt],
       ["mindep", minDepositMultiplier.toString()],
       ["to", timeoutBlocks],
     ]);
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = parseFloat(amount) * parseFloat(ppt) * minDepositMultiplier;
+    let listingFee = parseFloat(amount) * minDepositMultiplier;
     // Avoid very small listing fees
     if (listingFee < this.minDepositAbsolute) {
       listingFee = this.minDepositAbsolute;
@@ -164,7 +114,7 @@ export class SellInscriptionModalPage implements OnInit {
     listingFee = listingFee * 10 ** 6;
     listingFee = Math.floor(listingFee);
 
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.inscription', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -176,7 +126,7 @@ export class SellInscriptionModalPage implements OnInit {
         // routerLink: ['/app/manage/token', this.ticker],
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
-        metaprotocolAction: 'list.cft20',
+        metaprotocolAction: 'list.inscription',
         overrideFee: listingFee,
       }
     });

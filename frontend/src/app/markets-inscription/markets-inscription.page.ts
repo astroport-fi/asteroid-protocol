@@ -59,25 +59,27 @@ export class MarketsInscriptionPage implements OnInit {
 
   async ngOnInit() {
 
-    const result = await this.fetchInscriptions()
+    const result = await this.fetchInscriptions(
+      [],
+      [
+        {
+          id: order_by.asc
+        }
+      ]);
     this.inscriptions = result.inscription;
     this.isLoading = false;
 
 
   }
 
-  async fetchInscriptions() {
+  async fetchInscriptions(where: any[], order: any[]) {
 
     return this.chain('query')({
       inscription: [
         {
           offset: 0,
-          limit: 50,
-          order_by: [
-            {
-              id: order_by.asc
-            }
-          ],
+          limit: 100,
+          order_by: order,
         }, {
           id: true,
           transaction: {
@@ -115,6 +117,26 @@ export class MarketsInscriptionPage implements OnInit {
         }
       ]
     });
+  }
+
+  // This event is supposed to be of type SelectChangeEventDetail
+  selectionChange(type: string, event: any) {
+
+
+    switch (type) {
+      case "order":
+        // this.selectedPriceRange = event.detail.value;
+        break;
+      case "price":
+        // this.selectedBlockRange = event.detail.value;
+        break;
+      case "range":
+        // this.selectedOrder = event.detail.value;
+        break;
+      case "type":
+        // this.selectedType = event.detail.value;
+        break;
+    }
   }
 
   // async listSale(event: any, ticker: string) {

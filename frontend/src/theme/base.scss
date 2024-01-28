@@ -22,16 +22,16 @@ ion-button {
 }
 
 ion-popover {
-  --background: rgba(255, 255, 255, 0.2);
-  --backdrop-opacity: 0.6;
-  --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6);
+  --background: hsla(0, 0%, 50%, 0.4);
+  // --backdrop-opacity: 0.6;
+  --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
   --color: white;
   --width: 300px;
-  backdrop-filter: blur(50px) !important;
+  // backdrop-filter: blur(50px) !important;
 }
 
 ion-popover ion-content {
-  --background: rgba(0, 0, 0, 0.1);
+  --background: rgba(0, 0, 0, 0.5);
 }
 
 ion-popover::part(backdrop) {
