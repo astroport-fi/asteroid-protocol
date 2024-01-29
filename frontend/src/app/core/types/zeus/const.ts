@@ -31,6 +31,11 @@ export const AllTypesProps: Record<string, any> = {
 			order_by: "inscription_history_order_by",
 			where: "inscription_history_bool_exp"
 		},
+		marketplace_inscription_details: {
+			distinct_on: "marketplace_inscription_detail_select_column",
+			order_by: "marketplace_inscription_detail_order_by",
+			where: "marketplace_inscription_detail_bool_exp"
+		},
 		metadata: {
 
 		}
@@ -50,6 +55,7 @@ export const AllTypesProps: Record<string, any> = {
 		id: "Int_comparison_exp",
 		inscription_histories: "inscription_history_bool_exp",
 		is_explicit: "Boolean_comparison_exp",
+		marketplace_inscription_details: "marketplace_inscription_detail_bool_exp",
 		metadata: "json_comparison_exp",
 		transaction: "transaction_bool_exp",
 		transaction_id: "Int_comparison_exp",
@@ -188,6 +194,7 @@ export const AllTypesProps: Record<string, any> = {
 		id: "order_by",
 		inscription_histories_aggregate: "inscription_history_aggregate_order_by",
 		is_explicit: "order_by",
+		marketplace_inscription_details_aggregate: "marketplace_inscription_detail_aggregate_order_by",
 		metadata: "order_by",
 		transaction: "transaction_order_by",
 		transaction_id: "order_by",
@@ -332,11 +339,282 @@ export const AllTypesProps: Record<string, any> = {
 		ppt: "order_by",
 		token_id: "order_by"
 	},
+	marketplace_cft20_trade_history_aggregate_order_by: {
+		avg: "marketplace_cft20_trade_history_avg_order_by",
+		count: "order_by",
+		max: "marketplace_cft20_trade_history_max_order_by",
+		min: "marketplace_cft20_trade_history_min_order_by",
+		stddev: "marketplace_cft20_trade_history_stddev_order_by",
+		stddev_pop: "marketplace_cft20_trade_history_stddev_pop_order_by",
+		stddev_samp: "marketplace_cft20_trade_history_stddev_samp_order_by",
+		sum: "marketplace_cft20_trade_history_sum_order_by",
+		var_pop: "marketplace_cft20_trade_history_var_pop_order_by",
+		var_samp: "marketplace_cft20_trade_history_var_samp_order_by",
+		variance: "marketplace_cft20_trade_history_variance_order_by"
+	},
+	marketplace_cft20_trade_history_avg_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_bool_exp: {
+		_and: "marketplace_cft20_trade_history_bool_exp",
+		_not: "marketplace_cft20_trade_history_bool_exp",
+		_or: "marketplace_cft20_trade_history_bool_exp",
+		amount_base: "bigint_comparison_exp",
+		amount_quote: "bigint_comparison_exp",
+		buyer_address: "String_comparison_exp",
+		date_created: "timestamp_comparison_exp",
+		id: "Int_comparison_exp",
+		listing_id: "Int_comparison_exp",
+		marketplace_listing: "marketplace_listing_bool_exp",
+		rate: "Int_comparison_exp",
+		seller_address: "String_comparison_exp",
+		token: "token_bool_exp",
+		token_id: "Int_comparison_exp",
+		total_usd: "Float_comparison_exp",
+		transaction: "transaction_bool_exp",
+		transaction_id: "Int_comparison_exp"
+	},
+	marketplace_cft20_trade_history_max_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		seller_address: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_min_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		seller_address: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		marketplace_listing: "marketplace_listing_order_by",
+		rate: "order_by",
+		seller_address: "order_by",
+		token: "token_order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction: "transaction_order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_select_column: "enum" as const,
+	marketplace_cft20_trade_history_stddev_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_stddev_pop_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_stddev_samp_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_stream_cursor_input: {
+		initial_value: "marketplace_cft20_trade_history_stream_cursor_value_input",
+		ordering: "cursor_ordering"
+	},
+	marketplace_cft20_trade_history_stream_cursor_value_input: {
+		amount_base: "bigint",
+		amount_quote: "bigint",
+		date_created: "timestamp"
+	},
+	marketplace_cft20_trade_history_sum_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_var_pop_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_var_samp_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_cft20_trade_history_variance_order_by: {
+		amount_base: "order_by",
+		amount_quote: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		rate: "order_by",
+		token_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_inscription_detail_aggregate_order_by: {
+		avg: "marketplace_inscription_detail_avg_order_by",
+		count: "order_by",
+		max: "marketplace_inscription_detail_max_order_by",
+		min: "marketplace_inscription_detail_min_order_by",
+		stddev: "marketplace_inscription_detail_stddev_order_by",
+		stddev_pop: "marketplace_inscription_detail_stddev_pop_order_by",
+		stddev_samp: "marketplace_inscription_detail_stddev_samp_order_by",
+		sum: "marketplace_inscription_detail_sum_order_by",
+		var_pop: "marketplace_inscription_detail_var_pop_order_by",
+		var_samp: "marketplace_inscription_detail_var_samp_order_by",
+		variance: "marketplace_inscription_detail_variance_order_by"
+	},
+	marketplace_inscription_detail_avg_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_bool_exp: {
+		_and: "marketplace_inscription_detail_bool_exp",
+		_not: "marketplace_inscription_detail_bool_exp",
+		_or: "marketplace_inscription_detail_bool_exp",
+		date_created: "timestamp_comparison_exp",
+		id: "Int_comparison_exp",
+		inscription: "inscription_bool_exp",
+		inscription_id: "Int_comparison_exp",
+		listing_id: "Int_comparison_exp",
+		marketplace_listing: "marketplace_listing_bool_exp"
+	},
+	marketplace_inscription_detail_max_order_by: {
+		date_created: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_min_order_by: {
+		date_created: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_order_by: {
+		date_created: "order_by",
+		id: "order_by",
+		inscription: "inscription_order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by",
+		marketplace_listing: "marketplace_listing_order_by"
+	},
+	marketplace_inscription_detail_select_column: "enum" as const,
+	marketplace_inscription_detail_stddev_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_stddev_pop_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_stddev_samp_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_stream_cursor_input: {
+		initial_value: "marketplace_inscription_detail_stream_cursor_value_input",
+		ordering: "cursor_ordering"
+	},
+	marketplace_inscription_detail_stream_cursor_value_input: {
+		date_created: "timestamp"
+	},
+	marketplace_inscription_detail_sum_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_var_pop_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_var_samp_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
+	marketplace_inscription_detail_variance_order_by: {
+		id: "order_by",
+		inscription_id: "order_by",
+		listing_id: "order_by"
+	},
 	marketplace_listing: {
 		marketplace_cft20_details: {
 			distinct_on: "marketplace_cft20_detail_select_column",
 			order_by: "marketplace_cft20_detail_order_by",
 			where: "marketplace_cft20_detail_bool_exp"
+		},
+		marketplace_cft20_trade_histories: {
+			distinct_on: "marketplace_cft20_trade_history_select_column",
+			order_by: "marketplace_cft20_trade_history_order_by",
+			where: "marketplace_cft20_trade_history_bool_exp"
+		},
+		marketplace_inscription_details: {
+			distinct_on: "marketplace_inscription_detail_select_column",
+			order_by: "marketplace_inscription_detail_order_by",
+			where: "marketplace_inscription_detail_bool_exp"
+		},
+		marketplace_listing_histories: {
+			distinct_on: "marketplace_listing_history_select_column",
+			order_by: "marketplace_listing_history_order_by",
+			where: "marketplace_listing_history_bool_exp"
 		}
 	},
 	marketplace_listing_aggregate_order_by: {
@@ -376,10 +654,113 @@ export const AllTypesProps: Record<string, any> = {
 		is_deposited: "Boolean_comparison_exp",
 		is_filled: "Boolean_comparison_exp",
 		marketplace_cft20_details: "marketplace_cft20_detail_bool_exp",
+		marketplace_cft20_trade_histories: "marketplace_cft20_trade_history_bool_exp",
+		marketplace_inscription_details: "marketplace_inscription_detail_bool_exp",
+		marketplace_listing_histories: "marketplace_listing_history_bool_exp",
 		seller_address: "String_comparison_exp",
 		total: "bigint_comparison_exp",
 		transaction: "transaction_bool_exp",
 		transaction_id: "Int_comparison_exp"
+	},
+	marketplace_listing_history_aggregate_order_by: {
+		avg: "marketplace_listing_history_avg_order_by",
+		count: "order_by",
+		max: "marketplace_listing_history_max_order_by",
+		min: "marketplace_listing_history_min_order_by",
+		stddev: "marketplace_listing_history_stddev_order_by",
+		stddev_pop: "marketplace_listing_history_stddev_pop_order_by",
+		stddev_samp: "marketplace_listing_history_stddev_samp_order_by",
+		sum: "marketplace_listing_history_sum_order_by",
+		var_pop: "marketplace_listing_history_var_pop_order_by",
+		var_samp: "marketplace_listing_history_var_samp_order_by",
+		variance: "marketplace_listing_history_variance_order_by"
+	},
+	marketplace_listing_history_avg_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_bool_exp: {
+		_and: "marketplace_listing_history_bool_exp",
+		_not: "marketplace_listing_history_bool_exp",
+		_or: "marketplace_listing_history_bool_exp",
+		action: "String_comparison_exp",
+		date_created: "timestamp_comparison_exp",
+		id: "Int_comparison_exp",
+		listing_id: "Int_comparison_exp",
+		marketplace_listing: "marketplace_listing_bool_exp",
+		sender_address: "String_comparison_exp",
+		transaction: "transaction_bool_exp",
+		transaction_id: "Int_comparison_exp"
+	},
+	marketplace_listing_history_max_order_by: {
+		action: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		sender_address: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_min_order_by: {
+		action: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		sender_address: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_order_by: {
+		action: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		listing_id: "order_by",
+		marketplace_listing: "marketplace_listing_order_by",
+		sender_address: "order_by",
+		transaction: "transaction_order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_select_column: "enum" as const,
+	marketplace_listing_history_stddev_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_stddev_pop_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_stddev_samp_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_stream_cursor_input: {
+		initial_value: "marketplace_listing_history_stream_cursor_value_input",
+		ordering: "cursor_ordering"
+	},
+	marketplace_listing_history_stream_cursor_value_input: {
+		date_created: "timestamp"
+	},
+	marketplace_listing_history_sum_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_var_pop_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_var_samp_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
+	},
+	marketplace_listing_history_variance_order_by: {
+		id: "order_by",
+		listing_id: "order_by",
+		transaction_id: "order_by"
 	},
 	marketplace_listing_max_order_by: {
 		chain_id: "order_by",
@@ -420,6 +801,9 @@ export const AllTypesProps: Record<string, any> = {
 		is_deposited: "order_by",
 		is_filled: "order_by",
 		marketplace_cft20_details_aggregate: "marketplace_cft20_detail_aggregate_order_by",
+		marketplace_cft20_trade_histories_aggregate: "marketplace_cft20_trade_history_aggregate_order_by",
+		marketplace_inscription_details_aggregate: "marketplace_inscription_detail_aggregate_order_by",
+		marketplace_listing_histories_aggregate: "marketplace_listing_history_aggregate_order_by",
 		seller_address: "order_by",
 		total: "order_by",
 		transaction: "transaction_order_by",
@@ -529,12 +913,36 @@ export const AllTypesProps: Record<string, any> = {
 		marketplace_cft20_detail_by_pk: {
 
 		},
+		marketplace_cft20_trade_history: {
+			distinct_on: "marketplace_cft20_trade_history_select_column",
+			order_by: "marketplace_cft20_trade_history_order_by",
+			where: "marketplace_cft20_trade_history_bool_exp"
+		},
+		marketplace_cft20_trade_history_by_pk: {
+
+		},
+		marketplace_inscription_detail: {
+			distinct_on: "marketplace_inscription_detail_select_column",
+			order_by: "marketplace_inscription_detail_order_by",
+			where: "marketplace_inscription_detail_bool_exp"
+		},
+		marketplace_inscription_detail_by_pk: {
+
+		},
 		marketplace_listing: {
 			distinct_on: "marketplace_listing_select_column",
 			order_by: "marketplace_listing_order_by",
 			where: "marketplace_listing_bool_exp"
 		},
 		marketplace_listing_by_pk: {
+
+		},
+		marketplace_listing_history: {
+			distinct_on: "marketplace_listing_history_select_column",
+			order_by: "marketplace_listing_history_order_by",
+			where: "marketplace_listing_history_bool_exp"
+		},
+		marketplace_listing_history_by_pk: {
 
 		},
 		status: {
@@ -671,6 +1079,30 @@ export const AllTypesProps: Record<string, any> = {
 			cursor: "marketplace_cft20_detail_stream_cursor_input",
 			where: "marketplace_cft20_detail_bool_exp"
 		},
+		marketplace_cft20_trade_history: {
+			distinct_on: "marketplace_cft20_trade_history_select_column",
+			order_by: "marketplace_cft20_trade_history_order_by",
+			where: "marketplace_cft20_trade_history_bool_exp"
+		},
+		marketplace_cft20_trade_history_by_pk: {
+
+		},
+		marketplace_cft20_trade_history_stream: {
+			cursor: "marketplace_cft20_trade_history_stream_cursor_input",
+			where: "marketplace_cft20_trade_history_bool_exp"
+		},
+		marketplace_inscription_detail: {
+			distinct_on: "marketplace_inscription_detail_select_column",
+			order_by: "marketplace_inscription_detail_order_by",
+			where: "marketplace_inscription_detail_bool_exp"
+		},
+		marketplace_inscription_detail_by_pk: {
+
+		},
+		marketplace_inscription_detail_stream: {
+			cursor: "marketplace_inscription_detail_stream_cursor_input",
+			where: "marketplace_inscription_detail_bool_exp"
+		},
 		marketplace_listing: {
 			distinct_on: "marketplace_listing_select_column",
 			order_by: "marketplace_listing_order_by",
@@ -678,6 +1110,18 @@ export const AllTypesProps: Record<string, any> = {
 		},
 		marketplace_listing_by_pk: {
 
+		},
+		marketplace_listing_history: {
+			distinct_on: "marketplace_listing_history_select_column",
+			order_by: "marketplace_listing_history_order_by",
+			where: "marketplace_listing_history_bool_exp"
+		},
+		marketplace_listing_history_by_pk: {
+
+		},
+		marketplace_listing_history_stream: {
+			cursor: "marketplace_listing_history_stream_cursor_input",
+			where: "marketplace_listing_history_bool_exp"
 		},
 		marketplace_listing_stream: {
 			cursor: "marketplace_listing_stream_cursor_input",
@@ -784,6 +1228,11 @@ export const AllTypesProps: Record<string, any> = {
 			distinct_on: "marketplace_cft20_detail_select_column",
 			order_by: "marketplace_cft20_detail_order_by",
 			where: "marketplace_cft20_detail_bool_exp"
+		},
+		marketplace_cft20_trade_histories: {
+			distinct_on: "marketplace_cft20_trade_history_select_column",
+			order_by: "marketplace_cft20_trade_history_order_by",
+			where: "marketplace_cft20_trade_history_bool_exp"
 		},
 		token_address_histories: {
 			distinct_on: "token_address_history_select_column",
@@ -956,6 +1405,7 @@ export const AllTypesProps: Record<string, any> = {
 		last_price_base: "bigint_comparison_exp",
 		launch_timestamp: "bigint_comparison_exp",
 		marketplace_cft20_details: "marketplace_cft20_detail_bool_exp",
+		marketplace_cft20_trade_histories: "marketplace_cft20_trade_history_bool_exp",
 		max_supply: "numeric_comparison_exp",
 		metadata: "String_comparison_exp",
 		mint_page: "String_comparison_exp",
@@ -1250,6 +1700,7 @@ export const AllTypesProps: Record<string, any> = {
 		last_price_base: "order_by",
 		launch_timestamp: "order_by",
 		marketplace_cft20_details_aggregate: "marketplace_cft20_detail_aggregate_order_by",
+		marketplace_cft20_trade_histories_aggregate: "marketplace_cft20_trade_history_aggregate_order_by",
 		max_supply: "order_by",
 		metadata: "order_by",
 		mint_page: "order_by",
@@ -1436,10 +1887,20 @@ export const AllTypesProps: Record<string, any> = {
 		transaction_id: "order_by"
 	},
 	transaction: {
+		marketplace_listing_histories: {
+			distinct_on: "marketplace_listing_history_select_column",
+			order_by: "marketplace_listing_history_order_by",
+			where: "marketplace_listing_history_bool_exp"
+		},
 		marketplace_listings: {
 			distinct_on: "marketplace_listing_select_column",
 			order_by: "marketplace_listing_order_by",
 			where: "marketplace_listing_bool_exp"
+		},
+		token_address_histories: {
+			distinct_on: "token_address_history_select_column",
+			order_by: "token_address_history_order_by",
+			where: "token_address_history_bool_exp"
 		},
 		token_open_positions: {
 			distinct_on: "token_open_position_select_column",
@@ -1461,9 +1922,12 @@ export const AllTypesProps: Record<string, any> = {
 		id: "Int_comparison_exp",
 		inscription: "inscription_bool_exp",
 		inscription_history: "inscription_history_bool_exp",
+		marketplace_cft20_trade_history: "marketplace_cft20_trade_history_bool_exp",
+		marketplace_listing_histories: "marketplace_listing_history_bool_exp",
 		marketplace_listings: "marketplace_listing_bool_exp",
 		status_message: "String_comparison_exp",
 		token: "token_bool_exp",
+		token_address_histories: "token_address_history_bool_exp",
 		token_address_history: "token_address_history_bool_exp",
 		token_open_positions: "token_open_position_bool_exp",
 		token_trade_history: "token_trade_history_bool_exp"
@@ -1479,9 +1943,12 @@ export const AllTypesProps: Record<string, any> = {
 		id: "order_by",
 		inscription: "inscription_order_by",
 		inscription_history: "inscription_history_order_by",
+		marketplace_cft20_trade_history: "marketplace_cft20_trade_history_order_by",
+		marketplace_listing_histories_aggregate: "marketplace_listing_history_aggregate_order_by",
 		marketplace_listings_aggregate: "marketplace_listing_aggregate_order_by",
 		status_message: "order_by",
 		token: "token_order_by",
+		token_address_histories_aggregate: "token_address_history_aggregate_order_by",
 		token_address_history: "token_address_history_order_by",
 		token_open_positions_aggregate: "token_open_position_aggregate_order_by",
 		token_trade_history: "token_trade_history_order_by"
@@ -1514,6 +1981,7 @@ export const ReturnTypes: Record<string, any> = {
 		id: "Int",
 		inscription_histories: "inscription_history",
 		is_explicit: "Boolean",
+		marketplace_inscription_details: "marketplace_inscription_detail",
 		metadata: "json",
 		transaction: "transaction",
 		transaction_id: "Int",
@@ -1544,6 +2012,30 @@ export const ReturnTypes: Record<string, any> = {
 		token: "token",
 		token_id: "Int"
 	},
+	marketplace_cft20_trade_history: {
+		amount_base: "bigint",
+		amount_quote: "bigint",
+		buyer_address: "String",
+		date_created: "timestamp",
+		id: "Int",
+		listing_id: "Int",
+		marketplace_listing: "marketplace_listing",
+		rate: "Int",
+		seller_address: "String",
+		token: "token",
+		token_id: "Int",
+		total_usd: "Float",
+		transaction: "transaction",
+		transaction_id: "Int"
+	},
+	marketplace_inscription_detail: {
+		date_created: "timestamp",
+		id: "Int",
+		inscription: "inscription",
+		inscription_id: "Int",
+		listing_id: "Int",
+		marketplace_listing: "marketplace_listing"
+	},
 	marketplace_listing: {
 		chain_id: "String",
 		date_created: "timestamp",
@@ -1557,8 +2049,21 @@ export const ReturnTypes: Record<string, any> = {
 		is_deposited: "Boolean",
 		is_filled: "Boolean",
 		marketplace_cft20_details: "marketplace_cft20_detail",
+		marketplace_cft20_trade_histories: "marketplace_cft20_trade_history",
+		marketplace_inscription_details: "marketplace_inscription_detail",
+		marketplace_listing_histories: "marketplace_listing_history",
 		seller_address: "String",
 		total: "bigint",
+		transaction: "transaction",
+		transaction_id: "Int"
+	},
+	marketplace_listing_history: {
+		action: "String",
+		date_created: "timestamp",
+		id: "Int",
+		listing_id: "Int",
+		marketplace_listing: "marketplace_listing",
+		sender_address: "String",
 		transaction: "transaction",
 		transaction_id: "Int"
 	},
@@ -1570,8 +2075,14 @@ export const ReturnTypes: Record<string, any> = {
 		inscription_history_by_pk: "inscription_history",
 		marketplace_cft20_detail: "marketplace_cft20_detail",
 		marketplace_cft20_detail_by_pk: "marketplace_cft20_detail",
+		marketplace_cft20_trade_history: "marketplace_cft20_trade_history",
+		marketplace_cft20_trade_history_by_pk: "marketplace_cft20_trade_history",
+		marketplace_inscription_detail: "marketplace_inscription_detail",
+		marketplace_inscription_detail_by_pk: "marketplace_inscription_detail",
 		marketplace_listing: "marketplace_listing",
 		marketplace_listing_by_pk: "marketplace_listing",
+		marketplace_listing_history: "marketplace_listing_history",
+		marketplace_listing_history_by_pk: "marketplace_listing_history",
 		status: "status",
 		status_by_pk: "status",
 		token: "token",
@@ -1607,8 +2118,17 @@ export const ReturnTypes: Record<string, any> = {
 		marketplace_cft20_detail: "marketplace_cft20_detail",
 		marketplace_cft20_detail_by_pk: "marketplace_cft20_detail",
 		marketplace_cft20_detail_stream: "marketplace_cft20_detail",
+		marketplace_cft20_trade_history: "marketplace_cft20_trade_history",
+		marketplace_cft20_trade_history_by_pk: "marketplace_cft20_trade_history",
+		marketplace_cft20_trade_history_stream: "marketplace_cft20_trade_history",
+		marketplace_inscription_detail: "marketplace_inscription_detail",
+		marketplace_inscription_detail_by_pk: "marketplace_inscription_detail",
+		marketplace_inscription_detail_stream: "marketplace_inscription_detail",
 		marketplace_listing: "marketplace_listing",
 		marketplace_listing_by_pk: "marketplace_listing",
+		marketplace_listing_history: "marketplace_listing_history",
+		marketplace_listing_history_by_pk: "marketplace_listing_history",
+		marketplace_listing_history_stream: "marketplace_listing_history",
 		marketplace_listing_stream: "marketplace_listing",
 		status: "status",
 		status_by_pk: "status",
@@ -1647,6 +2167,7 @@ export const ReturnTypes: Record<string, any> = {
 		last_price_base: "bigint",
 		launch_timestamp: "bigint",
 		marketplace_cft20_details: "marketplace_cft20_detail",
+		marketplace_cft20_trade_histories: "marketplace_cft20_trade_history",
 		max_supply: "numeric",
 		metadata: "String",
 		mint_page: "String",
@@ -1730,9 +2251,12 @@ export const ReturnTypes: Record<string, any> = {
 		id: "Int",
 		inscription: "inscription",
 		inscription_history: "inscription_history",
+		marketplace_cft20_trade_history: "marketplace_cft20_trade_history",
+		marketplace_listing_histories: "marketplace_listing_history",
 		marketplace_listings: "marketplace_listing",
 		status_message: "String",
 		token: "token",
+		token_address_histories: "token_address_history",
 		token_address_history: "token_address_history",
 		token_open_positions: "token_open_position",
 		token_trade_history: "token_trade_history"

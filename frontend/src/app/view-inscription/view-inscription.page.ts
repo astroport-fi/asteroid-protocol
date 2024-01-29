@@ -12,6 +12,10 @@ import { Chain, order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
 import { SellInscriptionModalPage } from '../sell-inscription-modal/sell-inscription-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { InscriptionService } from '../core/metaprotocol/inscription.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 
 @Component({
   selector: 'app-view-inscription',
@@ -42,7 +46,8 @@ export class ViewInscriptionPage implements OnInit {
     private walletService: WalletService,
     private modalCtrl: ModalController,
     private titleService: Title,
-    private meta: Meta
+    private meta: Meta,
+    private protocolService: MarketplaceService
   ) { }
 
   async ngOnInit() {
@@ -64,6 +69,7 @@ export class ViewInscriptionPage implements OnInit {
                 _eq: this.activatedRoute.snapshot.params['txhash'],
               },
             },
+            // TODO: We need to filter based on marketplace_listing status
           },
         },
         {
@@ -78,6 +84,17 @@ export class ViewInscriptionPage implements OnInit {
           content_size_bytes: true,
           is_explicit: true,
           date_created: true,
+          marketplace_inscription_details: [{}, {
+            id: true,
+            marketplace_listing: {
+              transaction: {
+                hash: true,
+              },
+              is_cancelled: true,
+              is_filled: true,
+              seller_address: true,
+            }
+          }],
           __alias: {
             name: {
               metadata: [
@@ -107,6 +124,7 @@ export class ViewInscriptionPage implements OnInit {
         },
       ],
     });
+
     this.inscription = result.inscription[0];
     const { name, description, content_path, id, transaction } =
       this.inscription;
@@ -213,5 +231,43 @@ export class ViewInscriptionPage implements OnInit {
       },
     });
     modal.present();
+  }
+
+  async cancel() {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
+      });
+      modal.present();
+      return;
+    }
+
+    const listingHash = this.inscription.marketplace_inscription_details[0].marketplace_listing.transaction.hash;
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/inscription/', this.inscription.transaction.hash],
+        resultCTA: 'View transaction',
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'delist',
+      }
+    });
+    modal.present();
+
   }
 }

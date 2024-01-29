@@ -95,6 +95,17 @@
                       </div>
                     </ion-col>
                   </ion-row>
+                  <ion-row class="is-owner mt-4"
+                    *ngIf="walletConnected && inscription.marketplace_inscription_details[0].marketplace_listing.seller_address == currentAddress">
+                    <ion-col size="12" class="ps-3 pt-0">
+                      <div class="meta pt-4">
+                        <span class="label">You are currently listing this inscription</span>
+                      </div>
+                      <div class="mt-2 mb-3">
+                        <ion-button color="primary" fill="outline" (click)="cancel()">Cancel listing</ion-button>
+                      </div>
+                    </ion-col>
+                  </ion-row>
                   <ion-row class="pt-3">
                     <ion-col>
                       <div class="meta">

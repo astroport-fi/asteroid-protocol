@@ -32,7 +32,7 @@ export class MarketsInscriptionPage implements OnInit {
   isLoading = true;
   isTableLoading: boolean = false;
   userAddress: string = '';
-  inscriptions: any = null;
+  marketplaceDetail: any = null;
   offset = 0;
   limit = 20;
   total: number = 20000;
@@ -52,12 +52,35 @@ export class MarketsInscriptionPage implements OnInit {
   typeOptions: string[] = ["Image", "Video"];
   selectedType: string | undefined;
 
+  currentBlock: number = 0;
+  baseTokenUSD: number = 0;
+
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     // this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
   }
 
   async ngOnInit() {
+
+    const statusResult = await this.chain('query')({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: environment.chain.chainId
+            }
+          }
+        },
+        {
+          base_token: true,
+          base_token_usd: true,
+          last_processed_height: true,
+        }
+      ]
+    })
+    this.baseTokenUSD = statusResult.status[0].base_token_usd;
+    this.currentBlock = statusResult.status[0].last_processed_height;
+
 
     const result = await this.fetchInscriptions(
       [],
@@ -66,7 +89,8 @@ export class MarketsInscriptionPage implements OnInit {
           id: order_by.asc
         }
       ]);
-    this.inscriptions = result.inscription;
+    this.marketplaceDetail = result.marketplace_inscription_detail;
+    console.log(this.marketplaceDetail);
     this.isLoading = false;
 
 
@@ -75,47 +99,117 @@ export class MarketsInscriptionPage implements OnInit {
   async fetchInscriptions(where: any[], order: any[]) {
 
     return this.chain('query')({
-      inscription: [
+      marketplace_inscription_detail: [
         {
-          offset: 0,
-          limit: 100,
-          order_by: order,
-        }, {
-          id: true,
-          transaction: {
-            hash: true
-          },
-          // transaction_hash: true,
-          current_owner: true,
-          content_path: true,
-          content_size_bytes: true,
-          date_created: true,
-          is_explicit: true,
-          __alias: {
-            name: {
-              metadata: [{
-                path: '$.metadata.name'
+          where: {
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false
               },
-                true
-              ]
-            },
-            description: {
-              metadata: [{
-                path: '$.metadata.description'
+              is_filled: {
+                _eq: false
               },
-                true
-              ]
-            },
-            mime: {
-              metadata: [{
-                path: '$.metadata.mime'
-              },
-                true
-              ]
+              // is_deposited: {
+              //   _eq: true
+              // },
+              // depositor_timedout_block: {
+              //   _gt: this.currentBlock
+              // }
             }
-          }
+          },
+          limit: this.limit,
+          order_by: [
+            {
+              id: order_by.asc
+            }
+          ]
+        },
+        {
+          id: true,
+          marketplace_listing: {
+            seller_address: true,
+            total: true,
+            depositor_address: true,
+            is_deposited: true,
+            depositor_timedout_block: true,
+            deposit_total: true,
+            transaction: {
+              hash: true
+            },
+          },
+          inscription: {
+            id: true,
+            content_path: true,
+            __alias: {
+              name: {
+                metadata: [{
+                  path: '$.metadata.name'
+                },
+                  true
+                ]
+              },
+              description: {
+                metadata: [{
+                  path: '$.metadata.description'
+                },
+                  true
+                ]
+              },
+              mime: {
+                metadata: [{
+                  path: '$.metadata.mime'
+                },
+                  true
+                ]
+              }
+            }
+          },
+          date_created: true,
         }
       ]
+
+
+      // inscription: [
+      //   {
+      //     offset: 0,
+      //     limit: 100,
+      //     order_by: order,
+      //   }, {
+      //     id: true,
+      //     transaction: {
+      //       hash: true
+      //     },
+      //     // transaction_hash: true,
+      //     current_owner: true,
+      //     content_path: true,
+      //     content_size_bytes: true,
+      //     date_created: true,
+      //     is_explicit: true,
+      //     __alias: {
+      //       name: {
+      //         metadata: [{
+      //           path: '$.metadata.name'
+      //         },
+      //           true
+      //         ]
+      //       },
+      //       description: {
+      //         metadata: [{
+      //           path: '$.metadata.description'
+      //         },
+      //           true
+      //         ]
+      //       },
+      //       mime: {
+      //         metadata: [{
+      //           path: '$.metadata.mime'
+      //         },
+      //           true
+      //         ]
+      //       }
+      //     }
+      //   }
+      // ]
     });
   }
 
@@ -137,6 +231,11 @@ export class MarketsInscriptionPage implements OnInit {
         // this.selectedType = event.detail.value;
         break;
     }
+  }
+
+  async buy(listingHash: string) {
+    console.log("Lets buy", listingHash);
+
   }
 
   // async listSale(event: any, ticker: string) {

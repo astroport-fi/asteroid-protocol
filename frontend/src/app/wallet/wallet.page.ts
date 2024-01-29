@@ -36,6 +36,7 @@ export class WalletPage implements OnInit {
   tokens: any = null;
   holdings: any = null;
   inscriptions: any = null;
+  listedInscriptions: any = null;
   isWalletConnected = false;
   connectedAccount: any;
   baseTokenPrice: number = 0;
@@ -190,6 +191,82 @@ export class WalletPage implements OnInit {
         });
 
         this.inscriptions = result.inscription;
+
+        const listedResult = await chain('query')({
+          marketplace_inscription_detail: [
+            {
+              where: {
+                marketplace_listing: {
+                  is_cancelled: {
+                    _eq: false
+                  },
+                  is_filled: {
+                    _eq: false
+                  },
+                }
+              },
+              limit: 50, // TODO: Move
+              order_by: [
+                {
+                  id: order_by.asc
+                }
+              ]
+            },
+            {
+              id: true,
+              marketplace_listing: {
+                seller_address: true,
+                total: true,
+                depositor_address: true,
+                is_deposited: true,
+                depositor_timedout_block: true,
+                deposit_total: true,
+                transaction: {
+                  hash: true
+                },
+              },
+              inscription: {
+                id: true,
+                transaction: {
+                  hash: true
+                },
+                // transaction_hash: true,
+                current_owner: true,
+                content_path: true,
+                content_size_bytes: true,
+                date_created: true,
+                __alias: {
+                  name: {
+                    metadata: [{
+                      path: '$.metadata.name'
+                    },
+                      true
+                    ]
+                  },
+                  description: {
+                    metadata: [{
+                      path: '$.metadata.description'
+                    },
+                      true
+                    ]
+                  },
+                  mime: {
+                    metadata: [{
+                      path: '$.metadata.mime'
+                    },
+                      true
+                    ]
+                  }
+                }
+              },
+              date_created: true,
+            }
+          ]
+        });
+
+        this.listedInscriptions = listedResult.marketplace_inscription_detail;
+
+
       } catch (e) {
         console.log(e);
       }

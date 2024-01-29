@@ -77,28 +77,22 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
-          <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
-            *ngFor="let item of inscriptions; let index">
+        <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
+          <a class="inscription-item main-content" (click)="buy(item.marketplace_listing.transaction.hash)"
+            *ngFor="let item of marketplaceDetail; let index">
             <div class="content">
-              <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"
-                [isExplicit]="item.is_explicit"></app-generic-preview>
+              <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
+                [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
             </div>
-            <h4 class="name">{{ item.name }}</h4>
+            <h4 class="name">{{ item.inscription.name }}</h4>
             <div class="detail">
               <div class="detail-item">
-                <span>#{{item.id-1}}</span>
-                <!-- <ion-badge color="primary">First 100</ion-badge> -->
-
+                <span>#{{item.inscription.id-1}}</span>
               </div>
               <div class="detail-item">
-                <a href="/">{{ item.current_owner |
+                <a href="/">{{ item.marketplace_listing.seller_address |
                   shortenAddress | async}}</a>
               </div>
-              <!-- <div class="price mt-1"
-                style="position: relative; left: -10px; background-color: var(--color-teal); width: 200px; text-align: center; font-size: 16px; color: #333">
-                12 ATOM
-              </div> -->
               <div class="price text-center">
                 <ion-label class="value">12.12 <span>ATOM</span></ion-label>
                 <ion-label class="label">Price</ion-label>

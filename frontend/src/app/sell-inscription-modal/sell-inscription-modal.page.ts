@@ -97,7 +97,7 @@ export class SellInscriptionModalPage implements OnInit {
 
     // Construct metaprotocol memo message
     const params = new Map([
-      // ["tic", this.ticker],
+      ["h", this.hash],
       ["amt", amount],
       ["mindep", minDepositMultiplier.toString()],
       ["to", timeoutBlocks],
