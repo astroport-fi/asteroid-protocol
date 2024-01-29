@@ -6,6 +6,7 @@ import { Context, Options, createContext } from './context.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
+import { MarketplaceOperations } from './operations/marketplace.js'
 
 export function setupCommand(command?: Command) {
   if (!command) {
@@ -27,6 +28,7 @@ program.name('asteroid').version('0.1.0')
 
 const inscriptionCommand = program.command('inscription')
 const cft20Command = program.command('cft20')
+const marketplaceCommand = program.command('marketplace')
 
 async function action(
   options: Options,
@@ -57,6 +59,19 @@ async function cft20Action(
 ) {
   return action(options, (context) => {
     const operations = new CFT20Operations(
+      context.network.chainId,
+      context.account.address,
+    )
+    return fn(context, operations)
+  })
+}
+
+async function marketplaceAction(
+  options: Options,
+  fn: (context: Context, operations: MarketplaceOperations) => Promise<TxData>,
+) {
+  return action(options, (context) => {
+    const operations = new MarketplaceOperations(
       context.network.chainId,
       context.account.address,
     )
@@ -187,6 +202,43 @@ setupCommand(cft20Command.command('transfer'))
         options.ticker,
         parseInt(options.amount, 10),
         options.destination,
+      )
+    })
+  })
+
+interface MarkeplaceListCFT20Options extends Options {
+  ticker: string
+  amount: string
+  price: string
+  minDeposit: string
+  timeoutBlocks: string
+}
+
+const marketplaceListCommand = marketplaceCommand.command('list')
+
+setupCommand(marketplaceListCommand.command('cft20'))
+  .description('Creating a new listing for CFT-20 tokens')
+  .requiredOption('-t, --ticker <TICKER>', 'The token ticker')
+  .requiredOption('-m, --amount <AMOUNT>', 'The amount being sold')
+  .requiredOption('-p, --price <PRICE>', 'The price per token in atom')
+  .option(
+    '-d, --min-deposit <MIN_DEPOSIT>',
+    'The minimum deposit expressed as a percentage of total',
+    '10',
+  )
+  .option(
+    '-b, --timeout-blocks <DECIMALS>',
+    'The block this reservation expires',
+    '50',
+  )
+  .action(async (options: MarkeplaceListCFT20Options) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.listCFT20(
+        options.ticker,
+        parseInt(options.amount, 10),
+        parseFloat(options.price),
+        parseInt(options.minDeposit),
+        parseInt(options.timeoutBlocks),
       )
     })
   })
