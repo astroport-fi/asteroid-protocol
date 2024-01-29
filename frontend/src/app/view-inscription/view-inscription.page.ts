@@ -8,7 +8,8 @@ import { TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { WalletService } from '../core/service/wallet.service';
-import { Chain, order_by } from '../core/types/zeus';
+import { Chain } from '../core/helpers/zeus';
+import { order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
 

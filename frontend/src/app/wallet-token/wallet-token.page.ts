@@ -1,9 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 // import { IonicModule, ModalController, AlertController } from '@ionic/angular';
-import { IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, ModalController, AlertController } from '@ionic/angular/standalone';
-import { Chain, Subscription, order_by } from '../core/types/zeus';
+import {
+  IonContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonBackButton,
+  IonTitle,
+  IonProgressBar,
+  IonButton,
+  ModalController,
+  AlertController,
+} from '@ionic/angular/standalone';
+import { Chain, Subscription } from '../core/helpers/zeus';
+import { order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
@@ -29,10 +51,33 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
   templateUrl: './wallet-token.page.html',
   styleUrls: ['./wallet-token.page.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, ShortenAddressPipe, MaskitoModule, TableModule, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DateAgoPipe,
+    HumanTypePipe,
+    DecimalPipe,
+    HumanSupplyPipe,
+    TokenDecimalsPipe,
+    RouterLink,
+    ShortenAddressPipe,
+    MaskitoModule,
+    TableModule,
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonMenuButton,
+    IonBackButton,
+    IonTitle,
+    IonProgressBar,
+    IonButton,
+  ],
 })
 export class WalletTokenPage implements OnInit {
-
   isLoading = false;
   token: any;
   history: any;
@@ -43,7 +88,7 @@ export class WalletTokenPage implements OnInit {
   previousAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   walletConnected: boolean = false;
-  baseTokenUSD: number = 0.00;
+  baseTokenUSD: number = 0.0;
 
   transferForm: FormGroup;
   sellForm: FormGroup;
@@ -51,21 +96,40 @@ export class WalletTokenPage implements OnInit {
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
 
-  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
+  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private protocolServiceCFT: CFT20Service, private modalCtrl: ModalController, private walletService: WalletService, private builder: FormBuilder, private priceService: PriceService, private alertController: AlertController) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private protocolService: MarketplaceService,
+    private protocolServiceCFT: CFT20Service,
+    private modalCtrl: ModalController,
+    private walletService: WalletService,
+    private builder: FormBuilder,
+    private priceService: PriceService,
+    private alertController: AlertController
+  ) {
     this.transferForm = this.builder.group({
       basic: this.builder.group({
-        destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
-        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        destination: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(45),
+            Validators.maxLength(45),
+            Validators.pattern('^[a-zA-Z0-9]*$'),
+          ],
+        ],
+        amount: [10, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
       }),
     });
 
     this.sellForm = this.builder.group({
       basic: this.builder.group({
-        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        price: [0.55, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        amount: [10, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
+        price: [0.55, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
       }),
     });
 
@@ -73,7 +137,7 @@ export class WalletTokenPage implements OnInit {
       decimalSeparator: '.',
       thousandSeparator: ' ',
       precision: 0,
-      min: 1.000000,
+      min: 1.0,
     });
 
     this.decimalMask = maskitoNumberOptionsGenerator({
@@ -88,22 +152,22 @@ export class WalletTokenPage implements OnInit {
     this.isLoading = true;
 
     this.walletConnected = await this.walletService.isConnected();
-    this.previousAddress = this.activatedRoute.snapshot.queryParams["address"];
+    this.previousAddress = this.activatedRoute.snapshot.queryParams['address'];
     this.baseTokenUSD = await this.priceService.fetchBaseTokenUSDPrice();
 
     try {
-
-      const chain = Chain(environment.api.endpoint)
+      const chain = Chain(environment.api.endpoint);
       const result = await chain('query')({
         token: [
           {
             where: {
               ticker: {
-                _eq: this.activatedRoute.snapshot.params["ticker"]
-              }
+                _eq: this.activatedRoute.snapshot.params['ticker'],
+              },
             },
-            limit: 500
-          }, {
+            limit: 500,
+          },
+          {
             id: true,
             name: true,
             ticker: true,
@@ -115,12 +179,11 @@ export class WalletTokenPage implements OnInit {
             content_path: true,
             content_size_bytes: true,
             circulating_supply: true,
-          }
-        ]
+          },
+        ],
       });
 
       this.token = result.token[0];
-
 
       const account = await this.walletService.getAccount();
       this.address = account.address;
@@ -130,21 +193,22 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               address: {
-                _eq: account.address
+                _eq: account.address,
               },
               token_id: {
-                _eq: this.token.id
-              }
+                _eq: this.token.id,
+              },
             },
-            limit: 500
-          }, {
+            limit: 500,
+          },
+          {
             id: true,
             amount: true,
             token: {
               decimals: true,
               last_price_base: true,
-            }
-          }
+            },
+          },
         ],
         token_address_history: [
           {
@@ -152,25 +216,26 @@ export class WalletTokenPage implements OnInit {
               _or: [
                 {
                   sender: {
-                    _eq: account.address
+                    _eq: account.address,
                   },
                 },
                 {
                   receiver: {
-                    _eq: account.address
+                    _eq: account.address,
                   },
-                }
+                },
               ],
               token_id: {
-                _eq: this.token.id
-              }
+                _eq: this.token.id,
+              },
             },
             order_by: [
               {
-                height: order_by.desc
-              }
+                height: order_by.desc,
+              },
             ],
-          }, {
+          },
+          {
             id: true,
             height: true,
             token: {
@@ -184,8 +249,8 @@ export class WalletTokenPage implements OnInit {
             sender: true,
             receiver: true,
             date_created: true,
-          }
-        ]
+          },
+        ],
       });
 
       this.history = balanceResult.token_address_history;
@@ -201,28 +266,27 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               token_id: {
-                _eq: this.token.id
+                _eq: this.token.id,
               },
               seller_address: {
-                _eq: account.address
+                _eq: account.address,
               },
               is_cancelled: {
-                _eq: false
+                _eq: false,
               },
               is_filled: {
-                _eq: false
-              }
+                _eq: false,
+              },
             },
-            limit: 500
+            limit: 500,
           },
           {
             id: true,
             ppt: true,
             amount: true,
             total: true,
-
-          }
-        ]
+          },
+        ],
       });
 
       const listingsResult = await chain('query')({
@@ -230,21 +294,21 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               token_id: {
-                _eq: this.token.id
+                _eq: this.token.id,
               },
               marketplace_listing: {
                 is_cancelled: {
-                  _eq: false
+                  _eq: false,
                 },
                 is_filled: {
-                  _eq: false
+                  _eq: false,
                 },
                 seller_address: {
-                  _eq: account.address
+                  _eq: account.address,
                 },
-              }
+              },
             },
-            limit: 500
+            limit: 500,
           },
           {
             id: true,
@@ -254,11 +318,10 @@ export class WalletTokenPage implements OnInit {
               total: true,
               transaction: {
                 hash: true,
-              }
-            }
-
-          }
-        ]
+              },
+            },
+          },
+        ],
       });
 
       const wsChain = Subscription(environment.api.wss);
@@ -267,22 +330,23 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               address: {
-                _eq: account.address
+                _eq: account.address,
               },
               token_id: {
-                _eq: this.token.id
-              }
+                _eq: this.token.id,
+              },
             },
-            limit: 500
-          }, {
+            limit: 500,
+          },
+          {
             id: true,
             amount: true,
             token: {
               decimals: true,
               last_price_base: true,
-            }
-          }
-        ]
+            },
+          },
+        ],
       }).on(({ token_holder }) => {
         if (token_holder.length > 0) {
           this.holding = token_holder[0];
@@ -296,28 +360,27 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               token_id: {
-                _eq: this.token.id
+                _eq: this.token.id,
               },
               seller_address: {
-                _eq: account.address
+                _eq: account.address,
               },
               is_cancelled: {
-                _eq: false
+                _eq: false,
               },
               is_filled: {
-                _eq: false
-              }
+                _eq: false,
+              },
             },
-            limit: 500
+            limit: 500,
           },
           {
             id: true,
             ppt: true,
             amount: true,
             total: true,
-
-          }
-        ]
+          },
+        ],
       }).on(({ token_open_position }) => {
         this.oldlistings = token_open_position;
       });
@@ -328,21 +391,21 @@ export class WalletTokenPage implements OnInit {
           {
             where: {
               token_id: {
-                _eq: this.token.id
+                _eq: this.token.id,
               },
               marketplace_listing: {
                 seller_address: {
-                  _eq: account.address
+                  _eq: account.address,
                 },
                 is_cancelled: {
-                  _eq: false
+                  _eq: false,
                 },
                 is_filled: {
-                  _eq: false
-                }
-              }
+                  _eq: false,
+                },
+              },
             },
-            limit: 500
+            limit: 500,
           },
           {
             id: true,
@@ -352,53 +415,49 @@ export class WalletTokenPage implements OnInit {
               total: true,
               transaction: {
                 hash: true,
-              }
-            }
-          }
-        ]
+              },
+            },
+          },
+        ],
       }).on(({ marketplace_cft20_detail }) => {
         this.listings = marketplace_cft20_detail;
       });
       this.listings = listingsResult.marketplace_cft20_detail;
-
     } catch (err) {
       this.holding = {
         amount: 0,
         token: {
           decimals: 0,
-        }
+        },
       };
       this.history = [];
     }
-
 
     this.isLoading = false;
   }
 
   async listSale() {
-
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: true,
       component: SellModalPage,
 
       componentProps: {
-        ticker: this.token.ticker
-      }
+        ticker: this.token.ticker,
+      },
     });
     modal.present();
   }
 
   async transfer() {
-
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: true,
       component: TransferModalPage,
 
       componentProps: {
-        ticker: this.token.ticker
-      }
+        ticker: this.token.ticker,
+      },
     });
     modal.present();
   }
@@ -417,10 +476,12 @@ export class WalletTokenPage implements OnInit {
     }
 
     // Construct metaprotocol memo message
-    const params = new Map([
-      ["h", listingHash],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const params = new Map([['h', listingHash]]);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'delist',
+      params
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -433,10 +494,9 @@ export class WalletTokenPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
         metaprotocolAction: 'delist',
-      }
+      },
     });
     modal.present();
-
   }
 
   async cancelcft(orderNumber: number) {
@@ -454,10 +514,14 @@ export class WalletTokenPage implements OnInit {
 
     // Construct metaprotocol memo message
     const params = new Map([
-      ["tic", this.token.ticker],
-      ["ord", orderNumber],
+      ['tic', this.token.ticker],
+      ['ord', orderNumber],
     ]);
-    const urn = this.protocolServiceCFT.buildURN(environment.chain.chainId, 'delist', params);
+    const urn = this.protocolServiceCFT.buildURN(
+      environment.chain.chainId,
+      'delist',
+      params
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -470,10 +534,8 @@ export class WalletTokenPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'delist',
-      }
+      },
     });
     modal.present();
-
   }
-
 }
