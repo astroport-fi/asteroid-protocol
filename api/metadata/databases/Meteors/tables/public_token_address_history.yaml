@@ -4,19 +4,23 @@ table:
 object_relationships:
   - name: token
     using:
-      manual_configuration:
-        column_mapping:
-          token_id: id
-        insertion_order: null
-        remote_table:
-          name: token
-          schema: public
+      foreign_key_constraint_on: token_id
   - name: transaction
     using:
-      manual_configuration:
-        column_mapping:
-          transaction_id: id
-        insertion_order: null
-        remote_table:
-          name: transaction
-          schema: public
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount
+        - action
+        - chain_id
+        - receiver
+        - sender
+        - height
+        - id
+        - token_id
+        - transaction_id
+        - date_created
+      filter: {}
+    comment: ""

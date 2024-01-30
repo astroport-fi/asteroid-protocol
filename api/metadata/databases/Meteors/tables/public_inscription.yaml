@@ -4,10 +4,32 @@ table:
 object_relationships:
   - name: transaction
     using:
-      manual_configuration:
-        column_mapping:
-          transaction_id: id
-        insertion_order: null
-        remote_table:
-          name: transaction
+      foreign_key_constraint_on: transaction_id
+array_relationships:
+  - name: inscription_histories
+    using:
+      foreign_key_constraint_on:
+        column: inscription_id
+        table:
+          name: inscription_history
           schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - is_explicit
+        - chain_id
+        - content_hash
+        - content_path
+        - creator
+        - current_owner
+        - type
+        - version
+        - content_size_bytes
+        - height
+        - id
+        - transaction_id
+        - metadata
+        - date_created
+      filter: {}
+    comment: ""

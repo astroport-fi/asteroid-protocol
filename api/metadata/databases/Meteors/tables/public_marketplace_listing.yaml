@@ -4,10 +4,46 @@ table:
 object_relationships:
   - name: transaction
     using:
-      manual_configuration:
-        column_mapping:
-          transaction_id: id
-        insertion_order: null
-        remote_table:
-          name: transaction
+      foreign_key_constraint_on: transaction_id
+array_relationships:
+  - name: marketplace_cft20_details
+    using:
+      foreign_key_constraint_on:
+        column: listing_id
+        table:
+          name: marketplace_cft20_detail
           schema: public
+  - name: marketplace_cft20_trade_histories
+    using:
+      foreign_key_constraint_on:
+        column: listing_id
+        table:
+          name: marketplace_cft20_trade_history
+          schema: public
+  - name: marketplace_listing_histories
+    using:
+      foreign_key_constraint_on:
+        column: listing_id
+        table:
+          name: marketplace_listing_history
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - deposit_total
+        - total
+        - is_cancelled
+        - is_deposited
+        - is_filled
+        - chain_id
+        - depositor_address
+        - seller_address
+        - depositor_timedout_block
+        - deposit_timeout
+        - id
+        - transaction_id
+        - date_created
+        - date_updated
+      filter: {}
+    comment: ""

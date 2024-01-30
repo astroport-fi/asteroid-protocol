@@ -1,7 +1,10 @@
 table:
-  name: token_open_position
+  name: marketplace_cft20_trade_history
   schema: public
 object_relationships:
+  - name: marketplace_listing
+    using:
+      foreign_key_constraint_on: listing_id
   - name: token
     using:
       foreign_key_constraint_on: token_id
@@ -12,17 +15,16 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
-        - amount
-        - ppt
-        - total
-        - is_cancelled
-        - is_filled
-        - chain_id
+        - amount_base
+        - amount_quote
+        - buyer_address
         - seller_address
         - id
+        - listing_id
+        - rate
         - token_id
         - transaction_id
+        - total_usd
         - date_created
-        - date_filled
       filter: {}
     comment: ""

@@ -4,19 +4,19 @@ table:
 object_relationships:
   - name: marketplace_listing
     using:
-      manual_configuration:
-        column_mapping:
-          listing_id: id
-        insertion_order: null
-        remote_table:
-          name: marketplace_listing
-          schema: public
+      foreign_key_constraint_on: listing_id
   - name: token
     using:
-      manual_configuration:
-        column_mapping:
-          token_id: id
-        insertion_order: null
-        remote_table:
-          name: token
-          schema: public
+      foreign_key_constraint_on: token_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount
+        - ppt
+        - id
+        - listing_id
+        - token_id
+        - date_created
+      filter: {}
+    comment: ""

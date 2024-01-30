@@ -1,6 +1,7 @@
 - "!include public_inscription.yaml"
 - "!include public_inscription_history.yaml"
 - "!include public_marketplace_cft20_detail.yaml"
+- "!include public_marketplace_cft20_trade_history.yaml"
 - "!include public_marketplace_listing.yaml"
 - "!include public_marketplace_listing_history.yaml"
 - "!include public_status.yaml"

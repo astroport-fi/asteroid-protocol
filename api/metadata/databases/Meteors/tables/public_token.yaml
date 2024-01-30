@@ -4,29 +4,74 @@ table:
 object_relationships:
   - name: transaction
     using:
-      manual_configuration:
-        column_mapping:
-          transaction_id: id
-        insertion_order: null
-        remote_table:
-          name: transaction
-          schema: public
+      foreign_key_constraint_on: transaction_id
 array_relationships:
   - name: marketplace_cft20_details
     using:
-      manual_configuration:
-        column_mapping:
-          id: token_id
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
           name: marketplace_cft20_detail
+          schema: public
+  - name: marketplace_cft20_trade_histories
+    using:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
+          name: marketplace_cft20_trade_history
+          schema: public
+  - name: token_address_histories
+    using:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
+          name: token_address_history
           schema: public
   - name: token_holders
     using:
-      manual_configuration:
-        column_mapping:
-          id: token_id
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
           name: token_holder
           schema: public
+  - name: token_open_positions
+    using:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
+          name: token_open_position
+          schema: public
+  - name: token_trade_histories
+    using:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
+          name: token_trade_history
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - circulating_supply
+        - last_price_base
+        - launch_timestamp
+        - per_mint_limit
+        - volume_24_base
+        - chain_id
+        - content_path
+        - creator
+        - current_owner
+        - mint_page
+        - name
+        - ticker
+        - version
+        - content_size_bytes
+        - height
+        - id
+        - transaction_id
+        - max_supply
+        - decimals
+        - metadata
+        - date_created
+      filter: {}
+    comment: ""
