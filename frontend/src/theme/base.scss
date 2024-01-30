@@ -495,3 +495,25 @@ ion-toast {
 .sc-ion-select-popover-md-h ion-list.sc-ion-select-popover-md {
   backdrop-filter: blur(10px) !important;
 }
+
+.large-modal .modal-wrapper {
+
+  --width: 375px;
+  --height: 350px;
+
+
+  position: absolute;
+  overflow: hidden;
+  max-width: 320px;
+  border-radius: 10px;
+  width: 90vw;
+  height: 50vh !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border: 0;
+  box-shadow: 0 16px 20px rgba(0, 0, 0, .4);
+  background-color: #fafafa;
+}

@@ -1,0 +1,133 @@
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { IonicModule, ModalController } from '@ionic/angular';
+import { TableModule } from 'primeng/table';
+import { environment } from 'src/environments/environment';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { WalletService } from '../core/service/wallet.service';
+import { Chain, order_by } from '../core/types/zeus';
+import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
+import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
+import { SellInscriptionModalPage } from '../sell-inscription-modal/sell-inscription-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { InscriptionService } from '../core/metaprotocol/inscription.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+
+@Component({
+  selector: 'app-view-inscription-modal',
+  templateUrl: './view-inscription-modal.page.html',
+  styleUrls: ['./view-inscription-modal.page.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    ShortenAddressPipe,
+    RouterLink,
+    DatePipe,
+    GenericPreviewPage,
+    TableModule,
+  ],
+})
+export class ViewInscriptionModalPage implements OnInit {
+
+  @Input() hash: string = '';
+  @Input() listingHash: string = '';
+
+  isLoading = false;
+  inscription: any;
+  explorerTxUrl: string = environment.api.explorer;
+  walletConnected: boolean = false;
+  currentAddress: string = '';
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private walletService: WalletService,
+    private modalCtrl: ModalController,
+    private titleService: Title,
+    private meta: Meta,
+    private protocolService: MarketplaceService
+  ) { }
+
+  async ngOnInit() {
+    this.isLoading = true;
+
+    this.walletConnected = await this.walletService.isConnected();
+    if (this.walletConnected) {
+      this.currentAddress = (await this.walletService.getAccount()).address;
+    }
+
+    console.log("this.hash");
+    console.log(this.hash);
+
+    const chain = Chain(environment.api.endpoint);
+
+    const result = await chain('query')({
+      inscription: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: this.hash,
+              },
+            },
+            // TODO: We need to filter based on marketplace_listing status
+          },
+        },
+        {
+          id: true,
+          height: true,
+          transaction: {
+            hash: true,
+          },
+          creator: true,
+          current_owner: true,
+          content_path: true,
+          content_size_bytes: true,
+          is_explicit: true,
+          date_created: true,
+          __alias: {
+            name: {
+              metadata: [
+                {
+                  path: '$.metadata.name',
+                },
+                true,
+              ],
+            },
+            description: {
+              metadata: [
+                {
+                  path: '$.metadata.description',
+                },
+                true,
+              ],
+            },
+            mime: {
+              metadata: [
+                {
+                  path: '$.metadata.mime',
+                },
+                true,
+              ],
+            },
+          },
+        },
+      ],
+    });
+
+    this.inscription = result.inscription[0];
+    this.isLoading = false;
+  }
+
+  dismiss() {
+    this.modalCtrl.dismiss({
+      dismissed: true,
+    });
+  }
+
+}

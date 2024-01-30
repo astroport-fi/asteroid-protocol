@@ -30,7 +30,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline, chevronBack, arrowBack } from "ionicons/icons";
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -96,7 +96,7 @@ export class DashboardLayoutComponent {
   lag: number = 0;
 
   constructor(private walletService: WalletService, private alertController: AlertController, private toastController: ToastController, private modalCtrl: ModalController) {
-    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline });
+    addIcons({ chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, chevronForwardSharp, chevronDown, searchOutline, openOutline, eyeOffOutline, chevronBack, arrowBack });
   }
 
   async ngOnInit() {

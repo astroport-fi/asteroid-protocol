@@ -19,6 +19,7 @@ import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { DropdownModule } from 'primeng/dropdown';
 import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
 
 @Component({
   selector: 'app-markets-inscription',
@@ -233,8 +234,20 @@ export class MarketsInscriptionPage implements OnInit {
     }
   }
 
-  async buy(listingHash: string) {
+  async buy(listingHash: string, inscriptionHash: string) {
     console.log("Lets buy", listingHash);
+
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: true,
+      cssClass: 'large-modal',
+      component: ViewInscriptionModalPage,
+      componentProps: {
+        hash: inscriptionHash,
+        listingHash: listingHash
+      }
+    });
+    modal.present();
 
   }
 

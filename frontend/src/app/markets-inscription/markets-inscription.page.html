@@ -78,7 +78,8 @@
     <ion-row>
       <ion-col>
         <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
-          <a class="inscription-item main-content" (click)="buy(item.marketplace_listing.transaction.hash)"
+          <a class="inscription-item main-content"
+            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.hash)"
             *ngFor="let item of marketplaceDetail; let index">
             <div class="content">
               <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"

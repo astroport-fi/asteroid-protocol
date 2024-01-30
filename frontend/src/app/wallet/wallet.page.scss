@@ -119,3 +119,13 @@ div.title {
 .stargaze-name {
     opacity: 0.6;
 }
+
+.list-status-heading {
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 0px;
+    margin-bottom: 20px;
+}
