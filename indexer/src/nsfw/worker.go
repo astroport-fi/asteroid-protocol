@@ -69,7 +69,7 @@ func (w Worker) Stop() {
 	}()
 }
 
-func (w Worker) Add(image []byte) <-chan bool {
+func (w Worker) CheckImage(image []byte) <-chan bool {
 	w.work <- image
 	return w.result
 }

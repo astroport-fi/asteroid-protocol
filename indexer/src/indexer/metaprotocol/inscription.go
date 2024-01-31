@@ -147,7 +147,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// check if content is explicit
-		isExplicit := <-protocol.nsfwWorker.Add(content)
+		isExplicit := <-protocol.nsfwWorker.CheckImage(content)
 
 		inscriptionModel := models.Inscription{
 			ChainID:          parsedURN.ChainID,

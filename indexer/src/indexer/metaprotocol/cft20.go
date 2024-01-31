@@ -19,6 +19,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/nsfw"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/gorm"
@@ -36,6 +37,7 @@ type CFT20Config struct {
 type CFT20 struct {
 	chainID    string
 	db         *gorm.DB
+	nsfwWorker *nsfw.Worker
 	s3Endpoint string
 	s3Region   string
 	s3Bucket   string
@@ -55,7 +57,7 @@ type CFT20 struct {
 	perWalletLimitMaxValue uint64
 }
 
-func NewCFT20Processor(chainID string, db *gorm.DB) *CFT20 {
+func NewCFT20Processor(chainID string, db *gorm.DB, nsfwWorker *nsfw.Worker) *CFT20 {
 	// Parse config environment variables for self
 	var config InscriptionConfig
 	err := envconfig.Process("", &config)
@@ -66,6 +68,7 @@ func NewCFT20Processor(chainID string, db *gorm.DB) *CFT20 {
 	return &CFT20{
 		chainID:                chainID,
 		db:                     db,
+		nsfwWorker:             nsfwWorker,
 		s3Endpoint:             config.S3Endpoint,
 		s3Region:               config.S3Region,
 		s3Bucket:               config.S3Bucket,
@@ -182,6 +185,8 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		// TODO: Rework the content extraction
 		contentPath := ""
 		contentLength := 0
+		isExplicit := false
+
 		// If this token includes content, we need to store it and add to the record
 		if len(rawTransaction.Body.NonCriticalExtensionOptions) == 1 {
 			// Logo is stored in the non_critical_extension_options
@@ -219,6 +224,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 				return fmt.Errorf("unable to store content '%s'", err)
 			}
 
+			// check if content is explicit
+			isExplicit = <-protocol.nsfwWorker.CheckImage(logoContent)
+
 			contentLength = len(logoContent)
 		}
 
@@ -239,6 +247,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			ContentPath:       contentPath,
 			ContentSizeBytes:  uint64(contentLength),
 			DateCreated:       transactionModel.DateCreated,
+			IsExplicit:        isExplicit,
 			CirculatingSupply: 0,
 		}
 
