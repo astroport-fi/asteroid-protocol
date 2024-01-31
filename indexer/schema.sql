@@ -163,6 +163,7 @@ CREATE TABLE public."token" (
 	last_price_base int8 NOT NULL DEFAULT 0,
 	volume_24_base int8 NOT NULL DEFAULT 0,
 	date_created timestamp NOT NULL,
+    is_explicit bool NULL DEFAULT false,
 	CONSTRAINT token_pkey PRIMARY KEY (id),
 	CONSTRAINT token_ticker_key UNIQUE (ticker),
 	CONSTRAINT token_tx_id UNIQUE (transaction_id),
