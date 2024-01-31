@@ -34,3 +34,14 @@
         text-align: right;
     }
 }
+
+.explicit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    color: #999999;
+}

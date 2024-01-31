@@ -31,11 +31,15 @@
           <ion-grid>
             <ion-row>
               <ion-col size-lg="2" size-xs="4">
-                <div class="text-center">
+                <div class="text-center" *ngIf="!token.is_explicit">
                   <img class="rounded" [src]="token.content_path" *ngIf="token.content_path" />
                   <div class="ticker" *ngIf="!token.content_path">
                     <img class="no-logo rounded" src="../../assets/logo/a-white-on-transparent-250.png" />
                   </div>
+                </div>
+                <div class="explicit" *ngIf="token.is_explicit">
+                  <ion-icon name="eye-off-outline"></ion-icon>
+                  <div class="note">Explicit content</div>
                 </div>
               </ion-col>
               <ion-col size-xl="8" size-lg="6" size-sm="8" size-xs="8">

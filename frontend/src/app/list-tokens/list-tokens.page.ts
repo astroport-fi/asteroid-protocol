@@ -165,6 +165,7 @@ export class ListTokensPage implements OnInit {
           launch_timestamp: true,
           last_price_base: true,
           volume_24_base: true,
+          is_explicit: true,
           date_created: true,
         },
       ],
