@@ -19,6 +19,7 @@ type Inscription struct {
 	Metadata         datatypes.JSON `gorm:"column:metadata"`
 	ContentPath      string         `gorm:"column:content_path"`
 	ContentSizeBytes uint64         `gorm:"column:content_size_bytes"`
+	IsExplicit       bool           `gorm:"column:is_explicit"`
 	DateCreated      time.Time      `gorm:"column:date_created"`
 }
 

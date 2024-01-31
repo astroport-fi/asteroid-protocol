@@ -18,6 +18,7 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/nsfw"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
@@ -48,6 +49,7 @@ type Indexer struct {
 	metaprotocols            map[string]metaprotocol.Processor
 	stopChannel              chan bool
 	db                       *gorm.DB
+	nsfw                     *nsfw.Worker
 	wg                       sync.WaitGroup
 }
 
@@ -71,8 +73,11 @@ func New(
 
 	}
 
+	nsfwWorker := nsfw.NewWorker(log)
+	nsfwWorker.Start("./model")
+
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, nsfwWorker)
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
 	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db)
 
@@ -87,6 +92,7 @@ func New(
 		logger:                   log,
 		stopChannel:              make(chan bool),
 		db:                       db,
+		nsfw:                     nsfwWorker,
 	}, nil
 }
 
@@ -109,6 +115,7 @@ func (i *Indexer) Stop() error {
 	i.logger.Info("Stopping indexer")
 	i.stopChannel <- true
 	i.stopChannel <- true
+	i.nsfw.Stop()
 	return nil
 }
 

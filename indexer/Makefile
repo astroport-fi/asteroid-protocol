@@ -18,7 +18,7 @@ dependencies: ## Install dependencies for the service
 	go mod tidy
 
 build: ## Build the binary for the service
-	CGO_ENABLED=0 go build -o ./bin/${APP_NAME} ./src/*.go
+	go build -o ./bin/${APP_NAME} ./src/*.go
 
 run: build ## Build and run the service binary
 	./bin/${APP_NAME}
