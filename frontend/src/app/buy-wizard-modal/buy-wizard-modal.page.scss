@@ -82,3 +82,51 @@ ion-item {
         color: #ccc;
     }
 }
+
+div.fees {
+    font-size: 14px;
+    color: #a7a7a7;
+    max-width: 270px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h4 {
+        font-size: 16px;
+        color: #ebebeb;
+        text-align: center;
+    }
+
+    table {
+        td {
+            padding-right: 12px;
+            padding-bottom: 4px;
+
+            &.label {
+                text-align: left;
+                font-weight: bold;
+            }
+
+            &.total {
+                padding-top: 10px;
+                border-top: 1px solid #a7a7a7;
+            }
+        }
+    }
+}
+
+div.icon-trigger {
+    display: inline;
+    font-size: 18px;
+    position: relative;
+
+    ion-icon {
+        top: 8px;
+        position: relative;
+        padding: 5px;
+        cursor: pointer;
+    }
+}
+
+ion-popover {
+    --background: hsla(0, 0%, 100%, .05) !important;
+}

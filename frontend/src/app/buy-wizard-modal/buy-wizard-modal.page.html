@@ -1,19 +1,126 @@
 <ion-content class="main-content" mode="md">
-  <ion-grid class="p-3">
+  <div class="pt-3 text-center">
+    <h2>Purchase tokens</h2>
+  </div>
+  <ion-grid class="ps-3">
     <ion-row>
-      <ion-col class="text-center">
-        <h2>List {{ ticker }} for sale</h2>
+      <ion-col class="">
+        <h3>Reserve deposit</h3>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
+    <ion-row *ngIf="wizardStep == 'deposit'">
+      <ion-col size="12">
         <p>
-          This transaction will list your tokens for sale<br />You'll only receive the ATOM
-          from the sale should someone purchase them
+          The two-step buying process requires a small deposit to reserve the tokens for purchase. Once the tokens
+          are reserved you'll be able to complete the purchase.
         </p>
         <p>
-          Sales are final and can't be refunded. You may cancel a listing at any time before a successful reservation
+          Deposits are final and can't be refunded. If you don't complete the purchase, the deposit will be lost.
         </p>
+      </ion-col>
+      <ion-col size="12">
+        <div class="fees">
+          <h4>Deposit breakdown</h4>
+          <!-- <div *ngIf="isSimulating">
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+            <div class="note">
+              Estimating...
+            </div>
+          </div> -->
+          <!-- <table *ngIf="!isSimulating"> -->
+          <table>
+            <tr>
+              <td class="label">Cosmos Hub</td>
+              <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
+            </tr>
+            <tr>
+              <td class="label">Metaprotocol</td>
+              <!-- <td>{{ protocolFee | number: '1.6-6' }} ATOM</td> -->
+            </tr>
+            <tr>
+              <td class="label total">Estimated total</td>
+              <td class="total shifted">
+                <!-- {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM -->
+                <div class="icon-trigger">
+                  <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
+                  <!-- <ion-button>Left-Click Me</ion-button> -->
+                  <ion-popover trigger="click-trigger" triggerAction="click">
+                    <ng-template>
+                      <ion-content class="main-content ion-padding">You are required to complete a transfer of ATOM to
+                        generate an inscription. This self-transaction will send 0.000001
+                        ATOM from the inscribing address back to the same address. Since the amount is refunded, it is
+                        not listed as a fee</ion-content>
+                    </ng-template>
+                  </ion-popover>
+                </div>
+
+              </td>
+            </tr>
+          </table>
+        </div>
+      </ion-col>
+      <ion-col size="12" class="text-center">
+        <ion-button color="primary" (click)="next()">Make deposit</ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="wizardStep == 'buy'">
+      <ion-col size="12">
+        <p>
+          Complete your purchase
+        </p>
+        <p>
+          Deposits are final and can't be refunded. If you don't complete the purchase, the deposit will be lost.
+        </p>
+      </ion-col>
+      <ion-col size="12">
+        <div class="fees">
+          <h4>Purchase breakdown</h4>
+          <!-- <div *ngIf="isSimulating">
+                <ion-progress-bar type="indeterminate"></ion-progress-bar>
+                <div class="note">
+                  Estimating...
+                </div>
+              </div> -->
+          <!-- <table *ngIf="!isSimulating"> -->
+          <table>
+            <tr>
+              <td class="label">Deposit</td>
+              <td> - 10 ATOM</td>
+              <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
+            </tr>
+            <tr>
+              <td class="label">Cosmos Hub</td>
+              <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
+            </tr>
+            <tr>
+              <td class="label">Metaprotocol</td>
+              <!-- <td>{{ protocolFee | number: '1.6-6' }} ATOM</td> -->
+            </tr>
+            <tr>
+              <td class="label total">Estimated total</td>
+              <td class="total shifted">
+                <!-- {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM -->
+                <div class="icon-trigger">
+                  <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
+                  <!-- <ion-button>Left-Click Me</ion-button> -->
+                  <ion-popover trigger="click-trigger" triggerAction="click">
+                    <ng-template>
+                      <ion-content class="main-content ion-padding">You are required to complete a transfer of ATOM to
+                        generate an inscription. This self-transaction will send 0.000001
+                        ATOM from the inscribing address back to the same address. Since the amount is refunded, it is
+                        not listed as a fee</ion-content>
+                    </ng-template>
+                  </ion-popover>
+                </div>
+
+              </td>
+            </tr>
+          </table>
+        </div>
+      </ion-col>
+      <ion-col size="12" class="text-center">
+        <ion-button color="primary" (click)="next()">Buy</ion-button>
       </ion-col>
     </ion-row>
 
@@ -28,7 +135,7 @@
               list</ion-button>
             <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button> -->
 
-          <ion-button color="success" fill="clear" (click)="cancel()">Next</ion-button>
+          <!-- <ion-button color="success" fill="clear" (click)="cancel()">Next</ion-button> -->
           <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
         </div>
       </ion-col>
