@@ -64,3 +64,13 @@ create-migration:
 
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+tensorflow-install:
+	curl -L "https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.9.1.tar.gz" | sudo tar -C /usr/local -xz
+	sudo ldconfig
+
+nsfw-model-download:
+	wget https://github.com/GantMan/nsfw_model/releases/download/1.2.0/mobilenet_v2_140_224.1.zip
+	unzip mobilenet_v2_140_224.1.zip
+	mv mobilenet_v2_140_224 model
+	rm mobilenet_v2_140_224.1.zip

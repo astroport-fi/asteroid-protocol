@@ -28,3 +28,17 @@ curl -sSf https://atlasgo.sh | sh
 ```bash
 atlas migrate apply --env local
 ```
+
+## NSFW Installation
+
+1. Install Tensorflow C library 
+
+    ```bash
+    make tensorflow-install
+    ```
+
+2. Download model
+
+    ```
+    make nsfw-model-download
+    ```
