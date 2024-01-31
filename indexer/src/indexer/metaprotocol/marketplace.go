@@ -630,7 +630,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			WHERE token_id = ? 
 			AND amount_quote > 1000000 
 			ORDER BY id 
-			DESC LIMIT 100
+			DESC LIMIT 30
 		) AS last_records`, tokenModel.ID).Scan(&avgPrice)
 		if dberr.Error != nil {
 			// No need to alert the buyer
