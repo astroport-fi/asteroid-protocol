@@ -1,0 +1,27 @@
+table:
+  name: token_trade_history
+  schema: public
+object_relationships:
+  - name: token
+    using:
+      foreign_key_constraint_on: token_id
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount_base
+        - amount_quote
+        - buyer_address
+        - chain_id
+        - seller_address
+        - id
+        - rate
+        - token_id
+        - transaction_id
+        - total_usd
+        - date_created
+      filter: {}
+    comment: ""

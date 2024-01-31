@@ -7,7 +7,7 @@ services:
       - "8080:8080"
     restart: always
     environment:
-      DATABASE_URL: postgres://admin:admin1@127.0.0.1:5432/meteors
+      HASURA_GRAPHQL_DATABASE_URL: postgres://admin:admin1@127.0.0.1:5432/meteors
       ## postgres database to store Hasura metadata
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://admin:admin1@127.0.0.1:5432/postgres
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
