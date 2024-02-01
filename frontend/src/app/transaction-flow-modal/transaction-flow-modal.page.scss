@@ -9,8 +9,8 @@
 ion-content {
     // --background: var(--color-dark-teal);
     // border-radius: 10px !important;
-    --background: hsla(0, 0%, 100%, .05) !important;
-    background-color: hsla(0, 0%, 100%, .05) !important;
+    --background: hsla(0, 0%, 0%, 1) !important;
+    background-color: hsla(0, 0%, 0%, 1) !important;
     backdrop-filter: blur(50px);
     height: 100%;
     border-radius: 10px;

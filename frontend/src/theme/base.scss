@@ -253,6 +253,7 @@ a {
   padding-right: 0px;
 }
 
+
 .inscription-item {
   margin-right: 30px;
   margin-bottom: 40px;
@@ -487,5 +488,25 @@ ion-toast {
 
 .wallet-required-modal {
   --width: 375px;
-  --height: 350px;
+  --height: 370px;
+}
+
+.wallet-selection-modal {
+  --width: 375px;
+  --height: 370px;
+}
+
+/* A fix for the rare bug that causes modals to be completely transparent */
+.modal-background {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  img {
+    transform: scale(4) !important;
+    filter: blur(50px) brightness(45%) saturate(60%);
+  }
 }

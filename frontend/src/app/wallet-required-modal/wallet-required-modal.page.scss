@@ -1,8 +1,8 @@
 ion-content {
     // --background: var(--color-dark-teal);
     // border-radius: 10px !important;
-    --background: hsla(0, 0%, 100%, .05) !important;
-    background-color: hsla(0, 0%, 100%, .05) !important;
+    --background: hsla(0, 0%, 0%, 1) !important;
+    background-color: hsla(0, 0%, 0%, 1) !important;
     backdrop-filter: blur(50px);
     height: 100%;
     border-radius: 10px;
@@ -11,15 +11,19 @@ ion-content {
 
 }
 
-.confirmation {
-    background-color: rgba(0, 0, 0, 0.2);
+.wallet-row {
+    display: flex;
+    align-items: center;
     border-radius: 10px;
-    border: 1px solid var(--color-teal);
+    margin: 0 1.5rem;
+    cursor: pointer;
+
+    &>.name {
+        margin-left: 0.75rem;
+    }
 }
 
-.action {
-    position: fixed;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
+.bottom {
+    display: flex;
+    justify-content: flex-end;
 }

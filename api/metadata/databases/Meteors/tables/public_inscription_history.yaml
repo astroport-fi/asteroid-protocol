@@ -1,0 +1,25 @@
+table:
+  name: inscription_history
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      foreign_key_constraint_on: inscription_id
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - action
+        - chain_id
+        - receiver
+        - sender
+        - height
+        - id
+        - inscription_id
+        - transaction_id
+        - date_created
+      filter: {}
+    comment: ""

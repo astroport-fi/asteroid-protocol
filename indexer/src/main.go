@@ -23,7 +23,7 @@ func main() {
 	// load ENV vars from .env
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Warn("Error loading .env file")
 	}
 
 	// Parse config environment variables

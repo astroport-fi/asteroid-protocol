@@ -1,16 +1,30 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import {
+  chevronForward,
+  keySharp,
+  pencilSharp,
+  createSharp,
+  checkmark,
+  closeOutline,
+  close,
+} from 'ionicons/icons';
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
 import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
-import { Chain } from '../core/types/zeus';
+import { Chain } from '../core/helpers/zeus';
 import { TxFee } from '../core/types/tx-fee';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -25,10 +39,19 @@ import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
   templateUrl: './transfer-modal.page.html',
   styleUrls: ['./transfer-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, TokenDecimalsPipe, StripSpacesPipe]
+  imports: [
+    IonicModule,
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    LottieComponent,
+    MaskitoModule,
+    TokenDecimalsPipe,
+    StripSpacesPipe,
+  ],
 })
 export class TransferModalPage implements OnInit {
-
   @Input() ticker: string = 'tokens';
 
   transferForm: FormGroup;
@@ -37,16 +60,33 @@ export class TransferModalPage implements OnInit {
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
 
-  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
+  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: CFT20Service) {
+  constructor(
+    private walletService: WalletService,
+    private chainService: ChainService,
+    private modalCtrl: ModalController,
+    private router: Router,
+    private builder: FormBuilder,
+    private protocolService: CFT20Service
+  ) {
     addIcons({ checkmark, closeOutline, close });
 
     this.transferForm = this.builder.group({
       basic: this.builder.group({
-        destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
-        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
+        destination: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(45),
+            Validators.maxLength(45),
+            Validators.pattern('^[a-zA-Z0-9]*$'),
+          ],
+        ],
+        amount: [10, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
       }),
     });
 
@@ -54,7 +94,7 @@ export class TransferModalPage implements OnInit {
       decimalSeparator: '.',
       thousandSeparator: ' ',
       precision: 0,
-      min: 1.000000,
+      min: 1.0,
     });
 
     this.decimalMask = maskitoNumberOptionsGenerator({
@@ -74,14 +114,15 @@ export class TransferModalPage implements OnInit {
         {
           where: {
             ticker: {
-              _eq: this.ticker
-            }
-          }
-        }, {
+              _eq: this.ticker,
+            },
+          },
+        },
+        {
           id: true,
           decimals: true,
           last_price_base: true,
-        }
+        },
       ],
     });
 
@@ -90,20 +131,24 @@ export class TransferModalPage implements OnInit {
         {
           where: {
             address: {
-              _eq: sender.address
+              _eq: sender.address,
             },
             token_id: {
-              _eq: result.token[0].id
-            }
-          }
-        }, {
+              _eq: result.token[0].id,
+            },
+          },
+        },
+        {
           amount: true,
-        }
-      ]
+        },
+      ],
     });
     if (balanceResult.token_holder.length > 0) {
       // Get the sender's balance with decimals
-      this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
+      this.senderBalance = TokenDecimalsPipe.prototype.transform(
+        parseInt(balanceResult.token_holder[0].amount as string),
+        result.token[0].decimals as number
+      );
     }
   }
 
@@ -115,15 +160,20 @@ export class TransferModalPage implements OnInit {
     // Close the transfer modal
     this.modalCtrl.dismiss();
 
-
-    const amt = this.transferForm.value.basic.amount.toString().replace(/\s/g, '');
+    const amt = this.transferForm.value.basic.amount
+      .toString()
+      .replace(/\s/g, '');
     // Construct metaprotocol memo message
     const params = new Map([
-      ["tic", this.ticker],
-      ["amt", amt],
-      ["dst", this.transferForm.value.basic.destination],
+      ['tic', this.ticker],
+      ['amt', amt],
+      ['dst', this.transferForm.value.basic.destination],
     ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'transfer',
+      params
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -136,7 +186,7 @@ export class TransferModalPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'cft20',
         metaprotocolAction: 'transfer',
-      }
+      },
     });
 
     modal.present();
@@ -145,5 +195,4 @@ export class TransferModalPage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
-
 }

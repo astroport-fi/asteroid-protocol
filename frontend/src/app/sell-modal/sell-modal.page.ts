@@ -1,16 +1,30 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import {
+  chevronForward,
+  keySharp,
+  pencilSharp,
+  createSharp,
+  checkmark,
+  closeOutline,
+  close,
+} from 'ionicons/icons';
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
 import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
-import { Chain } from '../core/types/zeus';
+import { Chain } from '../core/helpers/zeus';
 import { TxFee } from '../core/types/tx-fee';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -26,38 +40,82 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
   templateUrl: './sell-modal.page.html',
   styleUrls: ['./sell-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, StripSpacesPipe]
+  imports: [
+    IonicModule,
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    LottieComponent,
+    MaskitoModule,
+    StripSpacesPipe,
+  ],
 })
 export class SellModalPage implements OnInit {
-
   @Input() ticker: string = 'tokens';
 
   sellForm: FormGroup;
-  minTradeSize: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTradeSize;
+  minTradeSize: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).minTradeSize;
   senderBalance?: number;
 
-  minDepositAbsolute: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositAbsolute;
-  minDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositPercent;
-  maxDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxDepositPercent;
-  minTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout;
-  maxTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxTimeout;
-
+  minDepositAbsolute: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).minDepositAbsolute;
+  minDepositPercent: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).minDepositPercent;
+  maxDepositPercent: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).maxDepositPercent;
+  minTimeout: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).minTimeout;
+  maxTimeout: number = (
+    environment.fees.protocol.marketplace['list.cft20'] as any
+  ).maxTimeout;
 
   readonly numberMask: MaskitoOptions;
   readonly decimalMask: MaskitoOptions;
 
-  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
+  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: MarketplaceService) {
+  constructor(
+    private walletService: WalletService,
+    private chainService: ChainService,
+    private modalCtrl: ModalController,
+    private router: Router,
+    private builder: FormBuilder,
+    private protocolService: MarketplaceService
+  ) {
     addIcons({ checkmark, closeOutline, close });
 
     this.sellForm = this.builder.group({
       basic: this.builder.group({
-        amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        price: [0.1, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        minDeposit: [this.minDepositPercent, [Validators.required, Validators.min(this.minDepositPercent), Validators.max(this.maxDepositPercent), Validators.pattern("^[0-9. ]*$")]],
-        timeoutBlocks: [this.minTimeout, [Validators.required, Validators.min(this.minTimeout), Validators.max(this.maxTimeout), Validators.pattern("^[0-9 ]*$")]],
+        amount: [10, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
+        price: [0.1, [Validators.required, Validators.pattern('^[0-9. ]*$')]],
+        minDeposit: [
+          this.minDepositPercent,
+          [
+            Validators.required,
+            Validators.min(this.minDepositPercent),
+            Validators.max(this.maxDepositPercent),
+            Validators.pattern('^[0-9. ]*$'),
+          ],
+        ],
+        timeoutBlocks: [
+          this.minTimeout,
+          [
+            Validators.required,
+            Validators.min(this.minTimeout),
+            Validators.max(this.maxTimeout),
+            Validators.pattern('^[0-9 ]*$'),
+          ],
+        ],
       }),
     });
 
@@ -65,7 +123,7 @@ export class SellModalPage implements OnInit {
       decimalSeparator: '.',
       thousandSeparator: ' ',
       precision: 0,
-      min: 1.000000,
+      min: 1.0,
     });
 
     this.decimalMask = maskitoNumberOptionsGenerator({
@@ -85,21 +143,25 @@ export class SellModalPage implements OnInit {
         {
           where: {
             ticker: {
-              _eq: this.ticker
-            }
-          }
-        }, {
+              _eq: this.ticker,
+            },
+          },
+        },
+        {
           id: true,
           decimals: true,
           last_price_base: true,
-        }
+        },
       ],
     });
     if (result.token.length > 0) {
       this.sellForm.patchValue({
         basic: {
-          price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base as number, 6)
-        }
+          price: TokenDecimalsPipe.prototype.transform(
+            result.token[0].last_price_base as number,
+            6
+          ),
+        },
       });
     }
 
@@ -108,23 +170,25 @@ export class SellModalPage implements OnInit {
         {
           where: {
             address: {
-              _eq: sender.address
+              _eq: sender.address,
             },
             token_id: {
-              _eq: result.token[0].id
-            }
-          }
-        }, {
+              _eq: result.token[0].id,
+            },
+          },
+        },
+        {
           amount: true,
-        }
-      ]
+        },
+      ],
     });
     if (balanceResult.token_holder.length > 0) {
       // Get the sender's balance with decimals
-      this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
+      this.senderBalance = TokenDecimalsPipe.prototype.transform(
+        parseInt(balanceResult.token_holder[0].amount as string),
+        result.token[0].decimals as number
+      );
     }
-
-
   }
 
   async submit() {
@@ -136,26 +200,37 @@ export class SellModalPage implements OnInit {
     // Close the sell modal
     this.modalCtrl.dismiss();
 
-    const amount = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString();
-    const ppt = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString();
+    const amount = StripSpacesPipe.prototype
+      .transform(this.sellForm.value.basic.amount)
+      .toString();
+    const ppt = StripSpacesPipe.prototype
+      .transform(this.sellForm.value.basic.price)
+      .toString();
 
-    let minDepositPercent = parseFloat(StripSpacesPipe.prototype.transform(this.sellForm.value.basic.minDeposit).toString());
+    let minDepositPercent = parseFloat(
+      StripSpacesPipe.prototype
+        .transform(this.sellForm.value.basic.minDeposit)
+        .toString()
+    );
     // We represent the percentage as a multiplier
     const minDepositMultiplier = minDepositPercent / 100;
-    const timeoutBlocks = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.timeoutBlocks).toString();
+    const timeoutBlocks = StripSpacesPipe.prototype
+      .transform(this.sellForm.value.basic.timeoutBlocks)
+      .toString();
 
     // Construct metaprotocol memo message
     const params = new Map([
-      ["tic", this.ticker],
-      ["amt", amount],
-      ["ppt", ppt],
-      ["mindep", minDepositMultiplier.toString()],
-      ["to", timeoutBlocks],
+      ['tic', this.ticker],
+      ['amt', amount],
+      ['ppt', ppt],
+      ['mindep', minDepositMultiplier.toString()],
+      ['to', timeoutBlocks],
     ]);
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = parseFloat(amount) * parseFloat(ppt) * minDepositMultiplier;
+    let listingFee =
+      parseFloat(amount) * parseFloat(ppt) * minDepositMultiplier;
     // Avoid very small listing fees
     if (listingFee < this.minDepositAbsolute) {
       listingFee = this.minDepositAbsolute;
@@ -164,7 +239,11 @@ export class SellModalPage implements OnInit {
     listingFee = listingFee * 10 ** 6;
     listingFee = Math.floor(listingFee);
 
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'list.cft20',
+      params
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -178,7 +257,7 @@ export class SellModalPage implements OnInit {
         metaprotocol: 'marketplace',
         metaprotocolAction: 'list.cft20',
         overrideFee: listingFee,
-      }
+      },
     });
     modal.present();
   }
@@ -186,5 +265,4 @@ export class SellModalPage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
-
 }
