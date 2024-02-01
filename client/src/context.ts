@@ -7,6 +7,7 @@ import { GasPrice } from '@cosmjs/stargate'
 import { SigningStargateClient } from './client.js'
 import type { Config, Network } from './config.js'
 import loadConfig from './config.js'
+import AsteroidService from './service/asteroid.js'
 
 export class Context {
   network: Network
@@ -14,6 +15,7 @@ export class Context {
   signer: OfflineSigner
   account: AccountData
   client: SigningStargateClient
+  api: AsteroidService
 
   constructor(
     network: Network,
@@ -21,12 +23,14 @@ export class Context {
     signer: OfflineSigner,
     account: AccountData,
     client: SigningStargateClient,
+    api: AsteroidService,
   ) {
     this.network = network
     this.config = config
     this.signer = signer
     this.account = account
     this.client = client
+    this.api = api
   }
 }
 
@@ -59,6 +63,9 @@ export async function createContext(options: Options): Promise<Context> {
     { gasPrice: GasPrice.fromString(config.gasPrice) },
   )
 
+  // api
+  const api = new AsteroidService(network.api)
+
   // create context
-  return new Context(network, config, wallet, account, client)
+  return new Context(network, config, wallet, account, client, api)
 }

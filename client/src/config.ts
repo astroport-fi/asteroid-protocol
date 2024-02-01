@@ -6,6 +6,7 @@ export const CONFIG_NAME = 'asteroid.json'
 const Network = z.object({
   chainId: z.string(),
   rpc: z.string(),
+  api: z.string(),
   explorer: z.string(),
 })
 export type Network = z.infer<typeof Network>

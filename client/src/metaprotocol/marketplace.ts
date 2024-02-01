@@ -9,7 +9,12 @@ const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',
   receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
   denom: 'uatom',
-  operations: {},
+  operations: {
+    'buy.cft20': {
+      amount: '0.02', // Default 2%
+      type: 'dynamic-percent',
+    },
+  },
 }
 
 export default class MarketplaceProtocol extends BaseProtocol {

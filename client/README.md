@@ -125,6 +125,21 @@ Options:
   -h, --help                       display help for command
 ```
 
+### Examples
+
+```
+npx asteroid inscription inscribe -p ~/Downloads/roids.png  --name asteroid --description asteroid
+npx asteroid inscription transfer -h 7105307B313A509C67CF1C146576E881E4B20FBA487A31F8F0145BEACDDF9B73 -d cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw
+
+npx asteroid cft20 deploy --ticker ROIDS --name ROIDS --supply 1000000 --logo-path ~/Downloads/roids.png
+npx asteroid cft20 mint --ticker ROIDS --amount 1000
+npx asteroid cft20 transfer --ticker ROIDS --amount 500 -d cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw
+
+npx asteroid marketplace list cft20 --ticker ROIDS --amount 10 --price 0.1
+npx asteroid marketplace deposit --hash 4C79CA69034AB97A49581E56FDE376E10D9FFB3E71567C0462A3729DA1B04E60
+npx asteroid marketplace buy cft20 --hash 4C79CA69034AB97A49581E56FDE376E10D9FFB3E71567C0462A3729DA1B04E60
+```
+
 ## Development
 
 ```bash

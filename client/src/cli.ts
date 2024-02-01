@@ -7,6 +7,7 @@ import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
+import AsteroidService from './service/asteroid.js'
 
 export function setupCommand(command?: Command) {
   if (!command) {
@@ -32,17 +33,28 @@ const marketplaceCommand = program.command('marketplace')
 
 async function action(
   options: Options,
-  fn: (context: Context) => Promise<TxData>,
+  fn: (context: Context) => Promise<TxData | void>,
 ) {
   const context = await createContext(options)
   const txData = await fn(context)
-  const res = await broadcastTx(context.client, context.account.address, txData)
-  console.log(`${context.network.explorer}${res.transactionHash}`)
+  if (txData) {
+    const res = await broadcastTx(
+      context.client,
+      context.account.address,
+      txData,
+    )
+    console.log(`${context.network.explorer}${res.transactionHash}`)
+  } else {
+    console.warn('No tx data')
+  }
 }
 
 async function inscriptionAction(
   options: Options,
-  fn: (context: Context, operations: InscriptionOperations) => Promise<TxData>,
+  fn: (
+    context: Context,
+    operations: InscriptionOperations,
+  ) => Promise<TxData | void>,
 ) {
   return action(options, (context) => {
     const operations = new InscriptionOperations(
@@ -55,7 +67,7 @@ async function inscriptionAction(
 
 async function cft20Action(
   options: Options,
-  fn: (context: Context, operations: CFT20Operations) => Promise<TxData>,
+  fn: (context: Context, operations: CFT20Operations) => Promise<TxData | void>,
 ) {
   return action(options, (context) => {
     const operations = new CFT20Operations(
@@ -68,12 +80,16 @@ async function cft20Action(
 
 async function marketplaceAction(
   options: Options,
-  fn: (context: Context, operations: MarketplaceOperations) => Promise<TxData>,
+  fn: (
+    context: Context,
+    operations: MarketplaceOperations,
+  ) => Promise<TxData | void>,
 ) {
   return action(options, (context) => {
     const operations = new MarketplaceOperations(
       context.network.chainId,
       context.account.address,
+      context.api,
     )
     return fn(context, operations)
   })
@@ -206,7 +222,7 @@ setupCommand(cft20Command.command('transfer'))
     })
   })
 
-interface MarkeplaceListCFT20Options extends Options {
+interface MarketplaceListCFT20Options extends Options {
   ticker: string
   amount: string
   price: string
@@ -231,7 +247,7 @@ setupCommand(marketplaceListCommand.command('cft20'))
     'The block this reservation expires',
     '50',
   )
-  .action(async (options: MarkeplaceListCFT20Options) => {
+  .action(async (options: MarketplaceListCFT20Options) => {
     marketplaceAction(options, async (context, operations) => {
       return operations.listCFT20(
         options.ticker,
@@ -240,6 +256,38 @@ setupCommand(marketplaceListCommand.command('cft20'))
         parseInt(options.minDeposit),
         parseInt(options.timeoutBlocks),
       )
+    })
+  })
+
+interface MarketplaceHashOptions extends Options {
+  hash: string
+}
+setupCommand(marketplaceCommand.command('deposit'))
+  .description('Reserve a listing for purchase')
+  .requiredOption('-h, --hash <HASH>', 'The listing transaction hash')
+  .action(async (options: MarketplaceHashOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.deposit(options.hash)
+    })
+  })
+
+const marketplaceBuyCommand = marketplaceCommand.command('buy')
+
+setupCommand(marketplaceBuyCommand.command('cft20'))
+  .description('Buy a listing, the listing must be reserved first')
+  .requiredOption('-h, --hash <HASH>', 'The listing transaction hash')
+  .action(async (options: MarketplaceHashOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.buyCFT20(options.hash)
+    })
+  })
+
+setupCommand(marketplaceCommand.command('delist'))
+  .description('Removing a listing')
+  .requiredOption('-h, --hash <HASH>', 'The listing transaction hash')
+  .action(async (options: MarketplaceHashOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.delist(options.hash)
     })
   })
 
