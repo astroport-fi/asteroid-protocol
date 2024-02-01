@@ -225,7 +225,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			}
 
 			// check if content is explicit
-			isExplicit = <-protocol.nsfwWorker.CheckImage(logoContent)
+			isExplicit = protocol.nsfwWorker.CheckImage(logoContent)
 
 			contentLength = len(logoContent)
 		}

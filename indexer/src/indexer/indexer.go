@@ -35,6 +35,8 @@ type Config struct {
 	RPCEndpoints             []string          `envconfig:"RPC_ENDPOINTS" required:"true"`
 	EndpointHeaders          map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
 	BlockPollIntervalMS      int               `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	NsfwModelPath            string            `envconfig:"NSFW_MODEL_PATH" default:"./model"`
+	NsfwWorkerEnabled        bool              `envconfig:"NSFW_WORKER_ENABLED" default:"true"`
 }
 
 // Indexer implements the reference indexer service
@@ -73,8 +75,8 @@ func New(
 
 	}
 
-	nsfwWorker := nsfw.NewWorker(log)
-	nsfwWorker.Start("./model")
+	nsfwWorker := nsfw.NewWorker(log, config.NsfwModelPath, config.NsfwWorkerEnabled)
+	nsfwWorker.Start()
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
 	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, nsfwWorker)

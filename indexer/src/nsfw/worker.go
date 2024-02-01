@@ -7,29 +7,37 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func NewWorker(log *logrus.Entry) *Worker {
+func NewWorker(log *logrus.Entry, modelPath string, enabled bool) *Worker {
 	worker := Worker{
-		work:     make(chan []byte),
-		result:   make(chan bool),
-		quitChan: make(chan bool),
+		modelPath: modelPath,
+		work:      make(chan []byte),
+		result:    make(chan bool),
+		quitChan:  make(chan bool),
 		logger: log.WithFields(logrus.Fields{
 			"worker": "nsfw",
 		}),
+		enabled: enabled,
+	}
+
+	if !enabled {
+		worker.logger.Info("NSFW worker disabled")
 	}
 
 	return &worker
 }
 
 type Worker struct {
-	work     chan []byte
-	result   chan bool
-	quitChan chan bool
-	logger   *logrus.Entry
+	modelPath string
+	enabled   bool
+	work      chan []byte
+	result    chan bool
+	quitChan  chan bool
+	logger    *logrus.Entry
 }
 
-func (w Worker) Start(modelPath string) {
+func (w *Worker) Start() {
 	go func() {
-		predictor, err := NewPredictorFromPath(modelPath)
+		predictor, err := NewPredictorFromPath(w.modelPath)
 		if err != nil {
 			w.logger.Fatal("unable to create predictor", err)
 		}
@@ -63,13 +71,18 @@ func (w Worker) Start(modelPath string) {
 	}()
 }
 
-func (w Worker) Stop() {
+func (w *Worker) Stop() {
 	go func() {
 		w.quitChan <- true
 	}()
 }
 
-func (w Worker) CheckImage(image []byte) <-chan bool {
+func (w *Worker) CheckImage(image []byte) bool {
+	if !w.enabled {
+		return false
+	}
+
 	w.work <- image
-	return w.result
+	isExplicit := <-w.result
+	return isExplicit
 }
