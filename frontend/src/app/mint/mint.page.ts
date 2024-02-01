@@ -14,6 +14,7 @@ import { WalletService } from '../core/service/wallet.service';
 import { Chain } from '../core/helpers/zeus';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { ConnectedWallet } from '../core/types/connected-wallet';
 
 @Component({
   selector: 'app-mint',
@@ -51,6 +52,14 @@ export class MintPage {
   async ngOnInit() {
     this.isLoading = true;
     const chain = Chain(environment.api.endpoint);
+
+    const walletDataJSON = localStorage.getItem(
+      environment.storage.connectedWalletKey
+    );
+    if (walletDataJSON) {
+      const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
+      this.walletService.setProvider(walletData.walletType);
+    }
 
     const result = await chain('query')({
       token: [
