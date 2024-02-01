@@ -16,17 +16,21 @@ audio {
 }
 
 .explicit {
-    width: 200px;
-    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
     background-color: rgba(0, 0, 0, 0.3);
     text-align: center;
     text-transform: uppercase;
-    padding-top: 80px;
     border-radius: 10px;
     font-size: 22px;
     color: #999999;
 
     .note {
         font-size: 12px;
+        margin-top: 10px;
     }
 }
