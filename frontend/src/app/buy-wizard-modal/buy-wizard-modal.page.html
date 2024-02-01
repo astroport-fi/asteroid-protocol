@@ -1,15 +1,21 @@
 <ion-content class="main-content" mode="md">
-  <div class="pt-3 text-center">
+  <div class="pt-3 text-center" *ngIf="wizardStep != 'failed' &&  wizardStep != 'invalid' && isLoading == false">
     <h2>Purchase tokens</h2>
   </div>
   <ion-grid class="ps-3">
-    <ion-row>
-      <ion-col class="">
-        <h3>Reserve deposit</h3>
+    <ion-row *ngIf="wizardStep != 'inflight' && wizardStep != 'failed' && wizardStep != 'invalid'">
+      <ion-col size="12" class="p-0 m-0 mb-3 mt-3">
+        <ol class="m-0 p-0">
+          <li [class.current]="wizardStep == 'deposit'" [class.success]="wizardStep == 'buy'">Reserve{{ wizardStep ==
+            'buy' ? 'd' : '' }}</li>
+          <li [class.current]="wizardStep == 'buy'">Purchase</li>
+        </ol>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="wizardStep == 'deposit'">
-      <ion-col size="12">
+  </ion-grid>
+  <ion-grid *ngIf=" wizardStep=='deposit'">
+    <ion-row>
+      <ion-col class="p-3 pb-0">
         <p>
           The two-step buying process requires a small deposit to reserve the tokens for purchase. Once the tokens
           are reserved you'll be able to complete the purchase.
@@ -20,26 +26,20 @@
       </ion-col>
       <ion-col size="12">
         <div class="fees">
-          <h4>Deposit breakdown</h4>
-          <!-- <div *ngIf="isSimulating">
-            <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <div class="note">
-              Estimating...
-            </div>
-          </div> -->
-          <!-- <table *ngIf="!isSimulating"> -->
+          <h4>Payment breakdown</h4>
           <table>
             <tr>
-              <td class="label">Cosmos Hub</td>
-              <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
+              <td class="label">Total price</td>
+              <td>{{ listing.total | tokenDecimals:6 | number: '1.6-6' }} ATOM</td>
             </tr>
             <tr>
-              <td class="label">Metaprotocol</td>
-              <!-- <td>{{ protocolFee | number: '1.6-6' }} ATOM</td> -->
+              <td class="label">Deposit (0.01%)</td>
+              <td>{{ listing.deposit_total | tokenDecimals:6 | number: '1.6-6' }} ATOM</td>
             </tr>
             <tr>
-              <td class="label total">Estimated total</td>
+              <td class="label total">Pay now</td>
               <td class="total shifted">
+                {{ listing.deposit_total | tokenDecimals:6 | number: '1.6-6' }} ATOM
                 <!-- {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM -->
                 <div class="icon-trigger">
                   <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
@@ -60,17 +60,20 @@
         </div>
       </ion-col>
       <ion-col size="12" class="text-center">
-        <ion-button color="primary" (click)="next()">Make deposit</ion-button>
+        <ion-button color="primary" (click)="deposit()">Make deposit</ion-button>
       </ion-col>
     </ion-row>
+  </ion-grid>
 
-    <ion-row *ngIf="wizardStep == 'buy'">
+  <ion-grid *ngIf="wizardStep == 'buy'">
+    <ion-row>
       <ion-col size="12">
         <p>
           Complete your purchase
         </p>
         <p>
-          Deposits are final and can't be refunded. If you don't complete the purchase, the deposit will be lost.
+          Your deposit has been accepted and the tokens are reserved for you. Complete the purchase to receive the
+          tokens.
         </p>
       </ion-col>
       <ion-col size="12">
@@ -85,21 +88,18 @@
           <!-- <table *ngIf="!isSimulating"> -->
           <table>
             <tr>
-              <td class="label">Deposit</td>
-              <td> - 10 ATOM</td>
+              <td class="label">Total price</td>
+              <td>&nbsp;0.000500 ATOM</td>
               <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
             </tr>
             <tr>
-              <td class="label">Cosmos Hub</td>
-              <!-- <td>{{ chainFee | tokenDecimals:6 | number: '1.6-6' }} ATOM</td> -->
+              <td class="label">Deposit (0.01%)</td>
+              <td>-0.000400 ATOM</td>
             </tr>
             <tr>
-              <td class="label">Metaprotocol</td>
-              <!-- <td>{{ protocolFee | number: '1.6-6' }} ATOM</td> -->
-            </tr>
-            <tr>
-              <td class="label total">Estimated total</td>
+              <td class="label total">Final payment</td>
               <td class="total shifted">
+                &nbsp;0.000100 ATOM
                 <!-- {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM -->
                 <div class="icon-trigger">
                   <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
@@ -123,12 +123,73 @@
         <ion-button color="primary" (click)="next()">Buy</ion-button>
       </ion-col>
     </ion-row>
+  </ion-grid>
 
-
-
+  <ion-grid *ngIf=" wizardStep=='inflight'">
     <ion-row>
       <ion-col>
-        <div class="action">
+        <div class="animation mx-auto">
+          <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="text-center mt-5">
+        <h2>Waiting for transaction</h2>
+        <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
+        <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
+          <b>Unable to sign transaction</b>
+          <p>{{ errorText }}</p>
+          <p>You must sign and submit the transaction in order to inscribe content</p>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="text-center note">
+        <h3>Transaction hash</h3>
+        <!-- <p>{{ txHash }}</p>
+        <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p> -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="wizardStep == 'failed' || wizardStep == 'invalid'">
+    <ion-row>
+      <ion-col>
+        <div class="animation large mx-auto p-0 m-0">
+          <ng-lottie [options]="{path: '../assets/lottie/error.json'}"></ng-lottie>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="text-center" *ngIf="wizardStep == 'failed'">
+        <h2>Purchase failed</h2>
+        <p>Your inscription was created on-chain, but failed to be added to Asteroid.<br />The reason for the failure
+          was:
+        </p>
+        <p class="color-orange">{{ errorText }}</p>
+      </ion-col>
+      <ion-col class="text-center" *ngIf="wizardStep == 'invalid'">
+        <h2>Unable to continue</h2>
+        <p>The reason for the failure was:
+        </p>
+        <p class="color-orange">{{ errorText }}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="wizardStep != 'invalid'">
+      <ion-col class="text-center note">
+        <h3>Transaction hash</h3>
+        <!-- <p>{{ txHash }}</p>
+        <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p> -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="action text-center">
           <!-- <ion-button color="success" type="submit"
               [disabled]="((sellForm.value.basic.amount | stripSpaces) *
               (sellForm.value.basic.price | stripSpaces)) < minTradeSize || (sellForm.value.basic.amount | stripSpaces) > senderBalance">Confirm and
@@ -136,9 +197,12 @@
             <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button> -->
 
           <!-- <ion-button color="success" fill="clear" (click)="cancel()">Next</ion-button> -->
-          <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
+          <ion-button color="primary" fill="clear" (click)="cancel()"
+            *ngIf="wizardStep == 'deposit'">Cancel</ion-button>
+          <ion-button color="primary" fill="clear" (click)="cancel()" *ngIf="wizardStep != 'deposit'">Close</ion-button>
         </div>
       </ion-col>
     </ion-row>
+
   </ion-grid>
 </ion-content>

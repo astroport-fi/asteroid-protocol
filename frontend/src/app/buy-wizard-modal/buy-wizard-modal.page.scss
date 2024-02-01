@@ -1,3 +1,11 @@
+:root {
+    border-radius: 10px !important;
+}
+
+:host {
+    border-radius: 10px !important;
+}
+
 ion-content {
     // --background: var(--color-dark-teal);
     // border-radius: 10px !important;
@@ -11,75 +19,31 @@ ion-content {
 
 }
 
-.confirmation {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    border: 1px solid var(--color-teal);
+
+.mw-400 {
+    max-width: 400px;
 }
 
-.action {
-    position: relative;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-}
+.animation {
+    max-width: 150px;
 
-.note {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-ion-list,
-ion-item,
-ion-list-header,
-ion-label,
-ion-accordion,
-ion-accordion-group {
-    --background: transparent;
-    --ion-background-color: transparent !important;
-    --background-color: transparent !important;
-    background-color: transparent !important;
-}
-
-ion-item[slot="header"] {
-    color: #ffffff;
-    // border-left: 1px solid #ff0000;
-
-    ion-label {
-        padding: 0px !important;
-        margin: 0px !important;
+    &.large {
+        max-width: 200px;
+        height: 200px;
     }
 }
 
-ion-accordion::part(expanded) {
-    // --background: #ff0000 !important;
-    background-color: rgba(30, 30, 30, 0.1) !important;
-}
+ion-col.note {
+    font-size: 14px;
+    color: #a7a7a7;
 
-ion-list-header {
-    ion-label {
-        text-transform: uppercase;
-        color: #ffffff;
-        padding: 0px;
-        margin: 0px;
+    h3 {
+        font-size: 14px;
+        color: #ebebeb;
     }
-}
 
-ion-item {
-    --min-height: 25px;
-    // min-height: 20px;
-    // max-height: 20px;
-    // height: 40px;
-    padding: 0px;
-    --padding-bottom: 0px;
-    --inner-padding-bottom: 0px;
-
-    ion-label {
-        margin-left: 10px;
-        --min-height: 25px;
-        height: 20px;
-        padding: 0px;
-        color: #ccc;
+    a {
+        color: var(--color-teal);
     }
 }
 
@@ -129,4 +93,107 @@ div.icon-trigger {
 
 ion-popover {
     --background: hsla(0, 0%, 100%, .05) !important;
+}
+
+.shifted {
+    position: relative;
+    top: -6px;
+}
+
+ion-popover {
+    --background: hsla(0, 0%, 100%, .05) !important;
+}
+
+$number-of-steps: 2;
+
+$line-width: 2px;
+$bullet-size: 2.5em;
+
+$background-color: #555;
+$foreground-color: #999;
+
+$active-background-color: #ffffff;
+$active-foreground-color: var(--ion-color-light);
+
+ol {
+    position: relative;
+    overflow: hidden;
+    counter-reset: wizard;
+    list-style: none;
+}
+
+li {
+    position: relative;
+    float: left;
+    width: 100% / $number-of-steps;
+    text-align: center;
+    color: $active-background-color;
+    opacity: 0.8;
+
+}
+
+.success {
+    color: var(--ion-color-success);
+}
+
+.current~li {
+    color: $foreground-color;
+}
+
+li:before {
+    counter-increment: wizard;
+    content: counter(wizard);
+    display: block;
+    color: #333;
+    background-color: $active-background-color;
+    border: $line-width solid $active-background-color;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    width: $bullet-size;
+    height: $bullet-size;
+    line-height: $bullet-size;
+    border-radius: $bullet-size;
+    position: relative;
+    left: 50%;
+    margin-bottom: $bullet-size / 2;
+    margin-left: $bullet-size * -0.5;
+    z-index: 1;
+    transition: all 0.4s ease-in-out;
+
+    .current~& {
+        background-color: $background-color;
+        color: $foreground-color;
+        border-color: $background-color;
+
+    }
+
+}
+
+li.success:before {
+    opacity: 0.4;
+    background-color: var(--ion-color-success);
+    border-color: var(--ion-color-success);
+    color: #777;
+}
+
+
+li+li {
+    &:after {
+        opacity: 0.2;
+        content: "";
+        display: block;
+        width: 80%;
+        background-color: $active-background-color;
+        height: $line-width;
+        position: absolute;
+        left: -40%;
+        top: $bullet-size / 2;
+        z-index: 0;
+    }
+}
+
+.current~li:after {
+    opacity: 0.2;
+    background-color: $background-color;
 }

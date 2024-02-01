@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -26,14 +27,17 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
   templateUrl: './buy-wizard-modal.page.html',
   styleUrls: ['./buy-wizard-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, StripSpacesPipe]
+  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, StripSpacesPipe, TokenDecimalsPipe]
 })
 export class BuyWizardModalPage implements OnInit {
 
   @Input() hash: string = '';
 
-  wizardStep: "deposit" | "buy" = "deposit";
-
+  wizardStep: "deposit" | "buy" | "inflight" | "failed" | "invalid" = "deposit";
+  errorText: string = "";
+  listing: any = null;
+  status: any = null;
+  isLoading: boolean = true;
 
   // sellForm: FormGroup;
   minTradeSize: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTradeSize;
@@ -81,57 +85,125 @@ export class BuyWizardModalPage implements OnInit {
   }
 
   async ngOnInit() {
-    const sender = await this.walletService.getAccount();
+    this.isLoading = true;
+    const ownAccount = await this.walletService.getAccount();
 
-    // const chain = Chain(environment.api.endpoint);
-    // const result = await chain('query')({
-    //   token: [
-    //     {
-    //       where: {
-    //         ticker: {
-    //           _eq: this.ticker
-    //         }
-    //       }
-    //     }, {
-    //       id: true,
-    //       decimals: true,
-    //       last_price_base: true,
-    //     }
-    //   ],
-    // });
-    // if (result.token.length > 0) {
-    //   this.sellForm.patchValue({
-    //     basic: {
-    //       price: TokenDecimalsPipe.prototype.transform(result.token[0].last_price_base as number, 6)
-    //     }
-    //   });
-    // }
 
-    // const balanceResult = await chain('query')({
-    //   token_holder: [
-    //     {
-    //       where: {
-    //         address: {
-    //           _eq: sender.address
-    //         },
-    //         token_id: {
-    //           _eq: result.token[0].id
-    //         }
-    //       }
-    //     }, {
-    //       amount: true,
-    //     }
-    //   ]
-    // });
-    // if (balanceResult.token_holder.length > 0) {
-    //   // Get the sender's balance with decimals
-    //   this.senderBalance = TokenDecimalsPipe.prototype.transform(parseInt(balanceResult.token_holder[0].amount as string), result.token[0].decimals as number);
-    // }
+    const chain = Chain(environment.api.endpoint);
+    const result = await chain('query')({
+      status: [
+        {},
+        {
+          last_processed_height: true,
+          last_known_height: true,
+        }
+      ],
+      marketplace_listing: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: this.hash
+              }
+            }
+          }
+        }, {
+          id: true,
+          is_cancelled: true,
+          is_deposited: true,
+          is_filled: true,
+          total: true,
+          seller_address: true,
+          depositor_address: true,
+          deposit_total: true,
+          depositor_timedout_block: true,
+        }
+      ],
+    });
+    this.listing = result.marketplace_listing[0];
+    this.status = result.status[0];
 
+    this.isLoading = false;
+
+    if (result.marketplace_listing.length == 0) {
+      this.wizardStep = "invalid";
+      this.errorText = "Listing not found";
+      return;
+    }
+    if (this.listing.is_cancelled || this.listing.is_filled) {
+      this.wizardStep = "invalid";
+      this.errorText = "This listing has already been cancelled or filled";
+      return;
+    }
+    if (this.listing.is_deposited && ownAccount.address != this.listing.depositor_address) {
+      this.wizardStep = "invalid";
+      this.errorText = "This listing already has a deposit, wait for the deposit to expire or choose a different listing";
+      return;
+    } else {
+      // We are the depositor, we can buy if the timeout hasn't passed
+      if (this.listing.depositor_timedout_block > this.status.last_known_height) {
+        this.wizardStep = "buy";
+        return;
+      }
+      // If the timeout has passed, show regular deposit flow
+    }
 
   }
 
-  async submit() {
+  async deposit() {
+    const deposit: bigint = this.listing.deposit_total as bigint;
+
+    const purchaseMessage = {
+      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      value: MsgSend.encode({
+        fromAddress: (await this.walletService.getAccount()).address,
+        toAddress: this.listing.seller_address,
+        amount: [
+          {
+            denom: "uatom",
+            amount: deposit.toString(),
+          }
+        ],
+      }).finish(),
+    }
+
+    const purchaseMessageJSON = {
+      '@type': "/cosmos.bank.v1beta1.MsgSend",
+      from_address: (await this.walletService.getAccount()).address,
+      to_address: this.listing.seller_address,
+      amount: [
+        {
+          denom: "uatom",
+          amount: deposit.toString(),
+        }
+      ],
+    }
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["h", this.hash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'deposit', params);
+    console.log("URN", urn);
+    // const modal = await this.modalCtrl.create({
+    //   keyboardClose: true,
+    //   backdropDismiss: false,
+    //   component: TransactionFlowModalPage,
+    //   componentProps: {
+    //     urn,
+    //     metadata: null,
+    //     data: null,
+    //     routerLink: ['/app/market', this.token.ticker],
+    //     resultCTA: 'Back to market',
+    //     metaprotocol: 'marketplace',
+    //     metaprotocolAction: 'deposit',
+    //     messages: [purchaseMessage],
+    //     messagesJSON: [purchaseMessageJSON],
+    //   }
+    // });
+    // modal.present();
+
+
     // if (!this.sellForm.valid) {
     //   this.sellForm.markAllAsTouched();
     //   return;
@@ -188,7 +260,9 @@ export class BuyWizardModalPage implements OnInit {
   }
 
   next() {
-    this.wizardStep = "buy";
+    // this.wizardStep = "failed";
+
+    // this.errorText = "Deposit not availble anymore"
   }
 
   cancel() {
