@@ -7,8 +7,19 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
 )
 
+type TokensTransferKind int
+
+const (
+	Send TokensTransferKind = iota
+	IbcTransfer
+)
+
 // GetBaseTokensSent returns the amount of base tokens sent in a transaction
-func GetBaseTokensSent(rawTransaction types.RawTransaction) (uint64, error) {
+func GetBaseTokensSent(rawTransaction types.RawTransaction, kind TokensTransferKind, ibcEnabled bool) (uint64, error) {
+	if ibcEnabled && kind == IbcTransfer {
+		return GetBaseTokensSentIBC(rawTransaction)
+	}
+
 	var err error
 	var amountSent uint64
 	for _, v := range rawTransaction.Body.Messages {
