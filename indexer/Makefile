@@ -59,6 +59,8 @@ test_cover_view: test_cover ## Run tests with coverage report and open HTML view
 clean: ## Remove compiled binaries from bin/
 	rm ./bin/*
 
+create-migration:
+	atlas migrate diff --env gorm
+
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-	

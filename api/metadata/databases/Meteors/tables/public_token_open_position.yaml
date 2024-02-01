@@ -1,0 +1,28 @@
+table:
+  name: token_open_position
+  schema: public
+object_relationships:
+  - name: token
+    using:
+      foreign_key_constraint_on: token_id
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount
+        - ppt
+        - total
+        - is_cancelled
+        - is_filled
+        - chain_id
+        - seller_address
+        - id
+        - token_id
+        - transaction_id
+        - date_created
+        - date_filled
+      filter: {}
+    comment: ""

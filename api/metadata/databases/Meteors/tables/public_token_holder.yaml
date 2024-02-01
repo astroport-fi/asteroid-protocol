@@ -1,0 +1,19 @@
+table:
+  name: token_holder
+  schema: public
+object_relationships:
+  - name: token
+    using:
+      foreign_key_constraint_on: token_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount
+        - address
+        - chain_id
+        - id
+        - token_id
+        - date_updated
+      filter: {}
+    comment: ""

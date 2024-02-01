@@ -31,7 +31,7 @@ The required parameters are:
 
 **Transferring an inscription**
 
-`urn:cft20:{chain-id}@{version};{operation}${param}={value},{param}={value}`
+`urn:inscription:{chain-id}@{version};{operation}${param}={value},{param}={value}`
 
 The operation values are:
 
