@@ -135,6 +135,7 @@ export class TradeTokenV2Page implements OnInit {
         {
           id: true,
           marketplace_listing: {
+            id: true,
             seller_address: true,
             total: true,
             depositor_address: true,
@@ -182,6 +183,7 @@ export class TradeTokenV2Page implements OnInit {
         {
           id: true,
           marketplace_listing: {
+            id: true,
             seller_address: true,
             total: true,
             depositor_address: true,
@@ -236,6 +238,7 @@ export class TradeTokenV2Page implements OnInit {
         {
           id: true,
           marketplace_listing: {
+            id: true,
             seller_address: true,
             total: true,
             depositor_address: true,
@@ -268,12 +271,10 @@ export class TradeTokenV2Page implements OnInit {
     });
     this.isLoading = false;
 
-    this.deposit("A4370FB32C90BA27D0AE7BF630760CF4EA3FD505FA1110698D66654F9924DD61");
-
   }
 
   async deposit(listingHash: string) {
-    console.log(listingHash);
+    console.log("listingHash" + listingHash);
     const modal = await this.modalCtrl.create({
       // keyboardClose: true,
       // backdropDismiss: false,

@@ -16,6 +16,7 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
 import { InscriptionService } from '../core/metaprotocol/inscription.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 
 @Component({
   selector: 'app-view-inscription',
@@ -31,6 +32,7 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
     DatePipe,
     GenericPreviewPage,
     TableModule,
+    TokenDecimalsPipe
   ],
 })
 export class ViewInscriptionPage implements OnInit {
@@ -84,12 +86,24 @@ export class ViewInscriptionPage implements OnInit {
           content_size_bytes: true,
           is_explicit: true,
           date_created: true,
-          marketplace_inscription_details: [{}, {
+          marketplace_inscription_details: [{
+            where: {
+              marketplace_listing: {
+                is_cancelled: {
+                  _eq: false,
+                },
+                is_filled: {
+                  _eq: false,
+                },
+              },
+            },
+          }, {
             id: true,
             marketplace_listing: {
               transaction: {
                 hash: true,
               },
+              total: true,
               is_cancelled: true,
               is_filled: true,
               seller_address: true,
@@ -126,6 +140,9 @@ export class ViewInscriptionPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
+
+    console.log(this.inscription);
+
     const { name, description, content_path, id, transaction } =
       this.inscription;
 
@@ -227,6 +244,7 @@ export class ViewInscriptionPage implements OnInit {
       component: SellInscriptionModalPage,
 
       componentProps: {
+        name: this.inscription.name,
         hash: this.inscription.transaction.hash,
       },
     });

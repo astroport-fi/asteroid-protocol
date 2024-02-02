@@ -162,7 +162,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-listing>
                 <tr class="no-click">
-                  <td pFrozenColumn>{{ listing.id }}</td>
+                  <td pFrozenColumn>{{ listing.marketplace_listing.id }}</td>
                   <td class="mono">{{ listing.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{listing.ppt *
                     baseTokenUSD |
                     tokenDecimals:6 | number:'1.6-6'}})</td>

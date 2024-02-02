@@ -32,7 +32,7 @@ export class MarketsInscriptionPage implements OnInit {
 
   isLoading = true;
   isTableLoading: boolean = false;
-  userAddress: string = '';
+  walletAddress: string = '';
   marketplaceDetail: any = null;
   offset = 0;
   limit = 20;
@@ -59,9 +59,15 @@ export class MarketsInscriptionPage implements OnInit {
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     // this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
+
   }
 
   async ngOnInit() {
+
+    const walletConnected = await this.walletService.isConnected();
+    if (walletConnected) {
+      this.walletAddress = (await this.walletService.getAccount()).address;
+    }
 
     const statusResult = await this.chain('query')({
       status: [
@@ -140,6 +146,9 @@ export class MarketsInscriptionPage implements OnInit {
           },
           inscription: {
             id: true,
+            transaction: {
+              hash: true
+            },
             content_path: true,
             __alias: {
               name: {
@@ -236,6 +245,7 @@ export class MarketsInscriptionPage implements OnInit {
 
   async buy(listingHash: string, inscriptionHash: string) {
     console.log("Lets buy", listingHash);
+    console.log("Lets buy", inscriptionHash);
 
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

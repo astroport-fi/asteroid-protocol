@@ -79,7 +79,7 @@
       <ion-col>
         <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
           <a class="inscription-item main-content"
-            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.hash)"
+            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
             *ngFor="let item of marketplaceDetail; let index">
             <div class="content">
               <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
@@ -91,11 +91,28 @@
                 <span>#{{item.inscription.id-1}}</span>
               </div>
               <div class="detail-item">
-                <a href="/">{{ item.marketplace_listing.seller_address |
+                Listed by:
+                <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
+                  *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
+                  item.marketplace_listing.seller_address |
                   shortenAddress | async}}</a>
+                <a class="text-warning" target="_blank"
+                  [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
+                  *ngIf="item.marketplace_listing.seller_address == walletAddress">You</a>
+
+                <!-- <ion-chip>
+                  <ion-avatar>
+                    <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                  </ion-avatar>
+                  <ion-label *ngIf="item.marketplace_listing.seller_address == walletAddress">You</ion-label>
+                  <ion-label *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
+                    item.marketplace_listing.seller_address
+                    | shortenAddress | async}}</ion-label>
+                </ion-chip> -->
               </div>
-              <div class="price text-center">
-                <ion-label class="value">12.12 <span>ATOM</span></ion-label>
+              <div class="marketplace-price text-center">
+                <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
+                  <span>ATOM</span></ion-label>
                 <ion-label class="label">Price</ion-label>
               </div>
             </div>

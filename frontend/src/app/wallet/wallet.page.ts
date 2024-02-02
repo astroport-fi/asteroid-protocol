@@ -197,6 +197,9 @@ export class WalletPage implements OnInit {
             {
               where: {
                 marketplace_listing: {
+                  seller_address: {
+                    _eq: this.selectedAddress
+                  },
                   is_cancelled: {
                     _eq: false
                   },

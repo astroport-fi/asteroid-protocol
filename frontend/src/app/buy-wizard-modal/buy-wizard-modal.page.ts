@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close, helpCircleOutline } from "ionicons/icons";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
@@ -32,65 +32,48 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 export class BuyWizardModalPage implements OnInit {
 
   @Input() hash: string = '';
+  @Input() metaprotocol: string = 'inscription';
+  @Input() metaprotocolAction: string = 'inscribe';
 
   wizardStep: "deposit" | "buy" | "inflight" | "failed" | "invalid" = "deposit";
   errorText: string = "";
   listing: any = null;
   status: any = null;
   isLoading: boolean = true;
+  currentChain = environment.chain;
+  explorerTxUrl: string = environment.api.explorer;
 
-  // sellForm: FormGroup;
-  minTradeSize: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTradeSize;
-  senderBalance: number = 0;
+  // @Input() resultCTA: string = 'View inscription';
+  // @Input() routerLink: string | [] = '';
+  // @Input() urn: string = '';
+  // @Input() metadata: string;
+  // @Input() data: string;
+  @Input() messages: any[] = [];
+  @Input() messagesJSON: any[] = [];
+  @Input() overrideFee: number = 0;
 
-  minDepositAbsolute: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositAbsolute;
-  minDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minDepositPercent;
-  maxDepositPercent: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxDepositPercent;
-  minTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).minTimeout;
-  maxTimeout: number = (environment.fees.protocol.marketplace["list.cft20"] as any).maxTimeout;
+  isSimulating: boolean = true;
+  // errorText: string = '';
+  txHash: string = '';
+  // state: 'sign' | 'submit' | 'success-onchain' | 'success-indexer' | 'success-inscribed' | 'failed' | 'error' = 'sign';
+  // explorerTxUrl: string = environment.api.explorer;
+  chain: any = null;
+  gasEstimate: number = parseInt(environment.fees.chain.gasLimit);
+  chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average / 1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+  protocolFee: number = 0.005;
+  protocolFeeAbsolute: number = 0.005;
 
-
-
-  // readonly numberMask: MaskitoOptions;
-  // readonly decimalMask: MaskitoOptions;
-
-  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
-  readonly decimalMaskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
 
   constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: MarketplaceService) {
-    addIcons({ checkmark, closeOutline, close });
-
-    // this.sellForm = this.builder.group({
-    //   basic: this.builder.group({
-    //     amount: [10, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-    //     price: [0.1, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-    //     minDeposit: [this.minDepositPercent, [Validators.required, Validators.min(this.minDepositPercent), Validators.max(this.maxDepositPercent), Validators.pattern("^[0-9. ]*$")]],
-    //     timeoutBlocks: [this.minTimeout, [Validators.required, Validators.min(this.minTimeout), Validators.max(this.maxTimeout), Validators.pattern("^[0-9 ]*$")]],
-    //   }),
-    // });
-
-    // this.numberMask = maskitoNumberOptionsGenerator({
-    //   decimalSeparator: '.',
-    //   thousandSeparator: ' ',
-    //   precision: 0,
-    //   min: 1.000000,
-    // });
-
-    // this.decimalMask = maskitoNumberOptionsGenerator({
-    //   decimalSeparator: '.',
-    //   thousandSeparator: ' ',
-    //   precision: 6,
-    //   min: 0,
-    // });
+    addIcons({ checkmark, closeOutline, close, helpCircleOutline });
+    this.chain = Chain(environment.api.endpoint);
   }
 
   async ngOnInit() {
     this.isLoading = true;
     const ownAccount = await this.walletService.getAccount();
 
-
-    const chain = Chain(environment.api.endpoint);
-    const result = await chain('query')({
+    const result = await this.chain('query')({
       status: [
         {},
         {
@@ -136,21 +119,28 @@ export class BuyWizardModalPage implements OnInit {
       return;
     }
     if (this.listing.is_deposited && ownAccount.address != this.listing.depositor_address) {
-      this.wizardStep = "invalid";
-      this.errorText = "This listing already has a deposit, wait for the deposit to expire or choose a different listing";
-      return;
+      // Check if the deposit has expired
+      if (this.listing.depositor_timedout_block > this.status.last_known_height) {
+        this.wizardStep = "invalid";
+        this.errorText = "This listing already has a deposit, wait for the deposit to expire or choose a different listing";
+        return;
+      }
+
+      // If it hasn't expired, allow reserve
+
     } else {
       // We are the depositor, we can buy if the timeout hasn't passed
+      // although this should use the regular transaction flow
       if (this.listing.depositor_timedout_block > this.status.last_known_height) {
         this.wizardStep = "buy";
         return;
       }
       // If the timeout has passed, show regular deposit flow
     }
-
   }
 
   async deposit() {
+
     const deposit: bigint = this.listing.deposit_total as bigint;
 
     const purchaseMessage = {
@@ -185,88 +175,149 @@ export class BuyWizardModalPage implements OnInit {
     ]);
     const urn = this.protocolService.buildURN(environment.chain.chainId, 'deposit', params);
     console.log("URN", urn);
-    // const modal = await this.modalCtrl.create({
-    //   keyboardClose: true,
-    //   backdropDismiss: false,
-    //   component: TransactionFlowModalPage,
-    //   componentProps: {
-    //     urn,
-    //     metadata: null,
-    //     data: null,
-    //     routerLink: ['/app/market', this.token.ticker],
-    //     resultCTA: 'Back to market',
-    //     metaprotocol: 'marketplace',
-    //     metaprotocolAction: 'deposit',
-    //     messages: [purchaseMessage],
-    //     messagesJSON: [purchaseMessageJSON],
-    //   }
-    // });
-    // modal.present();
 
 
-    // if (!this.sellForm.valid) {
-    //   this.sellForm.markAllAsTouched();
-    //   return;
-    // }
+    const fees = await this.updateFees();
+    try {
+      await this.updateSimulate(urn, null, null, fees, [purchaseMessageJSON]);
+    } catch (e) {
+      this.wizardStep = "failed";
+      this.errorText = "Failed to simulate transaction: " + e;
+      return;
+    }
 
-    // // Close the sell modal
-    // this.modalCtrl.dismiss();
+    // Submit transaction to sign and broadcast
+    try {
+      await this.submitTransaction(urn, null, null, fees, [purchaseMessage]);
+    } catch (e) {
+      this.wizardStep = "failed";
+      this.errorText = "Failed to submit transaction: " + e;
+      return;
+    }
 
-    // const amount = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.amount).toString();
-    // const ppt = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.price).toString();
-
-    // let minDepositPercent = parseFloat(StripSpacesPipe.prototype.transform(this.sellForm.value.basic.minDeposit).toString());
-    // // We represent the percentage as a multiplier
-    // const minDepositMultiplier = minDepositPercent / 100;
-    // const timeoutBlocks = StripSpacesPipe.prototype.transform(this.sellForm.value.basic.timeoutBlocks).toString();
-
-    // // Construct metaprotocol memo message
-    // const params = new Map([
-    //   ["tic", this.ticker],
-    //   ["amt", amount],
-    //   ["ppt", ppt],
-    //   ["mindep", minDepositMultiplier.toString()],
-    //   ["to", timeoutBlocks],
-    // ]);
-
-    // // Calculate the amount of ATOM for the listing fee
-    // // The listing fee is mindep % of amount * ppt
-    // let listingFee = parseFloat(amount) * parseFloat(ppt) * minDepositMultiplier;
-    // // Avoid very small listing fees
-    // if (listingFee < this.minDepositAbsolute) {
-    //   listingFee = this.minDepositAbsolute;
-    // }
-    // // Convert to uatom
-    // listingFee = listingFee * 10 ** 6;
-    // listingFee = Math.floor(listingFee);
-
-    // const urn = this.protocolService.buildURN(environment.chain.chainId, 'list.cft20', params);
-    // const modal = await this.modalCtrl.create({
-    //   keyboardClose: true,
-    //   backdropDismiss: false,
-    //   component: TransactionFlowModalPage,
-    //   componentProps: {
-    //     urn,
-    //     metadata: null,
-    //     data: null,
-    //     routerLink: ['/app/manage/token', this.ticker],
-    //     resultCTA: 'View transaction',
-    //     metaprotocol: 'marketplace',
-    //     metaprotocolAction: 'list.cft20',
-    //     overrideFee: listingFee,
-    //   }
-    // });
-    // modal.present();
   }
 
-  next() {
-    // this.wizardStep = "failed";
-
-    // this.errorText = "Deposit not availble anymore"
-  }
 
   cancel() {
     this.modalCtrl.dismiss();
   }
 
+  // TODO: This was taken from the regular transaction flow
+  // It should be moved to it's own service together with all the messy transaction stuff
+  async updateFees() {
+    const fees: TxFee = {
+      metaprotocol: {
+        receiver: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].receiver,
+        denom: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].denom,
+        amount: (environment.fees.protocol as any)[this.metaprotocol][this.metaprotocolAction].amount,
+      },
+      chain: {
+        denom: this.currentChain.feeCurrencies[0].coinMinimalDenom,
+        amount: "0",
+      },
+      gasLimit: environment.fees.chain.gasLimit,
+    }
+    if (this.overrideFee > 0) {
+      fees.metaprotocol.amount = this.overrideFee.toString();
+    }
+
+    this.protocolFee = parseInt(fees.metaprotocol.amount) / 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+    this.protocolFeeAbsolute = parseInt(fees.metaprotocol.amount);
+
+    this.gasEstimate = parseInt(environment.fees.chain.gasLimit);
+    return fees;
+  }
+
+  // TODO: This was taken from the regular transaction flow
+  // It should be moved to it's own service together with all the messy transaction stuff
+  async updateSimulate(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
+    const simulateTx = await this.walletService.createSimulated(urn, metadata, data, fees, messages);
+    const result = await this.chainService.simulateTransaction(simulateTx);
+
+    if (result) {
+      this.gasEstimate = parseInt(result.gas_used);
+      // Bump gas by 60% to account for any changes
+      this.gasEstimate = this.gasEstimate + (this.gasEstimate * 0.6);
+
+      // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+      this.chainFee = (this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average) / 1000000;
+
+      // Bump the chain fee by 40% to account for extra storage needed on top of the 40% gas bump
+      this.chainFee = this.chainFee + (this.chainFee * 0.4);
+
+      // Convert to uatom
+      this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+    }
+  }
+
+  async submitTransaction(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
+    try {
+
+      const signedTx = await this.walletService.sign(urn, metadata, data, fees, messages);
+      // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
+
+      this.wizardStep = 'inflight';
+      this.txHash = await this.walletService.broadcast(signedTx);
+
+      // Keep checking the chain is this TX is successful every second
+      // for 180 seconds (3 minutes)
+      for (let i = 0; i < 180; i++) {
+        await delay(1000);
+        try {
+          if (this.wizardStep == 'inflight') {
+            const tx = await this.chainService.fetchTransaction(this.txHash);
+            if (tx) {
+              if (tx.code == 0) {
+                // Depending on the flow, we need to either show success for purchase
+                // or we need to move on to buying
+
+                this.wizardStep = 'success-onchain';
+              }
+            }
+            // } else {
+            //   // Transaction was found on chain, now check indexer
+            //   // const result = await this.chain('query')({
+            //   //   transaction: [
+            //   //     {
+            //   //       where: {
+            //   //         hash: {
+            //   //           _eq: this.txHash
+            //   //         }
+            //   //       }
+            //   //     }, {
+            //   //       id: true,
+            //   //       hash: true,
+            //   //       status_message: true,
+            //   //     }
+            //   //   ]
+            //   // });
+
+            //   // if (result.transaction.length > 0) {
+            //   //   this.wizardStep = 'success-indexer';
+            //   //   // Indexer has it, keep checking until statusMessage changes
+            //   //   // to something else than pending
+            //   //   if (result.transaction[0].status_message.toLowerCase() == 'success') {
+            //   //     this.wizardStep = 'success-inscribed';
+            //   //     break;
+            //   //   } else if (result.transaction[0].status_message.toLowerCase().includes('error')) {
+            //   //     // We hit an error
+            //   //     this.wizardStep = 'failed';
+            //   //     this.errorText = this.mapToHumanError(result.transaction[0].status_message);
+            //   //     break;
+            //   //   }
+            //   // }
+            // }
+          }
+        catch (e) {
+            console.error(e);
+          }
+        }
+    } catch (error: any) {
+        // this.state = 'error';
+
+        // if (error instanceof Error) {
+        //   this.errorText = error.message;
+        // }
+      }
+    }
 }

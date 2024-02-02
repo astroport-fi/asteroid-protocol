@@ -16,6 +16,7 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
 import { InscriptionService } from '../core/metaprotocol/inscription.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 
 @Component({
   selector: 'app-view-inscription-modal',
@@ -31,6 +32,7 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
     DatePipe,
     GenericPreviewPage,
     TableModule,
+    TokenDecimalsPipe
   ],
 })
 export class ViewInscriptionModalPage implements OnInit {
@@ -61,9 +63,6 @@ export class ViewInscriptionModalPage implements OnInit {
       this.currentAddress = (await this.walletService.getAccount()).address;
     }
 
-    console.log("this.hash");
-    console.log(this.hash);
-
     const chain = Chain(environment.api.endpoint);
 
     const result = await chain('query')({
@@ -90,6 +89,27 @@ export class ViewInscriptionModalPage implements OnInit {
           content_size_bytes: true,
           is_explicit: true,
           date_created: true,
+          marketplace_inscription_details: [{
+            where: {
+              marketplace_listing: {
+                is_cancelled: {
+                  _eq: false,
+                },
+                is_filled: {
+                  _eq: false,
+                },
+              },
+            },
+          }, {
+            id: true,
+            marketplace_listing: {
+              seller_address: true,
+              total: true,
+              transaction: {
+                hash: true
+              }
+            },
+          }],
           __alias: {
             name: {
               metadata: [
@@ -121,6 +141,7 @@ export class ViewInscriptionModalPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
+    console.log(this.inscription);
     this.isLoading = false;
   }
 
@@ -128,6 +149,48 @@ export class ViewInscriptionModalPage implements OnInit {
     this.modalCtrl.dismiss({
       dismissed: true,
     });
+  }
+
+  buy() {
+
+  }
+
+  async delist() {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
+      });
+      modal.present();
+      return;
+    }
+
+    const listingHash = this.inscription.marketplace_inscription_details[0].marketplace_listing.transaction.hash;
+
+    // Construct metaprotocol memo message
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const modal = await this.modalCtrl.create({
+      keyboardClose: true,
+      backdropDismiss: false,
+      component: TransactionFlowModalPage,
+      componentProps: {
+        urn,
+        metadata: null,
+        data: null,
+        routerLink: ['/app/inscription/', this.inscription.transaction.hash],
+        resultCTA: 'View transaction',
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'delist',
+      }
+    });
+    modal.present();
+
   }
 
 }

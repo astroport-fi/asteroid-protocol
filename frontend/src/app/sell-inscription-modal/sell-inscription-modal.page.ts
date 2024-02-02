@@ -31,6 +31,7 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 export class SellInscriptionModalPage implements OnInit {
 
   @Input() hash: string = '';
+  @Input() name: string = '';
 
   sellForm: FormGroup;
   minTradeSize: number = (environment.fees.protocol.marketplace["list.inscription"] as any).minTradeSize;

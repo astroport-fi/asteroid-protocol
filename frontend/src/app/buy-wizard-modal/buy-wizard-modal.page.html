@@ -1,5 +1,5 @@
 <ion-content class="main-content" mode="md">
-  <div class="pt-3 text-center" *ngIf="wizardStep != 'failed' &&  wizardStep != 'invalid' && isLoading == false">
+  <div class="pt-3 text-center" *ngIf="wizardStep != 'failed' &&  wizardStep != 'invalid'">
     <h2>Purchase tokens</h2>
   </div>
   <ion-grid class="ps-3">
@@ -12,8 +12,16 @@
         </ol>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="isLoading">
+      <ion-col size="8" offset="2">
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        <p>
+          Loading...
+        </p>
+      </ion-col>
+    </ion-row>
   </ion-grid>
-  <ion-grid *ngIf=" wizardStep=='deposit'">
+  <ion-grid *ngIf=" wizardStep=='deposit' && !isLoading">
     <ion-row>
       <ion-col class="p-3 pb-0">
         <p>
@@ -43,7 +51,6 @@
                 <!-- {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM -->
                 <div class="icon-trigger">
                   <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
-                  <!-- <ion-button>Left-Click Me</ion-button> -->
                   <ion-popover trigger="click-trigger" triggerAction="click">
                     <ng-template>
                       <ion-content class="main-content ion-padding">You are required to complete a transfer of ATOM to
@@ -53,7 +60,6 @@
                     </ng-template>
                   </ion-popover>
                 </div>
-
               </td>
             </tr>
           </table>
@@ -65,7 +71,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="wizardStep == 'buy'">
+  <ion-grid *ngIf="wizardStep == 'buy' && !isLoading">
     <ion-row>
       <ion-col size="12">
         <p>
@@ -120,12 +126,12 @@
         </div>
       </ion-col>
       <ion-col size="12" class="text-center">
-        <ion-button color="primary" (click)="next()">Buy</ion-button>
+        <ion-button color="primary" (click)="deposit()">Buy</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf=" wizardStep=='inflight'">
+  <ion-grid *ngIf=" wizardStep=='inflight' && !isLoading">
     <ion-row>
       <ion-col>
         <div class="animation mx-auto">
@@ -147,8 +153,8 @@
     <ion-row>
       <ion-col class="text-center note">
         <h3>Transaction hash</h3>
-        <!-- <p>{{ txHash }}</p>
-        <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p> -->
+        <p>{{ txHash }}</p>
+        <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
       </ion-col>
     </ion-row>
   </ion-grid>
