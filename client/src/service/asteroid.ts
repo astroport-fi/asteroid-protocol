@@ -1,10 +1,14 @@
-import { Chain } from '../helpers/zeus.js'
+import { Chain, Subscription } from '../helpers/zeus.js'
 
-export default class AsteroidService {
+export class AsteroidService {
   chain: Chain
+  subscription?: Subscription
 
-  constructor(url: string) {
+  constructor(url: string, wsEnabled = false) {
     this.chain = Chain(url)
+    if (wsEnabled) {
+      this.subscription = Subscription(url)
+    }
   }
 
   async fetchListing(listingHash: string) {

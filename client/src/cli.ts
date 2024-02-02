@@ -7,7 +7,6 @@ import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
-import AsteroidService from './service/asteroid.js'
 
 export function setupCommand(command?: Command) {
   if (!command) {

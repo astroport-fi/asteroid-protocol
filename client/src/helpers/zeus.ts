@@ -2,6 +2,7 @@ import fetchRetry, { RequestInitWithRetry } from 'fetch-retry'
 import {
   GraphQLError,
   GraphQLResponse,
+  Subscription,
   Thunder,
   chainOptions,
   fetchOptions,
@@ -9,7 +10,8 @@ import {
 
 export { Subscription } from '../zeus/index.js'
 
-const fetch = fetchRetry(global.fetch)
+const globalFetch = typeof window !== 'undefined' ? window.fetch : global.fetch
+const fetch = fetchRetry(globalFetch)
 
 const handleFetchResponse = (response: Response): Promise<GraphQLResponse> => {
   if (!response.ok) {
@@ -80,3 +82,5 @@ export const apiFetch =
 
 export const Chain = (...options: chainOptions) => Thunder(apiFetch(options))
 export type Chain = ReturnType<typeof Chain>
+
+export type Subscription = ReturnType<typeof Subscription>

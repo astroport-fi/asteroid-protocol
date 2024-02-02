@@ -7,7 +7,7 @@ import { GasPrice } from '@cosmjs/stargate'
 import { SigningStargateClient } from './client.js'
 import type { Config, Network } from './config.js'
 import loadConfig from './config.js'
-import AsteroidService from './service/asteroid.js'
+import { AsteroidService } from './service/asteroid.js'
 
 export class Context {
   network: Network

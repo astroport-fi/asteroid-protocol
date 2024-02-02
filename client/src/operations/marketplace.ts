@@ -1,7 +1,7 @@
 import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
 import MarketplaceProtocol from '../metaprotocol/marketplace.js'
-import AsteroidService from '../service/asteroid.js'
+import { AsteroidService } from '../service/asteroid.js'
 import { OperationsBase } from './index.js'
 
 export class MarketplaceOperations extends OperationsBase {
