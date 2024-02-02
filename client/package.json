@@ -1,5 +1,5 @@
 {
-  "name": "asteroid",
+  "name": "@asteroid-protocol/sdk",
   "version": "0.1.0",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -10,12 +10,18 @@
     "prettify": "prettier . --write",
     "prepare": "cd .. && husky install client/.husky",
     "prepublishOnly": "npm run build",
-    "build": "tsc --build",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "npx tsc --module commonjs --outDir cjs/ && echo '{\"type\": \"commonjs\"}' > cjs/package.json",
+    "build:esm": "npx tsc --module es2022 --outDir esm/ && echo '{\"type\": \"module\"}' > esm/package.json",
     "clean": "tsc --build --clean"
   },
-  "main": "lib/index.js",
+  "main": "cjs/index.js",
+  "exports": {
+    "require": "./cjs/index.js",
+    "import": "./esm/index.js"
+  },
   "bin": {
-    "asteroid": "lib/cli.js"
+    "asteroid": "./esm/cli.js"
   },
   "dependencies": {
     "@cosmjs/crypto": "^0.32.2",
@@ -24,6 +30,7 @@
     "@cosmjs/stargate": "^0.32.2",
     "@cosmjs/tendermint-rpc": "^0.32.2",
     "commander": "^11.1.0",
+    "cosmjs-types": "^0.9.0",
     "fetch-retry": "^5.0.6",
     "graphql-ws": "^5.14.3",
     "mime": "^4.0.1",
@@ -49,7 +56,9 @@
     ]
   },
   "files": [
-    "lib"
+    "cjs",
+    "esm",
+    "asteroid.json"
   ],
   "publishConfig": {
     "access": "public"

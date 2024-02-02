@@ -7,4 +7,5 @@
 *.iml
 .idea
 
-lib
+cjs
+esm

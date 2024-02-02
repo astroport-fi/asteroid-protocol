@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { AllTypesProps, ReturnTypes, Ops } from './const';
+import { AllTypesProps, ReturnTypes, Ops } from './const.js';
 export const HOST = "http://localhost:8080/v1/graphql"
 
 

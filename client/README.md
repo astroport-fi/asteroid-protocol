@@ -1,6 +1,65 @@
-# Asteroid Protocol js library and command line tool
+# Asteroid Protocol SDK and command line tool
+
+## Install
+
+```bash
+npm i @asteroid-protocol/sdk
+```
+
+## SDK
+
+SKD exposes Operations class for each metaprotocol and calling a metaprotocol operation method returns tx data for a given operation
+
+### Operations
+
+- `InscriptionOperations`
+  - `inscribe`
+  - `transfer`
+
+- `CFT20Operations`
+  - `deploy`
+  - `mint`
+  - `transfer`
+
+- `MarketplaceOperations`
+  - `listCFT20`
+  - `delist`
+  - `deposit`
+  - `buyCFT20`
+
+### Tx Data interface
+
+```typescript
+interface TxData {
+  memo: string
+  messages: readonly EncodeObject[]
+  nonCriticalExtensionOptions: Any[]
+}
+```
+
+### Example
+
+```typescript
+import { InscriptionOperations } from "@asteroid-protocol/sdk";
+
+const operations = new InscriptionOperations(
+  network.chainId,
+  account.address
+);
+
+const data = "SOME DATA";
+const txData = operations.inscribe(data, {
+  mime: "text/plain",
+  name: "some text",
+  description: "some text description",
+});
+```
+
+Full example: [inscribe.js](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/example/inscribe.js)
 
 ## Command line tool
+
+Run `npx asteroid`
 
 ```bash
 Usage: asteroid [options] [command]
@@ -12,8 +71,13 @@ Options:
 Commands:
   inscription
   cft20
+  marketplace
   help [command]  display help for command
 ```
+
+### Config file
+
+To customize configuration create `asteroid.json`, see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/asteroid.json)
 
 ### Inscription
 
@@ -124,6 +188,83 @@ Options:
   -d, --destination <DESTINATION>  The address to transfer to
   -h, --help                       display help for command
 ```
+
+### Marketplace
+
+```bash
+Usage: asteroid marketplace [options] [command]
+
+Options:
+  -h, --help         display help for command
+
+Commands:
+  list
+  deposit [options]  Reserve a listing for purchase
+  buy
+  delist [options]   Removing a listing
+  help [command]     display help for command
+```
+
+#### List CFT20
+
+```bash
+Usage: asteroid marketplace list cft20 [options]
+
+Creating a new listing for CFT-20 tokens
+
+Options:
+  -n, --network <NETWORK_NAME>     Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>     Name of the account to use as transaction signer
+  -t, --ticker <TICKER>            The token ticker
+  -m, --amount <AMOUNT>            The amount being sold
+  -p, --price <PRICE>              The price per token in atom
+  -d, --min-deposit <MIN_DEPOSIT>  The minimum deposit expressed as a percentage of total (default: "10")
+  -b, --timeout-blocks <DECIMALS>  The block this reservation expires (default: "50")
+  -h, --help                       display help for command
+```
+
+#### Deposit
+
+```bash
+Usage: asteroid marketplace deposit [options]
+
+Reserve a listing for purchase
+
+Options:
+  -n, --network <NETWORK_NAME>  Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>  Name of the account to use as transaction signer
+  -h, --hash <HASH>             The listing transaction hash
+  --help                        display help for command
+```
+
+#### Buy CFT20
+
+```bash
+Usage: asteroid marketplace buy cft20 [options]
+
+Buy a listing, the listing must be reserved first
+
+Options:
+  -n, --network <NETWORK_NAME>  Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>  Name of the account to use as transaction signer
+  -h, --hash <HASH>             The listing transaction hash
+  --help                        display help for command
+```
+
+#### Delist
+
+```bash
+Usage: asteroid marketplace delist [options]
+
+Removing a listing
+
+Options:
+  -n, --network <NETWORK_NAME>  Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>  Name of the account to use as transaction signer
+  -h, --hash <HASH>             The listing transaction hash
+  --help                        display help for command
+```
+
 
 ### Examples
 

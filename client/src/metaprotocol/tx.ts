@@ -1,6 +1,6 @@
 import { EncodeObject } from '@cosmjs/proto-signing'
 import { MsgSendEncodeObject, MsgTransferEncodeObject } from '@cosmjs/stargate'
-import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx'
+import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
 import { Any } from 'cosmjs-types/google/protobuf/any'
 import { SigningStargateClient } from '../client.js'
 import { Inscription, ProtocolFee } from '../metaprotocol/index.js'

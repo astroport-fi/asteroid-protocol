@@ -36,9 +36,9 @@ import {
 } from '@cosmjs/stargate'
 import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { assert, assertDefined } from '@cosmjs/utils'
-import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing'
-import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
-import { Any } from 'cosmjs-types/google/protobuf/any'
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing.js'
+import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx.js'
+import { Any } from 'cosmjs-types/google/protobuf/any.js'
 import { TxExtension, setupTxExtension } from './tx-extension.js'
 
 export class SigningStargateClient extends StargateClient {
