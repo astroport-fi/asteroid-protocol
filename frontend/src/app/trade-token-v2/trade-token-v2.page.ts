@@ -281,6 +281,8 @@ export class TradeTokenV2Page implements OnInit {
       component: BuyWizardModalPage,
       componentProps: {
         hash: listingHash,
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'deposit',
       }
     });
     modal.present();
