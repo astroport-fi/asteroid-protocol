@@ -34,12 +34,14 @@ export class MarketsInscriptionPage implements OnInit {
   isTableLoading: boolean = false;
   walletAddress: string = '';
   marketplaceDetail: any = null;
+  reservedMarketplaceDetail: any = null;
   offset = 0;
   limit = 20;
   total: number = 20000;
   lastFetchCount = 0;
   baseToken: any;
   chain: any;
+  currentFilter: any = {};
 
   priceRanges: string[] = ["0-10 ATOM", "10+ ATOM"];
   selectedPriceRange: string | undefined;
@@ -48,7 +50,7 @@ export class MarketsInscriptionPage implements OnInit {
   selectedBlockRange: string | undefined;
 
   orderOptions: string[] = ["Newest", "Oldest"];
-  selectedOrder: string | undefined;
+  selectedOrder: any;
 
   typeOptions: string[] = ["Image", "Video"];
   selectedType: string | undefined;
@@ -89,21 +91,100 @@ export class MarketsInscriptionPage implements OnInit {
     this.currentBlock = statusResult.status[0].last_processed_height;
 
 
+    this.selectedOrder = {
+      marketplace_listing: {
+        id: order_by.desc
+      }
+    };
+    this.currentFilter = {};
     const result = await this.fetchInscriptions(
-      [],
+      this.currentFilter,
       [
-        {
-          id: order_by.asc
-        }
+        this.selectedOrder
       ]);
     this.marketplaceDetail = result.marketplace_inscription_detail;
-    console.log(this.marketplaceDetail);
+    const reservedResult = await this.fetchReservedInscriptions();
+    this.reservedMarketplaceDetail = reservedResult.marketplace_inscription_detail;
     this.isLoading = false;
 
 
   }
 
-  async fetchInscriptions(where: any[], order: any[]) {
+  async fetchInscriptions(where: {}, order: any[]) {
+
+    const fullWhere = {
+      marketplace_listing: {
+        is_cancelled: {
+          _eq: false
+        },
+        is_filled: {
+          _eq: false
+        },
+      },
+      _and: where,
+    };
+    console.log("fullWhere");
+    console.log(fullWhere);
+
+    return this.chain('query')({
+      marketplace_inscription_detail: [
+        {
+          where: fullWhere,
+          limit: this.limit,
+          order_by: order
+
+        },
+        {
+          id: true,
+          marketplace_listing: {
+            seller_address: true,
+            total: true,
+            depositor_address: true,
+            is_deposited: true,
+            depositor_timedout_block: true,
+            deposit_total: true,
+            transaction: {
+              hash: true
+            },
+          },
+          inscription: {
+            id: true,
+            transaction: {
+              hash: true
+            },
+            content_path: true,
+            __alias: {
+              name: {
+                metadata: [{
+                  path: '$.metadata.name'
+                },
+                  true
+                ]
+              },
+              description: {
+                metadata: [{
+                  path: '$.metadata.description'
+                },
+                  true
+                ]
+              },
+              mime: {
+                metadata: [{
+                  path: '$.metadata.mime'
+                },
+                  true
+                ]
+              }
+            }
+          },
+          date_created: true,
+        }
+      ]
+
+    });
+  }
+
+  async fetchReservedInscriptions() {
 
     return this.chain('query')({
       marketplace_inscription_detail: [
@@ -116,12 +197,15 @@ export class MarketsInscriptionPage implements OnInit {
               is_filled: {
                 _eq: false
               },
-              // is_deposited: {
-              //   _eq: true
-              // },
-              // depositor_timedout_block: {
-              //   _gt: this.currentBlock
-              // }
+              is_deposited: {
+                _eq: true
+              },
+              depositor_address: {
+                _eq: this.walletAddress
+              },
+              depositor_timedout_block: {
+                _gt: this.currentBlock
+              }
             }
           },
           limit: this.limit,
@@ -177,70 +261,87 @@ export class MarketsInscriptionPage implements OnInit {
           date_created: true,
         }
       ]
-
-
-      // inscription: [
-      //   {
-      //     offset: 0,
-      //     limit: 100,
-      //     order_by: order,
-      //   }, {
-      //     id: true,
-      //     transaction: {
-      //       hash: true
-      //     },
-      //     // transaction_hash: true,
-      //     current_owner: true,
-      //     content_path: true,
-      //     content_size_bytes: true,
-      //     date_created: true,
-      //     is_explicit: true,
-      //     __alias: {
-      //       name: {
-      //         metadata: [{
-      //           path: '$.metadata.name'
-      //         },
-      //           true
-      //         ]
-      //       },
-      //       description: {
-      //         metadata: [{
-      //           path: '$.metadata.description'
-      //         },
-      //           true
-      //         ]
-      //       },
-      //       mime: {
-      //         metadata: [{
-      //           path: '$.metadata.mime'
-      //         },
-      //           true
-      //         ]
-      //       }
-      //     }
-      //   }
-      // ]
     });
   }
 
   // This event is supposed to be of type SelectChangeEventDetail
-  selectionChange(type: string, event: any) {
-
+  async selectionChange(type: string, event: any) {
 
     switch (type) {
       case "order":
-        // this.selectedPriceRange = event.detail.value;
+        console.log("order changed", event.detail.value);
+        if (event.detail.value === "price-high") {
+          this.selectedOrder = {
+            marketplace_listing: {
+              total: order_by.desc
+            }
+          }
+        } else if (event.detail.value === "price-low") {
+          this.selectedOrder = {
+            marketplace_listing: {
+              total: order_by.asc
+            }
+          }
+        } else if (event.detail.value === "recent-adds") {
+          this.selectedOrder = {
+            marketplace_listing: {
+              id: order_by.desc
+            }
+          }
+        }
         break;
       case "price":
-        // this.selectedBlockRange = event.detail.value;
+        if (event.detail.value === "all") {
+          this.currentFilter = {};
+        } else {
+          const range = event.detail.value.split("-");
+          if (range.length === 2) {
+            const min = parseInt(range[0]);
+            const max = parseInt(range[1]);
+            this.currentFilter = {
+              ...this.currentFilter,
+
+              marketplace_listing: {
+                total: {
+                  _gte: min,
+                  _lte: max
+                }
+              }
+
+            };
+          }
+        }
         break;
       case "range":
-        // this.selectedOrder = event.detail.value;
+        if (event.detail.value === "all") {
+          this.currentFilter = {};
+        } else {
+          const maxID = parseInt(event.detail.value);
+          this.currentFilter = {
+            ...this.currentFilter,
+
+            inscription: {
+              id: {
+                _lte: maxID
+              }
+            }
+
+          };
+        }
         break;
-      case "type":
-        // this.selectedType = event.detail.value;
-        break;
+      // case "type":
+      // TODO        
+      //   break;
     }
+
+    console.log(this.currentFilter);
+
+    const result = await this.fetchInscriptions(
+      this.currentFilter,
+      [
+        this.selectedOrder
+      ]);
+    this.marketplaceDetail = result.marketplace_inscription_detail;
   }
 
   async buy(listingHash: string, inscriptionHash: string) {
@@ -260,138 +361,6 @@ export class MarketsInscriptionPage implements OnInit {
     modal.present();
 
   }
-
-  // async listSale(event: any, ticker: string) {
-  //   event.stopPropagation();
-  //   const modal = await this.modalCtrl.create({
-  //     keyboardClose: true,
-  //     backdropDismiss: true,
-  //     component: SellModalPage,
-
-  //     componentProps: {
-  //       ticker: ticker
-  //     }
-  //   });
-  //   modal.present();
-  // }
-
-  // customSort(event: SortEvent) {
-  //   if (event.field == 'listings') {
-  //     event.data?.sort((data1, data2) => {
-  //       let value1 = data1["marketplace_cft20_details"].length;
-  //       let value2 = data2["marketplace_cft20_details"].length;
-  //       let result = null;
-
-  //       if (value1 == null && value2 != null) result = -1;
-  //       else if (value1 != null && value2 == null) result = 1;
-  //       else if (value1 == null && value2 == null) result = 0;
-  //       else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
-  //       else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
-
-  //       return event.order as number * result;
-  //     });
-
-  //   }
-
-  //   event.data?.sort((data1, data2) => {
-  //     let value1 = data1[event.field as string];
-  //     let value2 = data2[event.field as string];
-  //     let result = null;
-
-  //     if (value1 == null && value2 != null) result = -1;
-  //     else if (value1 != null && value2 == null) result = 1;
-  //     else if (value1 == null && value2 == null) result = 0;
-  //     else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
-  //     else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
-
-  //     return event.order as number * result;
-  //   });
-  // }
-
-  // async load(event: TableLazyLoadEvent) {
-  //   this.isTableLoading = true;
-
-  //   // Determine the sort order
-  //   let sortOrder = event.sortOrder === 1 ? 'asc' : 'desc';
-
-  //   // Build the order_by clause based on the event.sortField and sortOrder
-  //   let orderByClause: any = {};
-  //   if (event.sortField) {
-  //     orderByClause[event.sortField as string] = sortOrder;
-  //   } else {
-  //     // Default sorting, if no sortField is provided
-  //     orderByClause = { id: 'asc' };
-  //   }
-
-  //   let whereClause: any = {};
-  //   if (event.globalFilter) {
-  //     const globalFilter = event.globalFilter as string;
-  //     whereClause = {
-  //       _or: [
-  //         { name: { _like: `%${globalFilter}%` } },
-  //         { name: { _like: `%${globalFilter.toUpperCase()}%` } },
-  //         { ticker: { _like: `%${globalFilter}%` } },
-  //         { ticker: { _like: `%${globalFilter.toUpperCase()}%` } },
-  //       ]
-  //     };
-  //   }
-
-
-  //   const tokensResult = await this.chain('query')({
-  //     token: [
-  //       {
-  //         offset: event.first,
-  //         limit: event.rows,
-  //         order_by: [
-  //           orderByClause
-  //         ],
-  //         where: whereClause
-  //       }, {
-  //         id: true,
-  //         transaction: {
-  //           hash: true
-  //         },
-  //         marketplace_cft20_details: [
-  //           {
-  //             where: {
-  //               marketplace_listing: {
-  //                 is_cancelled: {
-  //                   _eq: false
-  //                 },
-  //                 is_filled: {
-  //                   _eq: false
-  //                 }
-  //               }
-  //             }
-  //           },
-  //           {
-  //             id: true,
-  //           }
-  //         ],
-  //         token_holders: [
-  //           {
-  //             where: {
-  //               address: {
-  //                 _eq: this.userAddress
-  //               }
-  //             }
-  //           },
-  //           {
-  //             amount: true
-  //           }
-  //         ],
-  //         content_path: true,
-  //         name: true,
-  //         ticker: true,
-  //         decimals: true,
-  //         last_price_base: true,
-  //         volume_24_base: true,
-  //       }
-  //     ]
-  //   });
-  //   this.tokens = tokensResult.token;
-  //   this.isTableLoading = false;
-  // }
 
 
 

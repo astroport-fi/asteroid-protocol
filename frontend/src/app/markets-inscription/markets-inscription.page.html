@@ -26,7 +26,7 @@
         <div class="section-container">
           <div class="section">
             <h4 class="header">Sort</h4>
-            <ion-select aria-label="Order" placeholder="Order" fill="clear" interface="popover" value="price-low"
+            <ion-select aria-label="Order" placeholder="Order" fill="clear" interface="popover" value="recent-adds"
               (ionChange)="selectionChange('order', $event)">
               <ion-select-option value="price-low">Lowest price</ion-select-option>
               <ion-select-option value="price-high">Highest price</ion-select-option>
@@ -39,11 +39,11 @@
             <ion-select aria-label="Price" placeholder="Price" fill="clear" interface="popover" value="all"
               (ionChange)="selectionChange('price', $event)">
               <ion-select-option value="all">All</ion-select-option>
-              <ion-select-option value="0-1">&lt; 0.1 ATOM</ion-select-option>
-              <ion-select-option value="1-1000000">0.1 - 1 ATOM</ion-select-option>
+              <ion-select-option value="0-100000">&lt; 0.1 ATOM</ion-select-option>
+              <ion-select-option value="100000-1000000">0.1 - 1 ATOM</ion-select-option>
               <ion-select-option value="1000000-5000000">1 - 5 ATOM</ion-select-option>
               <ion-select-option value="5000000-10000000">5 - 10 ATOM</ion-select-option>
-              <ion-select-option value="10000000">10 ATOM+</ion-select-option>
+              <ion-select-option value="10000000-1000000000">10 ATOM+</ion-select-option>
             </ion-select>
           </div>
 
@@ -59,7 +59,7 @@
             </ion-select>
           </div>
 
-          <div class="section">
+          <!-- <div class="section">
             <h4 class="header">Type</h4>
             <ion-select aria-label="Type" placeholder="Type" fill="clear" interface="popover" value="all"
               (ionChange)="selectionChange('type', $event)">
@@ -67,16 +67,47 @@
               <ion-select-option value="image">Images</ion-select-option>
               <ion-select-option value="document">Documents</ion-select-option>
             </ion-select>
-          </div>
-
-          <!-- <div class="section">
-            <ion-button>List inscription</ion-button>
           </div> -->
         </div>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
+        <div class="list" *ngIf="!isLoading && reservedMarketplaceDetail.length > 0">
+          <h3 class="mb-4 mt-0 pt-0">Reserved by you</h3>
+          <a class="inscription-item main-content"
+            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
+            *ngFor="let item of reservedMarketplaceDetail; let index">
+            <div class="content">
+              <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
+                [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
+            </div>
+            <h4 class="name">{{ item.inscription.name }}</h4>
+            <div class="detail">
+              <div class="detail-item">
+                <span>#{{item.inscription.id-1}}</span>
+              </div>
+              <div class="detail-item">
+                Listed by:
+                <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
+                  *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
+                  item.marketplace_listing.seller_address |
+                  shortenAddress | async}}</a>
+                <a class="text-warning" target="_blank"
+                  [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
+                  *ngIf="item.marketplace_listing.seller_address == walletAddress">You</a>
+
+              </div>
+              <div class="marketplace-price text-center">
+                <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
+                  <span>ATOM</span></ion-label>
+                <ion-label class="label">Price</ion-label>
+              </div>
+            </div>
+          </a>
+
+          <h3>All listings</h3>
+        </div>
         <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
           <a class="inscription-item main-content"
             (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"

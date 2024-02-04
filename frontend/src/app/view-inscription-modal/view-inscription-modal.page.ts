@@ -17,6 +17,7 @@ import { InscriptionService } from '../core/metaprotocol/inscription.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
 
 @Component({
   selector: 'app-view-inscription-modal',
@@ -151,8 +152,18 @@ export class ViewInscriptionModalPage implements OnInit {
     });
   }
 
-  buy() {
-
+  async buy() {
+    const modal = await this.modalCtrl.create({
+      // keyboardClose: true,
+      // backdropDismiss: false,
+      component: BuyWizardModalPage,
+      componentProps: {
+        hash: this.listingHash,
+        metaprotocol: 'marketplace',
+        metaprotocolAction: 'deposit',
+      }
+    });
+    modal.present();
   }
 
   async delist() {
