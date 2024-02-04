@@ -4,28 +4,30 @@ import { fileExists } from './utils.js'
 
 export const CONFIG_NAME = 'asteroid.json'
 
+export const Networks: Record<string, Network> = {
+  local: {
+    chainId: 'gaialocal-1',
+    rpc: 'http://localhost:16657',
+    explorer: 'http://localhost:1316/cosmos/tx/v1beta1/txs/',
+    api: 'http://localhost:8080/v1/graphql',
+  },
+  testnet: {
+    chainId: 'theta-testnet-001',
+    rpc: 'https://rpc.sentry-01.theta-testnet.polypore.xyz',
+    explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
+    api: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
+  },
+  mainnet: {
+    chainId: 'cosmoshub-4',
+    rpc: 'https://rpc-nodes.asteroidprotocol.io',
+    explorer: 'https://www.mintscan.io/cosmos/tx/',
+    api: 'https://api.asteroidprotocol.io/v1/graphql',
+  },
+}
+
 const DEFAULT_CONFIG: Config = {
   gasPrice: '0.005uatom',
-  networks: {
-    local: {
-      chainId: 'gaialocal-1',
-      rpc: 'http://localhost:16657',
-      explorer: 'http://localhost:1316/cosmos/tx/v1beta1/txs/',
-      api: 'http://localhost:8080/v1/graphql',
-    },
-    testnet: {
-      chainId: 'theta-testnet-001',
-      rpc: 'https://rpc.sentry-01.theta-testnet.polypore.xyz',
-      explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
-      api: 'https://api.asteroidprotocol.io/v1/graphql',
-    },
-    mainnet: {
-      chainId: 'cosmoshub-4',
-      rpc: 'https://rpc-nodes.asteroidprotocol.io',
-      explorer: 'https://www.mintscan.io/cosmos/tx/',
-      api: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
-    },
-  },
+  networks: Networks,
   accounts: {
     test1: {
       mnemonic:

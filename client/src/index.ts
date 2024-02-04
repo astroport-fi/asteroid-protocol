@@ -8,3 +8,4 @@ export { default as MarketplaceProtocol } from './metaprotocol/marketplace.js'
 
 export * from './service/asteroid.js'
 export { SigningStargateClient } from './client.js'
+export { Networks } from './config.js'

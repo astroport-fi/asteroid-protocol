@@ -11,13 +11,13 @@
             "chainId": "theta-testnet-001",
             "rpc": "https://rpc.sentry-01.theta-testnet.polypore.xyz",
             "explorer": "https://www.mintscan.io/cosmoshub-testnet/tx/",
-            "api": "https://api.asteroidprotocol.io/v1/graphql"
+            "api": "https://testnet-api.asteroidprotocol.io/v1/graphql"
         },
         "mainnet": {
             "chainId": "cosmoshub-4",
             "rpc": "https://rpc-nodes.asteroidprotocol.io",
             "explorer": "https://www.mintscan.io/cosmos/tx/",
-            "api": "https://testnet-api.asteroidprotocol.io/v1/graphql"
+            "api": "https://api.asteroidprotocol.io/v1/graphql"
         }
     },
     "accounts": {
