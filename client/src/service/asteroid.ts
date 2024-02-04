@@ -1,5 +1,7 @@
 import { Chain, Subscription } from '../helpers/zeus.js'
 
+export * from '../zeus/index.js'
+
 export class AsteroidService {
   chain: Chain
   subscription?: Subscription
