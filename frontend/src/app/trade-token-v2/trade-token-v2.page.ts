@@ -4,15 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { Chain, Subscription } from '../core/helpers/zeus';
-import { order_by } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletService } from '../core/service/wallet.service';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
@@ -27,18 +26,7 @@ import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
   templateUrl: './trade-token-v2.page.html',
   styleUrls: ['./trade-token-v2.page.scss'],
   standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    ShortenAddressPipe,
-    RouterLink,
-    DatePipe,
-    HumanSupplyPipe,
-    TokenDecimalsPipe,
-    TableModule,
-    DateAgoPipe,
-  ],
+  imports: [IonicModule, CommonModule, FormsModule, ShortenAddressPipe, RouterLink, DatePipe, HumanSupplyPipe, TokenDecimalsPipe, TableModule, DateAgoPipe]
 })
 export class TradeTokenV2Page implements OnInit {
   isLoading = false;
@@ -48,24 +36,17 @@ export class TradeTokenV2Page implements OnInit {
   explorerTxUrl: string = environment.api.explorer;
   tokenLaunchDate: Date;
   tokenIsLaunched: boolean = false;
-  baseTokenUSD: number = 0.0;
+  baseTokenUSD: number = 0.00;
   walletAddress: string = '';
   currentBlock: number = 0;
   limit: number = 2000;
   isTableLoading: boolean = true;
-  chain: ReturnType<typeof Chain>;
+  chain: any;
   total: number = 1000;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private protocolService: MarketplaceService,
-    private modalCtrl: ModalController,
-    private alertController: AlertController,
-    private walletService: WalletService,
-    private priceService: PriceService
-  ) {
+  constructor(private activatedRoute: ActivatedRoute, private protocolService: MarketplaceService, private modalCtrl: ModalController, private alertController: AlertController, private walletService: WalletService, private priceService: PriceService) {
     this.tokenLaunchDate = new Date();
-    this.chain = Chain(environment.api.endpoint);
+    this.chain = Chain(environment.api.endpoint)
   }
 
   async ngOnInit() {
@@ -81,11 +62,10 @@ export class TradeTokenV2Page implements OnInit {
         {
           where: {
             ticker: {
-              _eq: this.activatedRoute.snapshot.params['quote'].toUpperCase(),
-            },
-          },
-        },
-        {
+              _eq: this.activatedRoute.snapshot.params["quote"].toUpperCase()
+            }
+          }
+        }, {
           id: true,
           name: true,
           ticker: true,
@@ -96,8 +76,8 @@ export class TradeTokenV2Page implements OnInit {
           last_price_base: true,
           volume_24_base: true,
           date_created: true,
-        },
-      ],
+        }
+      ]
     });
     this.token = result.token[0];
 
@@ -106,17 +86,17 @@ export class TradeTokenV2Page implements OnInit {
         {
           where: {
             chain_id: {
-              _eq: environment.chain.chainId,
-            },
-          },
+              _eq: environment.chain.chainId
+            }
+          }
         },
         {
           base_token: true,
           base_token_usd: true,
           last_processed_height: true,
-        },
-      ],
-    });
+        }
+      ]
+    })
     this.baseTokenUSD = statusResult.status[0].base_token_usd;
     this.currentBlock = statusResult.status[0].last_processed_height;
 
@@ -125,32 +105,32 @@ export class TradeTokenV2Page implements OnInit {
         {
           where: {
             token_id: {
-              _eq: this.token.id,
+              _eq: this.token.id
             },
             marketplace_listing: {
               is_cancelled: {
-                _eq: false,
+                _eq: false
               },
               is_filled: {
-                _eq: false,
+                _eq: false
               },
               is_deposited: {
-                _eq: true,
+                _eq: true
               },
               depositor_address: {
-                _eq: this.walletAddress,
+                _eq: this.walletAddress
               },
               depositor_timedout_block: {
-                _gt: this.currentBlock,
-              },
-            },
+                _gt: this.currentBlock
+              }
+            }
           },
           limit: this.limit,
           order_by: [
             {
-              ppt: order_by.asc,
-            },
-          ],
+              ppt: order_by.asc
+            }
+          ]
         },
         {
           id: true,
@@ -163,16 +143,17 @@ export class TradeTokenV2Page implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true,
+              hash: true
             },
           },
           ppt: true,
           amount: true,
           date_created: true,
-        },
-      ],
+        }
+      ]
     });
     this.depositedListings = depositListingsResult.marketplace_cft20_detail;
+
 
     const wsChain = Subscription(environment.api.wss);
     wsChain('subscription')({
@@ -180,23 +161,24 @@ export class TradeTokenV2Page implements OnInit {
         {
           where: {
             token_id: {
-              _eq: this.token.id,
+              _eq: this.token.id
             },
             marketplace_listing: {
               is_cancelled: {
-                _eq: false,
+                _eq: false
               },
               is_filled: {
-                _eq: false,
+                _eq: false
               },
-            },
+
+            }
           },
           limit: this.limit,
           order_by: [
             {
-              ppt: order_by.asc,
-            },
-          ],
+              ppt: order_by.asc
+            }
+          ]
         },
         {
           id: true,
@@ -209,14 +191,14 @@ export class TradeTokenV2Page implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true,
+              hash: true
             },
           },
           ppt: true,
           amount: true,
           date_created: true,
-        },
-      ],
+        }
+      ]
     }).on(({ marketplace_cft20_detail }) => {
       this.listings = marketplace_cft20_detail;
     });
@@ -226,32 +208,32 @@ export class TradeTokenV2Page implements OnInit {
         {
           where: {
             token_id: {
-              _eq: this.token.id,
+              _eq: this.token.id
             },
             marketplace_listing: {
               is_cancelled: {
-                _eq: false,
+                _eq: false
               },
               is_filled: {
-                _eq: false,
+                _eq: false
               },
               is_deposited: {
-                _eq: true,
+                _eq: true
               },
               depositor_address: {
-                _eq: this.walletAddress,
+                _eq: this.walletAddress
               },
               depositor_timedout_block: {
-                _gt: this.currentBlock,
-              },
-            },
+                _gt: this.currentBlock
+              }
+            }
           },
           limit: this.limit,
           order_by: [
             {
-              ppt: order_by.asc,
-            },
-          ],
+              ppt: order_by.asc
+            }
+          ]
         },
         {
           id: true,
@@ -264,14 +246,14 @@ export class TradeTokenV2Page implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true,
+              hash: true
             },
           },
           ppt: true,
           amount: true,
           date_created: true,
-        },
-      ],
+        }
+      ]
     }).on(({ marketplace_cft20_detail }) => {
       this.depositedListings = marketplace_cft20_detail;
     });
@@ -282,79 +264,17 @@ export class TradeTokenV2Page implements OnInit {
         {
           last_processed_height: true,
           last_known_height: true,
-        },
-      ],
+        }
+      ]
     }).on(({ status }) => {
       this.currentBlock = status[0].last_processed_height;
     });
     this.isLoading = false;
+
   }
 
   async deposit(listingHash: string) {
-    const chain = Chain(environment.api.endpoint);
-    const listingResult = await chain('query')({
-      marketplace_listing: [
-        {
-          where: {
-            transaction: {
-              hash: {
-                _eq: listingHash,
-              },
-            },
-          },
-        },
-        {
-          seller_address: true,
-          total: true,
-          deposit_total: true,
-          is_deposited: true,
-          is_cancelled: true,
-          is_filled: true,
-        },
-      ],
-    });
-
-    if (listingResult.marketplace_listing.length == 0) {
-      alert('Listing not found');
-      return;
-    }
-    const listing = listingResult.marketplace_listing[0];
-
-    const deposit: bigint = listing.deposit_total as bigint;
-
-    const purchaseMessage = {
-      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-      value: MsgSend.encode({
-        fromAddress: (await this.walletService.getAccount()).address,
-        toAddress: listing.seller_address,
-        amount: [
-          {
-            denom: 'uatom',
-            amount: deposit.toString(),
-          },
-        ],
-      }).finish(),
-    };
-
-    const purchaseMessageJSON = {
-      '@type': '/cosmos.bank.v1beta1.MsgSend',
-      from_address: (await this.walletService.getAccount()).address,
-      to_address: listing.seller_address,
-      amount: [
-        {
-          denom: 'uatom',
-          amount: deposit.toString(),
-        },
-      ],
-    };
-
-    // Construct metaprotocol memo message
-    const params = new Map([['h', listingHash]]);
-    const urn = this.protocolService.buildURN(
-      environment.chain.chainId,
-      'deposit',
-      params
-    );
+    console.log("listingHash" + listingHash);
     const modal = await this.modalCtrl.create({
       // keyboardClose: true,
       // backdropDismiss: false,
@@ -363,9 +283,7 @@ export class TradeTokenV2Page implements OnInit {
         hash: listingHash,
         metaprotocol: 'marketplace',
         metaprotocolAction: 'deposit',
-        messages: [purchaseMessage],
-        messagesJSON: [purchaseMessageJSON],
-      },
+      }
     });
     modal.present();
 
@@ -450,34 +368,34 @@ export class TradeTokenV2Page implements OnInit {
   }
 
   async buy(listingHash: string) {
-    const chain = Chain(environment.api.endpoint);
+    const chain = Chain(environment.api.endpoint)
     const listingResult = await chain('query')({
       marketplace_listing: [
         {
           where: {
             transaction: {
               hash: {
-                _eq: listingHash,
-              },
-            },
-          },
-        },
-        {
+                _eq: listingHash
+              }
+            }
+          }
+        }, {
           seller_address: true,
           total: true,
           deposit_total: true,
           is_deposited: true,
           is_cancelled: true,
           is_filled: true,
-        },
-      ],
+        }
+      ]
     });
 
     if (listingResult.marketplace_listing.length == 0) {
-      alert('Listing not found');
+      alert("Listing not found");
       return;
     }
     const listing = listingResult.marketplace_listing[0];
+
 
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
@@ -500,46 +418,38 @@ export class TradeTokenV2Page implements OnInit {
       // Subtract deposit amount already sent
       totaluatom -= deposit;
     }
-    let decimalTotal =
-      parseFloat(totaluatom.toString()) / 10 ** this.token.decimals;
+    let decimalTotal = parseFloat(totaluatom.toString()) / 10 ** this.token.decimals;
 
     const purchaseMessage = {
-      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
       value: MsgSend.encode({
         fromAddress: (await this.walletService.getAccount()).address,
         toAddress: listing.seller_address,
         amount: [
           {
-            denom: 'uatom',
+            denom: "uatom",
             amount: totaluatom.toString(),
-          },
+          }
         ],
       }).finish(),
-    };
+    }
 
     const purchaseMessageJSON = {
-      '@type': '/cosmos.bank.v1beta1.MsgSend',
+      '@type': "/cosmos.bank.v1beta1.MsgSend",
       from_address: (await this.walletService.getAccount()).address,
       to_address: listing.seller_address,
       amount: [
         {
-          denom: 'uatom',
+          denom: "uatom",
           amount: totaluatom.toString(),
-        },
+        }
       ],
-    };
+    }
 
     // Calculate the trading fee
-    let overrideFee = (
-      environment.fees.protocol.marketplace['buy.cft20'] as any
-    ).amount;
-    if (
-      (environment.fees.protocol.marketplace['buy.cft20'] as any).type ==
-      'dynamic-percent'
-    ) {
-      const feePercentage = parseFloat(
-        (environment.fees.protocol.marketplace['buy.cft20'] as any).amount
-      );
+    let overrideFee = (environment.fees.protocol.marketplace["buy.cft20"] as any).amount;
+    if ((environment.fees.protocol.marketplace["buy.cft20"] as any).type == 'dynamic-percent') {
+      const feePercentage = parseFloat((environment.fees.protocol.marketplace["buy.cft20"] as any).amount);
       let fee = decimalTotal * feePercentage;
       if (fee < 0.000001) {
         fee = 0.000001;
@@ -549,12 +459,10 @@ export class TradeTokenV2Page implements OnInit {
     }
 
     // Construct metaprotocol memo message
-    const params = new Map([['h', listingHash]]);
-    const urn = this.protocolService.buildURN(
-      environment.chain.chainId,
-      'buy.cft20',
-      params
-    );
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'buy.cft20', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -570,7 +478,7 @@ export class TradeTokenV2Page implements OnInit {
         messages: [purchaseMessage],
         messagesJSON: [purchaseMessageJSON],
         overrideFee,
-      },
+      }
     });
     modal.present();
   }
@@ -589,12 +497,10 @@ export class TradeTokenV2Page implements OnInit {
     }
 
     // Construct metaprotocol memo message
-    const params = new Map([['h', listingHash]]);
-    const urn = this.protocolService.buildURN(
-      environment.chain.chainId,
-      'delist',
-      params
-    );
+    const params = new Map([
+      ["h", listingHash],
+    ]);
+    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -607,20 +513,22 @@ export class TradeTokenV2Page implements OnInit {
         resultCTA: 'Back to market',
         metaprotocol: 'marketplace',
         metaprotocolAction: 'delist',
-      },
+      }
     });
     modal.present();
+
   }
 
   async listSale() {
+
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: true,
       component: SellModalPage,
 
       componentProps: {
-        ticker: this.token.ticker,
-      },
+        ticker: this.token.ticker
+      }
     });
     modal.present();
   }
@@ -629,8 +537,9 @@ export class TradeTokenV2Page implements OnInit {
     console.log(event.field);
     if (event.field == 'marketplace_listing.total') {
       event.data?.sort((data1, data2) => {
-        let value1 = parseInt(data1['marketplace_listing'].total);
-        let value2 = parseInt(data2['marketplace_listing'].total);
+
+        let value1 = parseInt(data1["marketplace_listing"].total);
+        let value2 = parseInt(data2["marketplace_listing"].total);
         let result = null;
 
         if (value1 == null && value2 != null) result = -1;
@@ -638,17 +547,15 @@ export class TradeTokenV2Page implements OnInit {
         else if (value1 == null && value2 == null) result = 0;
         else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-        return (event.order as number) * result;
+        return event.order as number * result;
       });
+
     }
     if (event.field == 'marketplace_listing.deposit_total') {
       event.data?.sort((data1, data2) => {
-        let value1 =
-          parseInt(data1['marketplace_listing'].deposit_total) /
-          parseInt(data1['marketplace_listing'].total);
-        let value2 =
-          parseInt(data2['marketplace_listing'].deposit_total) /
-          parseInt(data2['marketplace_listing'].total);
+
+        let value1 = parseInt(data1["marketplace_listing"].deposit_total) / parseInt(data1["marketplace_listing"].total);
+        let value2 = parseInt(data2["marketplace_listing"].deposit_total) / parseInt(data2["marketplace_listing"].total);
         let result = null;
 
         if (value1 == null && value2 != null) result = -1;
@@ -656,8 +563,9 @@ export class TradeTokenV2Page implements OnInit {
         else if (value1 == null && value2 == null) result = 0;
         else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-        return (event.order as number) * result;
+        return event.order as number * result;
       });
+
     }
 
     event.data?.sort((data1, data2) => {
@@ -668,15 +576,15 @@ export class TradeTokenV2Page implements OnInit {
       if (value1 == null && value2 != null) result = -1;
       else if (value1 != null && value2 == null) result = 1;
       else if (value1 == null && value2 == null) result = 0;
-      else if (typeof value1 === 'string' && typeof value2 === 'string')
-        result = value1.localeCompare(value2);
+      else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
       else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-      return (event.order as number) * result;
+      return event.order as number * result;
     });
   }
 
   async load(event: TableLazyLoadEvent) {
+
     this.isTableLoading = true;
 
     // Determine the sort order
@@ -688,15 +596,15 @@ export class TradeTokenV2Page implements OnInit {
       if (event.sortField == 'marketplace_listing.total') {
         orderByClause = {
           marketplace_listing: {
-            total: sortOrder,
-          },
+            total: sortOrder
+          }
         };
       } else if (event.sortField == 'marketplace_listing.deposit_total') {
         orderByClause = {
           marketplace_listing: {
-            deposit_total: sortOrder,
-          },
-        };
+            deposit_total: sortOrder
+          }
+        }
       } else {
         orderByClause[event.sortField as string] = sortOrder;
       }
@@ -708,22 +616,25 @@ export class TradeTokenV2Page implements OnInit {
     const listingsResult = await this.chain('query')({
       marketplace_cft20_detail: [
         {
+
           where: {
             token_id: {
-              _eq: this.token.id,
+              _eq: this.token.id
             },
             marketplace_listing: {
               is_cancelled: {
-                _eq: false,
+                _eq: false
               },
               is_filled: {
-                _eq: false,
-              },
-            },
+                _eq: false
+              }
+            }
           },
           offset: event.first,
           limit: event.rows,
-          order_by: [orderByClause],
+          order_by: [
+            orderByClause
+          ]
         },
         {
           id: true,
@@ -735,17 +646,18 @@ export class TradeTokenV2Page implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true,
+              hash: true
             },
           },
           ppt: true,
           amount: true,
           date_created: true,
-        },
-      ],
+        }
+      ]
     });
     this.listings = listingsResult.marketplace_cft20_detail;
 
     this.isTableLoading = false;
   }
+
 }

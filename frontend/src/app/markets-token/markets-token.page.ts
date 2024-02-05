@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController, IonicModule } from '@ionic/angular';
-import { Subscription, order_by } from '../core/types/zeus';
+import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
@@ -15,27 +15,16 @@ import { SortEvent } from 'primeng/api';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletService } from '../core/service/wallet.service';
 import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-notice-modal.page';
-import { Chain } from '../core/helpers/zeus';
 
 @Component({
   selector: 'app-markets-token',
   templateUrl: './markets-token.page.html',
   styleUrls: ['./markets-token.page.scss'],
   standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    DateAgoPipe,
-    HumanTypePipe,
-    DecimalPipe,
-    HumanSupplyPipe,
-    TokenDecimalsPipe,
-    RouterLink,
-    TableModule,
-  ],
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule]
 })
-export class MarketsPage implements OnInit {
+export class MarketsTokenPage implements OnInit {
+
   isLoading = true;
   isTableLoading: boolean = false;
   userAddress: string = '';
@@ -45,66 +34,63 @@ export class MarketsPage implements OnInit {
   total: number = 20000;
   lastFetchCount = 0;
   baseToken: any;
-  chain: Chain;
+  chain: any;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private priceService: PriceService,
-    private modalCtrl: ModalController,
-    private walletService: WalletService
-  ) {
+  constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
   }
 
   async ngOnInit() {
+
     // Check if tis use has seen the notice
     // if (localStorage.getItem('marketplace-notice') != 'shown') {
-    this.modalCtrl
-      .create({
-        component: MarketplaceNoticeModalPage,
-      })
-      .then((modal) => {
-        modal.present();
-      });
+    this.modalCtrl.create({
+      component: MarketplaceNoticeModalPage,
+    }).then(modal => {
+      modal.present();
+    });
     // }
 
-    this.activatedRoute.params.subscribe(async (params) => {
+    this.activatedRoute.params.subscribe(async params => {
       if (await this.walletService.isConnected()) {
         this.userAddress = (await this.walletService.getAccount()).address;
       }
 
       this.isLoading = true;
 
+
       const statusResult = await this.chain('query')({
         status: [
           {
             where: {
               chain_id: {
-                _eq: environment.chain.chainId,
-              },
-            },
+                _eq: environment.chain.chainId
+              }
+            }
           },
           {
             base_token: true,
             base_token_usd: true,
-          },
-        ],
+          }
+        ]
       });
       this.baseToken = statusResult.status[0];
 
       const tokensResult = await this.chain('query')({
         token: [
           {
-            order_by: [{ id: order_by.desc }],
-            limit: 1,
-          },
-          {
+            order_by: [
+              { id: order_by.desc }
+            ],
+            limit: 1
+          }, {
             id: true,
-          },
-        ],
+          }
+        ]
       });
       this.total = tokensResult.token[0].id;
+
 
       const wsChain = Subscription(environment.api.wss);
       wsChain('subscription')({
@@ -112,15 +98,15 @@ export class MarketsPage implements OnInit {
           {
             where: {
               chain_id: {
-                _eq: environment.chain.chainId,
-              },
-            },
+                _eq: environment.chain.chainId
+              }
+            }
           },
           {
             base_token: true,
             base_token_usd: true,
-          },
-        ],
+          }
+        ]
       }).on(({ status }) => {
         this.baseToken = status[0];
       });
@@ -137,8 +123,8 @@ export class MarketsPage implements OnInit {
       component: SellModalPage,
 
       componentProps: {
-        ticker: ticker,
-      },
+        ticker: ticker
+      }
     });
     modal.present();
   }
@@ -146,19 +132,19 @@ export class MarketsPage implements OnInit {
   customSort(event: SortEvent) {
     if (event.field == 'listings') {
       event.data?.sort((data1, data2) => {
-        let value1 = data1['marketplace_cft20_details'].length;
-        let value2 = data2['marketplace_cft20_details'].length;
+        let value1 = data1["marketplace_cft20_details"].length;
+        let value2 = data2["marketplace_cft20_details"].length;
         let result = null;
 
         if (value1 == null && value2 != null) result = -1;
         else if (value1 != null && value2 == null) result = 1;
         else if (value1 == null && value2 == null) result = 0;
-        else if (typeof value1 === 'string' && typeof value2 === 'string')
-          result = value1.localeCompare(value2);
+        else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
         else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-        return (event.order as number) * result;
+        return event.order as number * result;
       });
+
     }
 
     event.data?.sort((data1, data2) => {
@@ -169,11 +155,10 @@ export class MarketsPage implements OnInit {
       if (value1 == null && value2 != null) result = -1;
       else if (value1 != null && value2 == null) result = 1;
       else if (value1 == null && value2 == null) result = 0;
-      else if (typeof value1 === 'string' && typeof value2 === 'string')
-        result = value1.localeCompare(value2);
+      else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
       else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-      return (event.order as number) * result;
+      return event.order as number * result;
     });
   }
 
@@ -201,51 +186,53 @@ export class MarketsPage implements OnInit {
           { name: { _like: `%${globalFilter.toUpperCase()}%` } },
           { ticker: { _like: `%${globalFilter}%` } },
           { ticker: { _like: `%${globalFilter.toUpperCase()}%` } },
-        ],
+        ]
       };
     }
+
 
     const tokensResult = await this.chain('query')({
       token: [
         {
           offset: event.first,
           limit: event.rows,
-          order_by: [orderByClause],
-          where: whereClause,
-        },
-        {
+          order_by: [
+            orderByClause
+          ],
+          where: whereClause
+        }, {
           id: true,
           transaction: {
-            hash: true,
+            hash: true
           },
           marketplace_cft20_details: [
             {
               where: {
                 marketplace_listing: {
                   is_cancelled: {
-                    _eq: false,
+                    _eq: false
                   },
                   is_filled: {
-                    _eq: false,
-                  },
-                },
-              },
+                    _eq: false
+                  }
+                }
+              }
             },
             {
               id: true,
-            },
+            }
           ],
           token_holders: [
             {
               where: {
                 address: {
-                  _eq: this.userAddress,
-                },
-              },
+                  _eq: this.userAddress
+                }
+              }
             },
             {
-              amount: true,
-            },
+              amount: true
+            }
           ],
           content_path: true,
           name: true,
@@ -253,10 +240,12 @@ export class MarketsPage implements OnInit {
           decimals: true,
           last_price_base: true,
           volume_24_base: true,
-        },
-      ],
+        }
+      ]
     });
     this.tokens = tokensResult.token;
     this.isTableLoading = false;
   }
+
+
 }
