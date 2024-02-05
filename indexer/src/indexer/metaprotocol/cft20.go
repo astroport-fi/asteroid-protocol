@@ -549,12 +549,12 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return fmt.Errorf("unable to get current base currency price '%s'", err)
 		}
 
-		// Update token table with new price per token, no need to convert decimals, already included
-		tokenModel.LastPriceBase = openOrderModel.PPT
-		result = protocol.db.Save(&tokenModel)
-		if result.Error != nil {
-			return fmt.Errorf("unable to update token price '%s'", result.Error)
-		}
+		// We no longer update the price from the previous market
+		// tokenModel.LastPriceBase = openOrderModel.PPT
+		// result = protocol.db.Save(&tokenModel)
+		// if result.Error != nil {
+		// 	return fmt.Errorf("unable to update token price '%s'", result.Error)
+		// }
 
 		// Everything checks out, so we can mark the order as filled and transfer the tokens
 		openOrderModel.IsFilled = true
@@ -633,13 +633,15 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			Find(&sum).Error
 
 		if err != nil {
-			return result.Error
+			// No need to alert the buyer
+			return nil
 		}
 
 		tokenModel.Volume24Base = sum
 		result = protocol.db.Save(&tokenModel)
 		if result.Error != nil {
-			return result.Error
+			// No need to alert the buyer
+			return nil
 		}
 
 	case "delist":

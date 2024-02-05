@@ -1,0 +1,16 @@
+table:
+  name: status
+  schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - base_token
+        - chain_id
+        - id
+        - last_known_height
+        - last_processed_height
+        - base_token_usd
+        - date_updated
+      filter: {}
+    comment: ""

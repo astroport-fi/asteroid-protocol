@@ -2,8 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
 // import { IonicModule } from '@ionic/angular';
-import { IonAvatar, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, ModalController, AlertController, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
-import { Chain, order_by } from '../core/types/zeus';
+import {
+  IonAvatar,
+  IonContent,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonBackButton,
+  IonTitle,
+  IonProgressBar,
+  IonButton,
+  ModalController,
+  AlertController,
+  IonChip,
+  IonIcon,
+  IonLabel,
+  IonSegment,
+  IonSegmentButton,
+} from '@ionic/angular/standalone';
+import { Chain } from '../core/helpers/zeus';
+import { order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
@@ -26,10 +48,42 @@ import { ShortenAddressHiddenPipe } from '../core/pipe/shorten-address-hidden.pi
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss'],
   standalone: true,
-  imports: [CommonModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, DashboardPage, NgScrollbarModule, TableModule, ShortenAddressPipe, IonContent, IonGrid, IonRow, IonCol, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonTitle, IonProgressBar, IonButton, IonAvatar, IonChip, IonIcon, IonLabel, IonSegment, IonSegmentButton, LottieComponent, GenericPreviewPage, ShortenAddressHiddenPipe]
+  imports: [
+    CommonModule,
+    DateAgoPipe,
+    HumanTypePipe,
+    DecimalPipe,
+    HumanSupplyPipe,
+    TokenDecimalsPipe,
+    RouterLink,
+    DashboardPage,
+    NgScrollbarModule,
+    TableModule,
+    ShortenAddressPipe,
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonMenuButton,
+    IonBackButton,
+    IonTitle,
+    IonProgressBar,
+    IonButton,
+    IonAvatar,
+    IonChip,
+    IonIcon,
+    IonLabel,
+    IonSegment,
+    IonSegmentButton,
+    LottieComponent,
+    GenericPreviewPage,
+    ShortenAddressHiddenPipe,
+  ],
 })
 export class WalletPage implements OnInit {
-
   selectedSection: string = 'tokens';
   isLoading = true;
   selectedAddress: string = '';
@@ -41,11 +95,16 @@ export class WalletPage implements OnInit {
   connectedAccount: any;
   baseTokenPrice: number = 0;
 
-  constructor(private activatedRoute: ActivatedRoute, private walletService: WalletService, private priceService: PriceService) {
-  }
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private walletService: WalletService,
+    private priceService: PriceService
+  ) {}
 
   async ngOnInit() {
-    const walletDataJSON = localStorage.getItem(environment.storage.connectedWalletKey);;
+    const walletDataJSON = localStorage.getItem(
+      environment.storage.connectedWalletKey
+    );
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
       try {
@@ -62,9 +121,11 @@ export class WalletPage implements OnInit {
       }
     }
 
-    this.activatedRoute.params.subscribe(async params => {
-      this.selectedAddress = params["address"] || this.connectedAccount?.address;
-      this.selectedSection = this.activatedRoute.snapshot.queryParams["section"] || 'tokens';
+    this.activatedRoute.params.subscribe(async (params) => {
+      this.selectedAddress =
+        params['address'] || this.connectedAccount?.address;
+      this.selectedSection =
+        this.activatedRoute.snapshot.queryParams['section'] || 'tokens';
 
       this.isLoading = true;
 
@@ -80,18 +141,19 @@ export class WalletPage implements OnInit {
               limit: 500,
               order_by: [
                 {
-                  date_created: order_by.desc
-                }
+                  date_created: order_by.desc,
+                },
               ],
               where: {
                 current_owner: {
-                  _eq: this.selectedAddress
-                }
-              }
-            }, {
+                  _eq: this.selectedAddress,
+                },
+              },
+            },
+            {
               id: true,
               transaction: {
-                hash: true
+                hash: true,
               },
               current_owner: true,
               content_path: true,
@@ -101,9 +163,9 @@ export class WalletPage implements OnInit {
               decimals: true,
               launch_timestamp: true,
               last_price_base: true,
-              date_created: true
-            }
-          ]
+              date_created: true,
+            },
+          ],
         });
         this.tokens = tokensResult.token;
 
@@ -114,9 +176,9 @@ export class WalletPage implements OnInit {
               limit: 500,
               where: {
                 address: {
-                  _eq: this.selectedAddress
-                }
-              }
+                  _eq: this.selectedAddress,
+                },
+              },
             },
             {
               token: {
@@ -127,13 +189,13 @@ export class WalletPage implements OnInit {
                 decimals: true,
                 last_price_base: true,
                 transaction: {
-                  hash: true
-                }
+                  hash: true,
+                },
               },
               amount: true,
               date_updated: true,
-            }
-          ]
+            },
+          ],
         });
 
         this.holdings = holderResult.token_holder;
@@ -145,18 +207,19 @@ export class WalletPage implements OnInit {
               limit: 500,
               order_by: [
                 {
-                  date_created: order_by.desc
-                }
+                  date_created: order_by.desc,
+                },
               ],
               where: {
                 current_owner: {
-                  _eq: this.selectedAddress
-                }
-              }
-            }, {
+                  _eq: this.selectedAddress,
+                },
+              },
+            },
+            {
               id: true,
               transaction: {
-                hash: true
+                hash: true,
               },
               // transaction_hash: true,
               current_owner: true,
@@ -165,29 +228,32 @@ export class WalletPage implements OnInit {
               date_created: true,
               __alias: {
                 name: {
-                  metadata: [{
-                    path: '$.metadata.name'
-                  },
-                    true
-                  ]
+                  metadata: [
+                    {
+                      path: '$.metadata.name',
+                    },
+                    true,
+                  ],
                 },
                 description: {
-                  metadata: [{
-                    path: '$.metadata.description'
-                  },
-                    true
-                  ]
+                  metadata: [
+                    {
+                      path: '$.metadata.description',
+                    },
+                    true,
+                  ],
                 },
                 mime: {
-                  metadata: [{
-                    path: '$.metadata.mime'
-                  },
-                    true
-                  ]
-                }
-              }
-            }
-          ]
+                  metadata: [
+                    {
+                      path: '$.metadata.mime',
+                    },
+                    true,
+                  ],
+                },
+              },
+            },
+          ],
         });
 
         this.inscriptions = result.inscription;
@@ -276,11 +342,9 @@ export class WalletPage implements OnInit {
 
       this.isLoading = false;
     });
-
   }
 
   sectionChanged($event: any) {
     this.selectedSection = $event.detail.value;
   }
-
 }

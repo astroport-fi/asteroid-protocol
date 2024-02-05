@@ -1,16 +1,30 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { chevronForward, keySharp, pencilSharp, createSharp, checkmark, closeOutline, close } from "ionicons/icons";
+import {
+  chevronForward,
+  keySharp,
+  pencilSharp,
+  createSharp,
+  checkmark,
+  closeOutline,
+  close,
+} from 'ionicons/icons';
 import { LottieComponent } from 'ngx-lottie';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
 import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
-import { Chain } from '../core/types/zeus';
+import { Chain } from '../core/helpers/zeus';
 import { TxFee } from '../core/types/tx-fee';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -26,20 +40,44 @@ import { InscriptionService } from '../core/metaprotocol/inscription.service';
   templateUrl: './transfer-inscription-modal.page.html',
   styleUrls: ['./transfer-inscription-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, ReactiveFormsModule, CommonModule, FormsModule, RouterLink, LottieComponent, MaskitoModule, TokenDecimalsPipe, StripSpacesPipe]
+  imports: [
+    IonicModule,
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    LottieComponent,
+    MaskitoModule,
+    TokenDecimalsPipe,
+    StripSpacesPipe,
+  ],
 })
 export class TransferInscriptionModalPage implements OnInit {
-
   @Input() hash: string = '';
 
   transferForm: FormGroup;
 
-  constructor(private walletService: WalletService, private chainService: ChainService, private modalCtrl: ModalController, private router: Router, private builder: FormBuilder, private protocolService: InscriptionService) {
+  constructor(
+    private walletService: WalletService,
+    private chainService: ChainService,
+    private modalCtrl: ModalController,
+    private router: Router,
+    private builder: FormBuilder,
+    private protocolService: InscriptionService
+  ) {
     addIcons({ checkmark, closeOutline, close });
 
     this.transferForm = this.builder.group({
       basic: this.builder.group({
-        destination: ['', [Validators.required, Validators.minLength(45), Validators.maxLength(45), Validators.pattern("^[a-zA-Z0-9]*$")]],
+        destination: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(45),
+            Validators.maxLength(45),
+            Validators.pattern('^[a-zA-Z0-9]*$'),
+          ],
+        ],
       }),
     });
   }
@@ -54,17 +92,17 @@ export class TransferInscriptionModalPage implements OnInit {
           where: {
             transaction: {
               hash: {
-                _eq: this.hash
-              }
-            }
-          }
-        }, {
+                _eq: this.hash,
+              },
+            },
+          },
+        },
+        {
           id: true,
           current_owner: true,
-        }
+        },
       ],
     });
-
   }
 
   async submit() {
@@ -77,10 +115,14 @@ export class TransferInscriptionModalPage implements OnInit {
 
     // Construct metaprotocol memo message
     const params = new Map([
-      ["h", this.hash],
-      ["dst", this.transferForm.value.basic.destination],
+      ['h', this.hash],
+      ['dst', this.transferForm.value.basic.destination],
     ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'transfer', params);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'transfer',
+      params
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -93,7 +135,7 @@ export class TransferInscriptionModalPage implements OnInit {
         resultCTA: 'View inscription',
         metaprotocol: 'inscription',
         metaprotocolAction: 'transfer',
-      }
+      },
     });
 
     modal.present();
@@ -102,5 +144,4 @@ export class TransferInscriptionModalPage implements OnInit {
   cancel() {
     this.modalCtrl.dismiss();
   }
-
 }
