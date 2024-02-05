@@ -6,6 +6,9 @@
     "app": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:component": {
+          "standalone": true
+        },
         "@ionic/angular-toolkit:page": {
           "styleext": "scss",
           "standalone": true

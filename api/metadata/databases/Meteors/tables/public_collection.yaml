@@ -1,0 +1,37 @@
+table:
+  name: collection
+  schema: public
+object_relationships:
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+array_relationships:
+  - name: inscriptions
+    using:
+      foreign_key_constraint_on:
+        column: collection_id
+        table:
+          name: inscription
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - chain_id
+        - content_hash
+        - content_path
+        - content_size_bytes
+        - creator
+        - date_created
+        - height
+        - id
+        - is_explicit
+        - metadata
+        - minter
+        - name
+        - symbol
+        - transaction_id
+        - version
+      filter: {}
+      allow_aggregations: true
+    comment: ""

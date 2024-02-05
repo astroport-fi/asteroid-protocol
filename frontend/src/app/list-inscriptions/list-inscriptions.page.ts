@@ -176,6 +176,9 @@ export class ListInscriptionsPage implements OnInit {
             current_owner: {
               _eq: this.selectedAddress,
             },
+            collection_id: {
+              _is_null: true,
+            },
           },
         },
         {

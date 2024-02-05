@@ -41,6 +41,12 @@
  *  (window as any).__Zone_enable_cross_context_check = true;
  *
  */
+// Included with Angular CLI.
+
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
+import * as buffer from 'buffer';
 
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
@@ -48,8 +54,4 @@
 import 'zone.js';
 import './zone-flags';
 
-// Included with Angular CLI.
-
-/***************************************************************************************************
- * APPLICATION IMPORTS
- */
+window.Buffer = buffer.Buffer;

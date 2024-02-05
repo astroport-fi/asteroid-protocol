@@ -1,0 +1,21 @@
+<ion-grid>
+  <ion-row>
+    <ion-col size="12">
+      <div class="animation-ghost mx-auto">
+        <div class="ghost">
+          <ng-lottie
+            [options]="{
+              path: '../assets/lottie/ghost.json'
+            }"
+          ></ng-lottie>
+        </div>
+      </div>
+      <div class="title text-center p-3">it's a bit empty here...</div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="text-center">
+      <ng-content></ng-content>
+    </ion-col>
+  </ion-row>
+</ion-grid>

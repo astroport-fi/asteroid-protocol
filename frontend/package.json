@@ -14,7 +14,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts --subscriptions graphql-ws"
+    "gql:prettier": "npx prettier --write src/app/core/types/zeus/*.ts",
+    "gql:patch": "patch -p1 src/app/core/types/zeus/index.ts -i src/app/core/types/zeus/index.patch",
+    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts --subscriptions graphql-ws && npm run gql:prettier && npm run gql:patch",
+    "typecheck": "tsc --noEmit",
+    "prettify": "prettier . --write"
   },
   "private": true,
   "dependencies": {
@@ -35,7 +39,7 @@
     "@cosmjs/amino": "^0.32.1",
     "@cosmjs/encoding": "^0.32.1",
     "@cosmjs/proto-signing": "^0.32.1",
-    "@cosmjs/stargate": "^0.32.1",
+    "@cosmjs/stargate": "^0.32.2",
     "@ionic/angular": "^7.5.0",
     "@keplr-wallet/wc-client": "^0.12.55",
     "@keplr-wallet/wc-qrcode-modal": "^0.12.55",
@@ -74,6 +78,7 @@
     "@capacitor/cli": "5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
     "@keplr-wallet/types": "^0.12.52",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -90,6 +95,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.2.5",
     "ts-node": "^8.3.0",
     "typescript": "~5.2.2"
   },

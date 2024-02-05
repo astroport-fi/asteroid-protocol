@@ -1,0 +1,36 @@
+<app-content>
+  <ion-searchbar #search (ionInput)="searchbarInput($event)"></ion-searchbar>
+  @if (isLoading) {
+    <div>
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+  }
+
+  <ion-list>
+    @for (item of filteredItems; track item.token.id) {
+      <ion-item [button]="true" [detail]="false" (click)="handleChange(item)">
+        <ion-avatar aria-hidden="true" slot="start">
+          @if (item.token.content_path) {
+            <img [src]="item.token.content_path" />
+          } @else {
+            <img
+              class="no-logo"
+              src="../../assets/logo/a-white-on-transparent-250.png"
+            />
+          }
+        </ion-avatar>
+        <ion-label>{{ item.token.name }}</ion-label>
+        <ion-note slot="end" color="medium"
+          >{{
+            item.amount | tokenDecimals: item.token.decimals | number: '1.2-6'
+          }}
+          (${{
+            (item.amount | tokenDecimals: item.token.decimals) *
+              (baseTokenUSD * item.token.last_price_base
+                | tokenDecimals: item.token.decimals) | number: '1.2-6'
+          }})
+        </ion-note>
+      </ion-item>
+    }
+  </ion-list>
+</app-content>

@@ -16,7 +16,7 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title class="text-center"> New inscription </ion-title>
+            <ion-title> New inscription </ion-title>
           </ion-toolbar>
         </ion-header>
       </ion-col>
@@ -29,10 +29,8 @@
         offset-md="0"
         size-md="10"
         offset-md="1"
-        size-lg="8"
-        offset-lg="2"
-        size-xl="6"
-        offset-xl="3"
+        size-xl="8"
+        offset-xl="2"
         class="main-content"
       >
         <div class="aligned">
@@ -118,6 +116,29 @@
                     <h2>Inscription information</h2>
                     <p class="note">Add detail to your inscription</p>
                   </div>
+                  <ion-item
+                    lines="none"
+                    [button]="true"
+                    [detail]="false"
+                    id="select-collection"
+                    class="ps-2 py-2"
+                  >
+                    <ion-label class="text-nowrap">Collection</ion-label>
+                    <ion-icon
+                      color="dark"
+                      size="small"
+                      slot="end"
+                      name="caret-down-sharp"
+                    ></ion-icon
+                  ></ion-item>
+                  <ion-modal trigger="select-collection" #modal>
+                    <ng-template>
+                      <app-collection-modal
+                        class="ion-page"
+                        (selectionChange)="collectionChanged($event)"
+                      ></app-collection-modal>
+                    </ng-template>
+                  </ion-modal>
                   <div class="form-group" formGroupName="basic">
                     <div class="mt-2 ps-3">
                       <ion-input
@@ -136,10 +157,10 @@
                       <ion-textarea
                         class="no-border"
                         fill="outline"
-                        label="Description (optional)"
+                        label="Description"
                         labelPlacement="stacked"
-                        placeholder="Describe your inscription"
-                        rows="10"
+                        placeholder="Describe you inscription"
+                        rows="4"
                         formControlName="description"
                       ></ion-textarea>
                     </div>
@@ -174,8 +195,8 @@
             </ion-grid>
           </form>
         </div>
+        <div style="height: 100px"></div>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div style="height: 100px"></div>
 </ion-content>

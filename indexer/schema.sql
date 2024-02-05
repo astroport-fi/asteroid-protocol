@@ -38,6 +38,37 @@ CREATE TABLE public."transaction" (
 CREATE INDEX idx_tx_hash ON public.transaction USING btree (hash);
 
 
+
+-- public."collection" definition
+
+-- Drop table
+
+-- DROP TABLE public."collection";
+
+CREATE TABLE public."collection" (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    content_hash varchar(128) NOT NULL,
+    creator varchar(128) NOT NULL,
+    minter varchar(128) NULL,
+    "name" varchar(32) NOT NULL,
+    symbol varchar(10) NOT NULL,
+    metadata json NOT NULL,
+    content_path varchar(255) NULL DEFAULT NULL::character varying,
+    content_size_bytes int4 NULL,
+    is_explicit bool NULL DEFAULT false,
+    date_created timestamp NOT NULL,
+    CONSTRAINT collection_pkey PRIMARY KEY (id),
+    CONSTRAINT collection_content_hash_key UNIQUE (content_hash),
+    CONSTRAINT collection_symbol_key UNIQUE (symbol),
+    CONSTRAINT collection_tx_id UNIQUE (transaction_id),
+    CONSTRAINT collection_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+);
+
+
 -- public.inscription definition
 
 -- Drop table
@@ -50,6 +81,7 @@ CREATE TABLE public.inscription (
     height int4 NOT NULL,
     "version" varchar(32) NOT NULL,
     transaction_id int4 NOT NULL,
+    collection_id int4 NULL,
     content_hash varchar(128) NOT NULL,
     creator varchar(255) NOT NULL,
     current_owner varchar(128) NOT NULL,
@@ -62,7 +94,8 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_content_hash_key UNIQUE (content_hash),
     CONSTRAINT inscription_pkey PRIMARY KEY (id),
     CONSTRAINT inscription_tx_id UNIQUE (transaction_id),
-    CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+    CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
+    CONSTRAINT inscription_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
 );
 CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date_created);
 

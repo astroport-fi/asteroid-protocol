@@ -35,8 +35,9 @@ import { AccountData } from '@keplr-wallet/types';
 import { addIcons } from 'ionicons';
 import {
   add,
+  caretDownSharp,
   checkmark,
-  chevronDown,
+  chevronDownSharp,
   chevronForward,
   chevronForwardSharp,
   close,
@@ -131,7 +132,8 @@ export class DashboardLayoutComponent {
       closeOutline,
       close,
       chevronForwardSharp,
-      chevronDown,
+      chevronDownSharp,
+      caretDownSharp,
       searchOutline,
       openOutline,
       eyeOffOutline,
@@ -199,7 +201,7 @@ export class DashboardLayoutComponent {
         },
       ],
     }).on(({ status }) => {
-      this.maxHeight = status[0].last_known_height;
+      this.maxHeight = status[0].last_known_height!;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
       this.atomUSD = status[0].base_token_usd;

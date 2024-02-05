@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Coin, StdSignDoc, coin, makeStdTx } from '@cosmjs/amino';
-import { SigningStargateClient, defaultRegistryTypes } from '@cosmjs/stargate';
+import { SigningStargateClient } from '@cosmjs/stargate';
 import { Keplr } from '@keplr-wallet/types';
 import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
 import { SignClient } from '@walletconnect/sign-client';
@@ -115,6 +114,11 @@ export class WalletService {
 
     // Just return the first account for now
     return accounts[0];
+  }
+
+  async getAddress() {
+    const account = await this.getAccount();
+    return account.address;
   }
 
   /**

@@ -1,62 +1,16 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { Chain, Subscription } from '../helpers/zeus';
-import { Ops } from '../types/zeus/const';
 import {
-  GenericOperation,
+  AsteroidService as BaseAsteroidService,
   GraphQLTypes,
   InputType,
-  OperationOptions,
+  QueryOptions,
+  ScalarDefinition,
   Selector,
   ValueTypes,
+  WSSubscription,
   order_by,
-} from '../types/zeus/index';
-
-export type ScalarDefinition = {
-  smallint: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  bigint: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  numeric: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  timestamp: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => string;
-  };
-  json: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => string;
-  };
-};
-
-// O - operation - query | mutation | subscription
-// SCLR - scalar definition to handle custom types like bigint, json,..
-// R - concrete query type
-// Z - concrete query selection
-export type Operations<
-  O extends keyof typeof Ops,
-  SCLR extends ScalarDefinition,
-  R extends keyof ValueTypes = GenericOperation<O>,
-> = <Z extends ValueTypes[R]>(
-  o: (Z & ValueTypes[R]) | ValueTypes[R],
-  ops?: OperationOptions & { variables?: Record<string, unknown> },
-) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
-
-type First<T extends unknown> = T extends [any, ...infer R]
-  ? T extends [...infer F, ...R]
-    ? F[0]
-    : never
-  : never;
-
-export type QueryOptions<T extends keyof ValueTypes['query_root']> = First<
-  ValueTypes['query_root'][T]
->;
+} from '@asteroid-protocol/sdk';
+import { environment } from 'src/environments/environment';
 
 const tokenSelector = Selector('token')({
   id: true,
@@ -69,6 +23,7 @@ const tokenSelector = Selector('token')({
   last_price_base: true,
   volume_24_base: true,
   date_created: true,
+  max_supply: true,
 });
 
 export type Token = InputType<
@@ -77,12 +32,70 @@ export type Token = InputType<
   ScalarDefinition
 >;
 
-const inscriptionSelector = Selector('inscription')({
+const tokenHolderSelector = Selector('token_holder')({
+  token: tokenSelector,
+  amount: true,
+  date_updated: true,
+});
+
+export type TokenHolding = InputType<
+  GraphQLTypes['token_holder'],
+  typeof tokenHolderSelector,
+  ScalarDefinition
+>;
+
+const statusSelector = Selector('status')({
+  base_token: true,
+  base_token_usd: true,
+  last_processed_height: true,
+});
+
+export type Status = InputType<
+  GraphQLTypes['status'],
+  typeof statusSelector,
+  ScalarDefinition
+>;
+
+const aggregateCountSelector = Selector('marketplace_cft20_detail_aggregate')({
+  aggregate: {
+    count: [{}, true],
+  },
+});
+
+const cft20ListingSelector = Selector('marketplace_cft20_detail')({
+  id: true,
+  marketplace_listing: {
+    seller_address: true,
+    total: true,
+    depositor_address: true,
+    is_deposited: true,
+    depositor_timedout_block: true,
+    deposit_total: true,
+    transaction: {
+      hash: true,
+    },
+  },
+  ppt: true,
+  amount: true,
+  date_created: true,
+});
+
+export type CFT20MarketplaceListing = InputType<
+  GraphQLTypes['marketplace_cft20_detail'],
+  typeof cft20ListingSelector,
+  ScalarDefinition
+>;
+
+const collectionSelector = Selector('collection')({
   id: true,
   transaction: {
     hash: true,
   },
+  symbol: true,
+  creator: true,
   content_path: true,
+  content_size_bytes: true,
+  date_created: true,
   is_explicit: true,
   __alias: {
     name: {
@@ -112,6 +125,58 @@ const inscriptionSelector = Selector('inscription')({
   },
 });
 
+export type Collection = InputType<
+  GraphQLTypes['collection'],
+  typeof collectionSelector,
+  ScalarDefinition
+>;
+
+const inscriptionSelector = Selector('inscription')({
+  id: true,
+  transaction: {
+    hash: true,
+  },
+  current_owner: true,
+  content_path: true,
+  content_size_bytes: true,
+  date_created: true,
+  is_explicit: true,
+  __alias: {
+    name: {
+      metadata: [
+        {
+          path: '$.metadata.name',
+        },
+        true,
+      ],
+    },
+    description: {
+      metadata: [
+        {
+          path: '$.metadata.description',
+        },
+        true,
+      ],
+    },
+    mime: {
+      metadata: [
+        {
+          path: '$.metadata.mime',
+        },
+        true,
+      ],
+    },
+    attributes: {
+      metadata: [
+        {
+          path: '$.metadata.attributes',
+        },
+        true,
+      ],
+    },
+  },
+});
+
 export type Inscription = InputType<
   GraphQLTypes['inscription'],
   typeof inscriptionSelector,
@@ -133,24 +198,385 @@ export type InscriptionTradeHistory = InputType<
   typeof inscriptionTradeHistorySelector,
   ScalarDefinition
 >;
+export type TokenListings = {
+  listings: CFT20MarketplaceListing[];
+  count?: number;
+};
 
 @Injectable({
   providedIn: 'root',
 })
-export class AsteroidService {
-  chain: Chain;
-  ws: Subscription;
-
+export class AsteroidService extends BaseAsteroidService {
   constructor() {
-    this.chain = Chain(environment.api.endpoint);
-    this.ws = Subscription(environment.api.wss);
+    super(environment.api.endpoint, environment.api.wss);
   }
 
-  get query(): Operations<'query', ScalarDefinition> {
-    return this.chain<'query', ScalarDefinition>('query') as Operations<
-      'query',
-      ScalarDefinition
-    >;
+  async getStatus(): Promise<Status | undefined> {
+    const statusResult = await this.query({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: environment.chain.chainId,
+            },
+          },
+        },
+        statusSelector,
+      ],
+    });
+
+    return statusResult.status[0];
+  }
+
+  async getToken(ticker: string): Promise<Token | undefined> {
+    const result = await this.query({
+      token: [
+        {
+          where: {
+            ticker: {
+              _eq: ticker,
+            },
+          },
+        },
+        tokenSelector,
+      ],
+    });
+    return result.token[0];
+  }
+
+  async getTokens(
+    offset: number,
+    limit: number,
+    where: {
+      currentOwner?: string;
+    } = {},
+    orderBy?: ValueTypes['token_order_by'],
+  ): Promise<Token[]> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      };
+    }
+
+    const queryWhere: ValueTypes['token_bool_exp'] = {};
+    if (where.currentOwner) {
+      queryWhere.current_owner = {
+        _eq: where.currentOwner,
+      };
+    }
+
+    const result = await this.query({
+      token: [
+        {
+          offset,
+          limit,
+          order_by: [orderBy],
+          where: queryWhere,
+        },
+        tokenSelector,
+      ],
+    });
+    return result.token;
+  }
+
+  async getTokenHolding(
+    tokenId: number,
+    address: string,
+  ): Promise<TokenHolding | undefined> {
+    const result = await this.query({
+      token_holder: [
+        {
+          where: {
+            address: {
+              _eq: address,
+            },
+            token_id: {
+              _eq: tokenId,
+            },
+          },
+        },
+        tokenHolderSelector,
+      ],
+    });
+    return result.token_holder[0];
+  }
+
+  async getTokenHoldings(
+    address: string,
+    search?: string | null,
+    offset = 0,
+    limit = 500,
+  ): Promise<TokenHolding[]> {
+    const where: ValueTypes['token_holder_bool_exp'] = {
+      address: {
+        _eq: address,
+      },
+    };
+    if (search) {
+      where.token = {
+        _or: [
+          { name: { _like: `%${search}%` } },
+          { name: { _like: `%${search.toUpperCase()}%` } },
+          { ticker: { _like: `%${search}%` } },
+          { ticker: { _like: `%${search.toUpperCase()}%` } },
+        ],
+      };
+    }
+
+    const holderResult = await this.query({
+      token_holder: [
+        {
+          offset,
+          limit,
+          where,
+        },
+        tokenHolderSelector,
+      ],
+    });
+    return holderResult.token_holder;
+  }
+
+  async getTokenListings(
+    tokenId: number,
+    offset: number = 0,
+    limit: number = 20,
+    orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
+    aggregate = false,
+  ): Promise<TokenListings> {
+    if (!orderBy) {
+      orderBy = {
+        amount: order_by.asc,
+      };
+    }
+
+    const where: ValueTypes['marketplace_cft20_detail_bool_exp'] = {
+      token_id: {
+        _eq: tokenId,
+      },
+      marketplace_listing: {
+        is_cancelled: {
+          _eq: false,
+        },
+        is_filled: {
+          _eq: false,
+        },
+      },
+    };
+
+    type Query = {
+      marketplace_cft20_detail: [
+        QueryOptions<'marketplace_cft20_detail'>,
+        typeof cft20ListingSelector,
+      ];
+      marketplace_cft20_detail_aggregate?: [
+        QueryOptions<'marketplace_cft20_detail_aggregate'>,
+        typeof aggregateCountSelector,
+      ];
+    };
+
+    const query: Query = {
+      marketplace_cft20_detail: [
+        {
+          where,
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        cft20ListingSelector,
+      ],
+    };
+
+    if (aggregate) {
+      query.marketplace_cft20_detail_aggregate = [
+        {
+          where,
+        },
+        {
+          aggregate: {
+            count: [{}, true],
+          },
+        },
+      ];
+    }
+
+    const listingsResult = await this.query(query);
+
+    let count: number | undefined;
+    if (aggregate) {
+      count =
+        listingsResult.marketplace_cft20_detail_aggregate?.aggregate?.count;
+    }
+
+    return {
+      count,
+      listings: listingsResult.marketplace_cft20_detail,
+    };
+  }
+
+  tokenListingsSubscription(
+    tokenId: number,
+    limit: number,
+  ): WSSubscription<{ marketplace_cft20_detail: CFT20MarketplaceListing[] }> {
+    return this.subscription({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: tokenId,
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false,
+              },
+              is_filled: {
+                _eq: false,
+              },
+            },
+          },
+          limit,
+          order_by: [
+            {
+              ppt: order_by.asc,
+            },
+          ],
+        },
+        cft20ListingSelector,
+      ],
+    });
+  }
+
+  async getTokenFloorPrice(tokenId: number) {
+    const floorListings = await this.getTokenListings(tokenId, 0, 1, {
+      ppt: order_by.asc,
+    });
+    const listing = floorListings.listings[0];
+    if (!listing) {
+      return 0;
+    }
+    return listing.ppt;
+  }
+
+  async getCollections(
+    offset: number,
+    limit: number,
+    where: {
+      creator?: string;
+    } = {},
+    orderBy?: ValueTypes['collection_order_by'],
+  ): Promise<Collection[]> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      };
+    }
+
+    const queryWhere: ValueTypes['collection_bool_exp'] | undefined = {};
+    if (where.creator) {
+      queryWhere.creator = {
+        _eq: where.creator,
+      };
+    }
+
+    const result = await this.query({
+      collection: [
+        {
+          offset,
+          limit,
+          where: queryWhere,
+          order_by: [orderBy],
+        },
+        collectionSelector,
+      ],
+    });
+
+    return result.collection;
+  }
+
+  async getCollection(symbol: string): Promise<Collection | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            symbol: {
+              _eq: symbol,
+            },
+          },
+        },
+        collectionSelector,
+      ],
+    });
+    return result.collection[0];
+  }
+
+  async getInscriptions(
+    offset: number,
+    limit: number,
+    where: {
+      collectionId?: number;
+      currentOwner?: string;
+      onlySingle?: boolean;
+    } = {},
+    orderBy?: ValueTypes['inscription_order_by'],
+  ): Promise<Inscription[]> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      };
+    }
+
+    const queryWhere: ValueTypes['inscription_bool_exp'] | undefined = {};
+    if (where.collectionId) {
+      queryWhere.collection_id = {
+        _eq: where.collectionId,
+      };
+    } else if (where.onlySingle) {
+      queryWhere.collection_id = {
+        _is_null: true,
+      };
+    }
+
+    if (where.currentOwner) {
+      queryWhere.current_owner = {
+        _eq: where.currentOwner,
+      };
+    }
+
+    const result = await this.query({
+      inscription: [
+        {
+          offset,
+          limit,
+          order_by: [orderBy],
+          where: queryWhere,
+        },
+        inscriptionSelector,
+      ],
+    });
+    return result.inscription;
+  }
+
+  async getTransactionStatus(txHash: string) {
+    const result = await this.query({
+      transaction: [
+        {
+          where: {
+            hash: {
+              _eq: txHash,
+            },
+          },
+        },
+        {
+          status_message: true,
+        },
+      ],
+    });
+
+    const transaction = result.transaction[0];
+    if (!transaction) {
+      return;
+    }
+
+    return transaction.status_message;
   }
 
   async getInscriptionTradeHistory(

@@ -1,0 +1,78 @@
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="10"
+        offset-xl="1"
+      >
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button
+                defaultHref="/app/inscriptions"
+              ></ion-back-button>
+            </ion-buttons>
+            @if (collection) {
+              <ion-title>{{ collection.name }}</ion-title>
+            }
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="10"
+        offset-xl="1"
+      >
+        <div class="aligned">
+          @if (isLoading) {
+            <ion-progress-bar type="indeterminate"></ion-progress-bar>
+          } @else {
+            <div class="list">
+              @for (item of inscriptions; track item.id) {
+                <a
+                  class="inscription-item main-content"
+                  [routerLink]="['/app/inscription', item.transaction.hash]"
+                >
+                  <div class="content">
+                    <app-generic-preview
+                      [mime]="item.mime"
+                      [contentPath]="item.content_path!"
+                      [isExplicit]="item.is_explicit || false"
+                    ></app-generic-preview>
+                  </div>
+                  <h4 class="name">{{ item.name }}</h4>
+                  <div class="detail">
+                    <div class="detail-item">
+                      <span>{{ item.date_created | dateAgo }}</span>
+                    </div>
+                  </div>
+                </a>
+              } @empty {
+                No inscriptions found
+              }
+
+              <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+                <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+              </ion-infinite-scroll>
+            </div>
+          }
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

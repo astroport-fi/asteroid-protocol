@@ -1,0 +1,75 @@
+.content-container {
+  width: 100%;
+}
+
+:host {
+  height: calc(100% - 110px) !important;
+  padding: 20px;
+}
+
+.left {
+  background-color: hsla(0, 0%, 100%, 0.05);
+  backdrop-filter: blur(50px);
+  border-radius: 10px;
+  padding: 5px;
+  height: 100%;
+}
+
+.right {
+  padding: 0;
+  margin-left: 20px;
+}
+
+.label-wrapper {
+  background-color: hsla(0, 0%, 100%, 0.05);
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  border-radius: 40px;
+  width: 100%;
+
+  ion-label {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+ion-avatar {
+  --border-radius: 0;
+}
+
+.change-market {
+  cursor: pointer;
+}
+
+.token-stats {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  // max-width: 300px;
+
+  .key {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .value {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.sell-button {
+  --padding-bottom: 12px;
+  --padding-top: 12px;
+  --border-radius: 6px;
+}

@@ -8,13 +8,12 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { toBase64, toUtf8 } from '@cosmjs/encoding';
-import {
-  AlertController,
-  IonicModule,
-  ModalController,
-  ViewDidLeave,
-} from '@ionic/angular';
+import { IonicModule, ModalController, ViewDidLeave } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import {
+  Collection,
+  CollectionModalComponent,
+} from '../collection-modal/collection-modal.component';
 import { hashValue } from '../core/helpers/crypto';
 import {
   InscriptionMetadata,
@@ -29,7 +28,13 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
   templateUrl: './create-inscription.page.html',
   styleUrls: ['./create-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    IonicModule,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    CollectionModalComponent,
+  ],
 })
 export class CreateInscriptionPage implements OnInit, ViewDidLeave {
   createInscriptionForm: FormGroup;
@@ -44,7 +49,6 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
     private protocolService: InscriptionService,
     private walletService: WalletService,
     private modalCtrl: ModalController,
-    private alertController: AlertController,
   ) {
     this.createInscriptionForm = this.builder.group({
       basic: this.builder.group({
@@ -84,6 +88,10 @@ export class CreateInscriptionPage implements OnInit, ViewDidLeave {
         this.contentRequired = true;
       }
     }
+  }
+
+  collectionChanged(collection: Collection) {
+    console.log('!!', collection);
   }
 
   async createInscription() {

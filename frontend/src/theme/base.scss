@@ -81,9 +81,10 @@ ion-button[fill='outline'] {
 }
 
 ion-input,
+ion-searchbar,
 ion-textarea {
   // --border-color: rgba(66, 108, 117, 0.2) !important;
-  --background: transparent;
+  --background: transparent !important;
   // border-bottom: 1px solid var(--color-teal);
 
   --highlight-color-focused: var(--color-orange) !important;

@@ -62,22 +62,40 @@
               </ion-item>
               <div class="ion-padding" slot="content">
                 <p class="note">
-                  You do not need to adjust these parameters. The defaults should suffice.
+                  You do not need to adjust these parameters. The defaults
+                  should suffice.
                 </p>
                 <div formGroupName="basic">
                   <div class="mt-4 w-50">
-                    <ion-input label="Minimum deposit required" labelPlacement="stacked" fill="outline" placeholder="10"
-                      [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="minDeposit"></ion-input>
-                    <span class="note">This is the minimum percent someone needs to pay to reserve the listing,
-                      {{minDepositPercent}}% -
-                      {{maxDepositPercent}}%</span>
+                    <ion-input
+                      label="Minimum deposit required"
+                      labelPlacement="stacked"
+                      fill="outline"
+                      placeholder="10"
+                      [maskito]="decimalMask"
+                      [maskitoElement]="maskPredicate"
+                      formControlName="minDeposit"
+                    ></ion-input>
+                    <span class="note"
+                      >This is the minimum percent someone needs to pay to
+                      reserve the listing, {{minDepositPercent}}% -
+                      {{maxDepositPercent}}%</span
+                    >
                   </div>
                   <div class="mt-4 w-50">
-                    <ion-input label="Timout in blocks" labelPlacement="stacked" fill="outline" placeholder="5"
-                      [maskito]="decimalMask" [maskitoElement]="maskPredicate"
-                      formControlName="timeoutBlocks"></ion-input>
-                    <span class="note">How long a reservation will be valid for, {{minTimeout}} - {{maxTimeout}}
-                      blocks</span>
+                    <ion-input
+                      label="Timout in blocks"
+                      labelPlacement="stacked"
+                      fill="outline"
+                      placeholder="5"
+                      [maskito]="decimalMask"
+                      [maskitoElement]="maskPredicate"
+                      formControlName="timeoutBlocks"
+                    ></ion-input>
+                    <span class="note"
+                      >How long a reservation will be valid for, {{minTimeout}}
+                      - {{maxTimeout}} blocks</span
+                    >
                   </div>
                 </div>
               </div>

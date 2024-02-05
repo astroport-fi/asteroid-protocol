@@ -6,13 +6,14 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { SortEvent } from 'primeng/api';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PriceService } from '../core/service/price.service';
 import { WalletService } from '../core/service/wallet.service';
-import { Chain, Subscription, order_by } from '../core/types/zeus';
+import { Subscription, order_by } from '../core/types/zeus';
 import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-notice-modal.page';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 

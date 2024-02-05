@@ -1,0 +1,344 @@
+<ion-content class="main-content" mode="md">
+  <div class="modal-background">
+    <img src="../../assets/background/flow.webp" />
+  </div>
+  <div>
+    @if (state == 'sign' || state == 'estimate') {
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="animation mx-auto">
+              <ng-lottie
+                [options]="{ path: '../assets/lottie/scan.json' }"
+              ></ng-lottie>
+              <!-- <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie> -->
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center">
+            <h2>Sign and submit transaction</h2>
+            <!-- <p>
+              Inscription transactions are typically larger than standard<br />transactions and require higher fees
+            </p> -->
+            <!-- <p>
+              This transaction will send 0.000001 ATOM to your<br />
+              connected wallet to create the inscription
+            </p> -->
+            <p>
+              You are about to inscribe permanently on the Cosmos Hub.<br />This
+              can <b>not</b> be undone.
+            </p>
+            @if (errorText) {
+              <div class="mt-3 warning-box text-left">
+                <b>Unable to sign transaction</b>
+                <p>{{ errorText }}</p>
+                <p>
+                  You must sign and submit the transaction in order to inscribe
+                  content
+                </p>
+              </div>
+            }
+          </ion-col>
+        </ion-row>
+        @if (!errorText) {
+          <ion-row>
+            <ion-col>
+              <div class="fees">
+                <h4>Estimated fee breakdown</h4>
+                @if (state == 'estimate') {
+                  <div>
+                    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+                    <div class="note">Estimating...</div>
+                  </div>
+                } @else {
+                  <table>
+                    <!-- <tr>
+                      <td class="label">Gas</td>
+                      <td>{{ gasEstimate | number: '1.0-0' }}</td>
+                    </tr> -->
+                    <tr>
+                      <td class="label">Cosmos Hub</td>
+                      <td>
+                        {{ chainFee | tokenDecimals: 6 | number: '1.6-6' }} ATOM
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Metaprotocol</td>
+                      <td>{{ protocolFee | number: '1.6-6' }} ATOM</td>
+                    </tr>
+                    <tr>
+                      <td class="label total">Estimated total</td>
+                      <td class="total shifted">
+                        {{
+                          chainFee + protocolFeeAbsolute
+                            | tokenDecimals: 6
+                            | number: '1.6-6'
+                        }}
+                        ATOM
+                        <div class="icon-trigger">
+                          <ion-icon
+                            id="click-trigger"
+                            name="help-circle-outline"
+                          ></ion-icon>
+                          <!-- <ion-button>Left-Click Me</ion-button> -->
+                          <ion-popover
+                            trigger="click-trigger"
+                            triggerAction="click"
+                          >
+                            <ng-template>
+                              <ion-content class="main-content ion-padding"
+                                >You are required to complete a transfer of ATOM
+                                to generate an inscription. This
+                                self-transaction will send 0.000001 ATOM from
+                                the inscribing address back to the same address.
+                                Since the amount is refunded, it is not listed
+                                as a fee</ion-content
+                              >
+                            </ng-template>
+                          </ion-popover>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                }
+              </div>
+            </ion-col>
+          </ion-row>
+        }
+
+        <ion-row>
+          <ion-col>
+            <div class="text-center">
+              @if (errorText) {
+                <ion-button class="mt-3" color="success" (click)="retry()"
+                  >Retry</ion-button
+                >
+              } @else if (state == 'sign') {
+                <ion-button class="mt-3" color="success" (click)="submit()"
+                  >Continue</ion-button
+                >
+              }
+
+              <br />
+              <ion-button
+                color="primary"
+                class="mt-3"
+                fill="clear"
+                (click)="cancel()"
+                >Cancel</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    } @else if (state == 'submit') {
+      <ion-grid class="mt-5">
+        <ion-row>
+          <ion-col>
+            <div class="animation mx-auto">
+              <ng-lottie
+                [options]="{ path: '../assets/lottie/hourglass.json' }"
+              ></ng-lottie>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center mt-5">
+            <h2>Waiting for transaction</h2>
+            <p>
+              Your inscription has been submitted and<br />waiting to be added
+              to the next block
+            </p>
+            @if (errorText) {
+              <div class="mt-3 warning-box text-left">
+                <b>Unable to sign transaction</b>
+                <p>{{ errorText }}</p>
+                <p>
+                  You must sign and submit the transaction in order to inscribe
+                  content
+                </p>
+              </div>
+            }
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center note">
+            <h3>Transaction hash</h3>
+            <p>{{ txHash }}</p>
+            @if (txHash) {
+              <p>
+                <a target="_blank" href="{{ explorerTxUrl }}{{ txHash }}"
+                  >Open on Mintscan</a
+                >
+              </p>
+            }
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <div class="text-center">
+              <ion-button
+                color="primary"
+                class="mt-3"
+                fill="clear"
+                (click)="cancel()"
+                >Close</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    } @else if (state == 'success-onchain' || state == 'success-indexer') {
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="animation large mx-auto p-0 m-0">
+              <ng-lottie
+                [options]="{ path: '../assets/lottie/hourglass.json' }"
+              ></ng-lottie>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center">
+            <h2>Indexing</h2>
+            <p>
+              Your inscription has been created on-chain, waiting for indexer
+            </p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center note">
+            <h3>Transaction hash</h3>
+            <p>{{ txHash }}</p>
+            @if (txHash) {
+              <p>
+                <a target="_blank" href="{{ explorerTxUrl }}{{ txHash }}"
+                  >Open on Mintscan</a
+                >
+              </p>
+            }
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <div class="text-center">
+              <ion-button
+                color="primary"
+                class="mt-3"
+                fill="clear"
+                (click)="cancel()"
+                >Close</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    } @else if (state == 'failed') {
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="animation large mx-auto p-0 m-0">
+              <ng-lottie
+                [options]="{ path: '../assets/lottie/error.json' }"
+              ></ng-lottie>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center">
+            <h2>Inscription failed</h2>
+            <p>
+              Your inscription was created on-chain, but failed to be added to
+              Asteroid.<br />The reason for the failure was:
+            </p>
+            <p class="color-orange">{{ errorText }}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center note">
+            <h3>Transaction hash</h3>
+            <p>{{ txHash }}</p>
+            @if (txHash) {
+              <p>
+                <a target="_blank" href="{{ explorerTxUrl }}{{ txHash }}"
+                  >Open on Mintscan</a
+                >
+              </p>
+            }
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <div class="text-center">
+              <ion-button
+                color="primary"
+                class="mt-3"
+                fill="clear"
+                (click)="cancel()"
+                >Close</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    } @else if (state == 'success-inscribed') {
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div class="animation large mx-auto p-0 m-0">
+              <ng-lottie
+                [options]="{
+                  path: '../assets/lottie/success.json',
+                  loop: false
+                }"
+              ></ng-lottie>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center">
+            <h2>Transaction complete</h2>
+            <p>Your inscription is now on-chain and viewable on Asteroid</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center">
+            <div>
+              <ion-button color="primary" (click)="viewInscription()">{{
+                resultCTA
+              }}</ion-button>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="text-center note">
+            <h3>Transaction hash</h3>
+            <p>{{ txHash }}</p>
+            @if (txHash) {
+              <p>
+                <a target="_blank" href="{{ explorerTxUrl }}{{ txHash }}"
+                  >Open on Mintscan</a
+                >
+              </p>
+            }
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <div class="text-center">
+              <ion-button
+                color="primary"
+                class="mt-3"
+                fill="clear"
+                (click)="cancel()"
+                >Close</ion-button
+              >
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    }
+  </div>
+</ion-content>

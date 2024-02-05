@@ -19,4 +19,5 @@ select_permissions:
         - token_id
         - date_created
       filter: {}
+      allow_aggregations: true
     comment: ""

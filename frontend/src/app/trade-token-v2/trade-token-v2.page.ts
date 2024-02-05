@@ -8,6 +8,7 @@ import { SortEvent } from 'primeng/api';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
 import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
+import { Chain, Subscription } from '../core/helpers/zeus';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -16,7 +17,7 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PriceService } from '../core/service/price.service';
 import { WalletService } from '../core/service/wallet.service';
-import { Chain, Subscription, order_by } from '../core/types/zeus';
+import { order_by } from '../core/types/zeus';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
@@ -290,6 +291,70 @@ export class TradeTokenV2Page implements OnInit {
   }
 
   async deposit(listingHash: string) {
+    const chain = Chain(environment.api.endpoint);
+    const listingResult = await chain('query')({
+      marketplace_listing: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: listingHash,
+              },
+            },
+          },
+        },
+        {
+          seller_address: true,
+          total: true,
+          deposit_total: true,
+          is_deposited: true,
+          is_cancelled: true,
+          is_filled: true,
+        },
+      ],
+    });
+
+    if (listingResult.marketplace_listing.length == 0) {
+      alert('Listing not found');
+      return;
+    }
+    const listing = listingResult.marketplace_listing[0];
+
+    const deposit: bigint = BigInt(listing.deposit_total as number);
+
+    const purchaseMessage = {
+      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+      value: MsgSend.encode({
+        fromAddress: (await this.walletService.getAccount()).address,
+        toAddress: listing.seller_address,
+        amount: [
+          {
+            denom: 'uatom',
+            amount: deposit.toString(),
+          },
+        ],
+      }).finish(),
+    };
+
+    const purchaseMessageJSON = {
+      '@type': '/cosmos.bank.v1beta1.MsgSend',
+      from_address: (await this.walletService.getAccount()).address,
+      to_address: listing.seller_address,
+      amount: [
+        {
+          denom: 'uatom',
+          amount: deposit.toString(),
+        },
+      ],
+    };
+
+    // Construct metaprotocol memo message
+    const params = new Map([['h', listingHash]]);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'deposit',
+      params,
+    );
     const modal = await this.modalCtrl.create({
       // keyboardClose: true,
       // backdropDismiss: false,
@@ -424,8 +489,8 @@ export class TradeTokenV2Page implements OnInit {
       return;
     }
 
-    let totaluatom: bigint = listing.total as bigint;
-    const deposit: bigint = listing.deposit_total as bigint;
+    let totaluatom: bigint = BigInt(listing.total as number);
+    const deposit: bigint = BigInt(listing.deposit_total as number);
     if (deposit > totaluatom) {
       // If deposit is greater than total, then just sent 1uatom to complete the transaction
       totaluatom = BigInt(1);

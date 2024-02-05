@@ -81,6 +81,10 @@ export class ViewInscriptionPage implements OnInit {
           transaction: {
             hash: true,
           },
+          collection: {
+            name: true,
+            symbol: true,
+          },
           creator: true,
           current_owner: true,
           content_path: true,

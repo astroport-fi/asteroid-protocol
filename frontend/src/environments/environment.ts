@@ -7,6 +7,9 @@ export const environment = {
   storage: {
     connectedWalletKey: 'connectedWallet',
   },
+  swap: {
+    defaultToken: 'ROIDS',
+  },
   fees: {
     ibcChannel: 'channel-569',
     protocol: {
@@ -72,39 +75,6 @@ export const environment = {
           maxDepositPercent: 1,
           minTimeout: 50,
           maxTimeout: 500,
-        },
-        'buy.cft20': {
-          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
-          denom: 'uatom',
-          amount: '0.02', // Default 2%
-          type: 'dynamic-percent',
-        },
-        deposit: {
-          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
-          denom: 'uatom',
-          amount: '0',
-        },
-        delist: {
-          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
-          denom: 'uatom',
-          amount: '0',
-        },
-        'list.inscription': {
-          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
-          denom: 'uatom',
-          amount: '0',
-          minTradeSize: 0.000001,
-          minDepositAbsolute: 0.000001,
-          minDepositPercent: 0.1,
-          maxDepositPercent: 1,
-          minTimeout: 50,
-          maxTimeout: 500,
-        },
-        buy: {
-          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
-          denom: 'uatom',
-          amount: '0.02', // Default 2%
-          type: 'dynamic-percent',
         },
       },
     },

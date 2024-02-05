@@ -31,17 +31,24 @@ export const routes: Routes = [
       {
         path: 'wallet',
         loadComponent: () =>
-          import('./wallet/wallet.page').then((m) => m.WalletPage),
+          import('./wallet/wallet.component').then((m) => m.WalletPage),
       },
       {
         path: 'wallet/:address',
         loadComponent: () =>
-          import('./wallet/wallet.page').then((m) => m.WalletPage),
+          import('./wallet/wallet.component').then((m) => m.WalletPage),
       },
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
+      },
+      {
+        path: 'create/collection',
+        loadComponent: () =>
+          import('./create-collection/create-collection.component').then(
+            (m) => m.CreateCollectionPage,
+          ),
       },
       {
         path: 'create/inscription',
@@ -55,6 +62,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./create-token/create-token.page').then(
             (m) => m.CreateTokenPage,
+          ),
+      },
+      {
+        path: 'collections',
+        loadComponent: () =>
+          import('./list-collections/list-collections.component').then(
+            (m) => m.ListCollectionsPage,
+          ),
+      },
+      {
+        path: 'collection/:symbol',
+        loadComponent: () =>
+          import('./view-collection/view-collection.component').then(
+            (m) => m.ViewCollectionPage,
           ),
       },
       {
@@ -85,21 +106,11 @@ export const routes: Routes = [
             (m) => m.MarketsInscriptionPage,
           ),
       },
-      // {
-      //   path: 'market/:quote',
-      //   loadComponent: () => import('./trade-token-tv/trade-token-tv.page').then(m => m.TradeTokenTVPage)
-      // },
       {
         path: 'market/:quote',
         loadComponent: () =>
-          import('./trade-token-v2/trade-token-v2.page').then(
-            (m) => m.TradeTokenV2Page,
-          ),
+          import('./swap/swap.component').then((m) => m.SwapPage),
       },
-      // {
-      //   path: 'market/:quote',
-      //   loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)
-      // },
       {
         path: 'inscription/:txhash',
         loadComponent: () =>

@@ -1,0 +1,7 @@
+@if (change == 0) {
+  <ion-text color="success">Floor price</ion-text>
+} @else {
+  <ion-text [color]="getColor()"
+    >{{ change | percent: '1.0-2' }} above floor</ion-text
+  >
+}

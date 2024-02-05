@@ -15,9 +15,13 @@
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
+              @if (inscription?.collection) {
               <ion-back-button
-                defaultHref="/app/inscriptions"
+                defaultHref="/app/collection/{{inscription.collection.symbol}}"
               ></ion-back-button>
+              } @else {
+              <ion-back-button defaultHref="/app/inscriptions"></ion-back-button
+              >}
             </ion-buttons>
             <ion-title>
               <!-- Less 1 because database starts at 1 and not 0 -->
@@ -140,6 +144,22 @@
                         </a>
                       </div>
                     </ion-col>
+                    @if (inscription.collection) {
+                    <ion-col>
+                      <div class="meta">
+                        <span class="label">Collection</span>
+                        <a
+                          [routerLink]="['/app/collection', inscription.collection.symbol ]"
+                        >
+                          <ion-chip>
+                            <ion-label
+                              >{{ inscription.collection.name }}</ion-label
+                            >
+                          </ion-chip>
+                        </a>
+                      </div>
+                    </ion-col>
+                    }
                   </ion-row>
                   <ion-row
                     class="is-owner mt-4"

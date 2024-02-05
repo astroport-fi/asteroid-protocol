@@ -123,7 +123,7 @@ ol {
 li {
   position: relative;
   float: left;
-  width: 100% / $number-of-steps;
+  width: calc(100% / $number-of-steps);
   text-align: center;
   color: $active-background-color;
   opacity: 0.8;
@@ -153,7 +153,7 @@ li:before {
   border-radius: $bullet-size;
   position: relative;
   left: 50%;
-  margin-bottom: $bullet-size / 2;
+  margin-bottom: calc($bullet-size / 2);
   margin-left: $bullet-size * -0.5;
   z-index: 1;
   transition: all 0.4s ease-in-out;
@@ -182,7 +182,7 @@ li + li {
     height: $line-width;
     position: absolute;
     left: -40%;
-    top: $bullet-size / 2;
+    top: calc($bullet-size / 2);
     z-index: 0;
   }
 }

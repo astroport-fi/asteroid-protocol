@@ -2,6 +2,9 @@ table:
   name: inscription
   schema: public
 object_relationships:
+  - name: collection
+    using:
+      foreign_key_constraint_on: collection_id
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id
@@ -32,6 +35,7 @@ select_permissions:
     permission:
       columns:
         - chain_id
+        - collection_id
         - content_hash
         - content_path
         - content_size_bytes
