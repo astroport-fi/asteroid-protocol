@@ -23,7 +23,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <div class="section-container">
+        <div class="section-container mt-3">
           <div class="section">
             <h4 class="header">Sort</h4>
             <ion-select aria-label="Order" placeholder="Order" fill="clear" interface="popover" value="recent-adds"
@@ -58,6 +58,18 @@
               <ion-select-option value="50000">Sub 50 000</ion-select-option>
             </ion-select>
           </div>
+
+        </div>
+      </ion-col>
+      <ion-col size="12" size-lg="4">
+        <div class="token-stats">
+          <span class="key">
+            24H Volume
+          </span>
+          <span class="value ms-3">
+            {{ volumeAtom | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ volumeUSD |
+            number:"1.2-6" }})
+          </span>
         </div>
       </ion-col>
     </ion-row>

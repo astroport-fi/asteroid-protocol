@@ -47,20 +47,3 @@ h1 {
         text-align: right;
     }
 }
-
-.token-stats {
-    background-color: rgba(0, 0, 0, 0.2);
-    // display: inline-flex;
-    border-radius: 10px;
-    padding: 10px;
-    // margin: 5px;
-
-    .key {
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .value {
-        color: rgba(255, 255, 255, 0.6);
-    }
-}

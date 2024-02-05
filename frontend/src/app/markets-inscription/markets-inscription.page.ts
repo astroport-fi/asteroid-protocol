@@ -58,6 +58,9 @@ export class MarketsInscriptionPage implements OnInit {
   currentBlock: number = 0;
   baseTokenUSD: number = 0;
 
+  volumeAtom: number = 0;
+  volumeUSD: number = 0;
+
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
     // this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
@@ -105,6 +108,31 @@ export class MarketsInscriptionPage implements OnInit {
     this.marketplaceDetail = result.marketplace_inscription_detail;
     const reservedResult = await this.fetchReservedInscriptions();
     this.reservedMarketplaceDetail = reservedResult.marketplace_inscription_detail;
+
+    const date24HoursAgo = new Date(new Date().getTime() - (24 * 60 * 60 * 1000)).toISOString();
+
+    const tradeStatsResult = await this.chain('query')({
+      inscription_trade_history_aggregate: [
+        {
+          where: {
+            date_created: {
+              _gte: date24HoursAgo
+            }
+          },
+        },
+        {
+          aggregate: {
+            sum: {
+              amount_quote: true,
+              total_usd: true
+            }
+          }
+        }
+      ]
+
+    });
+    this.volumeAtom = tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.amount_quote;
+    this.volumeUSD = tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.total_usd;
     this.isLoading = false;
 
 
@@ -123,8 +151,6 @@ export class MarketsInscriptionPage implements OnInit {
       },
       _and: where,
     };
-    console.log("fullWhere");
-    console.log(fullWhere);
 
     return this.chain('query')({
       marketplace_inscription_detail: [
@@ -269,7 +295,6 @@ export class MarketsInscriptionPage implements OnInit {
 
     switch (type) {
       case "order":
-        console.log("order changed", event.detail.value);
         if (event.detail.value === "price-high") {
           this.selectedOrder = {
             marketplace_listing: {
@@ -334,8 +359,6 @@ export class MarketsInscriptionPage implements OnInit {
       //   break;
     }
 
-    console.log(this.currentFilter);
-
     const result = await this.fetchInscriptions(
       this.currentFilter,
       [
@@ -345,9 +368,6 @@ export class MarketsInscriptionPage implements OnInit {
   }
 
   async buy(listingHash: string, inscriptionHash: string) {
-    console.log("Lets buy", listingHash);
-    console.log("Lets buy", inscriptionHash);
-
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: true,

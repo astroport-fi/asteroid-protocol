@@ -969,6 +969,20 @@ export type ValueTypes = {
 			order_by?: Array<ValueTypes["inscription_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription_history"]],
+		inscription_trade_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history"]],
+		inscription_trade_histories_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history_aggregate"]],
 		is_explicit?: boolean | `@${string}`,
 		marketplace_inscription_details?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["marketplace_inscription_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -1002,6 +1016,8 @@ export type ValueTypes = {
 		height?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		inscription_histories?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_trade_histories?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_trade_histories_aggregate?: ValueTypes["inscription_trade_history_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 		is_explicit?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 		marketplace_inscription_details?: ValueTypes["marketplace_inscription_detail_bool_exp"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["json_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -1185,6 +1201,7 @@ export type ValueTypes = {
 		height?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		inscription_histories_aggregate?: ValueTypes["inscription_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
+		inscription_trade_histories_aggregate?: ValueTypes["inscription_trade_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		is_explicit?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		marketplace_inscription_details_aggregate?: ValueTypes["marketplace_inscription_detail_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		metadata?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -1218,6 +1235,305 @@ export type ValueTypes = {
 		transaction_id?: number | undefined | null | Variable<any, string>,
 		type?: string | undefined | null | Variable<any, string>,
 		version?: string | undefined | null | Variable<any, string>
+	};
+	/** columns and relationships of "inscription_trade_history" */
+	["inscription_trade_history"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ValueTypes["inscription"],
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ValueTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** aggregated selection of "inscription_trade_history" */
+	["inscription_trade_history_aggregate"]: AliasType<{
+		aggregate?: ValueTypes["inscription_trade_history_aggregate_fields"],
+		nodes?: ValueTypes["inscription_trade_history"],
+		__typename?: boolean | `@${string}`
+	}>;
+	["inscription_trade_history_aggregate_bool_exp"]: {
+		count?: ValueTypes["inscription_trade_history_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+	};
+	["inscription_trade_history_aggregate_bool_exp_count"]: {
+		arguments?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,
+		distinct?: boolean | undefined | null | Variable<any, string>,
+		filter?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>,
+		predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+	};
+	/** aggregate fields of "inscription_trade_history" */
+	["inscription_trade_history_aggregate_fields"]: AliasType<{
+		avg?: ValueTypes["inscription_trade_history_avg_fields"],
+		count?: [{ columns?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>, distinct?: boolean | undefined | null | Variable<any, string> }, boolean | `@${string}`],
+		max?: ValueTypes["inscription_trade_history_max_fields"],
+		min?: ValueTypes["inscription_trade_history_min_fields"],
+		stddev?: ValueTypes["inscription_trade_history_stddev_fields"],
+		stddev_pop?: ValueTypes["inscription_trade_history_stddev_pop_fields"],
+		stddev_samp?: ValueTypes["inscription_trade_history_stddev_samp_fields"],
+		sum?: ValueTypes["inscription_trade_history_sum_fields"],
+		var_pop?: ValueTypes["inscription_trade_history_var_pop_fields"],
+		var_samp?: ValueTypes["inscription_trade_history_var_samp_fields"],
+		variance?: ValueTypes["inscription_trade_history_variance_fields"],
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "inscription_trade_history" */
+	["inscription_trade_history_aggregate_order_by"]: {
+		avg?: ValueTypes["inscription_trade_history_avg_order_by"] | undefined | null | Variable<any, string>,
+		count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		max?: ValueTypes["inscription_trade_history_max_order_by"] | undefined | null | Variable<any, string>,
+		min?: ValueTypes["inscription_trade_history_min_order_by"] | undefined | null | Variable<any, string>,
+		stddev?: ValueTypes["inscription_trade_history_stddev_order_by"] | undefined | null | Variable<any, string>,
+		stddev_pop?: ValueTypes["inscription_trade_history_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+		stddev_samp?: ValueTypes["inscription_trade_history_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+		sum?: ValueTypes["inscription_trade_history_sum_order_by"] | undefined | null | Variable<any, string>,
+		var_pop?: ValueTypes["inscription_trade_history_var_pop_order_by"] | undefined | null | Variable<any, string>,
+		var_samp?: ValueTypes["inscription_trade_history_var_samp_order_by"] | undefined | null | Variable<any, string>,
+		variance?: ValueTypes["inscription_trade_history_variance_order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate avg on columns */
+	["inscription_trade_history_avg_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by avg() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_avg_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Boolean expression to filter rows from the table "inscription_trade_history". All fields are combined with a logical 'AND'. */
+	["inscription_trade_history_bool_exp"]: {
+		_and?: Array<ValueTypes["inscription_trade_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["inscription_trade_history_bool_exp"]> | undefined | null | Variable<any, string>,
+		amount_quote?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+		buyer_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["Float_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_bool_exp"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate max on columns */
+	["inscription_trade_history_max_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by max() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_max_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		buyer_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate min on columns */
+	["inscription_trade_history_min_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by min() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_min_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		buyer_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Ordering options when selecting data from "inscription_trade_history". */
+	["inscription_trade_history_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		buyer_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		chain_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		seller_address?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction?: ValueTypes["transaction_order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** select columns of table "inscription_trade_history" */
+	["inscription_trade_history_select_column"]: inscription_trade_history_select_column;
+	/** aggregate stddev on columns */
+	["inscription_trade_history_stddev_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate stddev_pop on columns */
+	["inscription_trade_history_stddev_pop_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_pop_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate stddev_samp on columns */
+	["inscription_trade_history_stddev_samp_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_samp_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** Streaming cursor of the table "inscription_trade_history" */
+	["inscription_trade_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ValueTypes["inscription_trade_history_stream_cursor_value_input"] | Variable<any, string>,
+		/** cursor ordering */
+		ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_trade_history_stream_cursor_value_input"]: {
+		amount_quote?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+		buyer_address?: string | undefined | null | Variable<any, string>,
+		chain_id?: string | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+		id?: number | undefined | null | Variable<any, string>,
+		inscription_id?: number | undefined | null | Variable<any, string>,
+		seller_address?: string | undefined | null | Variable<any, string>,
+		total_usd?: number | undefined | null | Variable<any, string>,
+		transaction_id?: number | undefined | null | Variable<any, string>
+	};
+	/** aggregate sum on columns */
+	["inscription_trade_history_sum_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by sum() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_sum_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate var_pop on columns */
+	["inscription_trade_history_var_pop_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by var_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_pop_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate var_samp on columns */
+	["inscription_trade_history_var_samp_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by var_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_samp_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
+	/** aggregate variance on columns */
+	["inscription_trade_history_variance_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by variance() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_variance_order_by"]: {
+		amount_quote?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		inscription_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		total_usd?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 	};
 	["json"]: unknown;
 	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
@@ -2125,6 +2441,21 @@ export type ValueTypes = {
 			where?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription_history"]],
 		inscription_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_history"]],
+		inscription_trade_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history"]],
+		inscription_trade_history_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history_aggregate"]],
+		inscription_trade_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_trade_history"]],
 		marketplace_cft20_detail?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["marketplace_cft20_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -2316,6 +2647,26 @@ export type ValueTypes = {
 			cursor: Array<ValueTypes["inscription_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 			where?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>
 		}, ValueTypes["inscription"]],
+		inscription_trade_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history"]],
+		inscription_trade_history_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["inscription_trade_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["inscription_trade_history_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history_aggregate"]],
+		inscription_trade_history_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["inscription_trade_history"]],
+		inscription_trade_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+			cursor: Array<ValueTypes["inscription_trade_history_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["inscription_trade_history"]],
 		marketplace_cft20_detail?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["marketplace_cft20_detail_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3395,6 +3746,8 @@ export type ValueTypes = {
 		/** An object relationship */
 		inscription_history?: ValueTypes["inscription_history"],
 		/** An object relationship */
+		inscription_trade_history?: ValueTypes["inscription_trade_history"],
+		/** An object relationship */
 		marketplace_cft20_trade_history?: ValueTypes["marketplace_cft20_trade_history"],
 		marketplace_listing_histories?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["marketplace_listing_history_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -3448,6 +3801,7 @@ export type ValueTypes = {
 		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 		inscription?: ValueTypes["inscription_bool_exp"] | undefined | null | Variable<any, string>,
 		inscription_history?: ValueTypes["inscription_history_bool_exp"] | undefined | null | Variable<any, string>,
+		inscription_trade_history?: ValueTypes["inscription_trade_history_bool_exp"] | undefined | null | Variable<any, string>,
 		marketplace_cft20_trade_history?: ValueTypes["marketplace_cft20_trade_history_bool_exp"] | undefined | null | Variable<any, string>,
 		marketplace_listing_histories?: ValueTypes["marketplace_listing_history_bool_exp"] | undefined | null | Variable<any, string>,
 		marketplace_listings?: ValueTypes["marketplace_listing_bool_exp"] | undefined | null | Variable<any, string>,
@@ -3470,6 +3824,7 @@ export type ValueTypes = {
 		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 		inscription?: ValueTypes["inscription_order_by"] | undefined | null | Variable<any, string>,
 		inscription_history?: ValueTypes["inscription_history_order_by"] | undefined | null | Variable<any, string>,
+		inscription_trade_history?: ValueTypes["inscription_trade_history_order_by"] | undefined | null | Variable<any, string>,
 		marketplace_cft20_trade_history?: ValueTypes["marketplace_cft20_trade_history_order_by"] | undefined | null | Variable<any, string>,
 		marketplace_listing_histories_aggregate?: ValueTypes["marketplace_listing_history_aggregate_order_by"] | undefined | null | Variable<any, string>,
 		marketplace_listings_aggregate?: ValueTypes["marketplace_listing_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -3610,6 +3965,20 @@ export type ResolverInputTypes = {
 			order_by?: Array<ResolverInputTypes["inscription_history_order_by"]> | undefined | null,	/** filter the rows returned */
 			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription_history"]],
+		inscription_trade_histories?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history"]],
+		inscription_trade_histories_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history_aggregate"]],
 		is_explicit?: boolean | `@${string}`,
 		marketplace_inscription_details?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["marketplace_inscription_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -3643,6 +4012,8 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		inscription_histories?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null,
+		inscription_trade_histories?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null,
+		inscription_trade_histories_aggregate?: ResolverInputTypes["inscription_trade_history_aggregate_bool_exp"] | undefined | null,
 		is_explicit?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 		marketplace_inscription_details?: ResolverInputTypes["marketplace_inscription_detail_bool_exp"] | undefined | null,
 		metadata?: ResolverInputTypes["json_comparison_exp"] | undefined | null,
@@ -3826,6 +4197,7 @@ export type ResolverInputTypes = {
 		height?: ResolverInputTypes["order_by"] | undefined | null,
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		inscription_histories_aggregate?: ResolverInputTypes["inscription_history_aggregate_order_by"] | undefined | null,
+		inscription_trade_histories_aggregate?: ResolverInputTypes["inscription_trade_history_aggregate_order_by"] | undefined | null,
 		is_explicit?: ResolverInputTypes["order_by"] | undefined | null,
 		marketplace_inscription_details_aggregate?: ResolverInputTypes["marketplace_inscription_detail_aggregate_order_by"] | undefined | null,
 		metadata?: ResolverInputTypes["order_by"] | undefined | null,
@@ -3859,6 +4231,305 @@ export type ResolverInputTypes = {
 		transaction_id?: number | undefined | null,
 		type?: string | undefined | null,
 		version?: string | undefined | null
+	};
+	/** columns and relationships of "inscription_trade_history" */
+	["inscription_trade_history"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		/** An object relationship */
+		inscription?: ResolverInputTypes["inscription"],
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		/** An object relationship */
+		transaction?: ResolverInputTypes["transaction"],
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** aggregated selection of "inscription_trade_history" */
+	["inscription_trade_history_aggregate"]: AliasType<{
+		aggregate?: ResolverInputTypes["inscription_trade_history_aggregate_fields"],
+		nodes?: ResolverInputTypes["inscription_trade_history"],
+		__typename?: boolean | `@${string}`
+	}>;
+	["inscription_trade_history_aggregate_bool_exp"]: {
+		count?: ResolverInputTypes["inscription_trade_history_aggregate_bool_exp_count"] | undefined | null
+	};
+	["inscription_trade_history_aggregate_bool_exp_count"]: {
+		arguments?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,
+		distinct?: boolean | undefined | null,
+		filter?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null,
+		predicate: ResolverInputTypes["Int_comparison_exp"]
+	};
+	/** aggregate fields of "inscription_trade_history" */
+	["inscription_trade_history_aggregate_fields"]: AliasType<{
+		avg?: ResolverInputTypes["inscription_trade_history_avg_fields"],
+		count?: [{ columns?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null, distinct?: boolean | undefined | null }, boolean | `@${string}`],
+		max?: ResolverInputTypes["inscription_trade_history_max_fields"],
+		min?: ResolverInputTypes["inscription_trade_history_min_fields"],
+		stddev?: ResolverInputTypes["inscription_trade_history_stddev_fields"],
+		stddev_pop?: ResolverInputTypes["inscription_trade_history_stddev_pop_fields"],
+		stddev_samp?: ResolverInputTypes["inscription_trade_history_stddev_samp_fields"],
+		sum?: ResolverInputTypes["inscription_trade_history_sum_fields"],
+		var_pop?: ResolverInputTypes["inscription_trade_history_var_pop_fields"],
+		var_samp?: ResolverInputTypes["inscription_trade_history_var_samp_fields"],
+		variance?: ResolverInputTypes["inscription_trade_history_variance_fields"],
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by aggregate values of table "inscription_trade_history" */
+	["inscription_trade_history_aggregate_order_by"]: {
+		avg?: ResolverInputTypes["inscription_trade_history_avg_order_by"] | undefined | null,
+		count?: ResolverInputTypes["order_by"] | undefined | null,
+		max?: ResolverInputTypes["inscription_trade_history_max_order_by"] | undefined | null,
+		min?: ResolverInputTypes["inscription_trade_history_min_order_by"] | undefined | null,
+		stddev?: ResolverInputTypes["inscription_trade_history_stddev_order_by"] | undefined | null,
+		stddev_pop?: ResolverInputTypes["inscription_trade_history_stddev_pop_order_by"] | undefined | null,
+		stddev_samp?: ResolverInputTypes["inscription_trade_history_stddev_samp_order_by"] | undefined | null,
+		sum?: ResolverInputTypes["inscription_trade_history_sum_order_by"] | undefined | null,
+		var_pop?: ResolverInputTypes["inscription_trade_history_var_pop_order_by"] | undefined | null,
+		var_samp?: ResolverInputTypes["inscription_trade_history_var_samp_order_by"] | undefined | null,
+		variance?: ResolverInputTypes["inscription_trade_history_variance_order_by"] | undefined | null
+	};
+	/** aggregate avg on columns */
+	["inscription_trade_history_avg_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by avg() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_avg_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Boolean expression to filter rows from the table "inscription_trade_history". All fields are combined with a logical 'AND'. */
+	["inscription_trade_history_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["inscription_trade_history_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["inscription_trade_history_bool_exp"]> | undefined | null,
+		amount_quote?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+		buyer_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		chain_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
+		inscription_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		seller_address?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		total_usd?: ResolverInputTypes["Float_comparison_exp"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_bool_exp"] | undefined | null,
+		transaction_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+	};
+	/** aggregate max on columns */
+	["inscription_trade_history_max_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by max() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_max_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		buyer_address?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate min on columns */
+	["inscription_trade_history_min_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		buyer_address?: boolean | `@${string}`,
+		chain_id?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		seller_address?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by min() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_min_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		buyer_address?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Ordering options when selecting data from "inscription_trade_history". */
+	["inscription_trade_history_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		buyer_address?: ResolverInputTypes["order_by"] | undefined | null,
+		chain_id?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		seller_address?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction?: ResolverInputTypes["transaction_order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** select columns of table "inscription_trade_history" */
+	["inscription_trade_history_select_column"]: inscription_trade_history_select_column;
+	/** aggregate stddev on columns */
+	["inscription_trade_history_stddev_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate stddev_pop on columns */
+	["inscription_trade_history_stddev_pop_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_pop_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate stddev_samp on columns */
+	["inscription_trade_history_stddev_samp_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by stddev_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_samp_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** Streaming cursor of the table "inscription_trade_history" */
+	["inscription_trade_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ResolverInputTypes["inscription_trade_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_trade_history_stream_cursor_value_input"]: {
+		amount_quote?: ResolverInputTypes["bigint"] | undefined | null,
+		buyer_address?: string | undefined | null,
+		chain_id?: string | undefined | null,
+		date_created?: ResolverInputTypes["timestamp"] | undefined | null,
+		id?: number | undefined | null,
+		inscription_id?: number | undefined | null,
+		seller_address?: string | undefined | null,
+		total_usd?: number | undefined | null,
+		transaction_id?: number | undefined | null
+	};
+	/** aggregate sum on columns */
+	["inscription_trade_history_sum_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by sum() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_sum_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate var_pop on columns */
+	["inscription_trade_history_var_pop_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by var_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_pop_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate var_samp on columns */
+	["inscription_trade_history_var_samp_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by var_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_samp_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
+	};
+	/** aggregate variance on columns */
+	["inscription_trade_history_variance_fields"]: AliasType<{
+		amount_quote?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		inscription_id?: boolean | `@${string}`,
+		total_usd?: boolean | `@${string}`,
+		transaction_id?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** order by variance() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_variance_order_by"]: {
+		amount_quote?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		inscription_id?: ResolverInputTypes["order_by"] | undefined | null,
+		total_usd?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_id?: ResolverInputTypes["order_by"] | undefined | null
 	};
 	["json"]: unknown;
 	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
@@ -4766,6 +5437,21 @@ export type ResolverInputTypes = {
 			where?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription_history"]],
 		inscription_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_history"]],
+		inscription_trade_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history"]],
+		inscription_trade_history_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history_aggregate"]],
+		inscription_trade_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_trade_history"]],
 		marketplace_cft20_detail?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["marketplace_cft20_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -4957,6 +5643,26 @@ export type ResolverInputTypes = {
 			cursor: Array<ResolverInputTypes["inscription_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 			where?: ResolverInputTypes["inscription_bool_exp"] | undefined | null
 		}, ResolverInputTypes["inscription"]],
+		inscription_trade_history?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history"]],
+		inscription_trade_history_aggregate?: [{	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["inscription_trade_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["inscription_trade_history_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history_aggregate"]],
+		inscription_trade_history_by_pk?: [{ id: number }, ResolverInputTypes["inscription_trade_history"]],
+		inscription_trade_history_stream?: [{	/** maximum number of rows returned in a single batch */
+			batch_size: number,	/** cursor to stream the results returned by the query */
+			cursor: Array<ResolverInputTypes["inscription_trade_history_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+			where?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null
+		}, ResolverInputTypes["inscription_trade_history"]],
 		marketplace_cft20_detail?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["marketplace_cft20_detail_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -6036,6 +6742,8 @@ export type ResolverInputTypes = {
 		/** An object relationship */
 		inscription_history?: ResolverInputTypes["inscription_history"],
 		/** An object relationship */
+		inscription_trade_history?: ResolverInputTypes["inscription_trade_history"],
+		/** An object relationship */
 		marketplace_cft20_trade_history?: ResolverInputTypes["marketplace_cft20_trade_history"],
 		marketplace_listing_histories?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["marketplace_listing_history_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -6089,6 +6797,7 @@ export type ResolverInputTypes = {
 		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 		inscription?: ResolverInputTypes["inscription_bool_exp"] | undefined | null,
 		inscription_history?: ResolverInputTypes["inscription_history_bool_exp"] | undefined | null,
+		inscription_trade_history?: ResolverInputTypes["inscription_trade_history_bool_exp"] | undefined | null,
 		marketplace_cft20_trade_history?: ResolverInputTypes["marketplace_cft20_trade_history_bool_exp"] | undefined | null,
 		marketplace_listing_histories?: ResolverInputTypes["marketplace_listing_history_bool_exp"] | undefined | null,
 		marketplace_listings?: ResolverInputTypes["marketplace_listing_bool_exp"] | undefined | null,
@@ -6111,6 +6820,7 @@ export type ResolverInputTypes = {
 		id?: ResolverInputTypes["order_by"] | undefined | null,
 		inscription?: ResolverInputTypes["inscription_order_by"] | undefined | null,
 		inscription_history?: ResolverInputTypes["inscription_history_order_by"] | undefined | null,
+		inscription_trade_history?: ResolverInputTypes["inscription_trade_history_order_by"] | undefined | null,
 		marketplace_cft20_trade_history?: ResolverInputTypes["marketplace_cft20_trade_history_order_by"] | undefined | null,
 		marketplace_listing_histories_aggregate?: ResolverInputTypes["marketplace_listing_history_aggregate_order_by"] | undefined | null,
 		marketplace_listings_aggregate?: ResolverInputTypes["marketplace_listing_aggregate_order_by"] | undefined | null,
@@ -6244,6 +6954,10 @@ export type ModelTypes = {
 		id: number,
 		/** An array relationship */
 		inscription_histories: Array<ModelTypes["inscription_history"]>,
+		/** An array relationship */
+		inscription_trade_histories: Array<ModelTypes["inscription_trade_history"]>,
+		/** An aggregate relationship */
+		inscription_trade_histories_aggregate: ModelTypes["inscription_trade_history_aggregate"],
 		is_explicit?: boolean | undefined,
 		/** An array relationship */
 		marketplace_inscription_details: Array<ModelTypes["marketplace_inscription_detail"]>,
@@ -6269,6 +6983,8 @@ export type ModelTypes = {
 		height?: ModelTypes["Int_comparison_exp"] | undefined,
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		inscription_histories?: ModelTypes["inscription_history_bool_exp"] | undefined,
+		inscription_trade_histories?: ModelTypes["inscription_trade_history_bool_exp"] | undefined,
+		inscription_trade_histories_aggregate?: ModelTypes["inscription_trade_history_aggregate_bool_exp"] | undefined,
 		is_explicit?: ModelTypes["Boolean_comparison_exp"] | undefined,
 		marketplace_inscription_details?: ModelTypes["marketplace_inscription_detail_bool_exp"] | undefined,
 		metadata?: ModelTypes["json_comparison_exp"] | undefined,
@@ -6450,6 +7166,7 @@ export type ModelTypes = {
 		height?: ModelTypes["order_by"] | undefined,
 		id?: ModelTypes["order_by"] | undefined,
 		inscription_histories_aggregate?: ModelTypes["inscription_history_aggregate_order_by"] | undefined,
+		inscription_trade_histories_aggregate?: ModelTypes["inscription_trade_history_aggregate_order_by"] | undefined,
 		is_explicit?: ModelTypes["order_by"] | undefined,
 		marketplace_inscription_details_aggregate?: ModelTypes["marketplace_inscription_detail_aggregate_order_by"] | undefined,
 		metadata?: ModelTypes["order_by"] | undefined,
@@ -6482,6 +7199,291 @@ export type ModelTypes = {
 		transaction_id?: number | undefined,
 		type?: string | undefined,
 		version?: string | undefined
+	};
+	/** columns and relationships of "inscription_trade_history" */
+	["inscription_trade_history"]: {
+		amount_quote: ModelTypes["bigint"],
+		buyer_address?: string | undefined,
+		chain_id: string,
+		date_created: ModelTypes["timestamp"],
+		id: number,
+		/** An object relationship */
+		inscription: ModelTypes["inscription"],
+		inscription_id: number,
+		seller_address: string,
+		total_usd: number,
+		/** An object relationship */
+		transaction: ModelTypes["transaction"],
+		transaction_id: number
+	};
+	/** aggregated selection of "inscription_trade_history" */
+	["inscription_trade_history_aggregate"]: {
+		aggregate?: ModelTypes["inscription_trade_history_aggregate_fields"] | undefined,
+		nodes: Array<ModelTypes["inscription_trade_history"]>
+	};
+	["inscription_trade_history_aggregate_bool_exp"]: {
+		count?: ModelTypes["inscription_trade_history_aggregate_bool_exp_count"] | undefined
+	};
+	["inscription_trade_history_aggregate_bool_exp_count"]: {
+		arguments?: Array<ModelTypes["inscription_trade_history_select_column"]> | undefined,
+		distinct?: boolean | undefined,
+		filter?: ModelTypes["inscription_trade_history_bool_exp"] | undefined,
+		predicate: ModelTypes["Int_comparison_exp"]
+	};
+	/** aggregate fields of "inscription_trade_history" */
+	["inscription_trade_history_aggregate_fields"]: {
+		avg?: ModelTypes["inscription_trade_history_avg_fields"] | undefined,
+		count: number,
+		max?: ModelTypes["inscription_trade_history_max_fields"] | undefined,
+		min?: ModelTypes["inscription_trade_history_min_fields"] | undefined,
+		stddev?: ModelTypes["inscription_trade_history_stddev_fields"] | undefined,
+		stddev_pop?: ModelTypes["inscription_trade_history_stddev_pop_fields"] | undefined,
+		stddev_samp?: ModelTypes["inscription_trade_history_stddev_samp_fields"] | undefined,
+		sum?: ModelTypes["inscription_trade_history_sum_fields"] | undefined,
+		var_pop?: ModelTypes["inscription_trade_history_var_pop_fields"] | undefined,
+		var_samp?: ModelTypes["inscription_trade_history_var_samp_fields"] | undefined,
+		variance?: ModelTypes["inscription_trade_history_variance_fields"] | undefined
+	};
+	/** order by aggregate values of table "inscription_trade_history" */
+	["inscription_trade_history_aggregate_order_by"]: {
+		avg?: ModelTypes["inscription_trade_history_avg_order_by"] | undefined,
+		count?: ModelTypes["order_by"] | undefined,
+		max?: ModelTypes["inscription_trade_history_max_order_by"] | undefined,
+		min?: ModelTypes["inscription_trade_history_min_order_by"] | undefined,
+		stddev?: ModelTypes["inscription_trade_history_stddev_order_by"] | undefined,
+		stddev_pop?: ModelTypes["inscription_trade_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: ModelTypes["inscription_trade_history_stddev_samp_order_by"] | undefined,
+		sum?: ModelTypes["inscription_trade_history_sum_order_by"] | undefined,
+		var_pop?: ModelTypes["inscription_trade_history_var_pop_order_by"] | undefined,
+		var_samp?: ModelTypes["inscription_trade_history_var_samp_order_by"] | undefined,
+		variance?: ModelTypes["inscription_trade_history_variance_order_by"] | undefined
+	};
+	/** aggregate avg on columns */
+	["inscription_trade_history_avg_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by avg() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_avg_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "inscription_trade_history". All fields are combined with a logical 'AND'. */
+	["inscription_trade_history_bool_exp"]: {
+		_and?: Array<ModelTypes["inscription_trade_history_bool_exp"]> | undefined,
+		_not?: ModelTypes["inscription_trade_history_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["inscription_trade_history_bool_exp"]> | undefined,
+		amount_quote?: ModelTypes["bigint_comparison_exp"] | undefined,
+		buyer_address?: ModelTypes["String_comparison_exp"] | undefined,
+		chain_id?: ModelTypes["String_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
+		inscription_id?: ModelTypes["Int_comparison_exp"] | undefined,
+		seller_address?: ModelTypes["String_comparison_exp"] | undefined,
+		total_usd?: ModelTypes["Float_comparison_exp"] | undefined,
+		transaction?: ModelTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: ModelTypes["Int_comparison_exp"] | undefined
+	};
+	/** aggregate max on columns */
+	["inscription_trade_history_max_fields"]: {
+		amount_quote?: ModelTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by max() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_max_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		buyer_address?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate min on columns */
+	["inscription_trade_history_min_fields"]: {
+		amount_quote?: ModelTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by min() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_min_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		buyer_address?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "inscription_trade_history". */
+	["inscription_trade_history_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		buyer_address?: ModelTypes["order_by"] | undefined,
+		chain_id?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription?: ModelTypes["inscription_order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		seller_address?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction?: ModelTypes["transaction_order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	["inscription_trade_history_select_column"]: inscription_trade_history_select_column;
+	/** aggregate stddev on columns */
+	["inscription_trade_history_stddev_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate stddev_pop on columns */
+	["inscription_trade_history_stddev_pop_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_pop_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate stddev_samp on columns */
+	["inscription_trade_history_stddev_samp_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_samp_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "inscription_trade_history" */
+	["inscription_trade_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: ModelTypes["inscription_trade_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: ModelTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_trade_history_stream_cursor_value_input"]: {
+		amount_quote?: ModelTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** aggregate sum on columns */
+	["inscription_trade_history_sum_fields"]: {
+		amount_quote?: ModelTypes["bigint"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_sum_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate var_pop on columns */
+	["inscription_trade_history_var_pop_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by var_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_pop_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate var_samp on columns */
+	["inscription_trade_history_var_samp_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by var_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_samp_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
+	};
+	/** aggregate variance on columns */
+	["inscription_trade_history_variance_fields"]: {
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by variance() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_variance_order_by"]: {
+		amount_quote?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		inscription_id?: ModelTypes["order_by"] | undefined,
+		total_usd?: ModelTypes["order_by"] | undefined,
+		transaction_id?: ModelTypes["order_by"] | undefined
 	};
 	["json"]: any;
 	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
@@ -7350,6 +8352,12 @@ export type ModelTypes = {
 		inscription_history: Array<ModelTypes["inscription_history"]>,
 		/** fetch data from the table: "inscription_history" using primary key columns */
 		inscription_history_by_pk?: ModelTypes["inscription_history"] | undefined,
+		/** fetch data from the table: "inscription_trade_history" */
+		inscription_trade_history: Array<ModelTypes["inscription_trade_history"]>,
+		/** fetch aggregated fields from the table: "inscription_trade_history" */
+		inscription_trade_history_aggregate: ModelTypes["inscription_trade_history_aggregate"],
+		/** fetch data from the table: "inscription_trade_history" using primary key columns */
+		inscription_trade_history_by_pk?: ModelTypes["inscription_trade_history"] | undefined,
 		/** fetch data from the table: "marketplace_cft20_detail" */
 		marketplace_cft20_detail: Array<ModelTypes["marketplace_cft20_detail"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
@@ -7476,6 +8484,14 @@ export type ModelTypes = {
 		inscription_history_stream: Array<ModelTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<ModelTypes["inscription"]>,
+		/** fetch data from the table: "inscription_trade_history" */
+		inscription_trade_history: Array<ModelTypes["inscription_trade_history"]>,
+		/** fetch aggregated fields from the table: "inscription_trade_history" */
+		inscription_trade_history_aggregate: ModelTypes["inscription_trade_history_aggregate"],
+		/** fetch data from the table: "inscription_trade_history" using primary key columns */
+		inscription_trade_history_by_pk?: ModelTypes["inscription_trade_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "inscription_trade_history" */
+		inscription_trade_history_stream: Array<ModelTypes["inscription_trade_history"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" */
 		marketplace_cft20_detail: Array<ModelTypes["marketplace_cft20_detail"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
@@ -8430,6 +9446,8 @@ export type ModelTypes = {
 		/** An object relationship */
 		inscription_history?: ModelTypes["inscription_history"] | undefined,
 		/** An object relationship */
+		inscription_trade_history?: ModelTypes["inscription_trade_history"] | undefined,
+		/** An object relationship */
 		marketplace_cft20_trade_history?: ModelTypes["marketplace_cft20_trade_history"] | undefined,
 		/** An array relationship */
 		marketplace_listing_histories: Array<ModelTypes["marketplace_listing_history"]>,
@@ -8462,6 +9480,7 @@ export type ModelTypes = {
 		id?: ModelTypes["Int_comparison_exp"] | undefined,
 		inscription?: ModelTypes["inscription_bool_exp"] | undefined,
 		inscription_history?: ModelTypes["inscription_history_bool_exp"] | undefined,
+		inscription_trade_history?: ModelTypes["inscription_trade_history_bool_exp"] | undefined,
 		marketplace_cft20_trade_history?: ModelTypes["marketplace_cft20_trade_history_bool_exp"] | undefined,
 		marketplace_listing_histories?: ModelTypes["marketplace_listing_history_bool_exp"] | undefined,
 		marketplace_listings?: ModelTypes["marketplace_listing_bool_exp"] | undefined,
@@ -8484,6 +9503,7 @@ export type ModelTypes = {
 		id?: ModelTypes["order_by"] | undefined,
 		inscription?: ModelTypes["inscription_order_by"] | undefined,
 		inscription_history?: ModelTypes["inscription_history_order_by"] | undefined,
+		inscription_trade_history?: ModelTypes["inscription_trade_history_order_by"] | undefined,
 		marketplace_cft20_trade_history?: ModelTypes["marketplace_cft20_trade_history_order_by"] | undefined,
 		marketplace_listing_histories_aggregate?: ModelTypes["marketplace_listing_history_aggregate_order_by"] | undefined,
 		marketplace_listings_aggregate?: ModelTypes["marketplace_listing_aggregate_order_by"] | undefined,
@@ -8614,6 +9634,10 @@ export type GraphQLTypes = {
 		id: number,
 		/** An array relationship */
 		inscription_histories: Array<GraphQLTypes["inscription_history"]>,
+		/** An array relationship */
+		inscription_trade_histories: Array<GraphQLTypes["inscription_trade_history"]>,
+		/** An aggregate relationship */
+		inscription_trade_histories_aggregate: GraphQLTypes["inscription_trade_history_aggregate"],
 		is_explicit?: boolean | undefined,
 		/** An array relationship */
 		marketplace_inscription_details: Array<GraphQLTypes["marketplace_inscription_detail"]>,
@@ -8639,6 +9663,8 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		inscription_histories?: GraphQLTypes["inscription_history_bool_exp"] | undefined,
+		inscription_trade_histories?: GraphQLTypes["inscription_trade_history_bool_exp"] | undefined,
+		inscription_trade_histories_aggregate?: GraphQLTypes["inscription_trade_history_aggregate_bool_exp"] | undefined,
 		is_explicit?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 		marketplace_inscription_details?: GraphQLTypes["marketplace_inscription_detail_bool_exp"] | undefined,
 		metadata?: GraphQLTypes["json_comparison_exp"] | undefined,
@@ -8822,6 +9848,7 @@ export type GraphQLTypes = {
 		height?: GraphQLTypes["order_by"] | undefined,
 		id?: GraphQLTypes["order_by"] | undefined,
 		inscription_histories_aggregate?: GraphQLTypes["inscription_history_aggregate_order_by"] | undefined,
+		inscription_trade_histories_aggregate?: GraphQLTypes["inscription_trade_history_aggregate_order_by"] | undefined,
 		is_explicit?: GraphQLTypes["order_by"] | undefined,
 		marketplace_inscription_details_aggregate?: GraphQLTypes["marketplace_inscription_detail_aggregate_order_by"] | undefined,
 		metadata?: GraphQLTypes["order_by"] | undefined,
@@ -8855,6 +9882,305 @@ export type GraphQLTypes = {
 		transaction_id?: number | undefined,
 		type?: string | undefined,
 		version?: string | undefined
+	};
+	/** columns and relationships of "inscription_trade_history" */
+	["inscription_trade_history"]: {
+		__typename: "inscription_trade_history",
+		amount_quote: GraphQLTypes["bigint"],
+		buyer_address?: string | undefined,
+		chain_id: string,
+		date_created: GraphQLTypes["timestamp"],
+		id: number,
+		/** An object relationship */
+		inscription: GraphQLTypes["inscription"],
+		inscription_id: number,
+		seller_address: string,
+		total_usd: number,
+		/** An object relationship */
+		transaction: GraphQLTypes["transaction"],
+		transaction_id: number
+	};
+	/** aggregated selection of "inscription_trade_history" */
+	["inscription_trade_history_aggregate"]: {
+		__typename: "inscription_trade_history_aggregate",
+		aggregate?: GraphQLTypes["inscription_trade_history_aggregate_fields"] | undefined,
+		nodes: Array<GraphQLTypes["inscription_trade_history"]>
+	};
+	["inscription_trade_history_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["inscription_trade_history_aggregate_bool_exp_count"] | undefined
+	};
+	["inscription_trade_history_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["inscription_trade_history_select_column"]> | undefined,
+		distinct?: boolean | undefined,
+		filter?: GraphQLTypes["inscription_trade_history_bool_exp"] | undefined,
+		predicate: GraphQLTypes["Int_comparison_exp"]
+	};
+	/** aggregate fields of "inscription_trade_history" */
+	["inscription_trade_history_aggregate_fields"]: {
+		__typename: "inscription_trade_history_aggregate_fields",
+		avg?: GraphQLTypes["inscription_trade_history_avg_fields"] | undefined,
+		count: number,
+		max?: GraphQLTypes["inscription_trade_history_max_fields"] | undefined,
+		min?: GraphQLTypes["inscription_trade_history_min_fields"] | undefined,
+		stddev?: GraphQLTypes["inscription_trade_history_stddev_fields"] | undefined,
+		stddev_pop?: GraphQLTypes["inscription_trade_history_stddev_pop_fields"] | undefined,
+		stddev_samp?: GraphQLTypes["inscription_trade_history_stddev_samp_fields"] | undefined,
+		sum?: GraphQLTypes["inscription_trade_history_sum_fields"] | undefined,
+		var_pop?: GraphQLTypes["inscription_trade_history_var_pop_fields"] | undefined,
+		var_samp?: GraphQLTypes["inscription_trade_history_var_samp_fields"] | undefined,
+		variance?: GraphQLTypes["inscription_trade_history_variance_fields"] | undefined
+	};
+	/** order by aggregate values of table "inscription_trade_history" */
+	["inscription_trade_history_aggregate_order_by"]: {
+		avg?: GraphQLTypes["inscription_trade_history_avg_order_by"] | undefined,
+		count?: GraphQLTypes["order_by"] | undefined,
+		max?: GraphQLTypes["inscription_trade_history_max_order_by"] | undefined,
+		min?: GraphQLTypes["inscription_trade_history_min_order_by"] | undefined,
+		stddev?: GraphQLTypes["inscription_trade_history_stddev_order_by"] | undefined,
+		stddev_pop?: GraphQLTypes["inscription_trade_history_stddev_pop_order_by"] | undefined,
+		stddev_samp?: GraphQLTypes["inscription_trade_history_stddev_samp_order_by"] | undefined,
+		sum?: GraphQLTypes["inscription_trade_history_sum_order_by"] | undefined,
+		var_pop?: GraphQLTypes["inscription_trade_history_var_pop_order_by"] | undefined,
+		var_samp?: GraphQLTypes["inscription_trade_history_var_samp_order_by"] | undefined,
+		variance?: GraphQLTypes["inscription_trade_history_variance_order_by"] | undefined
+	};
+	/** aggregate avg on columns */
+	["inscription_trade_history_avg_fields"]: {
+		__typename: "inscription_trade_history_avg_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by avg() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_avg_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Boolean expression to filter rows from the table "inscription_trade_history". All fields are combined with a logical 'AND'. */
+	["inscription_trade_history_bool_exp"]: {
+		_and?: Array<GraphQLTypes["inscription_trade_history_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["inscription_trade_history_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["inscription_trade_history_bool_exp"]> | undefined,
+		amount_quote?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+		buyer_address?: GraphQLTypes["String_comparison_exp"] | undefined,
+		chain_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
+		inscription_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		seller_address?: GraphQLTypes["String_comparison_exp"] | undefined,
+		total_usd?: GraphQLTypes["Float_comparison_exp"] | undefined,
+		transaction?: GraphQLTypes["transaction_bool_exp"] | undefined,
+		transaction_id?: GraphQLTypes["Int_comparison_exp"] | undefined
+	};
+	/** aggregate max on columns */
+	["inscription_trade_history_max_fields"]: {
+		__typename: "inscription_trade_history_max_fields",
+		amount_quote?: GraphQLTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by max() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_max_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		buyer_address?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate min on columns */
+	["inscription_trade_history_min_fields"]: {
+		__typename: "inscription_trade_history_min_fields",
+		amount_quote?: GraphQLTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by min() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_min_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		buyer_address?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Ordering options when selecting data from "inscription_trade_history". */
+	["inscription_trade_history_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		buyer_address?: GraphQLTypes["order_by"] | undefined,
+		chain_id?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		seller_address?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction?: GraphQLTypes["transaction_order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** select columns of table "inscription_trade_history" */
+	["inscription_trade_history_select_column"]: inscription_trade_history_select_column;
+	/** aggregate stddev on columns */
+	["inscription_trade_history_stddev_fields"]: {
+		__typename: "inscription_trade_history_stddev_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate stddev_pop on columns */
+	["inscription_trade_history_stddev_pop_fields"]: {
+		__typename: "inscription_trade_history_stddev_pop_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_pop_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate stddev_samp on columns */
+	["inscription_trade_history_stddev_samp_fields"]: {
+		__typename: "inscription_trade_history_stddev_samp_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by stddev_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_stddev_samp_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** Streaming cursor of the table "inscription_trade_history" */
+	["inscription_trade_history_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+		initial_value: GraphQLTypes["inscription_trade_history_stream_cursor_value_input"],
+		/** cursor ordering */
+		ordering?: GraphQLTypes["cursor_ordering"] | undefined
+	};
+	/** Initial value of the column from where the streaming should start */
+	["inscription_trade_history_stream_cursor_value_input"]: {
+		amount_quote?: GraphQLTypes["bigint"] | undefined,
+		buyer_address?: string | undefined,
+		chain_id?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		seller_address?: string | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** aggregate sum on columns */
+	["inscription_trade_history_sum_fields"]: {
+		__typename: "inscription_trade_history_sum_fields",
+		amount_quote?: GraphQLTypes["bigint"] | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by sum() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_sum_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate var_pop on columns */
+	["inscription_trade_history_var_pop_fields"]: {
+		__typename: "inscription_trade_history_var_pop_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by var_pop() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_pop_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate var_samp on columns */
+	["inscription_trade_history_var_samp_fields"]: {
+		__typename: "inscription_trade_history_var_samp_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by var_samp() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_var_samp_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
+	};
+	/** aggregate variance on columns */
+	["inscription_trade_history_variance_fields"]: {
+		__typename: "inscription_trade_history_variance_fields",
+		amount_quote?: number | undefined,
+		id?: number | undefined,
+		inscription_id?: number | undefined,
+		total_usd?: number | undefined,
+		transaction_id?: number | undefined
+	};
+	/** order by variance() on columns of table "inscription_trade_history" */
+	["inscription_trade_history_variance_order_by"]: {
+		amount_quote?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		inscription_id?: GraphQLTypes["order_by"] | undefined,
+		total_usd?: GraphQLTypes["order_by"] | undefined,
+		transaction_id?: GraphQLTypes["order_by"] | undefined
 	};
 	["json"]: "scalar" & { name: "json" };
 	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
@@ -9735,6 +11061,12 @@ export type GraphQLTypes = {
 		inscription_history: Array<GraphQLTypes["inscription_history"]>,
 		/** fetch data from the table: "inscription_history" using primary key columns */
 		inscription_history_by_pk?: GraphQLTypes["inscription_history"] | undefined,
+		/** fetch data from the table: "inscription_trade_history" */
+		inscription_trade_history: Array<GraphQLTypes["inscription_trade_history"]>,
+		/** fetch aggregated fields from the table: "inscription_trade_history" */
+		inscription_trade_history_aggregate: GraphQLTypes["inscription_trade_history_aggregate"],
+		/** fetch data from the table: "inscription_trade_history" using primary key columns */
+		inscription_trade_history_by_pk?: GraphQLTypes["inscription_trade_history"] | undefined,
 		/** fetch data from the table: "marketplace_cft20_detail" */
 		marketplace_cft20_detail: Array<GraphQLTypes["marketplace_cft20_detail"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
@@ -9864,6 +11196,14 @@ export type GraphQLTypes = {
 		inscription_history_stream: Array<GraphQLTypes["inscription_history"]>,
 		/** fetch data from the table in a streaming manner: "inscription" */
 		inscription_stream: Array<GraphQLTypes["inscription"]>,
+		/** fetch data from the table: "inscription_trade_history" */
+		inscription_trade_history: Array<GraphQLTypes["inscription_trade_history"]>,
+		/** fetch aggregated fields from the table: "inscription_trade_history" */
+		inscription_trade_history_aggregate: GraphQLTypes["inscription_trade_history_aggregate"],
+		/** fetch data from the table: "inscription_trade_history" using primary key columns */
+		inscription_trade_history_by_pk?: GraphQLTypes["inscription_trade_history"] | undefined,
+		/** fetch data from the table in a streaming manner: "inscription_trade_history" */
+		inscription_trade_history_stream: Array<GraphQLTypes["inscription_trade_history"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" */
 		marketplace_cft20_detail: Array<GraphQLTypes["marketplace_cft20_detail"]>,
 		/** fetch data from the table: "marketplace_cft20_detail" using primary key columns */
@@ -10829,6 +12169,8 @@ export type GraphQLTypes = {
 		/** An object relationship */
 		inscription_history?: GraphQLTypes["inscription_history"] | undefined,
 		/** An object relationship */
+		inscription_trade_history?: GraphQLTypes["inscription_trade_history"] | undefined,
+		/** An object relationship */
 		marketplace_cft20_trade_history?: GraphQLTypes["marketplace_cft20_trade_history"] | undefined,
 		/** An array relationship */
 		marketplace_listing_histories: Array<GraphQLTypes["marketplace_listing_history"]>,
@@ -10861,6 +12203,7 @@ export type GraphQLTypes = {
 		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 		inscription?: GraphQLTypes["inscription_bool_exp"] | undefined,
 		inscription_history?: GraphQLTypes["inscription_history_bool_exp"] | undefined,
+		inscription_trade_history?: GraphQLTypes["inscription_trade_history_bool_exp"] | undefined,
 		marketplace_cft20_trade_history?: GraphQLTypes["marketplace_cft20_trade_history_bool_exp"] | undefined,
 		marketplace_listing_histories?: GraphQLTypes["marketplace_listing_history_bool_exp"] | undefined,
 		marketplace_listings?: GraphQLTypes["marketplace_listing_bool_exp"] | undefined,
@@ -10883,6 +12226,7 @@ export type GraphQLTypes = {
 		id?: GraphQLTypes["order_by"] | undefined,
 		inscription?: GraphQLTypes["inscription_order_by"] | undefined,
 		inscription_history?: GraphQLTypes["inscription_history_order_by"] | undefined,
+		inscription_trade_history?: GraphQLTypes["inscription_trade_history_order_by"] | undefined,
 		marketplace_cft20_trade_history?: GraphQLTypes["marketplace_cft20_trade_history_order_by"] | undefined,
 		marketplace_listing_histories_aggregate?: GraphQLTypes["marketplace_listing_history_aggregate_order_by"] | undefined,
 		marketplace_listings_aggregate?: GraphQLTypes["marketplace_listing_aggregate_order_by"] | undefined,
@@ -10948,6 +12292,18 @@ export const enum inscription_select_column {
 	transaction_id = "transaction_id",
 	type = "type",
 	version = "version"
+}
+/** select columns of table "inscription_trade_history" */
+export const enum inscription_trade_history_select_column {
+	amount_quote = "amount_quote",
+	buyer_address = "buyer_address",
+	chain_id = "chain_id",
+	date_created = "date_created",
+	id = "id",
+	inscription_id = "inscription_id",
+	seller_address = "seller_address",
+	total_usd = "total_usd",
+	transaction_id = "transaction_id"
 }
 /** select columns of table "marketplace_cft20_detail" */
 export const enum marketplace_cft20_detail_select_column {
@@ -11144,6 +12500,24 @@ type ZEUS_VARIABLES = {
 	["inscription_select_column"]: ValueTypes["inscription_select_column"];
 	["inscription_stream_cursor_input"]: ValueTypes["inscription_stream_cursor_input"];
 	["inscription_stream_cursor_value_input"]: ValueTypes["inscription_stream_cursor_value_input"];
+	["inscription_trade_history_aggregate_bool_exp"]: ValueTypes["inscription_trade_history_aggregate_bool_exp"];
+	["inscription_trade_history_aggregate_bool_exp_count"]: ValueTypes["inscription_trade_history_aggregate_bool_exp_count"];
+	["inscription_trade_history_aggregate_order_by"]: ValueTypes["inscription_trade_history_aggregate_order_by"];
+	["inscription_trade_history_avg_order_by"]: ValueTypes["inscription_trade_history_avg_order_by"];
+	["inscription_trade_history_bool_exp"]: ValueTypes["inscription_trade_history_bool_exp"];
+	["inscription_trade_history_max_order_by"]: ValueTypes["inscription_trade_history_max_order_by"];
+	["inscription_trade_history_min_order_by"]: ValueTypes["inscription_trade_history_min_order_by"];
+	["inscription_trade_history_order_by"]: ValueTypes["inscription_trade_history_order_by"];
+	["inscription_trade_history_select_column"]: ValueTypes["inscription_trade_history_select_column"];
+	["inscription_trade_history_stddev_order_by"]: ValueTypes["inscription_trade_history_stddev_order_by"];
+	["inscription_trade_history_stddev_pop_order_by"]: ValueTypes["inscription_trade_history_stddev_pop_order_by"];
+	["inscription_trade_history_stddev_samp_order_by"]: ValueTypes["inscription_trade_history_stddev_samp_order_by"];
+	["inscription_trade_history_stream_cursor_input"]: ValueTypes["inscription_trade_history_stream_cursor_input"];
+	["inscription_trade_history_stream_cursor_value_input"]: ValueTypes["inscription_trade_history_stream_cursor_value_input"];
+	["inscription_trade_history_sum_order_by"]: ValueTypes["inscription_trade_history_sum_order_by"];
+	["inscription_trade_history_var_pop_order_by"]: ValueTypes["inscription_trade_history_var_pop_order_by"];
+	["inscription_trade_history_var_samp_order_by"]: ValueTypes["inscription_trade_history_var_samp_order_by"];
+	["inscription_trade_history_variance_order_by"]: ValueTypes["inscription_trade_history_variance_order_by"];
 	["json"]: ValueTypes["json"];
 	["json_comparison_exp"]: ValueTypes["json_comparison_exp"];
 	["marketplace_cft20_detail_aggregate_order_by"]: ValueTypes["marketplace_cft20_detail_aggregate_order_by"];

@@ -31,6 +31,16 @@ export const AllTypesProps: Record<string, any> = {
 			order_by: "inscription_history_order_by",
 			where: "inscription_history_bool_exp"
 		},
+		inscription_trade_histories: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
+		inscription_trade_histories_aggregate: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
 		marketplace_inscription_details: {
 			distinct_on: "marketplace_inscription_detail_select_column",
 			order_by: "marketplace_inscription_detail_order_by",
@@ -54,6 +64,8 @@ export const AllTypesProps: Record<string, any> = {
 		height: "Int_comparison_exp",
 		id: "Int_comparison_exp",
 		inscription_histories: "inscription_history_bool_exp",
+		inscription_trade_histories: "inscription_trade_history_bool_exp",
+		inscription_trade_histories_aggregate: "inscription_trade_history_aggregate_bool_exp",
 		is_explicit: "Boolean_comparison_exp",
 		marketplace_inscription_details: "marketplace_inscription_detail_bool_exp",
 		metadata: "json_comparison_exp",
@@ -193,6 +205,7 @@ export const AllTypesProps: Record<string, any> = {
 		height: "order_by",
 		id: "order_by",
 		inscription_histories_aggregate: "inscription_history_aggregate_order_by",
+		inscription_trade_histories_aggregate: "inscription_trade_history_aggregate_order_by",
 		is_explicit: "order_by",
 		marketplace_inscription_details_aggregate: "marketplace_inscription_detail_aggregate_order_by",
 		metadata: "order_by",
@@ -209,6 +222,148 @@ export const AllTypesProps: Record<string, any> = {
 	inscription_stream_cursor_value_input: {
 		date_created: "timestamp",
 		metadata: "json"
+	},
+	inscription_trade_history_aggregate_bool_exp: {
+		count: "inscription_trade_history_aggregate_bool_exp_count"
+	},
+	inscription_trade_history_aggregate_bool_exp_count: {
+		arguments: "inscription_trade_history_select_column",
+		filter: "inscription_trade_history_bool_exp",
+		predicate: "Int_comparison_exp"
+	},
+	inscription_trade_history_aggregate_fields: {
+		count: {
+			columns: "inscription_trade_history_select_column"
+		}
+	},
+	inscription_trade_history_aggregate_order_by: {
+		avg: "inscription_trade_history_avg_order_by",
+		count: "order_by",
+		max: "inscription_trade_history_max_order_by",
+		min: "inscription_trade_history_min_order_by",
+		stddev: "inscription_trade_history_stddev_order_by",
+		stddev_pop: "inscription_trade_history_stddev_pop_order_by",
+		stddev_samp: "inscription_trade_history_stddev_samp_order_by",
+		sum: "inscription_trade_history_sum_order_by",
+		var_pop: "inscription_trade_history_var_pop_order_by",
+		var_samp: "inscription_trade_history_var_samp_order_by",
+		variance: "inscription_trade_history_variance_order_by"
+	},
+	inscription_trade_history_avg_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_bool_exp: {
+		_and: "inscription_trade_history_bool_exp",
+		_not: "inscription_trade_history_bool_exp",
+		_or: "inscription_trade_history_bool_exp",
+		amount_quote: "bigint_comparison_exp",
+		buyer_address: "String_comparison_exp",
+		chain_id: "String_comparison_exp",
+		date_created: "timestamp_comparison_exp",
+		id: "Int_comparison_exp",
+		inscription: "inscription_bool_exp",
+		inscription_id: "Int_comparison_exp",
+		seller_address: "String_comparison_exp",
+		total_usd: "Float_comparison_exp",
+		transaction: "transaction_bool_exp",
+		transaction_id: "Int_comparison_exp"
+	},
+	inscription_trade_history_max_order_by: {
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		chain_id: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		seller_address: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_min_order_by: {
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		chain_id: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		seller_address: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_order_by: {
+		amount_quote: "order_by",
+		buyer_address: "order_by",
+		chain_id: "order_by",
+		date_created: "order_by",
+		id: "order_by",
+		inscription: "inscription_order_by",
+		inscription_id: "order_by",
+		seller_address: "order_by",
+		total_usd: "order_by",
+		transaction: "transaction_order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_select_column: "enum" as const,
+	inscription_trade_history_stddev_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_stddev_pop_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_stddev_samp_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_stream_cursor_input: {
+		initial_value: "inscription_trade_history_stream_cursor_value_input",
+		ordering: "cursor_ordering"
+	},
+	inscription_trade_history_stream_cursor_value_input: {
+		amount_quote: "bigint",
+		date_created: "timestamp"
+	},
+	inscription_trade_history_sum_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_var_pop_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_var_samp_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
+	},
+	inscription_trade_history_variance_order_by: {
+		amount_quote: "order_by",
+		id: "order_by",
+		inscription_id: "order_by",
+		total_usd: "order_by",
+		transaction_id: "order_by"
 	},
 	json: `scalar.json` as const,
 	json_comparison_exp: {
@@ -905,6 +1060,19 @@ export const AllTypesProps: Record<string, any> = {
 		inscription_history_by_pk: {
 
 		},
+		inscription_trade_history: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
+		inscription_trade_history_aggregate: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
+		inscription_trade_history_by_pk: {
+
+		},
 		marketplace_cft20_detail: {
 			distinct_on: "marketplace_cft20_detail_select_column",
 			order_by: "marketplace_cft20_detail_order_by",
@@ -1066,6 +1234,23 @@ export const AllTypesProps: Record<string, any> = {
 		inscription_stream: {
 			cursor: "inscription_stream_cursor_input",
 			where: "inscription_bool_exp"
+		},
+		inscription_trade_history: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
+		inscription_trade_history_aggregate: {
+			distinct_on: "inscription_trade_history_select_column",
+			order_by: "inscription_trade_history_order_by",
+			where: "inscription_trade_history_bool_exp"
+		},
+		inscription_trade_history_by_pk: {
+
+		},
+		inscription_trade_history_stream: {
+			cursor: "inscription_trade_history_stream_cursor_input",
+			where: "inscription_trade_history_bool_exp"
 		},
 		marketplace_cft20_detail: {
 			distinct_on: "marketplace_cft20_detail_select_column",
@@ -1922,6 +2107,7 @@ export const AllTypesProps: Record<string, any> = {
 		id: "Int_comparison_exp",
 		inscription: "inscription_bool_exp",
 		inscription_history: "inscription_history_bool_exp",
+		inscription_trade_history: "inscription_trade_history_bool_exp",
 		marketplace_cft20_trade_history: "marketplace_cft20_trade_history_bool_exp",
 		marketplace_listing_histories: "marketplace_listing_history_bool_exp",
 		marketplace_listings: "marketplace_listing_bool_exp",
@@ -1943,6 +2129,7 @@ export const AllTypesProps: Record<string, any> = {
 		id: "order_by",
 		inscription: "inscription_order_by",
 		inscription_history: "inscription_history_order_by",
+		inscription_trade_history: "inscription_trade_history_order_by",
 		marketplace_cft20_trade_history: "marketplace_cft20_trade_history_order_by",
 		marketplace_listing_histories_aggregate: "marketplace_listing_history_aggregate_order_by",
 		marketplace_listings_aggregate: "marketplace_listing_aggregate_order_by",
@@ -1980,6 +2167,8 @@ export const ReturnTypes: Record<string, any> = {
 		height: "Int",
 		id: "Int",
 		inscription_histories: "inscription_history",
+		inscription_trade_histories: "inscription_trade_history",
+		inscription_trade_histories_aggregate: "inscription_trade_history_aggregate",
 		is_explicit: "Boolean",
 		marketplace_inscription_details: "marketplace_inscription_detail",
 		metadata: "json",
@@ -2000,6 +2189,114 @@ export const ReturnTypes: Record<string, any> = {
 		sender: "String",
 		transaction: "transaction",
 		transaction_id: "Int"
+	},
+	inscription_trade_history: {
+		amount_quote: "bigint",
+		buyer_address: "String",
+		chain_id: "String",
+		date_created: "timestamp",
+		id: "Int",
+		inscription: "inscription",
+		inscription_id: "Int",
+		seller_address: "String",
+		total_usd: "Float",
+		transaction: "transaction",
+		transaction_id: "Int"
+	},
+	inscription_trade_history_aggregate: {
+		aggregate: "inscription_trade_history_aggregate_fields",
+		nodes: "inscription_trade_history"
+	},
+	inscription_trade_history_aggregate_fields: {
+		avg: "inscription_trade_history_avg_fields",
+		count: "Int",
+		max: "inscription_trade_history_max_fields",
+		min: "inscription_trade_history_min_fields",
+		stddev: "inscription_trade_history_stddev_fields",
+		stddev_pop: "inscription_trade_history_stddev_pop_fields",
+		stddev_samp: "inscription_trade_history_stddev_samp_fields",
+		sum: "inscription_trade_history_sum_fields",
+		var_pop: "inscription_trade_history_var_pop_fields",
+		var_samp: "inscription_trade_history_var_samp_fields",
+		variance: "inscription_trade_history_variance_fields"
+	},
+	inscription_trade_history_avg_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_max_fields: {
+		amount_quote: "bigint",
+		buyer_address: "String",
+		chain_id: "String",
+		date_created: "timestamp",
+		id: "Int",
+		inscription_id: "Int",
+		seller_address: "String",
+		total_usd: "Float",
+		transaction_id: "Int"
+	},
+	inscription_trade_history_min_fields: {
+		amount_quote: "bigint",
+		buyer_address: "String",
+		chain_id: "String",
+		date_created: "timestamp",
+		id: "Int",
+		inscription_id: "Int",
+		seller_address: "String",
+		total_usd: "Float",
+		transaction_id: "Int"
+	},
+	inscription_trade_history_stddev_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_stddev_pop_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_stddev_samp_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_sum_fields: {
+		amount_quote: "bigint",
+		id: "Int",
+		inscription_id: "Int",
+		total_usd: "Float",
+		transaction_id: "Int"
+	},
+	inscription_trade_history_var_pop_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_var_samp_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
+	},
+	inscription_trade_history_variance_fields: {
+		amount_quote: "Float",
+		id: "Float",
+		inscription_id: "Float",
+		total_usd: "Float",
+		transaction_id: "Float"
 	},
 	json: `scalar.json` as const,
 	marketplace_cft20_detail: {
@@ -2073,6 +2370,9 @@ export const ReturnTypes: Record<string, any> = {
 		inscription_by_pk: "inscription",
 		inscription_history: "inscription_history",
 		inscription_history_by_pk: "inscription_history",
+		inscription_trade_history: "inscription_trade_history",
+		inscription_trade_history_aggregate: "inscription_trade_history_aggregate",
+		inscription_trade_history_by_pk: "inscription_trade_history",
 		marketplace_cft20_detail: "marketplace_cft20_detail",
 		marketplace_cft20_detail_by_pk: "marketplace_cft20_detail",
 		marketplace_cft20_trade_history: "marketplace_cft20_trade_history",
@@ -2115,6 +2415,10 @@ export const ReturnTypes: Record<string, any> = {
 		inscription_history_by_pk: "inscription_history",
 		inscription_history_stream: "inscription_history",
 		inscription_stream: "inscription",
+		inscription_trade_history: "inscription_trade_history",
+		inscription_trade_history_aggregate: "inscription_trade_history_aggregate",
+		inscription_trade_history_by_pk: "inscription_trade_history",
+		inscription_trade_history_stream: "inscription_trade_history",
 		marketplace_cft20_detail: "marketplace_cft20_detail",
 		marketplace_cft20_detail_by_pk: "marketplace_cft20_detail",
 		marketplace_cft20_detail_stream: "marketplace_cft20_detail",
@@ -2251,6 +2555,7 @@ export const ReturnTypes: Record<string, any> = {
 		id: "Int",
 		inscription: "inscription",
 		inscription_history: "inscription_history",
+		inscription_trade_history: "inscription_trade_history",
 		marketplace_cft20_trade_history: "marketplace_cft20_trade_history",
 		marketplace_listing_histories: "marketplace_listing_history",
 		marketplace_listings: "marketplace_listing",

@@ -197,6 +197,11 @@ export class ViewInscriptionModalPage implements OnInit {
 
     const listingHash = this.inscription.marketplace_inscription_details[0].marketplace_listing.transaction.hash;
 
+    // Close current
+    this.modalCtrl.dismiss({
+      dismissed: true,
+    });
+
     // Construct metaprotocol memo message
     const params = new Map([
       ["h", listingHash],
