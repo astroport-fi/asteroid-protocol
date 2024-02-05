@@ -23,6 +23,7 @@ type MarketplaceConfig struct {
 
 	LCDEndpoints    []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
 	EndpointHeaders map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
+	IbcEnabled      bool              `envconfig:"IBC_ENABLED" default:"true"`
 }
 
 type Marketplace struct {
@@ -33,6 +34,7 @@ type Marketplace struct {
 	minimumDeposit       float64
 	minimumTradeSize     float64
 	tradeFee             float64
+	ibcEnabled           bool
 	db                   *gorm.DB
 
 	lcdEndpoints    []string
@@ -55,6 +57,7 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		minimumDeposit:       config.MinimumDeposit,
 		minimumTradeSize:     config.MinimumTradeSize,
 		tradeFee:             config.TradeFee,
+		ibcEnabled:           config.IbcEnabled,
 		db:                   db,
 		lcdEndpoints:         config.LCDEndpoints,
 		endpointHeaders:      config.EndpointHeaders,
@@ -169,22 +172,13 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Verify that the sender has sent enough tokens to cover the listing fee
-		amountSent, err := GetBaseTokensSentIBC(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
 		if amountSent < uint64(math.Floor(minDepositBase)) {
 			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
 		}
-
-		// Verify that the sender has sent enough tokens to cover the listing fee
-		// amountSent, err := GetBaseTokensSent(rawTransaction)
-		// if err != nil {
-		// 	return fmt.Errorf("invalid tokens sent '%s'", err)
-		// }
-		// if amountSent < uint64(math.Floor(minDepositBase)) {
-		// 	return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
-		// }
 
 		// Check that the user has enough tokens to sell
 		var holderModel models.TokenHolder
@@ -308,7 +302,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Check that the correct amount was sent with the deposit
-		amountSent, err := GetBaseTokensSent(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -482,7 +476,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -501,7 +495,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Verify that the sender has sent enough tokens to cover the fee
-		amountSent, err = GetBaseTokensSentIBC(rawTransaction)
+		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
