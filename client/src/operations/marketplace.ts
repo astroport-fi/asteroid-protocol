@@ -64,7 +64,7 @@ export class MarketplaceOperations extends OperationsBase {
       throw new Error('Listing not found')
     }
 
-    const deposit: bigint = listing.deposit_total as bigint
+    const deposit = BigInt(listing.deposit_total)
 
     const purchaseMessage = createSendMessage(
       this.address,
@@ -87,8 +87,8 @@ export class MarketplaceOperations extends OperationsBase {
       throw new Error('Listing not found')
     }
 
-    let totaluatom: bigint = listing.total as bigint
-    const deposit: bigint = listing.deposit_total as bigint
+    let totaluatom = BigInt(listing.total)
+    const deposit = BigInt(listing.deposit_total)
     if (deposit > totaluatom) {
       // If deposit is greater than total, then just sent 1uatom to complete the transaction
       totaluatom = BigInt(1)
