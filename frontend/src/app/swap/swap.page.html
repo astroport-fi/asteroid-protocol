@@ -1,0 +1,95 @@
+<ion-content fullscreen="true" [formGroup]="swapForm">
+  <ion-grid class="mt-5" class="container">
+    <ion-row *ngIf="token">
+      <ion-col size="2" class="label">Search in:</ion-col>
+      <ion-col
+        ><ion-segment
+          value="$"
+          color="primary"
+          (ionChange)="sectionChanged($event)"
+        >
+          <ion-segment-button value="$">
+            <ion-label>USD</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="ATOM">
+            <ion-label>ATOM</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="{{token.ticker}}">
+            <ion-label>{{token.ticker}}</ion-label>
+          </ion-segment-button>
+        </ion-segment></ion-col
+      >
+    </ion-row>
+    <ion-row class="mt-2">
+      <ion-col>
+        <ion-input
+          #input
+          label="{{searchIn}}"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="10"
+          [maskito]="decimalMask"
+          [maskitoElement]="maskPredicate"
+          formControlName="baseToken"
+          ><ion-button fill="clear" slot="end" aria-label="Show/hide"
+            >{{ searchIn }}</ion-button
+          ></ion-input
+        ></ion-col
+      >
+    </ion-row>
+    @if (token) { @for (listing of filteredListings; track listing.id) {
+    <ion-row
+      class="result"
+      [class.selected]="listing === selected"
+      (click)="onSelect(listing)"
+    >
+      <div class="result-row">
+        <strong>Offer</strong>
+        <span
+          >{{listing.amount| tokenDecimals:token.decimals | number:'1.0-6' }}
+          {{token.ticker}}</span
+        >
+      </div>
+
+      <div class="result-row">
+        <strong>Rate</strong>
+        <span>
+          <app-percentage-change
+            [value]="listing.ppt"
+            [baseValue]="floorPrice"
+            class="percentage"
+          />
+          <span>{{listing.ppt | tokenDecimals:6 |number:'1.0-6'}} ATOM</span>
+        </span>
+      </div>
+
+      <div class="result-row">
+        <strong>Total</strong>
+        <span
+          >{{ listing.marketplace_listing.total |tokenDecimals:6 |
+          number:'1.0-6'}} ATOM</span
+        >
+      </div>
+      <div class="result-row">
+        <strong>$</strong>
+        <span
+          >${{listing.marketplace_listing.total * baseTokenUSD | tokenDecimals:6
+          | number:'1.0-6'}}</span
+        >
+      </div>
+    </ion-row>
+    } }
+
+    <ion-row>
+      <ion-col size="12" class="actions">
+        <ion-button
+          [disabled]="!selected"
+          color="success"
+          type="submit"
+          (click)="buy()"
+          >Buy</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

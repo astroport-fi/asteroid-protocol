@@ -185,7 +185,7 @@ export class SellModalPage implements OnInit {
     if (balanceResult.token_holder.length > 0) {
       // Get the sender's balance with decimals
       this.senderBalance = TokenDecimalsPipe.prototype.transform(
-        parseInt(balanceResult.token_holder[0].amount as string),
+        balanceResult.token_holder[0].amount as number,
         result.token[0].decimals as number
       );
     }

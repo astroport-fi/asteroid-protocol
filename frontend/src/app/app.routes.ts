@@ -8,7 +8,10 @@ export const routes: Routes = [
   },
   {
     path: 'inscription/:txhash',
-    loadComponent: () => import('./generic-viewer/generic-viewer.page').then((m) => m.GenericViewerPage),
+    loadComponent: () =>
+      import('./generic-viewer/generic-viewer.page').then(
+        (m) => m.GenericViewerPage
+      ),
   },
   {
     path: 'mint/:ticker',
@@ -20,60 +23,82 @@ export const routes: Routes = [
     children: [
       {
         path: 'wallet/token/:ticker',
-        loadComponent: () => import('./wallet-token/wallet-token.page').then(m => m.WalletTokenPage)
+        loadComponent: () =>
+          import('./wallet-token/wallet-token.page').then(
+            (m) => m.WalletTokenPage
+          ),
       },
       {
         path: 'wallet',
-        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+        loadComponent: () =>
+          import('./wallet/wallet.page').then((m) => m.WalletPage),
       },
       {
         path: 'wallet/:address',
-        loadComponent: () => import('./wallet/wallet.page').then(m => m.WalletPage)
+        loadComponent: () =>
+          import('./wallet/wallet.page').then((m) => m.WalletPage),
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage)
+        loadComponent: () =>
+          import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
       },
       {
         path: 'create/inscription',
-        loadComponent: () => import('./create-inscription/create-inscription.page').then(m => m.CreateInscriptionPage)
+        loadComponent: () =>
+          import('./create-inscription/create-inscription.page').then(
+            (m) => m.CreateInscriptionPage
+          ),
       },
       {
         path: 'create/token',
-        loadComponent: () => import('./create-token/create-token.page').then(m => m.CreateTokenPage)
+        loadComponent: () =>
+          import('./create-token/create-token.page').then(
+            (m) => m.CreateTokenPage
+          ),
       },
       {
         path: 'inscriptions',
-        loadComponent: () => import('./list-inscriptions/list-inscriptions.page').then(m => m.ListInscriptionsPage)
+        loadComponent: () =>
+          import('./list-inscriptions/list-inscriptions.page').then(
+            (m) => m.ListInscriptionsPage
+          ),
       },
       {
         path: 'tokens',
-        loadComponent: () => import('./list-tokens/list-tokens.page').then(m => m.ListTokensPage)
+        loadComponent: () =>
+          import('./list-tokens/list-tokens.page').then(
+            (m) => m.ListTokensPage
+          ),
       },
       {
         path: 'markets',
-        loadComponent: () => import('./markets/markets.page').then(m => m.MarketsPage)
+        loadComponent: () =>
+          import('./markets/markets.page').then((m) => m.MarketsPage),
       },
-      // {
-      //   path: 'market/:quote',
-      //   loadComponent: () => import('./trade-token-tv/trade-token-tv.page').then(m => m.TradeTokenTVPage)
-      // },
       {
         path: 'market/:quote',
-        loadComponent: () => import('./trade-token-v2/trade-token-v2.page').then(m => m.TradeTokenV2Page)
+        loadComponent: () =>
+          import('./trade-token-v2/trade-token-v2.page').then(
+            (m) => m.TradeTokenV2Page
+          ),
       },
-      // {
-      //   path: 'market/:quote',
-      //   loadComponent: () => import('./trade-token/trade-token.page').then(m => m.TradeTokenPage)
-      // },
+      {
+        path: 'swap/:quote',
+        loadComponent: () => import('./swap/swap.page').then((m) => m.SwapPage),
+      },
       {
         path: 'inscription/:txhash',
-        loadComponent: () => import('./view-inscription/view-inscription.page').then(m => m.ViewInscriptionPage)
+        loadComponent: () =>
+          import('./view-inscription/view-inscription.page').then(
+            (m) => m.ViewInscriptionPage
+          ),
       },
       {
         path: 'token/:ticker',
-        loadComponent: () => import('./view-token/view-token.page').then(m => m.ViewTokenPage)
+        loadComponent: () =>
+          import('./view-token/view-token.page').then((m) => m.ViewTokenPage),
       },
-    ]
-  }
+    ],
+  },
 ];

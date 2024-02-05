@@ -316,7 +316,7 @@ export class TradeTokenV2Page implements OnInit {
     }
     const listing = listingResult.marketplace_listing[0];
 
-    const deposit: bigint = listing.deposit_total as bigint;
+    const deposit: bigint = BigInt(listing.deposit_total as number);
 
     const purchaseMessage = {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
@@ -412,8 +412,8 @@ export class TradeTokenV2Page implements OnInit {
       return;
     }
 
-    let totaluatom: bigint = listing.total as bigint;
-    const deposit: bigint = listing.deposit_total as bigint;
+    let totaluatom: bigint = BigInt(listing.total as number);
+    const deposit: bigint = BigInt(listing.deposit_total as number);
     if (deposit > totaluatom) {
       // If deposit is greater than total, then just sent 1uatom to complete the transaction
       totaluatom = BigInt(1);

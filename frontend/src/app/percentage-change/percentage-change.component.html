@@ -1,0 +1,7 @@
+@if(change == 0) {
+<ion-text color="success">Floor price</ion-text>
+} @else if (change < 5) {
+<ion-text color="warning">{{ change }}% above floor</ion-text>
+} @else {
+<ion-text color="danger">{{ change }}% above floor</ion-text>
+}
