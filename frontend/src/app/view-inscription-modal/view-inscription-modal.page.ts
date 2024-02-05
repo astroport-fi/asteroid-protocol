@@ -153,6 +153,22 @@ export class ViewInscriptionModalPage implements OnInit {
   }
 
   async buy() {
+    if (!this.walletService.hasWallet()) {
+      // Popup explaining that Keplr is needed and needs to be installed first
+      const modal = await this.modalCtrl.create({
+        keyboardClose: true,
+        backdropDismiss: true,
+        component: WalletRequiredModalPage,
+        cssClass: 'wallet-required-modal',
+      });
+      modal.present();
+      return;
+    }
+
+    this.modalCtrl.dismiss({
+      dismissed: true,
+    });
+
     const modal = await this.modalCtrl.create({
       // keyboardClose: true,
       // backdropDismiss: false,

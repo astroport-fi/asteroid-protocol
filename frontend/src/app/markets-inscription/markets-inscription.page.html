@@ -58,16 +58,6 @@
               <ion-select-option value="50000">Sub 50 000</ion-select-option>
             </ion-select>
           </div>
-
-          <!-- <div class="section">
-            <h4 class="header">Type</h4>
-            <ion-select aria-label="Type" placeholder="Type" fill="clear" interface="popover" value="all"
-              (ionChange)="selectionChange('type', $event)">
-              <ion-select-option value="all">All</ion-select-option>
-              <ion-select-option value="image">Images</ion-select-option>
-              <ion-select-option value="document">Documents</ion-select-option>
-            </ion-select>
-          </div> -->
         </div>
       </ion-col>
     </ion-row>
@@ -88,7 +78,7 @@
                 <span>#{{item.inscription.id-1}}</span>
               </div>
               <div class="detail-item">
-                Listed by:
+                <div>Listed by:</div>
                 <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
                   *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
                   item.marketplace_listing.seller_address |
@@ -122,7 +112,7 @@
                 <span>#{{item.inscription.id-1}}</span>
               </div>
               <div class="detail-item">
-                Listed by:
+                <div>Listed by:</div>
                 <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
                   *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
                   item.marketplace_listing.seller_address |
@@ -130,16 +120,6 @@
                 <a class="text-warning" target="_blank"
                   [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
                   *ngIf="item.marketplace_listing.seller_address == walletAddress">You</a>
-
-                <!-- <ion-chip>
-                  <ion-avatar>
-                    <img alt="Unknown avatar" src="../../assets/avatar.svg" />
-                  </ion-avatar>
-                  <ion-label *ngIf="item.marketplace_listing.seller_address == walletAddress">You</ion-label>
-                  <ion-label *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
-                    item.marketplace_listing.seller_address
-                    | shortenAddress | async}}</ion-label>
-                </ion-chip> -->
               </div>
               <div class="marketplace-price text-center">
                 <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
@@ -151,304 +131,6 @@
           <!-- <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
               <ion-infinite-scroll-content> </ion-infinite-scroll-content>
             </ion-infinite-scroll> -->
-        </div>
-      </ion-col>
-      <ion-col size="0" size-md="2">
-        <div class="section mb-2">
-          <h4 class="header">Activity</h4>
-          <ion-select aria-label="Price" placeholder="Range" fill="clear" interface="popover" value="all">
-            <ion-select-option value="all">All</ion-select-option>
-            <ion-select-option value="apples">Listings</ion-select-option>
-            <ion-select-option value="apples">Sales</ion-select-option>
-          </ion-select>
-        </div>
-        <div class="aligned sidebar">
-
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #1222 this it eh sentence to check
-          </div>
-          <div>
-            activity
-          </div>
-          <div>
-            Listed #xxx
-          </div>
         </div>
       </ion-col>
     </ion-row>

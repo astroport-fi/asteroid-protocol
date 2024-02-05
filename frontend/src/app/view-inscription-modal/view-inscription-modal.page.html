@@ -1,5 +1,5 @@
 <ion-content fullscreen="true">
-  <ion-grid class="main-content">
+  <ion-grid class="main-content mt-0 pt-0 pb-0 mb-0">
     <ion-row>
       <ion-col size="12">
         <ion-header class="no-shadow m-0 p-0">
@@ -18,7 +18,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0">
+      <ion-col size="12" offset="0" class="mt-0 pt-0">
         <div class="p-4" *ngIf="isLoading">
           <div class="loading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -27,10 +27,10 @@
             </p>
           </div>
         </div>
-        <div class="aligned" *ngIf="!isLoading">
+        <div class="aligned mt-0 pt-0" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
-              <ion-col size="8" offset="2">
+              <ion-col size="6" offset="3">
                 <a href="/app/inscription/{{ inscription.transaction.hash }}" target="_blank" class="text-center">
                   <app-generic-preview [mime]="inscription.mime" [contentPath]="inscription.content_path"
                     [isExplicit]="inscription.is_explicit"></app-generic-preview>
@@ -50,7 +50,7 @@
               </ion-col>
               <ion-col size="12">
                 <ion-grid>
-                  <ion-row class="break pt-3">
+                  <ion-row class="break pt-2">
                     <ion-col>
                       <div class="marketplace-price pt-0 mt-0 text-center">
                         <ion-label class="value">{{
@@ -61,10 +61,10 @@
                     </ion-col>
                     <ion-col class="text-end">
                       <ion-button color="success" (click)="buy()"
-                        *ngIf="walletConnected && inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address != currentAddress">Buy
+                        *ngIf="inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address != currentAddress">Buy
                         now</ion-button>
                       <ion-button color="warning" fill="outline" (click)="delist()"
-                        *ngIf="walletConnected && inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address == currentAddress">Cancel
+                        *ngIf="inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address == currentAddress">Cancel
                         listing</ion-button>
                     </ion-col>
                   </ion-row>
