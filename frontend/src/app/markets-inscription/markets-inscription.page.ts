@@ -43,16 +43,9 @@ export class MarketsInscriptionPage implements OnInit {
   chain: any;
   currentFilter: any = {};
 
-  priceRanges: string[] = ["0-10 ATOM", "10+ ATOM"];
   selectedPriceRange: string | undefined;
-
-  blockRanges: string[] = ["Sub 100", "Sub 1 000", "Sub 10 000", "Sub 100 000"];
   selectedBlockRange: string | undefined;
-
-  orderOptions: string[] = ["Newest", "Oldest"];
   selectedOrder: any;
-
-  typeOptions: string[] = ["Image", "Video"];
   selectedType: string | undefined;
 
   currentBlock: number = 0;
@@ -310,6 +303,18 @@ export class MarketsInscriptionPage implements OnInit {
         } else if (event.detail.value === "recent-adds") {
           this.selectedOrder = {
             marketplace_listing: {
+              id: order_by.desc
+            }
+          }
+        } else if (event.detail.value === "id-low") {
+          this.selectedOrder = {
+            inscription: {
+              id: order_by.asc
+            }
+          }
+        } else if (event.detail.value === "id-high") {
+          this.selectedOrder = {
+            inscription: {
               id: order_by.desc
             }
           }

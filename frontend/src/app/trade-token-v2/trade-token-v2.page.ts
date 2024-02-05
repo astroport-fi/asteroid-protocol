@@ -274,7 +274,6 @@ export class TradeTokenV2Page implements OnInit {
   }
 
   async deposit(listingHash: string) {
-    console.log("listingHash" + listingHash);
     const modal = await this.modalCtrl.create({
       // keyboardClose: true,
       // backdropDismiss: false,
@@ -534,7 +533,7 @@ export class TradeTokenV2Page implements OnInit {
   }
 
   customSort(event: SortEvent) {
-    console.log(event.field);
+
     if (event.field == 'marketplace_listing.total') {
       event.data?.sort((data1, data2) => {
 

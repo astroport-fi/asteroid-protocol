@@ -308,7 +308,6 @@ export class TradeTokenPage implements OnInit {
       );
       const fee = parseInt(totaluatom.toString()) * feePercentage;
       overrideFee = fee.toString();
-      console.log('overrideFee', overrideFee);
     }
 
     // Construct metaprotocol memo message

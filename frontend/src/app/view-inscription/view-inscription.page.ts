@@ -142,8 +142,6 @@ export class ViewInscriptionPage implements OnInit {
 
     this.inscription = result.inscription[0];
 
-    console.log(this.inscription);
-
     const { name, description, content_path, id, transaction } =
       this.inscription;
 

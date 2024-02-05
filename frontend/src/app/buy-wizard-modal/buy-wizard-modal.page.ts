@@ -53,6 +53,7 @@ export class BuyWizardModalPage implements OnInit {
   chain: any = null;
   gasEstimate: number = parseInt(environment.fees.chain.gasLimit);
   chainFee: number = this.gasEstimate * this.currentChain.feeCurrencies[0].gasPriceStep.average / 1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+  chainFeeDisplay: number = 0;
   protocolFee: number = 0.005;
   protocolFeeAbsolute: number = 0.005;
 
@@ -148,6 +149,9 @@ export class BuyWizardModalPage implements OnInit {
     }
 
     await this.updateFees();
+    this.chainFeeDisplay = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+    console.log(this.chainFee);
+    console.log(this.chainFeeDisplay);
     this.isLoading = false;
 
     if (result.marketplace_listing.length == 0) {
@@ -179,6 +183,8 @@ export class BuyWizardModalPage implements OnInit {
       }
       // If the timeout has passed, show regular deposit flow
     }
+
+
 
 
   }
@@ -223,6 +229,8 @@ export class BuyWizardModalPage implements OnInit {
     // No fees on deposit
     fees.metaprotocol.denom = "uatom";
     fees.metaprotocol.amount = "0";
+
+
     try {
       await this.updateSimulate(urn, null, null, fees, [purchaseMessageJSON]);
     } catch (e) {
@@ -244,6 +252,7 @@ export class BuyWizardModalPage implements OnInit {
 
   async buy() {
     let fees = await this.updateFees();
+    fees.metaprotocol.receiver = (environment.fees.protocol.marketplace["buy"] as any).receiver;
     fees.metaprotocol.denom = "uatom";
     fees.metaprotocol.amount = this.protocolFeeAbsolute.toString();
 
@@ -351,13 +360,22 @@ export class BuyWizardModalPage implements OnInit {
 
       // Convert to uatom
       this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+
     }
   }
 
   async submitTransaction(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
     try {
       fees.chain.denom = this.currentChain.feeCurrencies[0].coinMinimalDenom;
+
       fees.chain.amount = this.chainFee.toFixed(0);
+
+      // TODO Note
+      // For some reason sending token to another address now requires a higher fee
+      // on testnet
+      if (environment.fees.chain.minFee != "0") {
+        fees.chain.amount = environment.fees.chain.minFee;
+      }
 
       const signedTx = await this.walletService.sign(urn, metadata, data, fees, messages);
 
@@ -378,9 +396,6 @@ export class BuyWizardModalPage implements OnInit {
               if (tx.code == 0) {
                 // Depending on the flow, we need to either show success for purchase
                 // or we need to move on to buying
-                console.log("RESULT-gOT 0");
-                console.log("Check listing with hash", this.hash);
-
                 // Query API to see if deposit was accepted
                 // Transaction was found on chain, now check indexer
                 const result = await this.chain('query')({
@@ -401,8 +416,10 @@ export class BuyWizardModalPage implements OnInit {
                 if (result.transaction.length > 0) {
                   if (result.transaction[0].status_message.toLowerCase() == 'success') {
                     // If the indexer reported success, we can move on to the next step
+                    this.txHash = '';
                     const fees = await this.updateFees();
                     this.wizardStep = 'buy';
+                    break;
 
                   } else if (result.transaction[0].status_message.toLowerCase().includes('error')) {
                     // We hit an error
@@ -419,9 +436,6 @@ export class BuyWizardModalPage implements OnInit {
               if (tx.code == 0) {
                 // Depending on the flow, we need to either show success for purchase
                 // or we need to move on to buying
-                console.log("RESULT-gOT 0");
-                console.log("Check listing with hash", this.hash);
-
                 // Query API to see if deposit was accepted
                 // Transaction was found on chain, now check indexer
                 const result = await this.chain('query')({

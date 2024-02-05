@@ -212,30 +212,30 @@ export class WalletService {
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
         // TODO: Add back
-        msgs = {
-          '@type': '/ibc.applications.transfer.v1.MsgTransfer',
-          receiver: fees.metaprotocol.receiver,
-          sender: account?.address as string,
-          source_channel: environment.fees.ibcChannel,
-          source_port: 'transfer',
-          timeout_timestamp: timeoutTime.toFixed(0),
-          token: {
-            amount: fees.metaprotocol.amount,
-            denom: fees.metaprotocol.denom,
-          },
-        };
-        // Temporary testing for local development
         // msgs = {
-        //   '@type': "/cosmos.bank.v1beta1.MsgSend",
-        //   from_address: account?.address as string,
-        //   to_address: account?.address as string,
-        //   amount: [
-        //     {
-        //       denom: fees.metaprotocol.denom,
-        //       amount: fees.metaprotocol.amount,
-        //     },
-        //   ],
-        // }
+        //   '@type': '/ibc.applications.transfer.v1.MsgTransfer',
+        //   receiver: fees.metaprotocol.receiver,
+        //   sender: account?.address as string,
+        //   source_channel: environment.fees.ibcChannel,
+        //   source_port: 'transfer',
+        //   timeout_timestamp: timeoutTime.toFixed(0),
+        //   token: {
+        //     amount: fees.metaprotocol.amount,
+        //     denom: fees.metaprotocol.denom,
+        //   },
+        // };
+        // Temporary testing for local development
+        msgs = {
+          '@type': "/cosmos.bank.v1beta1.MsgSend",
+          from_address: account?.address as string,
+          to_address: account?.address as string,
+          amount: [
+            {
+              denom: fees.metaprotocol.denom,
+              amount: fees.metaprotocol.amount,
+            },
+          ],
+        }
       } else {
         // If no fee is charged, we need to send the smallest amount possible
         // to the sender to create a valid transaction
@@ -356,23 +356,39 @@ export class WalletService {
       timeoutTime = timeoutTime * 1000000;
 
       if (parseInt(fees.metaprotocol.amount) > 0) {
+        // feeMessage = {
+        //   typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
+        //   value: MsgTransfer.encode({
+        //     receiver: fees.metaprotocol.receiver,
+        //     sender: account?.address as string,
+        //     sourceChannel: environment.fees.ibcChannel,
+        //     sourcePort: 'transfer',
+        //     timeoutTimestamp: BigInt(timeoutTime),
+        //     timeoutHeight: {
+        //       revisionNumber: BigInt(0),
+        //       revisionHeight: BigInt(0),
+        //     },
+        //     memo: '',
+        //     token: {
+        //       amount: fees.metaprotocol.amount,
+        //       denom: fees.metaprotocol.denom,
+        //     },
+        //   }).finish(),
+        // };
+        // msgs.push(feeMessage);
+
+        // TODO: Nonibc
         feeMessage = {
-          typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
-          value: MsgTransfer.encode({
-            receiver: fees.metaprotocol.receiver,
-            sender: account?.address as string,
-            sourceChannel: environment.fees.ibcChannel,
-            sourcePort: 'transfer',
-            timeoutTimestamp: BigInt(timeoutTime),
-            timeoutHeight: {
-              revisionNumber: BigInt(0),
-              revisionHeight: BigInt(0),
-            },
-            memo: '',
-            token: {
-              amount: fees.metaprotocol.amount,
-              denom: fees.metaprotocol.denom,
-            },
+          typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+          value: MsgSend.encode({
+            fromAddress: account?.address as string,
+            toAddress: fees.metaprotocol.receiver,
+            amount: [
+              {
+                denom: fees.metaprotocol.denom,
+                amount: fees.metaprotocol.amount,
+              },
+            ],
           }).finish(),
         };
         msgs.push(feeMessage);

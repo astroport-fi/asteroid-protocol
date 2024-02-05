@@ -18,6 +18,8 @@ import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
+import { addIcons } from 'ionicons';
+import { arrowBack } from "ionicons/icons";
 
 @Component({
   selector: 'app-view-inscription-modal',
@@ -54,7 +56,9 @@ export class ViewInscriptionModalPage implements OnInit {
     private titleService: Title,
     private meta: Meta,
     private protocolService: MarketplaceService
-  ) { }
+  ) {
+    addIcons({ arrowBack });
+  }
 
   async ngOnInit() {
     this.isLoading = true;
@@ -142,7 +146,6 @@ export class ViewInscriptionModalPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
-    console.log(this.inscription);
     this.isLoading = false;
   }
 
