@@ -62,6 +62,11 @@
             </ion-select>
           </div>
 
+          <div class="section">
+            <h4 class="header">Search</h4>
+            <ion-input type="text" placeholder="Name or inscription number" (ionInput)="search($event)"
+              debounce="500"></ion-input>
+          </div>
         </div>
       </ion-col>
       <!-- <ion-col size="12" size-lg="4">

@@ -951,6 +951,10 @@ export type ValueTypes = {
 	};
 	/** ordering argument of a cursor */
 	["cursor_ordering"]: cursor_ordering;
+	/** find_inscription_by_nameNative Query Arguments */
+	["find_inscription_by_name_arguments"]: {
+		query_name: string | Variable<any, string>
+	};
 	/** columns and relationships of "inscription" */
 	["inscription"]: AliasType<{
 		chain_id?: boolean | `@${string}`,
@@ -2425,6 +2429,14 @@ export type ValueTypes = {
 	/** column ordering options */
 	["order_by"]: order_by;
 	["query_root"]: AliasType<{
+		find_inscription_by_name?: [{	/** find_inscription_by_nameNative Query Arguments */
+			args: ValueTypes["find_inscription_by_name_arguments"] | Variable<any, string>,	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["search_result_enum_name"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["search_result_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["search_result_bool_exp_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["search_result"]],
 		inscription?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["inscription_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -2554,6 +2566,49 @@ export type ValueTypes = {
 		transaction_by_pk?: [{ id: number | Variable<any, string> }, ValueTypes["transaction"]],
 		__typename?: boolean | `@${string}`
 	}>;
+	["search_result"]: AliasType<{
+		content_path?: boolean | `@${string}`,
+		content_size_bytes?: boolean | `@${string}`,
+		current_owner?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		description?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		is_explicit?: boolean | `@${string}`,
+		mime?: boolean | `@${string}`,
+		name?: boolean | `@${string}`,
+		transaction_hash?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** Boolean expression to filter rows from the logical model for "search_result". All fields are combined with a logical 'AND'. */
+	["search_result_bool_exp_bool_exp"]: {
+		_and?: Array<ValueTypes["search_result_bool_exp_bool_exp"]> | undefined | null | Variable<any, string>,
+		_not?: ValueTypes["search_result_bool_exp_bool_exp"] | undefined | null | Variable<any, string>,
+		_or?: Array<ValueTypes["search_result_bool_exp_bool_exp"]> | undefined | null | Variable<any, string>,
+		content_path?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		content_size_bytes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		current_owner?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
+		description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+		is_explicit?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+		mime?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+		transaction_hash?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+	};
+	["search_result_enum_name"]: search_result_enum_name;
+	/** Ordering options when selecting data from "search_result". */
+	["search_result_order_by"]: {
+		content_path?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		content_size_bytes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		current_owner?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		date_created?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		is_explicit?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		mime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+		transaction_hash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	};
 	["smallint"]: unknown;
 	/** Boolean expression to compare columns of type "smallint". All fields are combined with logical 'AND'. */
 	["smallint_comparison_exp"]: {
@@ -2621,6 +2676,14 @@ export type ValueTypes = {
 		last_processed_height?: number | undefined | null | Variable<any, string>
 	};
 	["subscription_root"]: AliasType<{
+		find_inscription_by_name?: [{	/** find_inscription_by_nameNative Query Arguments */
+			args: ValueTypes["find_inscription_by_name_arguments"] | Variable<any, string>,	/** distinct select on columns */
+			distinct_on?: Array<ValueTypes["search_result_enum_name"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+			order_by?: Array<ValueTypes["search_result_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+			where?: ValueTypes["search_result_bool_exp_bool_exp"] | undefined | null | Variable<any, string>
+		}, ValueTypes["search_result"]],
 		inscription?: [{	/** distinct select on columns */
 			distinct_on?: Array<ValueTypes["inscription_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 			limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3947,6 +4010,10 @@ export type ResolverInputTypes = {
 	};
 	/** ordering argument of a cursor */
 	["cursor_ordering"]: cursor_ordering;
+	/** find_inscription_by_nameNative Query Arguments */
+	["find_inscription_by_name_arguments"]: {
+		query_name: string
+	};
 	/** columns and relationships of "inscription" */
 	["inscription"]: AliasType<{
 		chain_id?: boolean | `@${string}`,
@@ -5421,6 +5488,14 @@ export type ResolverInputTypes = {
 	/** column ordering options */
 	["order_by"]: order_by;
 	["query_root"]: AliasType<{
+		find_inscription_by_name?: [{	/** find_inscription_by_nameNative Query Arguments */
+			args: ResolverInputTypes["find_inscription_by_name_arguments"],	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["search_result_enum_name"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["search_result_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["search_result_bool_exp_bool_exp"] | undefined | null
+		}, ResolverInputTypes["search_result"]],
 		inscription?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["inscription_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -5550,6 +5625,49 @@ export type ResolverInputTypes = {
 		transaction_by_pk?: [{ id: number }, ResolverInputTypes["transaction"]],
 		__typename?: boolean | `@${string}`
 	}>;
+	["search_result"]: AliasType<{
+		content_path?: boolean | `@${string}`,
+		content_size_bytes?: boolean | `@${string}`,
+		current_owner?: boolean | `@${string}`,
+		date_created?: boolean | `@${string}`,
+		description?: boolean | `@${string}`,
+		id?: boolean | `@${string}`,
+		is_explicit?: boolean | `@${string}`,
+		mime?: boolean | `@${string}`,
+		name?: boolean | `@${string}`,
+		transaction_hash?: boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+	}>;
+	/** Boolean expression to filter rows from the logical model for "search_result". All fields are combined with a logical 'AND'. */
+	["search_result_bool_exp_bool_exp"]: {
+		_and?: Array<ResolverInputTypes["search_result_bool_exp_bool_exp"]> | undefined | null,
+		_not?: ResolverInputTypes["search_result_bool_exp_bool_exp"] | undefined | null,
+		_or?: Array<ResolverInputTypes["search_result_bool_exp_bool_exp"]> | undefined | null,
+		content_path?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		content_size_bytes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		current_owner?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		date_created?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
+		description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+		is_explicit?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+		mime?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+		transaction_hash?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+	};
+	["search_result_enum_name"]: search_result_enum_name;
+	/** Ordering options when selecting data from "search_result". */
+	["search_result_order_by"]: {
+		content_path?: ResolverInputTypes["order_by"] | undefined | null,
+		content_size_bytes?: ResolverInputTypes["order_by"] | undefined | null,
+		current_owner?: ResolverInputTypes["order_by"] | undefined | null,
+		date_created?: ResolverInputTypes["order_by"] | undefined | null,
+		description?: ResolverInputTypes["order_by"] | undefined | null,
+		id?: ResolverInputTypes["order_by"] | undefined | null,
+		is_explicit?: ResolverInputTypes["order_by"] | undefined | null,
+		mime?: ResolverInputTypes["order_by"] | undefined | null,
+		name?: ResolverInputTypes["order_by"] | undefined | null,
+		transaction_hash?: ResolverInputTypes["order_by"] | undefined | null
+	};
 	["smallint"]: unknown;
 	/** Boolean expression to compare columns of type "smallint". All fields are combined with logical 'AND'. */
 	["smallint_comparison_exp"]: {
@@ -5617,6 +5735,14 @@ export type ResolverInputTypes = {
 		last_processed_height?: number | undefined | null
 	};
 	["subscription_root"]: AliasType<{
+		find_inscription_by_name?: [{	/** find_inscription_by_nameNative Query Arguments */
+			args: ResolverInputTypes["find_inscription_by_name_arguments"],	/** distinct select on columns */
+			distinct_on?: Array<ResolverInputTypes["search_result_enum_name"]> | undefined | null,	/** limit the number of rows returned */
+			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+			offset?: number | undefined | null,	/** sort the rows by one or more columns */
+			order_by?: Array<ResolverInputTypes["search_result_order_by"]> | undefined | null,	/** filter the rows returned */
+			where?: ResolverInputTypes["search_result_bool_exp_bool_exp"] | undefined | null
+		}, ResolverInputTypes["search_result"]],
 		inscription?: [{	/** distinct select on columns */
 			distinct_on?: Array<ResolverInputTypes["inscription_select_column"]> | undefined | null,	/** limit the number of rows returned */
 			limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -6941,6 +7067,10 @@ export type ModelTypes = {
 		_nin?: Array<ModelTypes["bigint"]> | undefined
 	};
 	["cursor_ordering"]: cursor_ordering;
+	/** find_inscription_by_nameNative Query Arguments */
+	["find_inscription_by_name_arguments"]: {
+		query_name: string
+	};
 	/** columns and relationships of "inscription" */
 	["inscription"]: {
 		chain_id: string,
@@ -8344,6 +8474,7 @@ export type ModelTypes = {
 	};
 	["order_by"]: order_by;
 	["query_root"]: {
+		find_inscription_by_name: Array<ModelTypes["search_result"]>,
 		/** fetch data from the table: "inscription" */
 		inscription: Array<ModelTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
@@ -8406,6 +8537,48 @@ export type ModelTypes = {
 		transaction: Array<ModelTypes["transaction"]>,
 		/** fetch data from the table: "transaction" using primary key columns */
 		transaction_by_pk?: ModelTypes["transaction"] | undefined
+	};
+	["search_result"]: {
+		content_path?: string | undefined,
+		content_size_bytes?: number | undefined,
+		current_owner?: string | undefined,
+		date_created?: ModelTypes["timestamp"] | undefined,
+		description?: string | undefined,
+		id?: number | undefined,
+		is_explicit?: boolean | undefined,
+		mime?: string | undefined,
+		name?: string | undefined,
+		transaction_hash?: string | undefined
+	};
+	/** Boolean expression to filter rows from the logical model for "search_result". All fields are combined with a logical 'AND'. */
+	["search_result_bool_exp_bool_exp"]: {
+		_and?: Array<ModelTypes["search_result_bool_exp_bool_exp"]> | undefined,
+		_not?: ModelTypes["search_result_bool_exp_bool_exp"] | undefined,
+		_or?: Array<ModelTypes["search_result_bool_exp_bool_exp"]> | undefined,
+		content_path?: ModelTypes["String_comparison_exp"] | undefined,
+		content_size_bytes?: ModelTypes["Int_comparison_exp"] | undefined,
+		current_owner?: ModelTypes["String_comparison_exp"] | undefined,
+		date_created?: ModelTypes["timestamp_comparison_exp"] | undefined,
+		description?: ModelTypes["String_comparison_exp"] | undefined,
+		id?: ModelTypes["Int_comparison_exp"] | undefined,
+		is_explicit?: ModelTypes["Boolean_comparison_exp"] | undefined,
+		mime?: ModelTypes["String_comparison_exp"] | undefined,
+		name?: ModelTypes["String_comparison_exp"] | undefined,
+		transaction_hash?: ModelTypes["String_comparison_exp"] | undefined
+	};
+	["search_result_enum_name"]: search_result_enum_name;
+	/** Ordering options when selecting data from "search_result". */
+	["search_result_order_by"]: {
+		content_path?: ModelTypes["order_by"] | undefined,
+		content_size_bytes?: ModelTypes["order_by"] | undefined,
+		current_owner?: ModelTypes["order_by"] | undefined,
+		date_created?: ModelTypes["order_by"] | undefined,
+		description?: ModelTypes["order_by"] | undefined,
+		id?: ModelTypes["order_by"] | undefined,
+		is_explicit?: ModelTypes["order_by"] | undefined,
+		mime?: ModelTypes["order_by"] | undefined,
+		name?: ModelTypes["order_by"] | undefined,
+		transaction_hash?: ModelTypes["order_by"] | undefined
 	};
 	["smallint"]: any;
 	/** Boolean expression to compare columns of type "smallint". All fields are combined with logical 'AND'. */
@@ -8472,6 +8645,7 @@ export type ModelTypes = {
 		last_processed_height?: number | undefined
 	};
 	["subscription_root"]: {
+		find_inscription_by_name: Array<ModelTypes["search_result"]>,
 		/** fetch data from the table: "inscription" */
 		inscription: Array<ModelTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
@@ -9620,6 +9794,10 @@ export type GraphQLTypes = {
 	};
 	/** ordering argument of a cursor */
 	["cursor_ordering"]: cursor_ordering;
+	/** find_inscription_by_nameNative Query Arguments */
+	["find_inscription_by_name_arguments"]: {
+		query_name: string
+	};
 	/** columns and relationships of "inscription" */
 	["inscription"]: {
 		__typename: "inscription",
@@ -11053,6 +11231,7 @@ export type GraphQLTypes = {
 	["order_by"]: order_by;
 	["query_root"]: {
 		__typename: "query_root",
+		find_inscription_by_name: Array<GraphQLTypes["search_result"]>,
 		/** fetch data from the table: "inscription" */
 		inscription: Array<GraphQLTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
@@ -11115,6 +11294,49 @@ export type GraphQLTypes = {
 		transaction: Array<GraphQLTypes["transaction"]>,
 		/** fetch data from the table: "transaction" using primary key columns */
 		transaction_by_pk?: GraphQLTypes["transaction"] | undefined
+	};
+	["search_result"]: {
+		__typename: "search_result",
+		content_path?: string | undefined,
+		content_size_bytes?: number | undefined,
+		current_owner?: string | undefined,
+		date_created?: GraphQLTypes["timestamp"] | undefined,
+		description?: string | undefined,
+		id?: number | undefined,
+		is_explicit?: boolean | undefined,
+		mime?: string | undefined,
+		name?: string | undefined,
+		transaction_hash?: string | undefined
+	};
+	/** Boolean expression to filter rows from the logical model for "search_result". All fields are combined with a logical 'AND'. */
+	["search_result_bool_exp_bool_exp"]: {
+		_and?: Array<GraphQLTypes["search_result_bool_exp_bool_exp"]> | undefined,
+		_not?: GraphQLTypes["search_result_bool_exp_bool_exp"] | undefined,
+		_or?: Array<GraphQLTypes["search_result_bool_exp_bool_exp"]> | undefined,
+		content_path?: GraphQLTypes["String_comparison_exp"] | undefined,
+		content_size_bytes?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		current_owner?: GraphQLTypes["String_comparison_exp"] | undefined,
+		date_created?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
+		description?: GraphQLTypes["String_comparison_exp"] | undefined,
+		id?: GraphQLTypes["Int_comparison_exp"] | undefined,
+		is_explicit?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+		mime?: GraphQLTypes["String_comparison_exp"] | undefined,
+		name?: GraphQLTypes["String_comparison_exp"] | undefined,
+		transaction_hash?: GraphQLTypes["String_comparison_exp"] | undefined
+	};
+	["search_result_enum_name"]: search_result_enum_name;
+	/** Ordering options when selecting data from "search_result". */
+	["search_result_order_by"]: {
+		content_path?: GraphQLTypes["order_by"] | undefined,
+		content_size_bytes?: GraphQLTypes["order_by"] | undefined,
+		current_owner?: GraphQLTypes["order_by"] | undefined,
+		date_created?: GraphQLTypes["order_by"] | undefined,
+		description?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+		is_explicit?: GraphQLTypes["order_by"] | undefined,
+		mime?: GraphQLTypes["order_by"] | undefined,
+		name?: GraphQLTypes["order_by"] | undefined,
+		transaction_hash?: GraphQLTypes["order_by"] | undefined
 	};
 	["smallint"]: "scalar" & { name: "smallint" };
 	/** Boolean expression to compare columns of type "smallint". All fields are combined with logical 'AND'. */
@@ -11184,6 +11406,7 @@ export type GraphQLTypes = {
 	};
 	["subscription_root"]: {
 		__typename: "subscription_root",
+		find_inscription_by_name: Array<GraphQLTypes["search_result"]>,
 		/** fetch data from the table: "inscription" */
 		inscription: Array<GraphQLTypes["inscription"]>,
 		/** fetch data from the table: "inscription" using primary key columns */
@@ -12370,6 +12593,18 @@ export const enum order_by {
 	desc_nulls_first = "desc_nulls_first",
 	desc_nulls_last = "desc_nulls_last"
 }
+export const enum search_result_enum_name {
+	content_path = "content_path",
+	content_size_bytes = "content_size_bytes",
+	current_owner = "current_owner",
+	date_created = "date_created",
+	description = "description",
+	id = "id",
+	is_explicit = "is_explicit",
+	mime = "mime",
+	name = "name",
+	transaction_hash = "transaction_hash"
+}
 /** select columns of table "status" */
 export const enum status_select_column {
 	base_token = "base_token",
@@ -12479,6 +12714,7 @@ type ZEUS_VARIABLES = {
 	["bigint"]: ValueTypes["bigint"];
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
+	["find_inscription_by_name_arguments"]: ValueTypes["find_inscription_by_name_arguments"];
 	["inscription_bool_exp"]: ValueTypes["inscription_bool_exp"];
 	["inscription_history_aggregate_order_by"]: ValueTypes["inscription_history_aggregate_order_by"];
 	["inscription_history_avg_order_by"]: ValueTypes["inscription_history_avg_order_by"];
@@ -12603,6 +12839,9 @@ type ZEUS_VARIABLES = {
 	["numeric"]: ValueTypes["numeric"];
 	["numeric_comparison_exp"]: ValueTypes["numeric_comparison_exp"];
 	["order_by"]: ValueTypes["order_by"];
+	["search_result_bool_exp_bool_exp"]: ValueTypes["search_result_bool_exp_bool_exp"];
+	["search_result_enum_name"]: ValueTypes["search_result_enum_name"];
+	["search_result_order_by"]: ValueTypes["search_result_order_by"];
 	["smallint"]: ValueTypes["smallint"];
 	["smallint_comparison_exp"]: ValueTypes["smallint_comparison_exp"];
 	["status_bool_exp"]: ValueTypes["status_bool_exp"];

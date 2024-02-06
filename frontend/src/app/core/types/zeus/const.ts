@@ -25,6 +25,9 @@ export const AllTypesProps: Record<string, any> = {
 		_nin: "bigint"
 	},
 	cursor_ordering: "enum" as const,
+	find_inscription_by_name_arguments: {
+
+	},
 	inscription: {
 		inscription_histories: {
 			distinct_on: "inscription_history_select_column",
@@ -1044,6 +1047,12 @@ export const AllTypesProps: Record<string, any> = {
 	},
 	order_by: "enum" as const,
 	query_root: {
+		find_inscription_by_name: {
+			args: "find_inscription_by_name_arguments",
+			distinct_on: "search_result_enum_name",
+			order_by: "search_result_order_by",
+			where: "search_result_bool_exp_bool_exp"
+		},
 		inscription: {
 			distinct_on: "inscription_select_column",
 			order_by: "inscription_order_by",
@@ -1170,6 +1179,34 @@ export const AllTypesProps: Record<string, any> = {
 
 		}
 	},
+	search_result_bool_exp_bool_exp: {
+		_and: "search_result_bool_exp_bool_exp",
+		_not: "search_result_bool_exp_bool_exp",
+		_or: "search_result_bool_exp_bool_exp",
+		content_path: "String_comparison_exp",
+		content_size_bytes: "Int_comparison_exp",
+		current_owner: "String_comparison_exp",
+		date_created: "timestamp_comparison_exp",
+		description: "String_comparison_exp",
+		id: "Int_comparison_exp",
+		is_explicit: "Boolean_comparison_exp",
+		mime: "String_comparison_exp",
+		name: "String_comparison_exp",
+		transaction_hash: "String_comparison_exp"
+	},
+	search_result_enum_name: "enum" as const,
+	search_result_order_by: {
+		content_path: "order_by",
+		content_size_bytes: "order_by",
+		current_owner: "order_by",
+		date_created: "order_by",
+		description: "order_by",
+		id: "order_by",
+		is_explicit: "order_by",
+		mime: "order_by",
+		name: "order_by",
+		transaction_hash: "order_by"
+	},
 	smallint: `scalar.smallint` as const,
 	smallint_comparison_exp: {
 		_eq: "smallint",
@@ -1211,6 +1248,12 @@ export const AllTypesProps: Record<string, any> = {
 		date_updated: "timestamp"
 	},
 	subscription_root: {
+		find_inscription_by_name: {
+			args: "find_inscription_by_name_arguments",
+			distinct_on: "search_result_enum_name",
+			order_by: "search_result_order_by",
+			where: "search_result_bool_exp_bool_exp"
+		},
 		inscription: {
 			distinct_on: "inscription_select_column",
 			order_by: "inscription_order_by",
@@ -2366,6 +2409,7 @@ export const ReturnTypes: Record<string, any> = {
 	},
 	numeric: `scalar.numeric` as const,
 	query_root: {
+		find_inscription_by_name: "search_result",
 		inscription: "inscription",
 		inscription_by_pk: "inscription",
 		inscription_history: "inscription_history",
@@ -2398,6 +2442,18 @@ export const ReturnTypes: Record<string, any> = {
 		transaction: "transaction",
 		transaction_by_pk: "transaction"
 	},
+	search_result: {
+		content_path: "String",
+		content_size_bytes: "Int",
+		current_owner: "String",
+		date_created: "timestamp",
+		description: "String",
+		id: "Int",
+		is_explicit: "Boolean",
+		mime: "String",
+		name: "String",
+		transaction_hash: "String"
+	},
 	smallint: `scalar.smallint` as const,
 	status: {
 		base_token: "String",
@@ -2409,6 +2465,7 @@ export const ReturnTypes: Record<string, any> = {
 		last_processed_height: "Int"
 	},
 	subscription_root: {
+		find_inscription_by_name: "search_result",
 		inscription: "inscription",
 		inscription_by_pk: "inscription",
 		inscription_history: "inscription_history",

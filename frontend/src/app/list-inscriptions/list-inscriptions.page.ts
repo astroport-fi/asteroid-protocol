@@ -84,7 +84,80 @@ export class ListInscriptionsPage implements OnInit {
     if (string && !isNaN(+string)) {
       const result = await this.fetchInscriptions(+string + 1);
       this.inscriptions = result.inscription;
+    } else {
+      await this.search(string);
     }
+  }
+
+  async search(term: any) {
+    const searchResult = await this.chain('query')({
+      find_inscription_by_name: [
+        {
+          args: {
+            query_name: "%" + term + "%"
+          }
+        },
+        {
+          id: true,
+        }
+      ]
+    });
+
+    const result = await this.chain('query')({
+      inscription: [
+        {
+          order_by: [
+            {
+              id: order_by.asc,
+            },
+          ],
+          where: {
+            id: {
+              _in: searchResult.find_inscription_by_name.map((i: any) => i.id)
+            }
+          },
+        },
+        {
+          id: true,
+          transaction: {
+            hash: true,
+          },
+          // transaction_hash: true,
+          current_owner: true,
+          content_path: true,
+          content_size_bytes: true,
+          date_created: true,
+          is_explicit: true,
+          __alias: {
+            name: {
+              metadata: [
+                {
+                  path: '$.metadata.name',
+                },
+                true,
+              ],
+            },
+            description: {
+              metadata: [
+                {
+                  path: '$.metadata.description',
+                },
+                true,
+              ],
+            },
+            mime: {
+              metadata: [
+                {
+                  path: '$.metadata.mime',
+                },
+                true,
+              ],
+            },
+          },
+        },
+      ],
+    });
+    this.inscriptions = result.inscription;
   }
 
   async fetchInscriptions(id?: number) {

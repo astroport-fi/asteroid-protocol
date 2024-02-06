@@ -372,6 +372,46 @@ export class MarketsInscriptionPage implements OnInit {
     this.marketplaceDetail = result.marketplace_inscription_detail;
   }
 
+  async search(event: any) {
+
+    // FE IDs are 0-indexed, so we need to add 1 to the ID
+    const byID = isNaN(+event.target.value) ? null : +event.target.value + 1;
+
+    const searchResult = await this.chain('query')({
+      find_inscription_by_name: [
+        {
+          args: {
+            query_name: "%" + event.target.value + "%"
+          }
+        },
+        {
+          id: true,
+        }
+      ]
+    });
+
+    // Since we don't have a direct way to do this LIKE query, we need to collect
+    // IDs first, then fetch the actual information
+    const result = await this.fetchInscriptions({
+      inscription: {
+        _or: [
+          {
+            id: {
+              _in: searchResult.find_inscription_by_name.map((i: any) => i.id)
+            }
+          },
+          {
+            id: {
+              _eq: byID
+            }
+          }
+        ]
+
+      }
+    }, [this.selectedOrder]);
+    this.marketplaceDetail = result.marketplace_inscription_detail;
+  }
+
   async buy(listingHash: string, inscriptionHash: string) {
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
