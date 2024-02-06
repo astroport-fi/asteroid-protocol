@@ -40,6 +40,7 @@ import {
   searchOutline,
   openOutline,
   eyeOffOutline,
+  add
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
@@ -123,6 +124,7 @@ export class DashboardLayoutComponent {
       searchOutline,
       openOutline,
       eyeOffOutline,
+      add
     });
   }
 

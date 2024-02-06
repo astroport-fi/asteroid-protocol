@@ -146,6 +146,7 @@ export class ViewInscriptionModalPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
+    console.log('Inscription', this.inscription);
     this.isLoading = false;
   }
 

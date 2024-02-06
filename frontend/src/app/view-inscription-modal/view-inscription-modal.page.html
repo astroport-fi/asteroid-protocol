@@ -44,7 +44,23 @@
                   <h1 class="mt-0">{{ inscription.name }}</h1>
                   <p>{{ inscription.description || "No description provided" }}</p>
                 </div>
-                <div class="text-center p-2 pt-0">
+                <div class="detail-item d-inline-block">
+                  <a [routerLink]="['/app/wallet', inscription.marketplace_inscription_details[0].marketplace_listing.seller_address ]"
+                    [queryParams]="{section: 'inscriptions'}" target="_blank">
+                    <ion-chip>
+                      <ion-avatar>
+                        <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                      </ion-avatar>
+                      <ion-label
+                        *ngIf="inscription.marketplace_inscription_details[0].marketplace_listing.seller_address == currentAddress">You</ion-label>
+                      <ion-label
+                        *ngIf="inscription.marketplace_inscription_details[0].marketplace_listing.seller_address != currentAddress">{{
+                        inscription.marketplace_inscription_details[0].marketplace_listing.seller_address
+                        | shortenAddress | async}}</ion-label>
+                    </ion-chip>
+                  </a>
+                </div>
+                <div class="text-center p-2 pt-0  d-inline-block">
                   <ion-button color="primary" fill="clear" href="/app/inscription/{{ inscription.transaction.hash }}"
                     target="_blank" *ngIf="!inscription.is_explicit">
                     View full details <ion-icon name="open-outline" class="ps-2"></ion-icon>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ModalController, IonicModule } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, ModalController, IonicModule } from '@ionic/angular';
 import { Chain, Subscription, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -36,7 +36,7 @@ export class MarketsInscriptionPage implements OnInit {
   marketplaceDetail: any = null;
   reservedMarketplaceDetail: any = null;
   offset = 0;
-  limit = 20;
+  limit = 25;
   total: number = 20000;
   lastFetchCount = 0;
   baseToken: any;
@@ -55,7 +55,7 @@ export class MarketsInscriptionPage implements OnInit {
   volumeUSD: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
-    // this.lastFetchCount = this.limit;
+    this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
 
   }
@@ -149,6 +149,7 @@ export class MarketsInscriptionPage implements OnInit {
       marketplace_inscription_detail: [
         {
           where: fullWhere,
+          offset: this.offset,
           limit: this.limit,
           order_by: order
 
@@ -373,9 +374,10 @@ export class MarketsInscriptionPage implements OnInit {
   }
 
   async search(event: any) {
-
+    this.offset = 0;
+    this.limit = 50;
     // FE IDs are 0-indexed, so we need to add 1 to the ID
-    const byID = isNaN(+event.target.value) ? null : +event.target.value + 1;
+    const byID = isNaN(+event.target.value) ? 0 : +event.target.value + 1;
 
     const searchResult = await this.chain('query')({
       find_inscription_by_name: [
@@ -409,6 +411,7 @@ export class MarketsInscriptionPage implements OnInit {
 
       }
     }, [this.selectedOrder]);
+
     this.marketplaceDetail = result.marketplace_inscription_detail;
   }
 
@@ -425,6 +428,33 @@ export class MarketsInscriptionPage implements OnInit {
     });
     modal.present();
 
+  }
+
+  async onIonInfinite(event: any) {
+    // console.log(event);
+
+    if (this.lastFetchCount < this.limit) {
+      // (event as InfiniteScrollCustomEvent).target.disabled = true;
+      await (event as InfiniteScrollCustomEvent).target.complete();
+      return;
+    }
+
+    this.offset += this.limit;
+    console.log(this.offset);
+
+    const result = await this.fetchInscriptions(this.currentFilter, [this.selectedOrder]);
+    this.marketplaceDetail = [...this.marketplaceDetail, ...result.marketplace_inscription_detail];
+
+    // this.inscriptions.push(...result.inscription);
+    this.lastFetchCount = result.marketplace_inscription_detail.length;
+    await (event as InfiniteScrollCustomEvent).target.complete();
+
+    // this.isTableLoading = true;
+    // this.offset += this.limit;
+    // this.fetchInscriptions(this.currentFilter, [this.selectedOrder]).then((result) => {
+    //   this.marketplaceDetail = [...this.marketplaceDetail, ...result.marketplace_inscription_detail];
+    //   this.isTableLoading = false;
+    // });
   }
 
 

@@ -22,8 +22,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <div class="section-container mt-3">
+      <ion-col size="12" size-md="4" size-lg="3">
+        <div class="section-container main-content-sidebar p-3 mt-0 me-3">
           <div class="section">
             <h4 class="header">Sort</h4>
             <ion-select aria-label="Order" placeholder="Order" fill="clear" interface="popover" value="recent-adds"
@@ -67,22 +67,15 @@
             <ion-input type="text" placeholder="Name or inscription number" (ionInput)="search($event)"
               debounce="500"></ion-input>
           </div>
+
+          <div class="section mt-5 text-center">
+            <ion-button fill="outline" color="primary" [routerLink]="['/app/wallet']"
+              [queryParams]="{section: 'inscriptions'}"><ion-icon name="add"></ion-icon> List
+              inscription</ion-button>
+          </div>
         </div>
       </ion-col>
-      <!-- <ion-col size="12" size-lg="4">
-        <div class="token-stats">
-          <span class="key">
-            24H Volume
-          </span>
-          <span class="value ms-3">
-            {{ volumeAtom | tokenDecimals:6 | number:"1.2-6" }} ATOM (${{ volumeUSD |
-            number:"1.2-6" }})
-          </span>
-        </div>
-      </ion-col> -->
-    </ion-row>
-    <ion-row>
-      <ion-col>
+      <ion-col size="12" size-md="8" size-lg="9">
         <div class="list" *ngIf="!isLoading && reservedMarketplaceDetail.length > 0">
           <h3 class="mb-4 mt-0 pt-0">Reserved by you</h3>
           <a class="inscription-item main-content"
@@ -96,17 +89,6 @@
             <div class="detail">
               <div class="detail-item">
                 <span>#{{item.inscription.id-1}}</span>
-              </div>
-              <div class="detail-item">
-                <div>Listed by:</div>
-                <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
-                  *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
-                  item.marketplace_listing.seller_address |
-                  shortenAddress | async}}</a>
-                <a class="text-warning" target="_blank"
-                  [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
-                  *ngIf="item.marketplace_listing.seller_address == walletAddress">You</a>
-
               </div>
               <div class="marketplace-price text-center">
                 <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
@@ -131,16 +113,6 @@
               <div class="detail-item">
                 <span>#{{item.inscription.id-1}}</span>
               </div>
-              <div class="detail-item">
-                <div>Listed by:</div>
-                <a target="_blank" [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
-                  *ngIf="item.marketplace_listing.seller_address != walletAddress">{{
-                  item.marketplace_listing.seller_address |
-                  shortenAddress | async}}</a>
-                <a class="text-warning" target="_blank"
-                  [routerLink]="['/app/wallet/', item.marketplace_listing.seller_address]"
-                  *ngIf="item.marketplace_listing.seller_address == walletAddress">You</a>
-              </div>
               <div class="marketplace-price text-center">
                 <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
                   <span>ATOM</span></ion-label>
@@ -148,9 +120,9 @@
               </div>
             </div>
           </a>
-          <!-- <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-              <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-            </ion-infinite-scroll> -->
+          <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
         </div>
       </ion-col>
     </ion-row>
