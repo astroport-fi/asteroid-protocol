@@ -51,12 +51,27 @@
           label="{{searchIn}}"
           labelPlacement="stacked"
           fill="outline"
-          placeholder="10"
+          placeholder=""
           [maskito]="decimalMask"
           [maskitoElement]="maskPredicate"
-          formControlName="baseToken"
-          ><ion-button fill="clear" slot="end" aria-label="Show/hide"
+          formControlName="amount"
+          ><ion-button fill="clear" slot="end" aria-label="token"
             >{{ searchIn }}</ion-button
+          ></ion-input
+        >
+        <ion-input
+          #input
+          *ngIf="token"
+          label="Max Rate"
+          labelPlacement="stacked"
+          fill="outline"
+          class="mt-3"
+          placeholder="{{token.last_price_base | tokenDecimals:token.decimals}}"
+          [maskito]="decimalMask"
+          [maskitoElement]="maskPredicate"
+          formControlName="rate"
+          ><ion-button fill="clear" slot="end" aria-label="token"
+            >ATOM</ion-button
           ></ion-input
         ></ion-col
       >

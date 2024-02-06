@@ -136,13 +136,15 @@ const RESULT_COUNT = 30;
 function findNearest(
   listings: ListingWithUSD[],
   amount: number,
+  maxRate: number,
   filterType: FilterType
 ) {
   const key = getKey(filterType);
 
-  const sortedByDistance = [...listings].sort(
+  const filteredListings = listings.filter((listing) => listing.ppt <= maxRate);
+  const sortedByDistance = filteredListings.sort(
     (a, b) =>
-      Math.abs(a[key] - amount * 10e5) - Math.abs(b[key] - amount * 10e5) ||
+      Math.abs(a[key] - amount * 1e6) - Math.abs(b[key] - amount * 1e6) ||
       a['ppt'] - b['ppt']
   );
 
@@ -175,6 +177,7 @@ export class SwapPage implements OnInit {
   currentBlock = 0;
   limit = 2000;
   amount: number | null = null;
+  maxRate: number = 0;
   filterType = FilterType.Usd;
   FilterType = FilterType;
   searchIn = '$';
@@ -182,7 +185,8 @@ export class SwapPage implements OnInit {
   @ViewChild('input') input!: IonInput;
 
   swapForm: FormGroup = this.formBuilder.group({
-    baseToken: [''],
+    amount: [''],
+    rate: [''],
   });
 
   readonly decimalMask: MaskitoOptions;
@@ -221,6 +225,11 @@ export class SwapPage implements OnInit {
       return;
     }
 
+    this.maxRate = this.token.last_price_base;
+    this.swapForm.controls['rate'].setValue(
+      this.token.last_price_base / Math.pow(10, this.token.decimals)
+    );
+
     this.baseTokenUSD = status.base_token_usd;
     this.currentBlock = status.last_processed_height;
 
@@ -232,11 +241,20 @@ export class SwapPage implements OnInit {
 
     this.floorPrice = await this.getFloorPrice(this.token.id);
 
-    this.swapForm.controls['baseToken'].valueChanges.subscribe((change) => {
+    this.swapForm.controls['amount'].valueChanges.subscribe((change) => {
       if (change) {
         this.amount = parseFloat(change.replace(/ /g, ''));
       } else {
         this.amount = null;
+      }
+      this.filterListings();
+    });
+
+    this.swapForm.controls['rate'].valueChanges.subscribe((change) => {
+      if (change) {
+        this.maxRate = parseFloat(change.replace(/ /g, '')) * 1e6;
+      } else {
+        this.maxRate = this.token!.last_price_base;
       }
       this.filterListings();
     });
@@ -257,7 +275,6 @@ export class SwapPage implements OnInit {
       filterType = FilterType.Atom;
     }
     this.filterType = filterType;
-    this.selected = null;
     this.listings = sortListings(this.listings, filterType);
     this.filterListings();
     this.input.setFocus();
@@ -296,10 +313,12 @@ export class SwapPage implements OnInit {
   }
 
   filterListings() {
+    this.selected = null;
     if (this.amount) {
       this.filteredListings = findNearest(
         this.listings,
         this.amount,
+        this.maxRate,
         this.filterType
       );
     } else {

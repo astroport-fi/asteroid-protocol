@@ -66,10 +66,15 @@ export const environment = {
           type: 'dynamic-percent',
         },
         'list.cft20': {
-          receiver: '',
+          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
           denom: 'uatom',
           amount: '0',
           minTradeSize: 0.000001,
+        },
+        deposit: {
+          receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
+          denom: 'uatom',
+          amount: '0',
         },
         buy: {
           receiver:
