@@ -131,6 +131,8 @@ function sortListings(listings: ListingWithUSD[], sortType: FilterType) {
   return listings.sort((a, b) => a[key] - b[key]);
 }
 
+const RESULT_COUNT = 30;
+
 function findNearest(
   listings: ListingWithUSD[],
   amount: number,
@@ -140,10 +142,11 @@ function findNearest(
 
   const sortedByDistance = [...listings].sort(
     (a, b) =>
-      Math.abs(a[key] - amount * 10e5) - Math.abs(b[key] - amount * 10e5)
+      Math.abs(a[key] - amount * 10e5) - Math.abs(b[key] - amount * 10e5) ||
+      a['ppt'] - b['ppt']
   );
 
-  return sortedByDistance.slice(0, 3);
+  return sortedByDistance.slice(0, RESULT_COUNT);
 }
 
 @Component({
@@ -162,6 +165,8 @@ function findNearest(
 })
 export class SwapPage implements OnInit {
   chain;
+  isLoading = true;
+  ticker!: string;
   token: Token | undefined;
   listings!: ListingWithUSD[];
   filteredListings!: ListingWithUSD[];
@@ -171,6 +176,7 @@ export class SwapPage implements OnInit {
   limit = 2000;
   amount: number | null = null;
   filterType = FilterType.Usd;
+  FilterType = FilterType;
   searchIn = '$';
   selected: ListingWithUSD | null = null;
   @ViewChild('input') input!: IonInput;
@@ -199,7 +205,9 @@ export class SwapPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.token = await this.getToken();
+    this.ticker = this.activatedRoute.snapshot.params['quote'].toUpperCase();
+
+    this.token = await this.getToken(this.ticker);
     if (!this.token) {
       console.warn('Unknown token');
       // @todo show some kind of error
@@ -218,15 +226,7 @@ export class SwapPage implements OnInit {
 
     const listings = await this.getListings(this.token.id, this.limit);
     this.listings = sortListings(listings.map(this.mapListing), FilterType.Usd);
-    this.filteredListings = this.listings.slice(0, 3);
-
-    const goal = 120 * 10e5;
-    const closest = this.listings.reduce(function (prev, curr) {
-      return Math.abs(curr.totalUSD - goal) < Math.abs(prev.totalUSD - goal)
-        ? curr
-        : prev;
-    });
-    this.listings.indexOf(closest);
+    this.filteredListings = this.listings.slice(0, RESULT_COUNT);
 
     // @todo handle zero listings
 
@@ -234,12 +234,14 @@ export class SwapPage implements OnInit {
 
     this.swapForm.controls['baseToken'].valueChanges.subscribe((change) => {
       if (change) {
-        this.amount = parseFloat(change.replace(' ', ''));
+        this.amount = parseFloat(change.replace(/ /g, ''));
       } else {
         this.amount = null;
       }
       this.filterListings();
     });
+
+    this.isLoading = false;
   }
 
   ionViewDidEnter() {
@@ -255,6 +257,7 @@ export class SwapPage implements OnInit {
       filterType = FilterType.Atom;
     }
     this.filterType = filterType;
+    this.selected = null;
     this.listings = sortListings(this.listings, filterType);
     this.filterListings();
     this.input.setFocus();
@@ -300,12 +303,11 @@ export class SwapPage implements OnInit {
         this.filterType
       );
     } else {
-      this.filteredListings = this.listings.slice(0, 3);
+      this.filteredListings = this.listings.slice(0, RESULT_COUNT);
     }
   }
 
-  private async getToken(): Promise<Token | undefined> {
-    const ticker = this.activatedRoute.snapshot.params['quote'].toUpperCase();
+  private async getToken(ticker: string): Promise<Token | undefined> {
     const result = await this.chain<'query', ScalarDefinition>('query')({
       token: [
         {

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Input,
@@ -12,7 +13,7 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: './percentage-change.component.html',
   styleUrls: ['./percentage-change.component.scss'],
   standalone: true,
-  imports: [IonicModule],
+  imports: [IonicModule, CommonModule],
 })
 export class PercentageChangeComponent implements OnInit, OnChanges {
   @Input() value!: number;
@@ -25,7 +26,7 @@ export class PercentageChangeComponent implements OnInit, OnChanges {
   }
 
   calculateChange() {
-    this.change = ((this.value - this.baseValue) / this.baseValue) * 100;
+    this.change = (this.value - this.baseValue) / this.baseValue;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

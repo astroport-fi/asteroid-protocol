@@ -1,6 +1,30 @@
 <ion-content fullscreen="true" [formGroup]="swapForm">
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="10"
+        offset-xl="1"
+      >
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
+            </ion-buttons>
+            <ion-title> <span>{{ ticker }}</span> / ATOM Market </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-grid class="mt-5" class="container">
-    <ion-row *ngIf="token">
+    <ion-row>
       <ion-col size="2" class="label">Search in:</ion-col>
       <ion-col
         ><ion-segment
@@ -14,8 +38,8 @@
           <ion-segment-button value="ATOM">
             <ion-label>ATOM</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="{{token.ticker}}">
-            <ion-label>{{token.ticker}}</ion-label>
+          <ion-segment-button value="{{ticker}}">
+            <ion-label>{{ticker}}</ion-label>
           </ion-segment-button>
         </ion-segment></ion-col
       >
@@ -37,48 +61,64 @@
         ></ion-col
       >
     </ion-row>
-    @if (token) { @for (listing of filteredListings; track listing.id) {
-    <ion-row
-      class="result"
-      [class.selected]="listing === selected"
-      (click)="onSelect(listing)"
-    >
-      <div class="result-row">
-        <strong>Offer</strong>
-        <span
-          >{{listing.amount| tokenDecimals:token.decimals | number:'1.0-6' }}
-          {{token.ticker}}</span
+    <div *ngIf="isLoading">
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
+    @if (token && !isLoading) {
+    <div class="results-container">
+      @for (listing of filteredListings; track listing.id) {
+      <ion-row
+        class="result"
+        [class.selected]="listing === selected"
+        (click)="onSelect(listing)"
+      >
+        <div
+          class="result-row"
+          [class.selected]="filterType === FilterType.Token"
         >
-      </div>
+          <strong>Offer</strong>
+          <span
+            >{{listing.amount| tokenDecimals:token.decimals | number:'1.0-6' }}
+            {{token.ticker}}</span
+          >
+        </div>
 
-      <div class="result-row">
-        <strong>Rate</strong>
-        <span>
-          <app-percentage-change
-            [value]="listing.ppt"
-            [baseValue]="floorPrice"
-            class="percentage"
-          />
-          <span>{{listing.ppt | tokenDecimals:6 |number:'1.0-6'}} ATOM</span>
-        </span>
-      </div>
+        <div class="result-row">
+          <strong>Rate</strong>
+          <span>
+            <app-percentage-change
+              [value]="listing.ppt"
+              [baseValue]="floorPrice"
+              class="percentage"
+            />
+            <span>{{listing.ppt | tokenDecimals:6 |number:'1.0-6'}} ATOM</span>
+          </span>
+        </div>
 
-      <div class="result-row">
-        <strong>Total</strong>
-        <span
-          >{{ listing.marketplace_listing.total |tokenDecimals:6 |
-          number:'1.0-6'}} ATOM</span
+        <div
+          class="result-row"
+          [class.selected]="filterType === FilterType.Atom"
         >
-      </div>
-      <div class="result-row">
-        <strong>$</strong>
-        <span
-          >${{listing.marketplace_listing.total * baseTokenUSD | tokenDecimals:6
-          | number:'1.0-6'}}</span
+          <strong>Total</strong>
+          <span
+            >{{ listing.marketplace_listing.total |tokenDecimals:6 |
+            number:'1.0-6'}} ATOM</span
+          >
+        </div>
+        <div
+          class="result-row"
+          [class.selected]="filterType === FilterType.Usd"
         >
-      </div>
-    </ion-row>
-    } }
+          <strong>$</strong>
+          <span
+            >${{listing.marketplace_listing.total * baseTokenUSD |
+            tokenDecimals:6 | number:'1.0-6'}}</span
+          >
+        </div>
+      </ion-row>
+      }
+    </div>
+    }
 
     <ion-row>
       <ion-col size="12" class="actions">
