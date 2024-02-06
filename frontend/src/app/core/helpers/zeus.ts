@@ -79,3 +79,5 @@ export const apiFetch =
 
 export const Chain = (...options: chainOptions) => Thunder(apiFetch(options));
 export type Chain = ReturnType<typeof Chain>;
+
+export type Subscription = ReturnType<typeof Subscription>;

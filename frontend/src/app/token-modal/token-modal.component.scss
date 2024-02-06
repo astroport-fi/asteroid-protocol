@@ -1,0 +1,33 @@
+ion-searchbar {
+    width: 100%;
+    padding: 0;
+}
+
+ion-list {
+    height: 550px;
+    overflow-y: scroll;
+    padding: 0;
+    margin: 0;
+}
+
+.token-logo {
+    width: 40px;
+    padding: 0px !important;
+
+    .image {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.3);
+      text-align: center;
+
+      img {
+        border-radius: 10px;
+
+        &.no-logo {
+          padding-top: 5px;
+          max-width: 30px;
+        }
+      }
+    }
+  }

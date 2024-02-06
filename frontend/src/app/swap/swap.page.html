@@ -23,63 +23,70 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
   <ion-grid class="mt-5" class="container">
-    <ion-row>
-      <ion-col size="2" class="label">Search in:</ion-col>
-      <ion-col
-        ><ion-segment
-          value="$"
-          color="primary"
-          (ionChange)="sectionChanged($event)"
-        >
-          <ion-segment-button value="$">
-            <ion-label>USD</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="ATOM">
-            <ion-label>ATOM</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="{{ticker}}">
-            <ion-label>{{ticker}}</ion-label>
-          </ion-segment-button>
-        </ion-segment></ion-col
-      >
-    </ion-row>
     <ion-row class="mt-2">
       <ion-col>
+        @if (token && !isLoading) {
         <ion-input
           #input
-          label="{{searchIn}}"
+          label="{{baseToken | uppercase}}"
           labelPlacement="stacked"
           fill="outline"
           placeholder=""
           [maskito]="decimalMask"
           [maskitoElement]="maskPredicate"
           formControlName="amount"
-          ><ion-button fill="clear" slot="end" aria-label="token"
-            >{{ searchIn }}</ion-button
+          ><ion-item slot="end" class="ion-padding-start" lines="none">
+            <ion-select
+              interface="popover"
+              value="atom"
+              (ionChange)="baseTokenChange($event)"
+            >
+              <ion-select-option value="atom">ATOM</ion-select-option>
+              <ion-select-option value="usd">$</ion-select-option>
+            </ion-select></ion-item
           ></ion-input
         >
         <ion-input
           #input
-          *ngIf="token"
-          label="Max Rate"
+          label="{{token.name}}"
           labelPlacement="stacked"
           fill="outline"
           class="mt-3"
-          placeholder="{{token.last_price_base | tokenDecimals:token.decimals}}"
+          [maskito]="decimalMask"
+          [maskitoElement]="maskPredicate"
+          formControlName="tokenAmount"
+          ><ion-button
+            fill="clear"
+            id="select-token"
+            (click)="openTokenModal()"
+            slot="end"
+            aria-label="token"
+            >{{token.ticker}}</ion-button
+          >
+        </ion-input>
+        <ion-input
+          #input
+          label="Max Rate (${{maxRate * baseTokenUSD | tokenDecimals:6 |
+            number:'1.0-6'}})"
+          labelPlacement="stacked"
+          fill="outline"
+          class="mt-3"
           [maskito]="decimalMask"
           [maskitoElement]="maskPredicate"
           formControlName="rate"
           ><ion-button fill="clear" slot="end" aria-label="token"
             >ATOM</ion-button
-          ></ion-input
-        ></ion-col
-      >
+          >
+        </ion-input>
+        }
+      </ion-col>
     </ion-row>
-    <div *ngIf="isLoading">
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </div>
-    @if (token && !isLoading) {
+
+    @if (isLoading) {
+    <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    } @if (token && !isLoading) {
     <div class="results-container">
       @for (listing of filteredListings; track listing.id) {
       <ion-row
@@ -87,10 +94,7 @@
         [class.selected]="listing === selected"
         (click)="onSelect(listing)"
       >
-        <div
-          class="result-row"
-          [class.selected]="filterType === FilterType.Token"
-        >
+        <div class="result-row">
           <strong>Offer</strong>
           <span
             >{{listing.amount| tokenDecimals:token.decimals | number:'1.0-6' }}
@@ -110,31 +114,17 @@
           </span>
         </div>
 
-        <div
-          class="result-row"
-          [class.selected]="filterType === FilterType.Atom"
-        >
+        <div class="result-row">
           <strong>Total</strong>
           <span
             >{{ listing.marketplace_listing.total |tokenDecimals:6 |
-            number:'1.0-6'}} ATOM</span
-          >
-        </div>
-        <div
-          class="result-row"
-          [class.selected]="filterType === FilterType.Usd"
-        >
-          <strong>$</strong>
-          <span
-            >${{listing.marketplace_listing.total * baseTokenUSD |
-            tokenDecimals:6 | number:'1.0-6'}}</span
+            number:'1.0-6'}} ATOM (${{listing.marketplace_listing.total *
+            baseTokenUSD | tokenDecimals:6 | number:'1.0-6'}})</span
           >
         </div>
       </ion-row>
       }
     </div>
-    }
-
     <ion-row>
       <ion-col size="12" class="actions">
         <ion-button
@@ -146,5 +136,6 @@
         >
       </ion-col>
     </ion-row>
+    }
   </ion-grid>
 </ion-content>

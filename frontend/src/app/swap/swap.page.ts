@@ -1,20 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MaskitoModule } from '@maskito/angular';
 import {
   IonInput,
   IonicModule,
   ModalController,
-  SegmentCustomEvent,
+  SelectCustomEvent,
 } from '@ionic/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { environment } from 'src/environments/environment';
-import { Chain } from '../core/helpers/zeus';
 import { WalletService } from '../core/service/wallet.service';
-import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import {
   GraphQLTypes,
   InputType,
@@ -26,29 +24,11 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PercentageChangeComponent } from '../percentage-change/percentage-change.component';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
-
-type ScalarDefinition = {
-  smallint: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  bigint: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  numeric: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => number;
-  };
-  timestamp: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => string;
-  };
-  json: {
-    encode: (e: unknown) => string;
-    decode: (e: unknown) => string;
-  };
-};
+import { TokenModalComponent } from '../token-modal/token-modal.component';
+import {
+  AsteroidService,
+  ScalarDefinition,
+} from '../core/service/asteroid.service';
 
 const tokenSelector = Selector('token')({
   id: true,
@@ -116,6 +96,8 @@ enum FilterType {
   Token,
 }
 
+const ATOM_DECIMALS = 1e6;
+
 function getKey(filterType: FilterType) {
   if (filterType === FilterType.Token) {
     return 'amount';
@@ -131,7 +113,7 @@ function sortListings(listings: ListingWithUSD[], sortType: FilterType) {
   return listings.sort((a, b) => a[key] - b[key]);
 }
 
-const RESULT_COUNT = 30;
+const RESULT_COUNT = 3;
 
 function findNearest(
   listings: ListingWithUSD[],
@@ -144,7 +126,7 @@ function findNearest(
   const filteredListings = listings.filter((listing) => listing.ppt <= maxRate);
   const sortedByDistance = filteredListings.sort(
     (a, b) =>
-      Math.abs(a[key] - amount * 1e6) - Math.abs(b[key] - amount * 1e6) ||
+      Math.abs(a[key] - amount) - Math.abs(b[key] - amount) ||
       a['ppt'] - b['ppt']
   );
 
@@ -163,10 +145,10 @@ function findNearest(
     MaskitoModule,
     TokenDecimalsPipe,
     PercentageChangeComponent,
+    TokenModalComponent,
   ],
 })
 export class SwapPage implements OnInit {
-  chain;
   isLoading = true;
   ticker!: string;
   token: Token | undefined;
@@ -178,14 +160,15 @@ export class SwapPage implements OnInit {
   limit = 2000;
   amount: number | null = null;
   maxRate: number = 0;
-  filterType = FilterType.Usd;
+  baseToken: 'atom' | 'usd' = 'atom';
+  filterType = FilterType.Atom;
   FilterType = FilterType;
-  searchIn = '$';
   selected: ListingWithUSD | null = null;
   @ViewChild('input') input!: IonInput;
 
   swapForm: FormGroup = this.formBuilder.group({
     amount: [''],
+    tokenAmount: [''],
     rate: [''],
   });
 
@@ -195,11 +178,12 @@ export class SwapPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private walletService: WalletService,
     private formBuilder: FormBuilder,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private asteroidService: AsteroidService
   ) {
-    this.chain = Chain(environment.api.endpoint);
     this.decimalMask = maskitoNumberOptionsGenerator({
       decimalSeparator: '.',
       thousandSeparator: ' ',
@@ -225,17 +209,14 @@ export class SwapPage implements OnInit {
       return;
     }
 
-    this.maxRate = this.token.last_price_base;
-    this.swapForm.controls['rate'].setValue(
-      this.token.last_price_base / Math.pow(10, this.token.decimals)
-    );
+    this.resetMaxRate();
 
     this.baseTokenUSD = status.base_token_usd;
     this.currentBlock = status.last_processed_height;
 
     const listings = await this.getListings(this.token.id, this.limit);
     this.listings = sortListings(listings.map(this.mapListing), FilterType.Usd);
-    this.filteredListings = this.listings.slice(0, RESULT_COUNT);
+    // this.filteredListings = this.listings.slice(0, RESULT_COUNT);
 
     // @todo handle zero listings
 
@@ -243,18 +224,40 @@ export class SwapPage implements OnInit {
 
     this.swapForm.controls['amount'].valueChanges.subscribe((change) => {
       if (change) {
-        this.amount = parseFloat(change.replace(/ /g, ''));
+        this.amount = parseFloat(change.replace(/ /g, '')) * ATOM_DECIMALS;
+        this.updateTokenAmount();
       } else {
         this.amount = null;
       }
+
+      this.setBaseTokenFilterType();
+      this.filterListings();
+    });
+
+    this.swapForm.controls['tokenAmount'].valueChanges.subscribe((change) => {
+      if (change) {
+        const amount = parseFloat(change.replace(/ /g, ''));
+        this.amount = amount * Math.pow(10, this.token!.decimals);
+
+        let rate = this.getRate();
+
+        const baseAmount = amount * (rate / ATOM_DECIMALS);
+        this.swapForm.controls['amount'].setValue(
+          Math.round(baseAmount * ATOM_DECIMALS) / ATOM_DECIMALS,
+          { emitEvent: false }
+        );
+      } else {
+        this.amount = null;
+      }
+      this.filterType = FilterType.Token;
       this.filterListings();
     });
 
     this.swapForm.controls['rate'].valueChanges.subscribe((change) => {
       if (change) {
-        this.maxRate = parseFloat(change.replace(/ /g, '')) * 1e6;
+        this.maxRate = parseFloat(change.replace(/ /g, '')) * ATOM_DECIMALS;
       } else {
-        this.maxRate = this.token!.last_price_base;
+        this.resetMaxRate();
       }
       this.filterListings();
     });
@@ -262,26 +265,72 @@ export class SwapPage implements OnInit {
     this.isLoading = false;
   }
 
-  ionViewDidEnter() {
-    this.input.setFocus();
+  getRate() {
+    let rate = this.maxRate;
+    if (this.baseToken === 'usd') {
+      rate *= this.baseTokenUSD;
+    }
+    return rate;
   }
 
-  sectionChanged(event: SegmentCustomEvent) {
-    this.searchIn = (event.detail.value as string) ?? '$';
-    let filterType = FilterType.Token;
-    if (this.searchIn === '$') {
+  updateTokenAmount() {
+    if (!this.amount) {
+      return;
+    }
+
+    const rate = this.getRate();
+    const tokenAmount = this.amount / rate;
+    this.swapForm.controls['tokenAmount'].setValue(
+      Math.round(tokenAmount * ATOM_DECIMALS) / ATOM_DECIMALS,
+      { emitEvent: false }
+    );
+  }
+
+  resetMaxRate() {
+    this.maxRate = this.token!.last_price_base;
+    this.swapForm.controls['rate'].setValue(this.maxRate / ATOM_DECIMALS, {
+      emitEvent: false,
+    });
+  }
+
+  setBaseTokenFilterType() {
+    let filterType: FilterType;
+    if (this.baseToken === 'usd') {
       filterType = FilterType.Usd;
-    } else if (this.searchIn === 'ATOM') {
+    } else {
       filterType = FilterType.Atom;
     }
     this.filterType = filterType;
-    this.listings = sortListings(this.listings, filterType);
+  }
+
+  baseTokenChange(event: SelectCustomEvent) {
+    this.baseToken = (event.detail.value as 'atom' | 'usd') ?? 'atom';
+    this.setBaseTokenFilterType();
+    this.updateTokenAmount();
+    this.listings = sortListings(this.listings, this.filterType);
     this.filterListings();
     this.input.setFocus();
   }
 
   onSelect(listing: ListingWithUSD) {
     this.selected = listing;
+  }
+
+  async openTokenModal() {
+    const emitter = new EventEmitter();
+    const modal = await this.modalCtrl.create({
+      component: TokenModalComponent,
+      componentProps: {
+        selectionChange: emitter,
+      },
+    });
+    emitter.subscribe((token) => {
+      this.modalCtrl.dismiss();
+      this.router.navigate(['../', token.ticker], {
+        relativeTo: this.activatedRoute,
+      });
+    });
+    await modal.present();
   }
 
   async buy() {
@@ -327,7 +376,7 @@ export class SwapPage implements OnInit {
   }
 
   private async getToken(ticker: string): Promise<Token | undefined> {
-    const result = await this.chain<'query', ScalarDefinition>('query')({
+    const result = await this.asteroidService.query({
       token: [
         {
           where: {
@@ -343,7 +392,7 @@ export class SwapPage implements OnInit {
   }
 
   private async getStatus(): Promise<Status | undefined> {
-    const statusResult = await this.chain<'query', ScalarDefinition>('query')({
+    const statusResult = await this.asteroidService.query({
       status: [
         {
           where: {
@@ -359,10 +408,6 @@ export class SwapPage implements OnInit {
     return statusResult.status[0];
   }
 
-  query() {
-    return this.chain<'query', ScalarDefinition>('query');
-  }
-
   private async getListings(
     tokenId: number,
     limit: number,
@@ -374,30 +419,28 @@ export class SwapPage implements OnInit {
       };
     }
 
-    const listingsResult = await this.chain<'query', ScalarDefinition>('query')(
-      {
-        marketplace_cft20_detail: [
-          {
-            where: {
-              token_id: {
-                _eq: tokenId,
+    const listingsResult = await this.asteroidService.query({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: tokenId,
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false,
               },
-              marketplace_listing: {
-                is_cancelled: {
-                  _eq: false,
-                },
-                is_filled: {
-                  _eq: false,
-                },
+              is_filled: {
+                _eq: false,
               },
             },
-            limit: limit,
-            order_by: [orderBy],
           },
-          cft20ListingSelector,
-        ],
-      }
-    );
+          limit: limit,
+          order_by: [orderBy],
+        },
+        cft20ListingSelector,
+      ],
+    });
     return listingsResult.marketplace_cft20_detail;
   }
 
