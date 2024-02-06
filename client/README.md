@@ -13,19 +13,19 @@ SKD exposes Operations class for each metaprotocol and calling a metaprotocol op
 ### Operations
 
 - `InscriptionOperations`
-  - `inscribe`
-  - `transfer`
+  - `inscribe(data: string | Buffer, metadata: ContentInscription): TxData`
+  - `transfer(hash: string, destination: string): TxData`
 
 - `CFT20Operations`
-  - `deploy`
-  - `mint`
-  - `transfer`
+  - `deploy(data: string | Buffer, mime: string, params: DeployParams): TxData`
+  - `mint(ticker: string, amount: number): TxData`
+  - `transfer(ticker: string, amount: number, destination: string): TxData`
 
 - `MarketplaceOperations`
-  - `listCFT20`
-  - `delist`
-  - `deposit`
-  - `buyCFT20`
+  - `listCFT20(ticker: string, amount: number, pricePerToken: number, minDepositPercent: number, timeoutBlocks: number): TxData`
+  - `delist(listingHash: string): TxData`
+  - `deposit(listingHash: string): TxData`
+  - `buyCFT20(listingHash: string): TxData`
 
 ### Tx Data interface
 
