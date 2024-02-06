@@ -55,7 +55,80 @@ const txData = operations.inscribe(data, {
 });
 ```
 
-Full example: [inscribe.js](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/example/inscribe.js)
+Once you have `txData` you have to sign it and broadcast to the chain.
+
+Asteroid SDK provides custom `SigningStargateClient` with `nonCriticalExtensionOptions` support that Asteroid Protocol uses
+
+```typescript
+import { SigningStargateClient } from "@asteroid-protocol/sdk";
+
+const client = await SigningStargateClient.connectWithSigner(
+  network.rpc,
+  signer,
+  { gasPrice: GasPrice.fromString(network.gasPrice) },
+)
+
+// broadcast tx
+const res = await client.signAndBroadcast(
+  account.address,
+  txData.messages,
+  'auto',
+  txData.memo,
+  undefined,
+  txData.nonCriticalExtensionOptions,
+)
+```
+
+Simple example: [inscribe.js](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/example/inscribe.js)
+
+How to integrate Asteroid Protocol SDK with Next.js and CosmosKit Wallet provider - https://github.com/astroport-fi/asteroid-sdk-cca-example/
+
+### Asteroid GraphQL Client
+
+```typescript
+import { AsteroidService } from "@asteroid-protocol/sdk";
+
+const asteroid = new AsteroidService('https://api.asteroidprotocol.io/v1/graphql')
+const tokens = await asteroid.query({
+  token: [
+    { limit: 20 },
+    {
+      id: true,
+      name: true,
+      ticker: true,
+      max_supply: true,
+      circulating_supply: true,
+    },
+  ],
+})
+```
+
+If you want to infer the response type then you can update previous example to be more reusable
+
+```typescript
+import { ScalarDefinition, Selector, InputType, GraphQLTypes } from "@asteroid-protocol/sdk";
+
+const tokenSelector = Selector('token')({
+  id: true,
+  name: true,
+  ticker: true,
+  max_supply: true,
+  circulating_supply: true,
+})
+
+export type Token = InputType<
+  GraphQLTypes['token'],
+  typeof tokenSelector,
+  ScalarDefinition
+>
+
+const tokens = await asteroid.query({
+  token: [
+    { limit: 20 },
+    tokenSelector,
+  ],
+})
+```
 
 ## Command line tool
 
