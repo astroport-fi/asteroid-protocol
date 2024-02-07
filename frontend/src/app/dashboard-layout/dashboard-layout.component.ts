@@ -23,7 +23,7 @@ import {
   IonRow,
   IonCol,
   ToastController,
-  ModalController,
+  ModalController, IonButtons, MenuController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
@@ -66,7 +66,7 @@ export function playerFactory() {
   templateUrl: 'dashboard-layout.component.html',
   styleUrls: ['./dashboard-layout.component.scss'],
   standalone: true,
-  imports: [
+  imports: [IonButtons,
     CommonModule,
     IonApp,
     IonContent,
@@ -109,7 +109,8 @@ export class DashboardLayoutComponent {
     private walletService: WalletService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private menuCtrl: MenuController
   ) {
     addIcons({
       chevronForward,
@@ -227,5 +228,10 @@ export class DashboardLayoutComponent {
     localStorage.clear();
     // Temp hack, reload to disconnect wallet from all components
     window.location.reload();
+  }
+
+  toggleMenu() {
+    console.log("GOGO");
+    this.menuCtrl.toggle();
   }
 }

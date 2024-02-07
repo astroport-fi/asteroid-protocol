@@ -99,7 +99,7 @@ export class WalletPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
     private priceService: PriceService
-  ) {}
+  ) { }
 
   async ngOnInit() {
     const walletDataJSON = localStorage.getItem(

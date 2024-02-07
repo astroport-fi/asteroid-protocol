@@ -1,5 +1,154 @@
 <ion-content class="layout" mode="md">
   <div class="darken"></div>
+
+  <ion-header id="desktop_menu">
+    <div class="header">
+      <div class="left">
+        <img src="logo.png" alt="Logo" class="logo">
+        <span>My Website</span>
+      </div>
+      <div class="center">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="right">
+        <span>Status: Online</span>
+      </div>
+    </div>
+  </ion-header>
+  <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside mb-5">
+    <ion-row class="menu">
+      <ion-col class="menu-wrapper ion-justify-content-between">
+        <ion-row>
+          <ion-col class="ion-no-padding">
+            <div class="logo">
+              <a href="/app/dashboard">
+                <img src="../../assets/logo/a-white-on-transparent-250.png" />
+              </a>
+              <div class="outpost">Asteroid Protocol</div>
+            </div>
+            <div class="profile disconnected">
+              <div class="connect-wallet">
+                <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
+                  <ion-icon name="key-sharp" color="warning" />
+                  <ion-label>{{ walletStatusText }}</ion-label>
+                </ion-chip>
+                <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
+                  (click)="toggleWalletOptions()">
+                  <ion-icon name="key-sharp" color="warning" />
+                  <ion-label>{{
+                    connectedAccount.address | shortenAddress | async
+                    }}</ion-label>
+                </ion-chip>
+              </div>
+            </div>
+            <div class="wallet-options" *ngIf="showWalletOptions" (click)="toggleWalletOptions()">
+              <div class="chip">
+                <ion-icon name="chevron-down" color="warning" />
+                <ion-label>{{
+                  connectedAccount.address | shortenAddress | async
+                  }}</ion-label>
+                <div>
+                  <ion-button fill="clear" color="danger" (click)="disconnectWallet()">Disconnect</ion-button>
+                </div>
+              </div>
+            </div>
+            <ion-list lines="none">
+              <ion-list-header>
+                <ion-label>Home</ion-label>
+              </ion-list-header>
+              <ion-menu-toggle autoHide="false">
+                <ion-item [button]="true" [routerLink]="['/app/wallet']" routerLinkActive="active">
+                  <ion-label>Wallet</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            </ion-list>
+            <ion-list lines="none">
+              <ion-list-header>
+                <ion-label>Metaprotocols</ion-label>
+              </ion-list-header>
+            </ion-list>
+            <ion-accordion-group [multiple]="false" value="inscriptions">
+              <ion-accordion value="inscriptions">
+                <ion-item slot="header" lines="none">
+                  <ion-label>Inscriptions</ion-label>
+                </ion-item>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/create/inscription']" routerLinkActive="active"
+                    lines="none">
+                    <ion-label>Create</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/inscriptions']" routerLinkActive="active" lines="none">
+                    <ion-label>Browse</ion-label>
+                  </ion-item> </ion-menu-toggle>app-dashboard'
+              </ion-accordion>
+              <ion-accordion value="tokens">
+                <ion-item slot="header" lines="none">
+                  <ion-label>CFT-20 Tokens</ion-label>
+                </ion-item>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/create/token']" routerLinkActive="active" lines="none">
+                    <ion-label>Create</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/tokens']" routerLinkActive="active" lines="none">
+                    <ion-label>Browse</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+              </ion-accordion>
+              <ion-accordion value="marketplace">
+                <ion-item slot="header" lines="none">
+                  <ion-label>Marketplace</ion-label>
+                </ion-item>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/markets']" routerLinkActive="active" lines="none">
+                    <ion-label>CFT-20 Tokens</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+                <ion-menu-toggle autoHide="false" slot="content">
+                  <ion-item [button]="true" [routerLink]="['/app/inscription-markets']" routerLinkActive="active"
+                    lines="none">
+                    <ion-label>Inscriptions</ion-label>
+                  </ion-item>
+                </ion-menu-toggle>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+        <ion-row class="info-wrapper">
+          <ion-col size="12" class="status text-center mb-2">
+            <div class="title">Current indexer block</div>
+            <div>
+              {{ currentHeight }}/{{maxHeight}}
+              <span *ngIf="lag <= 1" class="text-success">In sync</span>
+              <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
+              <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
+              <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+            </div>
+          </ion-col>
+          <ion-col class="social-link">
+            <a href="https://t.me/asteroidxyz" title="Astroid Protocol Telegram Group" target="_blank"><img
+                src="../../assets/socials/telegram.svg" width="24" /></a>
+          </ion-col>
+          <ion-col class="social-link">
+            <a href="https://twitter.com/asteroidxyz" title="Astroid Protocol on X" target="_blank"><img
+                src="../../assets/socials/twitter.svg" width="24" /></a>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-menu>
+  <ion-router-outlet id="primaryContent" [animated]="false"></ion-router-outlet>
+</ion-content>
+
+
+<!-- <ion-content class="layout" mode="md">
+  <div class="darken"></div>
   <ion-split-pane contentId="primaryContent" class="menu-split-pane">
     <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside mb-5">
       <ion-row class="menu">
@@ -131,4 +280,4 @@
     <ion-router-outlet id="primaryContent" [animated]="false">
     </ion-router-outlet>
   </ion-split-pane>
-</ion-content>
+</ion-content> -->
