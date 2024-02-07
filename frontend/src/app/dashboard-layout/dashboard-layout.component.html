@@ -2,19 +2,28 @@
   <div class="darken"></div>
 
   <ion-header id="desktop_menu">
-    <div class="header">
+    <div class="header main-content">
       <div class="left">
-        <img src="logo.png" alt="Logo" class="logo">
-        <span>My Website</span>
+        <img src="../../assets/logo/a-white-on-transparent-250.png" />
+        <div class="outpost">Asteroid Protocol</div>
       </div>
       <div class="center">
-        <a href="#">Home</a>
-        <a href="#">About</a>
+        <a [routerLink]="['/app/wallet']" routerLinkActive="active">Wallet</a>
+        <a [routerLink]="['/app/inscriptions']" routerLinkActive="active">Inscriptions</a>
         <a href="#">Services</a>
         <a href="#">Contact</a>
       </div>
-      <div class="right">
-        <span>Status: Online</span>
+      <div class=" right info-wrapper">
+        <div class="status text-center mb-2">
+          <div class="title">Current indexer block</div>
+          <div>
+            {{ currentHeight }}/{{maxHeight}}
+            <span *ngIf="lag <= 1" class="text-success">In sync</span>
+            <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
+            <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
+            <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+          </div>
+        </div>
       </div>
     </div>
   </ion-header>
