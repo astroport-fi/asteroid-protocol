@@ -146,9 +146,7 @@ export class SwapSellPage implements OnInit {
       return;
     }
 
-    const minDepositAbsolute = 0.000001; // @todo
-    const minDepositPercent = 10;
-    const timeoutBlocks = 50;
+    const config = environment.fees.protocol.marketplace['list.cft20'];
 
     const { tokenAmount, rate } = this.sellForm.value;
     if (!tokenAmount || !rate) {
@@ -156,7 +154,7 @@ export class SwapSellPage implements OnInit {
     }
 
     // We represent the percentage as a multiplier
-    const minDepositMultiplier = minDepositPercent / 100;
+    const minDepositMultiplier = config.minDepositPercent / 100;
 
     // Construct metaprotocol memo message
     const params = new Map([
@@ -164,7 +162,7 @@ export class SwapSellPage implements OnInit {
       ['amt', tokenAmount],
       ['ppt', rate],
       ['mindep', minDepositMultiplier.toString()],
-      ['to', timeoutBlocks.toString()],
+      ['to', config.minTimeout.toString()],
     ]);
 
     // Calculate the amount of ATOM for the listing fee
@@ -172,8 +170,8 @@ export class SwapSellPage implements OnInit {
     let listingFee =
       parseFloat(tokenAmount) * parseFloat(rate) * minDepositMultiplier;
     // Avoid very small listing fees
-    if (listingFee < minDepositAbsolute) {
-      listingFee = minDepositAbsolute;
+    if (listingFee < config.minDepositAbsolute) {
+      listingFee = config.minDepositAbsolute;
     }
     // Convert to uatom
     listingFee = listingFee * 10 ** 6;

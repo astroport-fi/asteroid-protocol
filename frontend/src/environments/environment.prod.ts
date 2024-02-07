@@ -73,6 +73,11 @@ export const environment = {
           denom: 'uatom',
           amount: '0',
           minTradeSize: 0.000001,
+          minDepositAbsolute: 0.000001,
+          minDepositPercent: 0.1,
+          maxDepositPercent: 1,
+          minTimeout: 50,
+          maxTimeout: 500,
         },
         deposit: {
           receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
