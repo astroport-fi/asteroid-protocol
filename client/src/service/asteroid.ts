@@ -66,10 +66,10 @@ export class AsteroidService {
   chain: Chain
   subscription?: Subscription
 
-  constructor(url: string, wsEnabled = false) {
+  constructor(url: string, wsUrl = "") {
     this.chain = Chain(url)
-    if (wsEnabled) {
-      this.subscription = Subscription(url)
+    if (wsUrl) {
+      this.subscription = Subscription(wsUrl)
     }
   }
 
