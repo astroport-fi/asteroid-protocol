@@ -7,11 +7,11 @@
   }
 
   <ion-list>
-    @for (item of filteredItems; track item.id) {
+    @for (item of filteredItems; track item.token.id) {
       <ion-item [button]="true" [detail]="false" (click)="handleChange(item)">
         <ion-avatar aria-hidden="true" slot="start">
-          @if (item.content_path) {
-            <img [src]="item.content_path" />
+          @if (item.token.content_path) {
+            <img [src]="item.token.content_path" />
           } @else {
             <img
               class="no-logo"
@@ -19,12 +19,15 @@
             />
           }
         </ion-avatar>
-        <ion-label>{{ item.name }}</ion-label>
+        <ion-label>{{ item.token.name }}</ion-label>
         <ion-note slot="end" color="medium"
-          >{{ item.last_price_base | tokenDecimals: item.decimals }} ATOM (${{
-            item.last_price_base * baseTokenUSD
-              | tokenDecimals: 6
-              | number: '1.0-6'
+          >{{
+            item.amount | tokenDecimals: item.token.decimals | number: '1.2-6'
+          }}
+          (${{
+            (item.amount | tokenDecimals: item.token.decimals) *
+              (baseTokenUSD * item.token.last_price_base
+                | tokenDecimals: item.token.decimals) | number: '1.2-6'
           }})
         </ion-note>
       </ion-item>

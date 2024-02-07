@@ -74,6 +74,7 @@
     "@capacitor/cli": "5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
     "@keplr-wallet/types": "^0.12.52",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

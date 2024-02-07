@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
   ViewChild,
 } from '@angular/core';
 import type { OnInit } from '@angular/core';
@@ -11,6 +12,8 @@ import {
   IonicModule,
   SearchbarCustomEvent,
 } from '@ionic/angular';
+import { ContentComponent } from '../content/content.component';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import {
   AsteroidService,
   ScalarDefinition,
@@ -22,8 +25,6 @@ import {
   ValueTypes,
   order_by,
 } from '../core/types/zeus';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { CommonModule } from '@angular/common';
 
 const tokenSelector = Selector('token')({
   id: true,
@@ -44,12 +45,13 @@ type Token = InputType<
   selector: 'app-token-modal',
   templateUrl: 'token-modal.component.html',
   standalone: true,
-  imports: [CommonModule, IonicModule, TokenDecimalsPipe],
+  imports: [CommonModule, IonicModule, TokenDecimalsPipe, ContentComponent],
   styleUrl: './token-modal.component.scss',
 })
 export class TokenModalComponent implements OnInit {
   @ViewChild('search') search!: IonSearchbar;
 
+  @Input({ required: true }) baseTokenUSD!: number;
   @Output() selectionChange = new EventEmitter<Token>();
 
   isLoading = true;
@@ -72,7 +74,12 @@ export class TokenModalComponent implements OnInit {
 
   async searchbarInput(ev: SearchbarCustomEvent) {
     this.isLoading = true;
-    this.filteredItems = await this.getTokens(ev.target.value);
+    const value = ev.target.value;
+    if (value) {
+      this.filteredItems = await this.getTokens(value);
+    } else {
+      this.filteredItems = [...this.tokens];
+    }
     this.isLoading = false;
   }
 

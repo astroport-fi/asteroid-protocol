@@ -1,1 +1,21 @@
-{}
+{
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "importOrderSortSpecifiers": true,
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^[./].*(?<!\\.(c|le|sc)ss|png|svg)$",
+        "\\.(c|le|sc)ss$",
+        "\\.png$",
+        "\\.svg$"
+    ],
+    "importOrderParserPlugins": [
+        "typescript",
+        "classProperties",
+        "[\"decorators\", { \"decoratorsBeforeExport\": true }]"
+    ],
+    "plugins": [
+        "@trivago/prettier-plugin-sort-imports"
+    ]
+}

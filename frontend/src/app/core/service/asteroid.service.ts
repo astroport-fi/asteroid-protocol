@@ -41,11 +41,54 @@ export type ScalarDefinition = {
 export type Operations<
   O extends keyof typeof Ops,
   SCLR extends ScalarDefinition,
-  R extends keyof ValueTypes = GenericOperation<O>
+  R extends keyof ValueTypes = GenericOperation<O>,
 > = <Z extends ValueTypes[R]>(
   o: (Z & ValueTypes[R]) | ValueTypes[R],
-  ops?: OperationOptions & { variables?: Record<string, unknown> }
+  ops?: OperationOptions & { variables?: Record<string, unknown> },
 ) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
+
+const tokenSelector = Selector('token')({
+  id: true,
+  name: true,
+  ticker: true,
+  decimals: true,
+  launch_timestamp: true,
+  content_path: true,
+  circulating_supply: true,
+  last_price_base: true,
+  volume_24_base: true,
+  date_created: true,
+});
+
+export type Token = InputType<
+  GraphQLTypes['token'],
+  typeof tokenSelector,
+  ScalarDefinition
+>;
+
+const tokenHolderSelector = Selector('token_holder')({
+  token: tokenSelector,
+  amount: true,
+  date_updated: true,
+});
+
+export type TokenHolding = InputType<
+  GraphQLTypes['token_holder'],
+  typeof tokenHolderSelector,
+  ScalarDefinition
+>;
+
+const statusSelector = Selector('status')({
+  base_token: true,
+  base_token_usd: true,
+  last_processed_height: true,
+});
+
+export type Status = InputType<
+  GraphQLTypes['status'],
+  typeof statusSelector,
+  ScalarDefinition
+>;
 
 @Injectable({
   providedIn: 'root',
@@ -64,5 +107,95 @@ export class AsteroidService {
       'query',
       ScalarDefinition
     >;
+  }
+
+  async getStatus(): Promise<Status | undefined> {
+    const statusResult = await this.query({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: environment.chain.chainId,
+            },
+          },
+        },
+        statusSelector,
+      ],
+    });
+
+    return statusResult.status[0];
+  }
+
+  async getToken(ticker: string): Promise<Token | undefined> {
+    const result = await this.query({
+      token: [
+        {
+          where: {
+            ticker: {
+              _eq: ticker,
+            },
+          },
+        },
+        tokenSelector,
+      ],
+    });
+    return result.token[0];
+  }
+
+  async getTokenHolding(
+    tokenId: number,
+    address: string,
+  ): Promise<TokenHolding | undefined> {
+    const result = await this.query({
+      token_holder: [
+        {
+          where: {
+            address: {
+              _eq: address,
+            },
+            token_id: {
+              _eq: tokenId,
+            },
+          },
+        },
+        tokenHolderSelector,
+      ],
+    });
+    return result.token_holder[0];
+  }
+
+  async getTokenHoldings(
+    address: string,
+    search?: string | null,
+    offset = 0,
+    limit = 500,
+  ): Promise<TokenHolding[]> {
+    let where: ValueTypes['token_holder_bool_exp'] = {
+      address: {
+        _eq: address,
+      },
+    };
+    if (search) {
+      where.token = {
+        _or: [
+          { name: { _like: `%${search}%` } },
+          { name: { _like: `%${search.toUpperCase()}%` } },
+          { ticker: { _like: `%${search}%` } },
+          { ticker: { _like: `%${search.toUpperCase()}%` } },
+        ],
+      };
+    }
+
+    const holderResult = await this.query({
+      token_holder: [
+        {
+          offset,
+          limit,
+          where,
+        },
+        tokenHolderSelector,
+      ],
+    });
+    return holderResult.token_holder;
   }
 }

@@ -1,0 +1,30 @@
+.container {
+  background-color: hsla(0, 0%, 100%, 0.05);
+  backdrop-filter: blur(50px);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 800px;
+}
+
+.label-wrapper {
+  background-color: hsla(0, 0%, 100%, 0.05);
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  border-radius: 40px;
+  width: 100%;
+
+  ion-label {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}

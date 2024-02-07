@@ -1,12 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MaskitoModule } from '@maskito/angular';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IonInput, IonicModule, ModalController } from '@ionic/angular';
+import { MaskitoModule } from '@maskito/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
+import { ATOM_DECIMALS } from 'src/constants';
 import { environment } from 'src/environments/environment';
+import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import {
+  AsteroidService,
+  ScalarDefinition,
+  Token,
+} from '../core/service/asteroid.service';
 import { WalletService } from '../core/service/wallet.service';
 import {
   GraphQLTypes,
@@ -15,48 +29,11 @@ import {
   ValueTypes,
   order_by,
 } from '../core/types/zeus';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PercentageChangeComponent } from '../percentage-change/percentage-change.component';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
-import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
 import { TokenModalComponent } from '../token-modal/token-modal.component';
-import {
-  AsteroidService,
-  ScalarDefinition,
-} from '../core/service/asteroid.service';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 type BaseTokenType = 'atom' | 'usd';
-
-const tokenSelector = Selector('token')({
-  id: true,
-  name: true,
-  ticker: true,
-  decimals: true,
-  launch_timestamp: true,
-  content_path: true,
-  circulating_supply: true,
-  last_price_base: true,
-  volume_24_base: true,
-  date_created: true,
-});
-
-type Token = InputType<
-  GraphQLTypes['token'],
-  typeof tokenSelector,
-  ScalarDefinition
->;
-
-const statusSelector = Selector('status')({
-  base_token: true,
-  base_token_usd: true,
-  last_processed_height: true,
-});
-
-type Status = InputType<
-  GraphQLTypes['status'],
-  typeof statusSelector,
-  ScalarDefinition
->;
 
 const cft20ListingSelector = Selector('marketplace_cft20_detail')({
   id: true,
@@ -92,8 +69,6 @@ enum FilterType {
   Atom,
   Token,
 }
-
-const ATOM_DECIMALS = 1e6;
 
 function getKey(filterType: FilterType) {
   if (filterType === FilterType.Token) {
@@ -156,15 +131,15 @@ function findNearest(
     TokenModalComponent,
   ],
 })
-export class SwapPage implements OnInit {
+export class SwapBuyPage implements OnInit {
+  @Input({ required: true }) token!: Token;
+  @Input({ required: true }) baseTokenUSD!: number;
+
   isLoading = true;
   ticker: string = environment.swap.defaultToken;
-  token: Token | undefined;
   listings!: ListingWithUSD[];
   filteredListings!: ListingWithUSD[];
-  baseTokenUSD = 0.0;
   floorPrice = 0;
-  currentBlock = 0;
   limit = 2000;
   baseAmount: number = 0;
   tokenAmount: number = 0;
@@ -187,7 +162,6 @@ export class SwapPage implements OnInit {
     (el as HTMLIonInputElement).getInputElement();
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private router: Router,
     private walletService: WalletService,
     private formBuilder: FormBuilder,
@@ -203,33 +177,10 @@ export class SwapPage implements OnInit {
   }
 
   async ngOnInit() {
-    const quote = this.activatedRoute.snapshot.params['quote'];
-    if (quote) {
-      this.ticker = quote.toUpperCase();
-    }
-
-    this.token = await this.getToken(this.ticker);
-    if (!this.token) {
-      console.warn('Unknown token');
-      // @todo show some kind of error
-      return;
-    }
-
-    const status = await this.getStatus();
-    if (!status) {
-      console.warn('No status');
-      // @todo show some kind of error
-      return;
-    }
-
     this.resetMaxRate();
-
-    this.baseTokenUSD = status.base_token_usd;
-    this.currentBlock = status.last_processed_height;
 
     const listings = await this.getListings(this.token.id, this.limit);
     this.listings = sortListings(listings.map(this.mapListing), FilterType.Usd);
-    // this.filteredListings = this.listings.slice(0, RESULT_COUNT);
 
     // @todo handle zero listings
 
@@ -252,7 +203,7 @@ export class SwapPage implements OnInit {
       if (change) {
         const amount = parseFloat(change.replace(/ /g, ''));
         this.amount = amount * Math.pow(10, this.token!.decimals);
-
+        this.tokenAmount = amount;
         this.updateBaseAmount(amount);
       } else {
         this.amount = null;
@@ -281,10 +232,10 @@ export class SwapPage implements OnInit {
     return rate;
   }
 
-  updateBaseAmount(amount: number) {
+  updateBaseAmount(tokenAmount: number) {
     let rate = this.getRate();
 
-    this.baseAmount = amount * rate;
+    this.baseAmount = tokenAmount * rate;
     this.swapForm.controls['amount'].setValue(
       Math.round(this.baseAmount) / ATOM_DECIMALS,
       { emitEvent: false },
@@ -339,6 +290,7 @@ export class SwapPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: TokenModalComponent,
       componentProps: {
+        baseTokenUSD: this.baseTokenUSD,
         selectionChange: emitter,
       },
     });
@@ -389,39 +341,6 @@ export class SwapPage implements OnInit {
     } else {
       this.filteredListings = this.listings.slice(0, RESULT_COUNT);
     }
-  }
-
-  private async getToken(ticker: string): Promise<Token | undefined> {
-    const result = await this.asteroidService.query({
-      token: [
-        {
-          where: {
-            ticker: {
-              _eq: ticker,
-            },
-          },
-        },
-        tokenSelector,
-      ],
-    });
-    return result.token[0];
-  }
-
-  private async getStatus(): Promise<Status | undefined> {
-    const statusResult = await this.asteroidService.query({
-      status: [
-        {
-          where: {
-            chain_id: {
-              _eq: environment.chain.chainId,
-            },
-          },
-        },
-        statusSelector,
-      ],
-    });
-
-    return statusResult.status[0];
   }
 
   private async getListings(
