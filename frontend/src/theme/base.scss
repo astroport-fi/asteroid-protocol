@@ -584,3 +584,10 @@ ion-toast {
     filter: blur(50px) brightness(45%) saturate(60%);
   }
 }
+
+ion-menu-button {
+
+  @media only screen and (min-width: 994px) {
+    display: none;
+  }
+}
