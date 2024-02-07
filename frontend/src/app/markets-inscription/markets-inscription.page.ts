@@ -431,30 +431,18 @@ export class MarketsInscriptionPage implements OnInit {
   }
 
   async onIonInfinite(event: any) {
-    // console.log(event);
-
     if (this.lastFetchCount < this.limit) {
-      // (event as InfiniteScrollCustomEvent).target.disabled = true;
+      (event as InfiniteScrollCustomEvent).target.disabled = true;
       await (event as InfiniteScrollCustomEvent).target.complete();
       return;
     }
 
     this.offset += this.limit;
-    console.log(this.offset);
-
     const result = await this.fetchInscriptions(this.currentFilter, [this.selectedOrder]);
     this.marketplaceDetail = [...this.marketplaceDetail, ...result.marketplace_inscription_detail];
 
-    // this.inscriptions.push(...result.inscription);
     this.lastFetchCount = result.marketplace_inscription_detail.length;
     await (event as InfiniteScrollCustomEvent).target.complete();
-
-    // this.isTableLoading = true;
-    // this.offset += this.limit;
-    // this.fetchInscriptions(this.currentFilter, [this.selectedOrder]).then((result) => {
-    //   this.marketplaceDetail = [...this.marketplaceDetail, ...result.marketplace_inscription_detail];
-    //   this.isTableLoading = false;
-    // });
   }
 
 

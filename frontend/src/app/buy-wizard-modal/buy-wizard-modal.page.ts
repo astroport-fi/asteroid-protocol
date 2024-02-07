@@ -150,8 +150,6 @@ export class BuyWizardModalPage implements OnInit {
 
     await this.updateFees();
     this.chainFeeDisplay = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
-    console.log(this.chainFee);
-    console.log(this.chainFeeDisplay);
     this.isLoading = false;
 
     if (result.marketplace_listing.length == 0) {
