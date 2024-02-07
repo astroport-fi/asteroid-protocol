@@ -1,6 +1,9 @@
+@if (isLoading) {
+  <ion-progress-bar type="indeterminate"></ion-progress-bar>
+}
 <div [formGroup]="swapForm">
-  <ion-grid class="mt-5" class="container">
-    @if (token && !isLoading) {
+  @if (token && !isLoading) {
+    <ion-grid class="mt-5" class="container">
       <ion-row class="mt-2">
         <ion-col class="flex-center">
           <ion-item
@@ -15,7 +18,7 @@
             <ion-label
               ><strong>{{ baseToken | uppercase }}</strong>
               <ion-note color="medium"
-                >${{ baseTokenUSD | number: "1.0-6" }}
+                >${{ baseTokenUSD | number: '1.0-6' }}
               </ion-note></ion-label
             >
             <ion-icon
@@ -56,7 +59,7 @@
             formControlName="amount"
             ><ion-label slot="end" color="medium"
               >(${{
-                baseAmount * baseTokenUSD | tokenDecimals: 6 | number: "1.0-6"
+                baseAmount * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
               }})</ion-label
             ></ion-input
           >
@@ -107,7 +110,7 @@
               >(${{
                 tokenAmount * maxRate * baseTokenUSD
                   | tokenDecimals: 6
-                  | number: "1.0-6"
+                  | number: '1.0-6'
               }})</ion-label
             ></ion-input
           ></ion-col
@@ -127,18 +130,13 @@
             formControlName="rate"
             ><ion-label slot="end" color="medium"
               >(${{
-                maxRate * baseTokenUSD | tokenDecimals: 6 | number: "1.0-6"
+                maxRate * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
               }})</ion-label
             ></ion-input
           >
         </ion-col>
       </ion-row>
-    }
 
-    @if (isLoading) {
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    }
-    @if (token && !isLoading) {
       <div class="results-container">
         @for (listing of filteredListings; track listing.id) {
           <ion-row
@@ -152,7 +150,7 @@
                 >{{
                   listing.amount
                     | tokenDecimals: token.decimals
-                    | number: "1.0-6"
+                    | number: '1.0-6'
                 }}
                 {{ token.ticker }}</span
               >
@@ -168,7 +166,7 @@
                 />
                 <span
                   >{{
-                    listing.ppt | tokenDecimals: 6 | number: "1.0-6"
+                    listing.ppt | tokenDecimals: 6 | number: '1.0-6'
                   }}
                   ATOM</span
                 >
@@ -181,12 +179,12 @@
                 >{{
                   listing.marketplace_listing.total
                     | tokenDecimals: 6
-                    | number: "1.0-6"
+                    | number: '1.0-6'
                 }}
                 ATOM (${{
                   listing.marketplace_listing.total * baseTokenUSD
                     | tokenDecimals: 6
-                    | number: "1.0-6"
+                    | number: '1.0-6'
                 }})</span
               >
             </div>
@@ -204,6 +202,6 @@
           >
         </ion-col>
       </ion-row>
-    }
-  </ion-grid>
+    </ion-grid>
+  }
 </div>

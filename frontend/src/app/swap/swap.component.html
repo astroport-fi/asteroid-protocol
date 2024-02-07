@@ -26,19 +26,22 @@
         </ion-segment>
       </ion-col>
     </ion-row>
-    @if (status && token) {
-      <ion-row>
-        <ion-col
-          class="ion-no-padding"
-          size="12"
-          offset="0"
-          size-md="12"
-          offset-md="0"
-          size-md="10"
-          offset-md="1"
-          size-xl="8"
-          offset-xl="2"
-        >
+    <ion-row>
+      <ion-col
+        class="ion-no-padding"
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+      >
+        @if (isLoading) {
+          <ion-progress-bar type="indeterminate"></ion-progress-bar>
+        }
+        @if (status && token) {
           @switch (kind) {
             @case ('buy') {
               <app-swap-buy
@@ -53,8 +56,8 @@
               />
             }
           }
-        </ion-col>
-      </ion-row>
-    }
+        }
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>

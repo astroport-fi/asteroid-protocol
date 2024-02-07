@@ -23,7 +23,7 @@ import { WalletService } from '../core/service/wallet.service';
 @Component({
   selector: 'app-token-holdings-modal',
   templateUrl: './token-holdings-modal.component.html',
-  styleUrl: './token-holdings-modal.component.scss',
+  styleUrl: '../token-modal/token-modal.component.scss',
   standalone: true,
   imports: [CommonModule, IonicModule, TokenDecimalsPipe, ContentComponent],
 })

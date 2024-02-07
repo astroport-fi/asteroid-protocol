@@ -22,6 +22,7 @@ export class SwapPage implements OnInit {
   ticker: string = environment.swap.defaultToken;
   token: Token | undefined;
   status: Status | undefined;
+  isLoading = true;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -52,6 +53,8 @@ export class SwapPage implements OnInit {
       // @todo show some kind of error
       return;
     }
+
+    this.isLoading = false;
   }
 
   sectionChanged(event: SegmentCustomEvent) {
