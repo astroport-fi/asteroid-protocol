@@ -5,29 +5,29 @@
   <div>
     <ion-searchbar #search (ionInput)="searchbarInput($event)"></ion-searchbar>
     @if (isLoading) {
-    <div>
-      <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    </div>
+      <div>
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </div>
     }
 
     <ion-list id="modal-list">
       @for (item of filteredItems; track item.id) {
-      <ion-item [button]="true" [detail]="false" (click)="handleChange(item)">
-        <ion-avatar aria-hidden="true" slot="start">
-          @if (item.content_path) {
-          <img [src]="item.content_path" />
-          } @else {
-          <img
-            class="no-logo"
-            src="../../assets/logo/a-white-on-transparent-250.png"
-          />
-          }
-        </ion-avatar>
-        <ion-label>{{ item.name }}</ion-label>
-        <ion-note slot="end" color="medium"
-          >{{ item.last_price_base | tokenDecimals : item.decimals }} ATOM
-        </ion-note>
-      </ion-item>
+        <ion-item [button]="true" [detail]="false" (click)="handleChange(item)">
+          <ion-avatar aria-hidden="true" slot="start">
+            @if (item.content_path) {
+              <img [src]="item.content_path" />
+            } @else {
+              <img
+                class="no-logo"
+                src="../../assets/logo/a-white-on-transparent-250.png"
+              />
+            }
+          </ion-avatar>
+          <ion-label>{{ item.name }}</ion-label>
+          <ion-note slot="end" color="medium"
+            >{{ item.last_price_base | tokenDecimals: item.decimals }} ATOM
+          </ion-note>
+        </ion-item>
       }
     </ion-list>
   </div>

@@ -10,7 +10,7 @@ export const routes: Routes = [
     path: 'inscription/:txhash',
     loadComponent: () =>
       import('./generic-viewer/generic-viewer.page').then(
-        (m) => m.GenericViewerPage
+        (m) => m.GenericViewerPage,
       ),
   },
   {
@@ -25,7 +25,7 @@ export const routes: Routes = [
         path: 'wallet/token/:ticker',
         loadComponent: () =>
           import('./wallet-token/wallet-token.page').then(
-            (m) => m.WalletTokenPage
+            (m) => m.WalletTokenPage,
           ),
       },
       {
@@ -47,28 +47,28 @@ export const routes: Routes = [
         path: 'create/inscription',
         loadComponent: () =>
           import('./create-inscription/create-inscription.page').then(
-            (m) => m.CreateInscriptionPage
+            (m) => m.CreateInscriptionPage,
           ),
       },
       {
         path: 'create/token',
         loadComponent: () =>
           import('./create-token/create-token.page').then(
-            (m) => m.CreateTokenPage
+            (m) => m.CreateTokenPage,
           ),
       },
       {
         path: 'inscriptions',
         loadComponent: () =>
           import('./list-inscriptions/list-inscriptions.page').then(
-            (m) => m.ListInscriptionsPage
+            (m) => m.ListInscriptionsPage,
           ),
       },
       {
         path: 'tokens',
         loadComponent: () =>
           import('./list-tokens/list-tokens.page').then(
-            (m) => m.ListTokensPage
+            (m) => m.ListTokensPage,
           ),
       },
       {
@@ -80,18 +80,24 @@ export const routes: Routes = [
         path: 'market/:quote',
         loadComponent: () =>
           import('./trade-token-v2/trade-token-v2.page').then(
-            (m) => m.TradeTokenV2Page
+            (m) => m.TradeTokenV2Page,
           ),
       },
       {
+        path: 'swap',
+        loadComponent: () =>
+          import('./swap/swap.component').then((m) => m.SwapPage),
+      },
+      {
         path: 'swap/:quote',
-        loadComponent: () => import('./swap/swap.page').then((m) => m.SwapPage),
+        loadComponent: () =>
+          import('./swap/swap.component').then((m) => m.SwapPage),
       },
       {
         path: 'inscription/:txhash',
         loadComponent: () =>
           import('./view-inscription/view-inscription.page').then(
-            (m) => m.ViewInscriptionPage
+            (m) => m.ViewInscriptionPage,
           ),
       },
       {

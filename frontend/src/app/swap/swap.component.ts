@@ -3,12 +3,7 @@ import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MaskitoModule } from '@maskito/angular';
-import {
-  IonInput,
-  IonicModule,
-  ModalController,
-  SelectCustomEvent,
-} from '@ionic/angular';
+import { IonInput, IonicModule, ModalController } from '@ionic/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
 import { environment } from 'src/environments/environment';
@@ -29,6 +24,8 @@ import {
   AsteroidService,
   ScalarDefinition,
 } from '../core/service/asteroid.service';
+
+type BaseTokenType = 'atom' | 'usd';
 
 const tokenSelector = Selector('token')({
   id: true,
@@ -119,15 +116,26 @@ function findNearest(
   listings: ListingWithUSD[],
   amount: number,
   maxRate: number,
-  filterType: FilterType
+  filterType: FilterType,
 ) {
   const key = getKey(filterType);
 
   const filteredListings = listings.filter((listing) => listing.ppt <= maxRate);
+  const ppt = filteredListings.reduce((acc, listing) => {
+    let amount = acc.get(listing.ppt);
+    if (amount) {
+      amount += listing.amount;
+    } else {
+      amount = listing.amount;
+    }
+
+    acc.set(listing.ppt, amount);
+    return acc;
+  }, new Map());
   const sortedByDistance = filteredListings.sort(
     (a, b) =>
       Math.abs(a[key] - amount) - Math.abs(b[key] - amount) ||
-      a['ppt'] - b['ppt']
+      a['ppt'] - b['ppt'],
   );
 
   return sortedByDistance.slice(0, RESULT_COUNT);
@@ -135,8 +143,8 @@ function findNearest(
 
 @Component({
   selector: 'app-swap',
-  templateUrl: './swap.page.html',
-  styleUrls: ['./swap.page.scss'],
+  templateUrl: './swap.component.html',
+  styleUrl: './swap.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -150,7 +158,7 @@ function findNearest(
 })
 export class SwapPage implements OnInit {
   isLoading = true;
-  ticker!: string;
+  ticker: string = environment.swap.defaultToken;
   token: Token | undefined;
   listings!: ListingWithUSD[];
   filteredListings!: ListingWithUSD[];
@@ -158,9 +166,11 @@ export class SwapPage implements OnInit {
   floorPrice = 0;
   currentBlock = 0;
   limit = 2000;
+  baseAmount: number = 0;
+  tokenAmount: number = 0;
   amount: number | null = null;
   maxRate: number = 0;
-  baseToken: 'atom' | 'usd' = 'atom';
+  baseToken: BaseTokenType = 'atom';
   filterType = FilterType.Atom;
   FilterType = FilterType;
   selected: ListingWithUSD | null = null;
@@ -182,7 +192,7 @@ export class SwapPage implements OnInit {
     private walletService: WalletService,
     private formBuilder: FormBuilder,
     private modalCtrl: ModalController,
-    private asteroidService: AsteroidService
+    private asteroidService: AsteroidService,
   ) {
     this.decimalMask = maskitoNumberOptionsGenerator({
       decimalSeparator: '.',
@@ -193,7 +203,10 @@ export class SwapPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.ticker = this.activatedRoute.snapshot.params['quote'].toUpperCase();
+    const quote = this.activatedRoute.snapshot.params['quote'];
+    if (quote) {
+      this.ticker = quote.toUpperCase();
+    }
 
     this.token = await this.getToken(this.ticker);
     if (!this.token) {
@@ -225,6 +238,7 @@ export class SwapPage implements OnInit {
     this.swapForm.controls['amount'].valueChanges.subscribe((change) => {
       if (change) {
         this.amount = parseFloat(change.replace(/ /g, '')) * ATOM_DECIMALS;
+        this.baseAmount = this.amount;
         this.updateTokenAmount();
       } else {
         this.amount = null;
@@ -239,13 +253,7 @@ export class SwapPage implements OnInit {
         const amount = parseFloat(change.replace(/ /g, ''));
         this.amount = amount * Math.pow(10, this.token!.decimals);
 
-        let rate = this.getRate();
-
-        const baseAmount = amount * (rate / ATOM_DECIMALS);
-        this.swapForm.controls['amount'].setValue(
-          Math.round(baseAmount * ATOM_DECIMALS) / ATOM_DECIMALS,
-          { emitEvent: false }
-        );
+        this.updateBaseAmount(amount);
       } else {
         this.amount = null;
       }
@@ -273,16 +281,26 @@ export class SwapPage implements OnInit {
     return rate;
   }
 
+  updateBaseAmount(amount: number) {
+    let rate = this.getRate();
+
+    this.baseAmount = amount * rate;
+    this.swapForm.controls['amount'].setValue(
+      Math.round(this.baseAmount) / ATOM_DECIMALS,
+      { emitEvent: false },
+    );
+  }
+
   updateTokenAmount() {
     if (!this.amount) {
       return;
     }
 
     const rate = this.getRate();
-    const tokenAmount = this.amount / rate;
+    this.tokenAmount = this.amount / rate;
     this.swapForm.controls['tokenAmount'].setValue(
-      Math.round(tokenAmount * ATOM_DECIMALS) / ATOM_DECIMALS,
-      { emitEvent: false }
+      Math.round(this.tokenAmount * ATOM_DECIMALS) / ATOM_DECIMALS,
+      { emitEvent: false },
     );
   }
 
@@ -303,8 +321,8 @@ export class SwapPage implements OnInit {
     this.filterType = filterType;
   }
 
-  baseTokenChange(event: SelectCustomEvent) {
-    this.baseToken = (event.detail.value as 'atom' | 'usd') ?? 'atom';
+  baseTokenChange(baseToken: BaseTokenType) {
+    this.baseToken = baseToken;
     this.setBaseTokenFilterType();
     this.updateTokenAmount();
     this.listings = sortListings(this.listings, this.filterType);
@@ -326,9 +344,7 @@ export class SwapPage implements OnInit {
     });
     emitter.subscribe((token) => {
       this.modalCtrl.dismiss();
-      this.router.navigate(['../', token.ticker], {
-        relativeTo: this.activatedRoute,
-      });
+      this.router.navigate(['/app/swap', token.ticker]);
     });
     await modal.present();
   }
@@ -368,7 +384,7 @@ export class SwapPage implements OnInit {
         this.listings,
         this.amount,
         this.maxRate,
-        this.filterType
+        this.filterType,
       );
     } else {
       this.filteredListings = this.listings.slice(0, RESULT_COUNT);
@@ -411,7 +427,7 @@ export class SwapPage implements OnInit {
   private async getListings(
     tokenId: number,
     limit: number,
-    orderBy?: ValueTypes['marketplace_cft20_detail_order_by']
+    orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
   ): Promise<CFT20MarketplaceListing[]> {
     if (!orderBy) {
       orderBy = {
@@ -456,6 +472,10 @@ export class SwapPage implements OnInit {
     const floorListings = await this.getListings(tokenId, 1, {
       ppt: order_by.asc,
     });
-    return floorListings[0].ppt;
+    const listing = floorListings[0];
+    if (!listing) {
+      return 0;
+    }
+    return listing.ppt;
   }
 }

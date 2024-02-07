@@ -45,7 +45,7 @@ type Token = InputType<
   templateUrl: 'token-modal.component.html',
   standalone: true,
   imports: [CommonModule, IonicModule, TokenDecimalsPipe],
-  styleUrls: ['./token-modal.component.scss'],
+  styleUrl: './token-modal.component.scss',
 })
 export class TokenModalComponent implements OnInit {
   @ViewChild('search') search!: IonSearchbar;

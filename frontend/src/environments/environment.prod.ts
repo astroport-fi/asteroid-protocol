@@ -7,6 +7,9 @@ export const environment = {
   storage: {
     connectedWalletKey: 'connectedWallet',
   },
+  swap: {
+    defaultToken: 'ROIDS',
+  },
   fees: {
     ibcChannel: 'channel-569',
     protocol: {

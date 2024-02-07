@@ -11,7 +11,7 @@ import { IonicModule } from '@ionic/angular';
 @Component({
   selector: 'app-percentage-change',
   templateUrl: './percentage-change.component.html',
-  styleUrls: ['./percentage-change.component.scss'],
+  styleUrl: './percentage-change.component.scss',
   standalone: true,
   imports: [IonicModule, CommonModule],
 })
@@ -26,7 +26,18 @@ export class PercentageChangeComponent implements OnInit, OnChanges {
   }
 
   calculateChange() {
-    this.change = (this.value - this.baseValue) / this.baseValue;
+    this.change =
+      Math.round(((this.value - this.baseValue) / this.baseValue) * 1e4) / 1e4;
+  }
+
+  getColor() {
+    if (this.change < 0.02) {
+      return 'success';
+    } else if (this.change < 0.05) {
+      return 'warning';
+    } else {
+      return 'danger';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

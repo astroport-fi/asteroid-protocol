@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonApp,
@@ -44,7 +44,6 @@ import {
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
-import { AccountData } from '@keplr-wallet/types';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { LottieComponent, LottieModule } from 'ngx-lottie';
 import player from 'lottie-web';
@@ -108,7 +107,7 @@ export class DashboardLayoutComponent {
     private walletService: WalletService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
   ) {
     addIcons({
       chevronForward,
@@ -128,7 +127,7 @@ export class DashboardLayoutComponent {
 
   async ngOnInit() {
     const walletDataJSON = localStorage.getItem(
-      environment.storage.connectedWalletKey
+      environment.storage.connectedWalletKey,
     );
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
