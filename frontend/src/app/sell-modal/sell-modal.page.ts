@@ -90,7 +90,7 @@ export class SellModalPage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     private builder: FormBuilder,
-    private protocolService: MarketplaceService
+    private protocolService: MarketplaceService,
   ) {
     addIcons({ checkmark, closeOutline, close });
 
@@ -159,7 +159,7 @@ export class SellModalPage implements OnInit {
         basic: {
           price: TokenDecimalsPipe.prototype.transform(
             result.token[0].last_price_base as number,
-            6
+            6,
           ),
         },
       });
@@ -186,7 +186,7 @@ export class SellModalPage implements OnInit {
       // Get the sender's balance with decimals
       this.senderBalance = TokenDecimalsPipe.prototype.transform(
         balanceResult.token_holder[0].amount as number,
-        result.token[0].decimals as number
+        result.token[0].decimals as number,
       );
     }
   }
@@ -210,7 +210,7 @@ export class SellModalPage implements OnInit {
     let minDepositPercent = parseFloat(
       StripSpacesPipe.prototype
         .transform(this.sellForm.value.basic.minDeposit)
-        .toString()
+        .toString(),
     );
     // We represent the percentage as a multiplier
     const minDepositMultiplier = minDepositPercent / 100;
@@ -242,7 +242,7 @@ export class SellModalPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'list.cft20',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

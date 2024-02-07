@@ -86,12 +86,12 @@ export const routes: Routes = [
       {
         path: 'swap',
         loadComponent: () =>
-          import('./swap/swap.component').then((m) => m.SwapPage),
+          import('./swap-buy/swap-buy.component').then((m) => m.SwapPage),
       },
       {
         path: 'swap/:quote',
         loadComponent: () =>
-          import('./swap/swap.component').then((m) => m.SwapPage),
+          import('./swap-buy/swap-buy.component').then((m) => m.SwapPage),
       },
       {
         path: 'inscription/:txhash',

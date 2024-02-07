@@ -1,0 +1,236 @@
+<ion-content fullscreen="true" [formGroup]="swapForm">
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="10"
+        offset-xl="1"
+      >
+        <ion-header class="no-shadow">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-menu-button></ion-menu-button>
+              <ion-back-button defaultHref="/app/markets"></ion-back-button>
+            </ion-buttons>
+            <ion-title>
+              <span>{{ ticker }}</span> / ATOM Market
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="mt-5" class="container">
+    @if (token && !isLoading) {
+      <ion-row class="mt-2">
+        <ion-col class="flex-center">
+          <ion-item
+            class="label-wrapper"
+            lines="none"
+            [button]="true"
+            [detail]="false"
+            id="popover-button"
+            ><ion-avatar aria-hidden="true" slot="start">
+              <img src="../../assets/atom.svg" />
+            </ion-avatar>
+            <ion-label
+              ><strong>{{ baseToken | uppercase }}</strong>
+              <ion-note color="medium"
+                >${{ baseTokenUSD | number: "1.0-6" }}
+              </ion-note></ion-label
+            >
+            <ion-icon
+              color="dark"
+              size="small"
+              slot="end"
+              name="chevron-down"
+            ></ion-icon
+          ></ion-item>
+          <ion-popover trigger="popover-button" [dismissOnSelect]="true">
+            <ng-template>
+              <ion-content>
+                <ion-list>
+                  <ion-item
+                    [button]="true"
+                    [detail]="false"
+                    (click)="baseTokenChange('atom')"
+                    >Atom</ion-item
+                  >
+                  <!-- <ion-item
+                    [button]="true"
+                    [detail]="false"
+                    (click)="baseTokenChange('usd')"
+                    >$</ion-item
+                  > -->
+                </ion-list>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ion-col>
+        <ion-col class="flex-center">
+          <ion-input
+            #input
+            fill="outline"
+            placeholder="0.0"
+            [maskito]="decimalMask"
+            [maskitoElement]="maskPredicate"
+            formControlName="amount"
+            ><ion-label slot="end" color="medium"
+              >(${{
+                baseAmount * baseTokenUSD | tokenDecimals: 6 | number: "1.0-6"
+              }})</ion-label
+            ></ion-input
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row class="mt-2">
+        <ion-col class="flex-center">
+          <ion-item
+            class="label-wrapper"
+            lines="none"
+            [button]="true"
+            [detail]="false"
+            (click)="openTokenModal()"
+          >
+            <ion-avatar aria-hidden="true" slot="start">
+              @if (token.content_path) {
+                <img [src]="token.content_path" />
+              } @else {
+                <img
+                  class="no-logo"
+                  src="../../assets/logo/a-white-on-transparent-250.png"
+                />
+              }
+            </ion-avatar>
+            <ion-label
+              ><strong>{{ token.name }}</strong>
+              <ion-note color="medium"
+                >{{ token.last_price_base | tokenDecimals: token.decimals }}
+                ATOM
+              </ion-note></ion-label
+            >
+            <ion-icon
+              color="dark"
+              size="small"
+              slot="end"
+              name="chevron-down"
+            ></ion-icon>
+          </ion-item>
+        </ion-col>
+        <ion-col class="flex-center"
+          ><ion-input
+            fill="outline"
+            placeholder="0.0"
+            [maskito]="decimalMask"
+            [maskitoElement]="maskPredicate"
+            formControlName="tokenAmount"
+            ><ion-label slot="end" color="medium"
+              >(${{
+                tokenAmount * maxRate * baseTokenUSD
+                  | tokenDecimals: 6
+                  | number: "1.0-6"
+              }})</ion-label
+            ></ion-input
+          ></ion-col
+        >
+      </ion-row>
+      <ion-row class="mt-2">
+        <ion-col class="flex-center"
+          ><ion-item class="label-wrapper" lines="none" [detail]="false">
+            <ion-label><strong>Max price per token</strong> </ion-label>
+          </ion-item></ion-col
+        >
+        <ion-col class="flex-center">
+          <ion-input
+            fill="outline"
+            [maskito]="decimalMask"
+            [maskitoElement]="maskPredicate"
+            formControlName="rate"
+            ><ion-label slot="end" color="medium"
+              >(${{
+                maxRate * baseTokenUSD | tokenDecimals: 6 | number: "1.0-6"
+              }})</ion-label
+            ></ion-input
+          >
+        </ion-col>
+      </ion-row>
+    }
+
+    @if (isLoading) {
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    }
+    @if (token && !isLoading) {
+      <div class="results-container">
+        @for (listing of filteredListings; track listing.id) {
+          <ion-row
+            class="result"
+            [class.selected]="listing === selected"
+            (click)="onSelect(listing)"
+          >
+            <div class="result-row">
+              <strong>Offer</strong>
+              <span
+                >{{
+                  listing.amount
+                    | tokenDecimals: token.decimals
+                    | number: "1.0-6"
+                }}
+                {{ token.ticker }}</span
+              >
+            </div>
+
+            <div class="result-row">
+              <strong>Rate</strong>
+              <span>
+                <app-percentage-change
+                  [value]="listing.ppt"
+                  [baseValue]="floorPrice"
+                  class="percentage"
+                />
+                <span
+                  >{{
+                    listing.ppt | tokenDecimals: 6 | number: "1.0-6"
+                  }}
+                  ATOM</span
+                >
+              </span>
+            </div>
+
+            <div class="result-row">
+              <strong>Total</strong>
+              <span
+                >{{
+                  listing.marketplace_listing.total
+                    | tokenDecimals: 6
+                    | number: "1.0-6"
+                }}
+                ATOM (${{
+                  listing.marketplace_listing.total * baseTokenUSD
+                    | tokenDecimals: 6
+                    | number: "1.0-6"
+                }})</span
+              >
+            </div>
+          </ion-row>
+        }
+      </div>
+      <ion-row>
+        <ion-col size="12" class="actions">
+          <ion-button
+            [disabled]="!selected"
+            color="success"
+            type="submit"
+            (click)="buy()"
+            >Buy</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    }
+  </ion-grid>
+</ion-content>
