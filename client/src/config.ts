@@ -1,8 +1,7 @@
-import fs from 'fs/promises'
 import { z } from 'zod'
-import { fileExists } from './utils.js'
 
 export const CONFIG_NAME = 'asteroid.json'
+export const CONFIG_PATH = `./${CONFIG_NAME}`
 
 export const Networks: Record<string, Network> = {
   local: {
@@ -25,7 +24,7 @@ export const Networks: Record<string, Network> = {
   },
 }
 
-const DEFAULT_CONFIG: Config = {
+export const DEFAULT_CONFIG: Config = {
   gasPrice: '0.005uatom',
   networks: Networks,
   accounts: {
@@ -49,27 +48,10 @@ const Account = z.object({
 })
 export type Account = z.infer<typeof Account>
 
-const Config = z.object({
+export const Config = z.object({
   gasPrice: z.string(),
   networks: z.record(z.string(), Network),
   accounts: z.record(z.string(), Account),
 })
 
 export type Config = z.infer<typeof Config>
-
-export default async function loadConfig(): Promise<Config> {
-  const configPath = `./${CONFIG_NAME}`
-  const exists = await fileExists(configPath)
-
-  if (exists) {
-    const configStr = await fs.readFile(configPath, 'utf8')
-    try {
-      return Config.parse(JSON.parse(configStr))
-    } catch (err) {
-      console.error('Config parsing error')
-      throw err
-    }
-  }
-
-  return Config.parse(DEFAULT_CONFIG)
-}

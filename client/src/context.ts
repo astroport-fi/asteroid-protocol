@@ -4,10 +4,12 @@ import {
   OfflineSigner,
 } from '@cosmjs/proto-signing'
 import { GasPrice } from '@cosmjs/stargate'
+import fs from 'fs/promises'
 import { SigningStargateClient } from './client.js'
-import type { Config, Network } from './config.js'
-import loadConfig from './config.js'
+import { Config, DEFAULT_CONFIG, Network } from './config.js'
+import { CONFIG_PATH } from './config.js'
 import { AsteroidService } from './service/asteroid.js'
+import { fileExists } from './utils.js'
 
 export class Context {
   network: Network
@@ -37,6 +39,22 @@ export class Context {
 export interface Options {
   network: string
   account?: string
+}
+
+export default async function loadConfig(): Promise<Config> {
+  const exists = await fileExists(CONFIG_PATH)
+
+  if (exists) {
+    const configStr = await fs.readFile(CONFIG_PATH, 'utf8')
+    try {
+      return Config.parse(JSON.parse(configStr))
+    } catch (err) {
+      console.error('Config parsing error')
+      throw err
+    }
+  }
+
+  return Config.parse(DEFAULT_CONFIG)
 }
 
 export async function createContext(options: Options): Promise<Context> {
