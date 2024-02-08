@@ -1,5 +1,5 @@
 import { Component, EnvironmentInjector } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonApp,
   IonRouterOutlet,
@@ -22,6 +22,8 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonSelect,
+  IonSelectOption,
   ToastController,
   ModalController, IonButtons, MenuController
 } from '@ionic/angular/standalone';
@@ -54,6 +56,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { Subscription } from '../core/types/zeus';
 import { WalletSelectionModalPage } from '../wallet-selection-modal/wallet-selection-modal.page';
+import { MenuItem } from 'primeng/api';
 
 // Note we need a separate function as it's required
 // by the AOT compiler.
@@ -89,6 +92,8 @@ export function playerFactory() {
     IonGrid,
     IonRow,
     IonCol,
+    IonSelect,
+    IonSelectOption,
     RouterLink,
     RouterLinkActive,
     NgScrollbarModule,
@@ -110,7 +115,8 @@ export class DashboardLayoutComponent {
     private alertController: AlertController,
     private toastController: ToastController,
     private modalCtrl: ModalController,
-    private menuCtrl: MenuController
+    private menuCtrl: MenuController,
+    private router: Router
   ) {
     addIcons({
       chevronForward,
@@ -127,6 +133,9 @@ export class DashboardLayoutComponent {
       eyeOffOutline,
       add
     });
+
+
+
   }
 
   async ngOnInit() {
@@ -230,8 +239,12 @@ export class DashboardLayoutComponent {
     window.location.reload();
   }
 
-  toggleMenu() {
+
+  menuChange(event: any) {
     console.log("GOGO");
-    this.menuCtrl.toggle();
+    console.log(event.target);
+    const destination = event.target.value;
+    event.target.value = '';
+    this.router.navigate([destination]);
   }
 }

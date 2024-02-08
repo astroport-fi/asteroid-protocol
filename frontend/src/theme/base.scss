@@ -1,7 +1,8 @@
 ion-card.no-shadow,
 ion-header.no-shadow,
 ion-toolbar.no-shadow,
-ion-title.no-shadow {
+ion-title.no-shadow,
+.md .menu-content-push {
   -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
   -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
@@ -469,10 +470,12 @@ p-table {
 }
 
 .darken {
+  // background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.2) 100%);
   background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.2) 100%);
   width: 100% !important;
   height: 100% !important;
   position: absolute;
+  // backdrop-filter: blur(22px);
 }
 
 ion-toast {
@@ -580,10 +583,11 @@ ion-toast {
   overflow: hidden;
 
   img {
-    transform: scale(4) !important;
-    filter: blur(50px) brightness(45%) saturate(60%);
+    transform: scale(8) !important;
+    filter: blur(0px) brightness(35%) saturate(100%);
   }
 }
+
 
 ion-menu-button {
 
