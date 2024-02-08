@@ -23,17 +23,18 @@ ion-button {
 }
 
 ion-popover {
-  --background: hsla(0, 0%, 50%, 0.4);
+  --background: #0a1829;
+  // --background: hsla(0, 0%, 20%, 1);
   // --backdrop-opacity: 0.6;
-  --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
+  // --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
   --color: white;
   --width: 300px;
   // backdrop-filter: blur(50px) !important;
 }
 
-ion-popover ion-content {
-  --background: rgba(0, 0, 0, 0.5);
-}
+// ion-popover ion-content {
+//   // --background: rgba(0, 0, 0, 0.5);
+// }
 
 ion-popover::part(backdrop) {
   background-color: rgb(7, 9, 40);

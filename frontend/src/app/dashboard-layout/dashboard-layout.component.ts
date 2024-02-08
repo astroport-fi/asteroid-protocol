@@ -242,8 +242,6 @@ export class DashboardLayoutComponent {
 
 
   menuChange(event: any) {
-    console.log("GOGO");
-    console.log(event.target);
     const destination = event.target.value;
     event.target.value = '';
     this.router.navigate([destination]);
