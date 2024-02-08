@@ -1,9 +1,20 @@
-.container {
+.content-container {
+  width: 100%;
+  height: 100%;
+}
+
+.left {
   background-color: hsla(0, 0%, 100%, 0.05);
   backdrop-filter: blur(50px);
   border-radius: 10px;
-  padding: 20px;
-  max-width: 800px;
+  padding: 5px;
+  height: 100%;
+}
+
+.right {
+  height: calc(100% - 44px);
+  padding: 0;
+  margin-left: 20px;
 }
 
 .label-wrapper {
@@ -31,4 +42,31 @@
 
 ion-avatar {
   --border-radius: 0;
+}
+
+.change-market {
+  cursor: pointer;
+}
+
+.token-stats {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  // max-width: 300px;
+
+  .key {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .value {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.sell-button {
+  --padding-bottom: 12px;
+  --padding-top: 12px;
+  --border-radius: 6px;
 }

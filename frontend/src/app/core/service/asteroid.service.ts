@@ -9,6 +9,7 @@ import {
   OperationOptions,
   Selector,
   ValueTypes,
+  order_by,
 } from '../types/zeus/index';
 
 export type ScalarDefinition = {
@@ -87,6 +88,30 @@ const statusSelector = Selector('status')({
 export type Status = InputType<
   GraphQLTypes['status'],
   typeof statusSelector,
+  ScalarDefinition
+>;
+
+const cft20ListingSelector = Selector('marketplace_cft20_detail')({
+  id: true,
+  marketplace_listing: {
+    seller_address: true,
+    total: true,
+    depositor_address: true,
+    is_deposited: true,
+    depositor_timedout_block: true,
+    deposit_total: true,
+    transaction: {
+      hash: true,
+    },
+  },
+  ppt: true,
+  amount: true,
+  date_created: true,
+});
+
+export type CFT20MarketplaceListing = InputType<
+  GraphQLTypes['marketplace_cft20_detail'],
+  typeof cft20ListingSelector,
   ScalarDefinition
 >;
 
@@ -197,5 +222,54 @@ export class AsteroidService {
       ],
     });
     return holderResult.token_holder;
+  }
+
+  async getTokenListings(
+    tokenId: number,
+    offset: number = 0,
+    limit: number = 20,
+    orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
+  ): Promise<CFT20MarketplaceListing[]> {
+    if (!orderBy) {
+      orderBy = {
+        amount: order_by.asc,
+      };
+    }
+
+    const listingsResult = await this.query({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: tokenId,
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false,
+              },
+              is_filled: {
+                _eq: false,
+              },
+            },
+          },
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        cft20ListingSelector,
+      ],
+    });
+    return listingsResult.marketplace_cft20_detail;
+  }
+
+  async getTokenFloorPrice(tokenId: number) {
+    const floorListings = await this.getTokenListings(tokenId, 0, 1, {
+      ppt: order_by.asc,
+    });
+    const listing = floorListings[0];
+    if (!listing) {
+      return 0;
+    }
+    return listing.ppt;
   }
 }

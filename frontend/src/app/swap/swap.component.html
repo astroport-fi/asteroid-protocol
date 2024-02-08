@@ -1,63 +1,123 @@
-<ion-content fullscreen="true">
-  <ion-grid
-    ><ion-row>
-      <ion-col
-        class="ion-no-padding"
-        size="12"
-        offset="0"
-        size-md="12"
-        offset-md="0"
-        size-md="10"
-        offset-md="1"
-        size-xl="8"
-        offset-xl="2"
-      >
-        <ion-segment
-          [value]="kind"
-          color="primary"
-          (ionChange)="sectionChanged($event)"
+<ion-grid class="h-100 content-container">
+  <ion-header class="no-shadow">
+    <ion-toolbar>
+      <div slot="start" class="flex-center">
+        <ion-buttons>
+          <ion-menu-button></ion-menu-button>
+          <ion-back-button defaultHref="/app/markets"></ion-back-button>
+        </ion-buttons>
+        <ion-title (click)="openTokenModal()" class="change-market">
+          @if (token) {
+            <span>{{ token.ticker }}</span> / ATOM Market
+          }
+        </ion-title>
+      </div>
+      @if (token && status) {
+        <ion-grid class="mx-5">
+          <ion-row>
+            <ion-col size="12" size-lg="4">
+              <div class="token-stats">
+                <span class="key"> ATOM / USD </span>
+                <span class="value ms-3">
+                  ${{ status.base_token_usd | number: '1.2-6' }}
+                </span>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4">
+              <div class="token-stats">
+                <span class="key"> {{ token.ticker }} / ATOM </span>
+                <span class="value ms-3">
+                  {{ token.last_price_base | tokenDecimals: token.decimals }}
+                  ATOM (${{
+                    status.base_token_usd *
+                      (token.last_price_base | tokenDecimals: token.decimals)
+                      | number: '1.2-6'
+                  }})
+                </span>
+              </div>
+            </ion-col>
+            <ion-col size="12" size-lg="4">
+              <div class="token-stats">
+                <span class="key"> 24H Volume </span>
+                <span class="value ms-3">
+                  {{
+                    token.volume_24_base | tokenDecimals: 6 | number: '1.2-6'
+                  }}
+                  ATOM (${{
+                    status.base_token_usd *
+                      (token.volume_24_base | tokenDecimals: 6)
+                      | number: '1.2-6'
+                  }})
+                </span>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-buttons slot="end"
+          ><ion-button
+            color="primary"
+            fill="outline"
+            (click)="listSale()"
+            class="sell-button"
+            >Sell {{ token.ticker }} tokens</ion-button
+          ></ion-buttons
         >
-          <ion-segment-button value="buy">
-            <ion-label>Buy</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="sell">
-            <ion-label>Sell</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col
-        class="ion-no-padding"
-        size="12"
-        offset="0"
-        size-md="12"
-        offset-md="0"
-        size-md="10"
-        offset-md="1"
-        size-xl="8"
-        offset-xl="2"
+      }
+    </ion-toolbar>
+  </ion-header>
+  <ion-row
+    class="ion-no-padding h-100"
+    size="12"
+    offset="0"
+    size-md="12"
+    offset-md="0"
+    size-md="10"
+    offset-md="1"
+    size-xl="8"
+    offset-xl="2"
+  >
+    <ion-col size="3" class="left">
+      <!-- <ion-segment
+        [value]="kind"
+        color="primary"
+        (ionChange)="sectionChanged($event)"
       >
-        @if (isLoading) {
-          <ion-progress-bar type="indeterminate"></ion-progress-bar>
-        }
-        @if (status && token) {
-          @switch (kind) {
-            @case ('buy') {
-              <app-swap-buy
-                [baseTokenUSD]="status.base_token_usd"
-                [token]="token"
-              />
-            }
-            @case ('sell') {
-              <app-swap-sell
-                [baseTokenUSD]="status.base_token_usd"
-                [token]="token"
-              />
-            }
+        <ion-segment-button value="buy">
+          <ion-label>Buy</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="sell">
+          <ion-label>List</ion-label>
+        </ion-segment-button>
+      </ion-segment> -->
+      @if (isLoading) {
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      }
+      @if (status && token) {
+        @switch (kind) {
+          @case ('buy') {
+            <app-swap-buy
+              [baseTokenUSD]="status.base_token_usd"
+              [token]="token"
+              (filterChange)="filterChanged($event)"
+            />
+          }
+          @case ('sell') {
+            <app-swap-sell
+              [baseTokenUSD]="status.base_token_usd"
+              [token]="token"
+            />
           }
         }
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+      }
+    </ion-col>
+    <ion-col size="8.9" class="right" offset="0.1">
+      @if (status && token) {
+        <app-token-listings
+          [token]="token"
+          [status]="status"
+          [listingsFilter]="filteredListings"
+        />
+      }
+    </ion-col>
+  </ion-row>
+</ion-grid>

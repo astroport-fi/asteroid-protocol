@@ -4,11 +4,11 @@ import {
   EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { IonInput, IonicModule, ModalController } from '@ionic/angular';
+import { IonInput, IonicModule } from '@ionic/angular';
 import { MaskitoModule } from '@maskito/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -18,46 +18,12 @@ import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import {
   AsteroidService,
-  ScalarDefinition,
+  CFT20MarketplaceListing,
   Token,
 } from '../core/service/asteroid.service';
-import { WalletService } from '../core/service/wallet.service';
-import {
-  GraphQLTypes,
-  InputType,
-  Selector,
-  ValueTypes,
-  order_by,
-} from '../core/types/zeus';
-import { PercentageChangeComponent } from '../percentage-change/percentage-change.component';
 import { TokenModalComponent } from '../token-modal/token-modal.component';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 type BaseTokenType = 'atom' | 'usd';
-
-const cft20ListingSelector = Selector('marketplace_cft20_detail')({
-  id: true,
-  marketplace_listing: {
-    seller_address: true,
-    total: true,
-    depositor_address: true,
-    is_deposited: true,
-    depositor_timedout_block: true,
-    deposit_total: true,
-    transaction: {
-      hash: true,
-    },
-  },
-  ppt: true,
-  amount: true,
-  date_created: true,
-});
-
-type CFT20MarketplaceListing = InputType<
-  GraphQLTypes['marketplace_cft20_detail'],
-  typeof cft20ListingSelector,
-  ScalarDefinition
->;
 
 type ListingWithUSD = CFT20MarketplaceListing & {
   totalUSD: number;
@@ -127,19 +93,17 @@ function findNearest(
     ReactiveFormsModule,
     MaskitoModule,
     TokenDecimalsPipe,
-    PercentageChangeComponent,
     TokenModalComponent,
   ],
 })
 export class SwapBuyPage implements OnInit {
   @Input({ required: true }) token!: Token;
   @Input({ required: true }) baseTokenUSD!: number;
+  @Output() filterChange = new EventEmitter<CFT20MarketplaceListing[]>();
 
   isLoading = true;
   ticker: string = environment.swap.defaultToken;
   listings!: ListingWithUSD[];
-  filteredListings!: ListingWithUSD[];
-  floorPrice = 0;
   limit = 2000;
   baseAmount: number = 0;
   tokenAmount: number = 0;
@@ -148,11 +112,10 @@ export class SwapBuyPage implements OnInit {
   baseToken: BaseTokenType = 'atom';
   filterType = FilterType.Atom;
   FilterType = FilterType;
-  selected: ListingWithUSD | null = null;
   @ViewChild('input') input!: IonInput;
 
   swapForm: FormGroup = this.formBuilder.group({
-    amount: [''],
+    baseAmount: [''],
     tokenAmount: [''],
     rate: [''],
   });
@@ -162,10 +125,7 @@ export class SwapBuyPage implements OnInit {
     (el as HTMLIonInputElement).getInputElement();
 
   constructor(
-    private router: Router,
-    private walletService: WalletService,
     private formBuilder: FormBuilder,
-    private modalCtrl: ModalController,
     private asteroidService: AsteroidService,
   ) {
     this.decimalMask = maskitoNumberOptionsGenerator({
@@ -179,14 +139,17 @@ export class SwapBuyPage implements OnInit {
   async ngOnInit() {
     this.resetMaxRate();
 
-    const listings = await this.getListings(this.token.id, this.limit);
-    this.listings = sortListings(listings.map(this.mapListing), FilterType.Usd);
+    const listings = await this.asteroidService.getTokenListings(
+      this.token.id,
+      0,
+      this.limit,
+    );
+    this.listings = sortListings(
+      listings.map(this.mapListing),
+      FilterType.Atom,
+    );
 
-    // @todo handle zero listings
-
-    this.floorPrice = await this.getFloorPrice(this.token.id);
-
-    this.swapForm.controls['amount'].valueChanges.subscribe((change) => {
+    this.swapForm.controls['baseAmount'].valueChanges.subscribe((change) => {
       if (change) {
         this.amount = parseFloat(change.replace(/ /g, '')) * ATOM_DECIMALS;
         this.baseAmount = this.amount;
@@ -281,104 +244,20 @@ export class SwapBuyPage implements OnInit {
     this.input.setFocus();
   }
 
-  onSelect(listing: ListingWithUSD) {
-    this.selected = listing;
-  }
-
-  async openTokenModal() {
-    const emitter = new EventEmitter();
-    const modal = await this.modalCtrl.create({
-      component: TokenModalComponent,
-      componentProps: {
-        baseTokenUSD: this.baseTokenUSD,
-        selectionChange: emitter,
-      },
-    });
-    emitter.subscribe((token) => {
-      this.modalCtrl.dismiss();
-      this.router.navigate(['/app/swap', token.ticker]);
-    });
-    await modal.present();
-  }
-
-  async buy() {
-    if (!this.walletService.hasWallet()) {
-      // Popup explaining that Keplr is needed and needs to be installed first
-      const modal = await this.modalCtrl.create({
-        keyboardClose: true,
-        backdropDismiss: true,
-        component: WalletRequiredModalPage,
-        cssClass: 'wallet-required-modal',
-      });
-      modal.present();
+  filterListings() {
+    if (!this.amount) {
+      this.filterChange.emit();
       return;
     }
 
-    this.modalCtrl.dismiss({
-      dismissed: true,
-    });
-
-    const modal = await this.modalCtrl.create({
-      component: BuyWizardModalPage,
-      componentProps: {
-        hash: this.selected?.marketplace_listing.transaction.hash,
-        metaprotocol: 'marketplace',
-        metaprotocolAction: 'deposit',
-      },
-    });
-    modal.present();
+    const filteredListings = findNearest(
+      this.listings,
+      this.amount,
+      this.maxRate,
+      this.filterType,
+    );
+    this.filterChange.emit(filteredListings);
   }
-
-  filterListings() {
-    this.selected = null;
-    if (this.amount) {
-      this.filteredListings = findNearest(
-        this.listings,
-        this.amount,
-        this.maxRate,
-        this.filterType,
-      );
-    } else {
-      this.filteredListings = this.listings.slice(0, RESULT_COUNT);
-    }
-  }
-
-  private async getListings(
-    tokenId: number,
-    limit: number,
-    orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
-  ): Promise<CFT20MarketplaceListing[]> {
-    if (!orderBy) {
-      orderBy = {
-        amount: order_by.asc,
-      };
-    }
-
-    const listingsResult = await this.asteroidService.query({
-      marketplace_cft20_detail: [
-        {
-          where: {
-            token_id: {
-              _eq: tokenId,
-            },
-            marketplace_listing: {
-              is_cancelled: {
-                _eq: false,
-              },
-              is_filled: {
-                _eq: false,
-              },
-            },
-          },
-          limit: limit,
-          order_by: [orderBy],
-        },
-        cft20ListingSelector,
-      ],
-    });
-    return listingsResult.marketplace_cft20_detail;
-  }
-
   private mapListing = (listing: CFT20MarketplaceListing): ListingWithUSD => {
     return {
       ...listing,
@@ -386,15 +265,4 @@ export class SwapBuyPage implements OnInit {
       totalAtom: listing.marketplace_listing.total,
     };
   };
-
-  private async getFloorPrice(tokenId: number) {
-    const floorListings = await this.getListings(tokenId, 1, {
-      ppt: order_by.asc,
-    });
-    const listing = floorListings[0];
-    if (!listing) {
-      return 0;
-    }
-    return listing.ppt;
-  }
 }

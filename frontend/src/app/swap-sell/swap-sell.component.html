@@ -1,122 +1,120 @@
-<div [formGroup]="sellForm">
-  <ion-grid class="mt-5" class="container">
-    <ion-row class="mt-2">
-      <ion-col class="flex-center">
-        <ion-item
-          class="label-wrapper"
-          lines="none"
-          [button]="true"
-          [detail]="false"
-          (click)="openTokenModal()"
-        >
-          <ion-avatar aria-hidden="true" slot="start">
-            @if (token.content_path) {
-              <img [src]="token.content_path" />
-            } @else {
-              <img
-                class="no-logo"
-                src="../../assets/logo/a-white-on-transparent-250.png"
-              />
-            }
-          </ion-avatar>
-          <ion-label
-            ><strong>{{ token.name }}</strong>
-            <ion-note color="medium"
-              >{{ token.last_price_base | tokenDecimals: token.decimals }}
-              ATOM
-            </ion-note></ion-label
-          >
-          <ion-icon
-            color="dark"
-            size="small"
-            slot="end"
-            name="chevron-down"
-          ></ion-icon>
-        </ion-item>
-      </ion-col>
-      <ion-col class="flex-center"
-        ><ion-input
-          fill="outline"
-          placeholder="0.0"
-          [maskito]="decimalMask"
-          [maskitoElement]="maskPredicate"
-          formControlName="tokenAmount"
-          ><ion-label slot="end" color="medium"
-            >(${{
-              tokenAmount * rate * baseTokenUSD
-                | tokenDecimals: 6
-                | number: '1.0-6'
-            }})</ion-label
-          ></ion-input
-        ></ion-col
+<ion-grid class="mt-5" [formGroup]="sellForm" class="h-100">
+  <ion-row class="mt-2">
+    <ion-col class="flex-center">
+      <ion-item
+        class="label-wrapper"
+        lines="none"
+        [button]="true"
+        [detail]="false"
+        (click)="openTokenModal()"
       >
-    </ion-row>
-    <ion-row class="mt-2">
-      <ion-col class="flex-center">
-        <ion-item
-          class="label-wrapper"
-          lines="none"
-          [button]="false"
-          [detail]="false"
-          id="popover-button"
-          ><ion-avatar aria-hidden="true" slot="start">
-            <img src="../../assets/atom.svg" />
-          </ion-avatar>
-          <ion-label
-            ><strong>ATOM</strong>
-            <ion-note color="medium"
-              >${{ baseTokenUSD | number: '1.0-6' }}
-            </ion-note></ion-label
-          >
-        </ion-item>
-      </ion-col>
-      <ion-col class="flex-center">
-        <ion-input
-          #input
-          fill="outline"
-          placeholder="0.0"
-          [maskito]="decimalMask"
-          [maskitoElement]="maskPredicate"
-          formControlName="amount"
-          ><ion-label slot="end" color="medium"
-            >(${{
-              baseAmount * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
-            }})</ion-label
-          ></ion-input
+        <ion-avatar aria-hidden="true" slot="start">
+          @if (token.content_path) {
+            <img [src]="token.content_path" />
+          } @else {
+            <img
+              class="no-logo"
+              src="../../assets/logo/a-white-on-transparent-250.png"
+            />
+          }
+        </ion-avatar>
+        <ion-label
+          ><strong>{{ token.name }}</strong>
+          <ion-note color="medium"
+            >{{ token.last_price_base | tokenDecimals: token.decimals }}
+            ATOM
+          </ion-note></ion-label
         >
-      </ion-col>
-    </ion-row>
-    <ion-row class="mt-2">
-      <ion-col class="flex-center"
-        ><ion-item class="label-wrapper" lines="none" [detail]="false">
-          <ion-label><strong>Price per token</strong> </ion-label>
-        </ion-item></ion-col
+        <ion-icon
+          color="dark"
+          size="small"
+          slot="end"
+          name="chevron-down"
+        ></ion-icon>
+      </ion-item>
+    </ion-col>
+    <ion-col class="flex-center"
+      ><ion-input
+        fill="outline"
+        placeholder="0.0"
+        [maskito]="decimalMask"
+        [maskitoElement]="maskPredicate"
+        formControlName="tokenAmount"
+        ><ion-label slot="end" color="medium"
+          >(${{
+            tokenAmount * rate * baseTokenUSD
+              | tokenDecimals: 6
+              | number: '1.0-6'
+          }})</ion-label
+        ></ion-input
+      ></ion-col
+    >
+  </ion-row>
+  <ion-row class="mt-2">
+    <ion-col class="flex-center">
+      <ion-item
+        class="label-wrapper"
+        lines="none"
+        [button]="false"
+        [detail]="false"
+        id="popover-button"
+        ><ion-avatar aria-hidden="true" slot="start">
+          <img src="../../assets/atom.svg" />
+        </ion-avatar>
+        <ion-label
+          ><strong>ATOM</strong>
+          <ion-note color="medium"
+            >${{ baseTokenUSD | number: '1.0-6' }}
+          </ion-note></ion-label
+        >
+      </ion-item>
+    </ion-col>
+    <ion-col class="flex-center">
+      <ion-input
+        #input
+        fill="outline"
+        placeholder="0.0"
+        [maskito]="decimalMask"
+        [maskitoElement]="maskPredicate"
+        formControlName="amount"
+        ><ion-label slot="end" color="medium"
+          >(${{
+            baseAmount * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
+          }})</ion-label
+        ></ion-input
       >
-      <ion-col class="flex-center">
-        <ion-input
-          fill="outline"
-          [maskito]="decimalMask"
-          [maskitoElement]="maskPredicate"
-          formControlName="rate"
-          ><ion-label slot="end" color="medium"
-            >(${{
-              rate * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
-            }})</ion-label
-          ></ion-input
-        >
-      </ion-col>
-    </ion-row>
+    </ion-col>
+  </ion-row>
+  <ion-row class="mt-2">
+    <ion-col class="flex-center"
+      ><ion-item class="label-wrapper" lines="none" [detail]="false">
+        <ion-label><strong>Price per token</strong> </ion-label>
+      </ion-item></ion-col
+    >
+    <ion-col class="flex-center">
+      <ion-input
+        fill="outline"
+        [maskito]="decimalMask"
+        [maskitoElement]="maskPredicate"
+        formControlName="rate"
+        ><ion-label slot="end" color="medium"
+          >(${{
+            rate * baseTokenUSD | tokenDecimals: 6 | number: '1.0-6'
+          }})</ion-label
+        ></ion-input
+      >
+    </ion-col>
+  </ion-row>
 
-    <ion-row>
-      <ion-col size="12" class="actions">
-        <ion-button
-          color="success"
-          type="submit"
-          [disabled]="!tokenAmount || !rate"
-          (click)="sell()"
-          >Confirm and list</ion-button
-        >
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</div>
+  <ion-row>
+    <ion-col size="12" class="actions">
+      <ion-button
+        color="success"
+        type="submit"
+        [disabled]="!tokenAmount || !rate"
+        (click)="sell()"
+        >Confirm and list</ion-button
+      >
+    </ion-col>
+  </ion-row>
+</ion-grid>

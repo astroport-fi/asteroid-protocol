@@ -19,7 +19,7 @@
             />
           }
         </ion-avatar>
-        <ion-label>{{ item.name }}</ion-label>
+        <ion-label>{{ item.ticker }} / ATOM</ion-label>
         <ion-note slot="end" color="medium"
           >{{ item.last_price_base | tokenDecimals: item.decimals }} ATOM (${{
             item.last_price_base * baseTokenUSD
