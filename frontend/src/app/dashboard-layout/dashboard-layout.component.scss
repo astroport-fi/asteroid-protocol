@@ -133,6 +133,14 @@ ion-item {
 }
 
 .profile {
+
+
+  &.header {
+    // ion-label {
+    //   // font-size: 9px !important;
+    // }
+  }
+
   &.disconnected {
     .alter-ego {
       img {
@@ -293,6 +301,7 @@ ion-router-outlet {
   }
 
   .center {
+    margin-left: -65px;
     flex-grow: 1;
     justify-content: center;
 
@@ -317,5 +326,27 @@ ion-router-outlet {
   .offset {
     position: relative;
     top: -4px;
+  }
+}
+
+
+.connect-wallet {
+
+  .hover-connect {
+    display: inline;
+  }
+
+  .hover-disconnect {
+    display: none;
+  }
+
+  &:hover {
+    .hover-connect {
+      display: none;
+    }
+
+    .hover-disconnect {
+      display: inline;
+    }
   }
 }

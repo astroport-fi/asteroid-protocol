@@ -45,11 +45,11 @@ export class MarketsTokenPage implements OnInit {
 
     // Check if tis use has seen the notice
     // if (localStorage.getItem('marketplace-notice') != 'shown') {
-    this.modalCtrl.create({
-      component: MarketplaceNoticeModalPage,
-    }).then(modal => {
-      modal.present();
-    });
+    // this.modalCtrl.create({
+    //   component: MarketplaceNoticeModalPage,
+    // }).then(modal => {
+    //   modal.present();
+    // });
     // }
 
     this.activatedRoute.params.subscribe(async params => {

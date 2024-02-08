@@ -225,6 +225,7 @@ export class DashboardLayoutComponent {
     modal.present();
   }
 
+
   toggleWalletOptions() {
     this.showWalletOptions = !this.showWalletOptions;
   }
@@ -248,3 +249,4 @@ export class DashboardLayoutComponent {
     this.router.navigate([destination]);
   }
 }
+

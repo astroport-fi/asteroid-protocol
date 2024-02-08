@@ -7,6 +7,22 @@
         <a href="/" class="p-0 m-0 d-inline-block">
           <img src="../../assets/logo/a-white-on-transparent-250.png" />
         </a>
+        <div class="profile header disconnected">
+          <div class="connect-wallet">
+            <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
+              <ion-icon name="key-sharp" color="warning" />
+              <ion-label>{{ walletStatusText }}</ion-label>
+            </ion-chip>
+            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
+              (click)="disconnectWallet()">
+              <ion-icon name="key-sharp" color="warning" />
+              <ion-label class="hover-connect">{{
+                connectedAccount.address | shortenAddress | async
+                }}</ion-label>
+              <ion-label class="hover-disconnect">Disconnect wallet</ion-label>
+            </ion-chip>
+          </div>
+        </div>
       </div>
       <div class="center">
         <ion-item lines="none" class="offset">
@@ -32,6 +48,7 @@
         </ion-item>
       </div>
       <div class="right info-wrapper">
+
         <div class="status text-center mb-2">
           <div class="title">Current indexer block</div>
           <div>
