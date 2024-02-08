@@ -1,8 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule, ModalController, AlertController, ViewDidLeave } from '@ionic/angular';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  IonicModule,
+  ModalController,
+  AlertController,
+  ViewDidLeave,
+} from '@ionic/angular';
+import { toBase64, toUtf8 } from '@cosmjs/encoding';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { MaskitoModule } from '@maskito/angular';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
@@ -20,7 +31,13 @@ import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-require
   styleUrls: ['./create-token.page.scss'],
   standalone: true,
   providers: [DatePipe],
-  imports: [IonicModule, CommonModule, ReactiveFormsModule, RouterLink, MaskitoModule],
+  imports: [
+    IonicModule,
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MaskitoModule,
+  ],
 })
 export class CreateTokenPage implements OnInit, ViewDidLeave {
   createForm: FormGroup;
@@ -34,22 +51,58 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   readonly numberMask: MaskitoOptions;
   readonly maxDecimalsMask: MaskitoOptions;
 
-  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) => (el as HTMLIonInputElement).getInputElement();
+  readonly maskPredicate: MaskitoElementPredicateAsync = async (el) =>
+    (el as HTMLIonInputElement).getInputElement();
 
-  constructor(private builder: FormBuilder, private datePipe: DatePipe, private protocolService: CFT20Service, private walletService: WalletService, private modalCtrl: ModalController, private alertController: AlertController) {
+  constructor(
+    private builder: FormBuilder,
+    private datePipe: DatePipe,
+    private protocolService: CFT20Service,
+    private walletService: WalletService,
+    private modalCtrl: ModalController,
+    private alertController: AlertController,
+  ) {
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
-        ticker: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
-        maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(1),
+            Validators.maxLength(32),
+            Validators.pattern('^[a-zA-Z0-9-. ]*$'),
+          ],
+        ],
+        ticker: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(1),
+            Validators.maxLength(10),
+            Validators.pattern('^[a-zA-Z0-9-.]*$'),
+          ],
+        ],
+        maxSupply: [
+          1000000,
+          [Validators.required, Validators.pattern('^[0-9. ]*$')],
+        ],
+        mintLimit: [
+          1000,
+          [Validators.required, Validators.pattern('^[0-9. ]*$')],
+        ],
+        decimals: [
+          6,
+          [Validators.required, Validators.min(0), Validators.max(6)],
+        ],
         launchImmediately: 'true',
-        launchDate: this.datePipe.transform(new Date(this.minDate), 'yyyy-MM-ddTHH:mm:ss'),
+        launchDate: this.datePipe.transform(
+          new Date(this.minDate),
+          'yyyy-MM-ddTHH:mm:ss',
+        ),
       }),
       optional: this.builder.group({
-        imageUpload: null
+        imageUpload: null,
       }),
     });
 
@@ -58,7 +111,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       thousandSeparator: ' ',
       precision: 6,
       min: 1,
-      max: 10000000000000.000000,
+      max: 10000000000000.0,
     });
 
     this.maxDecimalsMask = maskitoNumberOptionsGenerator({
@@ -68,23 +121,49 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
   }
 
   ngOnInit() {
-
     this.minDate = new Date();
     this.createForm = this.builder.group({
       basic: this.builder.group({
-        name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(32), Validators.pattern("^[a-zA-Z0-9-. ]*$")]],
-        ticker: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(10), Validators.pattern("^[a-zA-Z0-9-.]*$")]],
-        maxSupply: [1000000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        mintLimit: [1000, [Validators.required, Validators.pattern("^[0-9. ]*$")]],
-        decimals: [6, [Validators.required, Validators.min(0), Validators.max(6)]],
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(1),
+            Validators.maxLength(32),
+            Validators.pattern('^[a-zA-Z0-9-. ]*$'),
+          ],
+        ],
+        ticker: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(1),
+            Validators.maxLength(10),
+            Validators.pattern('^[a-zA-Z0-9-.]*$'),
+          ],
+        ],
+        maxSupply: [
+          1000000,
+          [Validators.required, Validators.pattern('^[0-9. ]*$')],
+        ],
+        mintLimit: [
+          1000,
+          [Validators.required, Validators.pattern('^[0-9. ]*$')],
+        ],
+        decimals: [
+          6,
+          [Validators.required, Validators.min(0), Validators.max(6)],
+        ],
         launchImmediately: 'true',
-        launchDate: this.datePipe.transform(new Date(this.minDate), 'yyyy-MM-ddTHH:mm:ss'),
+        launchDate: this.datePipe.transform(
+          new Date(this.minDate),
+          'yyyy-MM-ddTHH:mm:ss',
+        ),
       }),
       optional: this.builder.group({
-        imageUpload: [null, [Validators.required]]
+        imageUpload: [null, [Validators.required]],
       }),
     });
-
   }
 
   ionViewDidLeave(): void {
@@ -94,8 +173,8 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
         ticker: '',
       },
       optional: {
-        imageUpload: null
-      }
+        imageUpload: null,
+      },
     });
   }
 
@@ -116,47 +195,57 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       const ticker = this.createForm.value.basic.ticker.replace(/\s/g, '');
       // const decimals = this.createForm.value.basic.decimals;
       const decimals = 6;
-      const maxSupply = this.createForm.value.basic.maxSupply.replace(/\s/g, '');
-      const mintLimit = this.createForm.value.basic.mintLimit.replace(/\s/g, '');
+      const maxSupply = this.createForm.value.basic.maxSupply.replace(
+        /\s/g,
+        '',
+      );
+      const mintLimit = this.createForm.value.basic.mintLimit.replace(
+        /\s/g,
+        '',
+      );
 
       // Construct metaprotocol memo message
       const params = new Map([
-        ["nam", name],
-        ["tic", ticker],
-        ["sup", maxSupply],
-        ["dec", decimals],
-        ["lim", mintLimit],
-        ["opn", Math.round((new Date().getTime()) / 1000)],
+        ['nam', name],
+        ['tic', ticker],
+        ['sup', maxSupply],
+        ['dec', decimals],
+        ['lim', mintLimit],
+        ['opn', Math.round(new Date().getTime() / 1000)],
       ]);
       if (this.createForm.value.basic.launchImmediately === 'false') {
         const launchDate = new Date(this.createForm.value.basic.launchDate);
-        params.set("opn", launchDate.getTime() / 1000);
+        params.set('opn', launchDate.getTime() / 1000);
       }
 
       let data = this.createForm.value.optional.imageUpload;
       let sender = await this.walletService.getAccount();
       let metadataBase64 = null;
       if (data) {
-        const mime = data.split(";")[0].split(":")[1];
-        data = data.split(",")[1];
+        const mime = data.split(';')[0].split(':')[1];
+        data = data.split(',')[1];
 
         // Build the metadata for this inscription
         const metadata: InscriptionMetadata = {
           parent: {
-            type: "/cosmos.bank.Account",
+            type: '/cosmos.bank.Account',
             identifier: sender.address,
           },
           metadata: {
-            name: "Token Logo",
-            description: "Token Logo",
+            name: 'Token Logo',
+            description: 'Token Logo',
             mime,
-          }
+          },
         };
 
-        metadataBase64 = btoa(JSON.stringify(metadata));
+        metadataBase64 = toBase64(toUtf8(JSON.stringify(metadata)));
       }
 
-      const urn = this.protocolService.buildURN(environment.chain.chainId, 'deploy', params);
+      const urn = this.protocolService.buildURN(
+        environment.chain.chainId,
+        'deploy',
+        params,
+      );
       const modal = await this.modalCtrl.create({
         keyboardClose: true,
         backdropDismiss: false,
@@ -169,7 +258,7 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
           resultCTA: 'View token',
           metaprotocol: 'cft20',
           metaprotocolAction: 'deploy',
-        }
+        },
       });
       modal.present();
     } catch (err) {
@@ -181,7 +270,6 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
         cssClass: 'wallet-required-modal',
       });
       modal.present();
-
     }
   }
 
@@ -194,13 +282,14 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
       reader.onload = (e: any) => {
         const base64 = e.target.result;
 
-        const mime = base64.split(";")[0].split(":")[1];
-        if (!mime.startsWith("image/")) {
-          this.precheckErrorText = "Only image files are allowed for token logos";
+        const mime = base64.split(';')[0].split(':')[1];
+        if (!mime.startsWith('image/')) {
+          this.precheckErrorText =
+            'Only image files are allowed for token logos';
           return;
         }
         if (file.size > environment.limits.maxFileSize) {
-          this.precheckErrorText = `File size exceeds maximum allowed size of ${environment.limits.maxFileSize / 1000} kb`
+          this.precheckErrorText = `File size exceeds maximum allowed size of ${environment.limits.maxFileSize / 1000} kb`;
           return;
         }
 
@@ -211,23 +300,23 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
           const width = img.naturalWidth;
 
           if (width != height) {
-            this.precheckErrorText = "Image must be square";
+            this.precheckErrorText = 'Image must be square';
             return;
           }
 
           if (width < 250 || width > 1024) {
-            this.precheckErrorText = "Image must be square and between 250x250 and 1024x1024 pixels";
+            this.precheckErrorText =
+              'Image must be square and between 250x250 and 1024x1024 pixels';
             return;
           }
 
           this.createForm.patchValue({
             optional: {
-              imageUpload: base64
-            }
+              imageUpload: base64,
+            },
           });
           this.contentRequired = false;
         };
-
       };
       reader.readAsDataURL(file);
     }
@@ -235,14 +324,11 @@ export class CreateTokenPage implements OnInit, ViewDidLeave {
 
   supplyChanged(event: any) {
     // The amount of tokens that can be minter per tx may not exceed 1% of the total supply
-    this.maxMintLimit = StripSpacesPipe.prototype.transform(event.detail.value) * 0.01;
+    this.maxMintLimit =
+      StripSpacesPipe.prototype.transform(event.detail.value) * 0.01;
   }
 
   limitChanged(event: any) {
     this.limitNumeric = StripSpacesPipe.prototype.transform(event.detail.value);
   }
-
-
-
-
 }
