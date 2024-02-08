@@ -17,7 +17,6 @@
 .menu-aside {
   --width: 310px;
   border: none !important;
-  // height: 100vh;
 }
 
 .layout {
@@ -46,7 +45,6 @@ ion-accordion-group {
 
 ion-item[slot="header"] {
   color: #ffffff;
-  // border-left: 1px solid #ff0000;
 
   ion-label {
     padding: 0px !important;
@@ -55,7 +53,6 @@ ion-item[slot="header"] {
 }
 
 ion-accordion::part(expanded) {
-  // --background: #ff0000 !important;
   background-color: rgba(30, 30, 30, 0.1) !important;
 }
 
@@ -70,9 +67,6 @@ ion-list-header {
 
 ion-item {
   --min-height: 25px;
-  // min-height: 20px;
-  // max-height: 20px;
-  // height: 40px;
   padding: 0px;
   --padding-bottom: 0px;
   --inner-padding-bottom: 0px;
@@ -87,7 +81,6 @@ ion-item {
 }
 
 .menu {
-  // position: relative;
   overflow-y: auto;
   backdrop-filter: blur(10px) !important;
   background-color: hsla(0, 0%, 100%, 0.1);
@@ -107,13 +100,13 @@ ion-item {
   margin-left: auto;
   margin-right: auto;
 
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 0px;
+  margin-top: 0px;
   text-align: center;
 
   img {
     margin-top: 20px;
-    width: 100px;
+    width: 80px;
     margin-bottom: 15px;
   }
 
@@ -143,17 +136,25 @@ ion-item {
     }
 
     .connect-wallet {
-      // position: absolute;
       position: relative;
-      // top: 220px;
-      // left: 45px;
       width: 100%;
       z-index: 99;
       text-align: center;
+    }
+  }
 
-      // ion-chip {
-      //     backdrop-filter: blur(10px);
-      // }
+  &.header {
+    position: relative;
+    top: -6px;
+    width: 230px;
+
+    .connect-wallet {
+      width: 230px;
+    }
+
+    ion-chip {
+      backdrop-filter: blur(10px);
+      width: 215px;
     }
   }
 }
@@ -240,11 +241,8 @@ ion-item {
 
 ion-router-outlet {
 
-
-
   @media only screen and (min-width: 994px) {
     margin-top: 70px;
-    // margin-bottom: 100px;
   }
 }
 
@@ -295,7 +293,7 @@ ion-router-outlet {
   }
 
   .center {
-    margin-left: -65px;
+    margin-left: 165px;
     flex-grow: 1;
     justify-content: center;
 
@@ -341,6 +339,45 @@ ion-router-outlet {
 
     .hover-disconnect {
       display: inline;
+    }
+  }
+}
+
+.network-status {
+  backdrop-filter: blur(10px);
+  position: absolute;
+  z-index: 201;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  background-color: rgba(10, 24, 41, 0.6);
+  color: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  font-size: 12px;
+
+  .section {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .socials {
+    img {
+      opacity: 0.5;
+    }
+
+    a {
+      position: relative;
+      top: -2px;
+      display: inline-block;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    a:hover {
+      img {
+        opacity: 1;
+
+      }
     }
   }
 }

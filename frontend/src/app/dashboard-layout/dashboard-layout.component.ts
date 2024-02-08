@@ -56,7 +56,6 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { Subscription } from '../core/types/zeus';
 import { WalletSelectionModalPage } from '../wallet-selection-modal/wallet-selection-modal.page';
-import { MenuItem } from 'primeng/api';
 
 // Note we need a separate function as it's required
 // by the AOT compiler.
@@ -109,6 +108,7 @@ export class DashboardLayoutComponent {
   maxHeight: number = 0;
   currentHeight: number = 0;
   lag: number = 0;
+  atomUSD: number = 0;
 
   constructor(
     private walletService: WalletService,
@@ -193,12 +193,14 @@ export class DashboardLayoutComponent {
         {
           last_processed_height: true,
           last_known_height: true,
+          base_token_usd: true,
         },
       ],
     }).on(({ status }) => {
       this.maxHeight = status[0].last_known_height;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
+      this.atomUSD = status[0].base_token_usd;
     });
   }
 

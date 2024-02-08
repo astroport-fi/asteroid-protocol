@@ -1,28 +1,11 @@
 <ion-content class="layout" mode="md">
   <div class="darken"></div>
-
   <ion-header id="desktop_menu" class="no-shadow">
     <div class="header">
       <div class="left">
         <a href="/" class="p-0 m-0 d-inline-block">
           <img src="../../assets/logo/a-white-on-transparent-250.png" />
         </a>
-        <div class="profile header disconnected">
-          <div class="connect-wallet">
-            <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
-              <ion-icon name="key-sharp" color="warning" />
-              <ion-label>{{ walletStatusText }}</ion-label>
-            </ion-chip>
-            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
-              (click)="disconnectWallet()">
-              <ion-icon name="key-sharp" color="warning" />
-              <ion-label class="hover-connect">{{
-                connectedAccount.address | shortenAddress | async
-                }}</ion-label>
-              <ion-label class="hover-disconnect">Disconnect wallet</ion-label>
-            </ion-chip>
-          </div>
-        </div>
       </div>
       <div class="center">
         <ion-item lines="none" class="offset">
@@ -48,15 +31,20 @@
         </ion-item>
       </div>
       <div class="right info-wrapper">
-
-        <div class="status text-center mb-2">
-          <div class="title">Current indexer block</div>
-          <div>
-            {{ currentHeight }}/{{maxHeight}}
-            <span *ngIf="lag <= 1" class="text-success">In sync</span>
-            <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
-            <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
-            <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+        <div class="profile header disconnected">
+          <div class="connect-wallet">
+            <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
+              <ion-icon name="key-sharp" color="warning" />
+              <ion-label>{{ walletStatusText }}</ion-label>
+            </ion-chip>
+            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
+              (click)="disconnectWallet()">
+              <ion-icon name="key-sharp" color="warning" />
+              <ion-label class="hover-connect">{{
+                connectedAccount.address | shortenAddress | async
+                }}</ion-label>
+              <ion-label class="hover-disconnect">Disconnect wallet</ion-label>
+            </ion-chip>
           </div>
         </div>
       </div>
@@ -71,7 +59,7 @@
               <a href="/">
                 <img src="../../assets/logo/a-white-on-transparent-250.png" />
               </a>
-              <div class="outpost">Asteroid Protocol</div>
+              <!-- <div class="outpost">Asteroid Protocol</div> -->
             </div>
             <div class="profile disconnected">
               <div class="connect-wallet">
@@ -164,28 +152,28 @@
             </ion-accordion-group>
           </ion-col>
         </ion-row>
-        <ion-row class="info-wrapper">
-          <ion-col size="12" class="status text-center mb-2">
-            <div class="title">Current indexer block</div>
-            <div>
-              {{ currentHeight }}/{{maxHeight}}
-              <span *ngIf="lag <= 1" class="text-success">In sync</span>
-              <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
-              <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
-              <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
-            </div>
-          </ion-col>
-          <ion-col class="social-link">
-            <a href="https://t.me/asteroidxyz" title="Astroid Protocol Telegram Group" target="_blank"><img
-                src="../../assets/socials/telegram.svg" width="24" /></a>
-          </ion-col>
-          <ion-col class="social-link">
-            <a href="https://twitter.com/asteroidxyz" title="Astroid Protocol on X" target="_blank"><img
-                src="../../assets/socials/twitter.svg" width="24" /></a>
-          </ion-col>
-        </ion-row>
       </ion-col>
     </ion-row>
   </ion-menu>
   <ion-router-outlet id="primaryContent" [animated]="false"></ion-router-outlet>
+  <div class="network-status">
+    <div class="d-inline-block section p-2">
+      <div class="d-inline-block me-2">Indexer</div>
+      <div class="d-inline-block">
+        <span *ngIf="lag <= 1" class="text-success">In sync</span>
+        <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
+        <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
+        <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+      </div>
+    </div>
+    <div class="d-inline-block section socials p-2">
+      <a href="https://t.me/asteroidxyz" title="Astroid Protocol Telegram Group" target="_blank"><img
+          src="../../assets/socials/telegram.svg" width="16" /></a>
+      <a href="https://twitter.com/asteroidxyz" title="Astroid Protocol on X" target="_blank"><img
+          src="../../assets/socials/twitter.svg" width="16" /></a>
+    </div>
+    <div class="d-inline-block section p-2">
+      ATOM ${{ atomUSD | number: '1.2-2'}}
+    </div>
+  </div>
 </ion-content>

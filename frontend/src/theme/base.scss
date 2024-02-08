@@ -24,17 +24,9 @@ ion-button {
 
 ion-popover {
   --background: #0a1829;
-  // --background: hsla(0, 0%, 20%, 1);
-  // --backdrop-opacity: 0.6;
-  // --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
   --color: white;
   --width: 300px;
-  // backdrop-filter: blur(50px) !important;
 }
-
-// ion-popover ion-content {
-//   // --background: rgba(0, 0, 0, 0.5);
-// }
 
 ion-popover::part(backdrop) {
   background-color: rgb(7, 9, 40);
@@ -49,19 +41,8 @@ ion-modal {
 }
 
 .shadowed {
-  // background-color: #232f3d;
-  // background-color: #363c41;
-  // background-color: rgba(53, 60, 66, 0.1);
-  // border: 1px solid #363c41;
-  // // background: linear-gradient(184deg, rgba(53, 60, 66, 1) 0%, rgba(44, 50, 58, 1) 100%);
-  // // opacity: 0.9;
-  // backdrop-filter: blur(100px) !important;
-
-
-  // background-color: rgba(36, 43, 51, 0.75);
   --background: transparent;
   background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
-  // background: linear-gradient(184deg, #353c42, #353c42, #343b41, #333940, #31383f, #30363d, #2e353c, #2d333b, #2c323a, #2c323a);
 
   backdrop-filter: blur(100px) !important;
   opacity: 0.99;
@@ -595,4 +576,9 @@ ion-menu-button {
   @media only screen and (min-width: 994px) {
     display: none;
   }
+}
+
+.default-scrollbar {
+  --scrollbar-track-color: #0a1829 !important;
+  --scrollbar-thumb-color: #0d294a !important;
 }

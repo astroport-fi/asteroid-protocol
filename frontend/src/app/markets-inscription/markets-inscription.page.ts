@@ -2,31 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InfiniteScrollCustomEvent, ModalController, IonicModule } from '@ionic/angular';
-import { Chain, Subscription, order_by } from '../core/types/zeus';
+import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { PriceService } from '../core/service/price.service';
-import { SortEvent } from 'primeng/api';
-import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { WalletService } from '../core/service/wallet.service';
-import { MarketplaceNoticeModalPage } from '../marketplace-notice/marketplace-notice-modal.page';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { DropdownModule } from 'primeng/dropdown';
-import { ViewInscriptionPage } from '../view-inscription/view-inscription.page';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @Component({
   selector: 'app-markets-inscription',
   templateUrl: './markets-inscription.page.html',
   styleUrls: ['./markets-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, TableModule, GenericPreviewPage, DropdownModule, ShortenAddressPipe]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, GenericPreviewPage, DropdownModule, ShortenAddressPipe, NgScrollbarModule]
 })
 export class MarketsInscriptionPage implements OnInit {
 

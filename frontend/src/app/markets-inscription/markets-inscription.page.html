@@ -22,7 +22,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" size-md="4" size-lg="3">
+      <ion-col size="12" size-md="4" size-lg="3" size-xl="2">
         <div class="section-container main-content-sidebar p-3 mt-0 me-3">
           <div class="section">
             <h4 class="header">Sort</h4>
@@ -76,54 +76,56 @@
         </div>
       </ion-col>
       <ion-col size="12" size-md="8" size-lg="9">
-        <div class="list" *ngIf="!isLoading && reservedMarketplaceDetail.length > 0">
-          <h3 class="mb-4 mt-0 pt-0">Reserved by you</h3>
-          <a class="inscription-item main-content"
-            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
-            *ngFor="let item of reservedMarketplaceDetail; let index">
-            <div class="content">
-              <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
-                [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
-            </div>
-            <h4 class="name">{{ item.inscription.name }}</h4>
-            <div class="detail">
-              <div class="detail-item">
-                <span>#{{item.inscription.id-1}}</span>
+        <ng-scrollbar autoHeightDisabled="false" visibility="hover" class="default-scrollbar">
+          <div class="list" *ngIf="!isLoading && reservedMarketplaceDetail.length > 0">
+            <h3 class="mb-4 mt-0 pt-0">Reserved by you</h3>
+            <a class="inscription-item main-content"
+              (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
+              *ngFor="let item of reservedMarketplaceDetail; let index">
+              <div class="content">
+                <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
+                  [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
               </div>
-              <div class="marketplace-price text-center">
-                <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
-                  <span>ATOM</span></ion-label>
-                <ion-label class="label">Price</ion-label>
+              <h4 class="name">{{ item.inscription.name }}</h4>
+              <div class="detail">
+                <div class="detail-item">
+                  <span>#{{item.inscription.id-1}}</span>
+                </div>
+                <div class="marketplace-price text-center">
+                  <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
+                    <span>ATOM</span></ion-label>
+                  <ion-label class="label">Price</ion-label>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
 
-          <h3>All listings</h3>
-        </div>
-        <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
-          <a class="inscription-item main-content"
-            (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
-            *ngFor="let item of marketplaceDetail; let index">
-            <div class="content">
-              <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
-                [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
-            </div>
-            <h4 class="name">{{ item.inscription.name }}</h4>
-            <div class="detail">
-              <div class="detail-item">
-                <span>#{{item.inscription.id-1}}</span>
+            <h3>All listings</h3>
+          </div>
+          <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
+            <a class="inscription-item main-content"
+              (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
+              *ngFor="let item of marketplaceDetail; let index">
+              <div class="content">
+                <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
+                  [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
               </div>
-              <div class="marketplace-price text-center">
-                <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
-                  <span>ATOM</span></ion-label>
-                <ion-label class="label">Price</ion-label>
+              <h4 class="name">{{ item.inscription.name }}</h4>
+              <div class="detail">
+                <div class="detail-item">
+                  <span>#{{item.inscription.id-1}}</span>
+                </div>
+                <div class="marketplace-price text-center">
+                  <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
+                    <span>ATOM</span></ion-label>
+                  <ion-label class="label">Price</ion-label>
+                </div>
               </div>
-            </div>
-          </a>
-          <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
-            <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-          </ion-infinite-scroll>
-        </div>
+            </a>
+            <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+              <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div>
+        </ng-scrollbar>
       </ion-col>
     </ion-row>
   </ion-grid>
