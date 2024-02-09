@@ -57,7 +57,7 @@ export class TokenListingsComponent implements OnInit {
   walletAddress: string | undefined;
   listings!: CFT20MarketplaceListing[];
   _listingsFilter: CFT20MarketplaceListing[] | undefined;
-  total: number = 1000; // @todo where is this coming from?
+  total: number = 0;
 
   constructor(
     private asteroidService: AsteroidService,
@@ -156,12 +156,14 @@ export class TokenListingsComponent implements OnInit {
 
     this.isTableLoading = true;
 
-    this.listings = await this.asteroidService.getTokenListings(
+    const res = await this.asteroidService.getTokenListings(
       this.token.id,
       event.first,
       event.rows ?? 20,
       this.getOrderBy(event.sortOrder, event.sortField),
     );
+    this.listings = res.listings;
+    this.total = res.count;
 
     this.isTableLoading = false;
   }

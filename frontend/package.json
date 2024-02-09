@@ -14,7 +14,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts --subscriptions graphql-ws"
+    "gql:prettier": "npx prettier --write src/app/core/types/zeus/*.ts",
+    "gql:patch": "patch -p1 src/app/core/types/zeus/index.ts -i src/app/core/types/zeus/index.patch",
+    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src/app/core/types --ts --subscriptions graphql-ws && npm run gql:prettier && npm run gql:patch"
   },
   "private": true,
   "dependencies": {

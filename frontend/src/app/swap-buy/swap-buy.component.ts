@@ -145,7 +145,7 @@ export class SwapBuyPage implements OnInit {
       this.limit,
     );
     this.listings = sortListings(
-      listings.map(this.mapListing),
+      listings.listings.map(this.mapListing),
       FilterType.Atom,
     );
 

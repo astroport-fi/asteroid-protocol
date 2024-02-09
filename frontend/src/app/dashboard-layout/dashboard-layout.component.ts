@@ -1,56 +1,56 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import {
-  IonApp,
-  IonRouterOutlet,
-  IonContent,
-  IonSplitPane,
-  IonMenu,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonListHeader,
-  IonIcon,
-  IonChip,
-  IonButton,
-  IonMenuToggle,
-  IonAccordion,
-  IonAccordionGroup,
-  IonGrid,
-  IonRow,
-  IonCol,
-  ToastController,
-  ModalController,
-} from '@ionic/angular/standalone';
-import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import {
-  chevronForward,
-  keySharp,
-  pencilSharp,
-  createSharp,
-  checkmark,
-  closeOutline,
-  close,
-  chevronForwardSharp,
-  chevronDown,
-  searchOutline,
-  openOutline,
-  eyeOffOutline,
-} from 'ionicons/icons';
+  IonAccordion,
+  IonAccordionGroup,
+  IonApp,
+  IonButton,
+  IonChip,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenu,
+  IonMenuToggle,
+  IonRouterOutlet,
+  IonRow,
+  IonSplitPane,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { WalletService } from '../core/service/wallet.service';
+import {
+  checkmark,
+  chevronDown,
+  chevronForward,
+  chevronForwardSharp,
+  close,
+  closeOutline,
+  createSharp,
+  eyeOffOutline,
+  keySharp,
+  openOutline,
+  pencilSharp,
+  searchOutline,
+} from 'ionicons/icons';
+import player from 'lottie-web';
+import { LottieComponent, LottieModule } from 'ngx-lottie';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { environment } from 'src/environments/environment';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { LottieComponent, LottieModule } from 'ngx-lottie';
-import player from 'lottie-web';
+import { WalletService } from '../core/service/wallet.service';
 import { ConnectedWallet } from '../core/types/connected-wallet';
-import { NgScrollbarModule } from 'ngx-scrollbar';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { Subscription } from '../core/types/zeus';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { WalletSelectionModalPage } from '../wallet-selection-modal/wallet-selection-modal.page';
 
 // Note we need a separate function as it's required
@@ -183,7 +183,7 @@ export class DashboardLayoutComponent {
         },
       ],
     }).on(({ status }) => {
-      this.maxHeight = status[0].last_known_height;
+      this.maxHeight = status[0].last_known_height!;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
     });

@@ -9,6 +9,7 @@ import {
   OperationOptions,
   Selector,
   ValueTypes,
+  marketplace_cft20_detail_select_column,
   order_by,
 } from '../types/zeus/index';
 
@@ -114,6 +115,11 @@ export type CFT20MarketplaceListing = InputType<
   typeof cft20ListingSelector,
   ScalarDefinition
 >;
+
+export type TokenListings = {
+  listings: CFT20MarketplaceListing[];
+  count: number;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -229,29 +235,41 @@ export class AsteroidService {
     offset: number = 0,
     limit: number = 20,
     orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
-  ): Promise<CFT20MarketplaceListing[]> {
+  ): Promise<TokenListings> {
     if (!orderBy) {
       orderBy = {
         amount: order_by.asc,
       };
     }
 
+    const where: ValueTypes['marketplace_cft20_detail_bool_exp'] = {
+      token_id: {
+        _eq: tokenId,
+      },
+      marketplace_listing: {
+        is_cancelled: {
+          _eq: false,
+        },
+        is_filled: {
+          _eq: false,
+        },
+      },
+    };
+
     const listingsResult = await this.query({
+      marketplace_cft20_detail_aggregate: [
+        {
+          where,
+        },
+        {
+          aggregate: {
+            count: [{}, true],
+          },
+        },
+      ],
       marketplace_cft20_detail: [
         {
-          where: {
-            token_id: {
-              _eq: tokenId,
-            },
-            marketplace_listing: {
-              is_cancelled: {
-                _eq: false,
-              },
-              is_filled: {
-                _eq: false,
-              },
-            },
-          },
+          where,
           offset,
           limit,
           order_by: [orderBy],
@@ -259,14 +277,17 @@ export class AsteroidService {
         cft20ListingSelector,
       ],
     });
-    return listingsResult.marketplace_cft20_detail;
+    return {
+      count: listingsResult.marketplace_cft20_detail_aggregate.aggregate!.count,
+      listings: listingsResult.marketplace_cft20_detail,
+    };
   }
 
   async getTokenFloorPrice(tokenId: number) {
     const floorListings = await this.getTokenListings(tokenId, 0, 1, {
       ppt: order_by.asc,
     });
-    const listing = floorListings[0];
+    const listing = floorListings.listings[0];
     if (!listing) {
       return 0;
     }
