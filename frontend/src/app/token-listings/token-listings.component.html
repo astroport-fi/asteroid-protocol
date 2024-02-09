@@ -2,7 +2,7 @@
   <ion-row class="h-100">
     <ion-col class="main-content h-100">
       @if (isLoading) {
-        <div class="loading p-4">
+        <div class="p-4 w-100">
           <ion-progress-bar type="indeterminate"></ion-progress-bar>
           <p>Loading market...</p>
         </div>
@@ -18,7 +18,7 @@
             [loading]="isTableLoading"
             [tableStyle]="{ 'min-width': '30rem' }"
             [paginator]="true"
-            [rows]="20"
+            [rows]="limit"
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Showing {first} to {last} of many"
             [style]="{

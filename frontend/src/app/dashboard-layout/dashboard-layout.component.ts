@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { Component, EnvironmentInjector } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AlertController, IonicModule } from '@ionic/angular';
 import {
   IonAccordion,
   IonAccordionGroup,
   IonApp,
   IonButton,
+  IonButtons,
   IonChip,
   IonCol,
   IonContent,
@@ -19,18 +20,25 @@ import {
   IonListHeader,
   IonMenu,
   IonMenuToggle,
+  IonPopover,
   IonRouterOutlet,
   IonRow,
+  IonSelect,
+  IonSelectOption,
   IonSplitPane,
   IonTitle,
   IonToolbar,
+  MenuController,
   ModalController,
   ToastController,
 } from '@ionic/angular/standalone';
+import { AccountData } from '@keplr-wallet/types';
 import { addIcons } from 'ionicons';
 import {
+  add,
+  caretDownSharp,
   checkmark,
-  chevronDown,
+  chevronDownSharp,
   chevronForward,
   chevronForwardSharp,
   close,
@@ -65,6 +73,7 @@ export function playerFactory() {
   styleUrls: ['./dashboard-layout.component.scss'],
   standalone: true,
   imports: [
+    IonButtons,
     CommonModule,
     IonApp,
     IonContent,
@@ -87,6 +96,9 @@ export function playerFactory() {
     IonGrid,
     IonRow,
     IonCol,
+    IonPopover,
+    IonSelect,
+    IonSelectOption,
     RouterLink,
     RouterLinkActive,
     NgScrollbarModule,
@@ -102,12 +114,15 @@ export class DashboardLayoutComponent {
   maxHeight: number = 0;
   currentHeight: number = 0;
   lag: number = 0;
+  atomUSD: number = 0;
 
   constructor(
     private walletService: WalletService,
     private alertController: AlertController,
     private toastController: ToastController,
     private modalCtrl: ModalController,
+    private menuCtrl: MenuController,
+    private router: Router,
   ) {
     addIcons({
       chevronForward,
@@ -118,10 +133,12 @@ export class DashboardLayoutComponent {
       closeOutline,
       close,
       chevronForwardSharp,
-      chevronDown,
+      chevronDownSharp,
+      caretDownSharp,
       searchOutline,
       openOutline,
       eyeOffOutline,
+      add,
     });
   }
 
@@ -180,12 +197,14 @@ export class DashboardLayoutComponent {
         {
           last_processed_height: true,
           last_known_height: true,
+          base_token_usd: true,
         },
       ],
     }).on(({ status }) => {
       this.maxHeight = status[0].last_known_height!;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
+      this.atomUSD = status[0].base_token_usd;
     });
   }
 
@@ -224,5 +243,11 @@ export class DashboardLayoutComponent {
     localStorage.clear();
     // Temp hack, reload to disconnect wallet from all components
     window.location.reload();
+  }
+
+  menuChange(event: any) {
+    const destination = event.target.value;
+    event.target.value = '';
+    this.router.navigate([destination]);
   }
 }

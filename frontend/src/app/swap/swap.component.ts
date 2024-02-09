@@ -113,7 +113,7 @@ export class SwapPage implements OnInit {
     });
     emitter.subscribe((token) => {
       this.modalCtrl.dismiss();
-      this.router.navigate(['/app/swap', token.ticker]);
+      this.router.navigate(['/app/market', token.ticker]);
     });
     await modal.present();
   }

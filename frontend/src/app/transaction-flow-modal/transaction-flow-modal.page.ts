@@ -1,27 +1,27 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
+  checkmark,
   chevronForward,
+  close,
+  closeOutline,
+  createSharp,
+  helpCircleOutline,
   keySharp,
   pencilSharp,
-  createSharp,
-  checkmark,
-  closeOutline,
-  close,
-  helpCircleOutline,
 } from 'ionicons/icons';
 import { LottieComponent } from 'ngx-lottie';
-import { WalletService } from '../core/service/wallet.service';
 import { environment } from 'src/environments/environment';
-import { ChainService } from '../core/service/chain.service';
 import { delay } from '../core/helpers/delay';
 import { Chain } from '../core/helpers/zeus';
-import { TxFee } from '../core/types/tx-fee';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { ChainService } from '../core/service/chain.service';
+import { WalletService } from '../core/service/wallet.service';
+import { TxFee } from '../core/types/tx-fee';
 
 @Component({
   selector: 'app-transaction-flow-modal',
@@ -75,7 +75,7 @@ export class TransactionFlowModalPage implements OnInit {
     private walletService: WalletService,
     private chainService: ChainService,
     private modalCtrl: ModalController,
-    private router: Router
+    private router: Router,
   ) {
     this.urn = '';
     this.metadata = '';
@@ -121,7 +121,7 @@ export class TransactionFlowModalPage implements OnInit {
         this.metadata,
         this.data,
         fees,
-        this.messagesJSON
+        this.messagesJSON,
       );
       const result = await this.chainService.simulateTransaction(simulateTx);
 
@@ -181,7 +181,7 @@ export class TransactionFlowModalPage implements OnInit {
         this.metadata,
         this.data,
         fees,
-        this.messages
+        this.messages,
       );
       // const signedTx = await this.walletService.signMobile(this.urn, this.metadata, this.data, fees, this.messages);
 
@@ -236,7 +236,7 @@ export class TransactionFlowModalPage implements OnInit {
                 // We hit an error
                 this.state = 'failed';
                 this.errorText = this.mapToHumanError(
-                  result.transaction[0].status_message
+                  result.transaction[0].status_message,
                 );
                 break;
               }

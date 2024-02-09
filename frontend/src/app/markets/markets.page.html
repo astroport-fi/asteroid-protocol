@@ -16,7 +16,7 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title> CFT-20 Trading Markets </ion-title>
+            <ion-title class="text-center"> CFT-20 Trading Markets </ion-title>
           </ion-toolbar>
         </ion-header>
 
@@ -72,6 +72,7 @@
             </ng-template>
             <ng-template pTemplate="header">
               <tr>
+                <th>&nbsp;</th>
                 <th pSortableColumn="ticker" pFrozenColumn>
                   Market <p-sortIcon field="ticker"></p-sortIcon>
                 </th>
@@ -89,7 +90,20 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-token>
-              <tr [routerLink]="['/app/swap', token.ticker]">
+              <tr [routerLink]="['/app/market', token.ticker]">
+                <td class="token-logo">
+                  <div class="image">
+                    <img
+                      [src]="token.content_path"
+                      *ngIf="token.content_path"
+                    />
+                    <img
+                      class="no-logo"
+                      src="../../assets/logo/a-white-on-transparent-250.png"
+                      *ngIf="!token.content_path"
+                    />
+                  </div>
+                </td>
                 <td pFrozenColumn>{{ token.ticker }} / ATOM</td>
                 <td>{{ token.name }}</td>
                 <td class="mono">

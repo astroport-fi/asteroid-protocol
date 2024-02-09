@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { SortEvent } from 'primeng/api';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
@@ -57,6 +63,7 @@ export class TokenListingsComponent implements OnInit {
   walletAddress: string | undefined;
   listings!: CFT20MarketplaceListing[];
   _listingsFilter: CFT20MarketplaceListing[] | undefined;
+  limit = 20;
   total: number = 0;
 
   constructor(
@@ -71,6 +78,24 @@ export class TokenListingsComponent implements OnInit {
     this.baseTokenUSD = this.status.base_token_usd;
     this.currentBlock = this.status.last_processed_height;
     this.isLoading = false;
+    this.calculateLimit();
+
+    this.asteroidService
+      .tokenListingsSubscription(this.token.id, this.limit)
+      .on(({ marketplace_cft20_detail }) => {
+        if (!this._listingsFilter) {
+          this.listings = marketplace_cft20_detail;
+        }
+      });
+  }
+
+  calculateLimit() {
+    this.limit = Math.floor((window.innerHeight - 400) / 68);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.calculateLimit();
   }
 
   @Input() set listingsFilter(value: CFT20MarketplaceListing[] | undefined) {
@@ -159,16 +184,20 @@ export class TokenListingsComponent implements OnInit {
     const res = await this.asteroidService.getTokenListings(
       this.token.id,
       event.first,
-      event.rows ?? 20,
+      event.rows ?? this.limit,
       this.getOrderBy(event.sortOrder, event.sortField),
+      this.total == 0,
     );
     this.listings = res.listings;
-    this.total = res.count;
+    if (res.count) {
+      this.total = res.count;
+    }
 
     this.isTableLoading = false;
   }
 
   async deposit(hash: string) {
+    console.log('!!', hash);
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
       const modal = await this.modalCtrl.create({
@@ -191,6 +220,7 @@ export class TokenListingsComponent implements OnInit {
         hash,
         metaprotocol: 'marketplace',
         metaprotocolAction: 'deposit',
+        marketplaceType: 'cft20',
       },
     });
     modal.present();

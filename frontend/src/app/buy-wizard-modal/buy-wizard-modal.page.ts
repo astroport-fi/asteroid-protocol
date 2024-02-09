@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,34 +7,35 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import {
-  chevronForward,
-  keySharp,
-  pencilSharp,
-  createSharp,
-  checkmark,
-  closeOutline,
-  close,
-  helpCircleOutline,
-} from 'ionicons/icons';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
-import { LottieComponent } from 'ngx-lottie';
-import { WalletService } from '../core/service/wallet.service';
-import { environment } from 'src/environments/environment';
-import { ChainService } from '../core/service/chain.service';
-import { delay } from '../core/helpers/delay';
-import { Chain } from '../core/types/zeus';
-import { TxFee } from '../core/types/tx-fee';
+import { MaskitoModule } from '@maskito/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { MaskitoModule } from '@maskito/angular';
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { addIcons } from 'ionicons';
+import {
+  checkmark,
+  chevronForward,
+  close,
+  closeOutline,
+  createSharp,
+  helpCircleOutline,
+  keySharp,
+  pencilSharp,
+} from 'ionicons/icons';
+import { LottieComponent } from 'ngx-lottie';
+import { environment } from 'src/environments/environment';
+import { delay } from '../core/helpers/delay';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { ChainService } from '../core/service/chain.service';
+import { WalletService } from '../core/service/wallet.service';
+import { TxFee } from '../core/types/tx-fee';
+import { Chain } from '../core/types/zeus';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 
 @Component({
   selector: 'app-buy-wizard-modal',
@@ -87,6 +87,7 @@ export class BuyWizardModalPage implements OnInit {
     (this.gasEstimate *
       this.currentChain.feeCurrencies[0].gasPriceStep.average) /
     1000000; // Divide by 1 million to get the fee in uatom since the gas price is in 0.005 uatom format
+  chainFeeDisplay: number = 0;
   protocolFee: number = 0.005;
   protocolFeeAbsolute: number = 0.005;
 
@@ -96,7 +97,7 @@ export class BuyWizardModalPage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     private builder: FormBuilder,
-    private protocolService: MarketplaceService
+    private protocolService: MarketplaceService,
   ) {
     addIcons({ checkmark, closeOutline, close, helpCircleOutline });
     this.chain = Chain(environment.api.endpoint);
@@ -181,7 +182,7 @@ export class BuyWizardModalPage implements OnInit {
       'dynamic-percent'
     ) {
       const feePercentage = parseFloat(
-        (environment.fees.protocol.marketplace['buy'] as any).amount
+        (environment.fees.protocol.marketplace['buy'] as any).amount,
       );
       let fee = decimalTotal * feePercentage;
       if (fee < 0.000001) {
@@ -196,6 +197,8 @@ export class BuyWizardModalPage implements OnInit {
     }
 
     await this.updateFees();
+    this.chainFeeDisplay =
+      this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
     this.isLoading = false;
 
     if (result.marketplace_listing.length == 0) {
@@ -270,13 +273,14 @@ export class BuyWizardModalPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'deposit',
-      params
+      params,
     );
 
     let fees = await this.updateFees();
     // No fees on deposit
     fees.metaprotocol.denom = 'uatom';
     fees.metaprotocol.amount = '0';
+
     try {
       await this.updateSimulate(urn, null, null, fees, [purchaseMessageJSON]);
     } catch (e) {
@@ -297,6 +301,9 @@ export class BuyWizardModalPage implements OnInit {
 
   async buy() {
     let fees = await this.updateFees();
+    fees.metaprotocol.receiver = (
+      environment.fees.protocol.marketplace['buy'] as any
+    ).receiver;
     fees.metaprotocol.denom = 'uatom';
     fees.metaprotocol.amount = this.protocolFeeAbsolute.toString();
 
@@ -334,7 +341,7 @@ export class BuyWizardModalPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'buy.' + this.marketplaceType,
-      params
+      params,
     );
 
     try {
@@ -399,14 +406,14 @@ export class BuyWizardModalPage implements OnInit {
     metadata: string | null,
     data: string | null,
     fees: TxFee,
-    messages: any[]
+    messages: any[],
   ) {
     const simulateTx = await this.walletService.createSimulated(
       urn,
       metadata,
       data,
       fees,
-      messages
+      messages,
     );
     const result = await this.chainService.simulateTransaction(simulateTx);
 
@@ -435,18 +442,26 @@ export class BuyWizardModalPage implements OnInit {
     metadata: string | null,
     data: string | null,
     fees: TxFee,
-    messages: any[]
+    messages: any[],
   ) {
     try {
       fees.chain.denom = this.currentChain.feeCurrencies[0].coinMinimalDenom;
+
       fees.chain.amount = this.chainFee.toFixed(0);
+
+      // TODO Note
+      // For some reason sending token to another address now requires a higher fee
+      // on testnet
+      if (environment.fees.chain.minFee != '0') {
+        fees.chain.amount = environment.fees.chain.minFee;
+      }
 
       const signedTx = await this.walletService.sign(
         urn,
         metadata,
         data,
         fees,
-        messages
+        messages,
       );
 
       this.wizardStep = 'inflight-deposit';
@@ -466,9 +481,6 @@ export class BuyWizardModalPage implements OnInit {
               if (tx.code == 0) {
                 // Depending on the flow, we need to either show success for purchase
                 // or we need to move on to buying
-                console.log('RESULT-gOT 0');
-                console.log('Check listing with hash', this.hash);
-
                 // Query API to see if deposit was accepted
                 // Transaction was found on chain, now check indexer
                 const result = await this.chain('query')({
@@ -493,8 +505,10 @@ export class BuyWizardModalPage implements OnInit {
                     'success'
                   ) {
                     // If the indexer reported success, we can move on to the next step
+                    this.txHash = '';
                     const fees = await this.updateFees();
                     this.wizardStep = 'buy';
+                    break;
                   } else if (
                     result.transaction[0].status_message
                       .toLowerCase()
@@ -503,7 +517,7 @@ export class BuyWizardModalPage implements OnInit {
                     // We hit an error
                     this.wizardStep = 'failed';
                     this.errorText = this.mapToHumanError(
-                      result.transaction[0].status_message
+                      result.transaction[0].status_message,
                     );
                     break;
                   }
@@ -516,9 +530,6 @@ export class BuyWizardModalPage implements OnInit {
               if (tx.code == 0) {
                 // Depending on the flow, we need to either show success for purchase
                 // or we need to move on to buying
-                console.log('RESULT-gOT 0');
-                console.log('Check listing with hash', this.hash);
-
                 // Query API to see if deposit was accepted
                 // Transaction was found on chain, now check indexer
                 const result = await this.chain('query')({
@@ -551,7 +562,7 @@ export class BuyWizardModalPage implements OnInit {
                     // We hit an error
                     this.wizardStep = 'failed';
                     this.errorText = this.mapToHumanError(
-                      result.transaction[0].status_message
+                      result.transaction[0].status_message,
                     );
                     break;
                   }

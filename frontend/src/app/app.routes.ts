@@ -79,23 +79,6 @@ export const routes: Routes = [
       {
         path: 'market/:quote',
         loadComponent: () =>
-          import('./trade-token-v2/trade-token-v2.page').then(
-            (m) => m.TradeTokenV2Page,
-          ),
-      },
-      {
-        path: 'swap',
-        loadComponent: () =>
-          import('./swap/swap.component').then((m) => m.SwapPage),
-      },
-      {
-        path: 'swap/:quote',
-        loadComponent: () =>
-          import('./swap/swap.component').then((m) => m.SwapPage),
-      },
-      {
-        path: 'swap/:quote/:kind',
-        loadComponent: () =>
           import('./swap/swap.component').then((m) => m.SwapPage),
       },
       {

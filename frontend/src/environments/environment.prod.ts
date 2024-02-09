@@ -95,6 +95,7 @@ export const environment = {
     },
     chain: {
       gasLimit: '12000000',
+      minFee: '0',
     },
   },
   api: {

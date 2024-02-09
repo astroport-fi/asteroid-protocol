@@ -134,7 +134,7 @@ export class SwapSellPage implements OnInit {
     emitter.subscribe((holding) => {
       this.modalCtrl.dismiss();
       if (this.token.id !== holding.token.id) {
-        this.router.navigate(['/app/swap', holding.token.ticker, 'sell']);
+        this.router.navigate(['/app/market', holding.token.ticker, 'sell']);
       }
     });
     await modal.present();

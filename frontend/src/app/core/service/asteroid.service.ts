@@ -9,7 +9,7 @@ import {
   OperationOptions,
   Selector,
   ValueTypes,
-  marketplace_cft20_detail_select_column,
+  Variable,
   order_by,
 } from '../types/zeus/index';
 
@@ -48,6 +48,16 @@ export type Operations<
   o: (Z & ValueTypes[R]) | ValueTypes[R],
   ops?: OperationOptions & { variables?: Record<string, unknown> },
 ) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
+
+type First<T extends unknown> = T extends [any, ...infer R]
+  ? T extends [...infer F, ...R]
+    ? F[0]
+    : never
+  : never;
+
+export type QueryOptions<T extends keyof ValueTypes['query_root']> = First<
+  ValueTypes['query_root'][T]
+>;
 
 const tokenSelector = Selector('token')({
   id: true,
@@ -92,6 +102,12 @@ export type Status = InputType<
   ScalarDefinition
 >;
 
+const aggregateCountSelector = Selector('marketplace_cft20_detail_aggregate')({
+  aggregate: {
+    count: [{}, true],
+  },
+});
+
 const cft20ListingSelector = Selector('marketplace_cft20_detail')({
   id: true,
   marketplace_listing: {
@@ -118,7 +134,7 @@ export type CFT20MarketplaceListing = InputType<
 
 export type TokenListings = {
   listings: CFT20MarketplaceListing[];
-  count: number;
+  count?: number;
 };
 
 @Injectable({
@@ -126,11 +142,11 @@ export type TokenListings = {
 })
 export class AsteroidService {
   chain: Chain;
-  subscription?: Subscription;
+  ws: Subscription;
 
   constructor() {
     this.chain = Chain(environment.api.endpoint);
-    this.subscription = Subscription(environment.api.wss);
+    this.ws = Subscription(environment.api.wss);
   }
 
   get query(): Operations<'query', ScalarDefinition> {
@@ -235,6 +251,7 @@ export class AsteroidService {
     offset: number = 0,
     limit: number = 20,
     orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
+    aggregate = false,
   ): Promise<TokenListings> {
     if (!orderBy) {
       orderBy = {
@@ -256,17 +273,18 @@ export class AsteroidService {
       },
     };
 
-    const listingsResult = await this.query({
-      marketplace_cft20_detail_aggregate: [
-        {
-          where,
-        },
-        {
-          aggregate: {
-            count: [{}, true],
-          },
-        },
-      ],
+    type Query = {
+      marketplace_cft20_detail: [
+        QueryOptions<'marketplace_cft20_detail'>,
+        typeof cft20ListingSelector,
+      ];
+      marketplace_cft20_detail_aggregate?: [
+        QueryOptions<'marketplace_cft20_detail_aggregate'>,
+        typeof aggregateCountSelector,
+      ];
+    };
+
+    const query: Query = {
       marketplace_cft20_detail: [
         {
           where,
@@ -276,11 +294,62 @@ export class AsteroidService {
         },
         cft20ListingSelector,
       ],
-    });
+    };
+
+    if (aggregate) {
+      query.marketplace_cft20_detail_aggregate = [
+        {
+          where,
+        },
+        {
+          aggregate: {
+            count: [{}, true],
+          },
+        },
+      ];
+    }
+
+    const listingsResult = await this.query(query);
+
+    let count: number | undefined;
+    if (aggregate) {
+      count =
+        listingsResult.marketplace_cft20_detail_aggregate?.aggregate?.count;
+    }
+
     return {
-      count: listingsResult.marketplace_cft20_detail_aggregate.aggregate!.count,
+      count,
       listings: listingsResult.marketplace_cft20_detail,
     };
+  }
+
+  tokenListingsSubscription(tokenId: number, limit: number) {
+    return this.ws<'subscription', ScalarDefinition>('subscription')({
+      marketplace_cft20_detail: [
+        {
+          where: {
+            token_id: {
+              _eq: tokenId,
+            },
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false,
+              },
+              is_filled: {
+                _eq: false,
+              },
+            },
+          },
+          limit,
+          order_by: [
+            {
+              amount: order_by.asc,
+            },
+          ],
+        },
+        cft20ListingSelector,
+      ],
+    });
   }
 
   async getTokenFloorPrice(tokenId: number) {
