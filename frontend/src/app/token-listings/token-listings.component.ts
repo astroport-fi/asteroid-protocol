@@ -197,7 +197,6 @@ export class TokenListingsComponent implements OnInit {
   }
 
   async deposit(hash: string) {
-    console.log('!!', hash);
     if (!this.walletService.hasWallet()) {
       // Popup explaining that Keplr is needed and needs to be installed first
       const modal = await this.modalCtrl.create({

@@ -343,7 +343,7 @@ export class AsteroidService {
           limit,
           order_by: [
             {
-              amount: order_by.asc,
+              ppt: order_by.asc,
             },
           ],
         },
