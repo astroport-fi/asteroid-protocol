@@ -15,12 +15,12 @@ curl -sSf https://atlasgo.sh | sh
 
 ### Guides
 
-- Migrations for GORM - https://atlasgo.io/guides/orms/gorm
+- Getting started - https://atlasgo.io/getting-started/
 - Upgrading our production database to use versioned migrations - https://entgo.io/docs/versioned/upgrade-prod/
 
 ### Create a migration
 
-1. Update model(s)
+1. Update `schema.sql`
 2. Run `make create-migration`
 
 ### Apply migration(s)
