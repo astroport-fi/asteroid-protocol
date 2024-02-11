@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/nsfw"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/datatypes"
@@ -45,6 +46,7 @@ type InscriptionMetadata struct {
 type Inscription struct {
 	chainID    string
 	db         *gorm.DB
+	nsfwWorker *nsfw.Worker
 	s3Endpoint string
 	s3Region   string
 	s3Bucket   string
@@ -56,7 +58,7 @@ type Inscription struct {
 	s3Token string
 }
 
-func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB, nsfwWorker *nsfw.Worker) *Inscription {
 
 	// Parse config environment variables for self
 	var config InscriptionConfig
@@ -68,6 +70,7 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
 	return &Inscription{
 		chainID:    chainID,
 		db:         db,
+		nsfwWorker: nsfwWorker,
 		s3Endpoint: config.S3Endpoint,
 		s3Region:   config.S3Region,
 		s3Bucket:   config.S3Bucket,
@@ -143,6 +146,9 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			return fmt.Errorf("unable to store content '%s'", err)
 		}
 
+		// check if content is explicit
+		isExplicit := protocol.nsfwWorker.CheckImage(content)
+
 		inscriptionModel := models.Inscription{
 			ChainID:          parsedURN.ChainID,
 			Height:           transactionModel.Height,
@@ -155,6 +161,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			Metadata:         datatypes.JSON(metadata),
 			ContentPath:      contentPath,
 			ContentSizeBytes: uint64(len(content)),
+			IsExplicit:       isExplicit,
 			DateCreated:      transactionModel.DateCreated,
 		}
 

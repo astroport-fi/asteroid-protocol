@@ -50,10 +50,13 @@
             <ng-template pTemplate="body" let-token>
               <tr [routerLink]="['/app/token', token.ticker]">
                 <td class="token-logo">
-                  <div class="image">
+                  <div class="image" *ngIf="!token.is_explicit">
                     <img [src]="token.content_path" *ngIf="token.content_path" />
                     <img class="no-logo" src="../../assets/logo/a-white-on-transparent-250.png"
                       *ngIf="!token.content_path" />
+                  </div>
+                  <div class="explicit" *ngIf="token.is_explicit">
+                    <ion-icon name="eye-off-outline"></ion-icon>
                   </div>
                 </td>
                 <td>{{ token.id }}</td>

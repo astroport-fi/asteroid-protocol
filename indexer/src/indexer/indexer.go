@@ -18,6 +18,7 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/nsfw"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
@@ -34,6 +35,8 @@ type Config struct {
 	RPCEndpoints             []string          `envconfig:"RPC_ENDPOINTS" required:"true"`
 	EndpointHeaders          map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
 	BlockPollIntervalMS      int               `envconfig:"BLOCK_POLL_INTERVAL_MS" required:"true"`
+	NsfwModelPath            string            `envconfig:"NSFW_MODEL_PATH" default:"./model"`
+	NsfwWorkerEnabled        bool              `envconfig:"NSFW_WORKER_ENABLED" default:"true"`
 }
 
 // Indexer implements the reference indexer service
@@ -48,6 +51,7 @@ type Indexer struct {
 	metaprotocols            map[string]metaprotocol.Processor
 	stopChannel              chan bool
 	db                       *gorm.DB
+	nsfw                     *nsfw.Worker
 	wg                       sync.WaitGroup
 }
 
@@ -71,9 +75,12 @@ func New(
 
 	}
 
+	nsfwWorker := nsfw.NewWorker(log, config.NsfwModelPath, config.NsfwWorkerEnabled)
+	nsfwWorker.Start()
+
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
-	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, nsfwWorker)
+	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db, nsfwWorker)
 	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db)
 
 	return &Indexer{
@@ -87,6 +94,7 @@ func New(
 		logger:                   log,
 		stopChannel:              make(chan bool),
 		db:                       db,
+		nsfw:                     nsfwWorker,
 	}, nil
 }
 
@@ -109,6 +117,7 @@ func (i *Indexer) Stop() error {
 	i.logger.Info("Stopping indexer")
 	i.stopChannel <- true
 	i.stopChannel <- true
+	i.nsfw.Stop()
 	return nil
 }
 

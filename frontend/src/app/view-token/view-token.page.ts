@@ -97,6 +97,7 @@ export class ViewTokenPage implements OnInit {
           content_path: true,
           content_size_bytes: true,
           circulating_supply: true,
+          is_explicit: true,
           date_created: true,
         },
       ],

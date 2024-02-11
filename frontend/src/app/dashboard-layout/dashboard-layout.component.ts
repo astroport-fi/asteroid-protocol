@@ -184,7 +184,7 @@ export class DashboardLayoutComponent {
         },
       ],
     }).on(({ status }) => {
-      this.maxHeight = status[0].last_known_height;
+      this.maxHeight = status[0].last_known_height!;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
     });

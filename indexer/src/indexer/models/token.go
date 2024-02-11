@@ -24,6 +24,7 @@ type Token struct {
 	Metadata          datatypes.JSON `gorm:"column:metadata"`
 	ContentPath       string         `gorm:"column:content_path"`
 	ContentSizeBytes  uint64         `gorm:"column:content_size_bytes"`
+	IsExplicit        bool           `gorm:"column:is_explicit"`
 	CirculatingSupply uint64         `gorm:"column:circulating_supply"`
 	LastPriceBase     uint64         `gorm:"column:last_price_base"`
 	Volume24Base      uint64         `gorm:"column:volume_24_base"`
