@@ -239,7 +239,7 @@ setupCommand(marketplaceListCommand.command('cft20'))
   .option(
     '-d, --min-deposit <MIN_DEPOSIT>',
     'The minimum deposit expressed as a percentage of total',
-    '10',
+    '0.1',
   )
   .option(
     '-b, --timeout-blocks <DECIMALS>',
@@ -252,7 +252,7 @@ setupCommand(marketplaceListCommand.command('cft20'))
         options.ticker,
         parseInt(options.amount, 10),
         parseFloat(options.price),
-        parseInt(options.minDeposit),
+        parseFloat(options.minDeposit),
         parseInt(options.timeoutBlocks),
       )
     })
