@@ -167,6 +167,29 @@ export class SigningStargateClient extends StargateClient {
     return Uint53.fromString(gasInfo.gasUsed.toString()).toNumber()
   }
 
+  public async estimate(
+    signerAddress: string,
+    messages: readonly EncodeObject[],
+    memo: string | undefined,
+    nonCriticalExtensionOptions?: Any[],
+    fee: StdFee | 'auto' = 'auto',
+  ) {
+    assertDefined(
+      this.gasPrice,
+      'Gas price must be set in the client options when auto gas is used.',
+    )
+    const gasEstimation = await this.simulate(
+      signerAddress,
+      messages,
+      memo,
+      nonCriticalExtensionOptions,
+    )
+    // Starting with Cosmos SDK 0.47, we see many cases in which 1.3 is not enough anymore
+    // E.g. https://github.com/cosmos/cosmos-sdk/issues/16020
+    const multiplier = typeof fee === 'number' ? fee : 1.4
+    return calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice)
+  }
+
   public async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],

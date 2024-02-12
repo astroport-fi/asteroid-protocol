@@ -1,0 +1,36 @@
+--- index1.ts	2024-02-08 20:32:34.403926097 +0100
++++ index2.ts	2024-02-08 20:34:23.057263589 +0100
+@@ -178,7 +178,7 @@
+     }
+     const hasOperationName =
+       root && options?.operationName ? ' ' + options.operationName : ''
+-    const keyForDirectives = o.__directives ?? ''
++    const keyForDirectives = o['__directives'] ?? ''
+     const query = `{${Object.entries(o)
+       .filter(([k]) => k !== '__directives')
+       .map((e) =>
+@@ -497,7 +497,7 @@
+     super('')
+     console.error(response)
+   }
+-  toString() {
++  override toString() {
+     return 'GraphQL Response Error'
+   }
+ }
+@@ -673,6 +673,7 @@
+         }
+       }
+     }
++    return 'not'
+   }
+   const ResolveReturnType = (mappedParts: Part[]) => {
+     if (mappedParts.length === 0) {
+@@ -692,6 +693,7 @@
+         )
+       }
+     }
++    return 'not'
+   }
+   const rpp = (path: string): 'enum' | 'not' | `scalar.${string}` => {
+     const parts = path.split(SEPARATOR).filter((l) => l.length > 0)

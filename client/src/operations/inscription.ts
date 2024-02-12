@@ -1,5 +1,7 @@
 import InscriptionProtocol, {
-  ContentInscription,
+  ContentMetadata,
+  Parent,
+  accountIdentifier,
 } from '../metaprotocol/inscription.js'
 import { OperationsBase } from './index.js'
 
@@ -13,12 +15,16 @@ export class InscriptionOperations extends OperationsBase {
     this.address = address
   }
 
-  inscribe(data: string | Buffer, metadata: ContentInscription) {
-    const inscription = this.protocol.createInscription(
-      this.address,
-      data,
-      metadata,
-    )
+  inscribe<T = ContentMetadata>(
+    data: string | Buffer,
+    metadata: T,
+    parent?: Parent,
+  ) {
+    if (!parent) {
+      parent = accountIdentifier(this.address)
+    }
+
+    const inscription = this.protocol.createInscription(data, metadata, parent)
     const operation = this.protocol.inscribe(inscription.hash)
     return this.prepareOperation(operation, inscription)
   }

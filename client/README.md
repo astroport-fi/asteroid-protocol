@@ -13,7 +13,7 @@ SKD exposes Operations class for each metaprotocol and calling a metaprotocol op
 ### Operations
 
 - `InscriptionOperations`
-  - `inscribe(data: string | Buffer, metadata: ContentInscription): TxData`
+  - `inscribe(data: string | Buffer, metadata: ContentMetadata): TxData`
   - `transfer(hash: string, destination: string): TxData`
 
 - `CFT20Operations`
