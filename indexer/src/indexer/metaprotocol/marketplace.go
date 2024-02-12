@@ -264,7 +264,156 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 	case "list.inscription":
-		// TODO: Implement
+
+		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
+
+		// Check if the inscription exists
+		// Inscriptions are stored by their transaction hash
+		var transactionModel models.Transaction
+		result := protocol.db.Debug().Where("hash = ?", hash).First(&transactionModel)
+		if result.Error != nil {
+			return fmt.Errorf("inscription with hash '%s' doesn't exist", hash)
+		}
+
+		var inscriptionModel models.Inscription
+		result = protocol.db.Where("transaction_id = ?", transactionModel.ID).First(&inscriptionModel)
+		if result.Error != nil {
+			return fmt.Errorf("inscription with hash '%s' couldn't be found", hash)
+		}
+
+		// Verify the address creating the listing is the owner of the inscription
+		if inscriptionModel.CurrentOwner != sender {
+			return fmt.Errorf("sender is not the owner of the inscription")
+		}
+
+		// We will actually be sending the inscription to the marketplace address
+		destinationAddress := protocol.virtualAddress
+
+		// Check required fields
+		amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+		// Convert amount to have the correct number of decimals
+		amount, err := strconv.ParseFloat(amountString, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse amount '%s'", err)
+		}
+		if amount <= 0 {
+			return fmt.Errorf("amount must be greater than 0")
+		}
+
+		// 6 is the amount of ATOM decimals
+		totalBase := amount * math.Pow10(6)
+
+		// Get the minimum deposit
+		minDepositString := strings.TrimSpace(parsedURN.KeyValuePairs["mindep"])
+		// Convert amount to have the correct number of decimals
+		minDeposit, err := strconv.ParseFloat(minDepositString, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse mindep '%s'", err)
+		}
+		if minDeposit <= 0 {
+			return fmt.Errorf("minimum deposit must be greater than 0")
+		}
+		// TODO: Move 0.00001 (0.001%) to config as the minimum deposit percent
+		if minDeposit < 0.00001 {
+			return fmt.Errorf("minimum deposit percentage too small")
+		}
+
+		// Calculate the ATOM amount of the minimum deposit by checking against
+		// totalBase
+		minDepositBase := minDeposit * totalBase
+		if minDepositBase < 1 {
+			minDepositBase = 1
+		}
+
+		// Get the listing timeout
+		timeoutString := strings.TrimSpace(parsedURN.KeyValuePairs["to"])
+		timeout, err := strconv.ParseUint(timeoutString, 10, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse to '%s'", err)
+		}
+		if timeout < protocol.minimumTimeoutBlocks {
+			return fmt.Errorf("timeout must be greater than the minimum of %d", protocol.minimumTimeoutBlocks)
+		}
+
+		// Check that the correct amount was sent with the buy
+		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+
+		if amountSent < uint64(math.Floor(minDepositBase)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
+		}
+
+		// At this point we know that the sender has the inscription and everything
+		// checks out, transfer the inscription to the market
+		inscriptionModel.CurrentOwner = destinationAddress
+		result = protocol.db.Save(&inscriptionModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to transfer to marketplace '%s'", err)
+		}
+
+		// Create a listing position
+		listing := models.MarketplaceListing{
+			ChainID:          parsedURN.ChainID,
+			TransactionID:    currentTransaction.ID,
+			SellerAddress:    sender,
+			Total:            uint64(math.Round(totalBase)),
+			DepositTotal:     uint64(math.Round(minDepositBase)),
+			DepositorAddress: "",
+			DepositTimeout:   timeout,
+			IsDeposited:      false,
+			IsFilled:         false,
+			IsCancelled:      false,
+			DateUpdated:      currentTransaction.DateCreated,
+			DateCreated:      currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&listing)
+		if result.Error != nil {
+			return fmt.Errorf("unable to create listing '%s'", result.Error)
+		}
+
+		listingDetail := models.MarketplaceInscriptionDetail{
+			ListingID:     listing.ID,
+			InscriptionID: inscriptionModel.ID,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&listingDetail)
+		if result.Error != nil {
+			return fmt.Errorf("unable to create token listing '%s'", result.Error)
+		}
+
+		// Record the transfer
+		historyModel := models.InscriptionHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        currentTransaction.Height,
+			TransactionID: currentTransaction.ID,
+			InscriptionID: inscriptionModel.ID,
+			Sender:        sender,
+			Receiver:      destinationAddress,
+			Action:        "list",
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			// If we can't store the history, that fine, we shouldn't fail
+			_ = result
+		}
+
+		// Record the listing history
+		listingHistory := models.MarketplaceListingHistory{
+			ListingID:     listing.ID,
+			TransactionID: currentTransaction.ID,
+			SenderAddress: sender,
+			Action:        "list",
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&listingHistory)
+		if result.Error != nil {
+			// If we can't store the history, that is fine, we shouldn't fail
+			return nil
+		}
+
 	case "deposit":
 		action := "deposit"
 		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
@@ -433,6 +582,57 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			result = protocol.db.Save(&historyModel)
 			if result.Error != nil {
 				// If we can't store the history, that fine, we shouldn't fail
+				return nil
+			}
+			return nil
+
+		}
+
+		var inscriptionListingDetailModel models.MarketplaceInscriptionDetail
+		result = protocol.db.Where("listing_id = ?", listingModel.ID).First(&inscriptionListingDetailModel)
+		if result.Error == nil {
+			// This is an inscription listing, continue by returning the inscription
+			var inscriptionModel models.Inscription
+			result = protocol.db.Where("chain_id = ? AND id = ?", parsedURN.ChainID, inscriptionListingDetailModel.InscriptionID).First(&inscriptionModel)
+			if result.Error != nil {
+				return fmt.Errorf("sender never had this inscription to sell")
+			}
+
+			inscriptionModel.CurrentOwner = sender
+			result = protocol.db.Save(&inscriptionModel)
+			if result.Error != nil {
+				return fmt.Errorf("unable to update inscription's owner '%s'", err)
+			}
+
+			// Log history
+			// Record the transfer
+			historyModel := models.InscriptionHistory{
+				ChainID:       parsedURN.ChainID,
+				Height:        currentTransaction.Height,
+				TransactionID: currentTransaction.ID,
+				InscriptionID: inscriptionModel.ID,
+				Sender:        protocol.virtualAddress,
+				Receiver:      sender,
+				Action:        "delist",
+				DateCreated:   currentTransaction.DateCreated,
+			}
+			result = protocol.db.Save(&historyModel)
+			if result.Error != nil {
+				// If we can't store the history, that fine, we shouldn't fail
+				_ = result
+			}
+
+			// Record the listing history
+			listingHistory := models.MarketplaceListingHistory{
+				ListingID:     listingModel.ID,
+				TransactionID: currentTransaction.ID,
+				SenderAddress: sender,
+				Action:        "delist",
+				DateCreated:   currentTransaction.DateCreated,
+			}
+			result = protocol.db.Save(&listingHistory)
+			if result.Error != nil {
+				// If we can't store the history, that is fine, we shouldn't fail
 				return nil
 			}
 
@@ -653,6 +853,151 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
+	case "buy.inscription":
+		action := "buy"
+		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
+
+		// Buys are based on the listing transaction hash, find the transaction
+		// and matching listing
+		var transactionModel models.Transaction
+		result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
+		if result.Error != nil {
+			return fmt.Errorf("no listing transaction with hash '%s'", hash)
+		}
+
+		// Fetch listing based on hash
+		var listingModel models.MarketplaceListing
+		result = protocol.db.Where("chain_id = ? AND transaction_id = ?", parsedURN.ChainID, transactionModel.ID).First(&listingModel)
+		if result.Error != nil {
+			return fmt.Errorf("no listing with hash '%s'", hash)
+		}
+
+		// Fetch inscription listing detail
+		var listingDetailModel models.MarketplaceInscriptionDetail
+		result = protocol.db.Where("listing_id = ?", listingModel.ID).First(&listingDetailModel)
+		if result.Error != nil {
+			return fmt.Errorf("no inscription listing with hash '%s'", hash)
+		}
+
+		if listingModel.IsDeposited {
+			if listingModel.DepositorAddress != sender {
+				return fmt.Errorf("sender is not the depositor of the listing, buyer must deposit first")
+			}
+		} else {
+			return fmt.Errorf("listing has not been deposited, buyer must deposit first")
+		}
+
+		// Check the amount still owed after deposit
+		amountOwed := listingModel.Total - listingModel.DepositTotal
+
+		// Check that the correct amount was sent with the buy
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+
+		if amountSent < amountOwed {
+			return fmt.Errorf("sender did not send enough tokens to complete the buy")
+		}
+
+		// Verify that the sender sent enough to cover the feee
+		// Get amount owed with decimals
+		amountOwedWithDecimals := float64(amountOwed) / math.Pow10(6)
+		requiredFee := amountOwedWithDecimals * protocol.tradeFee
+		requiredFeeAbsolute := requiredFee * math.Pow10(6)
+		if requiredFeeAbsolute < 1 {
+			requiredFeeAbsolute = 1
+		}
+
+		// Check that the correct amount was sent with the buy
+		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+		if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
+		}
+
+		// Everything checks out, complete the buy and transfer the tokens to the buyer
+		listingModel.IsFilled = true
+		listingModel.DateUpdated = currentTransaction.DateCreated
+		result = protocol.db.Save(&listingModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Set the sender as the new owner of the inscription
+		var inscriptionModel models.Inscription
+		result = protocol.db.Where("chain_id = ? AND id = ?", parsedURN.ChainID, listingDetailModel.InscriptionID).First(&inscriptionModel)
+		if result.Error != nil {
+			// Somehow this inscription doesn't exist?
+			return result.Error
+		}
+
+		inscriptionModel.CurrentOwner = sender
+		result = protocol.db.Save(&inscriptionModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update owner '%s'", err)
+		}
+
+		// Record the listing history
+		listingHistory := models.MarketplaceListingHistory{
+			ListingID:     listingModel.ID,
+			TransactionID: currentTransaction.ID,
+			SenderAddress: sender,
+			Action:        action,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&listingHistory)
+		if result.Error != nil {
+			// If we can't store the history, that is fine, we shouldn't fail
+			return nil
+		}
+
+		// Record the transfer from marketplace to buyer
+		historyModel := models.InscriptionHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        currentTransaction.Height,
+			TransactionID: currentTransaction.ID,
+			InscriptionID: inscriptionModel.ID,
+			Sender:        protocol.virtualAddress,
+			Receiver:      sender,
+			Action:        action,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			// If we can't store the history, that fine, we shouldn't fail
+			_ = result
+		}
+
+		// CAPTURE TRADE HISTORY FOR VOLUME
+
+		// Get current USD price of the base
+		var statusModel models.Status
+		result = protocol.db.Where("chain_id = ?", parsedURN.ChainID).First(&statusModel)
+		if result.Error != nil {
+			// If this fails we just don't update the history
+			return nil
+		}
+
+		// Capture the trade in the history for future charts
+		totalWithDecimals := float64(listingModel.Total) / math.Pow10(6)
+		tradeHistory := models.InscriptionTradeHistory{
+			ChainID:       parsedURN.ChainID,
+			TransactionID: currentTransaction.ID,
+			InscriptionID: inscriptionModel.ID,
+			SellerAddress: listingModel.SellerAddress,
+			BuyerAddress:  sender,
+			AmountQuote:   listingModel.Total, // ATOM
+			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
+			DateCreated:   currentTransaction.DateCreated,
+		}
+		result = protocol.db.Save(&tradeHistory)
+		if result.Error != nil {
+			// Continue, this is not critical
+			_ = result
+		}
 	}
 
 	return nil

@@ -1,4 +1,4 @@
-<ion-content fullscreen="true">
+<ion-content>
   <ion-grid *ngIf="isLoading">
     <ion-row>
       <ion-col>
@@ -145,7 +145,8 @@
             </ion-row>
 
             <ion-row *ngIf="!isLoading && selectedSection == 'inscriptions'" class="p-4 text-center">
-              <ion-col size="12" class="mx-auto mb-4" *ngIf="inscriptions.length == 0">
+              <ion-col size="12" class="mx-auto mb-4"
+                *ngIf="inscriptions.length == 0 && listedInscriptions.length == 0">
                 <ion-grid>
                   <ion-row>
                     <ion-col size="12">
@@ -168,6 +169,36 @@
                     </ion-col>
                   </ion-row>
                 </ion-grid>
+              </ion-col>
+              <ion-col size="12" *ngIf="listedInscriptions.length > 0" class="list-status-heading">
+                Listed
+              </ion-col>
+              <ion-col size="12" *ngIf="listedInscriptions.length > 0">
+                <a class="inscription-item main-content"
+                  [routerLink]="['/app/inscription', item.inscription.transaction.hash]"
+                  *ngFor="let item of listedInscriptions; let index">
+                  <div class="content">
+                    <app-generic-preview [mime]="item.inscription.mime"
+                      [contentPath]="item.inscription.content_path"></app-generic-preview>
+                  </div>
+                  <h4>{{ item.inscription.name }}</h4>
+                  <div class="detail text-start">
+                    <div class="detail-item">
+                      <span>#{{item.inscription.id - 1}}</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>{{ item.inscription.mime | humanType }} ({{ item.inscription.content_size_bytes / 1024 |
+                        number: '1.0-0' }}
+                        kb)</span>
+                    </div>
+                    <div class="detail-item">
+                      <span>{{ item.inscription.date_created | dateAgo }}</span>
+                    </div>
+                  </div>
+                </a>
+              </ion-col>
+              <ion-col size="12" *ngIf="inscriptions.length > 0" class="list-status-heading">
+                Unlisted
               </ion-col>
               <ion-col size="12" *ngIf="inscriptions.length > 0">
                 <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"

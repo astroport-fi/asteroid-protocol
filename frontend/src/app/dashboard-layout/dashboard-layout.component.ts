@@ -1,5 +1,5 @@
 import { Component, EnvironmentInjector } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonApp,
   IonRouterOutlet,
@@ -22,8 +22,10 @@ import {
   IonGrid,
   IonRow,
   IonCol,
+  IonSelect,
+  IonSelectOption,
   ToastController,
-  ModalController,
+  ModalController, IonButtons, MenuController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
@@ -40,6 +42,7 @@ import {
   searchOutline,
   openOutline,
   eyeOffOutline,
+  add
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
@@ -65,7 +68,7 @@ export function playerFactory() {
   templateUrl: 'dashboard-layout.component.html',
   styleUrls: ['./dashboard-layout.component.scss'],
   standalone: true,
-  imports: [
+  imports: [IonButtons,
     CommonModule,
     IonApp,
     IonContent,
@@ -88,6 +91,8 @@ export function playerFactory() {
     IonGrid,
     IonRow,
     IonCol,
+    IonSelect,
+    IonSelectOption,
     RouterLink,
     RouterLinkActive,
     NgScrollbarModule,
@@ -103,12 +108,15 @@ export class DashboardLayoutComponent {
   maxHeight: number = 0;
   currentHeight: number = 0;
   lag: number = 0;
+  atomUSD: number = 0;
 
   constructor(
     private walletService: WalletService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private menuCtrl: MenuController,
+    private router: Router
   ) {
     addIcons({
       chevronForward,
@@ -123,7 +131,11 @@ export class DashboardLayoutComponent {
       searchOutline,
       openOutline,
       eyeOffOutline,
+      add
     });
+
+
+
   }
 
   async ngOnInit() {
@@ -181,12 +193,14 @@ export class DashboardLayoutComponent {
         {
           last_processed_height: true,
           last_known_height: true,
+          base_token_usd: true,
         },
       ],
     }).on(({ status }) => {
       this.maxHeight = status[0].last_known_height;
       this.currentHeight = status[0].last_processed_height;
       this.lag = this.maxHeight - this.currentHeight;
+      this.atomUSD = status[0].base_token_usd;
     });
   }
 
@@ -213,6 +227,7 @@ export class DashboardLayoutComponent {
     modal.present();
   }
 
+
   toggleWalletOptions() {
     this.showWalletOptions = !this.showWalletOptions;
   }
@@ -226,4 +241,12 @@ export class DashboardLayoutComponent {
     // Temp hack, reload to disconnect wallet from all components
     window.location.reload();
   }
+
+
+  menuChange(event: any) {
+    const destination = event.target.value;
+    event.target.value = '';
+    this.router.navigate([destination]);
+  }
 }
+

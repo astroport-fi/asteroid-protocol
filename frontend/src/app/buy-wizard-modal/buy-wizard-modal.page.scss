@@ -1,0 +1,199 @@
+:root {
+    border-radius: 10px !important;
+}
+
+:host {
+    border-radius: 10px !important;
+}
+
+ion-content {
+    // --background: var(--color-dark-teal);
+    // border-radius: 10px !important;
+    --background: hsla(0, 0%, 100%, .05) !important;
+    background-color: hsla(0, 0%, 100%, .05) !important;
+    backdrop-filter: blur(50px);
+    height: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.2s ease-in-out;
+
+}
+
+
+.mw-400 {
+    max-width: 400px;
+}
+
+.animation {
+    max-width: 150px;
+
+    &.large {
+        max-width: 200px;
+        height: 200px;
+    }
+}
+
+ion-col.note {
+    font-size: 14px;
+    color: #a7a7a7;
+
+    h3 {
+        font-size: 14px;
+        color: #ebebeb;
+    }
+
+    a {
+        color: var(--color-teal);
+    }
+}
+
+div.fees {
+    font-size: 14px;
+    color: #a7a7a7;
+    max-width: 270px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h4 {
+        font-size: 16px;
+        color: #ebebeb;
+        text-align: center;
+    }
+
+    table {
+        td {
+            padding-right: 12px;
+            padding-bottom: 4px;
+
+            &.label {
+                text-align: left;
+                font-weight: bold;
+            }
+
+            &.total {
+                padding-top: 10px;
+                border-top: 1px solid #a7a7a7;
+            }
+        }
+    }
+}
+
+div.icon-trigger {
+    display: inline;
+    font-size: 18px;
+    position: relative;
+
+    ion-icon {
+        top: 8px;
+        position: relative;
+        padding: 5px;
+        cursor: pointer;
+    }
+}
+
+ion-popover {
+    --background: hsla(0, 0%, 100%, .05) !important;
+}
+
+.shifted {
+    position: relative;
+    top: -6px;
+}
+
+ion-popover {
+    --background: hsla(0, 0%, 100%, .05) !important;
+}
+
+$number-of-steps: 2;
+
+$line-width: 2px;
+$bullet-size: 2.5em;
+
+$background-color: #555;
+$foreground-color: #999;
+
+$active-background-color: #ffffff;
+$active-foreground-color: var(--ion-color-light);
+
+ol {
+    position: relative;
+    overflow: hidden;
+    counter-reset: wizard;
+    list-style: none;
+}
+
+li {
+    position: relative;
+    float: left;
+    width: 100% / $number-of-steps;
+    text-align: center;
+    color: $active-background-color;
+    opacity: 0.8;
+
+}
+
+.success {
+    color: var(--ion-color-success);
+}
+
+.current~li {
+    color: $foreground-color;
+}
+
+li:before {
+    counter-increment: wizard;
+    content: counter(wizard);
+    display: block;
+    color: #333;
+    background-color: $active-background-color;
+    border: $line-width solid $active-background-color;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    width: $bullet-size;
+    height: $bullet-size;
+    line-height: $bullet-size;
+    border-radius: $bullet-size;
+    position: relative;
+    left: 50%;
+    margin-bottom: $bullet-size / 2;
+    margin-left: $bullet-size * -0.5;
+    z-index: 1;
+    transition: all 0.4s ease-in-out;
+
+    .current~& {
+        background-color: $background-color;
+        color: $foreground-color;
+        border-color: $background-color;
+
+    }
+
+}
+
+li.success:before {
+    opacity: 0.4;
+    background-color: var(--ion-color-success);
+    border-color: var(--ion-color-success);
+    color: #777;
+}
+
+
+li+li {
+    &:after {
+        opacity: 0.2;
+        content: "";
+        display: block;
+        width: 80%;
+        background-color: $active-background-color;
+        height: $line-width;
+        position: absolute;
+        left: -40%;
+        top: $bullet-size / 2;
+        z-index: 0;
+    }
+}
+
+.current~li:after {
+    opacity: 0.2;
+    background-color: $background-color;
+}

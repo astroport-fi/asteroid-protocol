@@ -1,0 +1,84 @@
+<ion-content class="main-content" mode="md">
+  <div class="modal-background">
+    <img src="../../assets/background/asteroids-dark-flipped.png" />
+  </div>
+  <form class="form" [formGroup]="sellForm" (ngSubmit)="submit()">
+    <ion-grid class="p-3">
+      <ion-row>
+        <ion-col class="text-center">
+          <h2>List "{{ name }}" for sale</h2>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <p>
+            This transaction will list your inscription for sale<br />You'll only receive the ATOM
+            from the sale should someone purchase it
+          </p>
+          <p>
+            Sales are final and can't be refunded. You may cancel a listing at any time before a successful reservation
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col offset-md="3" size-md="6" size="12">
+          <div formGroupName="basic">
+            <div class="mt-4">
+              <ion-input label="Price (ATOM)" labelPlacement="stacked" fill="outline" placeholder="10"
+                [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="amount"></ion-input>
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-col>
+          <ion-accordion-group>
+            <ion-accordion toggleIconSlot="start">
+              <ion-item slot="header">
+                <ion-label>Advanced</ion-label>
+              </ion-item>
+              <div class="ion-padding" slot="content">
+                <p class="note">
+                  You do not need to adjust these parameters. The defaults should suffice.
+                </p>
+                <div formGroupName="basic">
+                  <div class="mt-4 w-50">
+                    <ion-input label="Minimum deposit required" labelPlacement="stacked" fill="outline" placeholder="10"
+                      [maskito]="decimalMask" [maskitoElement]="maskPredicate" formControlName="minDeposit"></ion-input>
+                    <span class="note">This is the minimum percent someone needs to pay to reserve the listing,
+                      {{minDepositPercent}}% -
+                      {{maxDepositPercent}}%</span>
+                  </div>
+                  <div class="mt-4 w-50">
+                    <ion-input label="Timout in blocks" labelPlacement="stacked" fill="outline" placeholder="5"
+                      [maskito]="decimalMask" [maskitoElement]="maskPredicate"
+                      formControlName="timeoutBlocks"></ion-input>
+                    <span class="note">How long a reservation will be valid for, {{minTimeout}} - {{maxTimeout}}
+                      blocks</span>
+                  </div>
+                </div>
+              </div>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col>
+          <div class="p-3 mt-4 mb-4 color-danger" *ngIf="(sellForm.value.basic.amount | stripSpaces) < minTradeSize">
+            The minimum value of the listing must be at least {{ minTradeSize | number:'1.2-6' }} ATOM
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="action">
+            <ion-button color="success" type="submit"
+              [disabled]="(sellForm.value.basic.amount | stripSpaces) < minTradeSize">Confirm and
+              list</ion-button>
+            <ion-button color="primary" fill="clear" (click)="cancel()">Cancel</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

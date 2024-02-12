@@ -1,7 +1,7 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -16,7 +16,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1"
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
         class="main-content">
         <div class="loading p-4" *ngIf="isLoading">
           <ion-progress-bar type="indeterminate"></ion-progress-bar>
@@ -162,7 +162,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-listing>
                 <tr class="no-click">
-                  <td pFrozenColumn>{{ listing.id }}</td>
+                  <td pFrozenColumn>{{ listing.marketplace_listing.id }}</td>
                   <td class="mono">{{ listing.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{listing.ppt *
                     baseTokenUSD |
                     tokenDecimals:6 | number:'1.6-6'}})</td>
@@ -205,8 +205,8 @@
             </p-table>
           </div>
         </div>
-        <div style="height: 100px;"></div>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <div style="height: 100px;"></div>
 </ion-content>

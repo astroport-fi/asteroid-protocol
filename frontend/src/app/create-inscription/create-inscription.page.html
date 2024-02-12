@@ -7,7 +7,7 @@
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title>
+            <ion-title class="text-center">
               New inscription
             </ion-title>
           </ion-toolbar>
@@ -15,8 +15,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-lg="8" offset-lg="2"
+        size-xl="6" offset-xl="3" class="main-content">
         <div class="aligned">
           <p class="note">
             Inscriptions allow you to permanently write arbitrary data to the blockchain. The maximum size of an
@@ -72,8 +72,9 @@
                         [maxlength]="32" errorText="Please enter a name"></ion-input>
                     </div>
                     <div class="mt-2 ps-3">
-                      <ion-textarea class="no-border" fill="outline" label="Description" labelPlacement="stacked"
-                        placeholder="Describe you inscription" rows="4" formControlName="description"></ion-textarea>
+                      <ion-textarea class="no-border" fill="outline" label="Description (optional)"
+                        labelPlacement="stacked" placeholder="Describe your inscription" rows="10"
+                        formControlName="description"></ion-textarea>
                     </div>
                   </div>
                 </ion-col>
@@ -105,9 +106,8 @@
             </ion-grid>
           </form>
         </div>
-        <div style="height: 100px;"></div>
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <div style="height: 100px;"></div>
 </ion-content>

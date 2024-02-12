@@ -1,0 +1,43 @@
+ion-content {
+    --background: transparent;
+    backdrop-filter: blur(50px);
+}
+
+h1 {
+    font-size: 36px;
+}
+
+
+.meta {
+    .label {
+        font-size: 14px;
+        color: #dddddd;
+        font-weight: 600;
+        display: block;
+    }
+
+    .value {
+        font-size: 14px;
+        color: #ffffff;
+        font-weight: normal;
+        display: block;
+    }
+
+    a {
+        color: var(--color-teal);
+    }
+}
+
+.is-owner {
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.marketplace-price {
+    border: none;
+}
+
+.detail-item {
+    position: relative;
+    top: 8px;
+}

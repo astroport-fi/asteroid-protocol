@@ -270,7 +270,6 @@ export class TradeTokenTVPage implements OnInit {
     const listing = listingResult.marketplace_listing[0];
 
     const deposit: bigint = listing.deposit_total as bigint;
-    console.log(deposit);
 
     const purchaseMessage = {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
@@ -407,7 +406,6 @@ export class TradeTokenTVPage implements OnInit {
       );
       const fee = parseInt(totaluatom.toString()) * feePercentage;
       overrideFee = fee.toString();
-      console.log('overrideFee', overrideFee);
     }
 
     // Construct metaprotocol memo message

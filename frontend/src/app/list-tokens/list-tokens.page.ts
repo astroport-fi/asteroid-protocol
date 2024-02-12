@@ -111,7 +111,6 @@ export class ListTokensPage implements OnInit {
   }
 
   async load(event: TableLazyLoadEvent) {
-    console.log(event);
     this.isTableLoading = true;
 
     // Determine the sort order

@@ -1,57 +1,31 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col
-        size="12"
-        offset="0"
-        size-md="12"
-        offset-md="0"
-        size-md="10"
-        offset-md="1"
-        size-xl="10"
-        offset-xl="1"
-      >
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
         <ion-header class="no-shadow me-5">
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title> Inscriptions </ion-title>
+            <ion-title class="text-center">Inscriptions</ion-title>
           </ion-toolbar>
         </ion-header>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col
-        size="12"
-        offset="0"
-        size-md="12"
-        offset-md="0"
-        size-md="10"
-        offset-md="1"
-        size-xl="10"
-        offset-xl="1"
-      >
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
         <ion-grid>
           <ion-row>
             <ion-col>
               <ion-item lines="none">
-                <ion-searchbar
-                  [debounce]="500"
-                  (ionInput)="onChangeSearch($event.target.value)"
-                  placeholder="Search for #"
-                >
+                <ion-searchbar [debounce]="500" (ionInput)="onChangeSearch($event.target.value)"
+                  placeholder="Search by name or inscription number">
                 </ion-searchbar>
               </ion-item>
             </ion-col>
             <ion-col size="12" size-md="3">
               <ion-item class="ion-padding-start" lines="none">
-                <ion-select
-                  interface="popover"
-                  placeholder="Order"
-                  [(ngModel)]="order"
-                  (ionChange)="onChangeOrder()"
-                >
+                <ion-select interface="popover" placeholder="Order" [(ngModel)]="order" (ionChange)="onChangeOrder()">
                   <ion-select-option value="desc">Latest</ion-select-option>
                   <ion-select-option value="asc">Oldest</ion-select-option>
                 </ion-select>
@@ -63,26 +37,14 @@
     </ion-row>
 
     <ion-row>
-      <ion-col
-        size="12"
-        offset="0"
-        size-md="12"
-        offset-md="0"
-        size-md="10"
-        offset-md="1"
-        size-xl="10"
-        offset-xl="1"
-      >
+      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="10" offset-xl="1">
         <div class="aligned">
           <div *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
           </div>
           <div class="list" *ngIf="!isLoading && inscriptions.length > 0">
-            <a
-              class="inscription-item main-content"
-              [routerLink]="['/app/inscription', item.transaction.hash]"
-              *ngFor="let item of inscriptions; let index"
-            >
+            <a class="inscription-item main-content" [routerLink]="['/app/inscription', item.transaction.hash]"
+              *ngFor="let item of inscriptions; let index">
               <div class="content">
                 <app-generic-preview [mime]="item.mime" [contentPath]="item.content_path"
                   [isExplicit]="item.is_explicit"></app-generic-preview>
@@ -93,10 +55,8 @@
                   <span>#{{item.id-1}}</span>
                 </div>
                 <div class="detail-item">
-                  <span
-                    >{{ item.mime | humanType }} ({{ item.content_size_bytes /
-                    1024 | number: '1.0-1' }} kb)</span
-                  >
+                  <span>{{ item.mime | humanType }} ({{ item.content_size_bytes /
+                    1024 | number: '1.0-1' }} kb)</span>
                 </div>
 
                 <div class="detail-item">
