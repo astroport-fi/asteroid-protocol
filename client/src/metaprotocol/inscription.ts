@@ -7,10 +7,11 @@ import {
   buildOperation,
 } from './index.js'
 
-export type ContentInscription = {
+export type ContentMetadata = {
   name: string
   description: string
   mime: string
+  isExplicit?: boolean
 }
 
 export type Parent = {
@@ -18,9 +19,9 @@ export type Parent = {
   identifier: string
 }
 
-export type InscriptionMetadata = {
+export type InscriptionMetadata<T = ContentMetadata> = {
   parent: Parent
-  metadata: ContentInscription
+  metadata: T
 }
 
 const DEFAULT_FEE: ProtocolFee = {
@@ -28,6 +29,13 @@ const DEFAULT_FEE: ProtocolFee = {
   receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
   denom: 'uatom',
   operations: {},
+}
+
+export function accountIdentifier(accountAddress: string) {
+  return {
+    type: '/cosmos.bank.Account',
+    identifier: accountAddress,
+  }
 }
 
 export default class InscriptionProtocol extends BaseProtocol {
@@ -38,16 +46,13 @@ export default class InscriptionProtocol extends BaseProtocol {
     super(chainId, fee)
   }
 
-  createInscription(
-    accountAddress: string,
+  createInscription<T = ContentMetadata>(
     data: string | Buffer,
-    metadata: ContentInscription,
+    metadata: T,
+    parent: Parent,
   ): Inscription {
-    const inscriptionMetadata: InscriptionMetadata = {
-      parent: {
-        type: '/cosmos.bank.Account',
-        identifier: accountAddress,
-      },
+    const inscriptionMetadata: InscriptionMetadata<T> = {
+      parent,
       metadata,
     }
 
