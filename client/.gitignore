@@ -1,0 +1,11 @@
+/node_modules/
+**/node_modules/
+
+.DS_Store
+
+# IDEs
+*.iml
+.idea
+
+cjs
+esm

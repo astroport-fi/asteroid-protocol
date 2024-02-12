@@ -23,8 +23,7 @@ type MarketplaceConfig struct {
 
 	LCDEndpoints    []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
 	EndpointHeaders map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
-
-	IsMainnet bool `envconfig:"IS_MAINNET" required:"true"`
+	IbcEnabled      bool              `envconfig:"IBC_ENABLED" default:"true"`
 }
 
 type Marketplace struct {
@@ -35,11 +34,11 @@ type Marketplace struct {
 	minimumDeposit       float64
 	minimumTradeSize     float64
 	tradeFee             float64
+	ibcEnabled           bool
 	db                   *gorm.DB
 
 	lcdEndpoints    []string
 	endpointHeaders map[string]string
-	isMainnet       bool
 }
 
 func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
@@ -58,10 +57,10 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		minimumDeposit:       config.MinimumDeposit,
 		minimumTradeSize:     config.MinimumTradeSize,
 		tradeFee:             config.TradeFee,
+		ibcEnabled:           config.IbcEnabled,
 		db:                   db,
 		lcdEndpoints:         config.LCDEndpoints,
 		endpointHeaders:      config.EndpointHeaders,
-		isMainnet:            config.IsMainnet,
 	}
 }
 
@@ -172,25 +171,13 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("timeout must be greater than the minimum of %d", protocol.minimumTimeoutBlocks)
 		}
 
-		// On mainnet, we check IBC messages
-		if protocol.isMainnet {
-			// Verify that the sender has sent enough tokens to cover the listing fee
-			amountSent, err := GetBaseTokensSentIBC(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(minDepositBase)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
-			}
-		} else {
-			// Verify that the sender has sent enough tokens to cover the listing fee
-			amountSent, err := GetBaseTokensSent(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(minDepositBase)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
-			}
+		// Verify that the sender has sent enough tokens to cover the listing fee
+		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+		if amountSent < uint64(math.Floor(minDepositBase)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
 		}
 
 		// Check that the user has enough tokens to sell
@@ -348,25 +335,14 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("timeout must be greater than the minimum of %d", protocol.minimumTimeoutBlocks)
 		}
 
-		// On mainnet, we check IBC messages
-		if protocol.isMainnet {
-			// Verify that the sender has sent enough tokens to cover the listing fee
-			amountSent, err := GetBaseTokensSentIBC(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(minDepositBase)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
-			}
-		} else {
-			// Verify that the sender has sent enough tokens to cover the listing fee
-			amountSent, err := GetBaseTokensSent(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(minDepositBase)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
-			}
+		// Check that the correct amount was sent with the buy
+		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+
+		if amountSent < uint64(math.Floor(minDepositBase)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
 		}
 
 		// At this point we know that the sender has the inscription and everything
@@ -475,7 +451,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Check that the correct amount was sent with the deposit
-		amountSent, err := GetBaseTokensSent(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -700,7 +676,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -718,24 +694,13 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			requiredFeeAbsolute = 1
 		}
 
-		if protocol.isMainnet {
-			// Verify that the sender has sent enough tokens to cover the fee
-			amountSent, err = GetBaseTokensSentIBC(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
-			}
-		} else {
-			// Verify that the sender has sent enough tokens to cover the fee
-			amountSent, err = GetBaseTokensSent(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
-			}
+		// Verify that the sender has sent enough tokens to cover the fee
+		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+		if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
 		}
 
 		// Everything checks out, complete the buy and transfer the tokens to the buyer
@@ -926,7 +891,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction)
+		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -944,24 +909,13 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			requiredFeeAbsolute = 1
 		}
 
-		if protocol.isMainnet {
-			// Verify that the sender has sent enough tokens to cover the fee
-			amountSent, err = GetBaseTokensSentIBC(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
-			}
-		} else {
-			// Verify that the sender has sent enough tokens to cover the fee
-			amountSent, err = GetBaseTokensSent(rawTransaction)
-			if err != nil {
-				return fmt.Errorf("invalid tokens sent '%s'", err)
-			}
-			if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
-				return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
-			}
+		// Check that the correct amount was sent with the buy
+		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		if err != nil {
+			return fmt.Errorf("invalid tokens sent '%s'", err)
+		}
+		if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
+			return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
 		}
 
 		// Everything checks out, complete the buy and transfer the tokens to the buyer
