@@ -1,0 +1,26 @@
+table:
+  name: inscription_trade_history
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      foreign_key_constraint_on: inscription_id
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount_quote
+        - buyer_address
+        - chain_id
+        - seller_address
+        - id
+        - inscription_id
+        - transaction_id
+        - total_usd
+        - date_created
+      filter: {}
+      allow_aggregations: true
+    comment: ""

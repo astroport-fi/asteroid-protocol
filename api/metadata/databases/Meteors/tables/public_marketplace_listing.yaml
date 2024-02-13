@@ -20,6 +20,13 @@ array_relationships:
         table:
           name: marketplace_cft20_trade_history
           schema: public
+  - name: marketplace_inscription_details
+    using:
+      foreign_key_constraint_on:
+        column: listing_id
+        table:
+          name: marketplace_inscription_detail
+          schema: public
   - name: marketplace_listing_histories
     using:
       foreign_key_constraint_on:

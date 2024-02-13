@@ -13,23 +13,37 @@ array_relationships:
         table:
           name: inscription_history
           schema: public
+  - name: inscription_trade_histories
+    using:
+      foreign_key_constraint_on:
+        column: inscription_id
+        table:
+          name: inscription_trade_history
+          schema: public
+  - name: marketplace_inscription_details
+    using:
+      foreign_key_constraint_on:
+        column: inscription_id
+        table:
+          name: marketplace_inscription_detail
+          schema: public
 select_permissions:
   - role: anonymous
     permission:
       columns:
-        - is_explicit
         - chain_id
         - content_hash
         - content_path
+        - content_size_bytes
         - creator
         - current_owner
-        - type
-        - version
-        - content_size_bytes
+        - date_created
         - height
         - id
-        - transaction_id
+        - is_explicit
         - metadata
-        - date_created
+        - transaction_id
+        - type
+        - version
       filter: {}
     comment: ""
