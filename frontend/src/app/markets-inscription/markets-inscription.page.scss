@@ -96,5 +96,8 @@
 }
 
 .inscription-activity {
-  min-width: 300px;
+  min-width: 250px;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  max-width: 400px;
 }
