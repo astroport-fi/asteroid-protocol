@@ -373,6 +373,7 @@ export class BuyWizardModalPage implements OnInit {
     try {
       fees.chain.denom = this.currentChain.feeCurrencies[0].coinMinimalDenom;
       fees.chain.amount = this.chainFee.toFixed(0);
+      fees.gasLimit = this.gasEstimate.toFixed(0);
 
       const signedTx = await this.walletService.sign(urn, metadata, data, fees, messages);
 
