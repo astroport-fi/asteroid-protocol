@@ -22,8 +22,14 @@ a {
   }
 }
 
+.activity-container {
+  position: absolute;
+  height: 100%;
+}
+
 .activity-content {
-  height: 70vh;
+  position: relative;
+  height: calc(100% - 100px);
   overflow: auto;
   scrollbar-width: none;
 }
