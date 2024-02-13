@@ -148,8 +148,15 @@ export class BuyWizardModalPage implements OnInit {
       this.overrideFee = fee;
     }
 
-    await this.updateFees();
-    this.chainFeeDisplay = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+    // Simulate the transaction to get accurate gas estimate
+    if (this.wizardStep == 'deposit') {
+      await this.deposit(true);
+    } else if (this.wizardStep == 'buy') {
+      await this.buy(true);
+    }
+
+    this.chainFeeDisplay = this.chainFee;// * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
+
     this.isLoading = false;
 
     if (result.marketplace_listing.length == 0) {
@@ -181,13 +188,9 @@ export class BuyWizardModalPage implements OnInit {
       }
       // If the timeout has passed, show regular deposit flow
     }
-
-
-
-
   }
 
-  async deposit() {
+  async deposit(simulateOnly: boolean = true) {
 
     const deposit: bigint = this.listing.deposit_total as bigint;
 
@@ -228,7 +231,6 @@ export class BuyWizardModalPage implements OnInit {
     fees.metaprotocol.denom = "uatom";
     fees.metaprotocol.amount = "0";
 
-
     try {
       await this.updateSimulate(urn, null, null, fees, [purchaseMessageJSON]);
     } catch (e) {
@@ -236,7 +238,9 @@ export class BuyWizardModalPage implements OnInit {
       this.errorText = "Failed to simulate transaction: " + e;
       return;
     }
-
+    if (simulateOnly) {
+      return;
+    }
     // Submit transaction to sign and broadcast
     try {
       await this.submitTransaction(urn, null, null, fees, [purchaseMessage]);
@@ -246,9 +250,10 @@ export class BuyWizardModalPage implements OnInit {
       return;
     }
 
+
   }
 
-  async buy() {
+  async buy(simulateOnly: boolean = true) {
     let fees = await this.updateFees();
     fees.metaprotocol.receiver = (environment.fees.protocol.marketplace["buy"] as any).receiver;
     fees.metaprotocol.denom = "uatom";
@@ -295,6 +300,9 @@ export class BuyWizardModalPage implements OnInit {
     } catch (e) {
       this.wizardStep = "failed";
       this.errorText = "Failed to simulate transaction: " + e;
+      return;
+    }
+    if (simulateOnly) {
       return;
     }
 
@@ -358,22 +366,13 @@ export class BuyWizardModalPage implements OnInit {
 
       // Convert to uatom
       this.chainFee = this.chainFee * 10 ** this.currentChain.feeCurrencies[0].coinDecimals;
-
     }
   }
 
   async submitTransaction(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
     try {
       fees.chain.denom = this.currentChain.feeCurrencies[0].coinMinimalDenom;
-
       fees.chain.amount = this.chainFee.toFixed(0);
-
-      // TODO Note
-      // For some reason sending token to another address now requires a higher fee
-      // on testnet
-      if (environment.fees.chain.minFee != "0") {
-        fees.chain.amount = environment.fees.chain.minFee;
-      }
 
       const signedTx = await this.walletService.sign(urn, metadata, data, fees, messages);
 
@@ -415,8 +414,11 @@ export class BuyWizardModalPage implements OnInit {
                   if (result.transaction[0].status_message.toLowerCase() == 'success') {
                     // If the indexer reported success, we can move on to the next step
                     this.txHash = '';
-                    const fees = await this.updateFees();
+                    // const fees = await this.updateFees();
+                    // Simulate buy to get correct fees
+                    await this.buy(true);
                     this.wizardStep = 'buy';
+                    this.chainFeeDisplay = this.chainFee;
                     break;
 
                   } else if (result.transaction[0].status_message.toLowerCase().includes('error')) {
