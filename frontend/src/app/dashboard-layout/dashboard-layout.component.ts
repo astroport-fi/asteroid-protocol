@@ -25,7 +25,9 @@ import {
   IonSelect,
   IonSelectOption,
   ToastController,
-  ModalController, IonButtons, MenuController
+  ModalController,
+  IonButtons,
+  MenuController,
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
@@ -42,7 +44,8 @@ import {
   searchOutline,
   openOutline,
   eyeOffOutline,
-  add
+  timeOutline,
+  add,
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { WalletService } from '../core/service/wallet.service';
@@ -68,7 +71,8 @@ export function playerFactory() {
   templateUrl: 'dashboard-layout.component.html',
   styleUrls: ['./dashboard-layout.component.scss'],
   standalone: true,
-  imports: [IonButtons,
+  imports: [
+    IonButtons,
     CommonModule,
     IonApp,
     IonContent,
@@ -116,7 +120,7 @@ export class DashboardLayoutComponent {
     private toastController: ToastController,
     private modalCtrl: ModalController,
     private menuCtrl: MenuController,
-    private router: Router
+    private router: Router,
   ) {
     addIcons({
       chevronForward,
@@ -131,16 +135,14 @@ export class DashboardLayoutComponent {
       searchOutline,
       openOutline,
       eyeOffOutline,
-      add
+      timeOutline,
+      add,
     });
-
-
-
   }
 
   async ngOnInit() {
     const walletDataJSON = localStorage.getItem(
-      environment.storage.connectedWalletKey
+      environment.storage.connectedWalletKey,
     );
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
@@ -227,7 +229,6 @@ export class DashboardLayoutComponent {
     modal.present();
   }
 
-
   toggleWalletOptions() {
     this.showWalletOptions = !this.showWalletOptions;
   }
@@ -242,11 +243,9 @@ export class DashboardLayoutComponent {
     window.location.reload();
   }
 
-
   menuChange(event: any) {
     const destination = event.target.value;
     event.target.value = '';
     this.router.navigate([destination]);
   }
 }
-

@@ -1,0 +1,42 @@
+ion-label {
+  text-transform: uppercase;
+  color: #999999;
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+}
+
+ion-col {
+  white-space: nowrap;
+}
+
+.activity-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+a {
+  color: var(--ion-text-color) !important;
+
+  &:hover {
+    color: var(--color-teal) !important;
+  }
+}
+
+.activity-container {
+  position: absolute;
+  height: 100%;
+}
+
+.activity-content {
+  position: relative;
+  height: calc(100% - 100px);
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.activity-row {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  cursor: pointer;
+}

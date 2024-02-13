@@ -1,97 +1,100 @@
 .list {
-    text-align: left;
-    // height: 80vh;
-    margin-left: 50px;
-    // overflow-y: scroll;
+  text-align: left;
+  // height: 80vh;
+  margin-left: 50px;
+  // overflow-y: scroll;
 
-    @media only screen and (max-width: 900px) {
-        text-align: center;
-    }
+  @media only screen and (max-width: 900px) {
+    text-align: center;
+  }
 }
 
 .filter {
-    margin-top: -15px;
-    color: #888;
+  margin-top: -15px;
+  color: #888;
 }
 
 .token-holdings-list {
-    margin-left: 0;
-    max-width: 600px;
-    margin-bottom: 50px;
+  margin-left: 0;
+  max-width: 600px;
+  margin-bottom: 50px;
 
-    .item {
-        padding: 5px;
-        cursor: pointer;
-        border-bottom: 1px solid rgba($color: #777777, $alpha: 0.2);
+  .item {
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba($color: #777777, $alpha: 0.2);
 
-        &.interactable {
-            color: #cccccc;
+    &.interactable {
+      color: #cccccc;
 
-            &:hover {
-                color: #57AAA7;
-            }
-        }
+      &:hover {
+        color: #57aaa7;
+      }
     }
+  }
 
-    .actions {
-        text-align: right;
-    }
+  .actions {
+    text-align: right;
+  }
 }
 
 .sidebar {
-    position: static;
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
-    max-height: 700px;
-    overflow-y: scroll;
-    width: 250px;
+  position: static;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  max-height: 700px;
+  overflow-y: scroll;
+  width: 250px;
 }
 
 .section-container {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .section {
-    // margin-right: 40px;
-    // min-width: 200px;
-    display: block;
-    margin-bottom: 20px;
+  // margin-right: 40px;
+  // min-width: 200px;
+  display: block;
+  margin-bottom: 20px;
 
-    h4.header {
-        text-transform: uppercase;
-        color: #999999;
-        padding: 0px;
-        margin: 0px;
-        font-size: 14px;
-    }
+  h4.header {
+    text-transform: uppercase;
+    color: #999999;
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+  }
 }
 
-
-
 .inscription-item {
-    height: 310px;
+  height: 310px;
 
-    .content {
-        height: 62%;
-    }
+  .content {
+    height: 62%;
+  }
 }
 
 .main-content-sidebar {
-    // background-color: rgba(30, 30, 30, 0.3) !important;
-    position: fixed;
-    background-color: hsla(0, 0%, 100%, .05);
-    backdrop-filter: blur(50px);
-    height: 85%;
-    border-radius: 10px;
-    padding: 20px;
-    padding-left: 0px;
-    padding-right: 0px;
+  // background-color: rgba(30, 30, 30, 0.3) !important;
+  position: fixed;
+  background-color: hsla(0, 0%, 100%, 0.05);
+  backdrop-filter: blur(50px);
+  height: 85%;
+  border-radius: 10px;
+  padding: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
 
-    @media only screen and (max-width: 900px) {
-        position: relative;
-        height: 100%;
-    }
+  @media only screen and (max-width: 900px) {
+    position: relative;
+    height: 100%;
+  }
 }
 
-.activity {}
+.activity {
+}
+
+.inscription-activity {
+  min-width: 300px;
+}

@@ -15,15 +15,27 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" size-md="3" size-lg="3" size-xl="2">
+      <ion-col size="12" size-md="3" size-lg="2" size-xl="2">
         <div class="section-container main-content-sidebar p-3 mt-0 me-3">
           <div class="section">
             <h4 class="header">Sort</h4>
-            <ion-select aria-label="Order" placeholder="Order" fill="clear" interface="popover" value="recent-adds"
-              (ionChange)="selectionChange('order', $event)">
-              <ion-select-option value="price-low">Lowest price</ion-select-option>
-              <ion-select-option value="price-high">Highest price</ion-select-option>
-              <ion-select-option value="recent-adds">Recently listed</ion-select-option>
+            <ion-select
+              aria-label="Order"
+              placeholder="Order"
+              fill="clear"
+              interface="popover"
+              value="recent-adds"
+              (ionChange)="selectionChange('order', $event)"
+            >
+              <ion-select-option value="price-low"
+                >Lowest price</ion-select-option
+              >
+              <ion-select-option value="price-high"
+                >Highest price</ion-select-option
+              >
+              <ion-select-option value="recent-adds"
+                >Recently listed</ion-select-option
+              >
               <ion-select-option value="id-low">Lowest ID</ion-select-option>
               <ion-select-option value="id-high">Highest ID</ion-select-option>
             </ion-select>
@@ -31,22 +43,46 @@
 
           <div class="section">
             <h4 class="header">Price</h4>
-            <ion-select aria-label="Price" placeholder="Price" fill="clear" interface="popover" value="all"
-              (ionChange)="selectionChange('price', $event)">
+            <ion-select
+              aria-label="Price"
+              placeholder="Price"
+              fill="clear"
+              interface="popover"
+              value="all"
+              (ionChange)="selectionChange('price', $event)"
+            >
               <ion-select-option value="all">All</ion-select-option>
-              <ion-select-option value="0-100000">&lt; 0.1 ATOM</ion-select-option>
-              <ion-select-option value="100000-1000000">0.1 - 1 ATOM</ion-select-option>
-              <ion-select-option value="1000000-5000000">1 - 5 ATOM</ion-select-option>
-              <ion-select-option value="5000000-10000000">5 - 10 ATOM</ion-select-option>
-              <ion-select-option value="10000000-100000000">10 - 100 ATOM</ion-select-option>
-              <ion-select-option value="100000000-10000000000">100 ATOM+</ion-select-option>
+              <ion-select-option value="0-100000"
+                >&lt; 0.1 ATOM</ion-select-option
+              >
+              <ion-select-option value="100000-1000000"
+                >0.1 - 1 ATOM</ion-select-option
+              >
+              <ion-select-option value="1000000-5000000"
+                >1 - 5 ATOM</ion-select-option
+              >
+              <ion-select-option value="5000000-10000000"
+                >5 - 10 ATOM</ion-select-option
+              >
+              <ion-select-option value="10000000-100000000"
+                >10 - 100 ATOM</ion-select-option
+              >
+              <ion-select-option value="100000000-10000000000"
+                >100 ATOM+</ion-select-option
+              >
             </ion-select>
           </div>
 
           <div class="section">
             <h4 class="header">Inscription Range</h4>
-            <ion-select aria-label="Price" placeholder="Range" fill="clear" interface="popover" value="all"
-              (ionChange)="selectionChange('range', $event)">
+            <ion-select
+              aria-label="Price"
+              placeholder="Range"
+              fill="clear"
+              interface="popover"
+              value="all"
+              (ionChange)="selectionChange('range', $event)"
+            >
               <ion-select-option value="all">All</ion-select-option>
               <ion-select-option value="100">Sub 100</ion-select-option>
               <ion-select-option value="1000">Sub 1 000</ion-select-option>
@@ -57,18 +93,26 @@
 
           <div class="section">
             <h4 class="header">Search</h4>
-            <ion-input type="text" placeholder="Name or inscription number" (ionInput)="search($event)"
-              debounce="500"></ion-input>
+            <ion-input
+              type="text"
+              placeholder="Name or inscription number"
+              (ionInput)="search($event)"
+              debounce="500"
+            ></ion-input>
           </div>
 
           <div class="section mt-5 text-center">
-            <ion-button fill="outline" color="primary" [routerLink]="['/app/wallet']"
-              [queryParams]="{section: 'inscriptions'}"><ion-icon name="add"></ion-icon> List
-              inscription</ion-button>
+            <ion-button
+              fill="outline"
+              color="primary"
+              [routerLink]="['/app/wallet']"
+              [queryParams]="{section: 'inscriptions'}"
+              ><ion-icon name="add"></ion-icon> List inscription</ion-button
+            >
           </div>
         </div>
       </ion-col>
-      <ion-col size="12" size-md="9" size-lg="9">
+      <ion-col size="12" size-md="5" size-lg="7.5" size-xl="7.5">
         <div class="aligned main-content" *ngIf="isLoading">
           <ion-progress-bar type="indeterminate"></ion-progress-bar>
         </div>
@@ -76,12 +120,17 @@
         <div class="list" *ngIf="!isLoading && marketplaceDetail.length > 0">
           <div *ngIf="!isLoading && reservedMarketplaceDetail.length > 0">
             <h3 class="mb-4 mt-0 pt-0">Reserved by you</h3>
-            <a class="inscription-item main-content"
+            <a
+              class="inscription-item main-content"
               (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
-              *ngFor="let item of reservedMarketplaceDetail; let index">
+              *ngFor="let item of reservedMarketplaceDetail; let index"
+            >
               <div class="content">
-                <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
-                  [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
+                <app-generic-preview
+                  [mime]="item.inscription.mime"
+                  [contentPath]="item.inscription.content_path"
+                  [isExplicit]="item.inscription.is_explicit"
+                ></app-generic-preview>
               </div>
               <h4 class="name">{{ item.inscription.name }}</h4>
               <div class="detail">
@@ -89,8 +138,10 @@
                   <span>#{{item.inscription.id-1}}</span>
                 </div>
                 <div class="marketplace-price text-center">
-                  <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
-                    <span>ATOM</span></ion-label>
+                  <ion-label class="value"
+                    >{{ item.marketplace_listing.total | tokenDecimals:6}}
+                    <span>ATOM</span></ion-label
+                  >
                   <ion-label class="label">Price</ion-label>
                 </div>
               </div>
@@ -98,12 +149,17 @@
 
             <h3>All listings</h3>
           </div>
-          <a class="inscription-item main-content"
+          <a
+            class="inscription-item main-content"
             (click)="buy(item.marketplace_listing.transaction.hash, item.inscription.transaction.hash)"
-            *ngFor="let item of marketplaceDetail; let index">
+            *ngFor="let item of marketplaceDetail; let index"
+          >
             <div class="content">
-              <app-generic-preview [mime]="item.inscription.mime" [contentPath]="item.inscription.content_path"
-                [isExplicit]="item.inscription.is_explicit"></app-generic-preview>
+              <app-generic-preview
+                [mime]="item.inscription.mime"
+                [contentPath]="item.inscription.content_path"
+                [isExplicit]="item.inscription.is_explicit"
+              ></app-generic-preview>
             </div>
             <h4 class="name">{{ item.inscription.name }}</h4>
             <div class="detail">
@@ -111,8 +167,10 @@
                 <span>#{{item.inscription.id-1}}</span>
               </div>
               <div class="marketplace-price text-center">
-                <ion-label class="value">{{ item.marketplace_listing.total | tokenDecimals:6}}
-                  <span>ATOM</span></ion-label>
+                <ion-label class="value"
+                  >{{ item.marketplace_listing.total | tokenDecimals:6}}
+                  <span>ATOM</span></ion-label
+                >
                 <ion-label class="label">Price</ion-label>
               </div>
             </div>
@@ -120,6 +178,11 @@
           <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
             <ion-infinite-scroll-content> </ion-infinite-scroll-content>
           </ion-infinite-scroll>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-md="4" size-lg="2.5" size-xl="2.5">
+        <div class="main-content-sidebar m-0 p-0 me-5 inscription-activity">
+          <app-inscription-activity />
         </div>
       </ion-col>
     </ion-row>

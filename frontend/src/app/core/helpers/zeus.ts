@@ -50,7 +50,7 @@ export const apiFetch =
     if (fetchOptions.method && fetchOptions.method === 'GET') {
       return fetch(
         `${options[0]}?query=${encodeURIComponent(query)}`,
-        fetchOptions
+        fetchOptions,
       )
         .then(handleFetchResponse)
         .then((response: GraphQLResponse) => {
@@ -79,3 +79,5 @@ export const apiFetch =
 
 export const Chain = (...options: chainOptions) => Thunder(apiFetch(options));
 export type Chain = ReturnType<typeof Chain>;
+
+export type Subscription = ReturnType<typeof Subscription>;
