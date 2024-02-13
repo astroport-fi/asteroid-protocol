@@ -557,7 +557,7 @@ ion-toast {
 
 /* A fix for the rare bug that causes modals to be completely transparent */
 .modal-background {
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   right: 0px;
   width: 100%;
