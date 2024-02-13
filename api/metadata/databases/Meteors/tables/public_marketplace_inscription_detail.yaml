@@ -1,0 +1,20 @@
+table:
+  name: marketplace_inscription_detail
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      foreign_key_constraint_on: inscription_id
+  - name: marketplace_listing
+    using:
+      foreign_key_constraint_on: listing_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - id
+        - inscription_id
+        - listing_id
+        - date_created
+      filter: {}
+    comment: ""
