@@ -16,13 +16,14 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { NgScrollbarReachedModule } from 'ngx-scrollbar/reached-event';
 
 @Component({
   selector: 'app-markets-inscription',
   templateUrl: './markets-inscription.page.html',
   styleUrls: ['./markets-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, GenericPreviewPage, DropdownModule, ShortenAddressPipe, NgScrollbarModule]
+  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, GenericPreviewPage, DropdownModule, ShortenAddressPipe, NgScrollbarModule, NgScrollbarReachedModule]
 })
 export class MarketsInscriptionPage implements OnInit {
 
@@ -128,7 +129,6 @@ export class MarketsInscriptionPage implements OnInit {
   }
 
   async fetchInscriptions(where: {}, order: any[]) {
-
     const fullWhere = {
       marketplace_listing: {
         is_cancelled: {
@@ -282,7 +282,7 @@ export class MarketsInscriptionPage implements OnInit {
 
   // This event is supposed to be of type SelectChangeEventDetail
   async selectionChange(type: string, event: any) {
-
+    this.offset = 0;
     switch (type) {
       case "order":
         if (event.detail.value === "price-high") {
@@ -356,20 +356,33 @@ export class MarketsInscriptionPage implements OnInit {
           };
         }
         break;
-      // case "type":
-      // TODO        
-      //   break;
     }
 
+    this.isLoading = true;
     const result = await this.fetchInscriptions(
       this.currentFilter,
       [
         this.selectedOrder
       ]);
     this.marketplaceDetail = result.marketplace_inscription_detail;
+    this.isLoading = false;
   }
 
   async search(event: any) {
+    if (event.target.value.length == 0) {
+      this.isLoading = true;
+      const result = await this.fetchInscriptions(
+        {},
+        [
+          this.selectedOrder
+        ]);
+      this.marketplaceDetail = result.marketplace_inscription_detail;
+      this.isLoading = false;
+      return;
+    }
+
+
+    this.isLoading = true;
     this.offset = 0;
     this.limit = 50;
     // FE IDs are 0-indexed, so we need to add 1 to the ID
@@ -409,6 +422,7 @@ export class MarketsInscriptionPage implements OnInit {
     }, [this.selectedOrder]);
 
     this.marketplaceDetail = result.marketplace_inscription_detail;
+    this.isLoading = false;
   }
 
   async buy(listingHash: string, inscriptionHash: string) {
@@ -440,7 +454,5 @@ export class MarketsInscriptionPage implements OnInit {
     this.lastFetchCount = result.marketplace_inscription_detail.length;
     await (event as InfiniteScrollCustomEvent).target.complete();
   }
-
-
 
 }

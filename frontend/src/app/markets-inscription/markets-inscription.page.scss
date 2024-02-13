@@ -1,6 +1,7 @@
 .list {
     text-align: left;
-    height: 80vh;
+    // height: 80vh;
+    margin-left: 50px;
     // overflow-y: scroll;
 
     @media only screen and (max-width: 900px) {
@@ -78,11 +79,19 @@
 
 .main-content-sidebar {
     // background-color: rgba(30, 30, 30, 0.3) !important;
+    position: fixed;
     background-color: hsla(0, 0%, 100%, .05);
     backdrop-filter: blur(50px);
-    height: 98%;
+    height: 85%;
     border-radius: 10px;
     padding: 20px;
     padding-left: 0px;
     padding-right: 0px;
+
+    @media only screen and (max-width: 900px) {
+        position: relative;
+        height: 100%;
+    }
 }
+
+.activity {}
