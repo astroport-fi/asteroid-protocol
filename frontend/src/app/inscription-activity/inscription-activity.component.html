@@ -1,0 +1,67 @@
+<ion-grid class="px-0">
+  <ion-row class="d-flex justify-content-center mb-3 mt-2"
+    >Latest transactions</ion-row
+  >
+  <ion-row class="activity-header px-2">
+    <ion-col class="d-flex justify-content-center"
+      ><ion-label><ion-icon name="time-outline"></ion-icon></ion-label
+    ></ion-col>
+    <ion-col class="d-flex justify-content-center"
+      ><ion-label>Item</ion-label></ion-col
+    >
+    <ion-col class="d-flex justify-content-center"
+      ><ion-label>Price</ion-label></ion-col
+    >
+    <ion-col class="d-flex justify-content-center"
+      ><ion-label>Seller</ion-label></ion-col
+    >
+    <ion-col class="d-flex justify-content-center"
+      ><ion-label>Buyer</ion-label></ion-col
+    >
+  </ion-row>
+  <div class="activity-content">
+    @for (trade of activity; track trade.id) {
+      <ion-row
+        class="pt-2 px-2 activity-row"
+        (click)="openDetail(trade.inscription)"
+      >
+        <ion-col class="d-flex justify-content-center">{{
+          trade.date_created | dateAgo: true
+        }}</ion-col>
+        <ion-col class="d-flex justify-content-center">
+          @if (
+            trade.inscription.is_explicit ||
+            !trade.inscription.content_path ||
+            (trade.inscription.mime | humanType) != "Image"
+          ) {
+            <ion-icon name="eye-off-outline"></ion-icon>
+          } @else {
+            <img
+              class="rounded"
+              [src]="trade.inscription.content_path"
+              width="20"
+              height="20"
+            />
+          }
+        </ion-col>
+        <ion-col class="d-flex justify-content-center"
+          >{{ trade.amount_quote | tokenDecimals: 6 }} ATOM</ion-col
+        >
+        <ion-col class="d-flex justify-content-center"
+          ><a
+            [routerLink]="['/app/wallet', trade.seller_address]"
+            (click)="$event.stopPropagation()"
+            >{{ trade.seller_address | shortenAddressMin }}</a
+          ></ion-col
+        >
+        <ion-col class="d-flex justify-content-center"
+          ><a
+            [routerLink]="['/app/wallet', trade.seller_address]"
+            (click)="$event.stopPropagation()"
+            >{{ trade.buyer_address! | shortenAddressMin }}</a
+          ></ion-col
+        >
+      </ion-row>
+    }
+  </div>
+</ion-grid>

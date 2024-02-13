@@ -87,6 +87,20 @@
                 }
               ]
             },
+            "development-prod": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
             "ci": {
               "progress": false
             }
@@ -101,6 +115,9 @@
             },
             "development": {
               "buildTarget": "app:build:development"
+            },
+            "development-prod": {
+              "buildTarget": "app:build:development-prod"
             },
             "ci": {
               "progress": false

@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { InfiniteScrollCustomEvent, ModalController, IonicModule } from '@ionic/angular';
+import {
+  InfiniteScrollCustomEvent,
+  ModalController,
+  IonicModule,
+} from '@ionic/angular';
 import { Chain, order_by } from '../core/types/zeus';
 import { environment } from 'src/environments/environment';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
@@ -17,16 +21,32 @@ import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NgScrollbarReachedModule } from 'ngx-scrollbar/reached-event';
+import { InscriptionActivityComponent } from '../inscription-activity/inscription-activity.component';
 
 @Component({
   selector: 'app-markets-inscription',
   templateUrl: './markets-inscription.page.html',
   styleUrls: ['./markets-inscription.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, DateAgoPipe, HumanTypePipe, DecimalPipe, HumanSupplyPipe, TokenDecimalsPipe, RouterLink, GenericPreviewPage, DropdownModule, ShortenAddressPipe, NgScrollbarModule, NgScrollbarReachedModule]
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    DateAgoPipe,
+    HumanTypePipe,
+    DecimalPipe,
+    HumanSupplyPipe,
+    TokenDecimalsPipe,
+    RouterLink,
+    GenericPreviewPage,
+    DropdownModule,
+    ShortenAddressPipe,
+    NgScrollbarModule,
+    NgScrollbarReachedModule,
+    InscriptionActivityComponent,
+  ],
 })
 export class MarketsInscriptionPage implements OnInit {
-
   isLoading = true;
   isTableLoading: boolean = false;
   walletAddress: string = '';
@@ -51,14 +71,17 @@ export class MarketsInscriptionPage implements OnInit {
   volumeAtom: number = 0;
   volumeUSD: number = 0;
 
-  constructor(private activatedRoute: ActivatedRoute, private priceService: PriceService, private modalCtrl: ModalController, private walletService: WalletService) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private priceService: PriceService,
+    private modalCtrl: ModalController,
+    private walletService: WalletService,
+  ) {
     this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
-
   }
 
   async ngOnInit() {
-
     const walletConnected = await this.walletService.isConnected();
     if (walletConnected) {
       this.walletAddress = (await this.walletService.getAccount()).address;
@@ -69,73 +92,72 @@ export class MarketsInscriptionPage implements OnInit {
         {
           where: {
             chain_id: {
-              _eq: environment.chain.chainId
-            }
-          }
+              _eq: environment.chain.chainId,
+            },
+          },
         },
         {
           base_token: true,
           base_token_usd: true,
           last_processed_height: true,
-        }
-      ]
-    })
+        },
+      ],
+    });
     this.baseTokenUSD = statusResult.status[0].base_token_usd;
     this.currentBlock = statusResult.status[0].last_processed_height;
 
-
     this.selectedOrder = {
       marketplace_listing: {
-        id: order_by.desc
-      }
+        id: order_by.desc,
+      },
     };
     this.currentFilter = {};
-    const result = await this.fetchInscriptions(
-      this.currentFilter,
-      [
-        this.selectedOrder
-      ]);
+    const result = await this.fetchInscriptions(this.currentFilter, [
+      this.selectedOrder,
+    ]);
     this.marketplaceDetail = result.marketplace_inscription_detail;
     const reservedResult = await this.fetchReservedInscriptions();
-    this.reservedMarketplaceDetail = reservedResult.marketplace_inscription_detail;
+    this.reservedMarketplaceDetail =
+      reservedResult.marketplace_inscription_detail;
 
-    const date24HoursAgo = new Date(new Date().getTime() - (24 * 60 * 60 * 1000)).toISOString();
+    const date24HoursAgo = new Date(
+      new Date().getTime() - 24 * 60 * 60 * 1000,
+    ).toISOString();
 
     const tradeStatsResult = await this.chain('query')({
       inscription_trade_history_aggregate: [
         {
           where: {
             date_created: {
-              _gte: date24HoursAgo
-            }
+              _gte: date24HoursAgo,
+            },
           },
         },
         {
           aggregate: {
             sum: {
               amount_quote: true,
-              total_usd: true
-            }
-          }
-        }
-      ]
-
+              total_usd: true,
+            },
+          },
+        },
+      ],
     });
-    this.volumeAtom = tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.amount_quote;
-    this.volumeUSD = tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.total_usd;
+    this.volumeAtom =
+      tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.amount_quote;
+    this.volumeUSD =
+      tradeStatsResult.inscription_trade_history_aggregate.aggregate.sum.total_usd;
     this.isLoading = false;
-
-
   }
 
   async fetchInscriptions(where: {}, order: any[]) {
     const fullWhere = {
       marketplace_listing: {
         is_cancelled: {
-          _eq: false
+          _eq: false,
         },
         is_filled: {
-          _eq: false
+          _eq: false,
         },
       },
       _and: where,
@@ -147,8 +169,7 @@ export class MarketsInscriptionPage implements OnInit {
           where: fullWhere,
           offset: this.offset,
           limit: this.limit,
-          order_by: order
-
+          order_by: order,
         },
         {
           id: true,
@@ -160,76 +181,77 @@ export class MarketsInscriptionPage implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true
+              hash: true,
             },
           },
           inscription: {
             id: true,
             transaction: {
-              hash: true
+              hash: true,
             },
             content_path: true,
             __alias: {
               name: {
-                metadata: [{
-                  path: '$.metadata.name'
-                },
-                  true
-                ]
+                metadata: [
+                  {
+                    path: '$.metadata.name',
+                  },
+                  true,
+                ],
               },
               description: {
-                metadata: [{
-                  path: '$.metadata.description'
-                },
-                  true
-                ]
+                metadata: [
+                  {
+                    path: '$.metadata.description',
+                  },
+                  true,
+                ],
               },
               mime: {
-                metadata: [{
-                  path: '$.metadata.mime'
-                },
-                  true
-                ]
-              }
-            }
+                metadata: [
+                  {
+                    path: '$.metadata.mime',
+                  },
+                  true,
+                ],
+              },
+            },
           },
           date_created: true,
-        }
-      ]
-
+        },
+      ],
     });
   }
 
   async fetchReservedInscriptions() {
-
     return this.chain('query')({
       marketplace_inscription_detail: [
         {
           where: {
             marketplace_listing: {
               is_cancelled: {
-                _eq: false
+                _eq: false,
               },
               is_filled: {
-                _eq: false
+                _eq: false,
               },
               is_deposited: {
-                _eq: true
+                _eq: true,
               },
               depositor_address: {
-                _eq: this.walletAddress
+                _eq: this.walletAddress,
               },
               depositor_timedout_block: {
-                _gt: this.currentBlock
-              }
-            }
+                _gt: this.currentBlock,
+              },
+            },
           },
           limit: this.limit,
           order_by: [
             {
-              id: order_by.asc
-            }
-          ]
+              id: order_by.asc,
+            },
+          ],
         },
         {
           id: true,
@@ -241,42 +263,45 @@ export class MarketsInscriptionPage implements OnInit {
             depositor_timedout_block: true,
             deposit_total: true,
             transaction: {
-              hash: true
+              hash: true,
             },
           },
           inscription: {
             id: true,
             transaction: {
-              hash: true
+              hash: true,
             },
             content_path: true,
             __alias: {
               name: {
-                metadata: [{
-                  path: '$.metadata.name'
-                },
-                  true
-                ]
+                metadata: [
+                  {
+                    path: '$.metadata.name',
+                  },
+                  true,
+                ],
               },
               description: {
-                metadata: [{
-                  path: '$.metadata.description'
-                },
-                  true
-                ]
+                metadata: [
+                  {
+                    path: '$.metadata.description',
+                  },
+                  true,
+                ],
               },
               mime: {
-                metadata: [{
-                  path: '$.metadata.mime'
-                },
-                  true
-                ]
-              }
-            }
+                metadata: [
+                  {
+                    path: '$.metadata.mime',
+                  },
+                  true,
+                ],
+              },
+            },
           },
           date_created: true,
-        }
-      ]
+        },
+      ],
     });
   }
 
@@ -284,44 +309,44 @@ export class MarketsInscriptionPage implements OnInit {
   async selectionChange(type: string, event: any) {
     this.offset = 0;
     switch (type) {
-      case "order":
-        if (event.detail.value === "price-high") {
+      case 'order':
+        if (event.detail.value === 'price-high') {
           this.selectedOrder = {
             marketplace_listing: {
-              total: order_by.desc
-            }
-          }
-        } else if (event.detail.value === "price-low") {
+              total: order_by.desc,
+            },
+          };
+        } else if (event.detail.value === 'price-low') {
           this.selectedOrder = {
             marketplace_listing: {
-              total: order_by.asc
-            }
-          }
-        } else if (event.detail.value === "recent-adds") {
+              total: order_by.asc,
+            },
+          };
+        } else if (event.detail.value === 'recent-adds') {
           this.selectedOrder = {
             marketplace_listing: {
-              id: order_by.desc
-            }
-          }
-        } else if (event.detail.value === "id-low") {
+              id: order_by.desc,
+            },
+          };
+        } else if (event.detail.value === 'id-low') {
           this.selectedOrder = {
             inscription: {
-              id: order_by.asc
-            }
-          }
-        } else if (event.detail.value === "id-high") {
+              id: order_by.asc,
+            },
+          };
+        } else if (event.detail.value === 'id-high') {
           this.selectedOrder = {
             inscription: {
-              id: order_by.desc
-            }
-          }
+              id: order_by.desc,
+            },
+          };
         }
         break;
-      case "price":
-        if (event.detail.value === "all") {
+      case 'price':
+        if (event.detail.value === 'all') {
           this.currentFilter = {};
         } else {
-          const range = event.detail.value.split("-");
+          const range = event.detail.value.split('-');
           if (range.length === 2) {
             const min = parseInt(range[0]);
             const max = parseInt(range[1]);
@@ -331,16 +356,15 @@ export class MarketsInscriptionPage implements OnInit {
               marketplace_listing: {
                 total: {
                   _gte: min,
-                  _lte: max
-                }
-              }
-
+                  _lte: max,
+                },
+              },
             };
           }
         }
         break;
-      case "range":
-        if (event.detail.value === "all") {
+      case 'range':
+        if (event.detail.value === 'all') {
           this.currentFilter = {};
         } else {
           const maxID = parseInt(event.detail.value);
@@ -349,21 +373,18 @@ export class MarketsInscriptionPage implements OnInit {
 
             inscription: {
               id: {
-                _lte: maxID
-              }
-            }
-
+                _lte: maxID,
+              },
+            },
           };
         }
         break;
     }
 
     this.isLoading = true;
-    const result = await this.fetchInscriptions(
-      this.currentFilter,
-      [
-        this.selectedOrder
-      ]);
+    const result = await this.fetchInscriptions(this.currentFilter, [
+      this.selectedOrder,
+    ]);
     this.marketplaceDetail = result.marketplace_inscription_detail;
     this.isLoading = false;
   }
@@ -371,16 +392,11 @@ export class MarketsInscriptionPage implements OnInit {
   async search(event: any) {
     if (event.target.value.length == 0) {
       this.isLoading = true;
-      const result = await this.fetchInscriptions(
-        {},
-        [
-          this.selectedOrder
-        ]);
+      const result = await this.fetchInscriptions({}, [this.selectedOrder]);
       this.marketplaceDetail = result.marketplace_inscription_detail;
       this.isLoading = false;
       return;
     }
-
 
     this.isLoading = true;
     this.offset = 0;
@@ -392,34 +408,38 @@ export class MarketsInscriptionPage implements OnInit {
       find_inscription_by_name: [
         {
           args: {
-            query_name: "%" + event.target.value + "%"
-          }
+            query_name: '%' + event.target.value + '%',
+          },
         },
         {
           id: true,
-        }
-      ]
+        },
+      ],
     });
 
     // Since we don't have a direct way to do this LIKE query, we need to collect
     // IDs first, then fetch the actual information
-    const result = await this.fetchInscriptions({
-      inscription: {
-        _or: [
-          {
-            id: {
-              _in: searchResult.find_inscription_by_name.map((i: any) => i.id)
-            }
-          },
-          {
-            id: {
-              _eq: byID
-            }
-          }
-        ]
-
-      }
-    }, [this.selectedOrder]);
+    const result = await this.fetchInscriptions(
+      {
+        inscription: {
+          _or: [
+            {
+              id: {
+                _in: searchResult.find_inscription_by_name.map(
+                  (i: any) => i.id,
+                ),
+              },
+            },
+            {
+              id: {
+                _eq: byID,
+              },
+            },
+          ],
+        },
+      },
+      [this.selectedOrder],
+    );
 
     this.marketplaceDetail = result.marketplace_inscription_detail;
     this.isLoading = false;
@@ -433,11 +453,10 @@ export class MarketsInscriptionPage implements OnInit {
       component: ViewInscriptionModalPage,
       componentProps: {
         hash: inscriptionHash,
-        listingHash: listingHash
-      }
+        listingHash: listingHash,
+      },
     });
     modal.present();
-
   }
 
   async onIonInfinite(event: any) {
@@ -448,11 +467,15 @@ export class MarketsInscriptionPage implements OnInit {
     }
 
     this.offset += this.limit;
-    const result = await this.fetchInscriptions(this.currentFilter, [this.selectedOrder]);
-    this.marketplaceDetail = [...this.marketplaceDetail, ...result.marketplace_inscription_detail];
+    const result = await this.fetchInscriptions(this.currentFilter, [
+      this.selectedOrder,
+    ]);
+    this.marketplaceDetail = [
+      ...this.marketplaceDetail,
+      ...result.marketplace_inscription_detail,
+    ];
 
     this.lastFetchCount = result.marketplace_inscription_detail.length;
     await (event as InfiniteScrollCustomEvent).target.complete();
   }
-
 }
