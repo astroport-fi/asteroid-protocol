@@ -262,6 +262,44 @@ CREATE TABLE public.token_trade_history (
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+-- public.marketplace_inscription_detail definition
+
+-- Drop table
+
+-- DROP TABLE public.marketplace_inscription_detail;
+
+CREATE TABLE public.marketplace_inscription_detail (
+    id serial4 NOT NULL,
+    listing_id int4 NOT NULL,
+    inscription_id int4 NOT NULL,
+    date_created timestamp NOT NULL,
+    CONSTRAINT marketplace_inscription_detail_pkey PRIMARY KEY (id),
+    CONSTRAINT marketplace_inscription_detail_ls_fk FOREIGN KEY (listing_id) REFERENCES public.marketplace_listing(id),
+    CONSTRAINT marketplace_inscription_detail_ik_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id)
+);
+
+-- public.inscription_trade_history definition
+
+-- Drop table
+
+-- DROP TABLE public.inscription_trade_history;
+
+CREATE TABLE public.inscription_trade_history (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    inscription_id int4 NOT NULL,
+    seller_address varchar(128) NOT NULL,
+    buyer_address varchar(128) NULL,
+    amount_quote int8 NOT NULL,
+    total_usd float4 NOT NULL DEFAULT 0,
+    date_created timestamp NOT NULL,
+    CONSTRAINT ith_key PRIMARY KEY (id),
+    CONSTRAINT ith_tx_id UNIQUE (transaction_id),
+    CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id),
+    CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+);
+
 
 -- public.marketplace_cft20_detail definition
 
