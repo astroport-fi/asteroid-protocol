@@ -372,15 +372,7 @@ export class BuyWizardModalPage implements OnInit {
   async submitTransaction(urn: string, metadata: string | null, data: string | null, fees: TxFee, messages: any[]) {
     try {
       fees.chain.denom = this.currentChain.feeCurrencies[0].coinMinimalDenom;
-
       fees.chain.amount = this.chainFee.toFixed(0);
-
-      // TODO Note
-      // For some reason sending token to another address now requires a higher fee
-      // on testnet
-      if (environment.fees.chain.minFee != "0") {
-        fees.chain.amount = environment.fees.chain.minFee;
-      }
 
       const signedTx = await this.walletService.sign(urn, metadata, data, fees, messages);
 
