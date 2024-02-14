@@ -1,10 +1,10 @@
 import {
   BaseProtocol,
-  Inscription,
+  InscriptionContent,
   MetaProtocol,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscription,
+  buildInscriptionContent,
   buildOperation,
 } from './index.js'
 import { InscriptionMetadata } from './inscription.js'
@@ -36,7 +36,7 @@ export default class CFT20Protocol
     accountAddress: string,
     data: string | Buffer,
     mime: string,
-  ): Inscription {
+  ): InscriptionContent {
     const inscriptionMetadata: InscriptionMetadata = {
       parent: {
         type: '/cosmos.bank.Account',
@@ -49,7 +49,7 @@ export default class CFT20Protocol
       },
     }
 
-    return buildInscription(data, inscriptionMetadata)
+    return buildInscriptionContent(data, inscriptionMetadata)
   }
 
   deploy(

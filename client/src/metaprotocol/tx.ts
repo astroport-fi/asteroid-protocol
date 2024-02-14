@@ -3,7 +3,7 @@ import { MsgSendEncodeObject, MsgTransferEncodeObject } from '@cosmjs/stargate'
 import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
 import { Any } from 'cosmjs-types/google/protobuf/any'
 import { SigningStargateClient } from '../client.js'
-import { Inscription, ProtocolFee } from '../metaprotocol/index.js'
+import { InscriptionContent, ProtocolFee } from '../metaprotocol/index.js'
 
 export interface TxFee {
   protocol: ProtocolFee
@@ -16,48 +16,65 @@ export interface TxData {
   nonCriticalExtensionOptions: Any[]
 }
 
-const USE_IBC = false
+export interface TxInscription {
+  urn: string
+  content: InscriptionContent | undefined
+  fee: TxFee
+  messages: readonly EncodeObject[] | undefined
+}
 
 export function prepareTx(
   senderAddress: string,
   urn: string,
-  inscription: Inscription | undefined,
-  fee: TxFee,
-  messages: readonly EncodeObject[] = [],
+  inscriptions: TxInscription[],
+  useIbc = true,
 ): TxData {
-  let nonCriticalExtensionOptions: Any[] = []
-  if (inscription) {
-    nonCriticalExtensionOptions = [
-      {
+  if (inscriptions.length < 1) {
+    throw new Error('No inscription data have been provided')
+  }
+
+  const nonCriticalExtensionOptions: Any[] = []
+  let msgs: EncodeObject[] = []
+  const protocol = inscriptions[0].fee.protocol // NOTE: we support just one fee denom and fee receiver for now
+  let fee = 0
+  const isMultiOp = inscriptions.length > 1
+
+  for (const inscription of inscriptions) {
+    // nonCriticalExtensionOptions
+    if (inscription.content || isMultiOp) {
+      nonCriticalExtensionOptions.push({
         // This typeUrl isn't really important here as long as it is a type
         // that the chain recognizes it
         typeUrl: '/cosmos.authz.v1beta1.MsgRevoke',
         value: MsgRevoke.encode(
           MsgRevoke.fromPartial({
-            granter: inscription.metadata,
-            grantee: inscription.data,
-            msgTypeUrl: urn,
+            granter: inscription.content?.metadata ?? '',
+            grantee: inscription.content?.data ?? '',
+            msgTypeUrl: inscription.urn,
           }),
         ).finish(),
-      },
-    ]
+      })
+    }
+
+    // messages
+    if (inscription.messages) {
+      msgs = msgs.concat(inscription.messages)
+    }
+
+    // fee
+    fee += parseInt(inscription.fee.operation)
   }
 
-  let msgs: EncodeObject[] = []
-  if (messages.length > 0) {
-    msgs = [...messages]
-  }
-
-  if (parseInt(fee.operation) > 0) {
-    if (USE_IBC) {
+  if (fee > 0) {
+    if (useIbc) {
       const timeoutTime = (new Date().getTime() + 60 * 60 * 1000) * 1000000
 
       const feeMessage: MsgTransferEncodeObject = {
         typeUrl: '/ibc.applications.transfer.v1.MsgTransfer',
         value: {
-          receiver: fee.protocol.receiver,
+          receiver: protocol.receiver,
           sender: senderAddress,
-          sourceChannel: fee.protocol.ibcChannel,
+          sourceChannel: protocol.ibcChannel,
           sourcePort: 'transfer',
           timeoutTimestamp: BigInt(timeoutTime),
           timeoutHeight: {
@@ -66,8 +83,8 @@ export function prepareTx(
           },
           memo: '',
           token: {
-            amount: fee.operation,
-            denom: fee.protocol.denom,
+            amount: fee.toFixed(0),
+            denom: protocol.denom,
           },
         },
       }
@@ -77,18 +94,18 @@ export function prepareTx(
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
         value: {
           fromAddress: senderAddress,
-          toAddress: senderAddress,
+          toAddress: protocol.receiver,
           amount: [
             {
-              amount: fee.operation,
-              denom: fee.protocol.denom,
+              amount: fee.toFixed(0),
+              denom: protocol.denom,
             },
           ],
         },
       }
       msgs.push(feeMessage)
     }
-  } else if (messages.length == 0) {
+  } else if (msgs.length == 0) {
     // If no fee is charged, we need to send the smallest amount possible
     // to the sender to create a valid transaction
     // For the Hub that would be 0.000001 ATOM or 1uatom
@@ -101,7 +118,7 @@ export function prepareTx(
         amount: [
           {
             amount: '1',
-            denom: fee.protocol.denom,
+            denom: protocol.denom,
           },
         ],
       },

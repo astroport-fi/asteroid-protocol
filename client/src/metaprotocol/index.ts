@@ -8,7 +8,7 @@ export interface MetaProtocol {
 
 export type MetaProtocolParams = Array<[string, string | number]>
 
-export interface Inscription {
+export interface InscriptionContent {
   data: string // data base64
   metadata: string // metadata base64
   hash: string
@@ -82,10 +82,10 @@ export function buildOperation(
   }
 }
 
-export function buildInscription(
+export function buildInscriptionContent(
   data: string | Buffer,
   metadata: unknown,
-): Inscription {
+): InscriptionContent {
   let dataStr: string
   if (Buffer.isBuffer(data)) {
     dataStr = data.toString('base64')

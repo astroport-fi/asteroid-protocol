@@ -1,26 +1,56 @@
 import { EncodeObject } from '@cosmjs/proto-signing'
-import { BaseProtocol, Inscription, Operation } from '../metaprotocol/index.js'
-import { prepareTx } from '../metaprotocol/tx.js'
+import {
+  BaseProtocol,
+  InscriptionContent,
+  Operation,
+} from '../metaprotocol/index.js'
+import { TxData, TxInscription, prepareTx } from '../metaprotocol/tx.js'
 
-export abstract class OperationsBase {
+export interface Options<T extends boolean> {
+  useIbc?: boolean
+  multi: T
+}
+
+export function getDefaultOptions<T extends boolean>() {
+  return {
+    useIbc: true,
+    multi: false as T,
+  }
+}
+
+type PrepareType<B> = B extends true ? TxInscription : TxData
+
+export abstract class OperationsBase<T extends boolean> {
   abstract protocol: BaseProtocol
   abstract address: string
+  abstract options: Options<T>
 
-  prepareOperation(
+  protected prepareOperation(
     operation: Operation,
-    inscription?: Inscription,
+    inscriptionContent?: InscriptionContent,
     feeOverride?: string,
     messages?: readonly EncodeObject[],
-  ) {
+  ): PrepareType<T> {
+    const fee = {
+      protocol: this.protocol.fee,
+      operation: feeOverride ?? operation.fee.amount,
+    }
+    const inscription: TxInscription = {
+      fee,
+      content: inscriptionContent,
+      messages,
+      urn: operation.urn,
+    }
+
+    if (this.options.multi) {
+      return inscription as PrepareType<T>
+    }
+
     return prepareTx(
       this.address,
       operation.urn,
-      inscription,
-      {
-        protocol: this.protocol.fee,
-        operation: feeOverride ?? operation.fee.amount,
-      },
-      messages,
-    )
+      [inscription],
+      this.options.useIbc,
+    ) as PrepareType<T>
   }
 }

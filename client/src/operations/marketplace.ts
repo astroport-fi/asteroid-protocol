@@ -2,22 +2,27 @@ import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
 import MarketplaceProtocol from '../metaprotocol/marketplace.js'
 import { AsteroidService } from '../service/asteroid.js'
-import { OperationsBase } from './index.js'
+import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
-export class MarketplaceOperations extends OperationsBase {
+export class MarketplaceOperations<
+  T extends boolean = false,
+> extends OperationsBase<T> {
   protocol: MarketplaceProtocol
   asteroidService: AsteroidService
   address: string
+  options: Options<T>
 
   constructor(
     chainId: string,
     address: string,
     asteroidService: AsteroidService,
+    options: Options<T> = getDefaultOptions(),
   ) {
     super()
     this.protocol = new MarketplaceProtocol(chainId)
     this.address = address
     this.asteroidService = asteroidService
+    this.options = options
   }
 
   listCFT20(
