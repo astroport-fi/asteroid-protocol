@@ -2,7 +2,6 @@ package metaprotocol
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -56,7 +55,7 @@ type Inscription struct {
 	s3Token string
 }
 
-func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB) Processor {
 
 	// Parse config environment variables for self
 	var config InscriptionConfig
@@ -81,7 +80,11 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
-func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, extension *types.NonCriticalExtensionOptions, isNested bool, rawTransaction types.RawTransaction) error {
+	if isNested {
+		return fmt.Errorf("nested operations not allowed")
+	}
+
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -109,26 +112,19 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		// Inscription metadata is stored in the non_critical_extension_options
 		// section of the transaction
-		var metadata []byte
-		var content []byte
-		for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
-			// The type of the option must be MsgRevoke
-			if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
-				// The granter field contains the metadata
-				metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
-				if err != nil {
-					return fmt.Errorf("unable to decode granter metadata '%s'", err)
-				}
 
-				// The grantee field contains the content base64
-				content, err = base64.StdEncoding.DecodeString(extension.Grantee)
-				if err != nil {
-					return fmt.Errorf("unable to decode grantee content '%s'", err)
-				}
+		if extension == nil {
+			return fmt.Errorf("unable to get extension")
+		}
 
-				// We only process the first extension option
-				break
-			}
+		metadata, err := extension.GetMetadata()
+		if err != nil {
+			return err
+		}
+
+		content, err := extension.GetData()
+		if err != nil {
+			return err
 		}
 
 		var inscriptionMetadata InscriptionMetadata

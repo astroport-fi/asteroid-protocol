@@ -2,7 +2,6 @@ package metaprotocol
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -55,7 +54,7 @@ type CFT20 struct {
 	perWalletLimitMaxValue uint64
 }
 
-func NewCFT20Processor(chainID string, db *gorm.DB) *CFT20 {
+func NewCFT20Processor(chainID string, db *gorm.DB) Processor {
 	// Parse config environment variables for self
 	var config InscriptionConfig
 	err := envconfig.Process("", &config)
@@ -86,7 +85,11 @@ func (protocol *CFT20) Name() string {
 	return "cft20"
 }
 
-func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, extension *types.NonCriticalExtensionOptions, isNested bool, rawTransaction types.RawTransaction) error {
+	if isNested {
+		return fmt.Errorf("nested operations not allowed")
+	}
+
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -183,28 +186,16 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		contentPath := ""
 		contentLength := 0
 		// If this token includes content, we need to store it and add to the record
-		if len(rawTransaction.Body.NonCriticalExtensionOptions) == 1 {
+		if extension != nil {
 			// Logo is stored in the non_critical_extension_options
-			// section of the transaction
-			var logoContent []byte
-			var metadata []byte
-			for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
-				// The type of the option must be MsgRevoke
-				if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
-					// The granter field contains the metadata
-					metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
-					if err != nil {
-						return fmt.Errorf("unable to decode granter metadata '%s'", err)
-					}
-					// The grantee field contains the content base64
-					logoContent, err = base64.StdEncoding.DecodeString(extension.Grantee)
-					if err != nil {
-						return fmt.Errorf("unable to decode grantee content '%s'", err)
-					}
+			metadata, err := extension.GetMetadata()
+			if err != nil {
+				return err
+			}
 
-					// We only process the first extension option
-					break
-				}
+			logoContent, err := extension.GetData()
+			if err != nil {
+				return err
 			}
 
 			var inscriptionMetadata InscriptionMetadata

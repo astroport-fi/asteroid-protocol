@@ -41,7 +41,7 @@ type Marketplace struct {
 	endpointHeaders map[string]string
 }
 
-func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
+func NewMarketplaceProcessor(chainID string, db *gorm.DB) Processor {
 	// Parse config environment variables for self
 	var config MarketplaceConfig
 	err := envconfig.Process("", &config)
@@ -68,7 +68,11 @@ func (protocol *Marketplace) Name() string {
 	return "marketplace"
 }
 
-func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, extension *types.NonCriticalExtensionOptions, isNested bool, rawTransaction types.RawTransaction) error {
+	if isNested {
+		return fmt.Errorf("nested operations not allowed")
+	}
+
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err

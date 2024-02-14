@@ -39,6 +39,10 @@ func ParseProtocolString(protocolURN *urn.URN) (ProtocolURN, error) {
 	}
 	parsedProtocolURN.Operation = opContent[0]
 
+	if opContent[1] == "" {
+		return parsedProtocolURN, nil
+	}
+
 	// Parse h=...contenthash...
 	// Parse key=value,key=value
 	keyValuePairs := make(map[string]string)

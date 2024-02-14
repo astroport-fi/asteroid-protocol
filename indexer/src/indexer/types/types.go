@@ -1,10 +1,14 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
+
+	"github.com/leodido/go-urn"
 	// "github.com/calvinlauyh/cosmosutils"
 )
 
@@ -150,6 +154,37 @@ type RPCBlock struct {
 	} `json:"result"`
 }
 
+type NonCriticalExtensionOptions struct {
+	Type       string `json:"@type"`
+	Granter    string `json:"granter"`
+	Grantee    string `json:"grantee"`
+	MsgTypeURL string `json:"msg_type_url"`
+}
+
+func (extension NonCriticalExtensionOptions) IsValid() bool {
+	return extension.Type == "/cosmos.authz.v1beta1.MsgRevoke"
+}
+
+func (extension NonCriticalExtensionOptions) GetMetadata() ([]byte, error) {
+	metadata, err := base64.StdEncoding.DecodeString(extension.Granter)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
+	}
+	return metadata, nil
+}
+
+func (extension NonCriticalExtensionOptions) GetData() ([]byte, error) {
+	data, err := base64.StdEncoding.DecodeString(extension.Grantee)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode grantee content '%s'", err)
+	}
+	return data, nil
+}
+
+func (extension NonCriticalExtensionOptions) GetUrn() (*urn.URN, bool) {
+	return urn.Parse([]byte(extension.MsgTypeURL))
+}
+
 type RawTransaction struct {
 	Hash string `json:"hash"`
 	Body struct {
@@ -169,15 +204,10 @@ type RawTransaction struct {
 				Denom  string `json:"denom"`
 			} `json:"token"`
 		} `json:"messages"`
-		Memo                        string `json:"memo"`
-		TimeoutHeight               string `json:"timeout_height"`
-		ExtensionOptions            []any  `json:"extension_options"`
-		NonCriticalExtensionOptions []struct {
-			Type       string `json:"@type"`
-			Granter    string `json:"granter"`
-			Grantee    string `json:"grantee"`
-			MsgTypeURL string `json:"msg_type_url"`
-		} `json:"non_critical_extension_options"`
+		Memo                        string                        `json:"memo"`
+		TimeoutHeight               string                        `json:"timeout_height"`
+		ExtensionOptions            []any                         `json:"extension_options"`
+		NonCriticalExtensionOptions []NonCriticalExtensionOptions `json:"non_critical_extension_options"`
 	} `json:"body"`
 	AuthInfo struct {
 		SignerInfos []struct {

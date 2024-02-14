@@ -320,6 +320,46 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 		return errors.New("invalid metaprotocol URN")
 	}
 
+	// Handle transaction with multiple inscription operations
+	if metaprotocolURN.ID == "meta" {
+		parsedURN, err := metaprotocol.ParseProtocolString(metaprotocolURN)
+		if err != nil {
+			return err
+		}
+
+		if parsedURN.Operation != "execute" {
+			return errors.New("invalid meta operation")
+		}
+
+		for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
+			metaprotocolURN, ok = extension.GetUrn()
+			if !ok {
+				return errors.New("invalid metaprotocol URN")
+			}
+
+			if extension.IsValid() {
+				err = i.processMetaprotocolOperation(metaprotocolURN, transactionModel, &extension, true, rawTransaction)
+				if err != nil {
+					return err
+				}
+			}
+
+		}
+		return nil
+	}
+
+	var extension *types.NonCriticalExtensionOptions
+	if len(rawTransaction.Body.NonCriticalExtensionOptions) == 1 {
+		firstExtension := rawTransaction.Body.NonCriticalExtensionOptions[0]
+		if firstExtension.IsValid() {
+			extension = &firstExtension
+		}
+	}
+
+	return i.processMetaprotocolOperation(metaprotocolURN, transactionModel, extension, false, rawTransaction)
+}
+
+func (i *Indexer) processMetaprotocolOperation(metaprotocolURN *urn.URN, transactionModel models.Transaction, extension *types.NonCriticalExtensionOptions, isNested bool, rawTransaction types.RawTransaction) error {
 	// Match the ID and send the SS to the correct processor with base64 data to decode
 	processor, ok := i.metaprotocols[metaprotocolURN.ID]
 	if !ok {
@@ -331,7 +371,7 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 		"hash":      rawTransaction.Hash,
 	}).Info("Processing metaprotocol")
 
-	err := processor.Process(transactionModel, metaprotocolURN, rawTransaction)
+	err := processor.Process(transactionModel, metaprotocolURN, extension, isNested, rawTransaction)
 	if err != nil {
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,

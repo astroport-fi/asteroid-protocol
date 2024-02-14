@@ -8,5 +8,5 @@ import (
 
 type Processor interface {
 	Name() string
-	Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error
+	Process(transactionModel models.Transaction, protocolURN *urn.URN, extension *types.NonCriticalExtensionOptions, isNested bool, rawTransaction types.RawTransaction) error
 }
