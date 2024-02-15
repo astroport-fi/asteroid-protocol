@@ -1,0 +1,16 @@
+<a
+  [routerLink]="['/app/wallet', userAddress]"
+  [queryParams]="{ section }"
+  target="_blank"
+>
+  <ion-chip>
+    <ion-avatar>
+      <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+    </ion-avatar>
+    @if (userAddress == currentAddress) {
+      <ion-label>You</ion-label>
+    } @else {
+      <ion-label>{{ userAddress | shortenAddress | async }}</ion-label>
+    }
+  </ion-chip>
+</a>

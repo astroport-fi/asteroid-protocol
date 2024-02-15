@@ -67,6 +67,12 @@
   }
 }
 
+.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .inscription-item {
   height: 310px;
 
