@@ -14,7 +14,8 @@
             </ion-buttons>
             <ion-title>
               <!-- Less 1 because database starts at 1 and not 0 -->
-              Inscription <span *ngIf="!isLoading">#{{ inscription.id - 1 }}</span>
+              Inscription
+              <span *ngIf="!isLoading">#{{ inscription.id - 1 }}</span>
             </ion-title>
           </ion-toolbar>
         </ion-header>
@@ -25,45 +26,62 @@
         <div class="p-4" *ngIf="isLoading">
           <div class="loading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <p>
-              Loading inscription...
-            </p>
+            <p>Loading inscription...</p>
           </div>
         </div>
         <div class="aligned mt-0 pt-0" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
               <ion-col size="6" offset="3">
-                <a href="/app/inscription/{{ inscription.transaction.hash }}" target="_blank" class="text-center">
-                  <app-generic-preview [mime]="inscription.mime" [contentPath]="inscription.content_path"
-                    [isExplicit]="inscription.is_explicit"></app-generic-preview>
+                <a
+                  href="/app/inscription/{{ inscription.transaction.hash }}"
+                  target="_blank"
+                  class="text-center"
+                >
+                  <app-generic-preview
+                    [mime]="inscription.mime"
+                    [contentPath]="inscription.content_path"
+                    [isExplicit]="inscription.is_explicit"
+                  ></app-generic-preview>
                 </a>
               </ion-col>
               <ion-col size="12" class="text-center">
                 <div>
                   <h1 class="mt-0">{{ inscription.name }}</h1>
-                  <p>{{ inscription.description || "No description provided" }}</p>
+                  <p>
+                    {{ inscription.description || "No description provided" }}
+                  </p>
+                  <span
+                    >{{ inscription.date_created | date:'longDate' }} {{
+                    inscription.date_created | date:'shortTime' }}</span
+                  >
                 </div>
-                <div class="detail-item d-inline-block">
-                  <a [routerLink]="['/app/wallet', inscription.marketplace_inscription_details[0].marketplace_listing.seller_address ]"
-                    [queryParams]="{section: 'inscriptions'}" target="_blank">
-                    <ion-chip>
-                      <ion-avatar>
-                        <img alt="Unknown avatar" src="../../assets/avatar.svg" />
-                      </ion-avatar>
-                      <ion-label
-                        *ngIf="inscription.marketplace_inscription_details[0].marketplace_listing.seller_address == currentAddress">You</ion-label>
-                      <ion-label
-                        *ngIf="inscription.marketplace_inscription_details[0].marketplace_listing.seller_address != currentAddress">{{
-                        inscription.marketplace_inscription_details[0].marketplace_listing.seller_address
-                        | shortenAddress | async}}</ion-label>
-                    </ion-chip>
-                  </a>
+                <div class="d-flex flex-row justify-content-between mt-4">
+                  <div class="d-flex flex-column">
+                    <span class="mb-1">Created by</span>
+                    <app-user-chip
+                      [currentAddress]="currentAddress"
+                      [userAddress]="inscription.creator"
+                    />
+                  </div>
+                  <div class="d-flex flex-column">
+                    <span class="mb-1">Seller</span>
+                    <app-user-chip
+                      [currentAddress]="currentAddress"
+                      [userAddress]="sellerAddress"
+                    />
+                  </div>
                 </div>
-                <div class="text-center p-2 pt-0  d-inline-block">
-                  <ion-button color="primary" fill="clear" href="/app/inscription/{{ inscription.transaction.hash }}"
-                    target="_blank" *ngIf="!inscription.is_explicit">
-                    View full details <ion-icon name="open-outline" class="ps-2"></ion-icon>
+                <div class="text-center p-2 pt-0 mt-2">
+                  <ion-button
+                    color="primary"
+                    fill="clear"
+                    href="/app/inscription/{{ inscription.transaction.hash }}"
+                    target="_blank"
+                    *ngIf="!inscription.is_explicit"
+                  >
+                    View full details
+                    <ion-icon name="open-outline" class="ps-2"></ion-icon>
                   </ion-button>
                 </div>
               </ion-col>
@@ -72,19 +90,27 @@
                   <ion-row class="break pt-2">
                     <ion-col>
                       <div class="marketplace-price pt-0 mt-0 text-center">
-                        <ion-label class="value">{{
-                          inscription.marketplace_inscription_details[0]?.marketplace_listing?.total | tokenDecimals:6}}
-                          <span>ATOM</span></ion-label>
+                        <ion-label class="value"
+                          >{{
+                          inscription.marketplace_inscription_details[0]?.marketplace_listing?.total
+                          | tokenDecimals:6}} <span>ATOM</span></ion-label
+                        >
                         <ion-label class="label">Price</ion-label>
                       </div>
                     </ion-col>
                     <ion-col class="text-end">
+                      @if (sellerAddress == currentAddress) {
+                      <ion-button
+                        color="warning"
+                        fill="outline"
+                        (click)="delist()"
+                        >Cancel listing</ion-button
+                      >
+                      } @else {
                       <ion-button color="success" (click)="buy()"
-                        *ngIf="inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address != currentAddress">Buy
-                        now</ion-button>
-                      <ion-button color="warning" fill="outline" (click)="delist()"
-                        *ngIf="inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address == currentAddress">Cancel
-                        listing</ion-button>
+                        >Buy now</ion-button
+                      >
+                      }
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -95,5 +121,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>

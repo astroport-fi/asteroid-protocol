@@ -19,7 +19,8 @@ import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
 import { addIcons } from 'ionicons';
-import { arrowBack } from "ionicons/icons";
+import { arrowBack } from 'ionicons/icons';
+import { UserChipComponent } from '../user-chip/user-chip.component';
 
 @Component({
   selector: 'app-view-inscription-modal',
@@ -35,16 +36,17 @@ import { arrowBack } from "ionicons/icons";
     DatePipe,
     GenericPreviewPage,
     TableModule,
-    TokenDecimalsPipe
+    TokenDecimalsPipe,
+    UserChipComponent,
   ],
 })
 export class ViewInscriptionModalPage implements OnInit {
-
   @Input() hash: string = '';
   @Input() listingHash: string = '';
 
   isLoading = false;
   inscription: any;
+  sellerAddress: string = '';
   explorerTxUrl: string = environment.api.explorer;
   walletConnected: boolean = false;
   currentAddress: string = '';
@@ -55,7 +57,7 @@ export class ViewInscriptionModalPage implements OnInit {
     private modalCtrl: ModalController,
     private titleService: Title,
     private meta: Meta,
-    private protocolService: MarketplaceService
+    private protocolService: MarketplaceService,
   ) {
     addIcons({ arrowBack });
   }
@@ -94,27 +96,30 @@ export class ViewInscriptionModalPage implements OnInit {
           content_size_bytes: true,
           is_explicit: true,
           date_created: true,
-          marketplace_inscription_details: [{
-            where: {
-              marketplace_listing: {
-                is_cancelled: {
-                  _eq: false,
-                },
-                is_filled: {
-                  _eq: false,
+          marketplace_inscription_details: [
+            {
+              where: {
+                marketplace_listing: {
+                  is_cancelled: {
+                    _eq: false,
+                  },
+                  is_filled: {
+                    _eq: false,
+                  },
                 },
               },
             },
-          }, {
-            id: true,
-            marketplace_listing: {
-              seller_address: true,
-              total: true,
-              transaction: {
-                hash: true
-              }
+            {
+              id: true,
+              marketplace_listing: {
+                seller_address: true,
+                total: true,
+                transaction: {
+                  hash: true,
+                },
+              },
             },
-          }],
+          ],
           __alias: {
             name: {
               metadata: [
@@ -146,7 +151,8 @@ export class ViewInscriptionModalPage implements OnInit {
     });
 
     this.inscription = result.inscription[0];
-    console.log('Inscription', this.inscription);
+    this.sellerAddress =
+      this.inscription.marketplace_inscription_details[0]?.marketplace_listing?.seller_address;
     this.isLoading = false;
   }
 
@@ -181,7 +187,7 @@ export class ViewInscriptionModalPage implements OnInit {
         hash: this.listingHash,
         metaprotocol: 'marketplace',
         metaprotocolAction: 'deposit',
-      }
+      },
     });
     modal.present();
   }
@@ -199,7 +205,9 @@ export class ViewInscriptionModalPage implements OnInit {
       return;
     }
 
-    const listingHash = this.inscription.marketplace_inscription_details[0].marketplace_listing.transaction.hash;
+    const listingHash =
+      this.inscription.marketplace_inscription_details[0].marketplace_listing
+        .transaction.hash;
 
     // Close current
     this.modalCtrl.dismiss({
@@ -207,10 +215,12 @@ export class ViewInscriptionModalPage implements OnInit {
     });
 
     // Construct metaprotocol memo message
-    const params = new Map([
-      ["h", listingHash],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const params = new Map([['h', listingHash]]);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'delist',
+      params,
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -223,10 +233,8 @@ export class ViewInscriptionModalPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
         metaprotocolAction: 'delist',
-      }
+      },
     });
     modal.present();
-
   }
-
 }
