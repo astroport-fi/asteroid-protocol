@@ -14,8 +14,14 @@ const DEFAULT_FEE: ProtocolFee = {
       amount: '0.02', // Default 2%
       type: 'dynamic-percent',
     },
+    'buy.inscription': {
+      amount: '0.02', // Default 2%
+      type: 'dynamic-percent',
+    },
   },
 }
+
+export type BuyType = 'cft20' | 'inscription'
 
 export default class MarketplaceProtocol extends BaseProtocol {
   version = 'v1'
@@ -50,7 +56,7 @@ export default class MarketplaceProtocol extends BaseProtocol {
   ) {
     const params: MetaProtocolParams = [
       ['h', hash],
-      ['total', amount],
+      ['amt', amount],
       ['mindep', minDeposit],
       ['to', timeoutBlocks],
     ]
@@ -73,8 +79,14 @@ export default class MarketplaceProtocol extends BaseProtocol {
     return buildOperation(this, this.fee, this.chainId, 'delist', params)
   }
 
-  buyCFT20(listingHash: string) {
+  buy(listingHash: string, buyType: BuyType) {
     const params: MetaProtocolParams = [['h', listingHash]]
-    return buildOperation(this, this.fee, this.chainId, 'buy.cft20', params)
+    return buildOperation(
+      this,
+      this.fee,
+      this.chainId,
+      `buy.${buyType}`,
+      params,
+    )
   }
 }

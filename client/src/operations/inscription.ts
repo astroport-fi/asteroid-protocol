@@ -3,16 +3,24 @@ import InscriptionProtocol, {
   Parent,
   accountIdentifier,
 } from '../metaprotocol/inscription.js'
-import { OperationsBase } from './index.js'
+import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
-export class InscriptionOperations extends OperationsBase {
+export class InscriptionOperations<
+  T extends boolean = false,
+> extends OperationsBase<T> {
   protocol: InscriptionProtocol
   address: string
+  options: Options<T>
 
-  constructor(chainId: string, address: string) {
+  constructor(
+    chainId: string,
+    address: string,
+    options: Options<T> = getDefaultOptions(),
+  ) {
     super()
     this.protocol = new InscriptionProtocol(chainId)
     this.address = address
+    this.options = options
   }
 
   inscribe<T = ContentMetadata>(
@@ -24,9 +32,13 @@ export class InscriptionOperations extends OperationsBase {
       parent = accountIdentifier(this.address)
     }
 
-    const inscription = this.protocol.createInscription(data, metadata, parent)
-    const operation = this.protocol.inscribe(inscription.hash)
-    return this.prepareOperation(operation, inscription)
+    const inscriptionContent = this.protocol.createInscriptionContent(
+      data,
+      metadata,
+      parent,
+    )
+    const operation = this.protocol.inscribe(inscriptionContent.hash)
+    return this.prepareOperation(operation, inscriptionContent)
   }
 
   transfer(hash: string, destination: string) {

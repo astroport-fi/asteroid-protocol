@@ -23,9 +23,10 @@ SKD exposes Operations class for each metaprotocol and calling a metaprotocol op
 
 - `MarketplaceOperations`
   - `listCFT20(ticker: string, amount: number, pricePerToken: number, minDepositPercent: number, timeoutBlocks: number): TxData`
+  - `listInscription(hash: string, price: number, minDepositPercent: number, timeoutBlocks: number): TxData`
   - `delist(listingHash: string): TxData`
   - `deposit(listingHash: string): TxData`
-  - `buyCFT20(listingHash: string): TxData`
+  - `buy(listingHash: string, buyType: 'cft20' | 'inscription'): TxData`
 
 ### Tx Data interface
 
@@ -296,6 +297,23 @@ Options:
   -h, --help                       display help for command
 ```
 
+#### List Inscription
+
+```bash
+Usage: asteroid marketplace list inscription [options]
+
+Creating a new listing for an inscription
+
+Options:
+  -n, --network <NETWORK_NAME>     Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>     Name of the account to use as transaction signer
+  -t, --hash <HASH>                The transaction hash containing the inscription
+  -p, --price <PRICE>              The price in atom
+  -d, --min-deposit <MIN_DEPOSIT>  The minimum deposit expressed as a percentage of total (default: "10")
+  -b, --timeout-blocks <DECIMALS>  The block this reservation expires (default: "50")
+  -h, --help                       display help for command
+```
+
 #### Deposit
 
 ```bash
@@ -314,6 +332,20 @@ Options:
 
 ```bash
 Usage: asteroid marketplace buy cft20 [options]
+
+Buy a listing, the listing must be reserved first
+
+Options:
+  -n, --network <NETWORK_NAME>  Name of the network to use (default: "local")
+  -a, --account <ACCOUNT_NAME>  Name of the account to use as transaction signer
+  -h, --hash <HASH>             The listing transaction hash
+  --help                        display help for command
+```
+
+#### Buy Inscription
+
+```bash
+Usage: asteroid marketplace buy inscription [options]
 
 Buy a listing, the listing must be reserved first
 

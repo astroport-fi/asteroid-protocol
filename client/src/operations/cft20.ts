@@ -1,5 +1,5 @@
 import CFT20Protocol from '../metaprotocol/cft20.js'
-import { OperationsBase } from './index.js'
+import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
 interface DeployParams {
   name: string
@@ -10,18 +10,26 @@ interface DeployParams {
   openTime: Date
 }
 
-export class CFT20Operations extends OperationsBase {
+export class CFT20Operations<
+  T extends boolean = false,
+> extends OperationsBase<T> {
   protocol: CFT20Protocol
   address: string
+  options: Options<T>
 
-  constructor(chainId: string, address: string) {
+  constructor(
+    chainId: string,
+    address: string,
+    options: Options<T> = getDefaultOptions(),
+  ) {
     super()
     this.protocol = new CFT20Protocol(chainId)
     this.address = address
+    this.options = options
   }
 
   deploy(data: string | Buffer, mime: string, params: DeployParams) {
-    const inscription = this.protocol.createLogoInscription(
+    const inscriptionContent = this.protocol.createLogoInscription(
       this.address,
       data,
       mime,
@@ -34,7 +42,7 @@ export class CFT20Operations extends OperationsBase {
       params.mintLimit,
       params.openTime,
     )
-    return this.prepareOperation(operation, inscription)
+    return this.prepareOperation(operation, inscriptionContent)
   }
 
   mint(ticker: string, amount: number) {

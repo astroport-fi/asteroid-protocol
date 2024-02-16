@@ -1,9 +1,9 @@
 import {
   BaseProtocol,
-  Inscription,
+  InscriptionContent,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscription,
+  buildInscriptionContent,
   buildOperation,
 } from './index.js'
 
@@ -46,17 +46,17 @@ export default class InscriptionProtocol extends BaseProtocol {
     super(chainId, fee)
   }
 
-  createInscription<T = ContentMetadata>(
+  createInscriptionContent<T = ContentMetadata>(
     data: string | Buffer,
     metadata: T,
     parent: Parent,
-  ): Inscription {
+  ): InscriptionContent {
     const inscriptionMetadata: InscriptionMetadata<T> = {
       parent,
       metadata,
     }
 
-    return buildInscription(data, inscriptionMetadata)
+    return buildInscriptionContent(data, inscriptionMetadata)
   }
 
   inscribe(hash: string) {
