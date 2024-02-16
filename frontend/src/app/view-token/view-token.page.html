@@ -1,7 +1,16 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+      >
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -17,14 +26,21 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+        class="main-content"
+      >
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <p>
-              Loading token...
-            </p>
+            <p>Loading token...</p>
           </div>
         </div>
         <div class="aligned" *ngIf="!isLoading">
@@ -32,9 +48,16 @@
             <ion-row>
               <ion-col size-lg="2" size-xs="4">
                 <div class="text-center">
-                  <img class="rounded" [src]="token.content_path" *ngIf="token.content_path" />
+                  <img
+                    class="rounded"
+                    [src]="token.content_path"
+                    *ngIf="token.content_path"
+                  />
                   <div class="ticker" *ngIf="!token.content_path">
-                    <img class="no-logo rounded" src="../../assets/logo/a-white-on-transparent-250.png" />
+                    <img
+                      class="no-logo rounded"
+                      src="../../assets/logo/a-white-on-transparent-250.png"
+                    />
                   </div>
                 </div>
               </ion-col>
@@ -55,65 +78,97 @@
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Max supply</span>
-                        <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | number:
-                          '1.2-6'}}</span>
+                        <span class="value"
+                          >{{ token.max_supply | tokenDecimals:token.decimals |
+                          number: '1.2-6'}}</span
+                        >
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Circulating</span>
-                        <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply
-                          |number:
-                          '1.2-6' }}
-                          ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-4'}}%)</span>
+                        <span class="value"
+                          >{{ token.circulating_supply |
+                          tokenDecimals:token.decimals | humanSupply |number:
+                          '1.2-6' }} ({{token.circulating_supply /
+                          token.max_supply * 100 | number: '1.2-4'}}%)</span
+                        >
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Price</span>
-                        <span class="value">{{ token.last_price_base | tokenDecimals:token.decimals }} ATOM (${{
-                          baseTokenUSD
-                          *
-                          (token.last_price_base | tokenDecimals:token.decimals ) |
-                          number:"1.2-6" }})</span>
+                        <span class="value"
+                          >{{ token.last_price_base |
+                          tokenDecimals:token.decimals }} ATOM (${{ baseTokenUSD
+                          * (token.last_price_base |
+                          tokenDecimals:token.decimals ) | number:"1.2-6"
+                          }})</span
+                        >
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Market cap</span>
                         <span class="value">
-                          ${{ (token.circulating_supply | tokenDecimals:token.decimals ) * (baseTokenUSD *
-                          token.last_price_base |
-                          tokenDecimals:token.decimals) | number:"1.2-6" }}
+                          ${{ (token.circulating_supply |
+                          tokenDecimals:token.decimals ) * (baseTokenUSD *
+                          token.last_price_base | tokenDecimals:token.decimals)
+                          | number:"1.2-6" }}
                         </span>
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
                         <span class="label">Limit per mint</span>
-                        <span class="value">{{ token.per_mint_limit | tokenDecimals:token.decimals | number:"1.2-6"
-                          }}</span>
+                        <span class="value"
+                          >{{ token.per_mint_limit |
+                          tokenDecimals:token.decimals | number:"1.2-6" }}</span
+                        >
                       </div>
                     </ion-col>
                     <ion-col size="6">
                       <div class="meta">
-                        <span class="label">{{ tokenIsLaunched ? 'Launched at' : 'Launching'}}</span>
-                        <span class="value">{{ tokenLaunchDate | date:'longDate' }} {{ tokenLaunchDate |
-                          date:'shortTime' }}</span>
+                        <span class="label"
+                          >{{ tokenIsLaunched ? 'Launched at' :
+                          'Launching'}}</span
+                        >
+                        <span class="value"
+                          >{{ tokenLaunchDate | date:'longDate' }} {{
+                          tokenLaunchDate | date:'shortTime' }}</span
+                        >
                       </div>
                     </ion-col>
-                    <ion-col size="12" class="pt-3" *ngIf="token.circulating_supply < token.max_supply">
-                      <ion-button color="warning" (click)="mint()" *ngIf="tokenIsLaunched">Mint now</ion-button>
-                      <ion-button color="primary" fill="clear" href="/mint/{{token.ticker}}" target="_blank">Open
-                        mint
-                        page</ion-button>
+                    <ion-col
+                      size="12"
+                      class="pt-3"
+                      *ngIf="token.circulating_supply < token.max_supply"
+                    >
+                      <ion-button
+                        color="warning"
+                        (click)="mint()"
+                        *ngIf="tokenIsLaunched"
+                        >Mint now</ion-button
+                      >
+                      <ion-button
+                        color="primary"
+                        fill="clear"
+                        href="/mint/{{token.ticker}}"
+                        target="_blank"
+                        >Open mint page</ion-button
+                      >
                     </ion-col>
-                    <ion-col size="12" class="pt-3" *ngIf="token.circulating_supply >= token.max_supply">
-                      <ion-text color="warning">All ${{ token.ticker }} tokens have been minted</ion-text>
+                    <ion-col
+                      size="12"
+                      class="pt-3"
+                      *ngIf="token.circulating_supply >= token.max_supply"
+                    >
+                      <ion-text color="warning"
+                        >All ${{ token.ticker }} tokens have been
+                        minted</ion-text
+                      >
                     </ion-col>
                   </ion-row>
-
-
                 </ion-grid>
               </ion-col>
             </ion-row>
@@ -124,26 +179,51 @@
                 <h4>Your balance</h4>
                 <div class="meta">
                   <span class="label"></span>
-                  <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
-                    {{ token.ticker }} (${{ (holding.amount | tokenDecimals:token.decimals ) * (baseTokenUSD *
-                    token.last_price_base |
-                    tokenDecimals:token.decimals) | number:"1.2-6" }})</span>
+                  <span class="value"
+                    >{{ holding.amount | tokenDecimals:token.decimals }} {{
+                    token.ticker }} (${{ (holding.amount |
+                    tokenDecimals:token.decimals ) * (baseTokenUSD *
+                    token.last_price_base | tokenDecimals:token.decimals) |
+                    number:"1.2-6" }})</span
+                  >
                 </div>
                 <div class="mt-2 mb-3">
-                  <ion-button color="primary" fill="outline" (click)="transfer()"
-                    [disabled]="holding.amount == 0">Send</ion-button>
-                  <ion-button color="primary" fill="outline" (click)="listSale()"
-                    [disabled]="holding.amount == 0">Sell</ion-button>
-                  <ion-button color="primary" fill="outline"
-                    [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
-                  <ion-button color="primary" fill="outline"
-                    [routerLink]="['/app/wallet/token', token.ticker]">History</ion-button>
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    (click)="transfer()"
+                    [disabled]="holding.amount == 0"
+                    >Send</ion-button
+                  >
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    (click)="listSale()"
+                    [disabled]="holding.amount == 0"
+                    >Sell</ion-button
+                  >
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    [routerLink]="['/app/market', token.ticker]"
+                    >Trade</ion-button
+                  >
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    [routerLink]="['/app/wallet/token', token.ticker]"
+                    >History</ion-button
+                  >
                 </div>
               </ion-col>
             </ion-row>
             <ion-row class="pt-3">
               <ion-col size="12">
-                <ion-segment value="holders" color="primary" (ionChange)="sectionChanged($event)">
+                <ion-segment
+                  value="holders"
+                  color="primary"
+                  (ionChange)="sectionChanged($event)"
+                >
                   <!-- <ion-segment-button value="trading">
                     <ion-label>Trading</ion-label>
                   </ion-segment-button> -->
@@ -159,23 +239,41 @@
 
             <ion-row *ngIf="selectedSection == 'holders'">
               <ion-col>
-                <p-table #data [value]="holders" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true" [rows]="10"
+                <p-table
+                  #data
+                  [value]="holders"
+                  [tableStyle]="{ 'min-width': '30rem' }"
+                  [paginator]="true"
+                  [rows]="10"
                   [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} holders"
-                  styleClass="token-list" [sortOrder]="-1" sortField="amount">
+                  styleClass="token-list"
+                  [sortOrder]="-1"
+                  sortField="amount"
+                >
                   <ng-template pTemplate="header">
                     <tr>
-                      <th pSortableColumn="id" pFrozenColumn>Holder # <p-sortIcon field="id"></p-sortIcon></th>
-                      <th pSortableColumn="address">Address <p-sortIcon field="address"></p-sortIcon></th>
-                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon>
+                      <th pSortableColumn="id" pFrozenColumn>
+                        Holder # <p-sortIcon field="id"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="address">
+                        Address <p-sortIcon field="address"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="amount">
+                        Amount <p-sortIcon field="amount"></p-sortIcon>
                       </th>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-holder>
                     <tr [routerLink]="['/app/wallet', holder.address]">
                       <td>{{ holder.id }}</td>
-                      <td class="mono">{{ holder.address | shortenAddress | async}}</td>
-                      <td class="mono">{{ holder.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
+                      <td class="mono">
+                        {{ holder.address | shortenAddress | async}}
+                      </td>
+                      <td class="mono">
+                        {{ holder.amount | tokenDecimals:token.decimals |
+                        number:'1.6-6'}}
+                      </td>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="emptymessage">
@@ -194,12 +292,21 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Created by</span>
-                        <a [routerLink]="['/app/wallet', token.creator ]" [queryParams]="{section: 'tokens'}">
+                        <a
+                          [routerLink]="['/app/wallet', token.creator ]"
+                          [queryParams]="{section: 'tokens'}"
+                        >
                           <ion-chip>
                             <ion-avatar>
-                              <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                              <img
+                                alt="Unknown avatar"
+                                src="../../assets/avatar.svg"
+                              />
                             </ion-avatar>
-                            <ion-label>{{ token.creator | shortenAddress | async}}</ion-label>
+                            <ion-label
+                              >{{ token.creator | shortenAddress |
+                              async}}</ion-label
+                            >
                           </ion-chip>
                         </a>
                       </div>
@@ -207,12 +314,21 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Owned by</span>
-                        <a [routerLink]="['/app/wallet', token.current_owner ]" [queryParams]="{section: 'tokens'}">
+                        <a
+                          [routerLink]="['/app/wallet', token.current_owner ]"
+                          [queryParams]="{section: 'tokens'}"
+                        >
                           <ion-chip>
                             <ion-avatar>
-                              <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                              <img
+                                alt="Unknown avatar"
+                                src="../../assets/avatar.svg"
+                              />
                             </ion-avatar>
-                            <ion-label>{{ token.current_owner | shortenAddress | async}}</ion-label>
+                            <ion-label
+                              >{{ token.current_owner | shortenAddress |
+                              async}}</ion-label
+                            >
                           </ion-chip>
                         </a>
                       </div>
@@ -222,9 +338,13 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Created on</span>
-                        <span class="value">{{ token.date_created | date:'longDate' }} {{ token.date_created |
-                          date:'shortTime' }}</span>
-                        <span class="value">Block {{ token.height | number: '1.0-0' }}</span>
+                        <span class="value"
+                          >{{ token.date_created | date:'longDate' }} {{
+                          token.date_created | date:'shortTime' }}</span
+                        >
+                        <span class="value"
+                          >Block {{ token.height | number: '1.0-0' }}</span
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
@@ -232,8 +352,13 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Transaction</span>
-                        <span class="value"><a href="{{ explorerTxUrl }}{{ token.transaction.hash }}" target="_blank">{{
-                            token.transaction.hash }}</a></span>
+                        <span class="value"
+                          ><a
+                            href="{{ explorerTxUrl }}{{ token.transaction.hash }}"
+                            target="_blank"
+                            >{{ token.transaction.hash }}</a
+                          ></span
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
@@ -245,5 +370,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div style="height: 100px;"></div>
+  <div style="height: 100px"></div>
 </ion-content>

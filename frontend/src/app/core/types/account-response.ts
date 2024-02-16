@@ -1,7 +1,6 @@
 // import { Account } from "@cosmjs/stargate"
-
-import { Account } from "./account"
+import { Account } from './account';
 
 export type AccountResponse = {
-    account: Account
-}
+  account: Account;
+};

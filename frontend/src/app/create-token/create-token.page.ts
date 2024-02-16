@@ -1,28 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  Validators,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { toBase64, toUtf8 } from '@cosmjs/encoding';
 import {
+  AlertController,
   IonicModule,
   ModalController,
-  AlertController,
   ViewDidLeave,
 } from '@ionic/angular';
-import { toBase64, toUtf8 } from '@cosmjs/encoding';
-import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { MaskitoModule } from '@maskito/angular';
+import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { WalletService } from '../core/service/wallet.service';
-import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { environment } from 'src/environments/environment';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { InscriptionMetadata } from '../core/metaprotocol/inscription.service';
 import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
+import { WalletService } from '../core/service/wallet.service';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({

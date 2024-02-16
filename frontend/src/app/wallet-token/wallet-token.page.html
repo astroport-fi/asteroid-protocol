@@ -1,7 +1,16 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+      >
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
@@ -17,14 +26,21 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+        class="main-content"
+      >
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <p>
-              Loading token...
-            </p>
+            <p>Loading token...</p>
           </div>
         </div>
         <div class="aligned" *ngIf="!isLoading">
@@ -32,9 +48,16 @@
             <ion-row>
               <ion-col size-lg="2" size-xs="4">
                 <div class="text-center">
-                  <img class="rounded" [src]="token.content_path" *ngIf="token.content_path" />
+                  <img
+                    class="rounded"
+                    [src]="token.content_path"
+                    *ngIf="token.content_path"
+                  />
                   <div class="ticker" *ngIf="!token.content_path">
-                    <img class="no-logo rounded" src="../../assets/logo/a-white-on-transparent-250.png" />
+                    <img
+                      class="no-logo rounded"
+                      src="../../assets/logo/a-white-on-transparent-250.png"
+                    />
                   </div>
                 </div>
               </ion-col>
@@ -48,55 +71,104 @@
                 <h4>Your balance</h4>
                 <div class="meta">
                   <span class="label"></span>
-                  <span class="value">{{ holding.amount | tokenDecimals:token.decimals }}
-                    {{ token.ticker }} (${{ (holding.amount | tokenDecimals:holding.token.decimals )* (baseTokenUSD *
+                  <span class="value"
+                    >{{ holding.amount | tokenDecimals:token.decimals }} {{
+                    token.ticker }} (${{ (holding.amount |
+                    tokenDecimals:holding.token.decimals )* (baseTokenUSD *
                     holding.token.last_price_base |
-                    tokenDecimals:holding.token.decimals) | number:"1.2-6" }})</span>
+                    tokenDecimals:holding.token.decimals) | number:"1.2-6"
+                    }})</span
+                  >
                 </div>
                 <div class="mt-2 mb-0">
-                  <ion-button color="primary" fill="outline" (click)="transfer()"
-                    [disabled]="holding.amount == 0">Send</ion-button>
-                  <ion-button color="primary" fill="outline" (click)="listSale()"
-                    [disabled]="holding.amount == 0">Sell</ion-button>
-                  <ion-button color="primary" fill="outline"
-                    [routerLink]="['/app/market', token.ticker]">Trade</ion-button>
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    (click)="transfer()"
+                    [disabled]="holding.amount == 0"
+                    >Send</ion-button
+                  >
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    (click)="listSale()"
+                    [disabled]="holding.amount == 0"
+                    >Sell</ion-button
+                  >
+                  <ion-button
+                    color="primary"
+                    fill="outline"
+                    [routerLink]="['/app/market', token.ticker]"
+                    >Trade</ion-button
+                  >
                 </div>
               </ion-col>
 
               <ion-col size="12" class="ps-3 pt-0 mb-0">
                 <h4>Your listings</h4>
               </ion-col>
-              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="listings.length > 0">
+              <ion-col
+                size="12"
+                class="ps-3 pt-0 mb-0"
+                *ngIf="listings.length > 0"
+              >
                 <div class="mt-2 mb-3">
-                  <p-table #data [value]="listings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
-                    [rows]="10" [showCurrentPageReport]="true"
+                  <p-table
+                    #data
+                    [value]="listings"
+                    [tableStyle]="{ 'min-width': '30rem' }"
+                    [paginator]="true"
+                    [rows]="10"
+                    [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
-                    [globalFilterFields]="['name', 'ticker' ]" styleClass="token-list" [defaultSortOrder]="1"
-                    sortField="ppt">
+                    [globalFilterFields]="['name', 'ticker' ]"
+                    styleClass="token-list"
+                    [defaultSortOrder]="1"
+                    sortField="ppt"
+                  >
                     <ng-template pTemplate="header">
                       <tr>
-                        <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
-                        <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
-                        <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                        <th pSortableColumn="id" pFrozenColumn>
+                          Listing # <p-sortIcon field="id"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                        <th pSortableColumn="ppt">
+                          ATOM per Token <p-sortIcon field="ppt"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="amount">
+                          {{ token.ticker }} Tokens
+                          <p-sortIcon field="amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="total">
+                          Total ATOM <p-sortIcon field="total"></p-sortIcon>
+                        </th>
                         <th>&nbsp;</th>
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-position>
                       <tr class="no-click">
                         <td pFrozenColumn>{{ position.id }}</td>
-                        <td class="mono">{{ position.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{position.ppt *
-                          baseTokenUSD |
-                          tokenDecimals:6 | number:'1.6-6'}})</td>
-                        <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
-                        <td class="mono">{{ position.marketplace_listing.total | tokenDecimals:6 | number:'1.6-6'}}
-                          (${{position.marketplace_listing.total *
-                          baseTokenUSD |
-                          tokenDecimals:6 | number:'1.6-6'}})</td>
+                        <td class="mono">
+                          {{ position.ppt | tokenDecimals:6 | number:'1.6-6' }}
+                          (${{position.ppt * baseTokenUSD | tokenDecimals:6 |
+                          number:'1.6-6'}})
+                        </td>
+                        <td class="mono">
+                          {{ position.amount | tokenDecimals:token.decimals |
+                          number:'1.6-6'}}
+                        </td>
+                        <td class="mono">
+                          {{ position.marketplace_listing.total |
+                          tokenDecimals:6 | number:'1.6-6'}}
+                          (${{position.marketplace_listing.total * baseTokenUSD
+                          | tokenDecimals:6 | number:'1.6-6'}})
+                        </td>
                         <td>
-                          <ion-button fill="outline" color="warning"
-                            (click)="cancel(position.marketplace_listing.transaction.hash)">Cancel</ion-button>
+                          <ion-button
+                            fill="outline"
+                            color="warning"
+                            (click)="cancel(position.marketplace_listing.transaction.hash)"
+                            >Cancel</ion-button
+                          >
                         </td>
                       </tr>
                     </ng-template>
@@ -108,8 +180,12 @@
                   </p-table>
                 </div>
               </ion-col>
-              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="listings.length == 0">
-                <div class=" mt-2 mb-3 text-muted">
+              <ion-col
+                size="12"
+                class="ps-3 pt-0 mb-0"
+                *ngIf="listings.length == 0"
+              >
+                <div class="mt-2 mb-3 text-muted">
                   You have no listings for {{ token.ticker }}
                 </div>
               </ion-col>
@@ -117,38 +193,72 @@
               <ion-col size="12" class="ps-3 pt-0 mb-0">
                 <h4>Your old market listings</h4>
               </ion-col>
-              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="oldlistings.length > 0">
-                <p class="text-warning">These listings should be cancelled and reopened under the new marketplace</p>
+              <ion-col
+                size="12"
+                class="ps-3 pt-0 mb-0"
+                *ngIf="oldlistings.length > 0"
+              >
+                <p class="text-warning">
+                  These listings should be cancelled and reopened under the new
+                  marketplace
+                </p>
                 <div class="mt-2 mb-3">
-                  <p-table #data [value]="oldlistings" [tableStyle]="{ 'min-width': '30rem' }" [paginator]="true"
-                    [rows]="10" [showCurrentPageReport]="true"
+                  <p-table
+                    #data
+                    [value]="oldlistings"
+                    [tableStyle]="{ 'min-width': '30rem' }"
+                    [paginator]="true"
+                    [rows]="10"
+                    [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} listings"
                     [globalFilterFields]="
-                                                              ['name', 'ticker' ]" styleClass="token-list"
-                    [defaultSortOrder]="1" sortField="ppt">
+                                                              ['name', 'ticker' ]"
+                    styleClass="token-list"
+                    [defaultSortOrder]="1"
+                    sortField="ppt"
+                  >
                     <ng-template pTemplate="header">
                       <tr>
-                        <th pSortableColumn="id" pFrozenColumn>Listing # <p-sortIcon field="id"></p-sortIcon></th>
-                        <th pSortableColumn="ppt">ATOM per Token <p-sortIcon field="ppt"></p-sortIcon></th>
-                        <th pSortableColumn="amount">{{ token.ticker }} Tokens <p-sortIcon field="amount"></p-sortIcon>
+                        <th pSortableColumn="id" pFrozenColumn>
+                          Listing # <p-sortIcon field="id"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="total">Total ATOM <p-sortIcon field="total"></p-sortIcon></th>
+                        <th pSortableColumn="ppt">
+                          ATOM per Token <p-sortIcon field="ppt"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="amount">
+                          {{ token.ticker }} Tokens
+                          <p-sortIcon field="amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="total">
+                          Total ATOM <p-sortIcon field="total"></p-sortIcon>
+                        </th>
                         <th>&nbsp;</th>
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-position>
                       <tr class="no-click">
                         <td pFrozenColumn>{{ position.id }}</td>
-                        <td class="mono">{{ position.ppt | tokenDecimals:6 | number:'1.6-6' }} (${{position.ppt *
-                          baseTokenUSD |
-                          tokenDecimals:6 | number:'1.6-6'}})</td>
-                        <td class="mono">{{ position.amount | tokenDecimals:token.decimals | number:'1.6-6'}}</td>
-                        <td class="mono">{{ position.total | tokenDecimals:6 | number:'1.6-6'}} (${{position.total *
-                          baseTokenUSD |
-                          tokenDecimals:6 | number:'1.6-6'}})</td>
+                        <td class="mono">
+                          {{ position.ppt | tokenDecimals:6 | number:'1.6-6' }}
+                          (${{position.ppt * baseTokenUSD | tokenDecimals:6 |
+                          number:'1.6-6'}})
+                        </td>
+                        <td class="mono">
+                          {{ position.amount | tokenDecimals:token.decimals |
+                          number:'1.6-6'}}
+                        </td>
+                        <td class="mono">
+                          {{ position.total | tokenDecimals:6 | number:'1.6-6'}}
+                          (${{position.total * baseTokenUSD | tokenDecimals:6 |
+                          number:'1.6-6'}})
+                        </td>
                         <td>
-                          <ion-button fill="outline" color="warning"
-                            (click)="cancelcft(position.id)">Cancel</ion-button>
+                          <ion-button
+                            fill="outline"
+                            color="warning"
+                            (click)="cancelcft(position.id)"
+                            >Cancel</ion-button
+                          >
                         </td>
                       </tr>
                     </ng-template>
@@ -160,8 +270,12 @@
                   </p-table>
                 </div>
               </ion-col>
-              <ion-col size="12" class="ps-3 pt-0 mb-0" *ngIf="listings.length == 0">
-                <div class=" mt-2 mb-3 text-muted">
+              <ion-col
+                size="12"
+                class="ps-3 pt-0 mb-0"
+                *ngIf="listings.length == 0"
+              >
+                <div class="mt-2 mb-3 text-muted">
                   You have no listings for {{ token.ticker }}
                 </div>
               </ion-col>
@@ -169,50 +283,62 @@
           </ion-grid>
           <ion-grid class="history">
             <ion-row>
-              <ion-col size="6" class="header">
-                Transaction History
-              </ion-col>
+              <ion-col size="6" class="header"> Transaction History </ion-col>
             </ion-row>
             <ion-row class="break">
               <ion-col size="12">
-                <p-table #data [value]="history" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true" [rows]="30"
+                <p-table
+                  #data
+                  [value]="history"
+                  [tableStyle]="{ 'min-width': '40rem' }"
+                  [paginator]="true"
+                  [rows]="30"
                   [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-                  styleClass="token-list" sortField="date_created" [sortOrder]="-1">
+                  styleClass="token-list"
+                  sortField="date_created"
+                  [sortOrder]="-1"
+                >
                   <ng-template pTemplate="header">
                     <tr>
-                      <th pSortableColumn="date_created">Date <p-sortIcon field="date_created"></p-sortIcon></th>
-                      <th pSortableColumn="height" pFrozenColumn>Block <p-sortIcon field="height"></p-sortIcon>
+                      <th pSortableColumn="date_created">
+                        Date <p-sortIcon field="date_created"></p-sortIcon>
                       </th>
-                      <th pSortableColumn="action">Action <p-sortIcon field="action"></p-sortIcon></th>
-                      <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon></th>
-                      <th pSortableColumn="sender">Sender <p-sortIcon field="sender"></p-sortIcon></th>
-                      <th pSortableColumn="receiver">Receiver <p-sortIcon field="receiver"></p-sortIcon></th>
+                      <th pSortableColumn="height" pFrozenColumn>
+                        Block <p-sortIcon field="height"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="action">
+                        Action <p-sortIcon field="action"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="amount">
+                        Amount <p-sortIcon field="amount"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="sender">
+                        Sender <p-sortIcon field="sender"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="receiver">
+                        Receiver <p-sortIcon field="receiver"></p-sortIcon>
+                      </th>
                       <th>&nbsp;</th>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-item>
                     <tr>
+                      <td>{{ item.date_created | date }}</td>
+                      <td>{{ item.height | number }}</td>
+                      <td>{{ item.action }}</td>
                       <td>
-                        {{ item.date_created | date }}
+                        {{ item.amount | tokenDecimals:item.token.decimals |
+                        number:"1.1-6" }}
                       </td>
+                      <td>{{ item.sender | shortenAddress | async }}</td>
+                      <td>{{ item.receiver | shortenAddress | async }}</td>
                       <td>
-                        {{ item.height | number }}
-                      </td>
-                      <td>
-                        {{ item.action }}
-                      </td>
-                      <td>
-                        {{ item.amount | tokenDecimals:item.token.decimals | number:"1.1-6" }}
-                      </td>
-                      <td>
-                        {{ item.sender | shortenAddress | async }}
-                      </td>
-                      <td>
-                        {{ item.receiver | shortenAddress | async }}
-                      </td>
-                      <td>
-                        <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
+                        <a
+                          href="{{explorerTxUrl}}{{item.transaction.hash}}"
+                          target="_blank"
+                          >View on Mintscan</a
+                        >
                       </td>
                     </tr>
                   </ng-template>
@@ -229,5 +355,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div style="height: 100px;"></div>
+  <div style="height: 100px"></div>
 </ion-content>

@@ -6,18 +6,18 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { WalletService } from '../core/service/wallet.service';
 import { Chain } from '../core/helpers/zeus';
+import { InscriptionService } from '../core/metaprotocol/inscription.service';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { WalletService } from '../core/service/wallet.service';
 import { order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
-import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
 import { SellInscriptionModalPage } from '../sell-inscription-modal/sell-inscription-modal.page';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
-import { InscriptionService } from '../core/metaprotocol/inscription.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
   selector: 'app-view-inscription',
@@ -33,7 +33,7 @@ import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
     DatePipe,
     GenericPreviewPage,
     TableModule,
-    TokenDecimalsPipe
+    TokenDecimalsPipe,
   ],
 })
 export class ViewInscriptionPage implements OnInit {
@@ -50,8 +50,8 @@ export class ViewInscriptionPage implements OnInit {
     private modalCtrl: ModalController,
     private titleService: Title,
     private meta: Meta,
-    private protocolService: MarketplaceService
-  ) { }
+    private protocolService: MarketplaceService,
+  ) {}
 
   async ngOnInit() {
     this.isLoading = true;
@@ -87,29 +87,32 @@ export class ViewInscriptionPage implements OnInit {
           content_size_bytes: true,
           is_explicit: true,
           date_created: true,
-          marketplace_inscription_details: [{
-            where: {
-              marketplace_listing: {
-                is_cancelled: {
-                  _eq: false,
-                },
-                is_filled: {
-                  _eq: false,
+          marketplace_inscription_details: [
+            {
+              where: {
+                marketplace_listing: {
+                  is_cancelled: {
+                    _eq: false,
+                  },
+                  is_filled: {
+                    _eq: false,
+                  },
                 },
               },
             },
-          }, {
-            id: true,
-            marketplace_listing: {
-              transaction: {
-                hash: true,
+            {
+              id: true,
+              marketplace_listing: {
+                transaction: {
+                  hash: true,
+                },
+                total: true,
+                is_cancelled: true,
+                is_filled: true,
+                seller_address: true,
               },
-              total: true,
-              is_cancelled: true,
-              is_filled: true,
-              seller_address: true,
-            }
-          }],
+            },
+          ],
           __alias: {
             name: {
               metadata: [
@@ -146,7 +149,7 @@ export class ViewInscriptionPage implements OnInit {
       this.inscription;
 
     this.titleService.setTitle(
-      `${name} Inscription #${id} on Asteroid Protocol` as string
+      `${name} Inscription #${id} on Asteroid Protocol` as string,
     );
     this.meta.updateTag({
       property: 'og:url',
@@ -263,13 +266,17 @@ export class ViewInscriptionPage implements OnInit {
       return;
     }
 
-    const listingHash = this.inscription.marketplace_inscription_details[0].marketplace_listing.transaction.hash;
+    const listingHash =
+      this.inscription.marketplace_inscription_details[0].marketplace_listing
+        .transaction.hash;
 
     // Construct metaprotocol memo message
-    const params = new Map([
-      ["h", listingHash],
-    ]);
-    const urn = this.protocolService.buildURN(environment.chain.chainId, 'delist', params);
+    const params = new Map([['h', listingHash]]);
+    const urn = this.protocolService.buildURN(
+      environment.chain.chainId,
+      'delist',
+      params,
+    );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
       backdropDismiss: false,
@@ -282,9 +289,8 @@ export class ViewInscriptionPage implements OnInit {
         resultCTA: 'View transaction',
         metaprotocol: 'marketplace',
         metaprotocolAction: 'delist',
-      }
+      },
     });
     modal.present();
-
   }
 }

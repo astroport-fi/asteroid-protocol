@@ -1,9 +1,11 @@
 ion-content {
   --ion-background-color: transparent;
-  background: url("../../assets/background/asteroids-dark3.png") no-repeat;
+  background: url('../../assets/background/asteroids-dark3.png') no-repeat;
 
-  @supports (background-image: url("../../assets/background/asteroids-dark3.webp")) {
-    background-image: url("../../assets/background/asteroids-dark3.webp");
+  @supports (
+    background-image: url('../../assets/background/asteroids-dark3.webp')
+  ) {
+    background-image: url('../../assets/background/asteroids-dark3.webp');
   }
 
   background-size: cover;

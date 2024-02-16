@@ -12,37 +12,68 @@
           <a [routerLink]="['/app/wallet']" routerLinkActive="active">Wallet</a>
         </ion-item>
         <ion-item lines="none">
-          <ion-select interface="popover" placeholder="Inscriptions" (ionChange)="menuChange($event)">
-            <ion-select-option value="app/create/inscription">Create</ion-select-option>
-            <ion-select-option value="app/inscriptions">Browse</ion-select-option>
+          <ion-select
+            interface="popover"
+            placeholder="Inscriptions"
+            (ionChange)="menuChange($event)"
+          >
+            <ion-select-option value="app/create/inscription"
+              >Create</ion-select-option
+            >
+            <ion-select-option value="app/inscriptions"
+              >Browse</ion-select-option
+            >
           </ion-select>
         </ion-item>
         <ion-item lines="none">
-          <ion-select interface="popover" placeholder="CFT-20 Tokens" (ionChange)="menuChange($event)">
-            <ion-select-option value="app/create/token">Create</ion-select-option>
+          <ion-select
+            interface="popover"
+            placeholder="CFT-20 Tokens"
+            (ionChange)="menuChange($event)"
+          >
+            <ion-select-option value="app/create/token"
+              >Create</ion-select-option
+            >
             <ion-select-option value="app/tokens">Browse</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-item lines="none">
-          <ion-select interface="popover" placeholder="Marketplace" (ionChange)="menuChange($event)">
-            <ion-select-option value="app/inscription-markets">Inscriptions</ion-select-option>
-            <ion-select-option value="app/markets">CFT-20 Tokens</ion-select-option>
+          <ion-select
+            interface="popover"
+            placeholder="Marketplace"
+            (ionChange)="menuChange($event)"
+          >
+            <ion-select-option value="app/inscription-markets"
+              >Inscriptions</ion-select-option
+            >
+            <ion-select-option value="app/markets"
+              >CFT-20 Tokens</ion-select-option
+            >
           </ion-select>
         </ion-item>
       </div>
       <div class="right info-wrapper">
         <div class="profile header disconnected">
           <div class="connect-wallet">
-            <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
+            <ion-chip
+              color="warning"
+              [outline]="true"
+              *ngIf="!isWalletConnected"
+              (click)="connectWallet()"
+            >
               <ion-icon name="key-sharp" color="warning" />
               <ion-label>{{ walletStatusText }}</ion-label>
             </ion-chip>
-            <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
-              (click)="disconnectWallet()">
+            <ion-chip
+              color="warning"
+              [outline]="true"
+              *ngIf="isWalletConnected && !showWalletOptions"
+              (click)="disconnectWallet()"
+            >
               <ion-icon name="key-sharp" color="warning" />
               <ion-label class="hover-connect">{{
                 connectedAccount.address | shortenAddress | async
-                }}</ion-label>
+              }}</ion-label>
               <ion-label class="hover-disconnect">Disconnect wallet</ion-label>
             </ion-chip>
           </div>
@@ -50,7 +81,13 @@
       </div>
     </div>
   </ion-header>
-  <ion-menu side="start" type="push" menuId="primary" contentId="primaryContent" class="menu-aside mb-5">
+  <ion-menu
+    side="start"
+    type="push"
+    menuId="primary"
+    contentId="primaryContent"
+    class="menu-aside mb-5"
+  >
     <ion-row class="menu">
       <ion-col class="menu-wrapper ion-justify-content-between">
         <ion-row>
@@ -63,27 +100,45 @@
             </div>
             <div class="profile disconnected">
               <div class="connect-wallet">
-                <ion-chip color="warning" [outline]="true" *ngIf="!isWalletConnected" (click)="connectWallet()">
+                <ion-chip
+                  color="warning"
+                  [outline]="true"
+                  *ngIf="!isWalletConnected"
+                  (click)="connectWallet()"
+                >
                   <ion-icon name="key-sharp" color="warning" />
                   <ion-label>{{ walletStatusText }}</ion-label>
                 </ion-chip>
-                <ion-chip color="warning" [outline]="true" *ngIf="isWalletConnected && !showWalletOptions"
-                  (click)="toggleWalletOptions()">
+                <ion-chip
+                  color="warning"
+                  [outline]="true"
+                  *ngIf="isWalletConnected && !showWalletOptions"
+                  (click)="toggleWalletOptions()"
+                >
                   <ion-icon name="key-sharp" color="warning" />
                   <ion-label>{{
                     connectedAccount.address | shortenAddress | async
-                    }}</ion-label>
+                  }}</ion-label>
                 </ion-chip>
               </div>
             </div>
-            <div class="wallet-options" *ngIf="showWalletOptions" (click)="toggleWalletOptions()">
+            <div
+              class="wallet-options"
+              *ngIf="showWalletOptions"
+              (click)="toggleWalletOptions()"
+            >
               <div class="chip">
                 <ion-icon name="chevron-down" color="warning" />
                 <ion-label>{{
                   connectedAccount.address | shortenAddress | async
-                  }}</ion-label>
+                }}</ion-label>
                 <div>
-                  <ion-button fill="clear" color="danger" (click)="disconnectWallet()">Disconnect</ion-button>
+                  <ion-button
+                    fill="clear"
+                    color="danger"
+                    (click)="disconnectWallet()"
+                    >Disconnect</ion-button
+                  >
                 </div>
               </div>
             </div>
@@ -92,7 +147,11 @@
                 <ion-label>Home</ion-label>
               </ion-list-header>
               <ion-menu-toggle autoHide="false">
-                <ion-item [button]="true" [routerLink]="['/app/wallet']" routerLinkActive="active">
+                <ion-item
+                  [button]="true"
+                  [routerLink]="['/app/wallet']"
+                  routerLinkActive="active"
+                >
                   <ion-label>Wallet</ion-label>
                 </ion-item>
               </ion-menu-toggle>
@@ -108,27 +167,47 @@
                   <ion-label>Inscriptions</ion-label>
                 </ion-item>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/create/inscription']" routerLinkActive="active"
-                    lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/create/inscription']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>Create</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/inscriptions']" routerLinkActive="active" lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/inscriptions']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>Browse</ion-label>
-                  </ion-item> </ion-menu-toggle>app-dashboard'
+                  </ion-item> </ion-menu-toggle
+                >app-dashboard'
               </ion-accordion>
               <ion-accordion value="tokens">
                 <ion-item slot="header" lines="none">
                   <ion-label>CFT-20 Tokens</ion-label>
                 </ion-item>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/create/token']" routerLinkActive="active" lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/create/token']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>Create</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/tokens']" routerLinkActive="active" lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/tokens']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>Browse</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
@@ -138,13 +217,22 @@
                   <ion-label>Marketplace</ion-label>
                 </ion-item>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/inscription-markets']" routerLinkActive="active"
-                    lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/inscription-markets']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>Inscriptions</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
                 <ion-menu-toggle autoHide="false" slot="content">
-                  <ion-item [button]="true" [routerLink]="['/app/markets']" routerLinkActive="active" lines="none">
+                  <ion-item
+                    [button]="true"
+                    [routerLink]="['/app/markets']"
+                    routerLinkActive="active"
+                    lines="none"
+                  >
                     <ion-label>CFT-20 Tokens</ion-label>
                   </ion-item>
                 </ion-menu-toggle>
@@ -161,19 +249,29 @@
       <div class="d-inline-block me-2">Indexer</div>
       <div class="d-inline-block">
         <span *ngIf="lag <= 1" class="text-success">In sync</span>
-        <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{lag}}</span>
-        <span *ngIf="lag >= 5 && lag < 30" class="text-warning">+{{lag}}</span>
-        <span *ngIf="lag >= 30" class="text-warning">+{{lag}} Lagging</span>
+        <span *ngIf="lag > 1 && lag < 5" class="text-success">+{{ lag }}</span>
+        <span *ngIf="lag >= 5 && lag < 30" class="text-warning"
+          >+{{ lag }}</span
+        >
+        <span *ngIf="lag >= 30" class="text-warning">+{{ lag }} Lagging</span>
       </div>
     </div>
     <div class="d-inline-block section socials p-2">
-      <a href="https://t.me/asteroidxyz" title="Astroid Protocol Telegram Group" target="_blank"><img
-          src="../../assets/socials/telegram.svg" width="16" /></a>
-      <a href="https://twitter.com/asteroidxyz" title="Astroid Protocol on X" target="_blank"><img
-          src="../../assets/socials/twitter.svg" width="16" /></a>
+      <a
+        href="https://t.me/asteroidxyz"
+        title="Astroid Protocol Telegram Group"
+        target="_blank"
+        ><img src="../../assets/socials/telegram.svg" width="16"
+      /></a>
+      <a
+        href="https://twitter.com/asteroidxyz"
+        title="Astroid Protocol on X"
+        target="_blank"
+        ><img src="../../assets/socials/twitter.svg" width="16"
+      /></a>
     </div>
     <div class="d-inline-block section p-2">
-      ATOM ${{ atomUSD | number: '1.2-2'}}
+      ATOM ${{ atomUSD | number: '1.2-2' }}
     </div>
   </div>
 </ion-content>

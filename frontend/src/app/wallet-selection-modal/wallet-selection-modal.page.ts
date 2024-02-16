@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
+import { WalletStatus } from '../core/enum/wallet-status.enum';
 import { WalletType } from '../core/enum/wallet-type';
 import { WalletService } from '../core/service/wallet.service';
-import { WalletStatus } from '../core/enum/wallet-status.enum';
 import { ConnectedWallet } from '../core/types/connected-wallet';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-wallet-selection-modal',
@@ -29,7 +29,7 @@ export class WalletSelectionModalPage implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
-    private walletService: WalletService
+    private walletService: WalletService,
   ) {}
 
   async ngOnInit() {}
@@ -50,7 +50,7 @@ export class WalletSelectionModalPage implements OnInit {
             };
             localStorage.setItem(
               environment.storage.connectedWalletKey,
-              JSON.stringify(connectedWallet)
+              JSON.stringify(connectedWallet),
             );
 
             // Temp hack, reload to access wallet from all components

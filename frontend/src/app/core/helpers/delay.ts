@@ -8,7 +8,6 @@ export function delay(ms: number): Promise<void> {
   });
 }
 
-
 export function formatDate(date: Date) {
   const pad = (num: number) => (num < 10 ? '0' + num : num);
 

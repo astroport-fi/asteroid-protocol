@@ -6,6 +6,7 @@ import {
   chainOptions,
   fetchOptions,
 } from '../types/zeus';
+
 export { Subscription } from '../types/zeus';
 
 const fetch = fetchRetry(window.fetch);

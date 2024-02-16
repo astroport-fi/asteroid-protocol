@@ -1,17 +1,15 @@
 <div [ngSwitch]="humanType" *ngIf="!isExplicit">
   <img class="rounded" [src]="contentPath" *ngSwitchCase="'Image'" />
   <video class="rounded" controls *ngSwitchCase="'Video'">
-    <source [src]="contentPath" [type]="mime">
+    <source [src]="contentPath" [type]="mime" />
     Video not supported by browser
   </video>
   <audio controls *ngSwitchCase="'Audio'">
-    <source [src]="contentPath" [type]="mime">
-    <source [src]="contentPath" type="audio/wav">
+    <source [src]="contentPath" [type]="mime" />
+    <source [src]="contentPath" type="audio/wav" />
     Audio not supported by browser
   </audio>
-  <div class="no-preview mx-auto" *ngSwitchDefault>
-    {{ humanType }}
-  </div>
+  <div class="no-preview mx-auto" *ngSwitchDefault>{{ humanType }}</div>
 </div>
 <div *ngIf="isExplicit">
   <div class="explicit mx-auto">

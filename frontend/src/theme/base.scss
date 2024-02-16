@@ -19,7 +19,6 @@ ion-item.active {
 
 ion-button {
   text-transform: initial;
-
 }
 
 ion-popover {
@@ -42,7 +41,11 @@ ion-modal {
 
 .shadowed {
   --background: transparent;
-  background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
+  background: linear-gradient(
+    184deg,
+    rgba(53, 60, 66, 0.5) 0%,
+    rgba(44, 50, 58, 1) 100%
+  );
 
   backdrop-filter: blur(100px) !important;
   opacity: 0.99;
@@ -50,23 +53,21 @@ ion-modal {
   --border-radius: 10px !important;
   height: 90vh;
 
-
   -webkit-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 11px 29px 1px rgba(0, 0, 0, 0.75);
 }
 
-ion-button[color="primary"] {
+ion-button[color='primary'] {
   --ion-color-primary: var(--color-teal);
   --ion-color-primary-rgb: 87, 170, 167;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #4e918e;
   --ion-color-primary-tint: #7bc9c6;
-
 }
 
-ion-button[color="warning"] {
+ion-button[color='warning'] {
   --ion-color-warning: var(--color-orange);
   --ion-color-warning-rgb: 255, 119, 46;
   --ion-color-warning-contrast: #ffffff;
@@ -75,12 +76,9 @@ ion-button[color="warning"] {
   --ion-color-warning-tint: #ffca22;
 }
 
-
-
-ion-button[fill="outline"] {
+ion-button[fill='outline'] {
   --border-width: 1px;
 }
-
 
 ion-input,
 ion-textarea {
@@ -102,7 +100,6 @@ ion-textarea {
 
   &.no-border {
     border-bottom: 1px solid transparent;
-
   }
 }
 
@@ -159,7 +156,11 @@ div.aligned {
 }
 
 ion-alert {
-  --background: linear-gradient(84deg, rgba(40, 31, 67, 1) 0%, rgba(68, 45, 68, 1) 100%) !important;
+  --background: linear-gradient(
+    84deg,
+    rgba(40, 31, 67, 1) 0%,
+    rgba(68, 45, 68, 1) 100%
+  ) !important;
   // --background: hsla(0, 0%, 100%, .05) !important;
   // --background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
   // background: linear-gradient(184deg, rgba(53, 60, 66, 0.5) 0%, rgba(44, 50, 58, 1) 100%);
@@ -228,7 +229,7 @@ a {
 
 .main-content {
   // background-color: rgba(30, 30, 30, 0.3) !important;
-  background-color: hsla(0, 0%, 100%, .05);
+  background-color: hsla(0, 0%, 100%, 0.05);
   backdrop-filter: blur(50px);
   height: 100%;
   border-radius: 10px;
@@ -236,7 +237,6 @@ a {
   padding-left: 0px;
   padding-right: 0px;
 }
-
 
 .inscription-item {
   margin-right: 30px;
@@ -316,7 +316,6 @@ a {
     }
 
     border: 1px solid rgba(255, 255, 255, 0.2);
-
   }
 }
 
@@ -349,7 +348,7 @@ p-table {
   font-weight: 300;
 
   .p-paginator {
-    font-size: 12px
+    font-size: 12px;
   }
 
   .p-highlight {
@@ -358,7 +357,7 @@ p-table {
     height: 25px;
   }
 
-  .p-datatable .p-datatable-tbody>tr {
+  .p-datatable .p-datatable-tbody > tr {
     cursor: pointer;
 
     &.no-click {
@@ -370,7 +369,7 @@ p-table {
     }
   }
 
-  .p-datatable .p-datatable-thead>tr>th {
+  .p-datatable .p-datatable-thead > tr > th {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     padding-top: 10px;
@@ -379,7 +378,7 @@ p-table {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .p-datatable .p-datatable-tbody>tr>td {
+  .p-datatable .p-datatable-tbody > tr > td {
     padding: 12px;
     font-size: 14px;
 
@@ -453,7 +452,11 @@ p-table {
 
 .darken {
   // background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.2) 100%);
-  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.2) 100%);
+  background-image: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.55) 70%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
   width: 100% !important;
   height: 100% !important;
   position: absolute;
@@ -482,10 +485,8 @@ ion-toast {
 }
 
 .large-modal .modal-wrapper {
-
   --width: 375px;
   --height: 350px;
-
 
   position: absolute;
   overflow: hidden;
@@ -499,7 +500,7 @@ ion-toast {
   right: 0;
   margin: auto;
   border: 0;
-  box-shadow: 0 16px 20px rgba(0, 0, 0, .4);
+  box-shadow: 0 16px 20px rgba(0, 0, 0, 0.4);
   background-color: #fafafa;
 }
 
@@ -546,7 +547,6 @@ ion-toast {
 
   .value {
     color: rgba(255, 255, 255, 0.6);
-
   }
 }
 
@@ -570,9 +570,7 @@ ion-toast {
   }
 }
 
-
 ion-menu-button {
-
   @media only screen and (min-width: 994px) {
     display: none;
   }

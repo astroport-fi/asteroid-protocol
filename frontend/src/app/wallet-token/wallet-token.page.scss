@@ -1,100 +1,98 @@
 h1 {
-    font-size: 36px;
+  font-size: 36px;
 }
 
 .meta {
-    .label {
-        font-size: 14px;
-        color: #dddddd;
-        font-weight: 600;
-        display: block;
-    }
+  .label {
+    font-size: 14px;
+    color: #dddddd;
+    font-weight: 600;
+    display: block;
+  }
 
-    .value {
-        font-size: 14px;
-        color: #ffffff;
-        font-weight: 300;
-        display: block;
-    }
+  .value {
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: 300;
+    display: block;
+  }
 
-    a {
-        color: var(--color-teal);
-    }
+  a {
+    color: var(--color-teal);
+  }
 }
 
 .ticker {
-    max-width: 250px;
-    max-height: 250px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+  max-width: 250px;
+  max-height: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
 .own-balance {
-    text-align: left;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+  text-align: left;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 .no-logo {
-    opacity: 0.7;
-
+  opacity: 0.7;
 }
 
 .history {
-    margin-left: 0;
-    // max-width: 900px;
-    margin-bottom: 50px;
+  margin-left: 0;
+  // max-width: 900px;
+  margin-bottom: 50px;
 
-    .header {
-        font-size: 16px;
-        color: #cccccc;
-        font-weight: normal;
-        margin-bottom: 5px;
-        margin-top: 5px;
+  .header {
+    font-size: 16px;
+    color: #cccccc;
+    font-weight: normal;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  overflow-x: scroll;
+
+  table {
+    margin-top: 10px;
+
+    tr {
+      overflow-x: scroll;
     }
 
-    overflow-x: scroll;
-
-    table {
-        margin-top: 10px;
-
-        tr {
-            overflow-x: scroll;
-        }
-
-        th {
-            font-size: 14px;
-            color: #999999;
-            font-weight: normal;
-            text-align: left;
-            padding-bottom: 5px;
-            padding-right: 10px;
-        }
-
-        td {
-            font-size: 14px;
-            color: #ffffff;
-            font-weight: normal;
-            padding-bottom: 5px;
-            padding-right: 5px;
-            width: 150px;
-            padding-right: 10px;
-        }
-
+    th {
+      font-size: 14px;
+      color: #999999;
+      font-weight: normal;
+      text-align: left;
+      padding-bottom: 5px;
+      padding-right: 10px;
     }
+
+    td {
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: normal;
+      padding-bottom: 5px;
+      padding-right: 5px;
+      width: 150px;
+      padding-right: 10px;
+    }
+  }
 }
 
 .transfer-section {
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px;
 
-    .action {
-        text-align: center;
-        padding-top: 20px;
-        padding-bottom: 10px;
-    }
+  .action {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
 }

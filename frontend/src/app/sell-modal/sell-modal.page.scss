@@ -1,32 +1,31 @@
 ion-content {
-    // --background: var(--color-dark-teal);
-    // border-radius: 10px !important;
-    --background: hsla(0, 0%, 0%, 1) !important;
-    background-color: hsla(0, 0%, 0%, 1) !important;
-    backdrop-filter: blur(50px);
-    height: 100%;
-    border-radius: 10px;
-    padding: 20px;
-    transition: all 0.2s ease-in-out;
-
+  // --background: var(--color-dark-teal);
+  // border-radius: 10px !important;
+  --background: hsla(0, 0%, 0%, 1) !important;
+  background-color: hsla(0, 0%, 0%, 1) !important;
+  backdrop-filter: blur(50px);
+  height: 100%;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.2s ease-in-out;
 }
 
 .confirmation {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    border: 1px solid var(--color-teal);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid var(--color-teal);
 }
 
 .action {
-    position: fixed;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
 }
 
 .note {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 ion-list,
@@ -35,50 +34,50 @@ ion-list-header,
 ion-label,
 ion-accordion,
 ion-accordion-group {
-    --background: transparent;
-    --ion-background-color: transparent !important;
-    --background-color: transparent !important;
-    background-color: transparent !important;
+  --background: transparent;
+  --ion-background-color: transparent !important;
+  --background-color: transparent !important;
+  background-color: transparent !important;
 }
 
-ion-item[slot="header"] {
-    color: #ffffff;
-    // border-left: 1px solid #ff0000;
+ion-item[slot='header'] {
+  color: #ffffff;
+  // border-left: 1px solid #ff0000;
 
-    ion-label {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
+  ion-label {
+    padding: 0px !important;
+    margin: 0px !important;
+  }
 }
 
 ion-accordion::part(expanded) {
-    // --background: #ff0000 !important;
-    background-color: rgba(30, 30, 30, 0.1) !important;
+  // --background: #ff0000 !important;
+  background-color: rgba(30, 30, 30, 0.1) !important;
 }
 
 ion-list-header {
-    ion-label {
-        text-transform: uppercase;
-        color: #ffffff;
-        padding: 0px;
-        margin: 0px;
-    }
+  ion-label {
+    text-transform: uppercase;
+    color: #ffffff;
+    padding: 0px;
+    margin: 0px;
+  }
 }
 
 ion-item {
-    --min-height: 25px;
-    // min-height: 20px;
-    // max-height: 20px;
-    // height: 40px;
-    padding: 0px;
-    --padding-bottom: 0px;
-    --inner-padding-bottom: 0px;
+  --min-height: 25px;
+  // min-height: 20px;
+  // max-height: 20px;
+  // height: 40px;
+  padding: 0px;
+  --padding-bottom: 0px;
+  --inner-padding-bottom: 0px;
 
-    ion-label {
-        margin-left: 10px;
-        --min-height: 25px;
-        height: 20px;
-        padding: 0px;
-        color: #ccc;
-    }
+  ion-label {
+    margin-left: 10px;
+    --min-height: 25px;
+    height: 20px;
+    padding: 0px;
+    color: #ccc;
+  }
 }

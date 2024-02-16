@@ -33,7 +33,7 @@
             @if (
               trade.inscription.is_explicit ||
               !trade.inscription.content_path ||
-              (trade.inscription.mime | humanType) != "Image"
+              (trade.inscription.mime | humanType) != 'Image'
             ) {
               <ion-icon name="eye-off-outline"></ion-icon>
             } @else {

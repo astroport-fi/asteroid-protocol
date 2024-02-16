@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
+import { SigningStargateClient, defaultRegistryTypes } from '@cosmjs/stargate';
 import { environment } from 'src/environments/environment';
 import { WalletStatus } from '../enum/wallet-status.enum';
-import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate';
-import { AccountResponse } from '../types/account-response';
 import { api } from '../helpers/api';
-import { TxQueryResponse } from '../types/tx-response';
+import { AccountResponse } from '../types/account-response';
 import { GasSimulateResponse } from '../types/gas-simulate-response';
-
+import { TxQueryResponse } from '../types/tx-response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChainService {
-
-  constructor() { }
+  constructor() {}
 
   async fetchAccountInfo(address: string) {
     try {
@@ -22,7 +20,9 @@ export class ChainService {
 
       return response.account;
     } catch (e) {
-      throw new Error(`This may be a new account. Please send some tokens to this account first.`);
+      throw new Error(
+        `This may be a new account. Please send some tokens to this account first.`,
+      );
     }
   }
 
@@ -39,15 +39,14 @@ export class ChainService {
 
   async simulateTransaction(tx: string) {
     try {
-
       const call = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: tx
-      }
-      console.log("Using simulate endpoint");
+        body: tx,
+      };
+      console.log('Using simulate endpoint');
       const uri = `${environment.api.simulateEndpoint}/cosmos/tx/v1beta1/simulate`;
       const response = await api<GasSimulateResponse>(uri, call);
 
@@ -56,5 +55,4 @@ export class ChainService {
       throw new Error(`Failed to simulate transaction` + e);
     }
   }
-
 }

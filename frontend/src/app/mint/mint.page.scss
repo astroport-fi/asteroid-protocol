@@ -1,10 +1,10 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.5);
-  background-image: url("../../assets/background/meteor-background.jpg");
+  background-image: url('../../assets/background/meteor-background.jpg');
   @supports (
-    background-image: url("../../assets/background/meteor-background.webp")
+    background-image: url('../../assets/background/meteor-background.webp')
   ) {
-    background-image: url("../../assets/background/meteor-background.webp");
+    background-image: url('../../assets/background/meteor-background.webp');
   }
   background-repeat: no-repeat;
   background-size: cover;

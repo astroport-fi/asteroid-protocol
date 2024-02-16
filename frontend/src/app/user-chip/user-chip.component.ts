@@ -1,8 +1,8 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-user-chip',

@@ -1,31 +1,30 @@
 ion-content {
-    // --background: var(--color-dark-teal);
-    // border-radius: 10px !important;
-    --background: hsla(0, 0%, 0%, 1) !important;
-    background-color: hsla(0, 0%, 0%, 1) !important;
-    backdrop-filter: blur(50px);
-    height: 100%;
-    border-radius: 10px;
-    padding: 20px;
-    transition: all 0.2s ease-in-out;
-
+  // --background: var(--color-dark-teal);
+  // border-radius: 10px !important;
+  --background: hsla(0, 0%, 0%, 1) !important;
+  background-color: hsla(0, 0%, 0%, 1) !important;
+  backdrop-filter: blur(50px);
+  height: 100%;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.2s ease-in-out;
 }
 
 .wallet-row {
-    display: flex;
-    align-items: center;
-    background-color: hsla(0, 0%, 100%, .15) !important;
-    border-radius: 10px;
-    margin: 0 1.5rem;
-    margin-top: 0.75rem;
-    padding: 1.5rem;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: hsla(0, 0%, 100%, 0.15) !important;
+  border-radius: 10px;
+  margin: 0 1.5rem;
+  margin-top: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
 
-    &:hover {
-        background-color: hsla(0, 0%, 100%, .25) !important;
-    }
+  &:hover {
+    background-color: hsla(0, 0%, 100%, 0.25) !important;
+  }
 
-    &>.name {
-        margin-left: 0.75rem;
-    }
+  & > .name {
+    margin-left: 0.75rem;
+  }
 }

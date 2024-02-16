@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
-import { Chain } from '../core/helpers/zeus';
-import { order_by } from '../core/types/zeus';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
 import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
 import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { NgScrollbarModule } from 'ngx-scrollbar';
+import { order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 
 @Component({
@@ -94,13 +94,13 @@ export class ListInscriptionsPage implements OnInit {
       find_inscription_by_name: [
         {
           args: {
-            query_name: "%" + term + "%"
-          }
+            query_name: '%' + term + '%',
+          },
         },
         {
           id: true,
-        }
-      ]
+        },
+      ],
     });
 
     const result = await this.chain('query')({
@@ -113,8 +113,8 @@ export class ListInscriptionsPage implements OnInit {
           ],
           where: {
             id: {
-              _in: searchResult.find_inscription_by_name.map((i: any) => i.id)
-            }
+              _in: searchResult.find_inscription_by_name.map((i: any) => i.id),
+            },
           },
         },
         {

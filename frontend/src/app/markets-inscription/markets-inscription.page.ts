@@ -1,27 +1,27 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   InfiniteScrollCustomEvent,
-  ModalController,
   IonicModule,
+  ModalController,
 } from '@ionic/angular';
-import { Chain, order_by } from '../core/types/zeus';
-import { environment } from 'src/environments/environment';
-import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { PriceService } from '../core/service/price.service';
-import { WalletService } from '../core/service/wallet.service';
-import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
-import { DropdownModule } from 'primeng/dropdown';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NgScrollbarReachedModule } from 'ngx-scrollbar/reached-event';
+import { DropdownModule } from 'primeng/dropdown';
+import { environment } from 'src/environments/environment';
+import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { PriceService } from '../core/service/price.service';
+import { WalletService } from '../core/service/wallet.service';
+import { Chain, order_by } from '../core/types/zeus';
+import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 import { InscriptionActivityComponent } from '../inscription-activity/inscription-activity.component';
+import { ViewInscriptionModalPage } from '../view-inscription-modal/view-inscription-modal.page';
 
 @Component({
   selector: 'app-markets-inscription',

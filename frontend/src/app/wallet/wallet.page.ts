@@ -1,47 +1,47 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 // import { FormsModule } from '@angular/forms';
 // import { IonicModule } from '@ionic/angular';
 import {
+  AlertController,
   IonAvatar,
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonChip,
+  IonCol,
   IonContent,
   IonGrid,
-  IonRow,
-  IonCol,
   IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonMenuButton,
-  IonBackButton,
-  IonTitle,
-  IonProgressBar,
-  IonButton,
-  ModalController,
-  AlertController,
-  IonChip,
   IonIcon,
   IonLabel,
+  IonMenuButton,
+  IonProgressBar,
+  IonRow,
   IonSegment,
   IonSegmentButton,
+  IonTitle,
+  IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
-import { Chain } from '../core/helpers/zeus';
-import { order_by } from '../core/types/zeus';
-import { environment } from 'src/environments/environment';
-import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ConnectedWallet } from '../core/types/connected-wallet';
-import { WalletService } from '../core/service/wallet.service';
-import { DashboardPage } from '../dashboard/dashboard.page';
+import { LottieComponent } from 'ngx-lottie';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TableModule } from 'primeng/table';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { PriceService } from '../core/service/price.service';
-import { LottieComponent } from 'ngx-lottie';
-import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
+import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
+import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 import { ShortenAddressHiddenPipe } from '../core/pipe/shorten-address-hidden.pipe';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { PriceService } from '../core/service/price.service';
+import { WalletService } from '../core/service/wallet.service';
+import { ConnectedWallet } from '../core/types/connected-wallet';
+import { order_by } from '../core/types/zeus';
+import { DashboardPage } from '../dashboard/dashboard.page';
+import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
 
 @Component({
   selector: 'app-wallet',
@@ -98,12 +98,12 @@ export class WalletPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
-    private priceService: PriceService
-  ) { }
+    private priceService: PriceService,
+  ) {}
 
   async ngOnInit() {
     const walletDataJSON = localStorage.getItem(
-      environment.storage.connectedWalletKey
+      environment.storage.connectedWalletKey,
     );
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
@@ -264,22 +264,22 @@ export class WalletPage implements OnInit {
               where: {
                 marketplace_listing: {
                   seller_address: {
-                    _eq: this.selectedAddress
+                    _eq: this.selectedAddress,
                   },
                   is_cancelled: {
-                    _eq: false
+                    _eq: false,
                   },
                   is_filled: {
-                    _eq: false
+                    _eq: false,
                   },
-                }
+                },
               },
               limit: 50, // TODO: Move
               order_by: [
                 {
-                  id: order_by.asc
-                }
-              ]
+                  id: order_by.asc,
+                },
+              ],
             },
             {
               id: true,
@@ -291,13 +291,13 @@ export class WalletPage implements OnInit {
                 depositor_timedout_block: true,
                 deposit_total: true,
                 transaction: {
-                  hash: true
+                  hash: true,
                 },
               },
               inscription: {
                 id: true,
                 transaction: {
-                  hash: true
+                  hash: true,
                 },
                 // transaction_hash: true,
                 current_owner: true,
@@ -306,36 +306,37 @@ export class WalletPage implements OnInit {
                 date_created: true,
                 __alias: {
                   name: {
-                    metadata: [{
-                      path: '$.metadata.name'
-                    },
-                      true
-                    ]
+                    metadata: [
+                      {
+                        path: '$.metadata.name',
+                      },
+                      true,
+                    ],
                   },
                   description: {
-                    metadata: [{
-                      path: '$.metadata.description'
-                    },
-                      true
-                    ]
+                    metadata: [
+                      {
+                        path: '$.metadata.description',
+                      },
+                      true,
+                    ],
                   },
                   mime: {
-                    metadata: [{
-                      path: '$.metadata.mime'
-                    },
-                      true
-                    ]
-                  }
-                }
+                    metadata: [
+                      {
+                        path: '$.metadata.mime',
+                      },
+                      true,
+                    ],
+                  },
+                },
               },
               date_created: true,
-            }
-          ]
+            },
+          ],
         });
 
         this.listedInscriptions = listedResult.marketplace_inscription_detail;
-
-
       } catch (e) {
         console.log(e);
       }

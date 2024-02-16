@@ -1,6 +1,6 @@
-import { WalletType } from "../enum/wallet-type";
+import { WalletType } from '../enum/wallet-type';
 
 export type ConnectedWallet = {
-    address: string;
-    walletType: WalletType;
+  address: string;
+  walletType: WalletType;
 };

@@ -1,5 +1,5 @@
 export enum WalletType {
-    Keplr,
-    KeplrMobile,
-    Leap,
+  Keplr,
+  KeplrMobile,
+  Leap,
 }

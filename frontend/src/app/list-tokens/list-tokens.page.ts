@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
-import { Chain } from '../core/helpers/zeus';
-import { order_by } from '../core/types/zeus';
-import { environment } from 'src/environments/environment';
-import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { PriceService } from '../core/service/price.service';
+import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
 import { LazyLoadEvent, SortEvent } from 'primeng/api';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
+import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { PriceService } from '../core/service/price.service';
+import { order_by } from '../core/types/zeus';
 
 @Component({
   selector: 'app-list-tokens',
@@ -46,7 +46,7 @@ export class ListTokensPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private priceService: PriceService
+    private priceService: PriceService,
   ) {
     this.lastFetchCount = this.limit;
     this.chain = Chain(environment.api.endpoint);
