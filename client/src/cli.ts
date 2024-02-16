@@ -7,6 +7,7 @@ import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
+import { MetaOperations } from './operations/meta.js'
 
 export function setupCommand(command?: Command) {
   if (!command) {
@@ -46,6 +47,19 @@ async function action(
   } else {
     console.warn('No tx data')
   }
+}
+
+async function metaAction(
+  options: Options,
+  fn: (context: Context, operations: MetaOperations) => Promise<TxData | void>,
+) {
+  return action(options, (context) => {
+    const operations = new MetaOperations(
+      context.network.chainId,
+      context.account.address,
+    )
+    return fn(context, operations)
+  })
 }
 
 async function inscriptionAction(
@@ -258,6 +272,41 @@ setupCommand(marketplaceListCommand.command('cft20'))
     })
   })
 
+interface MarketplaceListInscriptionOptions extends Options {
+  hash: string
+  price: string
+  minDeposit: string
+  timeoutBlocks: string
+}
+
+setupCommand(marketplaceListCommand.command('inscription'))
+  .description('Creating a new listing for an inscription')
+  .requiredOption(
+    '-h, --hash <HASH>',
+    'The transaction hash containing the inscription',
+  )
+  .requiredOption('-p, --price <PRICE>', 'The price in atom')
+  .option(
+    '-d, --min-deposit <MIN_DEPOSIT>',
+    'The minimum deposit expressed as a percentage of total',
+    '0.1',
+  )
+  .option(
+    '-b, --timeout-blocks <DECIMALS>',
+    'The block this reservation expires',
+    '50',
+  )
+  .action(async (options: MarketplaceListInscriptionOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.listInscription(
+        options.hash,
+        parseInt(options.price, 10),
+        parseFloat(options.minDeposit),
+        parseInt(options.timeoutBlocks),
+      )
+    })
+  })
+
 interface MarketplaceHashOptions extends Options {
   hash: string
 }
@@ -277,7 +326,16 @@ setupCommand(marketplaceBuyCommand.command('cft20'))
   .requiredOption('-h, --hash <HASH>', 'The listing transaction hash')
   .action(async (options: MarketplaceHashOptions) => {
     marketplaceAction(options, async (context, operations) => {
-      return operations.buyCFT20(options.hash)
+      return operations.buy(options.hash, 'cft20')
+    })
+  })
+
+setupCommand(marketplaceBuyCommand.command('inscription'))
+  .description('Buy a listing, the listing must be reserved first')
+  .requiredOption('-h, --hash <HASH>', 'The listing transaction hash')
+  .action(async (options: MarketplaceHashOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      return operations.buy(options.hash, 'inscription')
     })
   })
 

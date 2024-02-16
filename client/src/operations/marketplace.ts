@@ -1,6 +1,6 @@
 import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
-import MarketplaceProtocol from '../metaprotocol/marketplace.js'
+import MarketplaceProtocol, { BuyType } from '../metaprotocol/marketplace.js'
 import { AsteroidService } from '../service/asteroid.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
@@ -59,6 +59,38 @@ export class MarketplaceOperations<
     )
   }
 
+  listInscription(
+    hash: string,
+    price: number,
+    minDepositPercent: number,
+    timeoutBlocks: number,
+  ) {
+    const minDepositMultiplier = minDepositPercent / 100
+    const minDepositAbsolute = 0.000001 // @todo move to fee config
+
+    // Calculate the amount of ATOM for the listing fee
+    // The listing fee is mindep % of amount * ppt
+    let listingFee = price * minDepositMultiplier
+    // Avoid very small listing fees
+    if (listingFee < minDepositAbsolute) {
+      listingFee = minDepositAbsolute
+    }
+    // Convert to uatom decimals from config
+    listingFee = listingFee * 10 ** TOKEN_DECIMALS
+    listingFee = Math.floor(listingFee)
+
+    return this.prepareOperation(
+      this.protocol.listInscription(
+        hash,
+        price,
+        minDepositMultiplier,
+        timeoutBlocks,
+      ),
+      undefined,
+      listingFee.toString(),
+    )
+  }
+
   delist(listingHash: string) {
     return this.prepareOperation(this.protocol.delist(listingHash))
   }
@@ -86,7 +118,7 @@ export class MarketplaceOperations<
     )
   }
 
-  async buyCFT20(listingHash: string) {
+  async buy(listingHash: string, buyType: BuyType) {
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
       throw new Error('Listing not found')
@@ -110,7 +142,7 @@ export class MarketplaceOperations<
     )
 
     // Calculate the trading fee
-    const operation = this.protocol.buyCFT20(listingHash)
+    const operation = this.protocol.buy(listingHash, buyType)
     const decimalTotal =
       parseFloat(totaluatom.toString()) / 10 ** TOKEN_DECIMALS
 
