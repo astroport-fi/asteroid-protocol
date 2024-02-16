@@ -1,6 +1,6 @@
 export enum WalletStatus {
-    NotInstalled,
-    NotConnected,
-    Connected,
-    Rejected
+  NotInstalled,
+  NotConnected,
+  Connected,
+  Rejected,
 }

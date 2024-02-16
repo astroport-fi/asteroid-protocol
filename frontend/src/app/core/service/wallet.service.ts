@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
+import { Coin, StdSignDoc, coin, makeStdTx } from '@cosmjs/amino';
+import { SigningStargateClient, defaultRegistryTypes } from '@cosmjs/stargate';
+import { Keplr } from '@keplr-wallet/types';
+import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
+import { SignClient } from '@walletconnect/sign-client';
+import { Buffer } from 'buffer';
+import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx';
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
+import { PubKey } from 'cosmjs-types/cosmos/crypto/secp256k1/keys';
+import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
+import { AuthInfo, SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { Fee, TxBody, TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
+import Long from 'long';
 import { environment } from 'src/environments/environment';
 import { WalletStatus } from '../enum/wallet-status.enum';
-import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate';
-import { ChainService } from './chain.service';
-import { Coin, coin, makeStdTx, StdSignDoc } from '@cosmjs/amino';
-import { SignDoc, AuthInfo } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx';
-import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing';
-import { TxRaw, TxBody, Fee } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-import { PubKey } from 'cosmjs-types/cosmos/crypto/secp256k1/keys';
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
-import { MsgTransfer } from 'cosmjs-types/ibc/applications/transfer/v1/tx';
-import { Buffer } from 'buffer';
-import Long from 'long';
-import { TxFee } from '../types/tx-fee';
-import { SignClient } from '@walletconnect/sign-client';
-import { KeplrWalletConnectV2 } from '@keplr-wallet/wc-client';
-import { Keplr } from '@keplr-wallet/types';
 import { WalletType } from '../enum/wallet-type';
+import { TxFee } from '../types/tx-fee';
+import { ChainService } from './chain.service';
 
 interface WalletProvider {
   id: string;
@@ -179,7 +179,7 @@ export class WalletService {
     metadata: string | null,
     data: string | null,
     fees: TxFee,
-    messages: any[]
+    messages: any[],
   ) {
     const account = await this.getAccount();
 
@@ -201,7 +201,7 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(
-        account.address
+        account.address,
       );
 
       let msgs = {};
@@ -316,7 +316,7 @@ export class WalletService {
     metadata: string | null,
     data: string | null,
     fees: TxFee,
-    messages: any[] = []
+    messages: any[] = [],
   ) {
     const signer = await this.getSigner();
     const account = await this.getAccount();
@@ -335,7 +335,7 @@ export class WalletService {
               granter: metadata,
               grantee: data,
               msgTypeUrl: urn,
-            })
+            }),
           ).finish(),
         },
       ];
@@ -343,7 +343,7 @@ export class WalletService {
 
     try {
       const accountInfo = await this.chainService.fetchAccountInfo(
-        account.address
+        account.address,
       );
 
       let msgs: any[] = [];
@@ -421,7 +421,7 @@ export class WalletService {
             messages: msgs,
             memo: urn,
             nonCriticalExtensionOptions,
-          })
+          }),
         ).finish(),
 
         authInfoBytes: AuthInfo.encode({
@@ -487,7 +487,7 @@ export class WalletService {
     metadata: string | null,
     data: string | null,
     fees: TxFee,
-    messages: any[] = []
+    messages: any[] = [],
   ) {
     const signClient = await SignClient.init({
       // If do you have your own project id, you can set it.
@@ -563,14 +563,14 @@ export class WalletService {
                 granter: metadata,
                 grantee: data,
                 msgTypeUrl: urn,
-              })
+              }),
             ).finish(),
           },
         ];
       }
 
       const accountInfo = await this.chainService.fetchAccountInfo(
-        account.address
+        account.address,
       );
       const feeMessage = {
         typeUrl: '/cosmos.bank.v1beta1.MsgSend',
@@ -592,7 +592,7 @@ export class WalletService {
             messages: [...messages, feeMessage],
             memo: urn,
             nonCriticalExtensionOptions,
-          })
+          }),
         ).finish(),
 
         authInfoBytes: AuthInfo.encode({
@@ -658,7 +658,7 @@ export class WalletService {
       const signer = await this.getSigner();
       const client = await SigningStargateClient.connectWithSigner(
         environment.chain.rpc,
-        signer
+        signer,
       );
 
       if (tx.length >= 1048576) {

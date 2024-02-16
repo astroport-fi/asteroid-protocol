@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +15,5 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
   imports: [IonContent, RouterModule],
 })
 export class HomePage {
-  constructor(private router: Router) {
-  }
+  constructor(private router: Router) {}
 }

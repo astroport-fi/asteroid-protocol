@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { Chain, Subscription } from '../core/helpers/zeus';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { WalletService } from '../core/service/wallet.service';
+import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx';
 import { TableModule } from 'primeng/table';
+import { environment } from 'src/environments/environment';
+import { Chain, Subscription } from '../core/helpers/zeus';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
+import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PriceService } from '../core/service/price.service';
+import { WalletService } from '../core/service/wallet.service';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
@@ -50,7 +50,7 @@ export class TradeTokenPage implements OnInit {
     private modalCtrl: ModalController,
     private alertController: AlertController,
     private walletService: WalletService,
-    private priceService: PriceService
+    private priceService: PriceService,
   ) {
     this.tokenLaunchDate = new Date();
   }
@@ -304,7 +304,7 @@ export class TradeTokenPage implements OnInit {
     let overrideFee = environment.fees.protocol.cft20.buy.amount;
     if (environment.fees.protocol.cft20.buy.type == 'dynamic-percent') {
       const feePercentage = parseFloat(
-        environment.fees.protocol.cft20.buy.amount
+        environment.fees.protocol.cft20.buy.amount,
       );
       const fee = parseInt(totaluatom.toString()) * feePercentage;
       overrideFee = fee.toString();
@@ -318,7 +318,7 @@ export class TradeTokenPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'buy',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
@@ -361,7 +361,7 @@ export class TradeTokenPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'delist',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

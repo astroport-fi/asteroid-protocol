@@ -1,47 +1,82 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+      >
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
             </ion-buttons>
-            <ion-title class="text-center">
-              New token
-            </ion-title>
+            <ion-title class="text-center"> New token </ion-title>
           </ion-toolbar>
         </ion-header>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-lg="8" offset-lg="2"
-        size-xl="6" offset-xl="3" class="main-content">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-lg="8"
+        offset-lg="2"
+        size-xl="6"
+        offset-xl="3"
+        class="main-content"
+      >
         <div class="aligned">
           <p class="note">
-            The CFT-20 metaprotocol allows you to create, transfer, mint, buy and sell fungible tokens. When used in
-            combination with the inscriptions
-            metaprotocol, you can inscribe a logo for your token on the chain. The maximum size of a logo is currently
+            The CFT-20 metaprotocol allows you to create, transfer, mint, buy
+            and sell fungible tokens. When used in combination with the
+            inscriptions metaprotocol, you can inscribe a logo for your token on
+            the chain. The maximum size of a logo is currently
             {{maxFilesSize/1000}}kb.
           </p>
           <p class="note">
-            Learn more in the <a
+            Learn more in the
+            <a
               href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
-              target="_blank">CFT-20 metaprotocol</a> documentation
+              target="_blank"
+              >CFT-20 metaprotocol</a
+            >
+            documentation
           </p>
           <form class="form" [formGroup]="createForm" (ngSubmit)="submit()">
             <ion-grid>
               <ion-row>
                 <ion-col size-xl="5" size-lg="8" size-xs="12">
-
-                  <div class="uploaded text-center" *ngIf="this.createForm.value.optional.imageUpload">
+                  <div
+                    class="uploaded text-center"
+                    *ngIf="this.createForm.value.optional.imageUpload"
+                  >
                     <div class="uploader no-style text-center">
-                      <img class="rounded" [src]="this.createForm.value.optional.imageUpload" />
+                      <img
+                        class="rounded"
+                        [src]="this.createForm.value.optional.imageUpload"
+                      />
                       <div class="upload">
-                        <label for='input_file_change'>Change file</label>
-                        <input id='input_file_change' type='file' (change)="onFileSelected($event)" />
-                        <ion-button color="warning" fill="clear"
-                          (click)="this.createForm.value.optional.imageUpload = ''">
+                        <label for="input_file_change">Change file</label>
+                        <input
+                          id="input_file_change"
+                          type="file"
+                          (change)="onFileSelected($event)"
+                        />
+                        <ion-button
+                          color="warning"
+                          fill="clear"
+                          (click)="this.createForm.value.optional.imageUpload = ''"
+                        >
                           Remove
                         </ion-button>
                       </div>
@@ -50,16 +85,28 @@
                       </div>
                     </div>
                   </div>
-                  <div class="uploader text-center" *ngIf="!this.createForm.value.optional.imageUpload">
+                  <div
+                    class="uploader text-center"
+                    *ngIf="!this.createForm.value.optional.imageUpload"
+                  >
                     <p>Logo</p>
                     <p class="info">Minimum dimensions<br />250x250</p>
                     <p class="info">Maximum dimensions<br />1024x1024</p>
-                    <p class="info">Max file size<br />{{maxFilesSize/1000}}kb</p>
+                    <p class="info">
+                      Max file size<br />{{maxFilesSize/1000}}kb
+                    </p>
                     <div class="upload">
-                      <label for='input_file_select'>Select file</label>
-                      <input id='input_file_select' type='file' (change)="onFileSelected($event)" />
+                      <label for="input_file_select">Select file</label>
+                      <input
+                        id="input_file_select"
+                        type="file"
+                        (change)="onFileSelected($event)"
+                      />
                     </div>
-                    <div *ngIf="contentRequired" class="info text-center color-danger">
+                    <div
+                      *ngIf="contentRequired"
+                      class="info text-center color-danger"
+                    >
                       You must add a logo to your token
                     </div>
                     <div class="section color-orange p-2">
@@ -74,14 +121,31 @@
                   </div>
                   <div class="form-group" formGroupName="basic">
                     <div class="mt-2 ps-3">
-                      <ion-input label="Name (alphanumeric only)" fill="outline" labelPlacement="stacked"
-                        placeholder="Name your token" formControlName="name" [counter]="true" [minlength]="1"
-                        [maxlength]="32" errorText="Please enter a name"></ion-input>
+                      <ion-input
+                        label="Name (alphanumeric only)"
+                        fill="outline"
+                        labelPlacement="stacked"
+                        placeholder="Name your token"
+                        formControlName="name"
+                        [counter]="true"
+                        [minlength]="1"
+                        [maxlength]="32"
+                        errorText="Please enter a name"
+                      ></ion-input>
                     </div>
                     <div class="mt-3 ps-3">
-                      <ion-input label="Ticker" fill="outline" labelPlacement="stacked" placeholder="TOKEN"
-                        label="Ticker (1 - 10 characters, alphanumeric only)" formControlName="ticker" [counter]="true"
-                        [minlength]="1" [maxlength]="10" oninput="this.value = this.value.toUpperCase()"></ion-input>
+                      <ion-input
+                        label="Ticker"
+                        fill="outline"
+                        labelPlacement="stacked"
+                        placeholder="TOKEN"
+                        label="Ticker (1 - 10 characters, alphanumeric only)"
+                        formControlName="ticker"
+                        [counter]="true"
+                        [minlength]="1"
+                        [maxlength]="10"
+                        oninput="this.value = this.value.toUpperCase()"
+                      ></ion-input>
                     </div>
                     <!-- <div class="mt-3 ps-3">
                       <ion-input label="Decimal places" fill="outline" labelPlacement="stacked" placeholder="Decimals"
@@ -89,82 +153,120 @@
                         formControlName="decimals"></ion-input>
                     </div> -->
                     <div class="mt-3 ps-3">
-                      <ion-input label="Maximum supply" fill="outline" labelPlacement="stacked"
-                        placeholder="Maximum supply" [maskito]="numberMask" [maskitoElement]="maskPredicate"
-                        formControlName="maxSupply" (ionInput)="supplyChanged($event)"></ion-input>
+                      <ion-input
+                        label="Maximum supply"
+                        fill="outline"
+                        labelPlacement="stacked"
+                        placeholder="Maximum supply"
+                        [maskito]="numberMask"
+                        [maskitoElement]="maskPredicate"
+                        formControlName="maxSupply"
+                        (ionInput)="supplyChanged($event)"
+                      ></ion-input>
                     </div>
                     <div class="mt-3 ps-3">
-                      <ion-input label="Per transaction mint limit" fill="outline" labelPlacement="stacked"
-                        placeholder="Mint limit" [maskito]="numberMask" [maskitoElement]="maskPredicate"
-                        formControlName="mintLimit" (ionInput)="limitChanged($event)"></ion-input>
+                      <ion-input
+                        label="Per transaction mint limit"
+                        fill="outline"
+                        labelPlacement="stacked"
+                        placeholder="Mint limit"
+                        [maskito]="numberMask"
+                        [maskitoElement]="maskPredicate"
+                        formControlName="mintLimit"
+                        (ionInput)="limitChanged($event)"
+                      ></ion-input>
                     </div>
                     <div class="mt-3 ps-3">
-                      <ion-text color="warning" *ngIf="limitNumeric > maxMintLimit">To keep
-                        minting fair, the mint limit may not exceed 1% of the total
-                        supply which is {{ maxMintLimit | number:"1.2-6" }}</ion-text>
+                      <ion-text
+                        color="warning"
+                        *ngIf="limitNumeric > maxMintLimit"
+                        >To keep minting fair, the mint limit may not exceed 1%
+                        of the total supply which is {{ maxMintLimit |
+                        number:"1.2-6" }}</ion-text
+                      >
                     </div>
                   </div>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size-xl="5" size-lg="5" size-xs="12">
-                  &nbsp;
-                </ion-col>
+                <ion-col size-xl="5" size-lg="5" size-xs="12"> &nbsp; </ion-col>
                 <ion-col size-xl="6" size-lg="8" size-sm="10" size-xs="12">
                   <div class="section">
                     <h3>Token launch</h3>
                     <p class="note">
-                      Set a launch date for your token. Any mints before this date will be ignored and not
-                      counted towards an address' balance
+                      Set a launch date for your token. Any mints before this
+                      date will be ignored and not counted towards an address'
+                      balance
                     </p>
                   </div>
                   <div>
                     <ion-list formGroupName="basic">
-                      <ion-radio-group formControlName="launchImmediately" [allowEmptySelection]="false"
-                        [value]="this.createForm.value.basic.launchImmediately">
+                      <ion-radio-group
+                        formControlName="launchImmediately"
+                        [allowEmptySelection]="false"
+                        [value]="this.createForm.value.basic.launchImmediately"
+                      >
                         <ion-item lines="none">
-                          <ion-radio labelPlacement="end" justify="start" value="true">
+                          <ion-radio
+                            labelPlacement="end"
+                            justify="start"
+                            value="true"
+                          >
                             Launch immediately
                           </ion-radio>
                         </ion-item>
                         <ion-item lines="none">
-                          <ion-radio labelPlacement="end" justify="start" value="false">
+                          <ion-radio
+                            labelPlacement="end"
+                            justify="start"
+                            value="false"
+                          >
                             Launch at a specific date and time
                           </ion-radio>
                         </ion-item>
                       </ion-radio-group>
                     </ion-list>
                   </div>
-                  <div style="width: 300px;" *ngIf="this.createForm.value.basic.launchImmediately == 'false'">
-                    <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                    <ion-modal [keepContentsMounted]="true" formGroupName="basic">
+                  <div
+                    style="width: 300px"
+                    *ngIf="this.createForm.value.basic.launchImmediately == 'false'"
+                  >
+                    <ion-datetime-button
+                      datetime="datetime"
+                    ></ion-datetime-button>
+                    <ion-modal
+                      [keepContentsMounted]="true"
+                      formGroupName="basic"
+                    >
                       <ng-template>
-                        <ion-datetime [showDefaultTitle]="true" showDefaultButtons="true" id="datetime"
+                        <ion-datetime
+                          [showDefaultTitle]="true"
+                          showDefaultButtons="true"
+                          id="datetime"
                           min="{{ minDate | date: 'yyyy-MM-ddTHH:mm:ss' }}"
                           value="{{ minDate | date: 'yyyy-MM-ddTHH:mm:ss' }}"
-                          formControlName="launchDate"></ion-datetime>
+                          formControlName="launchDate"
+                        ></ion-datetime>
                       </ng-template>
                     </ion-modal>
                   </div>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size-xl="5" size-lg="5" size-xs="12">
-                  &nbsp;
-                </ion-col>
+                <ion-col size-xl="5" size-lg="5" size-xs="12"> &nbsp; </ion-col>
                 <ion-col size-xl="6" size-lg="8" size-sm="10" size-xs="12">
                   <div class="section" formGroupName="basic">
                     <h3>Mint page</h3>
                     <p class="note">
-                      We create a dedicated mint page for your token where you can send people<br />The link will be
-                      available after your token is created</p>
+                      We create a dedicated mint page for your token where you
+                      can send people<br />The link will be available after your
+                      token is created
+                    </p>
                   </div>
                 </ion-col>
               </ion-row>
               <ion-row *ngIf="precheckErrorText">
-                <ion-col size-xl="3" size-lg="5" size-xs="12">
-                  &nbsp;
-                </ion-col>
+                <ion-col size-xl="3" size-lg="5" size-xs="12"> &nbsp; </ion-col>
                 <ion-col size-xl="9" size-lg="8" size-sm="8" size-xs="12">
                   <div class="section color-orange">
                     {{ precheckErrorText }}
@@ -172,13 +274,15 @@
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size-xl="5" size-lg="5" size-xs="12">
-                  &nbsp;
-                </ion-col>
+                <ion-col size-xl="5" size-lg="5" size-xs="12"> &nbsp; </ion-col>
                 <ion-col size-xl="6" size-lg="8" size-sm="8" size-xs="12">
                   <div class="section">
-                    <ion-button color="primary" fill="solid" type="submit"
-                      [disabled]="limitNumeric > maxMintLimit || precheckErrorText != ''">
+                    <ion-button
+                      color="primary"
+                      fill="solid"
+                      type="submit"
+                      [disabled]="limitNumeric > maxMintLimit || precheckErrorText != ''"
+                    >
                       <ion-icon slot="start" name="checkmark"></ion-icon>
                       Create token
                     </ion-button>
@@ -191,5 +295,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div style="height: 100px;"></div>
+  <div style="height: 100px"></div>
 </ion-content>

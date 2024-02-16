@@ -1,98 +1,97 @@
 :host {
-    // This is a hack for styling the datepicker button
-    --ion-color-step-300: transparent !important;
+  // This is a hack for styling the datepicker button
+  --ion-color-step-300: transparent !important;
 }
 
 .mw-400 {
-    max-width: 400px;
+  max-width: 400px;
 }
 
 .uploader {
-    padding: 35px;
-    background: rgba(255, 255, 255, .05);
-    border: 1px dashed rgba(255, 255, 255, .14);
+  padding: 35px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 30px;
+  margin-bottom: 25px;
+
+  &.no-style {
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  label {
+    cursor: pointer;
+    outline: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    color: var(--color-teal);
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+    height: 38px;
+    line-height: 32px;
+    padding: 0 30px;
+    border: 1px solid var(--color-teal);
+    border-top-color: var(--color-teal);
+    border-right-color: var(--color-teal);
+    border-bottom-color: var(--color-teal);
+    border-left-color: var(--color-teal);
     border-radius: 30px;
-    margin-bottom: 25px;
+    transition: all 0.3s ease-out 0s;
+  }
 
-    &.no-style {
-        padding: 0;
-        background: none;
-        border: none;
-        border-radius: 0;
-        margin-bottom: 0;
-    }
+  input[type='file'] {
+    display: none;
+  }
 
-    label {
-        cursor: pointer;
-        outline: 0;
-        -webkit-user-select: none;
-        user-select: none;
-        color: var(--color-teal);
-        font-size: 13px;
-        font-weight: 600;
-        display: inline-block;
-        height: 38px;
-        line-height: 32px;
-        padding: 0 30px;
-        border: 1px solid var(--color-teal);
-        border-top-color: var(--color-teal);
-        border-right-color: var(--color-teal);
-        border-bottom-color: var(--color-teal);
-        border-left-color: var(--color-teal);
-        border-radius: 30px;
-        transition: all .3s ease-out 0s;
-    }
+  .info {
+    font-size: 12px;
+    color: #fff;
+    padding: 0px;
+    margin: 5px;
+    text-align: left;
+  }
 
-    input[type="file"] {
-        display: none;
-    }
-
-    .info {
-        font-size: 12px;
-        color: #fff;
-        padding: 0px;
-        margin: 5px;
-        text-align: left;
-    }
-
-    .upload {
-        margin-top: 20px;
-    }
+  .upload {
+    margin-top: 20px;
+  }
 }
 
 .section {
-    padding-left: 15px;
-    font-size: 14px;
+  padding-left: 15px;
+  font-size: 14px;
 
-    h2 {
-        font-size: 22px;
-    }
+  h2 {
+    font-size: 22px;
+  }
 
-    h3 {
-        font-size: 18px;
-    }
+  h3 {
+    font-size: 18px;
+  }
 }
 
-
 ion-datetime-button {
-    --ion-text-color: var(--color-teal) !important;
+  --ion-text-color: var(--color-teal) !important;
 }
 
 .ion-datetime-button-overlay ion-datetime.datetime-grid {
-    background: #232f3d;
+  background: #232f3d;
 }
 
 :host .datetime-time {
-    color: #ffff00 !important;
+  color: #ffff00 !important;
 }
 
-button[part="wheel-item"] {
-    color: #ffff00 !important;
+button[part='wheel-item'] {
+  color: #ffff00 !important;
 }
 
 ion-datetime {
-    --background: rgb(35, 47, 61);
-    --background-rgb: 35, 47, 61;
-    --wheel-highlight-background: rgb(35, 47, 61);
-    --wheel-fade-background-rgb: 35, 47, 61;
+  --background: rgb(35, 47, 61);
+  --background-rgb: 35, 47, 61;
+  --wheel-highlight-background: rgb(35, 47, 61);
+  --wheel-fade-background-rgb: 35, 47, 61;
 }

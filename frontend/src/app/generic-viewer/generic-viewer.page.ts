@@ -1,20 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { Chain } from '../core/helpers/zeus';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { addIcons } from 'ionicons';
 import {
   cloudDownloadOutline,
   eyeOffOutline,
   linkOutline,
 } from 'ionicons/icons';
-import { addIcons } from 'ionicons';
 import { MarkdownComponent } from 'ngx-markdown';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
 
 @Component({
   selector: 'app-generic-viewer',
@@ -39,7 +39,7 @@ export class GenericViewerPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {
     addIcons({ cloudDownloadOutline, linkOutline, eyeOffOutline });
   }
@@ -103,7 +103,7 @@ export class GenericViewerPage implements OnInit {
     this.inscription = result.inscription[0];
     this.humanType = HumanTypePipe.prototype.transform(this.inscription.mime);
     this.untrustedURL = this.sanitizer.bypassSecurityTrustResourceUrl(
-      this.inscription.content_path
+      this.inscription.content_path,
     );
     this.isLoading = false;
   }

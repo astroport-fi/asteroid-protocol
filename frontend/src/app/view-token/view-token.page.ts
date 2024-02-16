@@ -6,13 +6,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ModalController } from '@ionic/angular';
 import { TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
+import { Chain, Subscription } from '../core/helpers/zeus';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { PriceService } from '../core/service/price.service';
 import { WalletService } from '../core/service/wallet.service';
-import { Chain, Subscription } from '../core/helpers/zeus';
 import { order_by } from '../core/types/zeus';
 import { SellModalPage } from '../sell-modal/sell-modal.page';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
@@ -56,7 +56,7 @@ export class ViewTokenPage implements OnInit {
     private walletService: WalletService,
     private priceService: PriceService,
     private titleService: Title,
-    private meta: Meta
+    private meta: Meta,
   ) {
     this.tokenLaunchDate = new Date();
   }
@@ -249,7 +249,7 @@ export class ViewTokenPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'mint',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

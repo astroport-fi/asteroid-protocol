@@ -1,63 +1,63 @@
+import { CommonModule } from '@angular/common';
 import { Component, EnvironmentInjector } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import {
-  IonApp,
-  IonRouterOutlet,
-  IonContent,
-  IonSplitPane,
-  IonMenu,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonListHeader,
-  IonIcon,
-  IonChip,
-  IonButton,
-  IonMenuToggle,
-  IonAccordion,
-  IonAccordionGroup,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonSelect,
-  IonSelectOption,
-  ToastController,
-  ModalController,
-  IonButtons,
-  MenuController,
-} from '@ionic/angular/standalone';
-import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import {
-  chevronForward,
-  keySharp,
-  pencilSharp,
-  createSharp,
-  checkmark,
-  closeOutline,
-  close,
-  chevronForwardSharp,
-  chevronDown,
-  searchOutline,
-  openOutline,
-  eyeOffOutline,
-  timeOutline,
-  add,
-} from 'ionicons/icons';
-import { addIcons } from 'ionicons';
-import { WalletService } from '../core/service/wallet.service';
-import { environment } from 'src/environments/environment';
+  IonAccordion,
+  IonAccordionGroup,
+  IonApp,
+  IonButton,
+  IonButtons,
+  IonChip,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenu,
+  IonMenuToggle,
+  IonRouterOutlet,
+  IonRow,
+  IonSelect,
+  IonSelectOption,
+  IonSplitPane,
+  IonTitle,
+  IonToolbar,
+  MenuController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { AccountData } from '@keplr-wallet/types';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { LottieComponent, LottieModule } from 'ngx-lottie';
+import { addIcons } from 'ionicons';
+import {
+  add,
+  checkmark,
+  chevronDown,
+  chevronForward,
+  chevronForwardSharp,
+  close,
+  closeOutline,
+  createSharp,
+  eyeOffOutline,
+  keySharp,
+  openOutline,
+  pencilSharp,
+  searchOutline,
+  timeOutline,
+} from 'ionicons/icons';
 import player from 'lottie-web';
-import { ConnectedWallet } from '../core/types/connected-wallet';
+import { LottieComponent, LottieModule } from 'ngx-lottie';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { environment } from 'src/environments/environment';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { WalletService } from '../core/service/wallet.service';
+import { ConnectedWallet } from '../core/types/connected-wallet';
 import { Subscription } from '../core/types/zeus';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 import { WalletSelectionModalPage } from '../wallet-selection-modal/wallet-selection-modal.page';
 
 // Note we need a separate function as it's required

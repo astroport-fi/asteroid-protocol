@@ -1,35 +1,57 @@
 <ion-grid>
   <ion-row>
-    <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+    <ion-col
+      size="12"
+      offset="0"
+      size-md="12"
+      offset-md="0"
+      size-md="10"
+      offset-md="1"
+      size-xl="8"
+      offset-xl="2"
+    >
       <ion-header class="no-shadow">
         <ion-toolbar>
           <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
           </ion-buttons>
-          <ion-title>
-            Welcome to Asteroid Protocol
-          </ion-title>
+          <ion-title> Welcome to Asteroid Protocol </ion-title>
         </ion-toolbar>
       </ion-header>
     </ion-col>
   </ion-row>
   <ion-row>
-    <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+    <ion-col
+      size="12"
+      offset="0"
+      size-md="12"
+      offset-md="0"
+      size-md="10"
+      offset-md="1"
+      size-xl="8"
+      offset-xl="2"
+    >
       <div class="main-content p-5">
         <div class="text-left">
-          <p>Asteroid Protocol is the first metaprotocol framework that allows you to inscribe arbitrary content on the
-            Cosmos Hub.
+          <p>
+            Asteroid Protocol is the first metaprotocol framework that allows
+            you to inscribe arbitrary content on the Cosmos Hub.
             <a href="#" class="color-orange">Learn more</a>
           </p>
         </div>
         <div class="animation mx-auto">
-          <ng-lottie [options]="{path: '../assets/lottie/no-wallet.json'}"></ng-lottie>
+          <ng-lottie
+            [options]="{path: '../assets/lottie/no-wallet.json'}"
+          ></ng-lottie>
         </div>
         <div class="text-center">
           <div class="title">
             <h3>No wallet connected</h3>
           </div>
-          <p>Connect your wallet to inscribe content, create tokens, trade and more</p>
+          <p>
+            Connect your wallet to inscribe content, create tokens, trade and
+            more
+          </p>
           <div>
             <ion-button fill="solid" (click)="connectWallet()">
               Connect Wallet

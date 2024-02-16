@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,31 +7,32 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import {
-  chevronForward,
-  keySharp,
-  pencilSharp,
-  createSharp,
-  checkmark,
-  closeOutline,
-  close,
-} from 'ionicons/icons';
-import { LottieComponent } from 'ngx-lottie';
-import { WalletService } from '../core/service/wallet.service';
-import { environment } from 'src/environments/environment';
-import { ChainService } from '../core/service/chain.service';
-import { delay } from '../core/helpers/delay';
-import { Chain } from '../core/helpers/zeus';
-import { TxFee } from '../core/types/tx-fee';
+import { MaskitoModule } from '@maskito/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { MaskitoModule } from '@maskito/angular';
+import { addIcons } from 'ionicons';
+import {
+  checkmark,
+  chevronForward,
+  close,
+  closeOutline,
+  createSharp,
+  keySharp,
+  pencilSharp,
+} from 'ionicons/icons';
+import { LottieComponent } from 'ngx-lottie';
+import { environment } from 'src/environments/environment';
+import { delay } from '../core/helpers/delay';
+import { Chain } from '../core/helpers/zeus';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { StripSpacesPipe } from '../core/pipe/strip-spaces.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { ChainService } from '../core/service/chain.service';
+import { WalletService } from '../core/service/wallet.service';
+import { TxFee } from '../core/types/tx-fee';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 
 @Component({
   selector: 'app-transfer-modal',
@@ -71,7 +71,7 @@ export class TransferModalPage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     private builder: FormBuilder,
-    private protocolService: CFT20Service
+    private protocolService: CFT20Service,
   ) {
     addIcons({ checkmark, closeOutline, close });
 
@@ -147,7 +147,7 @@ export class TransferModalPage implements OnInit {
       // Get the sender's balance with decimals
       this.senderBalance = TokenDecimalsPipe.prototype.transform(
         parseInt(balanceResult.token_holder[0].amount as string),
-        result.token[0].decimals as number
+        result.token[0].decimals as number,
       );
     }
   }
@@ -172,7 +172,7 @@ export class TransferModalPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'transfer',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

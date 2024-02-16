@@ -1,44 +1,76 @@
 <ion-content fullscreen="true">
   <ion-grid>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+      >
         <ion-header class="no-shadow">
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-menu-button></ion-menu-button>
-              <ion-back-button defaultHref="/app/inscriptions"></ion-back-button>
+              <ion-back-button
+                defaultHref="/app/inscriptions"
+              ></ion-back-button>
             </ion-buttons>
             <ion-title>
               <!-- Less 1 because database starts at 1 and not 0 -->
-              Inscription <span *ngIf="!isLoading">#{{ inscription.id - 1 }}</span>
+              Inscription
+              <span *ngIf="!isLoading">#{{ inscription.id - 1 }}</span>
             </ion-title>
           </ion-toolbar>
         </ion-header>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" offset="0" size-md="12" offset-md="0" size-md="10" offset-md="1" size-xl="8" offset-xl="2"
-        class="main-content">
+      <ion-col
+        size="12"
+        offset="0"
+        size-md="12"
+        offset-md="0"
+        size-md="10"
+        offset-md="1"
+        size-xl="8"
+        offset-xl="2"
+        class="main-content"
+      >
         <div class="p-4">
           <div class="loading" *ngIf="isLoading">
             <ion-progress-bar type="indeterminate"></ion-progress-bar>
-            <p>
-              Loading inscription...
-            </p>
+            <p>Loading inscription...</p>
           </div>
         </div>
         <div class="aligned" *ngIf="!isLoading">
           <ion-grid>
             <ion-row>
               <ion-col size-lg="6" size-xs="12">
-                <a href="inscription/{{ inscription.transaction.hash }}" target="_blank" class="text-center">
-                  <app-generic-preview [mime]="inscription.mime" [contentPath]="inscription.content_path"
-                    [isExplicit]="inscription.is_explicit"></app-generic-preview>
+                <a
+                  href="inscription/{{ inscription.transaction.hash }}"
+                  target="_blank"
+                  class="text-center"
+                >
+                  <app-generic-preview
+                    [mime]="inscription.mime"
+                    [contentPath]="inscription.content_path"
+                    [isExplicit]="inscription.is_explicit"
+                  ></app-generic-preview>
                 </a>
                 <div class="text-center p-2">
-                  <ion-button color="primary" fill="clear" href="inscription/{{ inscription.transaction.hash }}"
-                    target="_blank" *ngIf="!inscription.is_explicit">
-                    Open in viewer <ion-icon name="open-outline" class="ps-2"></ion-icon>
+                  <ion-button
+                    color="primary"
+                    fill="clear"
+                    href="inscription/{{ inscription.transaction.hash }}"
+                    target="_blank"
+                    *ngIf="!inscription.is_explicit"
+                  >
+                    Open in viewer
+                    <ion-icon name="open-outline" class="ps-2"></ion-icon>
                   </ion-button>
                 </div>
               </ion-col>
@@ -47,22 +79,36 @@
                   <ion-row>
                     <ion-col>
                       <h1 class="mt-0">{{ inscription.name }}</h1>
-                      <p class="note">{{ inscription.description || "No description provided"}}</p>
+                      <p class="note">
+                        {{ inscription.description || "No description
+                        provided"}}
+                      </p>
                     </ion-col>
                   </ion-row>
                   <ion-row class="break pt-3">
                     <ion-col>
                       <div class="meta">
                         <span class="label">Created by</span>
-                        <a [routerLink]="['/app/wallet', inscription.creator ]"
-                          [queryParams]="{section: 'inscriptions'}">
+                        <a
+                          [routerLink]="['/app/wallet', inscription.creator ]"
+                          [queryParams]="{section: 'inscriptions'}"
+                        >
                           <ion-chip>
                             <ion-avatar>
-                              <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                              <img
+                                alt="Unknown avatar"
+                                src="../../assets/avatar.svg"
+                              />
                             </ion-avatar>
-                            <ion-label *ngIf="inscription.creator == currentAddress">You</ion-label>
-                            <ion-label *ngIf="inscription.creator != currentAddress">{{ inscription.creator |
-                              shortenAddress | async}}</ion-label>
+                            <ion-label
+                              *ngIf="inscription.creator == currentAddress"
+                              >You</ion-label
+                            >
+                            <ion-label
+                              *ngIf="inscription.creator != currentAddress"
+                              >{{ inscription.creator | shortenAddress |
+                              async}}</ion-label
+                            >
                           </ion-chip>
                         </a>
                       </div>
@@ -70,41 +116,74 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Owned by</span>
-                        <a [routerLink]="['/app/wallet', inscription.current_owner ]"
-                          [queryParams]="{section: 'inscriptions'}">
+                        <a
+                          [routerLink]="['/app/wallet', inscription.current_owner ]"
+                          [queryParams]="{section: 'inscriptions'}"
+                        >
                           <ion-chip>
                             <ion-avatar>
-                              <img alt="Unknown avatar" src="../../assets/avatar.svg" />
+                              <img
+                                alt="Unknown avatar"
+                                src="../../assets/avatar.svg"
+                              />
                             </ion-avatar>
-                            <ion-label *ngIf="inscription.current_owner == currentAddress">You</ion-label>
-                            <ion-label *ngIf="inscription.current_owner != currentAddress">{{ inscription.current_owner
-                              | shortenAddress | async}}</ion-label>
+                            <ion-label
+                              *ngIf="inscription.current_owner == currentAddress"
+                              >You</ion-label
+                            >
+                            <ion-label
+                              *ngIf="inscription.current_owner != currentAddress"
+                              >{{ inscription.current_owner | shortenAddress |
+                              async}}</ion-label
+                            >
                           </ion-chip>
                         </a>
                       </div>
                     </ion-col>
                   </ion-row>
-                  <ion-row class="is-owner mt-4" *ngIf="walletConnected && inscription.current_owner == currentAddress">
+                  <ion-row
+                    class="is-owner mt-4"
+                    *ngIf="walletConnected && inscription.current_owner == currentAddress"
+                  >
                     <ion-col size="12" class="ps-3 pt-0">
                       <div class="meta pt-4">
                         <span class="label">You own this inscription</span>
                       </div>
                       <div class="mt-2 mb-3">
-                        <ion-button color="primary" fill="outline" (click)="listSale()">Sell</ion-button>
-                        <ion-button color="primary" fill="outline" (click)="transfer()">Transfer</ion-button>
+                        <ion-button
+                          color="primary"
+                          fill="outline"
+                          (click)="listSale()"
+                          >Sell</ion-button
+                        >
+                        <ion-button
+                          color="primary"
+                          fill="outline"
+                          (click)="transfer()"
+                          >Transfer</ion-button
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
-                  <ion-row class="is-owner mt-4"
-                    *ngIf="walletConnected && inscription.marketplace_inscription_details[0]?.marketplace_listing.seller_address == currentAddress">
+                  <ion-row
+                    class="is-owner mt-4"
+                    *ngIf="walletConnected && inscription.marketplace_inscription_details[0]?.marketplace_listing.seller_address == currentAddress"
+                  >
                     <ion-col size="12" class="ps-3 pt-0">
                       <div class="meta pt-4">
-                        <span class="label">You are currently listing this inscription for {{
-                          inscription.marketplace_inscription_details[0]?.marketplace_listing.total | tokenDecimals:6 }}
-                          ATOM </span>
+                        <span class="label"
+                          >You are currently listing this inscription for {{
+                          inscription.marketplace_inscription_details[0]?.marketplace_listing.total
+                          | tokenDecimals:6 }} ATOM
+                        </span>
                       </div>
                       <div class="mt-2 mb-3">
-                        <ion-button color="primary" fill="outline" (click)="cancel()">Cancel listing</ion-button>
+                        <ion-button
+                          color="primary"
+                          fill="outline"
+                          (click)="cancel()"
+                          >Cancel listing</ion-button
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
@@ -112,10 +191,14 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Created on</span>
-                        <span class="value">{{ inscription.date_created | date:'longDate' }} {{ inscription.date_created
-                          |
-                          date:'shortTime' }}</span>
-                        <span class="value">Block {{ inscription.height | number: '1.0-0' }}</span>
+                        <span class="value"
+                          >{{ inscription.date_created | date:'longDate' }} {{
+                          inscription.date_created | date:'shortTime' }}</span
+                        >
+                        <span class="value"
+                          >Block {{ inscription.height | number: '1.0-0'
+                          }}</span
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
@@ -123,9 +206,13 @@
                     <ion-col>
                       <div class="meta">
                         <span class="label">Transaction</span>
-                        <span class="value"><a href="{{ explorerTxUrl }}{{ inscription.transaction.hash }}"
-                            target="_blank">{{
-                            inscription.transaction.hash }}</a></span>
+                        <span class="value"
+                          ><a
+                            href="{{ explorerTxUrl }}{{ inscription.transaction.hash }}"
+                            target="_blank"
+                            >{{ inscription.transaction.hash }}</a
+                          ></span
+                        >
                       </div>
                     </ion-col>
                   </ion-row>
@@ -135,46 +222,55 @@
           </ion-grid>
           <ion-grid class="history">
             <ion-row>
-              <ion-col size="6" class="header">
-                History
-              </ion-col>
+              <ion-col size="6" class="header"> History </ion-col>
             </ion-row>
             <ion-row class="break">
               <ion-col size="12">
-                <p-table #data [value]="inscriptionHistory" [tableStyle]="{ 'min-width': '40rem' }" [paginator]="true"
-                  [rows]="10" [showCurrentPageReport]="true"
+                <p-table
+                  #data
+                  [value]="inscriptionHistory"
+                  [tableStyle]="{ 'min-width': '40rem' }"
+                  [paginator]="true"
+                  [rows]="10"
+                  [showCurrentPageReport]="true"
                   currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
-                  styleClass="token-list" sortField="date_created" [sortOrder]="-1">
+                  styleClass="token-list"
+                  sortField="date_created"
+                  [sortOrder]="-1"
+                >
                   <ng-template pTemplate="header">
                     <tr>
-                      <th pSortableColumn="date_created">Date <p-sortIcon field="date_created"></p-sortIcon></th>
-                      <th pSortableColumn="height" pFrozenColumn>Block <p-sortIcon field="height"></p-sortIcon>
+                      <th pSortableColumn="date_created">
+                        Date <p-sortIcon field="date_created"></p-sortIcon>
                       </th>
-                      <th pSortableColumn="action">Action <p-sortIcon field="action"></p-sortIcon></th>
-                      <th pSortableColumn="sender">Sender <p-sortIcon field="sender"></p-sortIcon></th>
-                      <th pSortableColumn="receiver">Receiver <p-sortIcon field="receiver"></p-sortIcon></th>
+                      <th pSortableColumn="height" pFrozenColumn>
+                        Block <p-sortIcon field="height"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="action">
+                        Action <p-sortIcon field="action"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="sender">
+                        Sender <p-sortIcon field="sender"></p-sortIcon>
+                      </th>
+                      <th pSortableColumn="receiver">
+                        Receiver <p-sortIcon field="receiver"></p-sortIcon>
+                      </th>
                       <th>&nbsp;</th>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-item>
                     <tr>
+                      <td>{{ item.date_created | date }}</td>
+                      <td>{{ item.height | number }}</td>
+                      <td>{{ item.action }}</td>
+                      <td>{{ item.sender | shortenAddress | async}}</td>
+                      <td>{{ item.receiver | shortenAddress | async}}</td>
                       <td>
-                        {{ item.date_created | date }}
-                      </td>
-                      <td>
-                        {{ item.height | number }}
-                      </td>
-                      <td>
-                        {{ item.action }}
-                      </td>
-                      <td>
-                        {{ item.sender | shortenAddress | async}}
-                      </td>
-                      <td>
-                        {{ item.receiver | shortenAddress | async}}
-                      </td>
-                      <td>
-                        <a href="{{explorerTxUrl}}{{item.transaction.hash}}" target="_blank">View on Mintscan</a>
+                        <a
+                          href="{{explorerTxUrl}}{{item.transaction.hash}}"
+                          target="_blank"
+                          >View on Mintscan</a
+                        >
                       </td>
                     </tr>
                   </ng-template>
@@ -191,5 +287,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <div style="height: 100px;"></div>
+  <div style="height: 100px"></div>
 </ion-content>

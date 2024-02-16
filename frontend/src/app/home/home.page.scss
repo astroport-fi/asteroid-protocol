@@ -1,10 +1,10 @@
 ion-content {
   --ion-background-color: rgba(0, 0, 0, 0.2);
-  background-image: url("../../assets/background/inscriptions-landscape.png");
+  background-image: url('../../assets/background/inscriptions-landscape.png');
   @supports (
-    background-image: url("../../assets/background/inscriptions-landscape.webp")
+    background-image: url('../../assets/background/inscriptions-landscape.webp')
   ) {
-    background-image: url("../../assets/background/inscriptions-landscape.webp");
+    background-image: url('../../assets/background/inscriptions-landscape.webp');
   }
   background-repeat: no-repeat;
   background-size: cover;

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,44 +7,44 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 // import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import {
+  AlertController,
+  IonBackButton,
+  IonButton,
+  IonButtons,
+  IonCol,
   IonContent,
   IonGrid,
-  IonRow,
-  IonCol,
   IonHeader,
-  IonToolbar,
-  IonButtons,
   IonMenuButton,
-  IonBackButton,
-  IonTitle,
   IonProgressBar,
-  IonButton,
+  IonRow,
+  IonTitle,
+  IonToolbar,
   ModalController,
-  AlertController,
 } from '@ionic/angular/standalone';
-import { Chain, Subscription } from '../core/helpers/zeus';
-import { order_by } from '../core/types/zeus';
-import { environment } from 'src/environments/environment';
-import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
-import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CFT20Service } from '../core/metaprotocol/cft20.service';
-import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { WalletService } from '../core/service/wallet.service';
+import { MaskitoModule } from '@maskito/angular';
 import { MaskitoElementPredicateAsync, MaskitoOptions } from '@maskito/core';
 import { maskitoNumberOptionsGenerator } from '@maskito/kit';
-import { MaskitoModule } from '@maskito/angular';
 import { TableModule } from 'primeng/table';
-import { SellModalPage } from '../sell-modal/sell-modal.page';
-import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
-import { PriceService } from '../core/service/price.service';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
+import { environment } from 'src/environments/environment';
+import { Chain, Subscription } from '../core/helpers/zeus';
+import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
+import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
+import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
+import { PriceService } from '../core/service/price.service';
+import { WalletService } from '../core/service/wallet.service';
+import { order_by } from '../core/types/zeus';
+import { SellModalPage } from '../sell-modal/sell-modal.page';
+import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
+import { TransferModalPage } from '../transfer-modal/transfer-modal.page';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
   selector: 'app-wallet-token',
@@ -109,7 +109,7 @@ export class WalletTokenPage implements OnInit {
     private walletService: WalletService,
     private builder: FormBuilder,
     private priceService: PriceService,
-    private alertController: AlertController
+    private alertController: AlertController,
   ) {
     this.transferForm = this.builder.group({
       basic: this.builder.group({
@@ -480,7 +480,7 @@ export class WalletTokenPage implements OnInit {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'delist',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
@@ -520,7 +520,7 @@ export class WalletTokenPage implements OnInit {
     const urn = this.protocolServiceCFT.buildURN(
       environment.chain.chainId,
       'delist',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,

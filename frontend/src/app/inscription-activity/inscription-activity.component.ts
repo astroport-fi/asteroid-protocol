@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
+import { HumanTypePipe } from '../core/pipe/human-type.pipe';
+import { ShortenAddressMinPipe } from '../core/pipe/shorten-address-min.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import {
   AsteroidService,
   Inscription,
   InscriptionTradeHistory,
 } from '../core/service/asteroid.service';
-import { IonicModule } from '@ionic/angular';
-import { DateAgoPipe } from '../core/pipe/date-ago.pipe';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { HumanTypePipe } from '../core/pipe/human-type.pipe';
-import { ShortenAddressMinPipe } from '../core/pipe/shorten-address-min.pipe';
-import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-inscription-activity',

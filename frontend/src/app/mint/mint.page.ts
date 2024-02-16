@@ -6,15 +6,15 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { interval } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { Chain } from '../core/helpers/zeus';
 import { CFT20Service } from '../core/metaprotocol/cft20.service';
 import { HumanSupplyPipe } from '../core/pipe/human-supply.pipe';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
 import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { WalletService } from '../core/service/wallet.service';
-import { Chain } from '../core/helpers/zeus';
+import { ConnectedWallet } from '../core/types/connected-wallet';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
 import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
-import { ConnectedWallet } from '../core/types/connected-wallet';
 
 @Component({
   selector: 'app-mint',
@@ -44,7 +44,7 @@ export class MintPage {
     private modalCtrl: ModalController,
     private walletService: WalletService,
     private titleService: Title,
-    private meta: Meta
+    private meta: Meta,
   ) {
     this.tokenLaunchDate = new Date();
   }
@@ -54,7 +54,7 @@ export class MintPage {
     const chain = Chain(environment.api.endpoint);
 
     const walletDataJSON = localStorage.getItem(
-      environment.storage.connectedWalletKey
+      environment.storage.connectedWalletKey,
     );
     if (walletDataJSON) {
       const walletData: ConnectedWallet = JSON.parse(walletDataJSON);
@@ -168,7 +168,7 @@ export class MintPage {
     const urn = this.protocolService.buildURN(
       environment.chain.chainId,
       'mint',
-      params
+      params,
     );
     const modal = await this.modalCtrl.create({
       keyboardClose: true,
@@ -199,10 +199,10 @@ export class MintPage {
           }
           const days = Math.floor(distance / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
-            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
           );
           const minutes = Math.floor(
-            (distance % (1000 * 60 * 60)) / (1000 * 60)
+            (distance % (1000 * 60 * 60)) / (1000 * 60),
           );
           const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -211,7 +211,7 @@ export class MintPage {
           }
 
           return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        })
+        }),
       )
       .subscribe((countdown) => (this.countdown = countdown));
   }

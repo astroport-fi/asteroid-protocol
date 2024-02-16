@@ -4,23 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { arrowBack } from 'ionicons/icons';
 import { TableModule } from 'primeng/table';
 import { environment } from 'src/environments/environment';
+import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
+import { InscriptionService } from '../core/metaprotocol/inscription.service';
+import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
 import { ShortenAddressPipe } from '../core/pipe/shorten-address.pipe';
+import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
 import { WalletService } from '../core/service/wallet.service';
 import { Chain, order_by } from '../core/types/zeus';
 import { GenericPreviewPage } from '../generic-preview/generic-preview.page';
-import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
 import { SellInscriptionModalPage } from '../sell-inscription-modal/sell-inscription-modal.page';
-import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
-import { InscriptionService } from '../core/metaprotocol/inscription.service';
 import { TransactionFlowModalPage } from '../transaction-flow-modal/transaction-flow-modal.page';
-import { MarketplaceService } from '../core/metaprotocol/marketplace.service';
-import { TokenDecimalsPipe } from '../core/pipe/token-with-decimals.pipe';
-import { BuyWizardModalPage } from '../buy-wizard-modal/buy-wizard-modal.page';
-import { addIcons } from 'ionicons';
-import { arrowBack } from 'ionicons/icons';
+import { TransferInscriptionModalPage } from '../transfer-inscription-modal/transfer-inscription-modal.page';
 import { UserChipComponent } from '../user-chip/user-chip.component';
+import { WalletRequiredModalPage } from '../wallet-required-modal/wallet-required-modal.page';
 
 @Component({
   selector: 'app-view-inscription-modal',

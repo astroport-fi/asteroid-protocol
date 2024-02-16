@@ -7,7 +7,9 @@
       <ion-row>
         <ion-col>
           <div class="animation mx-auto">
-            <ng-lottie [options]="{path: '../assets/lottie/scan.json'}"></ng-lottie>
+            <ng-lottie
+              [options]="{path: '../assets/lottie/scan.json'}"
+            ></ng-lottie>
             <!-- <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie> -->
           </div>
         </ion-col>
@@ -23,12 +25,16 @@
             connected wallet to create the inscription
           </p> -->
           <p>
-            You are about to inscribe permanently on the Cosmos Hub.<br />This can <b>not</b> be undone.
+            You are about to inscribe permanently on the Cosmos Hub.<br />This
+            can <b>not</b> be undone.
           </p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
             <p>{{ errorText }}</p>
-            <p>You must sign and submit the transaction in order to inscribe content</p>
+            <p>
+              You must sign and submit the transaction in order to inscribe
+              content
+            </p>
           </div>
         </ion-col>
       </ion-row>
@@ -38,9 +44,7 @@
             <h4>Estimated fee breakdown</h4>
             <div *ngIf="isSimulating">
               <ion-progress-bar type="indeterminate"></ion-progress-bar>
-              <div class="note">
-                Estimating...
-              </div>
+              <div class="note">Estimating...</div>
             </div>
             <table *ngIf="!isSimulating">
               <!-- <tr>
@@ -58,20 +62,26 @@
               <tr>
                 <td class="label total">Estimated total</td>
                 <td class="total shifted">
-                  {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number: '1.6-6' }} ATOM
+                  {{(chainFee + protocolFeeAbsolute) | tokenDecimals:6 | number:
+                  '1.6-6' }} ATOM
                   <div class="icon-trigger">
-                    <ion-icon id="click-trigger" name="help-circle-outline"></ion-icon>
+                    <ion-icon
+                      id="click-trigger"
+                      name="help-circle-outline"
+                    ></ion-icon>
                     <!-- <ion-button>Left-Click Me</ion-button> -->
                     <ion-popover trigger="click-trigger" triggerAction="click">
                       <ng-template>
-                        <ion-content class="main-content ion-padding">You are required to complete a transfer of ATOM to
-                          generate an inscription. This self-transaction will send 0.000001
-                          ATOM from the inscribing address back to the same address. Since the amount is refunded, it is
-                          not listed as a fee</ion-content>
+                        <ion-content class="main-content ion-padding"
+                          >You are required to complete a transfer of ATOM to
+                          generate an inscription. This self-transaction will
+                          send 0.000001 ATOM from the inscribing address back to
+                          the same address. Since the amount is refunded, it is
+                          not listed as a fee</ion-content
+                        >
                       </ng-template>
                     </ion-popover>
                   </div>
-
                 </td>
               </tr>
             </table>
@@ -82,10 +92,17 @@
       <ion-row *ngIf="!isSimulating">
         <ion-col>
           <div class="text-center">
-            <ion-button class="mt-3" color="success" (click)="submit()">{{ state == 'error' ? 'Retry' : 'Continue'
-              }}</ion-button>
+            <ion-button class="mt-3" color="success" (click)="submit()"
+              >{{ state == 'error' ? 'Retry' : 'Continue' }}</ion-button
+            >
             <br />
-            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Cancel</ion-button>
+            <ion-button
+              color="primary"
+              class="mt-3"
+              fill="clear"
+              (click)="cancel()"
+              >Cancel</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>
@@ -94,18 +111,26 @@
       <ion-row>
         <ion-col>
           <div class="animation mx-auto">
-            <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie>
+            <ng-lottie
+              [options]="{path: '../assets/lottie/hourglass.json'}"
+            ></ng-lottie>
           </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="text-center mt-5">
           <h2>Waiting for transaction</h2>
-          <p>Your inscription has been submitted and<br />waiting to be added to the next block</p>
+          <p>
+            Your inscription has been submitted and<br />waiting to be added to
+            the next block
+          </p>
           <div class="mt-3 warning-box text-left" *ngIf="errorText != ''">
             <b>Unable to sign transaction</b>
             <p>{{ errorText }}</p>
-            <p>You must sign and submit the transaction in order to inscribe content</p>
+            <p>
+              You must sign and submit the transaction in order to inscribe
+              content
+            </p>
           </div>
         </ion-col>
       </ion-row>
@@ -113,13 +138,23 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash">
+            <a target="_blank" href="{{explorerTxUrl}}{{txHash}}"
+              >Open on Mintscan</a
+            >
+          </p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <div class="text-center">
-            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+            <ion-button
+              color="primary"
+              class="mt-3"
+              fill="clear"
+              (click)="cancel()"
+              >Close</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>
@@ -128,7 +163,9 @@
       <ion-row>
         <ion-col>
           <div class="animation large mx-auto p-0 m-0">
-            <ng-lottie [options]="{path: '../assets/lottie/hourglass.json'}"></ng-lottie>
+            <ng-lottie
+              [options]="{path: '../assets/lottie/hourglass.json'}"
+            ></ng-lottie>
           </div>
         </ion-col>
       </ion-row>
@@ -142,13 +179,23 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash">
+            <a target="_blank" href="{{explorerTxUrl}}{{txHash}}"
+              >Open on Mintscan</a
+            >
+          </p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <div class="text-center">
-            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+            <ion-button
+              color="primary"
+              class="mt-3"
+              fill="clear"
+              (click)="cancel()"
+              >Close</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>
@@ -157,15 +204,18 @@
       <ion-row>
         <ion-col>
           <div class="animation large mx-auto p-0 m-0">
-            <ng-lottie [options]="{path: '../assets/lottie/error.json'}"></ng-lottie>
+            <ng-lottie
+              [options]="{path: '../assets/lottie/error.json'}"
+            ></ng-lottie>
           </div>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="text-center">
           <h2>Inscription failed</h2>
-          <p>Your inscription was created on-chain, but failed to be added to Asteroid.<br />The reason for the failure
-            was:
+          <p>
+            Your inscription was created on-chain, but failed to be added to
+            Asteroid.<br />The reason for the failure was:
           </p>
           <p class="color-orange">{{ errorText }}</p>
         </ion-col>
@@ -174,13 +224,23 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash">
+            <a target="_blank" href="{{explorerTxUrl}}{{txHash}}"
+              >Open on Mintscan</a
+            >
+          </p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <div class="text-center">
-            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+            <ion-button
+              color="primary"
+              class="mt-3"
+              fill="clear"
+              (click)="cancel()"
+              >Close</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>
@@ -189,7 +249,9 @@
       <ion-row>
         <ion-col>
           <div class="animation large mx-auto p-0 m-0">
-            <ng-lottie [options]="{path: '../assets/lottie/success.json', loop: false}"></ng-lottie>
+            <ng-lottie
+              [options]="{path: '../assets/lottie/success.json', loop: false}"
+            ></ng-lottie>
           </div>
         </ion-col>
       </ion-row>
@@ -202,7 +264,9 @@
       <ion-row>
         <ion-col class="text-center">
           <div>
-            <ion-button color="primary" (click)="viewInscription()">{{ resultCTA }}</ion-button>
+            <ion-button color="primary" (click)="viewInscription()"
+              >{{ resultCTA }}</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>
@@ -210,13 +274,23 @@
         <ion-col class="text-center note">
           <h3>Transaction hash</h3>
           <p>{{ txHash }}</p>
-          <p *ngIf="txHash"><a target="_blank" href="{{explorerTxUrl}}{{txHash}}">Open on Mintscan</a></p>
+          <p *ngIf="txHash">
+            <a target="_blank" href="{{explorerTxUrl}}{{txHash}}"
+              >Open on Mintscan</a
+            >
+          </p>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
           <div class="text-center">
-            <ion-button color="primary" class="mt-3" fill="clear" (click)="cancel()">Close</ion-button>
+            <ion-button
+              color="primary"
+              class="mt-3"
+              fill="clear"
+              (click)="cancel()"
+              >Close</ion-button
+            >
           </div>
         </ion-col>
       </ion-row>

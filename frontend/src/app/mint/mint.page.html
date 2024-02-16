@@ -1,9 +1,7 @@
 <ion-content>
   <div class="loading" *ngIf="isLoading">
     <ion-progress-bar type="indeterminate"></ion-progress-bar>
-    <p>
-      Loading token...
-    </p>
+    <p>Loading token...</p>
   </div>
   <div class="cover" *ngIf="!isLoading">
     <div class="mint-container mx-auto">
@@ -20,9 +18,7 @@
         <div class="text-center" *ngIf="token.content_path">
           ${{ token.ticker }}
         </div>
-        <div class="title">
-          {{ token.name }}
-        </div>
+        <div class="title">{{ token.name }}</div>
 
         <ion-grid>
           <ion-row class="break pb-3">
@@ -34,45 +30,62 @@
             <ion-col size="6">
               <div class="meta">
                 <span class="label">Max supply</span>
-                <span class="value">{{ token.max_supply | tokenDecimals:token.decimals | humanSupply }}</span>
+                <span class="value"
+                  >{{ token.max_supply | tokenDecimals:token.decimals |
+                  humanSupply }}</span
+                >
               </div>
             </ion-col>
             <ion-col size="6">
               <div class="meta">
                 <span class="label">Circulating</span>
-                <span class="value">{{ token.circulating_supply | tokenDecimals:token.decimals | humanSupply }}
-                  ({{token.circulating_supply / token.max_supply * 100 | number: '1.2-2'}}%)</span>
+                <span class="value"
+                  >{{ token.circulating_supply | tokenDecimals:token.decimals |
+                  humanSupply }} ({{token.circulating_supply / token.max_supply
+                  * 100 | number: '1.2-2'}}%)</span
+                >
               </div>
             </ion-col>
             <ion-col size="6">
               <div class="meta">
                 <span class="label">Limit per mint</span>
-                <span class="value">{{ token.per_mint_limit | tokenDecimals:token.decimals }}</span>
+                <span class="value"
+                  >{{ token.per_mint_limit | tokenDecimals:token.decimals
+                  }}</span
+                >
               </div>
             </ion-col>
             <ion-col size="6">
               <div class="meta">
-                <span class="label">{{ tokenIsLaunched ? 'Launched at' : 'Launching'}}</span>
-                <span class="value">{{ tokenLaunchDate | date:'longDate' }} {{ tokenLaunchDate |
-                  date:'shortTime' }}</span>
+                <span class="label"
+                  >{{ tokenIsLaunched ? 'Launched at' : 'Launching'}}</span
+                >
+                <span class="value"
+                  >{{ tokenLaunchDate | date:'longDate' }} {{ tokenLaunchDate |
+                  date:'shortTime' }}</span
+                >
               </div>
             </ion-col>
           </ion-row>
         </ion-grid>
 
-        <div class="cta text-center m-5" *ngIf="tokenIsLaunched && token.circulating_supply < token.max_supply">
+        <div
+          class="cta text-center m-5"
+          *ngIf="tokenIsLaunched && token.circulating_supply < token.max_supply"
+        >
           <ion-button color="warning" (click)="mint()">MINT NOW</ion-button>
         </div>
-        <div class="cta text-center m-5" *ngIf="tokenIsLaunched && token.circulating_supply >= token.max_supply">
-          <ion-text color="warning">All ${{ token.ticker }} tokens have been minted</ion-text>
+        <div
+          class="cta text-center m-5"
+          *ngIf="tokenIsLaunched && token.circulating_supply >= token.max_supply"
+        >
+          <ion-text color="warning"
+            >All ${{ token.ticker }} tokens have been minted</ion-text
+          >
         </div>
         <div class="countdown" *ngIf="!tokenIsLaunched">
-          <div class="title">
-            Minting starts in
-          </div>
-          <div class="counter">
-            {{ countdown }}
-          </div>
+          <div class="title">Minting starts in</div>
+          <div class="counter">{{ countdown }}</div>
         </div>
       </div>
     </div>
