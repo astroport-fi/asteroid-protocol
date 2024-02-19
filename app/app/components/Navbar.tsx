@@ -1,0 +1,107 @@
+import { Link, NavLink } from '@remix-run/react'
+import { useCallback, useState } from 'react'
+import { Button, Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
+import { Wallet } from './wallet/Wallet'
+
+export default function Navbar() {
+  const [detailOpen, setDetailOpen] = useState(false)
+  const close = useCallback(() => setDetailOpen(false), [])
+
+  return (
+    <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral">
+      <DaisyNavbar.Start className="py-2">
+        <Dropdown>
+          <Button tag="label" color="ghost" tabIndex={0} className="lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </Button>
+          <Dropdown.Menu tabIndex={0} className="w-52 menu-sm mt-3 z-10">
+            <Dropdown.Item anchor={false}>
+              <NavLink to="/inscriptions">Inscriptions</NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item anchor={false}>
+              <NavLink to="/tokens">CFT-20</NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item anchor={false}>
+              <NavLink to="/wallet">Portfolio</NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item anchor={false}>Create</Dropdown.Item>
+            <li>
+              <ul className="p-2 z-10">
+                {/* <li>
+                  <NavLink to="/create/collection">Collection</NavLink>
+                </li> */}
+                <li>
+                  <NavLink to="/create/inscription">Inscription</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/create/token">CFT-20</NavLink>
+                </li>
+              </ul>
+            </li>
+          </Dropdown.Menu>
+        </Dropdown>
+        <Link className="btn btn-ghost normal-case text-xl" to="/">
+          Asteroid
+        </Link>
+      </DaisyNavbar.Start>
+      <DaisyNavbar.Center className="hidden lg:flex">
+        <Menu horizontal className="px-1">
+          <Menu.Item>
+            <NavLink to="/inscriptions">Inscriptions</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <NavLink to="/tokens">CFT-20</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <NavLink to="/wallet">Portfolio</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <NavLink to="/markets">Marketplace</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <Menu.Details
+              label="Create"
+              className="z-10"
+              open={detailOpen}
+              onToggle={(e) => {
+                setDetailOpen(e.currentTarget.open)
+              }}
+            >
+              {/* <Menu.Item onClick={close}>
+                <NavLink to="/create/collection" onClick={close}>
+                  Collection
+                </NavLink>
+              </Menu.Item> */}
+              <Menu.Item onClick={close}>
+                <NavLink to="/create/inscription" onClick={close}>
+                  Inscription
+                </NavLink>
+              </Menu.Item>
+              <Menu.Item onClick={close}>
+                <NavLink to="/create/token" onClick={close}>
+                  CFT-20
+                </NavLink>
+              </Menu.Item>
+            </Menu.Details>
+          </Menu.Item>
+        </Menu>
+      </DaisyNavbar.Center>
+      <DaisyNavbar.End className="pr-4">
+        <Wallet />
+      </DaisyNavbar.End>
+    </DaisyNavbar>
+  )
+}
