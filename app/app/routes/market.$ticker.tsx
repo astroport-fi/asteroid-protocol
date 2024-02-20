@@ -11,9 +11,11 @@ import { NumericFormat } from 'react-number-format'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import Stat from '~/components/Stat'
+import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
+import useDialog from '~/hooks/useDialog'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import {
@@ -255,18 +257,21 @@ function Stats({ token }: { token: Token }) {
 
 export default function MarketPage() {
   const data = useLoaderData<typeof loader>()
+  const { dialogRef, handleShow } = useDialog()
+
   return (
     <div>
-      <div className="flex flex-col sticky top-0">
+      <div className="flex flex-col">
         <div className="flex flex-row justify-between">
           <BackHeader to="/markets">
             <Button color="ghost" className="text-lg font-medium">
               {data.token.ticker} / ATOM Market
             </Button>
           </BackHeader>
-          <Button color="primary" size="sm">
+          <Button color="primary" size="sm" onClick={() => handleShow()}>
             Sell {data.token.ticker} tokens
           </Button>
+          <SellTokenDialog ref={dialogRef} token={data.token} />
         </div>
         <Stats token={data.token} />
       </div>

@@ -150,10 +150,9 @@ export default function CreateInscription() {
           <p className="mt-2">Add detail to your inscription</p>
 
           <div className="form-control w-full mt-6">
-            <label className="label" htmlFor="maxSupply">
-              <span className="label-text">Name</span>
-            </label>
+            <Form.Label title="Name" htmlFor="name" />
             <Input
+              id="name"
               placeholder="Name your inscription"
               color={errors.name ? 'error' : undefined}
               {...register('name', {
@@ -172,10 +171,9 @@ export default function CreateInscription() {
           </div>
 
           <div className="form-control w-full">
-            <label className="label" htmlFor="maxSupply">
-              <span className="label-text">Description</span>
-            </label>
+            <Form.Label title="Description" htmlFor="description" />
             <Textarea
+              id="description"
               placeholder="Describe your inscription"
               rows={10}
               {...register('description')}

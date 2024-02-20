@@ -6,7 +6,7 @@ declare module '@remix-run/cloudflare' {
   interface AppLoadContext {
     env: {
       ENVIRONMENT: string
-      MAX_FILE_SIZE: number
+      MAX_FILE_SIZE: string
       ASTEROID_API: string
       ASTEROID_API_WSS: string
       TX_EXPLORER: string
@@ -15,6 +15,7 @@ declare module '@remix-run/cloudflare' {
       CHAIN_ID: string
       CHAIN_NAME: string
       GAS_PRICE: string
+      USE_IBC: string
     }
   }
 }

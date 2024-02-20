@@ -38,17 +38,6 @@ interface CheckResult {
   error?: string
 }
 
-function txErrorToText(error: string) {
-  if (error.includes('inscription_content_hash')) {
-    return 'Your inscription contains content already inscribed. Duplicates are not allowed.'
-  }
-  if (error.includes('order by id') && error.includes("doesn't exist")) {
-    return 'The sell order has already been filled or removed'
-  }
-
-  return error
-}
-
 async function checkTransaction(
   client: SigningClient,
   asteroidClient: AsteroidService,
@@ -112,7 +101,7 @@ function useWaitForTx(txHash: string) {
     }, 1000)
 
     return () => clearInterval(intervalId)
-  })
+  }, [txHash, txState, client, asteroidClient])
 
   return [txState, setTxState, error] as const
 }
@@ -130,6 +119,17 @@ interface SuccessProps extends Props {
   txHash?: string
   txState: TxState
   txError: string | null
+}
+
+function txErrorToText(error: string) {
+  if (error.includes('inscription_content_hash')) {
+    return 'Your inscription contains content already inscribed. Duplicates are not allowed.'
+  }
+  if (error.includes('order by id') && error.includes("doesn't exist")) {
+    return 'The sell order has already been filled or removed'
+  }
+
+  return error
 }
 
 function TxStatus({

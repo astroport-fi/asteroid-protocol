@@ -36,7 +36,7 @@ export function Inscriptions({
   inscriptions: Inscription[]
 }) {
   return (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
       {inscriptions.map((inscription) => (
         <InscriptionBox key={inscription.id} inscription={inscription} />
       ))}

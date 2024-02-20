@@ -45,3 +45,4 @@ npm run dev
 - [ ] Index page
 - [ ] Font
 - [ ] Reuse client - useMemo
+- [ ] Sell dialog check balance

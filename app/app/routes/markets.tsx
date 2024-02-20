@@ -14,6 +14,7 @@ import useSorting from '~/hooks/useSorting'
 import { AsteroidService } from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { parsePagination, parseSorting } from '~/utils/pagination'
+import type { ArrayElement } from '~/utils/types'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -49,7 +50,7 @@ const DEFAULT_SORT = { id: 'id', desc: true }
 export default function MarketsPage() {
   const data = useLoaderData<typeof loader>()
   type Markets = typeof data
-  type Market = Markets['tokens'][0]
+  type Market = ArrayElement<Markets['tokens']>
   const columnHelper = createColumnHelper<Market>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
@@ -85,7 +86,11 @@ export default function MarketsPage() {
       header: '',
       enableSorting: false,
       cell: (info) => {
-        return info.getValue()[0]?.amount ? (
+        const value = info.getValue()
+        if (!info.getValue()) {
+          return ''
+        }
+        return value[0]?.amount ? (
           <Button
             color="neutral"
             size="sm"

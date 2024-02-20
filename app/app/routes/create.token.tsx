@@ -190,10 +190,9 @@ export default function CreateToken() {
           <p className="mt-2">Add detail to your inscription</p>
 
           <div className="form-control w-full mt-4">
-            <label className="label" htmlFor="maxSupply">
-              <span className="label-text">Name</span>
-            </label>
+            <Form.Label title="Name" htmlFor="name" />
             <Input
+              id="name"
               placeholder="Name your token"
               color={errors.name ? 'error' : undefined}
               {...register('name', {
@@ -219,11 +218,10 @@ export default function CreateToken() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <label className="label" htmlFor="ticker">
-              <span className="label-text">Ticker</span>
-            </label>
+            <Form.Label title="Ticker" htmlFor="ticker" />
             <Input
               placeholder="TOKEN"
+              id="ticker"
               color={errors.ticker ? 'error' : undefined}
               {...register('ticker', {
                 required: true,
@@ -248,9 +246,7 @@ export default function CreateToken() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <label className="label" htmlFor="maxSupply">
-              <span className="label-text">Maximum supply</span>
-            </label>
+            <Form.Label title="Maximum supply" htmlFor="maxSupply" />
             <Controller
               rules={{ required: true, pattern: /^[0-9]+$/ }}
               control={control}
@@ -263,8 +259,11 @@ export default function CreateToken() {
                   value={value}
                   onBlur={onBlur}
                   disabled={disabled}
+                  id={name}
                   name={name}
-                  onValueChange={(v) => onChange(parseInt(v.value))}
+                  onValueChange={(v) =>
+                    onChange(v.value ? parseInt(v.value) : '')
+                  }
                   thousandSeparator
                   customInput={Input}
                   placeholder="Maximum supply"
@@ -285,10 +284,10 @@ export default function CreateToken() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <label className="label" htmlFor="mintLimit">
-              <span className="label-text">Per transaction mint limit</span>
-            </label>
-
+            <Form.Label
+              title="Per transaction mint limit"
+              htmlFor="mintLimit"
+            />
             <Controller
               rules={{ required: true, pattern: /^[0-9]+$/ }}
               control={control}
@@ -301,8 +300,11 @@ export default function CreateToken() {
                   value={value}
                   onBlur={onBlur}
                   disabled={disabled}
+                  id={name}
                   name={name}
-                  onValueChange={(v) => onChange(parseInt(v.value))}
+                  onValueChange={(v) =>
+                    onChange(v.value ? parseInt(v.value) : '')
+                  }
                   thousandSeparator
                   customInput={Input}
                   placeholder="Per transaction mint limit"
