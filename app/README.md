@@ -42,3 +42,6 @@ npm run dev
 - [ ] Add token logo to tokens list / marketplace 
 - [ ] Loading states
 - [ ] Lottie animations
+- [ ] Index page
+- [ ] Font
+- [ ] Reuse client - useMemo

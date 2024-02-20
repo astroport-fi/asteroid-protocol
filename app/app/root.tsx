@@ -70,6 +70,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
       TX_EXPLORER: context.env.TX_EXPLORER,
       GAS_PRICE: context.env.GAS_PRICE,
       MAX_FILE_SIZE: context.env.MAX_FILE_SIZE,
+      ASTEROID_API: context.env.ASTEROID_API,
+      ASTEROID_API_WSS: context.env.ASTEROID_API_WSS,
     },
   })
 }
@@ -93,6 +95,8 @@ export default function App() {
             gasPrice: data.ENV.GAS_PRICE,
             txExplorer: data.ENV.TX_EXPLORER,
             maxFileSize: data.ENV.MAX_FILE_SIZE,
+            asteroidApi: data.ENV.ASTEROID_API,
+            asteroidWs: data.ENV.ASTEROID_API_WSS,
             status: {
               baseToken: data.status?.base_token ?? '',
               baseTokenUsd: data.status?.base_token_usd ?? 0,

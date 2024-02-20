@@ -86,7 +86,11 @@ export default function MarketsPage() {
       enableSorting: false,
       cell: (info) => {
         return info.getValue()[0]?.amount ? (
-          <Button color="neutral" size="sm">
+          <Button
+            color="neutral"
+            size="sm"
+            onClick={(e) => e.stopPropagation()}
+          >
             Sell
           </Button>
         ) : (

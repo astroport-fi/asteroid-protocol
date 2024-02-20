@@ -4,9 +4,11 @@ import { useRootContext } from '~/context/root'
 export default function TxLink({
   txHash,
   title,
+  className,
 }: {
   txHash: string
   title?: string
+  className?: string
 }) {
   const { txExplorer } = useRootContext()
   return (
@@ -15,6 +17,7 @@ export default function TxLink({
       target="_blank"
       rel="noreferrer"
       color="primary"
+      className={className}
     >
       {title ?? txHash}
     </Link>

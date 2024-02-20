@@ -25,8 +25,6 @@ import { getDecimalValue, getSupplyTitle } from '~/utils/number'
 import { parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-
   if (!params.ticker) {
     throw new Response(null, {
       status: 404,
@@ -34,6 +32,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
+  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
   const token = await asteroidService.getToken(params.ticker, true)
 
   if (!token) {

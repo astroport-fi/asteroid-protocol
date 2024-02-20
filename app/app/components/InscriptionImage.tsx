@@ -23,7 +23,7 @@ export default function InscriptionImage({
           className,
         )}
       >
-        <EyeSlashIcon className="w-6 h-6" />
+        <EyeSlashIcon className="size-6" />
         <span className="ml-2">Explicit content</span>
       </span>
     )

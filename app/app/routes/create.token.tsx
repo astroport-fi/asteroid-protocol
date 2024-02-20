@@ -52,7 +52,6 @@ export default function CreateToken() {
   const [txData, setTxData] = useState<TxData | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
     if (!address) {
       console.warn('No address')
       return
@@ -372,13 +371,18 @@ export default function CreateToken() {
             type="submit"
             color="primary"
             className="mt-4"
-            startIcon={<CheckIcon className="w-5 h-5" />}
+            startIcon={<CheckIcon className="size-5" />}
           >
-            Inscribe
+            Create token
           </Button>
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txData={txData} />
+      <TxDialog
+        ref={dialogRef}
+        txData={txData}
+        resultLink={`/token/${ticker}`}
+        resultCTA="View Token"
+      />
     </div>
   )
 }

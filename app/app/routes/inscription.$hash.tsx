@@ -69,7 +69,7 @@ function InscriptionDetail({ inscription }: { inscription: Inscription }) {
           to={`/viewer/${inscription.transaction.hash}`}
           className="btn btn-link"
         >
-          Open in viewer <ArrowTopRightOnSquareIcon className="w-5 h-5" />
+          Open in viewer <ArrowTopRightOnSquareIcon className="size-5" />
         </Link>
       </div>
       <div className="flex flex-col flex-1">

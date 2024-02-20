@@ -10,10 +10,12 @@ import {
 import { Table as TableData, flexRender } from '@tanstack/react-table'
 import clsx from 'clsx'
 import { Button, Table as DaisyTable, Divider, Select } from 'react-daisyui'
+import { twMerge } from 'tailwind-merge'
 
 interface Props<T> {
   table: TableData<T>
   showPagination?: boolean
+  className?: string
   onClick?: (row: T) => void
 }
 
@@ -21,11 +23,12 @@ export default function Table<T = unknown>({
   table,
   showPagination,
   onClick,
+  className,
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
 
   return (
-    <div className="flex flex-col w-full">
+    <div className={twMerge('flex flex-col w-full', className)}>
       <DaisyTable pinCols>
         <thead>
           <tr>

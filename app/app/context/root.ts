@@ -3,6 +3,8 @@ import { createContext, useContext } from 'react'
 export const RootContext = createContext({
   maxFileSize: 550000,
   txExplorer: '', // @todo add default tx explorer
+  asteroidApi: '', // @todo add default asteroid api
+  asteroidWs: '', // @todo add default asteroid ws
   chainId: '', // @todo add default chain id
   chainName: '', // @todo add default chain name
   gasPrice: '0.005uatom',

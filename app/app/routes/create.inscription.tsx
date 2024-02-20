@@ -186,7 +186,7 @@ export default function CreateInscription() {
             type="submit"
             color="primary"
             className="mt-4"
-            startIcon={<CheckIcon className="w-5 h-5" />}
+            startIcon={<CheckIcon className="size-5" />}
           >
             Inscribe
           </Button>
