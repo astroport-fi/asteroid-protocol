@@ -1,4 +1,4 @@
-import { TxData, order_by } from '@asteroid-protocol/sdk'
+import { TxData, ValueTypes, order_by } from '@asteroid-protocol/sdk'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import {
@@ -57,13 +57,30 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     })
   }
 
+  let orderBy: ValueTypes['marketplace_cft20_detail_order_by']
+  if (sort === 'marketplace_listing_total') {
+    orderBy = {
+      marketplace_listing: {
+        total: direction,
+      },
+    }
+  } else if (sort === 'marketplace_listing_deposit_total') {
+    orderBy = {
+      marketplace_listing: {
+        deposit_total: direction,
+      },
+    }
+  } else {
+    orderBy = {
+      [sort]: direction,
+    }
+  }
+
   const res = await asteroidService.getTokenListings(
     token.id,
     offset,
     limit,
-    {
-      [sort]: direction,
-    },
+    orderBy,
     true,
   )
 
