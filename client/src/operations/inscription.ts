@@ -23,9 +23,9 @@ export class InscriptionOperations<
     this.options = options
   }
 
-  inscribe<T = ContentMetadata>(
+  inscribe<M = ContentMetadata>(
     data: string | Buffer,
-    metadata: T,
+    metadata: M,
     parent?: Parent,
   ) {
     if (!parent) {
