@@ -1,4 +1,4 @@
-import { InscriptionOperations, TxData } from '@asteroid-protocol/sdk'
+import { TxData } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -6,8 +6,8 @@ import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
 import { useRootContext } from '~/context/root'
-import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
+import { useInscriptionOperations } from '~/hooks/useOperations'
 import { toBase64 } from '~/utils/file'
 
 type FormData = {
@@ -17,8 +17,8 @@ type FormData = {
 }
 
 export default function CreateInscription() {
-  const { chainId, maxFileSize } = useRootContext()
-  const address = useAddress()
+  const { maxFileSize } = useRootContext()
+  const operations = useInscriptionOperations()
 
   // form
   const {
@@ -38,7 +38,7 @@ export default function CreateInscription() {
   const [txData, setTxData] = useState<TxData | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!address) {
+    if (!operations) {
       console.warn('No address')
       return
     }
@@ -50,7 +50,6 @@ export default function CreateInscription() {
       return
     }
 
-    const operations = new InscriptionOperations(chainId, address)
     const txData = operations.inscribe(fileData, {
       name: data.name,
       description: data.description,

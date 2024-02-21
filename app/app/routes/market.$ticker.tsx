@@ -12,6 +12,7 @@ import { NumericFormat } from 'react-number-format'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import Stat from '~/components/Stat'
+import BuyDialog from '~/components/dialogs/BuyDialog'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
@@ -146,8 +147,10 @@ function ListingsTable({
   const {
     status: { lastProcessedHeight },
   } = useRootContext()
-  const { dialogRef, handleShow } = useDialog()
+  const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
+  const { dialogRef: buyDialogRef, handleShow: showBuyDialog } = useDialog()
   const [txData, setTxData] = useState<TxData | null>(null)
+  const [listingHash, setListingHash] = useState<string | null>(null)
   const operations = useMarketplaceOperations()
 
   function cancelListing(listingHash: string) {
@@ -160,7 +163,12 @@ function ListingsTable({
 
     setTxData(txData)
 
-    handleShow()
+    showTxDialog()
+  }
+
+  function reserveListing(listingHash: string) {
+    setListingHash(listingHash)
+    showBuyDialog()
   }
 
   const columns = [
@@ -202,7 +210,7 @@ function ListingsTable({
       cell: (info) => {
         const listing = info.row.original.marketplace_listing
         const blocks =
-          listing.depositor_timedout_block ?? 0 - lastProcessedHeight
+          (listing.depositor_timedout_block ?? 0) - lastProcessedHeight
         const listingHash = listing.transaction.hash
 
         switch (
@@ -213,7 +221,7 @@ function ListingsTable({
               <Button
                 color="accent"
                 size="sm"
-                onClick={(e) => e.stopPropagation()}
+                onClick={() => reserveListing(listingHash)}
               >
                 Reserve
               </Button>
@@ -272,9 +280,15 @@ function ListingsTable({
     <>
       <Table table={table} className={className} />
       <TxDialog
-        ref={dialogRef}
+        ref={txDialogRef}
         txData={txData}
         resultCTA="Back to market"
+        resultLink={`/market/${token.ticker}`}
+      />
+      <BuyDialog
+        buyType="cft20"
+        listingHash={listingHash}
+        ref={buyDialogRef}
         resultLink={`/market/${token.ticker}`}
       />
     </>

@@ -3,49 +3,62 @@ import {
   InscriptionOperations,
   MarketplaceOperations,
 } from '@asteroid-protocol/sdk'
+import { useMemo } from 'react'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 
-export function useInscriptionOperations() {
+export function useInscriptionOperations<T extends boolean = false>(
+  multi = false as T,
+) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()
 
-  if (!address) {
-    return null
-  }
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
 
-  return new InscriptionOperations(chainId, address, {
-    multi: false,
-    useIbc,
-  })
+    return new InscriptionOperations(chainId, address, {
+      multi,
+      useIbc,
+    })
+  }, [chainId, address, useIbc, multi])
 }
 
-export function useCFT20Operations() {
+export function useCFT20Operations<T extends boolean = false>(
+  multi = false as T,
+) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()
 
-  if (!address) {
-    return null
-  }
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
 
-  return new CFT20Operations(chainId, address, {
-    multi: false,
-    useIbc,
-  })
+    return new CFT20Operations(chainId, address, {
+      multi,
+      useIbc,
+    })
+  }, [chainId, address, useIbc, multi])
 }
 
-export function useMarketplaceOperations() {
+export function useMarketplaceOperations<T extends boolean = false>(
+  multi = false as T,
+) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()
   const asteroidClient = useAsteroidClient()
 
-  if (!address) {
-    return null
-  }
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
 
-  return new MarketplaceOperations(chainId, address, asteroidClient, {
-    multi: false,
-    useIbc,
-  })
+    return new MarketplaceOperations(chainId, address, asteroidClient, {
+      multi,
+      useIbc,
+    })
+  }, [chainId, address, useIbc, asteroidClient, multi])
 }

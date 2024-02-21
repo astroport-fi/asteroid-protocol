@@ -66,8 +66,13 @@ export default function useSubmitTx(txData: TxData | null) {
 
   // Estimate chain fee
   useEffect(() => {
-    if (!txData || !client) {
-      setError('invalid txData or client')
+    if (!txData) {
+      setError('There are no transaction data to estimate chain fee')
+      return
+    }
+
+    if (!client) {
+      setError('There is no client to estimate chain fee')
       return
     }
 
@@ -114,6 +119,7 @@ export default function useSubmitTx(txData: TxData | null) {
       setTxHash(res.transactionHash)
     } catch (err) {
       setError((err as Error).message)
+      setTxState(TxState.Failed)
       console.error(err)
     }
   }, [address, client, txData, setTxState])

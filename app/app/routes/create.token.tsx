@@ -1,15 +1,14 @@
-import { CFT20Operations, TxData } from '@asteroid-protocol/sdk'
+import { TxData } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, FileInput, Form, Input, Link, Radio } from 'react-daisyui'
-import { Controller, useForm } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
+import { useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
 import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
-import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
+import { useCFT20Operations } from '~/hooks/useOperations'
 import { loadImage, toBase64 } from '~/utils/file'
 
 type FormData = {
@@ -23,8 +22,8 @@ type FormData = {
 }
 
 export default function CreateToken() {
-  const { chainId, maxFileSize } = useRootContext()
-  const address = useAddress()
+  const { maxFileSize } = useRootContext()
+  const operations = useCFT20Operations()
 
   // form
   const {
@@ -53,7 +52,7 @@ export default function CreateToken() {
   const [txData, setTxData] = useState<TxData | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!address) {
+    if (!operations) {
       console.warn('No address')
       return
     }
@@ -65,7 +64,6 @@ export default function CreateToken() {
       fileData = await toBase64(file)
     }
 
-    const operations = new CFT20Operations(chainId, address)
     const txData = operations.deploy(fileData ?? '', mime, {
       decimals: 6,
       maxSupply: data.maxSupply,

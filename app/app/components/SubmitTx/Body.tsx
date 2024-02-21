@@ -13,6 +13,7 @@ interface BodyProps {
   onClose?: () => void
 }
 
+// @todo add loading state
 export default function Body({
   error,
   chainFee,
