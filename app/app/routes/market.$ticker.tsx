@@ -1,4 +1,4 @@
-import { order_by } from '@asteroid-protocol/sdk'
+import { TxData, order_by } from '@asteroid-protocol/sdk'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import {
@@ -6,16 +6,19 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import Stat from '~/components/Stat'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
+import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
+import { useMarketplaceOperations } from '~/hooks/useOperations'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import {
@@ -126,6 +129,22 @@ function ListingsTable({
   const {
     status: { lastProcessedHeight },
   } = useRootContext()
+  const { dialogRef, handleShow } = useDialog()
+  const [txData, setTxData] = useState<TxData | null>(null)
+  const operations = useMarketplaceOperations()
+
+  function cancelListing(listingHash: string) {
+    if (!operations) {
+      console.warn('No address')
+      return
+    }
+
+    const txData = operations.delist(listingHash)
+
+    setTxData(txData)
+
+    handleShow()
+  }
 
   const columns = [
     columnHelper.accessor('id', {
@@ -159,62 +178,62 @@ function ListingsTable({
       header: 'Listed',
       cell: (info) => getDateAgo(info.getValue()),
     }),
-    columnHelper.accessor(
-      (row) => getListingState(row, address, lastProcessedHeight),
-      {
-        enableSorting: false,
-        header: '',
-        id: 'state',
-        cell: (info) => {
-          const blocks =
-            info.row.original.marketplace_listing.depositor_timedout_block ??
-            0 - lastProcessedHeight
+    columnHelper.accessor('marketplace_listing.transaction.hash', {
+      enableSorting: false,
+      header: '',
+      id: 'state',
+      cell: (info) => {
+        const listing = info.row.original.marketplace_listing
+        const blocks =
+          listing.depositor_timedout_block ?? 0 - lastProcessedHeight
+        const listingHash = listing.transaction.hash
 
-          switch (info.getValue()) {
-            case ListingState.Reserve:
-              return (
-                <Button
-                  color="accent"
-                  size="sm"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Reserve
-                </Button>
-              )
-            case ListingState.Buy:
-              return (
-                <Button
-                  color="accent"
-                  size="sm"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Buy ({blocks})
-                </Button>
-              )
-            case ListingState.Cancel:
-              return (
-                <Button
-                  color="neutral"
-                  size="sm"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Cancel
-                </Button>
-              )
-            case ListingState.Reserved:
-              return (
-                <Button
-                  color="neutral"
-                  size="sm"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Reserved ({blocks})
-                </Button>
-              )
-          }
-        },
+        switch (
+          getListingState(info.row.original, address, lastProcessedHeight)
+        ) {
+          case ListingState.Reserve:
+            return (
+              <Button
+                color="accent"
+                size="sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Reserve
+              </Button>
+            )
+          case ListingState.Buy:
+            return (
+              <Button
+                color="accent"
+                size="sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Buy ({blocks})
+              </Button>
+            )
+          case ListingState.Cancel:
+            return (
+              <Button
+                color="neutral"
+                size="sm"
+                onClick={() => cancelListing(listingHash)}
+              >
+                Cancel
+              </Button>
+            )
+          case ListingState.Reserved:
+            return (
+              <Button
+                color="neutral"
+                size="sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Reserved ({blocks})
+              </Button>
+            )
+        }
       },
-    ),
+    }),
   ]
 
   const table = useReactTable<CFT20MarketplaceListing>({
@@ -232,7 +251,17 @@ function ListingsTable({
     manualPagination: true,
   })
 
-  return <Table table={table} className={className} />
+  return (
+    <>
+      <Table table={table} className={className} />
+      <TxDialog
+        ref={dialogRef}
+        txData={txData}
+        resultCTA="Back to market"
+        resultLink={`/market/${token.ticker}`}
+      />
+    </>
+  )
 }
 
 function Stats({ token }: { token: Token }) {

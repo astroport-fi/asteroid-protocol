@@ -113,7 +113,12 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
               Confirm and list
             </Button>
           </Form>
-          <TxDialog txData={txData} ref={dialogRef} />
+          <TxDialog
+            txData={txData}
+            ref={dialogRef}
+            resultCTA="Back to market"
+            resultLink={`/market/${token.ticker}`}
+          />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">
           <form method="dialog" className="flex flex-col">

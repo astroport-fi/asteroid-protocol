@@ -1,6 +1,6 @@
 import { TxData } from '@asteroid-protocol/sdk'
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
-import { Link } from '@remix-run/react'
+import { useNavigate } from '@remix-run/react'
 import {
   PropsWithChildren,
   forwardRef,
@@ -10,9 +10,11 @@ import {
 } from 'react'
 import { Button, Divider, Modal, Tooltip } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import type { To } from 'react-router'
 import useAddress from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
+import useForwardRef from '~/hooks/useForwardRef'
 import { AsteroidService } from '~/services/asteroid'
 import { getDecimalValue } from '~/utils/number'
 import TxLink from '../TxLink'
@@ -20,7 +22,7 @@ import TxLink from '../TxLink'
 interface Props {
   txData: TxData | null
   resultCTA?: string
-  resultLink?: string
+  resultLink?: To
 }
 
 enum TxState {
@@ -68,10 +70,10 @@ async function checkTransaction(
   }
 }
 
-function useWaitForTx(txHash: string) {
+function useWaitForTx(txHash: string, retry: number) {
   const [txState, setTxState] = useState<TxState>(TxState.Initial)
   const [error, setError] = useState<string | null>(null)
-  const client = useClient()
+  const client = useClient(retry)
   const asteroidClient = useAsteroidClient()
 
   useEffect(() => {
@@ -115,10 +117,11 @@ function Row({ children, title }: PropsWithChildren<{ title: string }>) {
   )
 }
 
-interface SuccessProps extends Props {
+interface TxStatusProps extends Props {
   txHash?: string
   txState: TxState
   txError: string | null
+  onClose: () => void
 }
 
 function txErrorToText(error: string) {
@@ -134,11 +137,11 @@ function txErrorToText(error: string) {
 
 function TxStatus({
   resultCTA,
-  resultLink,
   txHash,
   txState,
   txError,
-}: SuccessProps) {
+  onClose,
+}: TxStatusProps) {
   let title = ''
   let description = ''
   let headerColor = 'text-base-content'
@@ -174,12 +177,11 @@ function TxStatus({
         <p className="text-error">{txErrorToText(txError)}</p>
       )}
       {txState == TxState.SuccessInscribed && (
-        <Link
-          className="btn btn-primary mt-8"
-          to={resultLink ?? `/inscription/${txHash}`}
-        >
-          {resultCTA ?? 'View inscription'}
-        </Link>
+        <Button
+          color="primary"
+          className="mt-8"
+          onClick={() => onClose()}
+        ></Button>
       )}
       {txHash && (
         <div className="flex flex-col bg-base-200 p-4 mt-4 rounded-xl">
@@ -288,7 +290,16 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [chainFee, setChainFee] = useState(0)
-  const [txState, setTxState, txError] = useWaitForTx(txHash)
+  const [txState, setTxState, txError] = useWaitForTx(txHash, retry)
+  const navigate = useNavigate()
+  const fRef = useForwardRef(ref)
+
+  function resetState() {
+    setChainFee(0)
+    setTxState(TxState.Initial)
+    setTxHash('')
+    setError(null)
+  }
 
   useEffect(() => {
     if (!txData || !client) {
@@ -358,6 +369,11 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
             txError={txError}
             resultCTA={resultCTA}
             resultLink={resultLink}
+            onClose={() => {
+              fRef.current?.close()
+              navigate(resultLink ?? `/inscription/${txHash}`)
+              resetState()
+            }}
           />
         ) : (
           <Estimate txData={txData} chainFee={chainFee} />
@@ -397,9 +413,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
             className="no-underline"
             variant="link"
             onClick={() => {
-              setChainFee(0)
-              setTxState(TxState.Initial)
-              setTxHash('')
+              resetState()
             }}
           >
             Close
