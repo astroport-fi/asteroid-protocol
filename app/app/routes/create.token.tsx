@@ -6,6 +6,7 @@ import { Button, FileInput, Form, Input, Link, Radio } from 'react-daisyui'
 import { Controller, useForm } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
 import TxDialog from '~/components/dialogs/TxDialog'
+import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
@@ -245,84 +246,21 @@ export default function CreateToken() {
             </label>
           </div>
 
-          <div className="form-control w-full mt-4">
-            <Form.Label title="Maximum supply" htmlFor="maxSupply" />
-            <Controller
-              rules={{ required: true, pattern: /^[0-9]+$/ }}
-              control={control}
-              name="maxSupply"
-              render={({
-                field: { name, onChange, value, ref, onBlur, disabled },
-              }) => (
-                <NumericFormat
-                  getInputRef={ref}
-                  value={value}
-                  onBlur={onBlur}
-                  disabled={disabled}
-                  id={name}
-                  name={name}
-                  onValueChange={(v) =>
-                    onChange(v.value ? parseInt(v.value) : '')
-                  }
-                  thousandSeparator
-                  customInput={Input}
-                  placeholder="Maximum supply"
-                  color={errors.maxSupply ? 'error' : undefined}
-                />
-              )}
-            />
+          <NumericInput
+            control={control}
+            error={errors.maxSupply}
+            name="maxSupply"
+            title="Maximum supply"
+            className="mt-4"
+          />
 
-            <label className="label" htmlFor="maxSupply">
-              <span
-                className={clsx('label-text-alt', {
-                  ['text-error']: errors.maxSupply != null,
-                })}
-              >
-                {errors.maxSupply && 'Required'}
-              </span>
-            </label>
-          </div>
-
-          <div className="form-control w-full mt-4">
-            <Form.Label
-              title="Per transaction mint limit"
-              htmlFor="mintLimit"
-            />
-            <Controller
-              rules={{ required: true, pattern: /^[0-9]+$/ }}
-              control={control}
-              name="mintLimit"
-              render={({
-                field: { name, onChange, value, ref, onBlur, disabled },
-              }) => (
-                <NumericFormat
-                  getInputRef={ref}
-                  value={value}
-                  onBlur={onBlur}
-                  disabled={disabled}
-                  id={name}
-                  name={name}
-                  onValueChange={(v) =>
-                    onChange(v.value ? parseInt(v.value) : '')
-                  }
-                  thousandSeparator
-                  customInput={Input}
-                  placeholder="Per transaction mint limit"
-                  color={errors.mintLimit ? 'error' : undefined}
-                />
-              )}
-            />
-
-            <label className="label" htmlFor="mintLimit">
-              <span
-                className={clsx('label-text-alt', {
-                  ['text-error']: errors.mintLimit != null,
-                })}
-              >
-                {errors.mintLimit && 'Required'}
-              </span>
-            </label>
-          </div>
+          <NumericInput
+            control={control}
+            error={errors.mintLimit}
+            name="mintLimit"
+            title="Per transaction mint limit"
+            className="mt-4"
+          />
 
           <div className="mt-4">
             <strong>Token launch</strong>
