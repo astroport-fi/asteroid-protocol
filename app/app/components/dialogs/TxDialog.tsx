@@ -1,4 +1,4 @@
-import { TxData } from '@asteroid-protocol/sdk'
+import { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
 import { forwardRef } from 'react'
 import { Modal } from 'react-daisyui'
@@ -9,17 +9,25 @@ import Actions from '../SubmitTx/Actions'
 import Body from '../SubmitTx/Body'
 
 interface Props {
-  txData: TxData | null
+  txInscription: TxInscription | null
   resultCTA?: string
   resultLink?: To
 }
 
 const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
-  { txData, resultCTA, resultLink },
+  { txInscription, resultCTA, resultLink },
   ref,
 ) {
-  const { chainFee, error, txState, txHash, sendTx, resetState, retry } =
-    useSubmitTx(txData)
+  const {
+    chainFee,
+    metaprotocolFee,
+    error,
+    txState,
+    txHash,
+    sendTx,
+    resetState,
+    retry,
+  } = useSubmitTx(txInscription)
   const navigate = useNavigate()
   const fRef = useForwardRef(ref)
 
@@ -28,6 +36,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
+          metaprotocolFee={metaprotocolFee}
           error={error}
           txHash={txHash}
           txState={txState}

@@ -1,4 +1,4 @@
-import { TxData } from '@asteroid-protocol/sdk'
+import { TxInscription } from '@asteroid-protocol/sdk'
 import { forwardRef, useState } from 'react'
 import { Alert, Button, Form, Modal } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
@@ -44,7 +44,9 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
 
     // dialog
     const { dialogRef, handleShow } = useDialog()
-    const [txData, setTxData] = useState<TxData | null>(null)
+    const [txInscription, setTxInscription] = useState<TxInscription | null>(
+      null,
+    )
 
     const onSubmit = handleSubmit(async (data) => {
       if (!operations) {
@@ -52,7 +54,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
         return
       }
 
-      const txData = operations.listCFT20(
+      const txInscription = operations.listCFT20(
         token.ticker,
         data.amount,
         data.ppt,
@@ -60,7 +62,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
         TIMEOUT_BLOCKS,
       )
 
-      setTxData(txData)
+      setTxInscription(txInscription)
 
       fRef.current?.close()
       handleShow()
@@ -117,7 +119,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             </Button>
           </Form>
           <TxDialog
-            txData={txData}
+            txInscription={txInscription}
             ref={dialogRef}
             resultCTA="Back to market"
             resultLink={`/market/${token.ticker}`}

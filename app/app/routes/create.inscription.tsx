@@ -1,4 +1,4 @@
-import { TxData } from '@asteroid-protocol/sdk'
+import { TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -35,7 +35,7 @@ export default function CreateInscription() {
 
   // dialog
   const { dialogRef, handleShow } = useDialog()
-  const [txData, setTxData] = useState<TxData | null>(null)
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -50,13 +50,13 @@ export default function CreateInscription() {
       return
     }
 
-    const txData = operations.inscribe(fileData, {
+    const txInscription = operations.inscribe(fileData, {
       name: data.name,
       description: data.description,
       mime: file.type,
     })
 
-    setTxData(txData)
+    setTxInscription(txInscription)
 
     handleShow()
   })
@@ -189,7 +189,7 @@ export default function CreateInscription() {
           </Button>
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txData={txData} />
+      <TxDialog ref={dialogRef} txInscription={txInscription} />
     </div>
   )
 }

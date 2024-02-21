@@ -2,10 +2,13 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
 import { PropsWithChildren } from 'react'
 import { Divider, Tooltip } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import { MetaprotocolFee } from '~/hooks/useSubmitTx'
 import { getDecimalValue } from '~/utils/number'
 
 interface FeeBreakdownProps {
+  metaprotocolFee: MetaprotocolFee
   chainFee: number
+  operationTitle?: string
 }
 
 function Row({ children, title }: PropsWithChildren<{ title: string }>) {
@@ -17,10 +20,11 @@ function Row({ children, title }: PropsWithChildren<{ title: string }>) {
   )
 }
 
-export function FeeBreakdown({ chainFee }: FeeBreakdownProps) {
-  // @todo
-  const metaprotocolFee = 0
-
+export function FeeBreakdown({
+  chainFee,
+  metaprotocolFee,
+  operationTitle,
+}: FeeBreakdownProps) {
   return (
     <div className="mt-8">
       <span className="text-md">Estimated fee breakdown</span>
@@ -36,17 +40,31 @@ export function FeeBreakdown({ chainFee }: FeeBreakdownProps) {
         </Row>
         <Row title="Metaprotocol">
           <NumericFormat
-            value={getDecimalValue(metaprotocolFee, 6)}
+            value={getDecimalValue(metaprotocolFee.base, 6)}
             suffix=" ATOM"
             displayType="text"
             fixedDecimalScale
             decimalScale={6}
           />
         </Row>
+        {metaprotocolFee.operation > 0 && (
+          <Row title={operationTitle ?? 'Operation'}>
+            <NumericFormat
+              value={getDecimalValue(metaprotocolFee.operation, 6)}
+              suffix=" ATOM"
+              displayType="text"
+              fixedDecimalScale
+              decimalScale={6}
+            />
+          </Row>
+        )}
         <Divider />
         <Row title="Estimated total">
           <NumericFormat
-            value={getDecimalValue(chainFee + metaprotocolFee, 6)}
+            value={getDecimalValue(
+              chainFee + metaprotocolFee.base + metaprotocolFee.operation,
+              6,
+            )}
             suffix=" ATOM"
             displayType="text"
             fixedDecimalScale

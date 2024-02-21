@@ -1,5 +1,7 @@
-import { TxData } from '@asteroid-protocol/sdk'
-import { useCallback, useEffect, useState } from 'react'
+import { TxInscription, prepareTx } from '@asteroid-protocol/sdk'
+import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
 import { AsteroidService } from '~/services/asteroid'
@@ -50,8 +52,14 @@ async function checkTransaction(
   }
 }
 
-export default function useSubmitTx(txData: TxData | null) {
+export interface MetaprotocolFee {
+  base: number
+  operation: number
+}
+
+export default function useSubmitTx(txInscription: TxInscription | null) {
   const [retryCounter, setRetryCounter] = useState(0)
+  const { useIbc } = useRootContext()
 
   // deps
   const client = useClient(retryCounter)
@@ -63,6 +71,38 @@ export default function useSubmitTx(txData: TxData | null) {
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [chainFee, setChainFee] = useState(0)
+
+  const txData = useMemo(() => {
+    if (!address || !txInscription) {
+      return null
+    }
+
+    return prepareTx(address, txInscription.urn, [txInscription], useIbc)
+  }, [txInscription, address, useIbc])
+
+  const metaprotocolFee = useMemo<MetaprotocolFee>(() => {
+    if (!txInscription) {
+      return {
+        base: 0,
+        operation: 0,
+      }
+    }
+
+    const operationFee =
+      txInscription.messages?.reduce((acc, msg) => {
+        msg.typeUrl
+        if (msg.typeUrl === '/cosmos.bank.v1beta1.MsgSend') {
+          const value = msg.value as MsgSend
+          acc += parseInt(value.amount[0].amount)
+        }
+        return acc
+      }, 0) ?? 0
+
+    return {
+      base: parseInt(txInscription.fee.operation),
+      operation: operationFee,
+    }
+  }, [txInscription])
 
   // Estimate chain fee
   useEffect(() => {
@@ -176,6 +216,7 @@ export default function useSubmitTx(txData: TxData | null) {
     txHash,
     error,
     chainFee,
+    metaprotocolFee,
     sendTx,
     resetState,
     retry,

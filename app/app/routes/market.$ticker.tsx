@@ -1,4 +1,4 @@
-import { TxData, ValueTypes, order_by } from '@asteroid-protocol/sdk'
+import { TxInscription, ValueTypes, order_by } from '@asteroid-protocol/sdk'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import {
@@ -149,7 +149,7 @@ function ListingsTable({
   } = useRootContext()
   const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
   const { dialogRef: buyDialogRef, handleShow: showBuyDialog } = useDialog()
-  const [txData, setTxData] = useState<TxData | null>(null)
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
   const [listingHash, setListingHash] = useState<string | null>(null)
   const operations = useMarketplaceOperations()
 
@@ -159,9 +159,9 @@ function ListingsTable({
       return
     }
 
-    const txData = operations.delist(listingHash)
+    const txInscription = operations.delist(listingHash)
 
-    setTxData(txData)
+    setTxInscription(txInscription)
 
     showTxDialog()
   }
@@ -281,7 +281,7 @@ function ListingsTable({
       <Table table={table} className={className} />
       <TxDialog
         ref={txDialogRef}
-        txData={txData}
+        txInscription={txInscription}
         resultCTA="Back to market"
         resultLink={`/market/${token.ticker}`}
       />

@@ -1,4 +1,4 @@
-import { TxData } from '@asteroid-protocol/sdk'
+import { TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -49,7 +49,7 @@ export default function CreateToken() {
 
   // dialog
   const { dialogRef, handleShow } = useDialog()
-  const [txData, setTxData] = useState<TxData | null>(null)
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -64,7 +64,7 @@ export default function CreateToken() {
       fileData = await toBase64(file)
     }
 
-    const txData = operations.deploy(fileData ?? '', mime, {
+    const txInscription = operations.deploy(fileData ?? '', mime, {
       decimals: 6,
       maxSupply: data.maxSupply,
       mintLimit: data.mintLimit,
@@ -73,7 +73,7 @@ export default function CreateToken() {
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
     })
 
-    setTxData(txData)
+    setTxInscription(txInscription)
 
     handleShow()
   })
@@ -317,7 +317,7 @@ export default function CreateToken() {
       </Form>
       <TxDialog
         ref={dialogRef}
-        txData={txData}
+        txInscription={txInscription}
         resultLink={`/token/${ticker}`}
         resultCTA="View Token"
       />

@@ -8,8 +8,8 @@ import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 
-export function useInscriptionOperations<T extends boolean = false>(
-  multi = false as T,
+export function useInscriptionOperations<T extends boolean = true>(
+  multi = true as T,
 ) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()
@@ -26,8 +26,8 @@ export function useInscriptionOperations<T extends boolean = false>(
   }, [chainId, address, useIbc, multi])
 }
 
-export function useCFT20Operations<T extends boolean = false>(
-  multi = false as T,
+export function useCFT20Operations<T extends boolean = true>(
+  multi = true as T,
 ) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()
@@ -44,8 +44,8 @@ export function useCFT20Operations<T extends boolean = false>(
   }, [chainId, address, useIbc, multi])
 }
 
-export function useMarketplaceOperations<T extends boolean = false>(
-  multi = false as T,
+export function useMarketplaceOperations<T extends boolean = true>(
+  multi = true as T,
 ) {
   const { chainId, useIbc } = useRootContext()
   const address = useAddress()

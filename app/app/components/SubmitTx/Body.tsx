@@ -1,15 +1,17 @@
 import { PropsWithChildren } from 'react'
-import { TxState } from '~/hooks/useSubmitTx'
+import { MetaprotocolFee, TxState } from '~/hooks/useSubmitTx'
 import { EstimateError, SignError } from './Errors'
 import { FeeBreakdown } from './FeeBreakdown'
 import TxStatus from './TxStatus'
 
 interface BodyProps {
   chainFee: number
+  metaprotocolFee: MetaprotocolFee
   error: string | null
   txHash: string | null
   txState: TxState
   resultCTA?: string
+  feeOperationTitle?: string
   onClose?: () => void
 }
 
@@ -17,9 +19,11 @@ interface BodyProps {
 export default function Body({
   error,
   chainFee,
+  metaprotocolFee,
   txHash,
   txState,
   resultCTA,
+  feeOperationTitle,
   children,
   onClose,
 }: PropsWithChildren<BodyProps>) {
@@ -45,7 +49,11 @@ export default function Body({
   return (
     <div>
       {children}
-      <FeeBreakdown chainFee={chainFee} />
+      <FeeBreakdown
+        chainFee={chainFee}
+        metaprotocolFee={metaprotocolFee}
+        operationTitle={feeOperationTitle}
+      />
     </div>
   )
 }

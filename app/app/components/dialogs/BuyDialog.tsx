@@ -1,4 +1,4 @@
-import { TxData } from '@asteroid-protocol/sdk'
+import { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
 import { forwardRef, useEffect, useState } from 'react'
 import { Modal, Steps } from 'react-daisyui'
@@ -25,15 +25,37 @@ enum Step {
 
 // @todo add fee breakdown details
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
-  { buyType, listingHash, resultLink },
+  { buyType, listingHash: listingHashProp, resultLink },
   ref,
 ) {
   const operations = useMarketplaceOperations()
 
-  const [txData, setTxData] = useState<TxData | null>(null)
+  const [listingHash, setListingHash] = useState<string | null>(null)
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+
+  useEffect(() => {
+    if (listingHashProp) {
+      setListingHash(listingHashProp)
+    }
+  }, [listingHashProp, setListingHash])
+
   const [step, setStep] = useState(Step.Initial)
-  const { chainFee, error, txState, txHash, sendTx, resetState, retry } =
-    useSubmitTx(txData)
+  const {
+    chainFee,
+    metaprotocolFee,
+    error,
+    txState,
+    txHash,
+    sendTx,
+    resetState: resetTxState,
+    retry,
+  } = useSubmitTx(txInscription)
+
+  function resetState() {
+    setListingHash(null)
+    setStep(Step.Initial)
+    resetTxState()
+  }
 
   useEffect(() => {
     if (!listingHash || !operations) {
@@ -41,33 +63,32 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     }
 
     if (step === Step.Initial && txState === TxState.Initial) {
-      console.log('set tx data: deposit')
       setStep(Step.Reserve)
-      operations.deposit(listingHash).then(setTxData)
+      operations.deposit(listingHash).then(setTxInscription)
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
-      console.log('set tx data: buy')
       operations.buy(listingHash, buyType).then((buyTxData) => {
-        setTxData(buyTxData)
+        setTxInscription(buyTxData)
         setStep(Step.Purchase)
-        resetState()
+        resetTxState()
       })
     }
-  }, [listingHash, buyType, operations, step, txState, resetState])
+  }, [listingHash, buyType, operations, step, txState, resetTxState])
 
   const navigate = useNavigate()
   const fRef = useForwardRef(ref)
-  if (error) {
-    console.log(error)
-  }
 
   return (
     <Modal ref={ref}>
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
+          metaprotocolFee={metaprotocolFee}
           error={error}
           txHash={txHash}
           txState={txState}
+          feeOperationTitle={
+            step === Step.Purchase ? 'Inscription price' : 'Deposit (0.01%)'
+          }
           resultCTA="Back to market"
           onClose={
             step === Step.Purchase
@@ -75,7 +96,6 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
                   fRef.current?.close()
                   navigate(resultLink)
                   resetState()
-                  setStep(Step.Initial)
                 }
               : undefined
           }
@@ -103,7 +123,6 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           onClose={() => {
             fRef.current?.close()
             resetState()
-            setStep(Step.Initial)
           }}
           onRetry={retry}
         />
