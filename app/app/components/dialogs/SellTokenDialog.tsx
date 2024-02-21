@@ -19,6 +19,9 @@ type FormData = {
   ppt: number
 }
 
+const MIN_DEPOSIT_PERCENT = 0.1
+const TIMEOUT_BLOCKS = 100
+
 const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
   function SellTokenDialog({ token }, ref) {
     // form
@@ -53,8 +56,8 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
         token.ticker,
         data.amount,
         data.ppt,
-        0.1,
-        50,
+        MIN_DEPOSIT_PERCENT,
+        TIMEOUT_BLOCKS,
       )
 
       setTxData(txData)
