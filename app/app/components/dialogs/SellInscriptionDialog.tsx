@@ -1,41 +1,35 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
 import { forwardRef, useState } from 'react'
-import { Alert, Button, Form, Modal } from 'react-daisyui'
+import { Button, Form, Modal } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
 import { MIN_DEPOSIT_PERCENT, TIMEOUT_BLOCKS } from '~/constants'
 import useDialog from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
-import { Token } from '~/services/asteroid'
+import { Inscription } from '~/services/asteroid'
 import NumericInput from '../form/NumericInput'
 import TxDialog from './TxDialog'
 
 interface Props {
-  token: Token
+  inscription: Inscription
 }
 
 type FormData = {
-  amount: number
-  ppt: number
+  price: number
 }
 
-const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
-  function SellTokenDialog({ token }, ref) {
+const SellInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
+  function SellInscriptionDialog({ inscription }, ref) {
     // form
     const {
       handleSubmit,
       control,
-      watch,
       formState: { errors },
     } = useForm<FormData>({
       defaultValues: {
-        amount: 10,
-        ppt: 0.1,
+        price: 10,
       },
     })
-    const amount = watch('amount')
-    const ppt = watch('ppt')
 
     const operations = useMarketplaceOperations()
     const fRef = useForwardRef(ref)
@@ -52,10 +46,9 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
         return
       }
 
-      const txInscription = operations.listCFT20(
-        token.ticker,
-        data.amount,
-        data.ppt,
+      const txInscription = operations.listInscription(
+        inscription.transaction.hash,
+        data.price,
         MIN_DEPOSIT_PERCENT,
         TIMEOUT_BLOCKS,
       )
@@ -69,13 +62,13 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     return (
       <Modal ref={ref}>
         <Modal.Header className="text-center">
-          List {token.ticker} for sale
+          List &quot;{inscription.name}&quot; for sale
         </Modal.Header>
         <Modal.Body>
-          <p>This transaction will list your tokens for sale</p>
+          <p>This transaction will list your inscription for sale</p>
           <p>
             You&apos;ll only receive the ATOM from the sale should someone
-            purchase them
+            purchase it
           </p>
           <p className="mt-4">
             Sales are final and can&apos;t be refunded. You may cancel a listing
@@ -85,32 +78,12 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             <div className="flex flex-row mt-8">
               <NumericInput
                 control={control}
-                name="amount"
-                error={errors.amount}
-                title="Amount to sell"
-              />
-
-              <NumericInput
-                control={control}
-                name="ppt"
-                error={errors.ppt}
-                title="Price per token"
-                className="ml-4"
+                name="price"
+                error={errors.price}
+                title="Price (ATOM)"
                 isFloat
               />
             </div>
-            <Alert className="border border-info">
-              <span>
-                You will be listing your tokens for a total of{' '}
-                <NumericFormat
-                  value={amount * ppt}
-                  suffix=" ATOM"
-                  thousandSeparator
-                  displayType="text"
-                  decimalScale={6}
-                />
-              </span>
-            </Alert>
 
             <Button color="primary" type="submit" className="mt-4">
               Confirm and list
@@ -120,7 +93,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={txInscription}
             ref={dialogRef}
             resultCTA="Back to market"
-            resultLink={`/market/${token.ticker}`}
+            resultLink={`/inscriptions`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">
@@ -134,4 +107,4 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     )
   },
 )
-export default SellTokenDialog
+export default SellInscriptionDialog
