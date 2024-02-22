@@ -23,7 +23,6 @@ enum Step {
   Purchase,
 }
 
-// @todo add fee breakdown details
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   { buyType, listingHash: listingHashProp, resultLink },
   ref,
