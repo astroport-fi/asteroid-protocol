@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import AtomValue from '~/components/AtomValue'
-import TokenBalance from '~/components/TokenBalance'
+import TokenValue from '~/components/TokenValue'
 import Table from '~/components/table'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
@@ -89,10 +89,11 @@ export default function WalletTokens() {
     columnHelper.accessor('amount', {
       header: 'Amount',
       cell: (info) => (
-        <TokenBalance
+        <TokenValue
           amount={info.getValue()}
           decimals={info.row.original.token.decimals}
           price={info.row.original.token.last_price_base}
+          ticker={info.row.original.token.ticker}
         />
       ),
     }),

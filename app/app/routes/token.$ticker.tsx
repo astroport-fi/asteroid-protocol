@@ -1,27 +1,33 @@
 import { order_by } from '@asteroid-protocol/sdk'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData, useNavigate } from '@remix-run/react'
+import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { PropsWithChildren } from 'react'
 import { Divider } from 'react-daisyui'
-import { NumericFormat } from 'react-number-format'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
-import AtomValue from '~/components/AtomValue'
 import InscriptionImage from '~/components/InscriptionImage'
+import MintToken from '~/components/MintToken'
+import { TokenActions } from '~/components/TokenActions'
+import TokenBalance from '~/components/TokenBalance'
+import Tokenomics from '~/components/Tokenomics'
 import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
-import { useRootContext } from '~/context/root'
 import useSorting from '~/hooks/useSorting'
-import { AsteroidService, TokenDetail, TokenHolder } from '~/services/asteroid'
+import {
+  AsteroidService,
+  TokenDetail,
+  TokenHolder,
+  TokenTypeWithHolder,
+} from '~/services/asteroid'
+import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
-import { round2 } from '~/utils/math'
-import { getDecimalValue, getSupplyTitle } from '~/utils/number'
+import { getDecimalValue } from '~/utils/number'
 import { parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -32,8 +38,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
+  const address = await getAddress(request)
+
   const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker, true)
+  const token = await asteroidService.getToken(params.ticker, true, address)
 
   if (!token) {
     throw new Response(null, {
@@ -55,7 +63,13 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   return json({ token, holders })
 }
 
-function TokenDetailComponent({ token }: { token: TokenDetail }) {
+function TokenDetailComponent({
+  token,
+}: {
+  token: TokenTypeWithHolder<TokenDetail>
+}) {
+  const amount = token.token_holders?.[0]?.amount
+
   return (
     <div className="flex flex-row w-full">
       <div className="flex flex-1 flex-col px-16 items-center">
@@ -67,7 +81,28 @@ function TokenDetailComponent({ token }: { token: TokenDetail }) {
         />
       </div>
       <div className="flex flex-col flex-1">
-        <h2 className="font-medium text-lg">{token.name}</h2>
+        <div className="flex flex-row justify-between">
+          <h2 className="font-medium text-2xl">{token.name}</h2>
+          <div className="flex items-center">
+            {token.circulating_supply < token.max_supply && (
+              <>
+                <MintToken
+                  amount={token.per_mint_limit}
+                  ticker={token.ticker}
+                />
+                <Link
+                  to={`/mint/${token.ticker}`}
+                  className="text-primary flex items-center ml-4 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open mint page{' '}
+                  <ArrowTopRightOnSquareIcon className="size-5 ml-1" />
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
         <span className="mt-2">{token.ticker}</span>
         <Divider />
         <div className="flex flex-row w-full">
@@ -89,77 +124,9 @@ function TokenDetailComponent({ token }: { token: TokenDetail }) {
           <strong>Transaction</strong>
           <TxLink txHash={token.transaction.hash} />
         </div>
+        <TokenBalance token={token} amount={amount} className="mt-6" />
+        <TokenActions token={token} amount={amount} />
       </div>
-    </div>
-  )
-}
-
-function Row({ children }: PropsWithChildren) {
-  return <div className="flex flex-row w-full mt-4">{children}</div>
-}
-
-function Column({ children, title }: PropsWithChildren<{ title: string }>) {
-  return (
-    <div className="flex flex-col flex-1">
-      <strong className="mb-1">{title}</strong>
-      {children}
-    </div>
-  )
-}
-
-function Tokenomics({ token }: { token: TokenDetail }) {
-  const {
-    status: { baseTokenUsd },
-  } = useRootContext()
-  const now = new Date().getTime() / 1000
-  const tokenIsLaunched = now > token.launch_timestamp
-
-  return (
-    <div>
-      <Row>
-        <Column title="Max supply">
-          <NumericFormat
-            displayType="text"
-            thousandSeparator
-            value={getDecimalValue(token.max_supply, token.decimals)}
-          />
-        </Column>
-        <Column title="Circulating">
-          <span>
-            {getSupplyTitle(getDecimalValue(token.max_supply, token.decimals))}{' '}
-            ({round2((token.circulating_supply / token.max_supply) * 100)}%)
-          </span>
-        </Column>
-      </Row>
-      <Row>
-        <Column title="Price">
-          <AtomValue value={token.last_price_base} />
-        </Column>
-        <Column title="Market cap">
-          <NumericFormat
-            displayType="text"
-            thousandSeparator
-            prefix="$"
-            value={
-              getDecimalValue(token.circulating_supply, token.decimals) *
-              (baseTokenUsd *
-                getDecimalValue(token.last_price_base, token.decimals))
-            }
-          />
-        </Column>
-      </Row>
-      <Row>
-        <Column title="Limit per mint">
-          <NumericFormat
-            displayType="text"
-            thousandSeparator
-            value={getDecimalValue(token.per_mint_limit, token.decimals)}
-          />
-        </Column>
-        <Column title={tokenIsLaunched ? 'Launched at' : 'Launching'}>
-          <span>{format(token.launch_timestamp, DATETIME_FORMAT)}</span>
-        </Column>
-      </Row>
     </div>
   )
 }
@@ -220,7 +187,7 @@ export default function TokenPage() {
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Tokenomics</h2>
       <Divider />
-      <Tokenomics token={data.token} />
+      <Tokenomics token={data.token} showPrice />
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Holders</h2>
       <Divider />

@@ -1,41 +1,24 @@
-import { NumericFormat } from 'react-number-format'
-import { useRootContext } from '~/context/root'
-import { getDecimalValue } from '~/utils/number'
+import { twMerge } from 'tailwind-merge'
+import { Token } from '~/services/asteroid'
+import TokenValue from './TokenValue'
 
-export default function TokenBalance({
-  amount,
-  decimals,
-  price,
-}: {
-  amount: number
-  decimals: number
-  price: number
-}) {
-  const {
-    status: { baseTokenUsd },
-  } = useRootContext()
+interface Props {
+  token: Token
+  amount?: number
+  className?: string
+}
 
+export default function TokenBalance({ token, amount, className }: Props) {
   return (
-    <span>
-      <NumericFormat
-        className="mr-1"
-        displayType="text"
-        thousandSeparator
-        value={getDecimalValue(amount, decimals)}
+    <div className={twMerge('flex flex-col', className)}>
+      <strong>Your balance</strong>
+      <TokenValue
+        className="mt-0"
+        amount={amount ?? 0}
+        decimals={token.decimals}
+        price={token.last_price_base}
+        ticker={token.ticker}
       />
-      (
-      <NumericFormat
-        displayType="text"
-        thousandSeparator
-        prefix="$"
-        decimalScale={6}
-        value={
-          (((amount / Math.pow(10, decimals)) * price) /
-            Math.pow(10, decimals)) *
-          baseTokenUsd
-        }
-      />
-      )
-    </span>
+    </div>
   )
 }

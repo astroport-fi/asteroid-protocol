@@ -27,6 +27,7 @@ import {
   CFT20MarketplaceListing,
   Token,
 } from '~/services/asteroid'
+import { getAddress } from '~/utils/cookies'
 import { getDateAgo } from '~/utils/date'
 import { round1 } from '~/utils/math'
 import { getDecimalValue } from '~/utils/number'
@@ -48,8 +49,9 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     order_by.asc,
   )
 
+  const address = await getAddress(request)
   const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker)
+  const token = await asteroidService.getToken(params.ticker, false, address)
 
   if (!token) {
     throw new Response(null, {
@@ -227,6 +229,7 @@ function ListingsTable({
               </Button>
             )
           case ListingState.Buy:
+            // @todo handle this button
             return (
               <Button
                 color="accent"
@@ -318,6 +321,7 @@ function Stats({ token }: { token: Token }) {
 export default function MarketPage() {
   const data = useLoaderData<typeof loader>()
   const { dialogRef, handleShow } = useDialog()
+  const amount = data.token.token_holders?.[0]?.amount
 
   return (
     <div>
@@ -331,7 +335,11 @@ export default function MarketPage() {
           <Button color="primary" size="sm" onClick={() => handleShow()}>
             Sell {data.token.ticker} tokens
           </Button>
-          <SellTokenDialog ref={dialogRef} token={data.token} />
+          <SellTokenDialog
+            ref={dialogRef}
+            ticker={data.token.ticker}
+            tokenAmount={amount ?? 0}
+          />
         </div>
         <Stats token={data.token} />
       </div>

@@ -31,6 +31,7 @@ const TransferTokenDialog = forwardRef<HTMLDialogElement, Props>(
     } = useForm<FormData>({
       defaultValues: {
         amount: 10,
+        destination: '',
       },
     })
     const destination = watch('destination')
@@ -69,23 +70,20 @@ const TransferTokenDialog = forwardRef<HTMLDialogElement, Props>(
         </Modal.Header>
         <Modal.Body>
           <p>Transfers are final and can&apos;t be cancelled</p>
-          <Form onSubmit={onSubmit} className="flex flex-col items-center">
-            <div className="flex flex-row mt-8">
-              <NumericInput
-                control={control}
-                name="amount"
-                error={errors.amount}
-                title="Amount to sell"
-              />
-              <CosmosAddressInput
-                register={register}
-                name="destination"
-                error={errors.destination}
-                title="Destination address"
-                value={destination}
-                className="mt-6"
-              />
-            </div>
+          <Form onSubmit={onSubmit} className="flex flex-col items-center mt-6">
+            <NumericInput
+              control={control}
+              name="amount"
+              error={errors.amount}
+              title="Amount to transfer"
+            />
+            <CosmosAddressInput
+              register={register}
+              name="destination"
+              error={errors.destination}
+              title="Destination address"
+              value={destination}
+            />
 
             <Button color="primary" type="submit" className="mt-4">
               Send now

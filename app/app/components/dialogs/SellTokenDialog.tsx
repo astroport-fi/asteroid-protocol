@@ -7,12 +7,13 @@ import { MIN_DEPOSIT_PERCENT, TIMEOUT_BLOCKS } from '~/constants'
 import useDialog from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
-import { Token } from '~/services/asteroid'
+import { getDecimalValue } from '~/utils/number'
 import NumericInput from '../form/NumericInput'
 import TxDialog from './TxDialog'
 
 interface Props {
-  token: Token
+  ticker: string
+  tokenAmount: number
 }
 
 type FormData = {
@@ -21,7 +22,7 @@ type FormData = {
 }
 
 const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
-  function SellTokenDialog({ token }, ref) {
+  function SellTokenDialog({ ticker, tokenAmount }, ref) {
     // form
     const {
       handleSubmit,
@@ -36,6 +37,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     })
     const amount = watch('amount')
     const ppt = watch('ppt')
+    const notEnoughTokens = amount * 10e5 > tokenAmount
 
     const operations = useMarketplaceOperations()
     const fRef = useForwardRef(ref)
@@ -53,7 +55,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
       }
 
       const txInscription = operations.listCFT20(
-        token.ticker,
+        ticker,
         data.amount,
         data.ppt,
         MIN_DEPOSIT_PERCENT,
@@ -69,7 +71,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     return (
       <Modal ref={ref}>
         <Modal.Header className="text-center">
-          List {token.ticker} for sale
+          List {ticker} for sale
         </Modal.Header>
         <Modal.Body>
           <p>This transaction will list your tokens for sale</p>
@@ -99,20 +101,41 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 isFloat
               />
             </div>
-            <Alert className="border border-info">
-              <span>
-                You will be listing your tokens for a total of{' '}
-                <NumericFormat
-                  value={amount * ppt}
-                  suffix=" ATOM"
-                  thousandSeparator
-                  displayType="text"
-                  decimalScale={6}
-                />
-              </span>
-            </Alert>
+            {notEnoughTokens ? (
+              <Alert className="border border-warning">
+                <span>
+                  You can&apos;t list more tokens than you have available. Your
+                  balance is{' '}
+                  <NumericFormat
+                    value={getDecimalValue(tokenAmount, 6)}
+                    suffix={` ${ticker}`}
+                    thousandSeparator
+                    displayType="text"
+                    decimalScale={6}
+                  />
+                </span>
+              </Alert>
+            ) : (
+              <Alert className="border border-info">
+                <span>
+                  You will be listing your tokens for a total of{' '}
+                  <NumericFormat
+                    value={amount * ppt}
+                    suffix=" ATOM"
+                    thousandSeparator
+                    displayType="text"
+                    decimalScale={6}
+                  />
+                </span>
+              </Alert>
+            )}
 
-            <Button color="primary" type="submit" className="mt-4">
+            <Button
+              color="primary"
+              type="submit"
+              className="mt-4"
+              disabled={notEnoughTokens}
+            >
               Confirm and list
             </Button>
           </Form>
@@ -120,7 +143,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={txInscription}
             ref={dialogRef}
             resultCTA="Back to market"
-            resultLink={`/market/${token.ticker}`}
+            resultLink={`/market/${ticker}`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">

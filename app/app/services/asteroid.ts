@@ -45,6 +45,7 @@ const tokenDetailSelector = Selector('token')({
   per_mint_limit: true,
   launch_timestamp: true,
   last_price_base: true,
+  volume_24_base: true,
   content_path: true,
   content_size_bytes: true,
   circulating_supply: true,
@@ -57,7 +58,13 @@ export type TokenDetail = InputType<
   ScalarDefinition
 >
 
-export type TokenType<T> = T extends true ? TokenDetail : Token
+export type TokenTypeWithHolder<T> = T & {
+  token_holders?: (TokenMarketHolder | undefined)[]
+}
+
+export type TokenType<T> = T extends true
+  ? TokenTypeWithHolder<TokenDetail>
+  : TokenTypeWithHolder<Token>
 
 const tokenHoldingSelector = Selector('token_holder')({
   token: tokenSelector,
@@ -388,6 +395,7 @@ export class AsteroidService extends BaseAsteroidService {
   async getToken<T extends boolean = false>(
     ticker: string,
     detail = false as T,
+    address?: string,
   ): Promise<TokenType<T> | undefined> {
     const queryOptions: QueryOptions<'token'> = {
       where: {
@@ -397,17 +405,36 @@ export class AsteroidService extends BaseAsteroidService {
       },
     }
 
+    let selector: ValueTypes['token'] = tokenSelector
+
     if (detail) {
-      const result = await this.query({
-        token: [queryOptions, tokenDetailSelector],
-      })
-      return result.token[0] as TokenType<T>
+      selector = tokenDetailSelector
+    }
+
+    if (address) {
+      selector = {
+        ...selector,
+        token_holders: [
+          {
+            where: {
+              address: {
+                _eq: address,
+              },
+            },
+          },
+          {
+            amount: true,
+          },
+        ],
+      }
     }
 
     const result = await this.query({
-      token: [queryOptions, tokenSelector],
+      token: [queryOptions, selector],
     })
-    return result.token[0] as TokenType<T>
+    return result.token[0] as TokenType<T> & {
+      token_holders?: (TokenMarketHolder | undefined)[]
+    }
   }
 
   async getTokens(
@@ -978,20 +1005,20 @@ export class AsteroidService extends BaseAsteroidService {
     return result.inscription_trade_history
   }
 
-  inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
-    return this.ws<'subscription', ScalarDefinition>('subscription')({
-      inscription_trade_history: [
-        {
-          offset,
-          limit,
-          order_by: [
-            {
-              date_created: order_by.desc,
-            },
-          ],
-        },
-        inscriptionTradeHistorySelector,
-      ],
-    })
-  }
+  // inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
+  //   return this.ws<'subscription', ScalarDefinition>('subscription')({
+  //     inscription_trade_history: [
+  //       {
+  //         offset,
+  //         limit,
+  //         order_by: [
+  //           {
+  //             date_created: order_by.desc,
+  //           },
+  //         ],
+  //       },
+  //       inscriptionTradeHistorySelector,
+  //     ],
+  //   })
+  // }
 }

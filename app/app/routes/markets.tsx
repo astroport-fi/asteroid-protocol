@@ -6,9 +6,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import AtomValue from '~/components/AtomValue'
+import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import Table from '~/components/table'
+import useDialog from '~/hooks/useDialog'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { AsteroidService, TokenMarket } from '~/services/asteroid'
@@ -52,6 +55,11 @@ export default function MarketsPage() {
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
+  const { dialogRef, handleShow } = useDialog()
+  const [selected, setSelected] = useState<{ ticker: string; amount: number }>({
+    ticker: '',
+    amount: 0,
+  })
 
   const columns = [
     columnHelper.accessor('ticker', {
@@ -87,11 +95,16 @@ export default function MarketsPage() {
         if (!info.getValue()) {
           return ''
         }
-        return value[0]?.amount ? (
+        const amount = value[0]?.amount
+        return amount ? (
           <Button
             color="neutral"
             size="sm"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelected({ ticker: info.row.original.ticker, amount })
+              handleShow()
+            }}
           >
             Sell
           </Button>
@@ -118,9 +131,18 @@ export default function MarketsPage() {
   })
 
   return (
-    <Table
-      table={table}
-      onClick={(tokenSelection) => navigate(`/market/${tokenSelection.ticker}`)}
-    />
+    <>
+      <Table
+        table={table}
+        onClick={(tokenSelection) =>
+          navigate(`/market/${tokenSelection.ticker}`)
+        }
+      />
+      <SellTokenDialog
+        ticker={selected.ticker}
+        tokenAmount={selected.amount}
+        ref={dialogRef}
+      />
+    </>
   )
 }

@@ -1,4 +1,4 @@
-export const DATETIME_FORMAT = 'MMM d yyyy h:m a'
+export const DATETIME_FORMAT = 'MMM d yyyy h:mm a'
 export const DATE_FORMAT = 'MMM d yyyy'
 
 export function getDateAgo(value: Date | string, short = false) {

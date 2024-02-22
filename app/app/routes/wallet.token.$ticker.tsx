@@ -10,6 +10,8 @@ import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
 import Address from '~/components/Address'
 import InscriptionImage from '~/components/InscriptionImage'
+import { TokenActions } from '~/components/TokenActions'
+import TokenBalance from '~/components/TokenBalance'
 import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
 import useSorting from '~/hooks/useSorting'
@@ -17,6 +19,7 @@ import {
   AsteroidService,
   Token,
   TokenAddressHistory,
+  TokenTypeWithHolder,
 } from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
@@ -31,8 +34,13 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
+  let address = params.address
+  if (!address) {
+    address = await getAddress(request)
+  }
+
   const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker)
+  const token = await asteroidService.getToken(params.ticker, false, address)
 
   if (!token) {
     throw new Response(null, {
@@ -41,10 +49,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
-  let address = params.address
-  if (!address) {
-    address = await getAddress(request)
-  }
   if (!address) {
     return json({ token, history: [] })
   }
@@ -65,7 +69,9 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   return json({ token, history })
 }
-function TokenDetail({ token }: { token: Token }) {
+function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
+  const amount = token.token_holders?.[0]?.amount
+
   return (
     <div className="flex flex-row w-full">
       <div className="flex flex-1 flex-col px-16 items-center">
@@ -73,12 +79,18 @@ function TokenDetail({ token }: { token: Token }) {
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl w-2/3"
+          className="rounded-xl max-w-60"
         />
       </div>
       <div className="flex flex-col flex-1">
-        <h2 className="font-medium text-lg">{token.name}</h2>
-        <span className="mt-2">{token.ticker}</span>
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col">
+            <h2 className="font-medium text-lg">{token.name}</h2>
+            <span className="mt-1">{token.ticker}</span>
+          </div>
+          <TokenActions token={token} amount={amount} />
+        </div>
+        <TokenBalance token={token} amount={amount} className="mt-2" />
       </div>
     </div>
   )

@@ -15,7 +15,6 @@ export default function TxLink({
     <Link
       href={`${txExplorer}${txHash}`}
       target="_blank"
-      rel="noreferrer"
       color="primary"
       className={className}
     >
