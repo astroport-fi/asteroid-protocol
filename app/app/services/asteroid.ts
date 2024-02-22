@@ -103,19 +103,45 @@ const aggregateCountSelector = Selector('marketplace_cft20_detail_aggregate')({
   },
 })
 
+const transactionHashSelector = Selector('transaction')({
+  hash: true,
+})
+
+export type TransactionHash = InputType<
+  GraphQLTypes['transaction'],
+  typeof transactionHashSelector,
+  ScalarDefinition
+>
+
+const marketplaceListingSelector = Selector('marketplace_listing')({
+  seller_address: true,
+  total: true,
+  depositor_address: true,
+  is_deposited: true,
+  depositor_timedout_block: true,
+  deposit_total: true,
+  transaction: transactionHashSelector,
+})
+
+export type MarketplaceListing = InputType<
+  GraphQLTypes['marketplace_listing'],
+  typeof cft20ListingSelector,
+  ScalarDefinition
+>
+
+const inscriptionListingSelector = Selector('marketplace_inscription_detail')({
+  marketplace_listing: marketplaceListingSelector,
+})
+
+export type InscriptionMarketplaceListing = InputType<
+  GraphQLTypes['marketplace_inscription_detail'],
+  typeof inscriptionListingSelector,
+  ScalarDefinition
+>
+
 const cft20ListingSelector = Selector('marketplace_cft20_detail')({
   id: true,
-  marketplace_listing: {
-    seller_address: true,
-    total: true,
-    depositor_address: true,
-    is_deposited: true,
-    depositor_timedout_block: true,
-    deposit_total: true,
-    transaction: {
-      hash: true,
-    },
-  },
+  marketplace_listing: marketplaceListingSelector,
   ppt: true,
   amount: true,
   date_created: true,
@@ -172,6 +198,55 @@ export type CFT20MarketplaceListing = InputType<
 //   ScalarDefinition
 // >
 
+//// TOKEN MARKET
+
+const tokenMarketTokenSelector = Selector('token')({
+  id: true,
+  content_path: true,
+  name: true,
+  ticker: true,
+  decimals: true,
+  last_price_base: true,
+  volume_24_base: true,
+})
+
+const tokenMarketHolderSelector = Selector('token_holder')({
+  amount: true,
+})
+
+const marketplaceCft20DetailsAggregateSelector = Selector(
+  'marketplace_cft20_detail_aggregate',
+)({
+  aggregate: {
+    count: [{}, true],
+  },
+})
+
+export type TokenMarketToken = InputType<
+  GraphQLTypes['token'],
+  typeof tokenMarketTokenSelector,
+  ScalarDefinition
+>
+
+export type TokenMarketHolder = InputType<
+  GraphQLTypes['token_holder'],
+  typeof tokenMarketHolderSelector,
+  ScalarDefinition
+>
+
+export type MarketplaceCFT20DetailsAggregate = InputType<
+  GraphQLTypes['marketplace_cft20_detail_aggregate'],
+  typeof marketplaceCft20DetailsAggregateSelector,
+  ScalarDefinition
+>
+
+export type TokenMarket = TokenMarketToken & {
+  marketplace_cft20_details_aggregate: MarketplaceCFT20DetailsAggregate
+  token_holders: (TokenMarketHolder | undefined)[]
+}
+
+//// INSCRIPTION
+
 const inscriptionSelector = Selector('inscription')({
   id: true,
   transaction: {
@@ -226,21 +301,25 @@ export type Inscription = InputType<
   ScalarDefinition
 >
 
-// const inscriptionTradeHistorySelector = Selector('inscription_trade_history')({
-//   id: true,
-//   amount_quote: true,
-//   total_usd: true,
-//   seller_address: true,
-//   buyer_address: true,
-//   date_created: true,
-//   inscription: inscriptionSelector,
-// })
+export type InscriptionWithMarket = Inscription & {
+  marketplace_inscription_details: (InscriptionMarketplaceListing | undefined)[]
+}
 
-// export type InscriptionTradeHistory = InputType<
-//   GraphQLTypes['inscription_trade_history'],
-//   typeof inscriptionTradeHistorySelector,
-//   ScalarDefinition
-// >
+const inscriptionTradeHistorySelector = Selector('inscription_trade_history')({
+  id: true,
+  amount_quote: true,
+  total_usd: true,
+  seller_address: true,
+  buyer_address: true,
+  date_created: true,
+  inscription: inscriptionSelector,
+})
+
+export type InscriptionTradeHistory = InputType<
+  GraphQLTypes['inscription_trade_history'],
+  typeof inscriptionTradeHistorySelector,
+  ScalarDefinition
+>
 
 const inscriptionHistorySelector = Selector('inscription_history')({
   id: true,
@@ -471,7 +550,7 @@ export class AsteroidService extends BaseAsteroidService {
       userAddress?: string
     } = {},
     orderBy?: ValueTypes['token_order_by'],
-  ) {
+  ): Promise<TokenMarket[]> {
     if (!orderBy) {
       orderBy = {
         id: order_by.desc,
@@ -732,14 +811,15 @@ export class AsteroidService extends BaseAsteroidService {
       onlySingle?: boolean
     } = {},
     orderBy?: ValueTypes['inscription_order_by'],
-  ): Promise<Inscription[]> {
+  ): Promise<InscriptionWithMarket[]> {
     if (!orderBy) {
       orderBy = {
-        date_created: order_by.desc,
+        // date_created: order_by.desc,
       }
     }
 
-    const queryWhere: ValueTypes['inscription_bool_exp'] | undefined = {}
+    const queryWhere: ValueTypes['inscription_market_bool_exp'] | undefined = {}
+
     // if (where.collectionId) {
     //   queryWhere.collection_id = {
     //     _eq: where.collectionId,
@@ -749,25 +829,41 @@ export class AsteroidService extends BaseAsteroidService {
     //     _is_null: true,
     //   }
     // }
-
     if (where.currentOwner) {
-      queryWhere.current_owner = {
-        _eq: where.currentOwner,
+      queryWhere.inscription = {
+        current_owner: {
+          _eq: where.currentOwner,
+        },
       }
     }
 
     const result = await this.query({
-      inscription: [
+      inscription_market: [
         {
           offset,
           limit,
-          order_by: [orderBy],
+          // order_by: [orderBy],
           where: queryWhere,
         },
-        inscriptionSelector,
+        {
+          inscription: {
+            ...inscriptionSelector,
+            marketplace_inscription_details: [
+              {
+                where: {
+                  marketplace_listing: {
+                    is_cancelled: { _eq: false },
+                    is_filled: { _eq: false },
+                  },
+                },
+              },
+              inscriptionListingSelector,
+            ],
+          },
+        },
       ],
     })
-    return result.inscription
+    return result.inscription_market.map((i) => i.inscription!)
   }
 
   async getInscriptionHistory(
@@ -861,41 +957,41 @@ export class AsteroidService extends BaseAsteroidService {
     return transaction.status_message
   }
 
-  // async getInscriptionTradeHistory(
-  //   offset = 0,
-  //   limit = 500,
-  // ): Promise<InscriptionTradeHistory[]> {
-  //   const result = await this.query({
-  //     inscription_trade_history: [
-  //       {
-  //         offset,
-  //         limit,
-  //         order_by: [
-  //           {
-  //             date_created: order_by.desc,
-  //           },
-  //         ],
-  //       },
-  //       inscriptionTradeHistorySelector,
-  //     ],
-  //   })
-  //   return result.inscription_trade_history
-  // }
+  async getInscriptionTradeHistory(
+    offset = 0,
+    limit = 500,
+  ): Promise<InscriptionTradeHistory[]> {
+    const result = await this.query({
+      inscription_trade_history: [
+        {
+          offset,
+          limit,
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+        },
+        inscriptionTradeHistorySelector,
+      ],
+    })
+    return result.inscription_trade_history
+  }
 
-  // inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
-  //   return this.ws<'subscription', ScalarDefinition>('subscription')({
-  //     inscription_trade_history: [
-  //       {
-  //         offset,
-  //         limit,
-  //         order_by: [
-  //           {
-  //             date_created: order_by.desc,
-  //           },
-  //         ],
-  //       },
-  //       inscriptionTradeHistorySelector,
-  //     ],
-  //   })
-  // }
+  inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
+    return this.ws<'subscription', ScalarDefinition>('subscription')({
+      inscription_trade_history: [
+        {
+          offset,
+          limit,
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+        },
+        inscriptionTradeHistorySelector,
+      ],
+    })
+  }
 }

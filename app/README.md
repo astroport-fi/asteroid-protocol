@@ -32,10 +32,10 @@ npm run dev
 - [ ] Footer - update data from websocket
 - [ ] Header - add logo
 - [ ] Inscription viewer
-- [ ] Improve tx dialog
+- [x] Improve tx dialog
 - [x] Token logo validation
 - [ ] Make token logo optional in create token form
-- [ ] CFT-20 Marketplace
+- [x] CFT-20 Marketplace
 - [ ] Inscriptions Marketplace
 - [ ] Add background
 - [ ] Add breadcrumbs navigation
@@ -44,5 +44,6 @@ npm run dev
 - [ ] Lottie animations
 - [ ] Index page
 - [ ] Font
-- [ ] Reuse client - useMemo
+- [x] Reuse client - useMemo
 - [ ] Sell dialog check balance
+- [ ] check @todos

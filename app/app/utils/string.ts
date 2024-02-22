@@ -9,6 +9,10 @@ export function getEllipsisTxt(hash: string = '', start = 6, end = 6) {
   )}`
 }
 
+export function shortAddress(value: string, start = 6, len = 6) {
+  return value.substring(start, start + len)
+}
+
 export function getMimeTitle(value: string) {
   // Cover all image types
   if (value.startsWith('image/')) {

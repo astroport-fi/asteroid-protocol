@@ -11,10 +11,9 @@ import AtomValue from '~/components/AtomValue'
 import Table from '~/components/table'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
-import { AsteroidService } from '~/services/asteroid'
+import { AsteroidService, TokenMarket } from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { parsePagination, parseSorting } from '~/utils/pagination'
-import type { ArrayElement } from '~/utils/types'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -49,9 +48,7 @@ const DEFAULT_SORT = { id: 'id', desc: true }
 
 export default function MarketsPage() {
   const data = useLoaderData<typeof loader>()
-  type Markets = typeof data
-  type Market = ArrayElement<Markets['tokens']>
-  const columnHelper = createColumnHelper<Market>()
+  const columnHelper = createColumnHelper<TokenMarket>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
@@ -105,7 +102,7 @@ export default function MarketsPage() {
     }),
   ]
 
-  const table = useReactTable<Market>({
+  const table = useReactTable<TokenMarket>({
     columns,
     data: data.tokens,
     pageCount: data.pages,

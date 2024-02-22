@@ -1,4 +1,5 @@
 import { EyeSlashIcon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { getMimeTitle } from '~/utils/string'
 
@@ -7,24 +8,25 @@ export default function InscriptionImage({
   src,
   mime,
   className,
+  min,
 }: {
   isExplicit?: boolean
   className?: string
   src: string
   mime: string
+  min?: boolean
 }) {
   const mimeTitle = getMimeTitle(mime)
+  const noImageClass = clsx(
+    'flex items-center justify-center w-full h-full uppercase',
+    { ['bg-base-200 p-16']: !min },
+  )
 
   if (isExplicit) {
     return (
-      <span
-        className={twMerge(
-          'flex items-center justify-center w-full h-full bg-base-200 uppercase',
-          className,
-        )}
-      >
+      <span className={twMerge(noImageClass, className)}>
         <EyeSlashIcon className="size-6" />
-        <span className="ml-2">Explicit content</span>
+        {!min && <span className="ml-2">Explicit content</span>}
       </span>
     )
   }
@@ -39,14 +41,5 @@ export default function InscriptionImage({
     )
   }
 
-  return (
-    <span
-      className={twMerge(
-        'flex items-center justify-center w-full h-full bg-base-200 uppercase',
-        className,
-      )}
-    >
-      {mimeTitle}
-    </span>
-  )
+  return <span className={twMerge(noImageClass, className)}>{mimeTitle}</span>
 }
