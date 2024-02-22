@@ -25,7 +25,7 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
       register,
       watch,
       formState: { errors },
-    } = useForm<FormData>()
+    } = useForm<FormData>({ defaultValues: { destination: '' } })
     const destination = watch('destination')
 
     const operations = useInscriptionOperations()
@@ -62,16 +62,14 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
         <Modal.Body>
           <p>Transfers are final and can&apos;t be cancelled</p>
           <Form onSubmit={onSubmit} className="flex flex-col items-center">
-            <div className="flex flex-row mt-8">
-              <CosmosAddressInput
-                register={register}
-                name="destination"
-                error={errors.destination}
-                title="Destination address"
-                value={destination}
-                className="mt-6"
-              />
-            </div>
+            <CosmosAddressInput
+              register={register}
+              name="destination"
+              error={errors.destination}
+              title="Destination address"
+              value={destination}
+              className="mt-6"
+            />
 
             <Button color="primary" type="submit" className="mt-4">
               Send now
