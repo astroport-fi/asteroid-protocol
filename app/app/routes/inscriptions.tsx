@@ -1,13 +1,13 @@
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
-import { Button, Divider, Dropdown } from 'react-daisyui'
+import { Divider, Dropdown } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import InscriptionImage from '~/components/InscriptionImage'
 import { Inscriptions } from '~/components/Inscriptions'
 import BuyInscriptionDialog from '~/components/dialogs/BuyInscriptionDialog'
+import Select, { DropdownItem } from '~/components/form/Select'
 import useDialog from '~/hooks/useDialog'
 import {
   AsteroidService,
@@ -32,36 +32,6 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   })
 }
 
-interface DropdownItem {
-  label: string
-  value: string
-}
-
-function DropdownSelect({
-  items,
-  selected,
-  onSelect,
-}: {
-  items: DropdownItem[]
-  selected: DropdownItem
-  onSelect: (item: DropdownItem) => void
-}) {
-  return (
-    <Dropdown>
-      <Dropdown.Toggle button={false} className="flex flex-row">
-        {selected.label} <ChevronDownIcon className="size-5" />
-      </Dropdown.Toggle>
-      <Dropdown.Menu className="w-52">
-        {items.map((item) => (
-          <Dropdown.Item onClick={() => onSelect(item)} key={item.value}>
-            {item.label}
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
-  )
-}
-
 function Filter() {
   const sortItems: DropdownItem[] = [
     { label: 'Lowest price', value: 'lowest_price' },
@@ -71,33 +41,46 @@ function Filter() {
     { label: 'Highest ID', value: 'highest_id' },
   ]
 
+  const priceItems: DropdownItem[] = [
+    { label: '< 0.1 ATOM', value: '0-100000' },
+    { label: '0.1 - 1 ATOM', value: '100000-1000000' },
+    { label: '1 - 5 ATOM', value: '1000000-5000000' },
+    { label: '5 - 10 ATOM', value: '5000000-10000000' },
+    { label: '10 - 100 ATOM', value: '10000000-100000000' },
+    { label: '100 ATOM+', value: '100000000-10000000000' },
+  ]
+
+  const rangeItems: DropdownItem[] = [
+    { value: 'all', label: 'All' },
+    { value: '100', label: 'Sub 100' },
+    { value: '1000', label: 'Sub 1 000' },
+    { value: '10000', label: 'Sub 10 000' },
+    { value: '50000', label: 'Sub 50 000' },
+  ]
+
+  const [sort, setSort] = useState<DropdownItem>(sortItems[0])
+  const [price, setPrice] = useState<DropdownItem>(priceItems[0])
+  const [range, setRange] = useState<DropdownItem>(rangeItems[0])
+
   return (
     <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
       <div className="flex flex-col items-center absolute py-8">
         <span className="text-gray-500 text-sm uppercase">Sort</span>
-        <DropdownSelect
-          items={sortItems}
-          onSelect={(item) => console.log(item)}
-          selected={sortItems[0]}
-        />
+        <Select items={sortItems} onSelect={setSort} selected={sort} />
         <span className="text-gray-500 text-sm uppercase mt-6">Price</span>
-        <DropdownSelect
-          items={sortItems}
-          onSelect={(item) => console.log(item)}
-          selected={sortItems[0]}
-        />
+        <Select items={priceItems} onSelect={setPrice} selected={price} />
         <span className="text-gray-500 text-sm uppercase mt-6">
           Inscription range
         </span>
-        <DropdownSelect
-          items={sortItems}
-          onSelect={(item) => console.log(item)}
-          selected={sortItems[0]}
-        />
+        <Select items={rangeItems} onSelect={setRange} selected={range} />
 
-        <Button className="mt-8" color="accent">
+        <Link
+          to="/wallet/inscriptions"
+          className="btn btn-primary mt-8"
+          color="accent"
+        >
           List inscription
-        </Button>
+        </Link>
       </div>
     </div>
   )

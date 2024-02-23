@@ -21,8 +21,8 @@ npm run dev
 
 - [ ] Handle empty states in wallet
 - [ ] Wallet disconnected state
-- [ ] Inscription detail actions
-- [ ] Token detail actions
+- [x] Inscription detail actions
+- [x] Token detail actions
 - [ ] OG tags (like inscription)
 - [x] Handler sorting in loader for tables, for example token table in wallet
 - [ ] Stargaze in Address component
@@ -30,6 +30,7 @@ npm run dev
 - [x] Number formatting
 - [ ] Token explicit
 - [ ] Footer - update data from websocket
+- [ ] Updates from websocket on necessary places
 - [ ] Header - add logo
 - [ ] Inscription viewer
 - [x] Improve tx dialog
@@ -47,3 +48,6 @@ npm run dev
 - [x] Reuse client - useMemo
 - [ ] Sell dialog check balance
 - [ ] check @todos
+- [x] token mint page
+- [ ] Your listings in wallet (both inscriptions and tokens)
+- [ ] Latest transactions clickable
