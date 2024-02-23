@@ -18,15 +18,15 @@ export default function InscriptionImage({
 }) {
   const mimeTitle = getMimeTitle(mime)
   const noImageClass = clsx(
-    'flex items-center justify-center w-full h-full uppercase',
-    { ['bg-base-200 p-16']: !min },
+    'flex flex-col items-center justify-center w-full h-full uppercase',
+    { ['bg-base-200 px-8 py-16']: !min },
   )
 
   if (isExplicit) {
     return (
       <span className={twMerge(noImageClass, className)}>
         <EyeSlashIcon className="size-6" />
-        {!min && <span className="ml-2">Explicit content</span>}
+        {!min && <span className="mt-2">Explicit content</span>}
       </span>
     )
   }

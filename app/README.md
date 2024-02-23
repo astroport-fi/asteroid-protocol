@@ -50,4 +50,4 @@ npm run dev
 - [ ] check @todos
 - [x] token mint page
 - [ ] Your listings in wallet (both inscriptions and tokens)
-- [ ] Latest transactions clickable
+- [x] Latest transactions clickable

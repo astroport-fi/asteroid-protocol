@@ -1,8 +1,8 @@
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import { useState } from 'react'
-import { Divider, Dropdown } from 'react-daisyui'
+import { Button, Divider, Dropdown } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import InscriptionImage from '~/components/InscriptionImage'
 import { Inscriptions } from '~/components/Inscriptions'
@@ -91,11 +91,13 @@ function LatestTransactions({
 }: {
   transactions: InscriptionTradeHistory[]
 }) {
+  const navigate = useNavigate()
+
   return (
     <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex">
-      <div className="fixed py-8 flex flex-col px-4 w-[-webkit-fill-available]">
+      <div className="fixed py-8 flex flex-col pl-2 w-[-webkit-fill-available]">
         <div className="text-center">Latest transactions</div>
-        <div className="flex flex-row justify-between mt-4 uppercase text-gray-500">
+        <div className="flex flex-row justify-between mt-4 uppercase text-gray-500 px-4">
           <span className="p-2 shrink-0">
             <ClockIcon className="size-5" />
           </span>
@@ -107,7 +109,14 @@ function LatestTransactions({
         <Divider className="my-1" />
         <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
           {transactions.map((tx) => (
-            <div key={tx.id} className="flex flex-row justify-between w-full">
+            <Button
+              onClick={() => {
+                navigate(`/inscription/${tx.inscription.transaction.hash}`)
+              }}
+              key={tx.id}
+              color="ghost"
+              className="flex flex-row justify-between w-full rounded-none"
+            >
               <span className="p-2 shrink-0">
                 {getDateAgo(tx.date_created, true)}
               </span>
@@ -127,13 +136,21 @@ function LatestTransactions({
                 suffix=" ATOM"
                 value={getDecimalValue(tx.amount_quote, 6)}
               />
-              <span className="p-2 shrink-0">
+              <Link
+                to={`/wallet/${tx.seller_address}`}
+                className="p-2 shrink-0 hover:text-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {shortAddress(tx.seller_address)}
-              </span>
-              <span className="p-2 shrink-0">
+              </Link>
+              <Link
+                to={`/wallet/${tx.buyer_address}`}
+                className="p-2 shrink-0 hover:text-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {shortAddress(tx.buyer_address!)}
-              </span>
-            </div>
+              </Link>
+            </Button>
           ))}
         </div>
       </div>
