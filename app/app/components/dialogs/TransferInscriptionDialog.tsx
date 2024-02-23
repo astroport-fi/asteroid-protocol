@@ -79,7 +79,7 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={txInscription}
             ref={dialogRef}
             resultCTA="View transaction"
-            resultLink={`/inscription/${inscription.transaction.hash}`}
+            resultlink={`/app/inscription/${inscription.transaction.hash}`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">

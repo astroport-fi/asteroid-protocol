@@ -174,7 +174,7 @@ function TokenHolders({
     <Table
       table={table}
       showPagination={false}
-      onClick={(holder) => navigate(`/wallet/${holder.address}`)}
+      onClick={(holder) => navigate(`/app/wallet/${holder.address}`)}
     />
   )
 }

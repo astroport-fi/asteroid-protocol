@@ -143,7 +143,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={txInscription}
             ref={dialogRef}
             resultCTA="Back to market"
-            resultLink={`/market/${ticker}`}
+            resultlink={`/app/market/${ticker}`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">

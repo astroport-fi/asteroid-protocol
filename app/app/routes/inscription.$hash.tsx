@@ -1,31 +1,14 @@
-import { order_by } from '@asteroid-protocol/sdk'
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
+import { CloudArrowDownIcon, LinkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
-import { format } from 'date-fns'
-import { Divider } from 'react-daisyui'
-import Address from '~/components/Address'
-import AddressChip from '~/components/AddressChip'
-import { InscriptionActions } from '~/components/InscriptionActions'
+import { useEffect, useState } from 'react'
+import { Link as DaisyLink } from 'react-daisyui'
+import Markdown from 'react-markdown'
 import InscriptionImage from '~/components/InscriptionImage'
-import TxLink from '~/components/TxLink'
-import Table from '~/components/table'
-import useAddress from '~/hooks/useAddress'
-import useSorting from '~/hooks/useSorting'
-import {
-  AsteroidService,
-  Inscription,
-  InscriptionHistory,
-} from '~/services/asteroid'
-import { DATETIME_FORMAT } from '~/utils/date'
-import { parseSorting } from '~/utils/pagination'
+import { AsteroidService, Inscription } from '~/services/asteroid'
+import { getMimeTitle } from '~/utils/string'
 
-export async function loader({ context, params, request }: LoaderFunctionArgs) {
+export async function loader({ context, params }: LoaderFunctionArgs) {
   const asteroidService = new AsteroidService(context.env.ASTEROID_API)
 
   if (!params.hash) {
@@ -44,135 +27,87 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
-  const { sort, direction } = parseSorting(
-    new URL(request.url).searchParams,
-    'height',
-    order_by.desc,
-  )
-
-  const history = await asteroidService.getInscriptionHistory(inscription.id, {
-    [sort]: direction,
-  })
-
-  return json({ inscription, history })
+  return json({ inscription })
 }
 
-function InscriptionDetail({ inscription }: { inscription: Inscription }) {
-  const address = useAddress()
+function RemoteMarkdown({ src, isJson }: { src: string; isJson?: boolean }) {
+  const [data, setData] = useState<string | null>(null)
+  useEffect(() => {
+    fetch(src)
+      .then((res) => res.text())
+      .then((data) => {
+        if (isJson) {
+          setData(`\`\`\`json\n${data}\n\`\`\``)
+        } else {
+          setData(data)
+        }
+      })
+  }, [src, isJson])
+
+  // @todo add loader
 
   return (
-    <div className="flex flex-row w-full">
-      <div className="flex flex-1 flex-col px-16 items-center">
-        <InscriptionImage
-          mime={inscription.mime}
-          src={inscription.content_path}
-          isExplicit={inscription.is_explicit}
-          className="rounded-xl w-2/3"
-        />
-        <Link
-          to={`/viewer/${inscription.transaction.hash}`}
-          className="btn btn-link"
-        >
-          Open in viewer <ArrowTopRightOnSquareIcon className="size-5" />
-        </Link>
-      </div>
-      <div className="flex flex-col flex-1">
-        <div className="flex items-center justify-between">
-          <h2 className="font-medium text-lg">{inscription.name}</h2>
-          {address == inscription.current_owner && (
-            <InscriptionActions inscription={inscription} />
-          )}
-        </div>
-        <p className="whitespace-pre-wrap">{inscription.description}</p>
-        <Divider />
-        <div className="flex flex-row w-full">
-          <div className="flex flex-col flex-1">
-            <strong className="mb-1">Created by</strong>
-            <AddressChip address={inscription.creator} />
-          </div>
-          <div className="flex flex-col flex-1">
-            <strong className="mb-1">Owned by</strong>
-            <AddressChip address={inscription.current_owner} />
-          </div>
-        </div>
-
-        <div className="flex flex-col mt-6">
-          <strong>Created on</strong>
-          <span>{format(inscription.date_created, DATETIME_FORMAT)}</span>
-          <span>Block {inscription.height}</span>
-        </div>
-        <div className="flex flex-col mt-6">
-          <strong>Transaction</strong>
-          <TxLink txHash={inscription.transaction.hash} />
-        </div>
-      </div>
-    </div>
+    <Markdown className="prose bg-base-200 p-8 rounded max-w-full">
+      {data}
+    </Markdown>
   )
 }
 
-const DEFAULT_SORT = { id: 'height', desc: true }
+function InscriptionContent({ inscription }: { inscription: Inscription }) {
+  const mimeTitle = getMimeTitle(inscription.mime)
 
-function InscriptionHistoryComponent({
-  history,
-}: {
-  history: InscriptionHistory[]
-}) {
-  const columnHelper = createColumnHelper<InscriptionHistory>()
-  const [sorting, setSorting] = useSorting(DEFAULT_SORT)
+  if (mimeTitle === 'Markdown') {
+    return <RemoteMarkdown src={inscription.content_path} />
+  }
 
-  const columns = [
-    columnHelper.accessor('date_created', {
-      header: 'Date',
-      cell: (info) => format(info.getValue(), DATETIME_FORMAT),
-    }),
-    columnHelper.accessor('height', {
-      header: 'Block',
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor('action', {
-      header: 'Action',
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor('sender', {
-      header: 'Sender',
-      cell: (info) => <Address address={info.getValue()} />,
-    }),
-    columnHelper.accessor('receiver', {
-      header: 'Receiver',
-      cell: (info) => <Address address={info.getValue() as string} />,
-    }),
-    columnHelper.accessor('transaction.hash', {
-      header: '',
-      enableSorting: false,
-      cell: (info) => (
-        <TxLink txHash={info.getValue()} title="View on Mintscan" />
-      ),
-    }),
-  ]
+  if (mimeTitle === 'JSON') {
+    return <RemoteMarkdown src={inscription.content_path} isJson />
+  }
 
-  const table = useReactTable<InscriptionHistory>({
-    columns,
-    data: history,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    manualSorting: true,
-  })
+  // @todo text, html, audio, video, not supported
 
-  return <Table table={table} showPagination={false} />
+  return (
+    <InscriptionImage
+      src={inscription.content_path}
+      isExplicit={inscription.is_explicit}
+      mime={inscription.mime}
+      className="object-none rounded"
+    />
+  )
 }
 
 export default function InscriptionPage() {
   const data = useLoaderData<typeof loader>()
+
   return (
-    <div className="flex flex-col">
-      <InscriptionDetail inscription={data.inscription} />
-      <Divider className="mt-8" />
-      <h2 className="font-medium text-lg">Transaction History</h2>
-      <Divider />
-      <InscriptionHistoryComponent history={data.history} />
+    <div className="flex flex-col p-8">
+      <header className="flex flex-row items-center justify-between">
+        <h1 className="text-2xl font-bold flex items-center">
+          Inscription #{data.inscription.id - 1}: {data.inscription.name}
+          <span className="text-sm font-extralight ml-2">
+            {data.inscription.mime}
+          </span>
+        </h1>
+        <div className="flex">
+          <DaisyLink
+            className="flex text-primary"
+            href={data.inscription.content_path}
+          >
+            Download <CloudArrowDownIcon className="w-5 ml-1" />
+          </DaisyLink>
+          <Link
+            className="flex text-primary ml-4 hover:underline"
+            to={`/app/inscription/${data.inscription.transaction.hash}`}
+          >
+            View on Asteroids <LinkIcon className="w-5 ml-1" />
+          </Link>
+        </div>
+      </header>
+      <div className="flex pt-8 justify-center">
+        <div className="flex flex-col w-full">
+          <InscriptionContent inscription={data.inscription} />
+        </div>
+      </div>
     </div>
   )
 }

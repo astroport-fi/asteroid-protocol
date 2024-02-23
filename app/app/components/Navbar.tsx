@@ -29,47 +29,47 @@ export default function Navbar() {
           </Button>
           <Dropdown.Menu tabIndex={0} className="w-52 menu-sm mt-3 z-10">
             <Dropdown.Item anchor={false}>
-              <NavLink to="/inscriptions">Inscriptions</NavLink>
+              <NavLink to="/app/inscriptions">Inscriptions</NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
-              <NavLink to="/tokens">CFT-20</NavLink>
+              <NavLink to="/app/tokens">CFT-20</NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
-              <NavLink to="/wallet">Portfolio</NavLink>
+              <NavLink to="/app/wallet">Portfolio</NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>Create</Dropdown.Item>
             <li>
               <ul className="p-2 z-10">
                 {/* <li>
-                  <NavLink to="/create/collection">Collection</NavLink>
+                  <NavLink to="/app/create/collection">Collection</NavLink>
                 </li> */}
                 <li>
-                  <NavLink to="/create/inscription">Inscription</NavLink>
+                  <NavLink to="/app/create/inscription">Inscription</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/create/token">CFT-20</NavLink>
+                  <NavLink to="/app/create/token">CFT-20</NavLink>
                 </li>
               </ul>
             </li>
           </Dropdown.Menu>
         </Dropdown>
-        <Link className="btn btn-ghost normal-case text-xl" to="/">
+        <Link className="btn btn-ghost normal-case text-xl" to="/app/">
           Asteroid
         </Link>
       </DaisyNavbar.Start>
       <DaisyNavbar.Center className="hidden lg:flex">
         <Menu horizontal className="px-1">
           <Menu.Item>
-            <NavLink to="/inscriptions">Inscriptions</NavLink>
+            <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>
           <Menu.Item>
-            <NavLink to="/tokens">CFT-20</NavLink>
+            <NavLink to="/app/tokens">CFT-20</NavLink>
           </Menu.Item>
           <Menu.Item>
-            <NavLink to="/wallet">Portfolio</NavLink>
+            <NavLink to="/app/wallet">Portfolio</NavLink>
           </Menu.Item>
           <Menu.Item>
-            <NavLink to="/markets">Marketplace</NavLink>
+            <NavLink to="/app/markets">Marketplace</NavLink>
           </Menu.Item>
           <Menu.Item>
             <Menu.Details
@@ -81,17 +81,17 @@ export default function Navbar() {
               }}
             >
               {/* <Menu.Item onClick={close}>
-                <NavLink to="/create/collection" onClick={close}>
+                <NavLink to="/app/create/collection" onClick={close}>
                   Collection
                 </NavLink>
               </Menu.Item> */}
               <Menu.Item onClick={close}>
-                <NavLink to="/create/inscription" onClick={close}>
+                <NavLink to="/app/create/inscription" onClick={close}>
                   Inscription
                 </NavLink>
               </Menu.Item>
               <Menu.Item onClick={close}>
-                <NavLink to="/create/token" onClick={close}>
+                <NavLink to="/app/create/token" onClick={close}>
                   CFT-20
                 </NavLink>
               </Menu.Item>

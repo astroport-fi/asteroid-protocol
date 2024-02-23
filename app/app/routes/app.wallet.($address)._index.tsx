@@ -118,7 +118,7 @@ export default function WalletTokens() {
     <Table
       table={table}
       onClick={(tokenSelection) =>
-        navigate(`/wallet/token/${tokenSelection.token.ticker}`)
+        navigate(`/app/wallet/token/${tokenSelection.token.ticker}`)
       }
     />
   )

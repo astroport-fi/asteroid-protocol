@@ -33,7 +33,10 @@ export function TokenActions({ amount, token }: Props) {
         >
           Sell
         </Button>
-        <Link className="btn btn-primary ml-2" to={`/market/${token.ticker}`}>
+        <Link
+          className="btn btn-primary ml-2"
+          to={`/app/market/${token.ticker}`}
+        >
           Trade
         </Link>
         <TransferTokenDialog token={token} ref={transferDialogRef} />

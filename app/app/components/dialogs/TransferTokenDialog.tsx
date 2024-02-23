@@ -93,7 +93,7 @@ const TransferTokenDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={txInscription}
             ref={dialogRef}
             resultCTA="View transaction"
-            resultLink={`/wallet/token/${token.ticker}`}
+            resultlink={`/app/wallet/token/${token.ticker}`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">

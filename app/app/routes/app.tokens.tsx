@@ -94,7 +94,9 @@ export default function TokensPage() {
   return (
     <Table
       table={table}
-      onClick={(tokenSelection) => navigate(`/token/${tokenSelection.ticker}`)}
+      onClick={(tokenSelection) =>
+        navigate(`/app/token/${tokenSelection.ticker}`)
+      }
     />
   )
 }

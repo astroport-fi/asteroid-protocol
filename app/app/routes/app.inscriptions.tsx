@@ -75,7 +75,7 @@ function Filter() {
         <Select items={rangeItems} onSelect={setRange} selected={range} />
 
         <Link
-          to="/wallet/inscriptions"
+          to="/app/wallet/inscriptions"
           className="btn btn-primary mt-8"
           color="accent"
         >
@@ -111,7 +111,7 @@ function LatestTransactions({
           {transactions.map((tx) => (
             <Button
               onClick={() => {
-                navigate(`/inscription/${tx.inscription.transaction.hash}`)
+                navigate(`/app/inscription/${tx.inscription.transaction.hash}`)
               }}
               key={tx.id}
               color="ghost"
@@ -137,14 +137,14 @@ function LatestTransactions({
                 value={getDecimalValue(tx.amount_quote, 6)}
               />
               <Link
-                to={`/wallet/${tx.seller_address}`}
+                to={`/app/wallet/${tx.seller_address}`}
                 className="p-2 shrink-0 hover:text-primary"
                 onClick={(e) => e.stopPropagation()}
               >
                 {shortAddress(tx.seller_address)}
               </Link>
               <Link
-                to={`/wallet/${tx.buyer_address}`}
+                to={`/app/wallet/${tx.buyer_address}`}
                 className="p-2 shrink-0 hover:text-primary"
                 onClick={(e) => e.stopPropagation()}
               >

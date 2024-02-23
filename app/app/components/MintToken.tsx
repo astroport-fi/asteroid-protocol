@@ -40,7 +40,7 @@ export default function MintToken({
         ref={dialogRef}
         txInscription={txInscription}
         resultCTA="Back to mint"
-        resultLink={`/mint/${ticker}`}
+        resultlink={`/app/mint/${ticker}`}
       />
     </div>
   )

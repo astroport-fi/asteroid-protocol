@@ -79,7 +79,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               </div>
 
               <Link
-                to={`/inscription/${inscription.transaction.hash}`}
+                to={`/app/inscription/${inscription.transaction.hash}`}
                 className="btn btn-link mt-4"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -123,7 +123,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               <BuyDialog
                 buyType="inscription"
                 listingHash={listing?.transaction.hash ?? null}
-                resultLink={`/inscriptions`}
+                resultlink={`/app/inscriptions`}
                 ref={dialogRef}
               />
             </Modal.Body>

@@ -286,13 +286,13 @@ function ListingsTable({
         ref={txDialogRef}
         txInscription={txInscription}
         resultCTA="Back to market"
-        resultLink={`/market/${token.ticker}`}
+        resultlink={`/app/market/${token.ticker}`}
       />
       <BuyDialog
         buyType="cft20"
         listingHash={listingHash}
         ref={buyDialogRef}
-        resultLink={`/market/${token.ticker}`}
+        resultlink={`/app/market/${token.ticker}`}
       />
     </>
   )
@@ -327,7 +327,7 @@ export default function MarketPage() {
     <div>
       <div className="flex flex-col">
         <div className="flex flex-row justify-between">
-          <BackHeader to="/markets">
+          <BackHeader to="/app/markets">
             <Button color="ghost" className="text-lg font-medium">
               {data.token.ticker} / ATOM Market
             </Button>

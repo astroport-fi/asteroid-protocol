@@ -19,7 +19,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
   return (
     <Link
       className="flex flex-col justify-between bg-base-200 rounded-xl"
-      to={`/inscription/${inscription.transaction.hash}`}
+      to={`/app/inscription/${inscription.transaction.hash}`}
       onClick={(e) => {
         if (typeof onClick === 'function') {
           e.preventDefault()

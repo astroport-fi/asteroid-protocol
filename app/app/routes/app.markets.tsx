@@ -135,7 +135,7 @@ export default function MarketsPage() {
       <Table
         table={table}
         onClick={(tokenSelection) =>
-          navigate(`/market/${tokenSelection.ticker}`)
+          navigate(`/app/market/${tokenSelection.ticker}`)
         }
       />
       <SellTokenDialog

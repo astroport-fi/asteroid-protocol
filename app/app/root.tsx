@@ -81,8 +81,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 export default function App() {
   const data = useLoaderData<typeof loader>()
-  const location = useLocation()
-  const padding = location.pathname !== '/inscriptions'
 
   return (
     <html lang="en">
@@ -130,18 +128,7 @@ export default function App() {
             //   },
             // }}
           >
-            <div>
-              <Navbar />
-              <div
-                className={clsx(
-                  'mt-16 overflow-y-scroll h-[calc(100vh-6rem)]',
-                  { ['px-16 py-8']: padding },
-                )}
-              >
-                <Outlet />
-              </div>
-              <Footer />
-            </div>
+            <Outlet />
           </ChainProvider>
         </RootContext.Provider>
         <ScrollRestoration />

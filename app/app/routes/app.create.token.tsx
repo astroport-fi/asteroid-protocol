@@ -318,7 +318,7 @@ export default function CreateToken() {
       <TxDialog
         ref={dialogRef}
         txInscription={txInscription}
-        resultLink={`/token/${ticker}`}
+        resultlink={`/app/token/${ticker}`}
         resultCTA="View Token"
       />
     </div>

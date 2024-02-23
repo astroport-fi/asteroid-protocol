@@ -26,7 +26,7 @@ function TokenComponent({ token }: { token: Token }) {
   return (
     <Link
       className="flex flex-col justify-between bg-base-200 rounded-xl"
-      to={`/token/${token.ticker}`}
+      to={`/app/token/${token.ticker}`}
     >
       <TokenLogo src={token.content_path} isExplicit={false} />
       <div className="flex flex-col bg-base-300 rounded-b-xl p-4">
