@@ -28,8 +28,8 @@ export class CFT20Operations<
     this.options = options
   }
 
-  deploy(data: string | Buffer, mime: string, params: DeployParams) {
-    const inscriptionContent = this.protocol.createLogoInscription(
+  deploy(data: Uint8Array, mime: string, params: DeployParams) {
+    const inscriptionData = this.protocol.createLogoInscription(
       this.address,
       data,
       mime,
@@ -42,7 +42,7 @@ export class CFT20Operations<
       params.mintLimit,
       params.openTime,
     )
-    return this.prepareOperation(operation, inscriptionContent)
+    return this.prepareOperation(operation, inscriptionData)
   }
 
   mint(ticker: string, amount: number) {

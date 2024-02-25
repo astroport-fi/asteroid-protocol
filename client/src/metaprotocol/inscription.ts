@@ -1,9 +1,9 @@
 import {
   BaseProtocol,
-  InscriptionContent,
+  InscriptionData,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscriptionContent,
+  buildInscriptionData,
   buildOperation,
 } from './index.js'
 
@@ -17,11 +17,6 @@ export type ContentMetadata = {
 export type Parent = {
   type: string
   identifier: string
-}
-
-export type InscriptionMetadata<T = ContentMetadata> = {
-  parent: Parent
-  metadata: T
 }
 
 const DEFAULT_FEE: ProtocolFee = {
@@ -46,17 +41,17 @@ export default class InscriptionProtocol extends BaseProtocol {
     super(chainId, fee)
   }
 
-  createInscriptionContent<T = ContentMetadata>(
-    data: string | Buffer,
+  createInscriptionData<T = ContentMetadata>(
+    content: Uint8Array,
     metadata: T,
     parent: Parent,
-  ): InscriptionContent {
-    const inscriptionMetadata: InscriptionMetadata<T> = {
-      parent,
+  ): InscriptionData {
+    return buildInscriptionData(
+      parent.type,
+      parent.identifier,
+      content,
       metadata,
-    }
-
-    return buildInscriptionContent(data, inscriptionMetadata)
+    )
   }
 
   inscribe(hash: string) {

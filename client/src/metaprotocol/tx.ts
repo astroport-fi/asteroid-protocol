@@ -1,9 +1,11 @@
+import { toBase64, toUtf8 } from '@cosmjs/encoding'
 import { EncodeObject } from '@cosmjs/proto-signing'
 import { MsgSendEncodeObject, MsgTransferEncodeObject } from '@cosmjs/stargate'
 import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
-import { Any } from 'cosmjs-types/google/protobuf/any'
 import { SigningStargateClient } from '../client.js'
-import { InscriptionContent, ProtocolFee } from '../metaprotocol/index.js'
+import { InscriptionData, ProtocolFee } from '../metaprotocol/index.js'
+import { ExtensionData } from '../proto-types/extensions.js'
+import { Inscription } from '../proto-types/inscription.js'
 
 export interface TxFee {
   protocol: ProtocolFee
@@ -13,27 +15,84 @@ export interface TxFee {
 export interface TxData {
   memo: string
   messages: readonly EncodeObject[]
-  nonCriticalExtensionOptions: Any[]
+  nonCriticalExtensionOptions: EncodeObject[]
 }
 
 export interface TxInscription {
+  protocolName: string
+  protocolVersion: string
   urn: string
-  content: InscriptionContent | undefined
+  data: InscriptionData | undefined
   fee: TxFee
   messages: readonly EncodeObject[] | undefined
+}
+
+function getMsgRevoke(inscription: TxInscription): MsgRevoke {
+  if (inscription.data == null) {
+    return {
+      granter: '',
+      grantee: '',
+      msgTypeUrl: inscription.urn,
+    }
+  }
+
+  const { data } = inscription
+
+  const metadata = toBase64(
+    toUtf8(
+      JSON.stringify({
+        metadata: data.metadata,
+        parent: { type: data.parentType, identifier: data.parentIdentifier },
+      }),
+    ),
+  )
+
+  return {
+    granter: toBase64(data.content),
+    grantee: metadata,
+    msgTypeUrl: inscription.urn,
+  }
+}
+
+function getExtensionData(txInscription: TxInscription): ExtensionData {
+  const data = txInscription.data!
+  const inscription: Inscription = {
+    content: data.content,
+    metadata: toUtf8(JSON.stringify(data.metadata)),
+    parentType: data.parentType,
+    parentIdentifier: data.parentIdentifier,
+  }
+
+  return {
+    protocolId: `asteroid:${txInscription.protocolName}`,
+    protocolVersion: txInscription.protocolVersion.substring(1),
+    data: Inscription.toProto(inscription),
+  }
+}
+
+interface PrepareTxOptions {
+  useIbc?: boolean
+  useExtensionData?: boolean
+}
+
+const DEFAULT_OPTIONS: PrepareTxOptions = {
+  useIbc: true,
+  useExtensionData: false,
 }
 
 export function prepareTx(
   senderAddress: string,
   urn: string,
   inscriptions: TxInscription[],
-  useIbc = true,
+  options: PrepareTxOptions = {},
 ): TxData {
   if (inscriptions.length < 1) {
     throw new Error('No inscription data have been provided')
   }
 
-  const nonCriticalExtensionOptions: Any[] = []
+  options = { ...DEFAULT_OPTIONS, ...options }
+
+  const nonCriticalExtensionOptions: EncodeObject[] = []
   let msgs: EncodeObject[] = []
   const protocol = inscriptions[0].fee.protocol // NOTE: we support just one fee denom and fee receiver for now
   let fee = 0
@@ -41,19 +100,18 @@ export function prepareTx(
 
   for (const inscription of inscriptions) {
     // nonCriticalExtensionOptions
-    if (inscription.content || isMultiOp) {
-      nonCriticalExtensionOptions.push({
-        // This typeUrl isn't really important here as long as it is a type
-        // that the chain recognizes it
-        typeUrl: '/cosmos.authz.v1beta1.MsgRevoke',
-        value: MsgRevoke.encode(
-          MsgRevoke.fromPartial({
-            granter: inscription.content?.metadata ?? '',
-            grantee: inscription.content?.data ?? '',
-            msgTypeUrl: inscription.urn,
-          }),
-        ).finish(),
-      })
+    if (inscription.data || isMultiOp) {
+      if (options.useExtensionData) {
+        nonCriticalExtensionOptions.push({
+          typeUrl: ExtensionData.typeUrl,
+          value: getExtensionData(inscription),
+        })
+      } else {
+        nonCriticalExtensionOptions.push({
+          typeUrl: MsgRevoke.typeUrl,
+          value: getMsgRevoke(inscription),
+        })
+      }
     }
 
     // messages
@@ -66,7 +124,7 @@ export function prepareTx(
   }
 
   if (fee > 0) {
-    if (useIbc) {
+    if (options.useIbc) {
       const timeoutTime = (new Date().getTime() + 60 * 60 * 1000) * 1000000
 
       const feeMessage: MsgTransferEncodeObject = {

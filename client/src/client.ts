@@ -19,12 +19,12 @@ import {
   AminoTypes,
   AuthExtension,
   BankExtension,
+  SigningStargateClientOptions as BaseSigningStargateClientOptions,
   DeliverTxResponse,
   GasPrice,
   HttpEndpoint,
   QueryClient,
   SignerData,
-  SigningStargateClientOptions,
   StakingExtension,
   StargateClient,
   calculateFee,
@@ -36,10 +36,17 @@ import {
 } from '@cosmjs/stargate'
 import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { assert, assertDefined } from '@cosmjs/utils'
+import { GasInfo } from 'cosmjs-types/cosmos/base/abci/v1beta1/abci.js'
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing.js'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx.js'
-import { Any } from 'cosmjs-types/google/protobuf/any.js'
+import { ExtensionData } from './proto-types/extensions.js'
+import simulateTxRest from './simulate-tx-rest.js'
 import { TxExtension, setupTxExtension } from './tx-extension.js'
+
+interface SigningStargateClientOptions
+  extends BaseSigningStargateClientOptions {
+  simulateEndpoint?: string
+}
 
 export class SigningStargateClient extends StargateClient {
   public readonly registry: Registry
@@ -56,6 +63,7 @@ export class SigningStargateClient extends StargateClient {
         StakingExtension &
         TxExtension)
     | undefined
+  private readonly simulateEndpoint: string | undefined
 
   /**
    * Creates an instance by connecting to the given CometBFT RPC endpoint.
@@ -110,12 +118,14 @@ export class SigningStargateClient extends StargateClient {
       registry = new Registry(defaultRegistryTypes),
       aminoTypes = new AminoTypes(createDefaultAminoConverters()),
     } = options
+    registry.register('/gaia.metaprotocols.ExtensionData', ExtensionData)
     this.registry = registry
     this.aminoTypes = aminoTypes
     this.signer = signer
     this.broadcastTimeoutMs = options.broadcastTimeoutMs
     this.broadcastPollIntervalMs = options.broadcastPollIntervalMs
     this.gasPrice = options.gasPrice
+    this.simulateEndpoint = options.simulateEndpoint
 
     if (cometClient) {
       this.customQueryClient = QueryClient.withExtensions(
@@ -145,9 +155,8 @@ export class SigningStargateClient extends StargateClient {
     signerAddress: string,
     messages: readonly EncodeObject[],
     memo: string | undefined,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<number> {
-    const anyMsgs = messages.map((m) => this.registry.encodeAsAny(m))
     const accountFromSigner = (await this.signer.getAccounts()).find(
       (account) => account.address === signerAddress,
     )
@@ -156,13 +165,31 @@ export class SigningStargateClient extends StargateClient {
     }
     const pubkey = encodeSecp256k1Pubkey(accountFromSigner.pubkey)
     const { sequence } = await this.getSequence(signerAddress)
-    const { gasInfo } = await this.forceGetQueryClient().tx.simulate(
-      anyMsgs,
-      memo,
-      pubkey,
-      sequence,
-      nonCriticalExtensionOptions,
-    )
+
+    let gasInfo: GasInfo | undefined
+    if (this.simulateEndpoint) {
+      ;({ gasInfo } = await simulateTxRest(
+        this.simulateEndpoint,
+        messages,
+        memo,
+        pubkey,
+        sequence,
+        nonCriticalExtensionOptions,
+      ))
+    } else {
+      const anyMsgs = messages.map((m) => this.registry.encodeAsAny(m))
+      const anyNonCriticalExtensionOptions = nonCriticalExtensionOptions?.map(
+        (m) => this.registry.encodeAsAny(m),
+      )
+      ;({ gasInfo } = await this.forceGetQueryClient().tx.simulate(
+        anyMsgs,
+        memo,
+        pubkey,
+        sequence,
+        anyNonCriticalExtensionOptions,
+      ))
+    }
+
     assertDefined(gasInfo)
     return Uint53.fromString(gasInfo.gasUsed.toString()).toNumber()
   }
@@ -171,7 +198,7 @@ export class SigningStargateClient extends StargateClient {
     signerAddress: string,
     messages: readonly EncodeObject[],
     memo: string | undefined,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
     fee: StdFee | 'auto' = 'auto',
   ) {
     assertDefined(
@@ -196,7 +223,7 @@ export class SigningStargateClient extends StargateClient {
     fee: StdFee | 'auto' | number,
     memo = '',
     timeoutHeight?: bigint,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<DeliverTxResponse> {
     let usedFee: StdFee
     if (fee == 'auto' || typeof fee === 'number') {
@@ -249,7 +276,7 @@ export class SigningStargateClient extends StargateClient {
     fee: StdFee | 'auto' | number,
     memo = '',
     timeoutHeight?: bigint,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<string> {
     let usedFee: StdFee
     if (fee == 'auto' || typeof fee === 'number') {
@@ -301,7 +328,7 @@ export class SigningStargateClient extends StargateClient {
     memo: string,
     explicitSignerData?: SignerData,
     timeoutHeight?: bigint,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<TxRaw> {
     let signerData: SignerData
     if (explicitSignerData) {
@@ -344,7 +371,7 @@ export class SigningStargateClient extends StargateClient {
     memo: string,
     { accountNumber, sequence, chainId }: SignerData,
     timeoutHeight?: bigint,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<TxRaw> {
     assert(!isOfflineDirectSigner(this.signer))
     const accountFromSigner = (await this.signer.getAccounts()).find(
@@ -369,11 +396,14 @@ export class SigningStargateClient extends StargateClient {
       signerAddress,
       signDoc,
     )
+    const anyNonCriticalExtensionOptions = nonCriticalExtensionOptions?.map(
+      (m) => this.registry.encodeAsAny(m),
+    )
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,
       timeoutHeight: timeoutHeight,
-      nonCriticalExtensionOptions,
+      nonCriticalExtensionOptions: anyNonCriticalExtensionOptions,
     }
     const signedTxBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: '/cosmos.tx.v1beta1.TxBody',
@@ -404,7 +434,7 @@ export class SigningStargateClient extends StargateClient {
     memo: string,
     { accountNumber, sequence, chainId }: SignerData,
     timeoutHeight?: bigint,
-    nonCriticalExtensionOptions?: Any[],
+    nonCriticalExtensionOptions?: EncodeObject[],
   ): Promise<TxRaw> {
     assert(isOfflineDirectSigner(this.signer))
     const accountFromSigner = (await this.signer.getAccounts()).find(
@@ -414,13 +444,16 @@ export class SigningStargateClient extends StargateClient {
       throw new Error('Failed to retrieve account from signer')
     }
     const pubkey = encodePubkey(encodeSecp256k1Pubkey(accountFromSigner.pubkey))
+    const anyNonCriticalExtensionOptions = nonCriticalExtensionOptions?.map(
+      (m) => this.registry.encodeAsAny(m),
+    )
     const txBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: '/cosmos.tx.v1beta1.TxBody',
       value: {
         messages: messages,
         memo: memo,
         timeoutHeight: timeoutHeight,
-        nonCriticalExtensionOptions,
+        nonCriticalExtensionOptions: anyNonCriticalExtensionOptions,
       },
     }
     const txBodyBytes = this.registry.encode(txBodyEncodeObject)
@@ -442,6 +475,7 @@ export class SigningStargateClient extends StargateClient {
       signerAddress,
       signDoc,
     )
+
     return TxRaw.fromPartial({
       bodyBytes: signed.bodyBytes,
       authInfoBytes: signed.authInfoBytes,

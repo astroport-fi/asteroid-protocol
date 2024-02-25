@@ -78,7 +78,10 @@ export async function createContext(options: Options): Promise<Context> {
   const client = await SigningStargateClient.connectWithSigner(
     network.rpc,
     wallet,
-    { gasPrice: GasPrice.fromString(config.gasPrice) },
+    {
+      gasPrice: GasPrice.fromString(config.gasPrice),
+      simulateEndpoint: network.rest,
+    },
   )
 
   // api
