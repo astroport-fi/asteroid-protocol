@@ -4,6 +4,7 @@ import { Button } from 'react-daisyui'
 import TxDialog from '~/components/dialogs/TxDialog'
 import useDialog from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
+import { Wallet } from './wallet/Wallet'
 
 export default function MintToken({
   className,
@@ -33,9 +34,13 @@ export default function MintToken({
 
   return (
     <div className={className}>
-      <Button onClick={() => mint()} color="primary">
-        Mint now
-      </Button>
+      {operations ? (
+        <Button onClick={() => mint()} color="primary">
+          Mint now
+        </Button>
+      ) : (
+        <Wallet className="btn-md" color="primary" />
+      )}
       <TxDialog
         ref={dialogRef}
         txInscription={txInscription}

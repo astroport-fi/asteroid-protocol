@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
+import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
@@ -179,14 +180,18 @@ export default function CreateInscription() {
             />
           </div>
 
-          <Button
-            type="submit"
-            color="primary"
-            className="mt-4"
-            startIcon={<CheckIcon className="size-5" />}
-          >
-            Inscribe
-          </Button>
+          {operations ? (
+            <Button
+              type="submit"
+              color="primary"
+              className="mt-4"
+              startIcon={<CheckIcon className="size-5" />}
+            >
+              Inscribe
+            </Button>
+          ) : (
+            <Wallet className="mt-4 btn-md w-full" color="primary" />
+          )}
         </div>
       </Form>
       <TxDialog ref={dialogRef} txInscription={txInscription} />

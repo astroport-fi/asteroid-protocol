@@ -28,9 +28,7 @@ export default function CancelListing({
 
     setTxInscription(txInscription)
 
-    if (typeof onClick === 'function') {
-      onClick()
-    }
+    onClick?.()
     handleShow()
   }
 

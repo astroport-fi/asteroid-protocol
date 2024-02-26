@@ -1,3 +1,4 @@
+import { WalletIcon } from '@heroicons/react/20/solid'
 import { MouseEventHandler } from 'react'
 import {
   Button as DaisyButton,
@@ -10,6 +11,7 @@ export type ButtonProps = {
   loading?: boolean
   disabled?: boolean
   color?: DaisyButtonProps['color']
+  icon?: React.ReactNode
   onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
@@ -19,10 +21,12 @@ function Button({
   disabled,
   className,
   color,
+  icon,
   onClick,
 }: ButtonProps) {
   return (
     <DaisyButton
+      startIcon={icon}
       color={color ?? 'neutral'}
       size="sm"
       onClick={onClick}
@@ -41,20 +45,17 @@ export const ButtonConnect = ({
   color,
   onClick,
 }: ButtonProps) => (
-  <Button text={text} className={className} color={color} onClick={onClick} />
+  <Button
+    text={text}
+    icon={<WalletIcon className="w-5" />}
+    className={className}
+    color={color}
+    onClick={onClick}
+  />
 )
 
 export const ButtonConnected = ({
   text = 'My Wallet',
-  className,
-  color,
-  onClick,
-}: ButtonProps) => (
-  <Button text={text} className={className} color={color} onClick={onClick} />
-)
-
-export const ButtonDisconnected = ({
-  text = 'Connect Wallet',
   className,
   color,
   onClick,

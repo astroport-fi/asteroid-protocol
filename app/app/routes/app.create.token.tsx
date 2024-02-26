@@ -6,6 +6,7 @@ import { Button, FileInput, Form, Input, Link, Radio } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
 import NumericInput from '~/components/form/NumericInput'
+import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
@@ -307,14 +308,18 @@ export default function CreateToken() {
             </p>
           </div>
 
-          <Button
-            type="submit"
-            color="primary"
-            className="mt-4"
-            startIcon={<CheckIcon className="size-5" />}
-          >
-            Create token
-          </Button>
+          {operations ? (
+            <Button
+              type="submit"
+              color="primary"
+              className="mt-4"
+              startIcon={<CheckIcon className="size-5" />}
+            >
+              Create token
+            </Button>
+          ) : (
+            <Wallet className="mt-4 btn-md w-full" color="primary" />
+          )}
         </div>
       </Form>
       <TxDialog

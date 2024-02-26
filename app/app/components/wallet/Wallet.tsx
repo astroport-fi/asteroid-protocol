@@ -12,7 +12,6 @@ import {
   ButtonConnect,
   ButtonConnected,
   ButtonConnecting,
-  ButtonDisconnected,
   ButtonError,
   ButtonNotExist,
   ButtonRejected,
@@ -21,9 +20,13 @@ import {
 export function Wallet({
   className,
   color,
+  onClick,
+  reload = true,
 }: {
   className?: string
   color?: ButtonProps['color']
+  reload?: boolean
+  onClick?: () => void
 }) {
   const { chainName } = useRootContext()
   const { status, wallet, message, connect, openView, address } =
@@ -41,14 +44,21 @@ export function Wallet({
         setCookie(USER_ADDRESS_COOKIE, addressCookie, {
           path: '/',
           sameSite: 'lax',
+          maxAge: 60 * 60 * 24 * 365,
         })
-        navigate('/app/wallet', { replace: true })
+        if (reload) {
+          navigate({ hash: '' }, { replace: true })
+        }
       }
     } else if (
       status === WalletStatus.Disconnected &&
       previousStatus === WalletStatus.Connected
     ) {
-      removeCookie(USER_ADDRESS_COOKIE, { path: '/' })
+      // @todo move this to a server action
+      removeCookie(USER_ADDRESS_COOKIE, { path: '/', sameSite: 'lax' })
+      if (reload) {
+        navigate({ hash: '' }, { replace: true })
+      }
     }
 
     setPreviousStatus(status)
@@ -60,6 +70,7 @@ export function Wallet({
     address,
     status,
     previousStatus,
+    reload,
   ])
 
   const ConnectButton = {
@@ -75,8 +86,11 @@ export function Wallet({
       <ButtonConnecting className={className} color={color} />
     ),
     [WalletStatus.Disconnected]: (
-      <ButtonDisconnected
-        onClick={connect}
+      <ButtonConnect
+        onClick={() => {
+          onClick?.()
+          connect()
+        }}
         className={className}
         color={color}
       />
@@ -91,7 +105,14 @@ export function Wallet({
       <ButtonNotExist onClick={openView} className={className} color={color} />
     ),
   }[status] || (
-    <ButtonConnect onClick={connect} className={className} color={color} />
+    <ButtonConnect
+      onClick={() => {
+        onClick?.()
+        connect()
+      }}
+      className={className}
+      color={color}
+    />
   )
 
   return (

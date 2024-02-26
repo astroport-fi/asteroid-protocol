@@ -9,6 +9,7 @@ import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import { getDecimalValue } from '~/utils/number'
 import NumericInput from '../form/NumericInput'
+import { Wallet } from '../wallet/Wallet'
 import TxDialog from './TxDialog'
 
 interface Props {
@@ -101,43 +102,51 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 isFloat
               />
             </div>
-            {notEnoughTokens ? (
-              <Alert className="border border-warning">
-                <span>
-                  You can&apos;t list more tokens than you have available. Your
-                  balance is{' '}
-                  <NumericFormat
-                    value={getDecimalValue(tokenAmount, 6)}
-                    suffix={` ${ticker}`}
-                    thousandSeparator
-                    displayType="text"
-                    decimalScale={6}
-                  />
-                </span>
-              </Alert>
-            ) : (
-              <Alert className="border border-info">
-                <span>
-                  You will be listing your tokens for a total of{' '}
-                  <NumericFormat
-                    value={amount * ppt}
-                    suffix=" ATOM"
-                    thousandSeparator
-                    displayType="text"
-                    decimalScale={6}
-                  />
-                </span>
-              </Alert>
-            )}
+            {operations &&
+              (notEnoughTokens ? (
+                <Alert className="border border-warning">
+                  <span>
+                    You can&apos;t list more tokens than you have available.
+                    Your balance is{' '}
+                    <NumericFormat
+                      value={getDecimalValue(tokenAmount, 6)}
+                      suffix={` ${ticker}`}
+                      thousandSeparator
+                      displayType="text"
+                      decimalScale={6}
+                    />
+                  </span>
+                </Alert>
+              ) : (
+                <Alert className="border border-info">
+                  <span>
+                    You will be listing your tokens for a total of{' '}
+                    <NumericFormat
+                      value={amount * ppt}
+                      suffix=" ATOM"
+                      thousandSeparator
+                      displayType="text"
+                      decimalScale={6}
+                    />
+                  </span>
+                </Alert>
+              ))}
 
-            <Button
-              color="primary"
-              type="submit"
-              className="mt-4"
-              disabled={notEnoughTokens}
-            >
-              Confirm and list
-            </Button>
+            {operations ? (
+              <Button
+                color="primary"
+                type="submit"
+                className="mt-4"
+                disabled={notEnoughTokens}
+              >
+                Confirm and list
+              </Button>
+            ) : (
+              <Wallet
+                className="mt-4 btn-md"
+                onClick={() => fRef.current?.close()}
+              />
+            )}
           </Form>
           <TxDialog
             txInscription={txInscription}
