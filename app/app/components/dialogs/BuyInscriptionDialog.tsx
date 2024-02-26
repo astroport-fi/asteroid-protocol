@@ -123,7 +123,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               <BuyDialog
                 buyType="inscription"
                 listingHash={listing?.transaction.hash ?? null}
-                resultlink={`/app/inscriptions`}
+                resultLink={`/app/inscriptions`}
                 ref={dialogRef}
               />
             </Modal.Body>

@@ -286,13 +286,13 @@ function ListingsTable({
         ref={txDialogRef}
         txInscription={txInscription}
         resultCTA="Back to market"
-        resultlink={`/app/market/${token.ticker}`}
+        resultLink={`/app/market/${token.ticker}`}
       />
       <BuyDialog
         buyType="cft20"
         listingHash={listingHash}
         ref={buyDialogRef}
-        resultlink={`/app/market/${token.ticker}`}
+        resultLink={`/app/market/${token.ticker}`}
       />
     </>
   )

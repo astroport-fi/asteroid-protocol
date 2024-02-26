@@ -26,7 +26,7 @@ export default function InscriptionImage({
     return (
       <span className={twMerge(noImageClass, className)}>
         <EyeSlashIcon className="size-6" />
-        {!min && <span className="mt-2">Explicit content</span>}
+        {!min && <span className="mt-2 text-center">Explicit content</span>}
       </span>
     )
   }
