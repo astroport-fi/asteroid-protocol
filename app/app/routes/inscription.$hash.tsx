@@ -47,7 +47,7 @@ function RemoteMarkdown({ src, isJson }: { src: string; isJson?: boolean }) {
   // @todo add loader
 
   return (
-    <Markdown className="prose bg-base-200 p-8 rounded max-w-full">
+    <Markdown className="prose bg-base-200 p-8 rounded w-full max-w-full">
       {data}
     </Markdown>
   )
@@ -64,7 +64,30 @@ function InscriptionContent({ inscription }: { inscription: Inscription }) {
     return <RemoteMarkdown src={inscription.content_path} isJson />
   }
 
-  // @todo text, html, audio, video, not supported
+  if (mimeTitle === 'Text') {
+    return <RemoteMarkdown src={inscription.content_path} isJson />
+  }
+
+  if (mimeTitle === 'Audio') {
+    return (
+      <audio controls>
+        <source src={inscription.content_path} type={inscription.mime} />
+        <source src={inscription.content_path} type="audio/wav" />
+        Audio not supported by browser
+      </audio>
+    )
+  }
+
+  if (mimeTitle === 'Video') {
+    return (
+      <video className="rounded w-fit" controls>
+        <source src={inscription.content_path} type={inscription.mime} />
+        Video not supported by browser
+      </video>
+    )
+  }
+
+  // @todo html, not supported
 
   return (
     <InscriptionImage
@@ -82,12 +105,16 @@ export default function InscriptionPage() {
   return (
     <div className="flex flex-col p-8">
       <header className="flex flex-row items-center justify-between">
-        <h1 className="text-2xl font-bold flex items-center">
-          Inscription #{data.inscription.id - 1}: {data.inscription.name}
-          <span className="text-sm font-extralight ml-2">
-            {data.inscription.mime}
-          </span>
-        </h1>
+        <div className="flex items-center">
+          <Link to="/app">Asteroid</Link>
+          <h1 className="text-2xl font-bold flex items-center ml-2">
+            Inscription #{data.inscription.id - 1}: {data.inscription.name}
+            <span className="text-sm font-extralight ml-2">
+              {data.inscription.mime}
+            </span>
+          </h1>
+        </div>
+
         <div className="flex">
           <DaisyLink
             className="flex text-primary"
@@ -104,7 +131,7 @@ export default function InscriptionPage() {
         </div>
       </header>
       <div className="flex pt-8 justify-center">
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full items-center">
           <InscriptionContent inscription={data.inscription} />
         </div>
       </div>
