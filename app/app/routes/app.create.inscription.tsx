@@ -8,7 +8,6 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
-import { toBase64 } from '~/utils/file'
 
 type FormData = {
   name: string
@@ -44,13 +43,14 @@ export default function CreateInscription() {
     }
 
     const file = data.content[0]
-    const fileData = await toBase64(file)
-    if (!fileData) {
+    const fileBuffer = await file.arrayBuffer()
+    const byteArray = new Uint8Array(fileBuffer)
+    if (!byteArray.byteLength) {
       console.warn('No file data')
       return
     }
 
-    const txInscription = operations.inscribe(fileData, {
+    const txInscription = operations.inscribe(byteArray, {
       name: data.name,
       description: data.description,
       mime: file.type,

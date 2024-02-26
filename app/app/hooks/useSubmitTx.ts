@@ -77,7 +77,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       return null
     }
 
-    return prepareTx(address, txInscription.urn, [txInscription], useIbc)
+    return prepareTx(address, txInscription.urn, [txInscription], { useIbc })
   }, [txInscription, address, useIbc])
 
   const metaprotocolFee = useMemo<MetaprotocolFee>(() => {

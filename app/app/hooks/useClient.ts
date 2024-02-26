@@ -50,8 +50,13 @@ export class SigningClient {
 
 export default function useClient(retry = 0) {
   const { chainName, gasPrice } = useRootContext()
-  const { getRpcEndpoint, getOfflineSignerDirect, isWalletConnected, address } =
-    useChain(chainName)
+  const {
+    getRpcEndpoint,
+    getRestEndpoint,
+    getOfflineSignerDirect,
+    isWalletConnected,
+    address,
+  } = useChain(chainName)
 
   const [client, setClient] = useState<SigningClient>()
   useEffect(() => {
@@ -60,17 +65,22 @@ export default function useClient(retry = 0) {
     }
     async function createSigningClient(address: string) {
       const rpcEndpoint = await getRpcEndpoint()
+      const restEndpoint = await getRestEndpoint()
       const signer = getOfflineSignerDirect()
       const signingClient = await SigningStargateClient.connectWithSigner(
         rpcEndpoint,
         signer,
-        { gasPrice: GasPrice.fromString(gasPrice) },
+        {
+          gasPrice: GasPrice.fromString(gasPrice),
+          simulateEndpoint: restEndpoint as string,
+        },
       )
       setClient(new SigningClient(signingClient, address))
     }
     createSigningClient(address)
   }, [
     getRpcEndpoint,
+    getRestEndpoint,
     getOfflineSignerDirect,
     isWalletConnected,
     gasPrice,

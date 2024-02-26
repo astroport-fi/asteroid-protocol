@@ -9,7 +9,7 @@ import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
-import { loadImage, toBase64 } from '~/utils/file'
+import { loadImage } from '~/utils/file'
 
 type FormData = {
   name: string
@@ -58,13 +58,15 @@ export default function CreateToken() {
     }
 
     const file = data.content[0]
-    let fileData: string | null = null
     const mime = file?.type ?? ''
-    if (file) {
-      fileData = await toBase64(file)
+    const fileBuffer = await file.arrayBuffer()
+    const byteArray = new Uint8Array(fileBuffer)
+    if (!byteArray.byteLength) {
+      console.warn('No file data')
+      return
     }
 
-    const txInscription = operations.deploy(fileData ?? '', mime, {
+    const txInscription = operations.deploy(byteArray, mime, {
       decimals: 6,
       maxSupply: data.maxSupply,
       mintLimit: data.mintLimit,
@@ -318,7 +320,7 @@ export default function CreateToken() {
       <TxDialog
         ref={dialogRef}
         txInscription={txInscription}
-        resultlink={`/app/token/${ticker}`}
+        resultLink={`/app/token/${ticker}`}
         resultCTA="View Token"
       />
     </div>
