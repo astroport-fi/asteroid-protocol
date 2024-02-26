@@ -5,6 +5,8 @@ import { Modal } from 'react-daisyui'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
 import useSubmitTx from '~/hooks/useSubmitTx'
+import scanAnimationData from '~/lottie/scan.json'
+import Lottie from '../Lottie'
 import Actions from '../SubmitTx/Actions'
 import Body from '../SubmitTx/Body'
 
@@ -47,6 +49,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
             resetState()
           }}
         >
+          <Lottie animationData={scanAnimationData} />
           <h2 className="text-xl font-semibold">Sign and submit transaction</h2>
           <p className="mt-4">
             You are about to inscribe permanently on the Cosmos Hub.

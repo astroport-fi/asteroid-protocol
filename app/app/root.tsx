@@ -10,14 +10,10 @@ import {
   isRouteErrorResponse,
   json,
   useLoaderData,
-  useLocation,
   useRouteError,
 } from '@remix-run/react'
 import { assets, chains } from 'chain-registry'
-import clsx from 'clsx'
 import { wallets } from 'cosmos-kit'
-import Footer from './components/Footer'
-import Navbar from './components/Navbar'
 import { RootContext } from './context/root'
 import { AsteroidService } from './services/asteroid'
 import '~/tailwind.css'

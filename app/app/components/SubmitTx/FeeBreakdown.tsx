@@ -26,7 +26,7 @@ export function FeeBreakdown({
   operationTitle,
 }: FeeBreakdownProps) {
   return (
-    <div className="mt-8">
+    <div className="flex flex-col w-full mt-8">
       <span className="text-md">Estimated fee breakdown</span>
       <div className="flex flex-col px-16 mt-4">
         <Row title="Cosmos Hub">

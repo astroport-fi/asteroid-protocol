@@ -1,5 +1,10 @@
+import { LottieOptions } from 'lottie-react'
 import { Button } from 'react-daisyui'
 import { TxState } from '~/hooks/useSubmitTx'
+import errorAnimationData from '~/lottie/error.json'
+import hourglassAnimationData from '~/lottie/hourglass.json'
+import successAnimationData from '~/lottie/success.json'
+import Lottie from '../Lottie'
 import TxLink from '../TxLink'
 
 interface TxStatusProps {
@@ -31,16 +36,21 @@ export default function TxStatus({
   let title = ''
   let description = ''
   let headerColor = 'text-base-content'
+  let animationData: LottieOptions['animationData'] = hourglassAnimationData
+  let animationLoop = true
 
   if (txState == TxState.Failed) {
     headerColor = 'text-error'
     title = 'Inscription failed'
     description =
       'Your inscription was created on-chain, but failed to be added to Asteroid.'
+    animationData = errorAnimationData
   } else if (txState == TxState.SuccessInscribed) {
     headerColor = 'text-success'
     title = 'Transaction complete'
     description = 'Your inscription is now on-chain and viewable on Asteroid'
+    animationData = successAnimationData
+    animationLoop = false
   } else if (
     txState == TxState.SuccessOnchain ||
     txState == TxState.SuccessIndexer
@@ -57,6 +67,11 @@ export default function TxStatus({
 
   return (
     <div className="flex flex-col items-center">
+      <Lottie
+        animationData={animationData}
+        className="size-40"
+        loop={animationLoop}
+      />
       <h2 className={`text-xl font-semibold ${headerColor}`}>{title}</h2>
       <p className="mt-4">{description}</p>
       {txState == TxState.Failed && txError && (

@@ -47,7 +47,7 @@ export default function Body({
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       {children}
       <FeeBreakdown
         chainFee={chainFee}
