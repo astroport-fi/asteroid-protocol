@@ -5,12 +5,14 @@ import { format } from 'date-fns'
 import { forwardRef } from 'react'
 import { Button, Divider, Modal } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { InscriptionWithMarket } from '~/services/asteroid'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
 import AddressChip from '../AddressChip'
+import CancelListing from '../CancelListing'
 import InscriptionImage from '../InscriptionImage'
 import BuyDialog from './BuyDialog'
 
@@ -25,7 +27,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     const listing =
       inscription?.marketplace_inscription_details[0]?.marketplace_listing
 
-    // @todo cancel button when owner
+    const address = useAddress()
 
     // dialog
     const { dialogRef, handleShow } = useDialog()
@@ -105,16 +107,23 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                       Price
                     </span>
                   </div>
-                  <Button
-                    color="primary"
-                    type="submit"
-                    onClick={() => {
-                      fRef.current?.close()
-                      handleShow()
-                    }}
-                  >
-                    Buy now
-                  </Button>
+                  {listing.seller_address == address ? (
+                    <CancelListing
+                      listingHash={listing.transaction.hash}
+                      onClick={() => fRef.current?.close()}
+                    />
+                  ) : (
+                    <Button
+                      color="primary"
+                      type="submit"
+                      onClick={() => {
+                        fRef.current?.close()
+                        handleShow()
+                      }}
+                    >
+                      Buy now
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <span className="text-lg">No listing</span>
