@@ -45,6 +45,11 @@ export type TokenListings = {
   count?: number
 }
 
+export type InscriptionsResult = {
+  inscriptions: InscriptionWithMarket[]
+  count: number
+}
+
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
@@ -276,7 +281,7 @@ export class AsteroidClient extends AsteroidService {
     }
 
     const result = await this.query({
-      token_aggregate: [{}, { aggregate: { count: [{}, true] } }],
+      token_aggregate: [{}, aggregateCountSelector],
       token: [
         { offset, limit, order_by: [orderBy] },
         {
@@ -515,15 +520,13 @@ export class AsteroidClient extends AsteroidService {
       collectionId?: number
       currentOwner?: string
       onlySingle?: boolean
+      onlyBuy?: boolean
+      idLTE?: number
+      priceGTE?: number
+      priceLTE?: number
     } = {},
-    orderBy?: ValueTypes['inscription_order_by'],
-  ): Promise<InscriptionWithMarket[]> {
-    if (!orderBy) {
-      orderBy = {
-        // date_created: order_by.desc,
-      }
-    }
-
+    orderBy?: ValueTypes['inscription_market_order_by'],
+  ): Promise<InscriptionsResult> {
     const queryWhere: ValueTypes['inscription_market_bool_exp'] | undefined = {}
 
     // if (where.collectionId) {
@@ -536,19 +539,58 @@ export class AsteroidClient extends AsteroidService {
     //   }
     // }
     if (where.currentOwner) {
-      queryWhere.inscription = {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
         current_owner: {
           _eq: where.currentOwner,
         },
-      }
+      })
+    }
+
+    if (where.onlyBuy) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        marketplace_inscription_details: {
+          marketplace_listing: {
+            is_cancelled: {
+              _eq: false,
+            },
+            is_filled: {
+              _eq: false,
+            },
+          },
+        },
+      })
+    }
+
+    if (where.idLTE) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        id: {
+          _lte: where.idLTE,
+        },
+      })
+    }
+
+    if (where.priceGTE || where.priceLTE) {
+      queryWhere.marketplace_listing = Object.assign(
+        queryWhere.marketplace_listing || {},
+        {
+          total: {
+            _lte: where.priceLTE,
+            _gte: where.priceGTE,
+          },
+        },
+      )
     }
 
     const result = await this.query({
+      inscription_market_aggregate: [
+        { where: queryWhere },
+        aggregateCountSelector,
+      ],
       inscription_market: [
         {
           offset,
           limit,
-          // order_by: [orderBy],
+          order_by: orderBy ? [orderBy] : undefined,
           where: queryWhere,
         },
         {
@@ -569,7 +611,12 @@ export class AsteroidClient extends AsteroidService {
         },
       ],
     })
-    return result.inscription_market.map((i) => i.inscription!)
+    return {
+      inscriptions: result.inscription_market.map((i) => i.inscription!),
+      count:
+        result.inscription_market_aggregate.aggregate?.count ??
+        result.inscription_market.length,
+    }
   }
 
   async getInscriptionHistory(

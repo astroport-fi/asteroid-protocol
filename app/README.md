@@ -19,7 +19,6 @@ npm run dev
 
 # TODO
 
-- [ ] When wallet is not connected show connect button instead in all places with some action
 - [ ] OG tags (like inscription)
 - [ ] Stargaze in Address component
 - [ ] Token explicit
@@ -27,6 +26,7 @@ npm run dev
 - [ ] Add breadcrumbs navigation
 - [ ] Loading states
 - [ ] check @todos
+- [x] When wallet is not connected show connect button instead in all places with some action
 - [x] Index page
 - [x] Wallet disconnected state
 - [x] Inscription detail actions
@@ -54,13 +54,13 @@ npm run dev
 - [ ] Header - add logo
 
 ## Inscription marketplace
-- [ ] Infinit loading
-- [ ] Filters
-- [ ] Add radio filter - buy now / all listings
+- [x] Infinit loading
+- [x] Filters
+- [x] Add radio filter - buy now / all listings
 
 ## CFT-20
-- [ ] Merge CFT-20 and Marketplace pages
-- [ ] Add token logo to tokens list / marketplace 
+- [x] Merge CFT-20 and Marketplace pages
+- [x] Add token logo to tokens list / marketplace 
 
 ## Portfolio (wallet)
 - [ ] Handle empty states in wallet

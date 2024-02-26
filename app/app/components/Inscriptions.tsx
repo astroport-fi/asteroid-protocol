@@ -31,7 +31,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
-        className="rounded-t-xl"
+        className="rounded-t-xl min-h-48"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
@@ -74,12 +74,7 @@ export function Inscriptions<T extends InscriptionWithMarket>({
   onClick?: (inscription: T) => void
 }) {
   return (
-    <div
-      className={twMerge(
-        'grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4',
-        className,
-      )}
-    >
+    <div className={twMerge('grid grid-cols-fill-56 gap-4', className)}>
       {inscriptions.map((inscription) => (
         <InscriptionBox
           key={inscription.id}

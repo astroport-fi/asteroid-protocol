@@ -4,9 +4,9 @@ import { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
 import { DetailsHTMLAttributes, forwardRef, useState } from 'react'
 import { Dropdown } from 'react-daisyui'
 
-export interface DropdownItem {
+export interface DropdownItem<T extends string = string> {
   label: string
-  value: string
+  value: T
 }
 
 export type DetailsProps = DetailsHTMLAttributes<HTMLDetailsElement> &
@@ -53,16 +53,37 @@ const Details = forwardRef<HTMLDetailsElement, DetailsProps>(function Details(
   )
 })
 
-export default function Select({
+export default function Select<T extends string = string>({
   items,
   selected,
   onSelect,
 }: {
-  items: DropdownItem[]
-  selected: DropdownItem
-  onSelect: (item: DropdownItem) => void
+  items: DropdownItem<T>[]
+  selected: T
+  onSelect: (item: T) => void
 }) {
   const [open, setOpen] = useState(false)
+
+  const { selectedItem, dropdownItems } = items.reduce(
+    (acc, item) => {
+      acc.dropdownItems.push(
+        <Dropdown.Item
+          onClick={() => {
+            setOpen(false)
+            onSelect(item.value)
+          }}
+          key={item.value}
+        >
+          {item.label}
+        </Dropdown.Item>,
+      )
+      if (item.value === selected) {
+        acc.selectedItem = item
+      }
+      return acc
+    },
+    { selectedItem: items[0], dropdownItems: [] as JSX.Element[] },
+  )
 
   return (
     <Details
@@ -72,29 +93,17 @@ export default function Select({
       }}
     >
       <Dropdown.Details.Toggle
-        className="flex flex-row hover:bg-transparent"
+        className="flex flex-row hover:bg-transparent px-0"
         color="ghost"
       >
-        {selected.label}
+        {selectedItem.label}
         {open ? (
           <ChevronUpIcon className="size-5" />
         ) : (
           <ChevronDownIcon className="size-5" />
         )}
       </Dropdown.Details.Toggle>
-      <Dropdown.Menu className="w-52 z-10">
-        {items.map((item) => (
-          <Dropdown.Item
-            onClick={() => {
-              setOpen(false)
-              onSelect(item)
-            }}
-            key={item.value}
-          >
-            {item.label}
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
+      <Dropdown.Menu className="w-52 z-10">{dropdownItems}</Dropdown.Menu>
     </Details>
   )
 }
