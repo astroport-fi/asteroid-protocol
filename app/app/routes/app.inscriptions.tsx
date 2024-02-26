@@ -56,7 +56,7 @@ enum PriceRange {
 
 type Status = 'all' | 'buy'
 const DEFAULT_STATUS: Status = 'all'
-const DEFAULT_SORT = Sort.LOWEST_ID
+const DEFAULT_SORT = Sort.RECENTLY_LISTED
 const DEFAULT_RANGE = Range.ALL
 const DEFAULT_PRICE_RANGE = PriceRange.ALL
 

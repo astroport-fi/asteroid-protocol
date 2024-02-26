@@ -324,7 +324,7 @@ export default function MarketPage() {
     <div>
       <div className="flex flex-col">
         <div className="flex flex-row justify-between">
-          <BackHeader to="/app/markets">
+          <BackHeader to="/app/tokens">
             <Button color="ghost" className="text-lg font-medium">
               {data.token.ticker} / ATOM Market
             </Button>
