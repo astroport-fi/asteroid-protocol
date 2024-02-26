@@ -20,16 +20,14 @@ npm run dev
 # TODO
 
 - [ ] When wallet is not connected show connect button instead in all places with some action
-- [ ] Index page
 - [ ] OG tags (like inscription)
 - [ ] Stargaze in Address component
 - [ ] Token explicit
-- [ ] Footer - update data from websocket
-- [ ] Updates from websocket on necessary places
 - [ ] Make token logo optional in create token form
 - [ ] Add breadcrumbs navigation
 - [ ] Loading states
 - [ ] check @todos
+- [x] Index page
 - [x] Wallet disconnected state
 - [x] Inscription detail actions
 - [x] Token detail actions
@@ -44,6 +42,10 @@ npm run dev
 - [x] Sell dialog check balance
 - [x] token mint page
 - [x] Latest transactions clickable
+
+## Websocket
+- [ ] Footer - update data from websocket
+- [ ] Market page
 
 ## Styling
 - [ ] Colors
