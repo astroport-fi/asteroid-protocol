@@ -19,35 +19,47 @@ npm run dev
 
 # TODO
 
-- [ ] Handle empty states in wallet
-- [ ] Wallet disconnected state
-- [x] Inscription detail actions
-- [x] Token detail actions
+- [ ] When wallet is not connected show connect button instead in all places with some action
+- [ ] Index page
 - [ ] OG tags (like inscription)
-- [x] Handler sorting in loader for tables, for example token table in wallet
 - [ ] Stargaze in Address component
-- [ ] Favicon
-- [x] Number formatting
 - [ ] Token explicit
 - [ ] Footer - update data from websocket
 - [ ] Updates from websocket on necessary places
-- [ ] Header - add logo
-- [ ] Inscription viewer
+- [ ] Make token logo optional in create token form
+- [ ] Add breadcrumbs navigation
+- [ ] Loading states
+- [ ] check @todos
+- [x] Wallet disconnected state
+- [x] Inscription detail actions
+- [x] Token detail actions
+- [x] Handler sorting in loader for tables, for example token table in wallet
+- [x] Number formatting
+- [x] Inscription viewer
 - [x] Improve tx dialog
 - [x] Token logo validation
-- [ ] Make token logo optional in create token form
 - [x] CFT-20 Marketplace
-- [ ] Inscriptions Marketplace
-- [ ] Add background
-- [ ] Add breadcrumbs navigation
-- [ ] Add token logo to tokens list / marketplace 
-- [ ] Loading states
-- [ ] Lottie animations
-- [ ] Index page
-- [ ] Font
+- [x] Lottie animations
 - [x] Reuse client - useMemo
-- [ ] Sell dialog check balance
-- [ ] check @todos
+- [x] Sell dialog check balance
 - [x] token mint page
-- [ ] Your listings in wallet (both inscriptions and tokens)
 - [x] Latest transactions clickable
+
+## Styling
+- [ ] Colors
+- [ ] Font
+- [ ] Favicon
+- [ ] Header - add logo
+
+## Inscription marketplace
+- [ ] Infinit loading
+- [ ] Filters
+- [ ] Add radio filter - buy now / all listings
+
+## CFT-20
+- [ ] Merge CFT-20 and Marketplace pages
+- [ ] Add token logo to tokens list / marketplace 
+
+## Portfolio (wallet)
+- [ ] Handle empty states in wallet
+- [ ] Your listings in wallet (both inscriptions and tokens) + cancel listing
