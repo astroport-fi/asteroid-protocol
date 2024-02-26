@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react'
-import { Token } from '~/services/asteroid'
+import { Token } from '~/api/token'
 import { getDateAgo } from '~/utils/date'
 import { getDecimalValue, getSupplyTitle } from '~/utils/number'
 import logo from '../images/logo/a-white-on-transparent-250.png'
@@ -22,7 +22,6 @@ function TokenLogo({
 }
 
 function TokenComponent({ token }: { token: Token }) {
-  // @todo handle different content from image
   return (
     <Link
       className="flex flex-col justify-between bg-base-200 rounded-xl"

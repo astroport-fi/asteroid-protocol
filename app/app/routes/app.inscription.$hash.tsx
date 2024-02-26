@@ -9,6 +9,8 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
+import { AsteroidClient } from '~/api/client'
+import { Inscription, InscriptionHistory } from '~/api/inscription'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
 import { InscriptionActions } from '~/components/InscriptionActions'
@@ -17,16 +19,11 @@ import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
 import useAddress from '~/hooks/useAddress'
 import useSorting from '~/hooks/useSorting'
-import {
-  AsteroidService,
-  Inscription,
-  InscriptionHistory,
-} from '~/services/asteroid'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
 
   if (!params.hash) {
     throw new Response(null, {
@@ -35,7 +32,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
-  const inscription = await asteroidService.getInscription(params.hash)
+  const inscription = await asteroidClient.getInscription(params.hash)
 
   if (!inscription) {
     throw new Response(null, {
@@ -50,7 +47,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     order_by.desc,
   )
 
-  const history = await asteroidService.getInscriptionHistory(inscription.id, {
+  const history = await asteroidClient.getInscriptionHistory(inscription.id, {
     [sort]: direction,
   })
 

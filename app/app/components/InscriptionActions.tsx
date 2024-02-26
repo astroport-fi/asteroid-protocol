@@ -1,6 +1,6 @@
 import { Button } from 'react-daisyui'
+import { Inscription } from '~/api/inscription'
 import useDialog from '~/hooks/useDialog'
-import { Inscription } from '~/services/asteroid'
 import SellInscriptionDialog from './dialogs/SellInscriptionDialog'
 import TransferInscriptionDialog from './dialogs/TransferInscriptionDialog'
 

@@ -4,12 +4,13 @@ import { Link, useLoaderData } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { Link as DaisyLink } from 'react-daisyui'
 import Markdown from 'react-markdown'
+import { AsteroidClient } from '~/api/client'
+import { Inscription } from '~/api/inscription'
 import InscriptionImage from '~/components/InscriptionImage'
-import { AsteroidService, Inscription } from '~/services/asteroid'
 import { getMimeTitle } from '~/utils/string'
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
 
   if (!params.hash) {
     throw new Response(null, {
@@ -18,7 +19,7 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     })
   }
 
-  const inscription = await asteroidService.getInscription(params.hash)
+  const inscription = await asteroidClient.getInscription(params.hash)
 
   if (!inscription) {
     throw new Response(null, {

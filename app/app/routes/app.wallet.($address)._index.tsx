@@ -6,12 +6,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { AsteroidClient } from '~/api/client'
+import { TokenHolding } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import TokenValue from '~/components/TokenValue'
 import Table from '~/components/table'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
-import { AsteroidService, TokenHolding } from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
@@ -51,8 +52,8 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     return json({ tokens: [], pages: 0 })
   }
 
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const tokens = await asteroidService.getTokenHoldings(
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const tokens = await asteroidClient.getTokenHoldings(
     address,
     offset,
     limit,

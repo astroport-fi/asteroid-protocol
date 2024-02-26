@@ -9,6 +9,8 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
+import { AsteroidClient } from '~/api/client'
+import { TokenDetail, TokenHolder, TokenTypeWithHolder } from '~/api/token'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
 import InscriptionImage from '~/components/InscriptionImage'
@@ -19,12 +21,6 @@ import Tokenomics from '~/components/Tokenomics'
 import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
 import useSorting from '~/hooks/useSorting'
-import {
-  AsteroidService,
-  TokenDetail,
-  TokenHolder,
-  TokenTypeWithHolder,
-} from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
@@ -40,8 +36,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   const address = await getAddress(request)
 
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker, true, address)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const token = await asteroidClient.getToken(params.ticker, true, address)
 
   if (!token) {
     throw new Response(null, {
@@ -56,7 +52,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     order_by.desc,
   )
 
-  const holders = await asteroidService.getTokenHolders(token.id, 0, 100, {
+  const holders = await asteroidClient.getTokenHolders(token.id, 0, 100, {
     [sort]: direction,
   })
 

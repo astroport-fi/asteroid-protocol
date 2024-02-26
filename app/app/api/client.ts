@@ -1,376 +1,51 @@
 import {
-  AsteroidService as BaseAsteroidService,
-  GraphQLTypes,
-  InputType,
+  AsteroidService,
   QueryOptions,
-  ScalarDefinition,
-  Selector,
   ValueTypes,
   WSSubscription,
   order_by,
 } from '@asteroid-protocol/sdk'
+import { aggregateCountSelector } from '~/api/common'
+import {
+  Inscription,
+  InscriptionHistory,
+  InscriptionTradeHistory,
+  InscriptionWithMarket,
+  inscriptionHistorySelector,
+  inscriptionListingSelector,
+  inscriptionSelector,
+  inscriptionTradeHistorySelector,
+} from '~/api/inscription'
+import { Status, statusSelector } from '~/api/status'
+import {
+  MarketplaceTokenListing,
+  Token,
+  TokenAddressHistory,
+  TokenHolder,
+  TokenHolderAmount,
+  TokenHolding,
+  TokenMarket,
+  TokenType,
+  tokenAddressHistorySelector,
+  tokenDetailSelector,
+  tokenHolderAmountSelector,
+  tokenHolderSelector,
+  tokenHoldingSelector,
+  tokenListingSelector,
+  tokenSelector,
+} from '~/api/token'
 
-const tokenSelector = Selector('token')({
-  id: true,
-  name: true,
-  ticker: true,
-  decimals: true,
-  launch_timestamp: true,
-  content_path: true,
-  circulating_supply: true,
-  last_price_base: true,
-  volume_24_base: true,
-  date_created: true,
-  max_supply: true,
-})
-
-export type Token = InputType<
-  GraphQLTypes['token'],
-  typeof tokenSelector,
-  ScalarDefinition
->
-
-const tokenDetailSelector = Selector('token')({
-  id: true,
-  height: true,
-  transaction: {
-    hash: true,
-  },
-  creator: true,
-  current_owner: true,
-  name: true,
-  ticker: true,
-  decimals: true,
-  max_supply: true,
-  per_mint_limit: true,
-  launch_timestamp: true,
-  last_price_base: true,
-  volume_24_base: true,
-  content_path: true,
-  content_size_bytes: true,
-  circulating_supply: true,
-  date_created: true,
-})
-
-export type TokenDetail = InputType<
-  GraphQLTypes['token'],
-  typeof tokenDetailSelector,
-  ScalarDefinition
->
-
-export type TokenTypeWithHolder<T> = T & {
-  token_holders?: (TokenMarketHolder | undefined)[]
+export type TokenMarketResult = {
+  tokens: TokenMarket[]
+  count: number
 }
-
-export type TokenType<T> = T extends true
-  ? TokenTypeWithHolder<TokenDetail>
-  : TokenTypeWithHolder<Token>
-
-const tokenHoldingSelector = Selector('token_holder')({
-  token: tokenSelector,
-  amount: true,
-  date_updated: true,
-})
-
-export type TokenHolding = InputType<
-  GraphQLTypes['token_holder'],
-  typeof tokenHoldingSelector,
-  ScalarDefinition
->
-
-const tokenHolderSelector = Selector('token_holder')({
-  id: true,
-  address: true,
-  amount: true,
-  date_updated: true,
-})
-
-export type TokenHolder = InputType<
-  GraphQLTypes['token_holder'],
-  typeof tokenHolderSelector,
-  ScalarDefinition
->
-
-const statusSelector = Selector('status')({
-  base_token: true,
-  base_token_usd: true,
-  last_processed_height: true,
-  last_known_height: true,
-})
-
-export type Status = InputType<
-  GraphQLTypes['status'],
-  typeof statusSelector,
-  ScalarDefinition
->
-
-const aggregateCountSelector = Selector('marketplace_cft20_detail_aggregate')({
-  aggregate: {
-    count: [{}, true],
-  },
-})
-
-const transactionHashSelector = Selector('transaction')({
-  hash: true,
-})
-
-export type TransactionHash = InputType<
-  GraphQLTypes['transaction'],
-  typeof transactionHashSelector,
-  ScalarDefinition
->
-
-const marketplaceListingSelector = Selector('marketplace_listing')({
-  seller_address: true,
-  total: true,
-  depositor_address: true,
-  is_deposited: true,
-  depositor_timedout_block: true,
-  deposit_total: true,
-  transaction: transactionHashSelector,
-})
-
-export type MarketplaceListing = InputType<
-  GraphQLTypes['marketplace_listing'],
-  typeof cft20ListingSelector,
-  ScalarDefinition
->
-
-const inscriptionListingSelector = Selector('marketplace_inscription_detail')({
-  marketplace_listing: marketplaceListingSelector,
-})
-
-export type InscriptionMarketplaceListing = InputType<
-  GraphQLTypes['marketplace_inscription_detail'],
-  typeof inscriptionListingSelector,
-  ScalarDefinition
->
-
-const cft20ListingSelector = Selector('marketplace_cft20_detail')({
-  id: true,
-  marketplace_listing: marketplaceListingSelector,
-  ppt: true,
-  amount: true,
-  date_created: true,
-})
-
-export type CFT20MarketplaceListing = InputType<
-  GraphQLTypes['marketplace_cft20_detail'],
-  typeof cft20ListingSelector,
-  ScalarDefinition
->
-
-// const collectionSelector = Selector('collection')({
-//   id: true,
-//   transaction: {
-//     hash: true,
-//   },
-//   symbol: true,
-//   creator: true,
-//   content_path: true,
-//   content_size_bytes: true,
-//   date_created: true,
-//   is_explicit: true,
-//   __alias: {
-//     name: {
-//       metadata: [
-//         {
-//           path: '$.metadata.name',
-//         },
-//         true,
-//       ],
-//     },
-//     description: {
-//       metadata: [
-//         {
-//           path: '$.metadata.description',
-//         },
-//         true,
-//       ],
-//     },
-//     mime: {
-//       metadata: [
-//         {
-//           path: '$.metadata.mime',
-//         },
-//         true,
-//       ],
-//     },
-//   },
-// })
-
-// export type Collection = InputType<
-//   GraphQLTypes['collection'],
-//   typeof collectionSelector,
-//   ScalarDefinition
-// >
-
-//// TOKEN MARKET
-
-const tokenMarketTokenSelector = Selector('token')({
-  id: true,
-  content_path: true,
-  name: true,
-  ticker: true,
-  decimals: true,
-  last_price_base: true,
-  volume_24_base: true,
-})
-
-const tokenMarketHolderSelector = Selector('token_holder')({
-  amount: true,
-})
-
-const marketplaceCft20DetailsAggregateSelector = Selector(
-  'marketplace_cft20_detail_aggregate',
-)({
-  aggregate: {
-    count: [{}, true],
-  },
-})
-
-export type TokenMarketToken = InputType<
-  GraphQLTypes['token'],
-  typeof tokenMarketTokenSelector,
-  ScalarDefinition
->
-
-export type TokenMarketHolder = InputType<
-  GraphQLTypes['token_holder'],
-  typeof tokenMarketHolderSelector,
-  ScalarDefinition
->
-
-export type MarketplaceCFT20DetailsAggregate = InputType<
-  GraphQLTypes['marketplace_cft20_detail_aggregate'],
-  typeof marketplaceCft20DetailsAggregateSelector,
-  ScalarDefinition
->
-
-export type TokenMarket = TokenMarketToken & {
-  marketplace_cft20_details_aggregate: MarketplaceCFT20DetailsAggregate
-  token_holders: (TokenMarketHolder | undefined)[]
-}
-
-//// INSCRIPTION
-
-const inscriptionSelector = Selector('inscription')({
-  id: true,
-  transaction: {
-    hash: true,
-  },
-  current_owner: true,
-  creator: true,
-  height: true,
-  content_path: true,
-  content_size_bytes: true,
-  date_created: true,
-  is_explicit: true,
-  __alias: {
-    name: {
-      metadata: [
-        {
-          path: '$.metadata.name',
-        },
-        true,
-      ],
-    },
-    description: {
-      metadata: [
-        {
-          path: '$.metadata.description',
-        },
-        true,
-      ],
-    },
-    mime: {
-      metadata: [
-        {
-          path: '$.metadata.mime',
-        },
-        true,
-      ],
-    },
-    attributes: {
-      metadata: [
-        {
-          path: '$.metadata.attributes',
-        },
-        true,
-      ],
-    },
-  },
-})
-
-export type Inscription = InputType<
-  GraphQLTypes['inscription'],
-  typeof inscriptionSelector,
-  ScalarDefinition
->
-
-export type InscriptionWithMarket = Inscription & {
-  marketplace_inscription_details: (InscriptionMarketplaceListing | undefined)[]
-}
-
-const inscriptionTradeHistorySelector = Selector('inscription_trade_history')({
-  id: true,
-  amount_quote: true,
-  total_usd: true,
-  seller_address: true,
-  buyer_address: true,
-  date_created: true,
-  inscription: inscriptionSelector,
-})
-
-export type InscriptionTradeHistory = InputType<
-  GraphQLTypes['inscription_trade_history'],
-  typeof inscriptionTradeHistorySelector,
-  ScalarDefinition
->
-
-const inscriptionHistorySelector = Selector('inscription_history')({
-  id: true,
-  height: true,
-  transaction: {
-    hash: true,
-  },
-  sender: true,
-  receiver: true,
-  action: true,
-  date_created: true,
-})
-
-export type InscriptionHistory = InputType<
-  GraphQLTypes['inscription_history'],
-  typeof inscriptionHistorySelector,
-  ScalarDefinition
->
-
-const tokenAddressHistorySelector = Selector('token_address_history')({
-  id: true,
-  height: true,
-  transaction: {
-    hash: true,
-  },
-  action: true,
-  amount: true,
-  sender: true,
-  receiver: true,
-  date_created: true,
-})
-
-export type TokenAddressHistory = InputType<
-  GraphQLTypes['token_address_history'],
-  typeof tokenAddressHistorySelector,
-  ScalarDefinition
->
 
 export type TokenListings = {
-  listings: CFT20MarketplaceListing[]
+  listings: MarketplaceTokenListing[]
   count?: number
 }
 
-export class AsteroidService extends BaseAsteroidService {
+export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
   }
@@ -422,9 +97,7 @@ export class AsteroidService extends BaseAsteroidService {
               },
             },
           },
-          {
-            amount: true,
-          },
+          tokenHolderAmountSelector,
         ],
       }
     }
@@ -433,7 +106,7 @@ export class AsteroidService extends BaseAsteroidService {
       token: [queryOptions, selector],
     })
     return result.token[0] as TokenType<T> & {
-      token_holders?: (TokenMarketHolder | undefined)[]
+      token_holders?: (TokenHolderAmount | undefined)[]
     }
   }
 
@@ -577,7 +250,7 @@ export class AsteroidService extends BaseAsteroidService {
       userAddress?: string
     } = {},
     orderBy?: ValueTypes['token_order_by'],
-  ): Promise<TokenMarket[]> {
+  ): Promise<TokenMarketResult> {
     if (!orderBy) {
       orderBy = {
         id: order_by.desc,
@@ -603,16 +276,19 @@ export class AsteroidService extends BaseAsteroidService {
     }
 
     const result = await this.query({
+      token_aggregate: [{}, { aggregate: { count: [{}, true] } }],
       token: [
         { offset, limit, order_by: [orderBy] },
         {
           id: true,
-          content_path: true,
           name: true,
           ticker: true,
           decimals: true,
+          content_path: true,
+          circulating_supply: true,
           last_price_base: true,
           volume_24_base: true,
+          max_supply: true,
           token_holders: tokenHolders,
           marketplace_cft20_details_aggregate: [
             {
@@ -636,7 +312,10 @@ export class AsteroidService extends BaseAsteroidService {
         },
       ],
     })
-    return result.token
+    return {
+      tokens: result.token,
+      count: result.token_aggregate.aggregate?.count ?? result.token.length,
+    }
   }
 
   async getTokenListings(
@@ -669,7 +348,7 @@ export class AsteroidService extends BaseAsteroidService {
     type Query = {
       marketplace_cft20_detail: [
         QueryOptions<'marketplace_cft20_detail'>,
-        typeof cft20ListingSelector,
+        typeof tokenListingSelector,
       ]
       marketplace_cft20_detail_aggregate?: [
         QueryOptions<'marketplace_cft20_detail_aggregate'>,
@@ -685,7 +364,7 @@ export class AsteroidService extends BaseAsteroidService {
           limit,
           order_by: [orderBy],
         },
-        cft20ListingSelector,
+        tokenListingSelector,
       ],
     }
 
@@ -719,7 +398,7 @@ export class AsteroidService extends BaseAsteroidService {
   tokenListingsSubscription(
     tokenId: number,
     limit: number,
-  ): WSSubscription<{ marketplace_cft20_detail: CFT20MarketplaceListing[] }> {
+  ): WSSubscription<{ marketplace_cft20_detail: MarketplaceTokenListing[] }> {
     return this.subscription({
       marketplace_cft20_detail: [
         {
@@ -743,7 +422,7 @@ export class AsteroidService extends BaseAsteroidService {
             },
           ],
         },
-        cft20ListingSelector,
+        tokenListingSelector,
       ],
     })
   }

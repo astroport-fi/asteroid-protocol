@@ -69,9 +69,6 @@ export default function Navbar() {
             <NavLink to="/app/wallet">Portfolio</NavLink>
           </Menu.Item>
           <Menu.Item>
-            <NavLink to="/app/markets">Marketplace</NavLink>
-          </Menu.Item>
-          <Menu.Item>
             <Menu.Details
               label="Create"
               className="z-10"

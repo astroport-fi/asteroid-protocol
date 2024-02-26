@@ -2,7 +2,7 @@ import { Link } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
-import { InscriptionWithMarket } from '~/services/asteroid'
+import { InscriptionWithMarket } from '~/api/inscription'
 import { getDecimalValue } from '~/utils/number'
 import InscriptionImage from './InscriptionImage'
 

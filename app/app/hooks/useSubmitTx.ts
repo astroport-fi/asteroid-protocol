@@ -1,10 +1,10 @@
 import { TxInscription, prepareTx } from '@asteroid-protocol/sdk'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AsteroidClient } from '~/api/client'
 import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
-import { AsteroidService } from '~/services/asteroid'
 import useAddress from './useAddress'
 
 export enum TxState {
@@ -24,7 +24,7 @@ interface CheckResult {
 
 async function checkTransaction(
   client: SigningClient,
-  asteroidClient: AsteroidService,
+  asteroidClient: AsteroidClient,
   txState: TxState,
   txHash: string,
 ): Promise<CheckResult | undefined> {

@@ -14,8 +14,8 @@ import {
 } from '@remix-run/react'
 import { assets, chains } from 'chain-registry'
 import { wallets } from 'cosmos-kit'
+import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
-import { AsteroidService } from './services/asteroid'
 import '~/tailwind.css'
 
 // Add Local Cosmos Hub
@@ -57,8 +57,8 @@ const additionalAssets: AssetList[] = [
 ]
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const status = await asteroidService.getStatus(context.env.CHAIN_ID)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const status = await asteroidClient.getStatus(context.env.CHAIN_ID)
 
   return json({
     status,

@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react'
 import { Button } from 'react-daisyui'
+import { Token } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
-import { Token } from '~/services/asteroid'
 import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
 

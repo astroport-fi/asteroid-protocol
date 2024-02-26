@@ -1,10 +1,10 @@
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
+import { AsteroidClient } from '~/api/client'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintToken from '~/components/MintToken'
 import Tokenomics from '~/components/Tokenomics'
-import { AsteroidService } from '~/services/asteroid'
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   if (!params.ticker) {
@@ -14,8 +14,8 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     })
   }
 
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker, true)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const token = await asteroidClient.getToken(params.ticker, true)
 
   if (!token) {
     throw new Response(null, {

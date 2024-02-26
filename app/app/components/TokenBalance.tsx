@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge'
-import { Token } from '~/services/asteroid'
+import { Token } from '~/api/token'
 import TokenValue from './TokenValue'
 
 interface Props {

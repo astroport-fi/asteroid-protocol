@@ -9,6 +9,8 @@ import {
 import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import { AsteroidClient } from '~/api/client'
+import { MarketplaceTokenListing, Token } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import Stat from '~/components/Stat'
@@ -22,11 +24,6 @@ import useDialog from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
-import {
-  AsteroidService,
-  CFT20MarketplaceListing,
-  Token,
-} from '~/services/asteroid'
 import { getAddress } from '~/utils/cookies'
 import { getDateAgo } from '~/utils/date'
 import { round1 } from '~/utils/math'
@@ -50,8 +47,8 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   )
 
   const address = await getAddress(request)
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const token = await asteroidService.getToken(params.ticker, false, address)
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const token = await asteroidClient.getToken(params.ticker, false, address)
 
   if (!token) {
     throw new Response(null, {
@@ -79,7 +76,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const res = await asteroidService.getTokenListings(
+  const res = await asteroidClient.getTokenListings(
     token.id,
     offset,
     limit,
@@ -104,7 +101,7 @@ enum ListingState {
 }
 
 function getListingState(
-  listing: CFT20MarketplaceListing,
+  listing: MarketplaceTokenListing,
   walletAddress: string | undefined,
   currentBlock: number,
 ) {
@@ -138,11 +135,11 @@ function ListingsTable({
   className,
 }: {
   token: Token
-  listings: CFT20MarketplaceListing[]
+  listings: MarketplaceTokenListing[]
   pages: number
   className?: string
 }) {
-  const columnHelper = createColumnHelper<CFT20MarketplaceListing>()
+  const columnHelper = createColumnHelper<MarketplaceTokenListing>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const address = useAddress()
@@ -264,7 +261,7 @@ function ListingsTable({
     }),
   ]
 
-  const table = useReactTable<CFT20MarketplaceListing>({
+  const table = useReactTable<MarketplaceTokenListing>({
     columns,
     data: listings,
     pageCount: pages,

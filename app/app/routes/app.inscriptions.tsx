@@ -2,18 +2,18 @@ import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import { useState } from 'react'
-import { Button, Divider, Dropdown } from 'react-daisyui'
+import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import { AsteroidClient } from '~/api/client'
+import {
+  InscriptionTradeHistory,
+  InscriptionWithMarket,
+} from '~/api/inscription'
 import InscriptionImage from '~/components/InscriptionImage'
 import { Inscriptions } from '~/components/Inscriptions'
 import BuyInscriptionDialog from '~/components/dialogs/BuyInscriptionDialog'
 import Select, { DropdownItem } from '~/components/form/Select'
 import useDialog from '~/hooks/useDialog'
-import {
-  AsteroidService,
-  InscriptionTradeHistory,
-  InscriptionWithMarket,
-} from '~/services/asteroid'
 import { getDateAgo } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination } from '~/utils/pagination'
@@ -22,9 +22,9 @@ import { shortAddress } from '~/utils/string'
 export async function loader({ context, request }: LoaderFunctionArgs) {
   // @todo offset, limit
   const { offset, limit } = parsePagination(new URL(request.url).searchParams)
-  const asteroidService = new AsteroidService(context.env.ASTEROID_API)
-  const inscriptions = await asteroidService.getInscriptions(0, 500)
-  const transactions = await asteroidService.getInscriptionTradeHistory()
+  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const inscriptions = await asteroidClient.getInscriptions(0, 500)
+  const transactions = await asteroidClient.getInscriptionTradeHistory()
 
   return json({
     inscriptions,
