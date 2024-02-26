@@ -48,8 +48,8 @@ function getMsgRevoke(inscription: TxInscription): MsgRevoke {
   )
 
   return {
-    granter: toBase64(data.content),
-    grantee: metadata,
+    granter: metadata,
+    grantee: toBase64(data.content),
     msgTypeUrl: inscription.urn,
   }
 }
