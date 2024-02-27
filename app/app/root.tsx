@@ -110,6 +110,10 @@ export default function App() {
           }}
         >
           <ChainProvider
+            modalTheme={{
+              modalContentClassName: 'cosmoskit-content',
+              modalChildrenClassName: 'cosmoskit-children',
+            }}
             chains={[...chains, ...additionalChains]}
             assetLists={[...assets, ...additionalAssets]}
             wallets={[wallets[0], wallets[2]]}

@@ -104,3 +104,19 @@ strong {
     @apply font-heading;
   }
 }
+
+.cosmoskit-children div *,
+.cosmoskit-content > div {
+  @apply bg-base-300;
+}
+
+.cosmoskit-children button,
+.cosmoskit-children button * {
+  @apply bg-primary !important;
+  @apply text-primary-content !important;
+
+  &:hover {
+    @apply shadow-none !important;
+    @apply opacity-85 !important;
+  }
+}
