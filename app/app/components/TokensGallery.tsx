@@ -42,7 +42,7 @@ function TokenComponent({ token }: { token: Token }) {
 
 export function Tokens({ tokens }: { tokens: Token[] }) {
   return (
-    <div className="grid grid-cols-6 gap-4">
+    <div className="grid grid-cols-fill-56 gap-4">
       {tokens.map((token) => (
         <TokenComponent key={token.id} token={token} />
       ))}

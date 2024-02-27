@@ -13,6 +13,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!address) {
     return json({ tokens: [] })
   }
+  // @todo pagination
   const tokens = await asteroidClient.getTokens(0, 500, {
     currentOwner: address,
   })

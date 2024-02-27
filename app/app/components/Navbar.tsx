@@ -8,7 +8,7 @@ export default function Navbar() {
   const close = useCallback(() => setDetailOpen(false), [])
 
   return (
-    <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral">
+    <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral uppercase">
       <DaisyNavbar.Start className="py-2">
         <Dropdown>
           <Button tag="label" color="ghost" tabIndex={0} className="lg:hidden">
@@ -53,12 +53,12 @@ export default function Navbar() {
             </li>
           </Dropdown.Menu>
         </Dropdown>
-        <Link className="btn btn-ghost normal-case text-xl" to="/app/">
-          Asteroid
+        <Link className="btn btn-ghost normal-case text-xl px-8" to="/app/">
+          <img src="/app/images/logo/white.svg" alt="Asteroid protocol" />
         </Link>
       </DaisyNavbar.Start>
       <DaisyNavbar.Center className="hidden lg:flex">
-        <Menu horizontal className="px-1">
+        <Menu horizontal className="px-1 flex items-center text-lg">
           <Menu.Item>
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>

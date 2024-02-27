@@ -75,7 +75,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     case Sort.LOWEST_PRICE:
       orderBy = {
         inscription: {
-          id: order_by.asc,
+          id: order_by.desc,
         },
         marketplace_listing: {
           total: order_by.asc,
@@ -85,7 +85,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     case Sort.HIGHEST_PRICE:
       orderBy = {
         inscription: {
-          id: order_by.asc,
+          id: order_by.desc,
         },
         marketplace_listing: {
           total: order_by.desc_nulls_last,
@@ -95,7 +95,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     case Sort.RECENTLY_LISTED:
       orderBy = {
         inscription: {
-          id: order_by.asc,
+          id: order_by.desc,
         },
         marketplace_listing: {
           id: order_by.desc_nulls_last,
@@ -105,7 +105,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     case Sort.LOWEST_ID:
       orderBy = {
         inscription: {
-          id: order_by.asc,
+          id: order_by.desc,
         },
       }
       break
@@ -194,7 +194,9 @@ function FilterTitle({
   className,
 }: PropsWithChildren<{ className?: string }>) {
   return (
-    <span className={twMerge('text-gray-500 text-sm uppercase', className)}>
+    <span
+      className={twMerge('text-header-content text-sm uppercase', className)}
+    >
       {children}
     </span>
   )
@@ -331,7 +333,7 @@ function LatestTransactions({
     <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex">
       <div className="fixed py-8 flex flex-col pl-2 w-[-webkit-fill-available]">
         <div className="text-center">Latest transactions</div>
-        <div className="flex flex-row justify-between mt-4 uppercase text-gray-500 px-4">
+        <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
           <span className="p-2 shrink-0">
             <ClockIcon className="size-5" />
           </span>

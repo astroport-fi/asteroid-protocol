@@ -13,12 +13,12 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!address) {
     return json({ inscriptions: [] })
   }
-  const inscriptions = await asteroidClient.getInscriptions(0, 500, {
+  const res = await asteroidClient.getInscriptions(0, 500, {
     currentOwner: address,
   })
 
   return json({
-    inscriptions: inscriptions,
+    inscriptions: res.inscriptions,
   })
 }
 

@@ -103,7 +103,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                       />
                       <span>ATOM</span>
                     </span>
-                    <span className="uppercase text-sm text-gray-500">
+                    <span className="uppercase text-sm text-header-content">
                       Price
                     </span>
                   </div>
