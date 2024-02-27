@@ -25,6 +25,7 @@ npm run dev
 - [ ] Add breadcrumbs navigation
 - [ ] check @todos
 - [ ] Token explicit
+- [ ] Search by name
 
 ## Websocket
 - [ ] Footer - update data from websocket

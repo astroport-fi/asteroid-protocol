@@ -1,6 +1,6 @@
 import { AssetList, Chain } from '@chain-registry/types'
 import { ChainProvider } from '@cosmos-kit/react'
-import { LoaderFunctionArgs } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import {
   Links,
   Meta,
@@ -73,6 +73,10 @@ export async function loader({ context }: LoaderFunctionArgs) {
       USE_IBC: context.env.USE_IBC,
     },
   })
+}
+
+export const meta: MetaFunction = () => {
+  return [{ title: 'Asteroid Protocol | Inscribe anything on the Hub' }]
 }
 
 export default function App() {

@@ -53,7 +53,9 @@ function InscriptionBox<T extends InscriptionWithMarket>({
                 />
                 <span>ATOM</span>
               </span>
-              <span className="uppercase text-sm text-gray-500">Price</span>
+              <span className="uppercase text-sm text-header-content">
+                Price
+              </span>
             </>
           ) : (
             <span className="text-lg py-2.5">No listing</span>
