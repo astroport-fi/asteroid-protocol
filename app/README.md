@@ -19,13 +19,30 @@ npm run dev
 
 # TODO
 
-- [ ] OG tags (like inscription)
 - [ ] Stargaze in Address component
-- [ ] Token explicit
+- [ ] OG tags (like inscription)
 - [ ] Make token logo optional in create token form
 - [ ] Add breadcrumbs navigation
-- [ ] Loading states
 - [ ] check @todos
+- [ ] Token explicit
+
+## Websocket
+- [ ] Footer - update data from websocket
+- [ ] Market page
+
+## Styling
+- [ ] Colors
+- [ ] Font
+- [ ] Favicon
+- [ ] Header - add logo
+
+## Portfolio (wallet)
+- [ ] Handle empty states in wallet
+- [ ] Your listings in wallet (both inscriptions and tokens) + cancel listing
+
+## Done
+
+- [x] Fix two buy dialog loading state
 - [x] When wallet is not connected show connect button instead in all places with some action
 - [x] Index page
 - [x] Wallet disconnected state
@@ -43,16 +60,6 @@ npm run dev
 - [x] token mint page
 - [x] Latest transactions clickable
 
-## Websocket
-- [ ] Footer - update data from websocket
-- [ ] Market page
-
-## Styling
-- [ ] Colors
-- [ ] Font
-- [ ] Favicon
-- [ ] Header - add logo
-
 ## Inscription marketplace
 - [x] Infinit loading
 - [x] Filters
@@ -61,7 +68,3 @@ npm run dev
 ## CFT-20
 - [x] Merge CFT-20 and Marketplace pages
 - [x] Add token logo to tokens list / marketplace 
-
-## Portfolio (wallet)
-- [ ] Handle empty states in wallet
-- [ ] Your listings in wallet (both inscriptions and tokens) + cancel listing

@@ -107,7 +107,6 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   // Estimate chain fee
   useEffect(() => {
     if (!txData) {
-      setError('There are no transaction data to estimate chain fee')
       return
     }
 
