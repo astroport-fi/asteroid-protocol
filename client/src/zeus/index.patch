@@ -1,5 +1,13 @@
 --- index1.ts	2024-02-08 20:32:34.403926097 +0100
 +++ index2.ts	2024-02-08 20:34:23.057263589 +0100
+@@ -1,6 +1,6 @@
+ /* eslint-disable */
+ import { type Sink, createClient } from 'graphql-ws'
+-import { AllTypesProps, Ops, ReturnTypes } from './const'
++import { AllTypesProps, Ops, ReturnTypes } from './const.js'
+ 
+ export const HOST = 'http://localhost:8080/v1/graphql'
+ 
 @@ -178,7 +178,7 @@
      }
      const hasOperationName =

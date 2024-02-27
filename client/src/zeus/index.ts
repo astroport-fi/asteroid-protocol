@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { type Sink, createClient } from 'graphql-ws'
-import { AllTypesProps, Ops, ReturnTypes } from './const'
+import { AllTypesProps, Ops, ReturnTypes } from './const.js'
 
 export const HOST = 'http://localhost:8080/v1/graphql'
 
