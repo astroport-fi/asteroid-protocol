@@ -119,7 +119,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   }
 
   const { offset, limit, page } = parsePagination(searchParams, LIMIT)
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const result = await asteroidClient.getInscriptions(
     offset,
     limit,

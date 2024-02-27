@@ -52,7 +52,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     return json({ tokens: [], pages: 0 })
   }
 
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const tokens = await asteroidClient.getTokenHoldings(
     address,
     offset,

@@ -57,20 +57,20 @@ const additionalAssets: AssetList[] = [
 ]
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
-  const status = await asteroidClient.getStatus(context.env.CHAIN_ID)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
+  const status = await asteroidClient.getStatus(context.cloudflare.env.CHAIN_ID)
 
   return json({
     status,
     ENV: {
-      CHAIN_ID: context.env.CHAIN_ID,
-      CHAIN_NAME: context.env.CHAIN_NAME,
-      TX_EXPLORER: context.env.TX_EXPLORER,
-      GAS_PRICE: context.env.GAS_PRICE,
-      MAX_FILE_SIZE: context.env.MAX_FILE_SIZE,
-      ASTEROID_API: context.env.ASTEROID_API,
-      ASTEROID_API_WSS: context.env.ASTEROID_API_WSS,
-      USE_IBC: context.env.USE_IBC,
+      CHAIN_ID: context.cloudflare.env.CHAIN_ID,
+      CHAIN_NAME: context.cloudflare.env.CHAIN_NAME,
+      TX_EXPLORER: context.cloudflare.env.TX_EXPLORER,
+      GAS_PRICE: context.cloudflare.env.GAS_PRICE,
+      MAX_FILE_SIZE: context.cloudflare.env.MAX_FILE_SIZE,
+      ASTEROID_API: context.cloudflare.env.ASTEROID_API,
+      ASTEROID_API_WSS: context.cloudflare.env.ASTEROID_API_WSS,
+      USE_IBC: context.cloudflare.env.USE_IBC,
     },
   })
 }

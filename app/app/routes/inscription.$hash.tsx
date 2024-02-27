@@ -10,7 +10,7 @@ import InscriptionImage from '~/components/InscriptionImage'
 import { getMimeTitle } from '~/utils/string'
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
 
   if (!params.hash) {
     throw new Response(null, {

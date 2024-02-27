@@ -32,7 +32,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
   const address = await getAddress(request)
 
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const res = await asteroidClient.getTokenMarkets(
     offset,
     limit,

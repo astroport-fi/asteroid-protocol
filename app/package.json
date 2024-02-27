@@ -10,17 +10,18 @@
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "wrangler pages dev ./build/client",
     "typecheck": "tsc",
-    "prettify": "prettier . --write"
+    "prettify": "prettier . --write",
+    "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.5.3",
+    "@asteroid-protocol/sdk": "^0.6.1",
     "@chain-registry/types": "^0.18.0",
     "@cosmjs/stargate": "^0.32.2",
     "@cosmos-kit/react": "^2.10.10",
     "@heroicons/react": "^2.1.1",
-    "@remix-run/cloudflare": "^2.6.0",
-    "@remix-run/cloudflare-pages": "^2.6.0",
-    "@remix-run/react": "^2.6.0",
+    "@remix-run/cloudflare": "^2.7.2",
+    "@remix-run/cloudflare-pages": "^2.7.2",
+    "@remix-run/react": "^2.7.2",
     "@tanstack/react-table": "^8.12.0",
     "chain-registry": "^1.28.1",
     "clsx": "^2.1.0",
@@ -42,7 +43,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230518.0",
-    "@remix-run/dev": "^2.6.0",
+    "@remix-run/dev": "^2.7.2",
     "@tailwindcss/typography": "^0.5.10",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/react": "^18.2.20",
@@ -61,7 +62,7 @@
     "tailwindcss": "^3.4.1",
     "tsc-files": "^1.1.4",
     "typescript": "^5.1.6",
-    "vite": "^5.0.0",
+    "vite": "^5.1.0",
     "vite-plugin-node-polyfills": "^0.21.0",
     "vite-tsconfig-paths": "^4.2.1",
     "wrangler": "^3.24.0"

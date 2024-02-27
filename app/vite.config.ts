@@ -1,6 +1,6 @@
 import {
-  unstable_cloudflarePreset as cloudflare,
-  unstable_vitePlugin as remix,
+  vitePlugin as remix,
+  cloudflareDevProxyVitePlugin as remixCloudflareDevProxy,
 } from '@remix-run/dev'
 import { defineConfig } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -8,9 +8,8 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [
-    remix({
-      presets: [cloudflare()],
-    }),
+    remixCloudflareDevProxy(),
+    remix(),
     tsconfigPaths(),
     nodePolyfills({
       include: ['buffer'],
@@ -19,9 +18,4 @@ export default defineConfig({
       },
     }),
   ],
-  ssr: {
-    resolve: {
-      externalConditions: ['workerd', 'worker'],
-    },
-  },
 })

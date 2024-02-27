@@ -5,7 +5,7 @@ import { Inscriptions } from '~/components/Inscriptions'
 import { getAddress } from '~/utils/cookies'
 
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   let address = params.address
   if (!address) {
     address = await getAddress(request)

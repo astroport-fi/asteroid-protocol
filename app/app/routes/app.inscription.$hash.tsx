@@ -23,7 +23,7 @@ import { DATETIME_FORMAT } from '~/utils/date'
 import { parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
-  const asteroidClient = new AsteroidClient(context.env.ASTEROID_API)
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
 
   if (!params.hash) {
     throw new Response(null, {

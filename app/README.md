@@ -10,12 +10,7 @@
 
 ## Development
 
-Run the Vite dev server:
-
-```bash
-npm run dev
-```
-
+see [DEV.md](./DEV.md)
 
 # TODO
 
@@ -30,12 +25,6 @@ npm run dev
 ## Websocket
 - [ ] Footer - update data from websocket
 - [ ] Market page
-
-## Styling
-- [ ] Colors
-- [ ] Font
-- [ ] Favicon
-- [ ] Header - add logo
 
 ## Portfolio (wallet)
 - [ ] Handle empty states in wallet
@@ -60,6 +49,12 @@ npm run dev
 - [x] Sell dialog check balance
 - [x] token mint page
 - [x] Latest transactions clickable
+
+## Styling
+- [x] Colors
+- [x] Font
+- [x] Favicon
+- [x] Header - add logo
 
 ## Inscription marketplace
 - [x] Infinit loading
