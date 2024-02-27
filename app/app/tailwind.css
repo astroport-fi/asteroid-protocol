@@ -114,9 +114,9 @@ strong {
 .cosmoskit-children button * {
   @apply bg-primary !important;
   @apply text-primary-content !important;
+}
 
-  &:hover {
-    @apply shadow-none !important;
-    @apply opacity-85 !important;
-  }
+.cosmoskit-children button:hover {
+  @apply shadow-none !important;
+  @apply opacity-85 !important;
 }
