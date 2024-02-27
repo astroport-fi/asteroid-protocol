@@ -7,18 +7,21 @@ export const Networks: Record<string, Network> = {
   local: {
     chainId: 'gaialocal-1',
     rpc: 'http://localhost:16657',
+    rest: 'http://localhost:1316',
     explorer: 'http://localhost:1316/cosmos/tx/v1beta1/txs/',
     api: 'http://localhost:8080/v1/graphql',
   },
   testnet: {
     chainId: 'theta-testnet-001',
     rpc: 'https://rpc.sentry-01.theta-testnet.polypore.xyz',
+    rest: 'https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz',
     explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
     api: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
   },
   mainnet: {
     chainId: 'cosmoshub-4',
     rpc: 'https://rpc-nodes.asteroidprotocol.io',
+    rest: 'https://nodes.asteroidprotocol.io',
     explorer: 'https://www.mintscan.io/cosmos/tx/',
     api: 'https://api.asteroidprotocol.io/v1/graphql',
   },
@@ -38,6 +41,7 @@ export const DEFAULT_CONFIG: Config = {
 const Network = z.object({
   chainId: z.string(),
   rpc: z.string(),
+  rest: z.string(),
   api: z.string(),
   explorer: z.string(),
 })

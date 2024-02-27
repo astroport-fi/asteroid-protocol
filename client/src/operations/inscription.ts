@@ -24,7 +24,7 @@ export class InscriptionOperations<
   }
 
   inscribe<M = ContentMetadata>(
-    data: string | Buffer,
+    content: Uint8Array,
     metadata: M,
     parent?: Parent,
   ) {
@@ -32,13 +32,13 @@ export class InscriptionOperations<
       parent = accountIdentifier(this.address)
     }
 
-    const inscriptionContent = this.protocol.createInscriptionContent(
-      data,
+    const inscriptionData = this.protocol.createInscriptionData(
+      content,
       metadata,
       parent,
     )
-    const operation = this.protocol.inscribe(inscriptionContent.hash)
-    return this.prepareOperation(operation, inscriptionContent)
+    const operation = this.protocol.inscribe(inscriptionData.hash)
+    return this.prepareOperation(operation, inscriptionData)
   }
 
   transfer(hash: string, destination: string) {

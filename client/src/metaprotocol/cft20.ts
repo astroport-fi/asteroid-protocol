@@ -1,13 +1,12 @@
 import {
   BaseProtocol,
-  InscriptionContent,
+  InscriptionData,
   MetaProtocol,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscriptionContent,
+  buildInscriptionData,
   buildOperation,
 } from './index.js'
-import { InscriptionMetadata } from './inscription.js'
 
 const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',
@@ -34,22 +33,20 @@ export default class CFT20Protocol
 
   createLogoInscription(
     accountAddress: string,
-    data: string | Buffer,
+    content: Uint8Array,
     mime: string,
-  ): InscriptionContent {
-    const inscriptionMetadata: InscriptionMetadata = {
-      parent: {
-        type: '/cosmos.bank.Account',
-        identifier: accountAddress,
-      },
-      metadata: {
-        name: 'Token Logo',
-        description: 'Token Logo',
-        mime,
-      },
+  ): InscriptionData {
+    const metadata = {
+      name: 'Token Logo',
+      description: 'Token Logo',
+      mime,
     }
-
-    return buildInscriptionContent(data, inscriptionMetadata)
+    return buildInscriptionData(
+      '/cosmos.bank.Account',
+      accountAddress,
+      content,
+      metadata,
+    )
   }
 
   deploy(

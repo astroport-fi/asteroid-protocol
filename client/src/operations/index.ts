@@ -1,13 +1,14 @@
 import { EncodeObject } from '@cosmjs/proto-signing'
 import {
   BaseProtocol,
-  InscriptionContent,
+  InscriptionData,
   Operation,
 } from '../metaprotocol/index.js'
 import { TxData, TxInscription, prepareTx } from '../metaprotocol/tx.js'
 
 export interface Options<T extends boolean> {
   useIbc?: boolean
+  useExtensionData?: boolean
   multi: T
 }
 
@@ -27,7 +28,7 @@ export abstract class OperationsBase<T extends boolean> {
 
   protected prepareOperation(
     operation: Operation,
-    inscriptionContent?: InscriptionContent,
+    inscriptionData?: InscriptionData,
     feeOverride?: string,
     messages?: readonly EncodeObject[],
   ): PrepareType<T> {
@@ -36,8 +37,10 @@ export abstract class OperationsBase<T extends boolean> {
       operation: feeOverride ?? operation.fee.amount,
     }
     const inscription: TxInscription = {
+      protocolName: this.protocol.name,
+      protocolVersion: this.protocol.version,
       fee,
-      content: inscriptionContent,
+      data: inscriptionData,
       messages,
       urn: operation.urn,
     }
@@ -46,11 +49,9 @@ export abstract class OperationsBase<T extends boolean> {
       return inscription as PrepareType<T>
     }
 
-    return prepareTx(
-      this.address,
-      operation.urn,
-      [inscription],
-      this.options.useIbc,
-    ) as PrepareType<T>
+    return prepareTx(this.address, operation.urn, [inscription], {
+      useIbc: this.options.useIbc,
+      useExtensionData: this.options.useExtensionData,
+    }) as PrepareType<T>
   }
 }

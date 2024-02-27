@@ -1,5 +1,5 @@
-import { toBase64, toUtf8 } from '@cosmjs/encoding'
-import { hashValue } from '../crypto.js'
+import { sha256 } from '@cosmjs/crypto'
+import { toHex } from '@cosmjs/encoding'
 
 export interface MetaProtocol {
   version: string
@@ -8,9 +8,11 @@ export interface MetaProtocol {
 
 export type MetaProtocolParams = Array<[string, string | number]>
 
-export interface InscriptionContent {
-  data: string // data base64
-  metadata: string // metadata base64
+export interface InscriptionData {
+  content: Uint8Array
+  metadata: unknown
+  parentType: string
+  parentIdentifier: string
   hash: string
 }
 
@@ -82,22 +84,19 @@ export function buildOperation(
   }
 }
 
-export function buildInscriptionContent(
-  data: string | Buffer,
-  metadata: unknown,
-): InscriptionContent {
-  let dataStr: string
-  if (Buffer.isBuffer(data)) {
-    dataStr = data.toString('base64')
-  } else {
-    dataStr = data
-  }
-  const metadataBase64 = toBase64(toUtf8(JSON.stringify(metadata)))
-  const hash = hashValue(metadataBase64 + dataStr)
+export function buildInscriptionData<T = unknown>(
+  parentType: string,
+  parentIdentifier: string,
+  content: Uint8Array,
+  metadata: T,
+): InscriptionData {
+  const hash = toHex(sha256(content))
 
   return {
+    parentType,
+    parentIdentifier,
+    content,
+    metadata,
     hash,
-    data: dataStr,
-    metadata: metadataBase64,
   }
 }

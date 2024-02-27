@@ -22,11 +22,9 @@ export class MetaOperations<
 
   execute(inscriptions: TxInscription[]): TxData {
     const operation = this.protocol.execute()
-    return prepareTx(
-      this.address,
-      operation.urn,
-      inscriptions,
-      this.options.useIbc,
-    )
+    return prepareTx(this.address, operation.urn, inscriptions, {
+      useIbc: this.options.useIbc,
+      useExtensionData: this.options.useExtensionData,
+    })
   }
 }

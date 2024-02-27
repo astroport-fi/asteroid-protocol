@@ -46,7 +46,7 @@ export function setupTxExtension(base: QueryClient): TxExtension {
         signer: Pubkey,
         sequence: number,
         nonCriticalExtensionOptions?: Any[],
-      ) => {
+      ): Promise<SimulateResponse> => {
         const tx = Tx.fromPartial({
           authInfo: AuthInfo.fromPartial({
             fee: Fee.fromPartial({}),
@@ -65,6 +65,7 @@ export function setupTxExtension(base: QueryClient): TxExtension {
           }),
           signatures: [new Uint8Array()],
         })
+
         const request = SimulateRequest.fromPartial({
           txBytes: Tx.encode(tx).finish(),
         })
