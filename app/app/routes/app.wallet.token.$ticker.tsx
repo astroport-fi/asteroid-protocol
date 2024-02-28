@@ -1,3 +1,4 @@
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
@@ -7,20 +8,35 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Divider } from 'react-daisyui'
+import { useState } from 'react'
+import { Button, Divider } from 'react-daisyui'
+import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
-import { Token, TokenAddressHistory, TokenTypeWithHolder } from '~/api/token'
+import { ListingState, getListingState } from '~/api/marketplace'
+import {
+  MarketplaceTokenListing,
+  Token,
+  TokenAddressHistory,
+  TokenTypeWithHolder,
+} from '~/api/token'
 import Address from '~/components/Address'
+import AtomValue from '~/components/AtomValue'
 import InscriptionImage from '~/components/InscriptionImage'
 import { TokenActions } from '~/components/TokenActions'
 import TokenBalance from '~/components/TokenBalance'
 import TxLink from '~/components/TxLink'
+import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
+import { useRootContext } from '~/context/root'
+import useAddress from '~/hooks/useAddress'
+import useDialog from '~/hooks/useDialog'
+import { useMarketplaceOperations } from '~/hooks/useOperations'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
 import { parseSorting } from '~/utils/pagination'
+import { getTokenMarketplaceListingSort } from './app.market.$ticker'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!params.ticker) {
@@ -46,13 +62,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   }
 
   if (!address) {
-    return json({ token, history: [] })
+    return json({ token, history: [] as TokenAddressHistory[], listings: [] })
   }
 
   const { sort, direction } = parseSorting(
     new URL(request.url).searchParams,
     'height',
     order_by.desc,
+    'history',
   )
 
   const history = await asteroidClient.getTokenAddressHistory(
@@ -63,7 +80,23 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     },
   )
 
-  return json({ token, history })
+  const { sort: listingsSort, direction: listingsDirection } = parseSorting(
+    new URL(request.url).searchParams,
+    'listing_id',
+    order_by.desc,
+    'listings',
+  )
+
+  const listingsResult = await asteroidClient.getTokenListings(
+    token.id,
+    0,
+    500,
+    getTokenMarketplaceListingSort(listingsSort, listingsDirection),
+    false,
+    address,
+  )
+
+  return json({ token, history, listings: listingsResult.listings })
 }
 function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
   const amount = token.token_holders?.[0]?.amount
@@ -92,7 +125,130 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
   )
 }
 
-const DEFAULT_SORT = { id: 'height', desc: true }
+const LISTING_DEFAULT_SORT = { id: 'listing_id', desc: false }
+
+function ListingsTable({
+  token,
+  listings,
+  className,
+}: {
+  token: Token
+  listings: MarketplaceTokenListing[]
+  className?: string
+}) {
+  const columnHelper = createColumnHelper<MarketplaceTokenListing>()
+  const [sorting, setSorting] = useSorting(LISTING_DEFAULT_SORT, 'listings')
+  const {
+    status: { lastProcessedHeight },
+  } = useRootContext()
+  const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const operations = useMarketplaceOperations()
+  const address = useAddress()
+
+  function cancelListing(listingHash: string) {
+    if (!operations) {
+      console.warn('No address')
+      return
+    }
+
+    const txInscription = operations.delist(listingHash)
+
+    setTxInscription(txInscription)
+
+    showTxDialog()
+  }
+
+  const columns = [
+    columnHelper.accessor('id', {
+      header: 'Listing #',
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor('ppt', {
+      header: 'ATOM per Token',
+      cell: (info) => <AtomValue value={info.getValue()} />,
+    }),
+    columnHelper.accessor('amount', {
+      header: `${token.ticker} Tokens`,
+      cell: (info) => (
+        <NumericFormat
+          displayType="text"
+          thousandSeparator
+          value={getDecimalValue(info.getValue(), token.decimals)}
+        />
+      ),
+    }),
+    columnHelper.accessor('marketplace_listing.total', {
+      header: 'Total Atom',
+      cell: (info) => <AtomValue value={info.getValue()} />,
+    }),
+    columnHelper.accessor('marketplace_listing.transaction.hash', {
+      enableSorting: false,
+      header: '',
+      id: 'state',
+      cell: (info) => {
+        const listing = info.row.original.marketplace_listing
+        const blocks =
+          (listing.depositor_timedout_block ?? 0) - lastProcessedHeight
+        const listingHash = listing.transaction.hash
+
+        switch (
+          getListingState(
+            info.row.original.marketplace_listing,
+            address,
+            lastProcessedHeight,
+          )
+        ) {
+          case ListingState.Cancel:
+            return (
+              <Button
+                color="neutral"
+                size="sm"
+                onClick={() => cancelListing(listingHash)}
+              >
+                Cancel
+              </Button>
+            )
+          case ListingState.Reserved:
+            return (
+              <Button
+                color="neutral"
+                size="sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Reserved ({blocks})
+              </Button>
+            )
+        }
+      },
+    }),
+  ]
+
+  const table = useReactTable<MarketplaceTokenListing>({
+    columns,
+    data: listings,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    manualSorting: true,
+  })
+
+  return (
+    <>
+      <Table table={table} className={className} />
+      <TxDialog
+        ref={txDialogRef}
+        txInscription={txInscription}
+        resultCTA="Back to token detail"
+        resultLink={`/app/wallet/token/${token.ticker}`}
+      />
+    </>
+  )
+}
+
+const HISTORY_DEFAULT_SORT = { id: 'height', desc: true }
 
 function TokenAddressHistoryComponent({
   history,
@@ -102,7 +258,7 @@ function TokenAddressHistoryComponent({
   history: TokenAddressHistory[]
 }) {
   const columnHelper = createColumnHelper<TokenAddressHistory>()
-  const [sorting, setSorting] = useSorting(DEFAULT_SORT)
+  const [sorting, setSorting] = useSorting(HISTORY_DEFAULT_SORT, 'history')
 
   const columns = [
     columnHelper.accessor('date_created', {
@@ -158,7 +314,10 @@ export default function WalletToken() {
     <div className="flex flex-col">
       <TokenDetail token={data.token} />
       <Divider className="mt-8" />
-      <h2 className="font-medium text-lg">Transaction History</h2>
+      <h2 className="font-medium text-lg">Your listings</h2>
+      <Divider className="mt-8" />
+      <ListingsTable token={data.token} listings={data.listings} />
+      <h2 className="font-medium text-lg mt-16">Transaction History</h2>
       <Divider />
       <TokenAddressHistoryComponent token={data.token} history={data.history} />
     </div>

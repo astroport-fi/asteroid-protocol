@@ -329,6 +329,7 @@ export class AsteroidClient extends AsteroidService {
     limit: number = 20,
     orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
     aggregate = false,
+    seller?: string,
   ): Promise<TokenListings> {
     if (!orderBy) {
       orderBy = {
@@ -348,6 +349,17 @@ export class AsteroidClient extends AsteroidService {
           _eq: false,
         },
       },
+    }
+
+    if (seller) {
+      where.marketplace_listing = Object.assign(
+        where.marketplace_listing || {},
+        {
+          seller_address: {
+            _eq: seller,
+          },
+        },
+      )
     }
 
     type Query = {

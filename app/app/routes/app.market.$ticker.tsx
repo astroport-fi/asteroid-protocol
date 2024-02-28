@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
+import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing, Token } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
@@ -30,6 +31,29 @@ import { getDateAgo } from '~/utils/date'
 import { round1 } from '~/utils/math'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
+
+export function getTokenMarketplaceListingSort(
+  sort: string,
+  direction: order_by,
+): ValueTypes['marketplace_cft20_detail_order_by'] {
+  if (sort === 'marketplace_listing_total') {
+    return {
+      marketplace_listing: {
+        total: direction,
+      },
+    }
+  } else if (sort === 'marketplace_listing_deposit_total') {
+    return {
+      marketplace_listing: {
+        deposit_total: direction,
+      },
+    }
+  } else {
+    return {
+      [sort]: direction,
+    }
+  }
+}
 
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!params.ticker) {
@@ -58,24 +82,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     })
   }
 
-  let orderBy: ValueTypes['marketplace_cft20_detail_order_by']
-  if (sort === 'marketplace_listing_total') {
-    orderBy = {
-      marketplace_listing: {
-        total: direction,
-      },
-    }
-  } else if (sort === 'marketplace_listing_deposit_total') {
-    orderBy = {
-      marketplace_listing: {
-        deposit_total: direction,
-      },
-    }
-  } else {
-    orderBy = {
-      [sort]: direction,
-    }
-  }
+  const orderBy = getTokenMarketplaceListingSort(sort, direction)
 
   const res = await asteroidClient.getTokenListings(
     token.id,
@@ -93,41 +100,6 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 }
 
 const DEFAULT_SORT = { id: 'ppt', desc: false }
-
-enum ListingState {
-  Reserve,
-  Buy,
-  Cancel,
-  Reserved,
-}
-
-function getListingState(
-  listing: MarketplaceTokenListing,
-  walletAddress: string | undefined,
-  currentBlock: number,
-) {
-  const isExpired =
-    listing.marketplace_listing.depositor_timedout_block! < currentBlock
-  const isDeposited = listing.marketplace_listing.is_deposited
-
-  if (listing.marketplace_listing.seller_address == walletAddress) {
-    if (!isDeposited || isExpired) {
-      return ListingState.Cancel
-    } else {
-      return ListingState.Reserved
-    }
-  } else {
-    if (isDeposited && !isExpired) {
-      if (listing.marketplace_listing.depositor_address == walletAddress) {
-        return ListingState.Buy
-      } else {
-        return ListingState.Reserved
-      }
-    }
-  }
-
-  return ListingState.Reserve
-}
 
 function ListingsTable({
   token,
@@ -214,7 +186,11 @@ function ListingsTable({
         const listingHash = listing.transaction.hash
 
         switch (
-          getListingState(info.row.original, address, lastProcessedHeight)
+          getListingState(
+            info.row.original.marketplace_listing,
+            address,
+            lastProcessedHeight,
+          )
         ) {
           case ListingState.Reserve:
             return (

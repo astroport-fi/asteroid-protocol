@@ -24,9 +24,19 @@ export function parseSorting(
   urlSearchParams: URLSearchParams,
   defaultSort: string,
   defaultDirection: order_by,
+  prefix = '',
 ) {
-  const sort = urlSearchParams.get('sort') ?? defaultSort
-  const direction = (urlSearchParams.get('direction') ??
+  let name, directionName: string
+  if (prefix) {
+    name = `${prefix}_sort`
+    directionName = `${prefix}_direction`
+  } else {
+    name = 'sort'
+    directionName = 'direction'
+  }
+
+  const sort = urlSearchParams.get(name) ?? defaultSort
+  const direction = (urlSearchParams.get(directionName) ??
     defaultDirection) as order_by
 
   return {

@@ -21,3 +21,37 @@ export type MarketplaceListing = InputType<
   typeof marketplaceListingSelector,
   ScalarDefinition
 >
+
+export enum ListingState {
+  Reserve,
+  Buy,
+  Cancel,
+  Reserved,
+}
+
+export function getListingState(
+  listing: MarketplaceListing,
+  walletAddress: string | undefined,
+  currentBlock: number,
+) {
+  const isExpired = listing.depositor_timedout_block! < currentBlock
+  const isDeposited = listing.is_deposited
+
+  if (listing.seller_address == walletAddress) {
+    if (!isDeposited || isExpired) {
+      return ListingState.Cancel
+    } else {
+      return ListingState.Reserved
+    }
+  } else {
+    if (isDeposited && !isExpired) {
+      if (listing.depositor_address == walletAddress) {
+        return ListingState.Buy
+      } else {
+        return ListingState.Reserved
+      }
+    }
+  }
+
+  return ListingState.Reserve
+}
