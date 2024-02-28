@@ -1,6 +1,6 @@
 {
   "name": "@asteroid-protocol/sdk",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "scripts": {
@@ -20,8 +20,14 @@
   },
   "main": "cjs/index.js",
   "exports": {
-    "require": "./cjs/index.js",
-    "import": "./esm/index.js"
+    ".": {
+      "require": "./cjs/index.js",
+      "import": "./esm/index.js"
+    },
+    "./client": {
+      "require": "./cjs/service/asteroid.js",
+      "import": "./esm/service/asteroid.js"
+    }
   },
   "bin": {
     "asteroid": "./esm/cli.js"
