@@ -50,6 +50,11 @@ export type InscriptionsResult = {
   count: number
 }
 
+export type TokenHoldings = {
+  holdings: TokenHolding[]
+  count: number
+}
+
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
@@ -211,7 +216,7 @@ export class AsteroidClient extends AsteroidService {
     limit = 500,
     search?: string | null,
     orderBy?: ValueTypes['token_holder_order_by'],
-  ): Promise<TokenHolding[]> {
+  ): Promise<TokenHoldings> {
     if (!orderBy) {
       orderBy = {
         amount: order_by.desc,
@@ -244,8 +249,14 @@ export class AsteroidClient extends AsteroidService {
         },
         tokenHoldingSelector,
       ],
+      token_holder_aggregate: [{ where }, aggregateCountSelector],
     })
-    return holderResult.token_holder
+    return {
+      holdings: holderResult.token_holder,
+      count:
+        holderResult.token_holder_aggregate.aggregate?.count ??
+        holderResult.token_holder.length,
+    }
   }
 
   async getTokenMarkets(

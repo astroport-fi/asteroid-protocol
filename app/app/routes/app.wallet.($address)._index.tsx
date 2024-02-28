@@ -54,19 +54,17 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const tokens = await asteroidClient.getTokenHoldings(
+  const result = await asteroidClient.getTokenHoldings(
     address,
     offset,
     limit,
     null,
     orderBy,
   )
-  // @todo total
-  const total = 500
 
   return json({
-    tokens: tokens,
-    pages: Math.ceil(total / limit),
+    tokens: result.holdings,
+    pages: Math.ceil(result.count / limit),
   })
 }
 
