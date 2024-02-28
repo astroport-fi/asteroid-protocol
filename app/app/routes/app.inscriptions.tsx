@@ -1,4 +1,4 @@
-import { ValueTypes, order_by } from '@asteroid-protocol/sdk'
+import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import {

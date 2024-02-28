@@ -1,4 +1,4 @@
-import { LottieOptions } from 'lottie-react'
+import type { LottieOptions } from 'lottie-react'
 import { Button } from 'react-daisyui'
 import { TxState } from '~/hooks/useSubmitTx'
 import errorAnimationData from '~/lottie/error.json'

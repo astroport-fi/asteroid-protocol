@@ -1,4 +1,3 @@
-import { AssetList, Chain } from '@chain-registry/types'
 import { ChainProvider } from '@cosmos-kit/react'
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import {
@@ -12,49 +11,12 @@ import {
   useLoaderData,
   useRouteError,
 } from '@remix-run/react'
-import { assets, chains } from 'chain-registry'
 import { wallets } from 'cosmos-kit'
+import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
+import { getAssets, getChains } from './utils/chain'
 import '~/tailwind.css'
-
-// Add Local Cosmos Hub
-const cosmosHubChain = chains.find((asset) => asset.chain_name == 'cosmoshub')
-const additionalChains: Chain[] = [
-  {
-    ...cosmosHubChain,
-    bech32_prefix: 'cosmos',
-    chain_id: 'gaialocal-1',
-    chain_name: 'localcosmoshub',
-    network_type: 'localnet',
-    pretty_name: 'Local Cosmos Hub',
-    key_algos: ['secp256k1'],
-    slip44: 118,
-    status: 'live',
-    apis: {
-      rpc: [
-        {
-          address: 'http://localhost:16657',
-        },
-      ],
-      rest: [
-        {
-          address: 'http://localhost:1316',
-        },
-      ],
-    },
-    explorers: [
-      {
-        tx_page: 'http://localhost:1316/cosmos/tx/v1beta1/txs/${txHash}',
-      },
-    ],
-  },
-]
-
-const cosmosHubAssets = assets.find((asset) => asset.chain_name == 'cosmoshub')
-const additionalAssets: AssetList[] = [
-  { chain_name: 'localcosmoshub', assets: cosmosHubAssets!.assets },
-]
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -73,6 +35,40 @@ export async function loader({ context }: LoaderFunctionArgs) {
       USE_IBC: context.cloudflare.env.USE_IBC,
     },
   })
+}
+
+function WalletProvider() {
+  const Provider = clientOnly$(
+    <ChainProvider
+      modalTheme={{
+        modalContentClassName: 'cosmoskit-content',
+        modalChildrenClassName: 'cosmoskit-children',
+      }}
+      chains={getChains()}
+      assetLists={getAssets()}
+      wallets={[wallets[0], wallets[2]]}
+      // walletConnectOptions={{
+      //   signClient: {
+      //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
+      //     relayUrl: 'wss://relay.walletconnect.org',
+      //     metadata: {
+      //       name: 'Asteroid',
+      //       description: 'Asteroid Protocol',
+      //       url: 'https://asteroidprotocol.io/app/',
+      //       icons: [
+      //         'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
+      //       ],
+      //     },
+      //   },
+      // }}
+    >
+      <Outlet />
+    </ChainProvider>,
+  )
+  if (Provider) {
+    return Provider
+  }
+  return <Outlet />
 }
 
 export const meta: MetaFunction = () => {
@@ -109,31 +105,7 @@ export default function App() {
             },
           }}
         >
-          <ChainProvider
-            modalTheme={{
-              modalContentClassName: 'cosmoskit-content',
-              modalChildrenClassName: 'cosmoskit-children',
-            }}
-            chains={[...chains, ...additionalChains]}
-            assetLists={[...assets, ...additionalAssets]}
-            wallets={[wallets[0], wallets[2]]}
-            // walletConnectOptions={{
-            //   signClient: {
-            //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
-            //     relayUrl: 'wss://relay.walletconnect.org',
-            //     metadata: {
-            //       name: 'Asteroid',
-            //       description: 'Asteroid Protocol',
-            //       url: 'https://asteroidprotocol.io/app/',
-            //       icons: [
-            //         'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
-            //       ],
-            //     },
-            //   },
-            // }}
-          >
-            <Outlet />
-          </ChainProvider>
+          <WalletProvider />
         </RootContext.Provider>
         <ScrollRestoration />
         <Scripts />

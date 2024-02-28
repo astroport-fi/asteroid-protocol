@@ -3,7 +3,7 @@
 //   InputType,
 //   ScalarDefinition,
 //   Selector,
-// } from '@asteroid-protocol/sdk'
+// } from '@asteroid-protocol/sdk/client'
 
 // export const collectionSelector = Selector('collection')({
 //   id: true,

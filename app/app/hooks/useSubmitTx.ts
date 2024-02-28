@@ -1,6 +1,7 @@
 import { TxInscription, prepareTx } from '@asteroid-protocol/sdk'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
 import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
@@ -62,7 +63,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   const { useIbc } = useRootContext()
 
   // deps
-  const client = useClient(retryCounter)
+  const client = clientOnly$(useClient(retryCounter))
   const asteroidClient = useAsteroidClient()
   const address = useAddress()
 
@@ -77,7 +78,9 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       return null
     }
 
-    return prepareTx(address, txInscription.urn, [txInscription], { useIbc })
+    return clientOnly$(
+      prepareTx(address, txInscription.urn, [txInscription], { useIbc }),
+    )
   }, [txInscription, address, useIbc])
 
   const metaprotocolFee = useMemo<MetaprotocolFee>(() => {

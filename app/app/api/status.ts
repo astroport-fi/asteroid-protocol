@@ -3,7 +3,7 @@ import {
   InputType,
   ScalarDefinition,
   Selector,
-} from '@asteroid-protocol/sdk'
+} from '@asteroid-protocol/sdk/client'
 
 export const statusSelector = Selector('status')({
   base_token: true,

@@ -3,7 +3,7 @@ import {
   InputType,
   ScalarDefinition,
   Selector,
-} from '@asteroid-protocol/sdk'
+} from '@asteroid-protocol/sdk/client'
 import { transactionHashSelector } from './transaction'
 
 export const marketplaceListingSelector = Selector('marketplace_listing')({

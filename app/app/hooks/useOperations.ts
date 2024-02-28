@@ -4,6 +4,7 @@ import {
   MarketplaceOperations,
 } from '@asteroid-protocol/sdk'
 import { useMemo } from 'react'
+import { clientOnly$ } from 'vite-env-only'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
@@ -19,10 +20,12 @@ export function useInscriptionOperations<T extends boolean = true>(
       return null
     }
 
-    return new InscriptionOperations(chainId, address, {
-      multi,
-      useIbc,
-    })
+    return clientOnly$(
+      new InscriptionOperations(chainId, address, {
+        multi,
+        useIbc,
+      }),
+    )
   }, [chainId, address, useIbc, multi])
 }
 
@@ -37,10 +40,12 @@ export function useCFT20Operations<T extends boolean = true>(
       return null
     }
 
-    return new CFT20Operations(chainId, address, {
-      multi,
-      useIbc,
-    })
+    return clientOnly$(
+      new CFT20Operations(chainId, address, {
+        multi,
+        useIbc,
+      }),
+    )
   }, [chainId, address, useIbc, multi])
 }
 
@@ -56,9 +61,11 @@ export function useMarketplaceOperations<T extends boolean = true>(
       return null
     }
 
-    return new MarketplaceOperations(chainId, address, asteroidClient, {
-      multi,
-      useIbc,
-    })
+    return clientOnly$(
+      new MarketplaceOperations(chainId, address, asteroidClient, {
+        multi,
+        useIbc,
+      }),
+    )
   }, [chainId, address, useIbc, asteroidClient, multi])
 }

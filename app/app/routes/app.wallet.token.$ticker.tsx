@@ -1,4 +1,4 @@
-import { order_by } from '@asteroid-protocol/sdk'
+import { order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import {

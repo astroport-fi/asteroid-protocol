@@ -1,8 +1,9 @@
-import { useChain } from '@cosmos-kit/react'
 import { useRootContext } from '~/context/root'
+import useChain from './useChain'
 
 export default function useAddress() {
   const { chainName } = useRootContext()
-  const { address } = useChain(chainName)
-  return address
+  const chain = useChain(chainName)
+  if (!chain) return
+  return chain.address
 }

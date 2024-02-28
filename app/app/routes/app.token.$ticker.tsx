@@ -1,4 +1,4 @@
-import { order_by } from '@asteroid-protocol/sdk'
+import { order_by } from '@asteroid-protocol/sdk/client'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useNavigate } from '@remix-run/react'

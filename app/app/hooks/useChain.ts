@@ -1,0 +1,21 @@
+import { useChain as useChainOriginal } from '@cosmos-kit/react'
+import type { WalletStatus } from 'cosmos-kit'
+import { clientOnly$ } from 'vite-env-only'
+
+export default function useChain(chainName: string) {
+  const chain = clientOnly$(useChainOriginal(chainName))
+  if (!chain)
+    return {
+      status: 'Disconnected' as WalletStatus.Disconnected,
+      openView: () => {},
+      connect: () => {},
+      message: undefined,
+      wallet: undefined,
+      getRpcEndpoint: () => '',
+      getRestEndpoint: () => '',
+      getOfflineSignerDirect: undefined,
+      isWalletConnected: false,
+      address: undefined,
+    }
+  return chain
+}

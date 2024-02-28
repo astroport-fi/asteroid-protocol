@@ -1,4 +1,4 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'

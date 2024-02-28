@@ -1,4 +1,4 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { forwardRef, useState } from 'react'
 import { Alert, Button, Form, Modal } from 'react-daisyui'
 import { useForm } from 'react-hook-form'

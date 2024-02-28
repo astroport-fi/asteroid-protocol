@@ -1,11 +1,10 @@
-import { useChain } from '@cosmos-kit/react'
 import '@interchain-ui/react/styles'
 import { useNavigate } from '@remix-run/react'
-import { WalletStatus } from 'cosmos-kit'
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { Alert, ButtonProps } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
+import useChain from '~/hooks/useChain'
 import { USER_ADDRESS_COOKIE, serializeCookieValue } from '~/utils/cookies'
 import { getEllipsisTxt } from '~/utils/string'
 import {
@@ -16,6 +15,15 @@ import {
   ButtonNotExist,
   ButtonRejected,
 } from './Connect'
+
+export enum WalletStatus {
+  Disconnected = 'Disconnected',
+  Connecting = 'Connecting',
+  Connected = 'Connected',
+  NotExist = 'NotExist',
+  Rejected = 'Rejected',
+  Error = 'Error',
+}
 
 export function Wallet({
   className,

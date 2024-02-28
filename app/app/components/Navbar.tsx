@@ -2,6 +2,7 @@ import { Link, NavLink } from '@remix-run/react'
 import { useCallback, useState } from 'react'
 import { Button, Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
 import { Wallet } from './wallet/Wallet'
+import logo from '../images/logo/white.svg'
 
 export default function Navbar() {
   const [detailOpen, setDetailOpen] = useState(false)
@@ -54,7 +55,7 @@ export default function Navbar() {
           </Dropdown.Menu>
         </Dropdown>
         <Link className="btn btn-ghost normal-case text-xl px-8" to="/app/">
-          <img src="/app/images/logo/white.svg" alt="Asteroid protocol" />
+          <img src={logo} alt="Asteroid protocol" />
         </Link>
       </DaisyNavbar.Start>
       <DaisyNavbar.Center className="hidden lg:flex">

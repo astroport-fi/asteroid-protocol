@@ -1,4 +1,4 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import TxDialog from '~/components/dialogs/TxDialog'

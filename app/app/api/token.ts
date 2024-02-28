@@ -3,7 +3,7 @@ import {
   InputType,
   ScalarDefinition,
   Selector,
-} from '@asteroid-protocol/sdk'
+} from '@asteroid-protocol/sdk/client'
 import { Aggregate } from './common'
 import { marketplaceListingSelector } from './marketplace'
 

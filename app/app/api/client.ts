@@ -4,7 +4,7 @@ import {
   ValueTypes,
   WSSubscription,
   order_by,
-} from '@asteroid-protocol/sdk'
+} from '@asteroid-protocol/sdk/client'
 import { aggregateCountSelector } from '~/api/common'
 import {
   Inscription,

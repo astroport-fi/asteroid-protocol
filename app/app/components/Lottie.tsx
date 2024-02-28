@@ -1,4 +1,5 @@
 import { LottieOptions, useLottie } from 'lottie-react'
+import { clientOnly$ } from 'vite-env-only'
 
 export default function Lottie({
   animationData,
@@ -16,6 +17,6 @@ export default function Lottie({
     height: 250,
   }
 
-  const { View } = useLottie(options)
-  return <div className={className ?? 'size-64'}>{View}</div>
+  const lottie = clientOnly$(useLottie(options))
+  return <div className={className ?? 'size-64'}>{lottie && lottie.View}</div>
 }

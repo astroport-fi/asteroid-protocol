@@ -1,4 +1,5 @@
-import { TxInscription, ValueTypes, order_by } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
+import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import {

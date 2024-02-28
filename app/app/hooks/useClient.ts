@@ -1,8 +1,8 @@
 import { SigningStargateClient, TxData } from '@asteroid-protocol/sdk'
 import { GasPrice } from '@cosmjs/stargate'
-import { useChain } from '@cosmos-kit/react'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
+import useChain from './useChain'
 
 export class SigningClient {
   client: SigningStargateClient
@@ -60,13 +60,13 @@ export default function useClient(retry = 0) {
 
   const [client, setClient] = useState<SigningClient>()
   useEffect(() => {
-    if (!isWalletConnected || !address) {
+    if (!isWalletConnected || !address || !getOfflineSignerDirect) {
       return
     }
     async function createSigningClient(address: string) {
       const rpcEndpoint = await getRpcEndpoint()
       const restEndpoint = await getRestEndpoint()
-      const signer = getOfflineSignerDirect()
+      const signer = getOfflineSignerDirect!()
       const signingClient = await SigningStargateClient.connectWithSigner(
         rpcEndpoint,
         signer,

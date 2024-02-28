@@ -1,4 +1,4 @@
-import { order_by } from '@asteroid-protocol/sdk'
+import { order_by } from '@asteroid-protocol/sdk/client'
 
 export const DEFAULT_LIMIT = 30
 export const DEFAULT_PAGE = 1

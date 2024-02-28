@@ -1,4 +1,4 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
 import { forwardRef } from 'react'
 import { Modal } from 'react-daisyui'
