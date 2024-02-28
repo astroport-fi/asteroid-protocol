@@ -9,6 +9,5 @@ export type { TxData, TxFee, TxInscription } from './metaprotocol/tx.js'
 
 export { prepareTx, broadcastTx } from './metaprotocol/tx.js'
 
-export * from './service/asteroid.js'
 export { SigningStargateClient } from './client.js'
 export { Networks } from './config.js'

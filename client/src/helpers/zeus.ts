@@ -10,8 +10,8 @@ import {
 
 export { Subscription } from '../zeus/index.js'
 
-const globalFetch = typeof window !== 'undefined' ? window.fetch : global.fetch
-const fetch = fetchRetry(globalFetch)
+const globalFetch = typeof window !== 'undefined' ? window.fetch : fetch
+const fetchWithRetry = fetchRetry(globalFetch)
 
 const handleFetchResponse = (response: Response): Promise<GraphQLResponse> => {
   if (!response.ok) {
@@ -51,7 +51,7 @@ export const apiFetch =
       ...providedOptions,
     }
     if (fetchOptions.method && fetchOptions.method === 'GET') {
-      return fetch(
+      return fetchWithRetry(
         `${options[0]}?query=${encodeURIComponent(query)}`,
         fetchOptions,
       )
@@ -63,7 +63,7 @@ export const apiFetch =
           return response.data
         })
     }
-    return fetch(`${options[0]}`, {
+    return fetchWithRetry(`${options[0]}`, {
       body: JSON.stringify({ query, variables }),
       method: 'POST',
       headers: {
