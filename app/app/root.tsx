@@ -1,4 +1,3 @@
-import { ChainProvider } from '@cosmos-kit/react'
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import {
   Links,
@@ -11,11 +10,10 @@ import {
   useLoaderData,
   useRouteError,
 } from '@remix-run/react'
-import { wallets } from 'cosmos-kit'
-import { clientOnly$ } from 'vite-env-only'
+import { clientOnly$, serverOnly$ } from 'vite-env-only'
 import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
-import { getAssets, getChains } from './utils/chain'
+import WalletProvider from './context/wallet'
 import '~/tailwind.css'
 
 export async function loader({ context }: LoaderFunctionArgs) {
@@ -37,34 +35,16 @@ export async function loader({ context }: LoaderFunctionArgs) {
   })
 }
 
-function WalletProvider() {
-  const Provider = clientOnly$(
-    <ChainProvider
-      modalTheme={{
-        modalContentClassName: 'cosmoskit-content',
-        modalChildrenClassName: 'cosmoskit-children',
-      }}
-      chains={getChains()}
-      assetLists={getAssets()}
-      wallets={[wallets[0], wallets[2]]}
-      // walletConnectOptions={{
-      //   signClient: {
-      //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
-      //     relayUrl: 'wss://relay.walletconnect.org',
-      //     metadata: {
-      //       name: 'Asteroid',
-      //       description: 'Asteroid Protocol',
-      //       url: 'https://asteroidprotocol.io/app/',
-      //       icons: [
-      //         'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
-      //       ],
-      //     },
-      //   },
-      // }}
-    >
-      <Outlet />
-    </ChainProvider>,
-  )
+function WalletProviderWrapper() {
+  let Provider: JSX.Element | undefined
+
+  Provider = import.meta.env.DEV ? serverOnly$(<WalletProvider />) : undefined
+
+  if (Provider) {
+    return Provider
+  }
+
+  Provider = clientOnly$(<WalletProvider />)
   if (Provider) {
     return Provider
   }
@@ -105,7 +85,7 @@ export default function App() {
             },
           }}
         >
-          <WalletProvider />
+          <WalletProviderWrapper />
         </RootContext.Provider>
         <ScrollRestoration />
         <Scripts />

@@ -1,6 +1,6 @@
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData, useNavigate } from '@remix-run/react'
+import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -9,6 +9,7 @@ import {
 import { AsteroidClient } from '~/api/client'
 import { TokenHolding } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
+import GhostEmptyState from '~/components/GhostEmptyState'
 import TokenValue from '~/components/TokenValue'
 import Table from '~/components/table'
 import usePagination from '~/hooks/usePagination'
@@ -114,6 +115,21 @@ export default function WalletTokens() {
     manualPagination: true,
     manualSorting: true,
   })
+
+  if (data.tokens.length < 1) {
+    return (
+      <GhostEmptyState>
+        <div className="flex mt-8">
+          <Link to="/app/create/token" className="btn btn-primary">
+            Create token
+          </Link>
+          <Link to="/app/tokens" className="btn btn-primary ml-4">
+            Buy tokens
+          </Link>
+        </div>
+      </GhostEmptyState>
+    )
+  }
 
   return (
     <Table

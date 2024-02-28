@@ -28,7 +28,7 @@ USE_IBC = true
 
 [env.mainnet.vars]
 ENVIRONMENT = "production"
-ASTEROID_API = "https://api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API = "https://api-lb.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://api.asteroidprotocol.io/v1/graphql"
 TX_EXPLORER = "https://www.mintscan.io/cosmos/tx/"
 RPC = "https://rpc-nodes.asteroidprotocol.io"

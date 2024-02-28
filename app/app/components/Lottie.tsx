@@ -13,10 +13,12 @@ export default function Lottie({
   const options = {
     animationData,
     loop,
-    width: 250,
-    height: 250,
   }
 
   const lottie = clientOnly$(useLottie(options))
-  return <div className={className ?? 'size-64'}>{lottie && lottie.View}</div>
+  return (
+    <div className={className ?? 'size-64'}>
+      {lottie ? lottie.View : <div />}
+    </div>
+  )
 }

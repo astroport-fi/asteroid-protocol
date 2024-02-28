@@ -116,7 +116,7 @@ export default function MarketsPage() {
         const minted = info.row.getValue<number>('minted')
 
         const value = info.getValue()
-        const amount = value ? value[0]?.amount : 0
+        const amount = value?.[0]?.amount ?? 0
         return (
           <>
             {minted < 1 && (
@@ -128,7 +128,7 @@ export default function MarketsPage() {
                 Mint
               </Link>
             )}
-            {amount && (
+            {amount > 0 && (
               <Button
                 color="neutral"
                 size="sm"

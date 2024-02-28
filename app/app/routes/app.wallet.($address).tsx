@@ -1,11 +1,14 @@
+import { WalletIcon } from '@heroicons/react/20/solid'
 import { Link, Outlet, useLocation, useParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { PropsWithChildren } from 'react'
 import { Link as DaisyLink, Tabs } from 'react-daisyui'
+import Address from '~/components/Address'
 import Lottie from '~/components/Lottie'
 import { Wallet } from '~/components/wallet/Wallet'
 import useAddress from '~/hooks/useAddress'
 import noWalletAnimationData from '~/lottie/no-wallet.json'
+import logo from '../images/logo/white.svg'
 
 function Tab({
   active,
@@ -77,8 +80,15 @@ export default function WalletPage() {
   }
 
   return (
-    <div>
-      <Tabs variant="bordered">
+    <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center">
+        <img src={logo} alt="Asteroid protocol" className="w-40" />
+        <DaisyLink className="btn btn-outline btn-primary mt-8 rounded-full btn-md">
+          <WalletIcon className="w-5" />
+          <Address address={address} full />
+        </DaisyLink>
+      </div>
+      <Tabs variant="bordered" className="w-full mt-16">
         <Tab to="" active={active === WalletTab.Tokens}>
           Tokens
         </Tab>
@@ -89,7 +99,7 @@ export default function WalletPage() {
           Deployed
         </Tab>
       </Tabs>
-      <div className="py-8">
+      <div className="py-8 w-full">
         <Outlet />
       </div>
     </div>

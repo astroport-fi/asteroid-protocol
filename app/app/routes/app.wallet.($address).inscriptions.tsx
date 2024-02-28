@@ -1,6 +1,7 @@
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
+import GhostEmptyState from '~/components/GhostEmptyState'
 import { Inscriptions } from '~/components/Inscriptions'
 import { getAddress } from '~/utils/cookies'
 
@@ -24,5 +25,19 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 
 export default function WalletInscriptions() {
   const data = useLoaderData<typeof loader>()
-  return <Inscriptions inscriptions={data.inscriptions} />
+  if (data.inscriptions.length < 1) {
+    return (
+      <GhostEmptyState>
+        <div className="flex mt-8">
+          <Link to="/app/create/inscription" className="btn btn-primary">
+            Create inscription
+          </Link>
+          <Link to="/app/inscriptions" className="btn btn-primary ml-4">
+            Buy inscriptions
+          </Link>
+        </div>
+      </GhostEmptyState>
+    )
+  }
+  return <Inscriptions className="w-full" inscriptions={data.inscriptions} />
 }
