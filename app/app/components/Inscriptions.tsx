@@ -14,7 +14,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
   onClick?: (inscription: T) => void
 }) {
   const listing =
-    inscription.marketplace_inscription_details[0]?.marketplace_listing
+    inscription.marketplace_inscription_details?.[0]?.marketplace_listing
 
   return (
     <Link

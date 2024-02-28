@@ -495,6 +495,39 @@ export class AsteroidClient extends AsteroidService {
   //   return result.collection[0]
   // }
 
+  async getInscriptionWithMarket(
+    hash: string,
+  ): Promise<InscriptionWithMarket | undefined> {
+    const result = await this.query({
+      inscription: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: hash,
+              },
+            },
+          },
+        },
+        {
+          ...inscriptionSelector,
+          marketplace_inscription_details: [
+            {
+              where: {
+                marketplace_listing: {
+                  is_cancelled: { _eq: false },
+                  is_filled: { _eq: false },
+                },
+              },
+            },
+            inscriptionListingSelector,
+          ],
+        },
+      ],
+    })
+    return result.inscription[0]
+  }
+
   async getInscription(hash: string): Promise<Inscription | undefined> {
     const result = await this.query({
       inscription: [
@@ -539,11 +572,22 @@ export class AsteroidClient extends AsteroidService {
     //   }
     // }
     if (where.currentOwner) {
-      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
-        current_owner: {
-          _eq: where.currentOwner,
+      queryWhere._or = [
+        {
+          inscription: {
+            current_owner: {
+              _eq: where.currentOwner,
+            },
+          },
         },
-      })
+        {
+          marketplace_listing: {
+            seller_address: {
+              _eq: where.currentOwner,
+            },
+          },
+        },
+      ]
     }
 
     if (where.onlyBuy) {

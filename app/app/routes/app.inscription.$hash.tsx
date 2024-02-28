@@ -10,14 +10,13 @@ import {
 import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
-import { Inscription, InscriptionHistory } from '~/api/inscription'
+import { InscriptionHistory, InscriptionWithMarket } from '~/api/inscription'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
 import { InscriptionActions } from '~/components/InscriptionActions'
 import InscriptionImage from '~/components/InscriptionImage'
 import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
-import useAddress from '~/hooks/useAddress'
 import useSorting from '~/hooks/useSorting'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { parseSorting } from '~/utils/pagination'
@@ -32,7 +31,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
-  const inscription = await asteroidClient.getInscription(params.hash)
+  const inscription = await asteroidClient.getInscriptionWithMarket(params.hash)
 
   if (!inscription) {
     throw new Response(null, {
@@ -54,9 +53,11 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   return json({ inscription, history })
 }
 
-function InscriptionDetail({ inscription }: { inscription: Inscription }) {
-  const address = useAddress()
-
+function InscriptionDetail({
+  inscription,
+}: {
+  inscription: InscriptionWithMarket
+}) {
   return (
     <div className="flex flex-row w-full">
       <div className="flex flex-1 flex-col px-16 items-center">
@@ -76,9 +77,7 @@ function InscriptionDetail({ inscription }: { inscription: Inscription }) {
       <div className="flex flex-col flex-1">
         <div className="flex items-center justify-between">
           <h2 className="font-medium text-lg">{inscription.name}</h2>
-          {address == inscription.current_owner && (
-            <InscriptionActions inscription={inscription} />
-          )}
+          <InscriptionActions inscription={inscription} />
         </div>
         <p className="whitespace-pre-wrap">{inscription.description}</p>
         <Divider />

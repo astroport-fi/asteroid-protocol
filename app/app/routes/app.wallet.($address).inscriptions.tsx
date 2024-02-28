@@ -1,3 +1,4 @@
+import { order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
@@ -14,9 +15,21 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!address) {
     return json({ inscriptions: [] })
   }
-  const res = await asteroidClient.getInscriptions(0, 500, {
-    currentOwner: address,
-  })
+  const res = await asteroidClient.getInscriptions(
+    0,
+    500,
+    {
+      currentOwner: address,
+    },
+    {
+      inscription: {
+        id: order_by.desc,
+      },
+      marketplace_listing: {
+        id: order_by.desc_nulls_last,
+      },
+    },
+  )
 
   return json({
     inscriptions: res.inscriptions,
