@@ -36,8 +36,7 @@ export function Wallet({
   onClick?: () => void
 }) {
   const { chainName } = useRootContext()
-  const { status, wallet, message, connect, openView, address } =
-    useChain(chainName)
+  const { status, connect, openView, address } = useChain(chainName)
   const [previousStatus, setPreviousStatus] = useState<WalletStatus | null>(
     null,
   )

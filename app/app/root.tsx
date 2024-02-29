@@ -31,6 +31,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
       ASTEROID_API: context.cloudflare.env.ASTEROID_API,
       ASTEROID_API_WSS: context.cloudflare.env.ASTEROID_API_WSS,
       USE_IBC: context.cloudflare.env.USE_IBC,
+      REST: context.cloudflare.env.REST,
+      RPC: context.cloudflare.env.RPC,
     },
   })
 }
@@ -72,6 +74,8 @@ export default function App() {
             chainId: data.ENV.CHAIN_ID,
             chainName: data.ENV.CHAIN_NAME,
             gasPrice: data.ENV.GAS_PRICE,
+            restEndpoint: data.ENV.REST,
+            rpcEndpoint: data.ENV.RPC,
             txExplorer: data.ENV.TX_EXPLORER,
             maxFileSize: parseInt(data.ENV.MAX_FILE_SIZE),
             asteroidApi: data.ENV.ASTEROID_API,

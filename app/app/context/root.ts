@@ -2,6 +2,8 @@ import { createContext, useContext } from 'react'
 
 export const RootContext = createContext({
   maxFileSize: 550000,
+  restEndpoint: '', // @todo add default rest endpoint
+  rpcEndpoint: '', // @todo add default rpc endpoint
   txExplorer: '', // @todo add default tx explorer
   asteroidApi: '', // @todo add default asteroid api
   asteroidWs: '', // @todo add default asteroid ws
