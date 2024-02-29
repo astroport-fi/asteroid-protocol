@@ -15,6 +15,7 @@ import TxDialog from './TxDialog'
 interface Props {
   ticker: string
   tokenAmount: number
+  lastPrice: number
 }
 
 type FormData = {
@@ -23,7 +24,7 @@ type FormData = {
 }
 
 const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
-  function SellTokenDialog({ ticker, tokenAmount }, ref) {
+  function SellTokenDialog({ ticker, tokenAmount, lastPrice }, ref) {
     // form
     const {
       handleSubmit,
@@ -33,7 +34,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     } = useForm<FormData>({
       defaultValues: {
         amount: 10,
-        ppt: 0.1,
+        ppt: lastPrice > 0 ? lastPrice : 0.1,
       },
     })
     const amount = watch('amount')

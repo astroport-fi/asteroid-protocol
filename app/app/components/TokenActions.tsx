@@ -2,6 +2,7 @@ import { Link } from '@remix-run/react'
 import { Button } from 'react-daisyui'
 import { Token } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
+import { getDecimalValue } from '~/utils/number'
 import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
 
@@ -44,6 +45,7 @@ export function TokenActions({ amount, token }: Props) {
           ticker={token.ticker}
           tokenAmount={amount ?? 0}
           ref={sellDialogRef}
+          lastPrice={getDecimalValue(token.last_price_base, token.decimals)}
         />
       </div>
     </div>

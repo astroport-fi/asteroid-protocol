@@ -28,7 +28,8 @@ import useDialog from '~/hooks/useDialog'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
-import { round1 } from '~/utils/math'
+import { round2 } from '~/utils/math'
+import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -64,9 +65,14 @@ export default function MarketsPage() {
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
   const { dialogRef, handleShow } = useDialog()
-  const [selected, setSelected] = useState<{ ticker: string; amount: number }>({
+  const [selected, setSelected] = useState<{
+    ticker: string
+    amount: number
+    lastPrice: number | undefined
+  }>({
     ticker: '',
     amount: 0,
+    lastPrice: undefined,
   })
   const [searchParams] = useSearchParams()
   const defaultSearch = searchParams.get('search') ?? ''
@@ -103,7 +109,7 @@ export default function MarketsPage() {
       enableSorting: false,
       header: 'Minted',
       id: 'minted',
-      cell: (info) => `${round1(info.getValue() * 100)}%`,
+      cell: (info) => `${round2(info.getValue() * 100)}%`,
     }),
     columnHelper.accessor(
       'marketplace_cft20_details_aggregate.aggregate.count',
@@ -130,12 +136,13 @@ export default function MarketsPage() {
 
         const value = info.getValue()
         const amount = value?.[0]?.amount ?? 0
+        const token = info.row.original
         return (
           <>
             {minted < 1 && (
               <Link
                 className="btn btn-neutral btn-sm mr-2"
-                to={`/app/token/${info.row.original.ticker}`}
+                to={`/app/token/${token.ticker}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 Mint
@@ -147,7 +154,14 @@ export default function MarketsPage() {
                 size="sm"
                 onClick={(e) => {
                   e.stopPropagation()
-                  setSelected({ ticker: info.row.original.ticker, amount })
+                  setSelected({
+                    ticker: token.ticker,
+                    amount,
+                    lastPrice: getDecimalValue(
+                      token.last_price_base,
+                      token.decimals,
+                    ),
+                  })
                   handleShow()
                 }}
               >
@@ -208,6 +222,7 @@ export default function MarketsPage() {
       <SellTokenDialog
         ticker={selected.ticker}
         tokenAmount={selected.amount}
+        lastPrice={selected.lastPrice}
         ref={dialogRef}
       />
     </>

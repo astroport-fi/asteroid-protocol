@@ -29,7 +29,7 @@ import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { getDateAgo } from '~/utils/date'
-import { round1 } from '~/utils/math'
+import { round2 } from '~/utils/math'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
@@ -172,7 +172,7 @@ function ListingsTable({
     columnHelper.accessor('marketplace_listing.deposit_total', {
       header: 'Minimum Deposit',
       cell: (info) =>
-        `${round1((info.getValue() / info.row.original.marketplace_listing.total) * 100)}%`,
+        `${round2((info.getValue() / info.row.original.marketplace_listing.total) * 100)}%`,
     }),
     columnHelper.accessor('date_created', {
       header: 'Listed',
@@ -340,6 +340,7 @@ export default function MarketPage() {
               ref={dialogRef}
               ticker={token.ticker}
               tokenAmount={amount ?? 0}
+              lastPrice={getDecimalValue(token.last_price_base, token.decimals)}
             />
           </div>
         </div>
