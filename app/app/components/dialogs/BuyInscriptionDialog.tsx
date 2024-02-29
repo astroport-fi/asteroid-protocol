@@ -15,6 +15,7 @@ import AddressChip from '../AddressChip'
 import CancelListing from '../CancelListing'
 import InscriptionImage from '../InscriptionImage'
 import BuyDialog from './BuyDialog'
+import SellInscriptionDialog from './SellInscriptionDialog'
 
 interface Props {
   inscription: InscriptionWithMarket | null
@@ -31,6 +32,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
 
     // dialog
     const { dialogRef, handleShow } = useDialog()
+    const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
 
     return (
       <Modal ref={ref} backdrop>
@@ -125,6 +127,16 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                     </Button>
                   )}
                 </div>
+              ) : inscription.current_owner == address ? (
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    fRef.current?.close()
+                    showSellDialog()
+                  }}
+                >
+                  List inscription
+                </Button>
               ) : (
                 <span className="text-lg">No listing</span>
               )}
@@ -134,6 +146,10 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                 listingHash={listing?.transaction.hash ?? null}
                 resultLink={`/app/inscriptions`}
                 ref={dialogRef}
+              />
+              <SellInscriptionDialog
+                inscription={inscription}
+                ref={sellDialogRef}
               />
             </Modal.Body>
             <Modal.Actions className="flex justify-center"></Modal.Actions>

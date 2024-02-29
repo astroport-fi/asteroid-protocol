@@ -105,6 +105,10 @@ strong {
   }
 }
 
+.cosmoskit-content * {
+  @apply text-base-content !important;
+}
+
 .cosmoskit-children div *,
 .cosmoskit-content > div {
   @apply bg-base-300;

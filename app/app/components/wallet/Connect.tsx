@@ -81,15 +81,6 @@ export const ButtonRejected = ({
   <Button text={text} className={className} color={color} onClick={onClick} />
 )
 
-export const ButtonError = ({
-  text = 'Change Wallet',
-  className,
-  color,
-  onClick,
-}: ButtonProps) => (
-  <Button text={text} className={className} color={color} onClick={onClick} />
-)
-
 export const ButtonNotExist = ({
   text = 'Install Wallet',
   className,

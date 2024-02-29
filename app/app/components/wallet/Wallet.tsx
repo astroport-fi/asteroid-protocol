@@ -2,7 +2,7 @@ import '@interchain-ui/react/styles'
 import { useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { Alert, ButtonProps } from 'react-daisyui'
+import { ButtonProps } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
 import useChain from '~/hooks/useChain'
 import { USER_ADDRESS_COOKIE, serializeCookieValue } from '~/utils/cookies'
@@ -11,7 +11,6 @@ import {
   ButtonConnect,
   ButtonConnected,
   ButtonConnecting,
-  ButtonError,
   ButtonNotExist,
   ButtonRejected,
 } from './Connect'
@@ -104,7 +103,7 @@ export function Wallet({
       />
     ),
     [WalletStatus.Error]: (
-      <ButtonError onClick={openView} className={className} color={color} />
+      <ButtonConnect onClick={openView} className={className} color={color} />
     ),
     [WalletStatus.Rejected]: (
       <ButtonRejected onClick={connect} className={className} color={color} />
@@ -123,13 +122,5 @@ export function Wallet({
     />
   )
 
-  return (
-    <div>
-      {ConnectButton}
-      {message &&
-      [WalletStatus.Error, WalletStatus.Rejected].includes(status) ? (
-        <Alert>{`${wallet?.prettyName}: ${message}`}</Alert>
-      ) : null}
-    </div>
-  )
+  return ConnectButton
 }

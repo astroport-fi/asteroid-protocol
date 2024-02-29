@@ -77,9 +77,9 @@ export function Inscriptions<T extends InscriptionWithMarket>({
 }) {
   return (
     <div className={twMerge('grid grid-cols-fill-56 gap-4', className)}>
-      {inscriptions.map((inscription) => (
+      {inscriptions.map((inscription, index) => (
         <InscriptionBox
-          key={inscription.id}
+          key={index}
           inscription={inscription}
           onClick={onClick}
         />

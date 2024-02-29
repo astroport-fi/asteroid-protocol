@@ -4,9 +4,9 @@ import logo from '~/images/logo/asteroid-white-transparent-narrow.png'
 
 export default function Index() {
   return (
-    <div className="w-full h-svh bg-no-repeat bg-cover bg-center bg-[url('/app/images/background/inscriptions-landscape.webp')]">
+    <div className="w-full min-h-svh h-full bg-no-repeat bg-cover bg-center bg-[url('/app/images/background/inscriptions-landscape.webp')]">
       <img src={logo} alt="logo" className="w-44 p-8" />
-      <div className="md:w-1/2 p-16 md:py-32">
+      <div className="md:w-1/2 px-16 pt-16 md:pt-32">
         <h1 className="text-6xl md:text-8xl font-medium text-white">
           INSCRIBE
           <br />
@@ -25,7 +25,7 @@ export default function Index() {
           </Link>
           <DaisyLink
             className="ml-4 font-light"
-            href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
+            href="https://www.notion.so/delphilabs/Asteroid-Protocol-Docs-c3fb7993254b4c2e814c42e76a1acec3"
             target="_blank"
           >
             Learn more

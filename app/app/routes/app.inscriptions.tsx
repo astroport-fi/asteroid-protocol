@@ -244,7 +244,9 @@ function Filter() {
   const [range, setRange] = useState<Range>(
     (searchParams.get('range') as Range) ?? DEFAULT_RANGE,
   )
-  const [status, setStatus] = useState<Status>('all')
+  const [status, setStatus] = useState<Status>(
+    (searchParams.get('status') as Status) ?? 'all',
+  )
 
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
@@ -330,17 +332,17 @@ function LatestTransactions({
   const navigate = useNavigate()
 
   return (
-    <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex">
+    <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
       <div className="fixed py-8 flex flex-col pl-2 w-[-webkit-fill-available]">
-        <div className="text-center">Latest transactions</div>
+        <div>Latest transactions</div>
         <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
-          <span className="p-2 shrink-0">
+          <span className="p-2 w-1/12">
             <ClockIcon className="size-5" />
           </span>
-          <span className="p-2 shrink-0">Item</span>
-          <span className="p-2 shrink-0">Price</span>
-          <span className="p-2 shrink-0">Seller</span>
-          <span className="p-2 shrink-0">Buyer</span>
+          <span className="p-2 w-2/12">Item</span>
+          <span className="p-2 w-3/12">Price</span>
+          <span className="p-2 w-2/12">Seller</span>
+          <span className="p-2 w-2/12">Buyer</span>
         </div>
         <Divider className="my-1" />
         <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
@@ -351,12 +353,12 @@ function LatestTransactions({
               }}
               key={tx.id}
               color="ghost"
-              className="flex flex-row justify-between w-full rounded-none"
+              className="flex flex-row justify-between w-full rounded-none px-4"
             >
-              <span className="p-2 shrink-0">
+              <span className="mx-1 shrink-0 w-1/12">
                 {getDateAgo(tx.date_created, true)}
               </span>
-              <span className="p-2 shrink-0">
+              <span className="shrink-0 w-2/12 flex justify-center">
                 <InscriptionImage
                   min
                   mime={tx.inscription.mime}
@@ -366,7 +368,7 @@ function LatestTransactions({
                 />
               </span>
               <NumericFormat
-                className="p-2 shrink-0"
+                className="shrink-0 w-3/12"
                 displayType="text"
                 thousandSeparator
                 suffix=" ATOM"
@@ -374,14 +376,14 @@ function LatestTransactions({
               />
               <Link
                 to={`/app/wallet/${tx.seller_address}`}
-                className="p-2 shrink-0 hover:text-primary"
+                className="shrink-0 w-2/12 hover:text-primary"
                 onClick={(e) => e.stopPropagation()}
               >
                 {shortAddress(tx.seller_address)}
               </Link>
               <Link
                 to={`/app/wallet/${tx.buyer_address}`}
-                className="p-2 shrink-0 hover:text-primary"
+                className="shrink-0 w-2/12 hover:text-primary"
                 onClick={(e) => e.stopPropagation()}
               >
                 {shortAddress(tx.buyer_address!)}

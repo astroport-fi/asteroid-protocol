@@ -24,11 +24,7 @@ import { parsePagination, parseSorting } from '~/utils/pagination'
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
   const { offset, limit } = parsePagination(url.searchParams)
-  const { sort, direction } = parseSorting(
-    url.searchParams,
-    'id',
-    order_by.desc,
-  )
+  const { sort, direction } = parseSorting(url.searchParams, 'id', order_by.asc)
 
   const address = await getAddress(request)
 
@@ -48,7 +44,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   })
 }
 
-const DEFAULT_SORT = { id: 'id', desc: true }
+const DEFAULT_SORT = { id: 'id', desc: false }
 
 export default function MarketsPage() {
   const data = useLoaderData<typeof loader>()
