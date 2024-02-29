@@ -1,7 +1,7 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -15,6 +15,7 @@ import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing, Token } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
+import GhostEmptyState from '~/components/GhostEmptyState'
 import Stat from '~/components/Stat'
 import BuyDialog from '~/components/dialogs/BuyDialog'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
@@ -106,10 +107,12 @@ function ListingsTable({
   listings,
   pages,
   className,
+  onListClick,
 }: {
   token: Token
   listings: MarketplaceTokenListing[]
   pages: number
+  onListClick: () => void
   className?: string
 }) {
   const columnHelper = createColumnHelper<MarketplaceTokenListing>()
@@ -255,7 +258,20 @@ function ListingsTable({
 
   return (
     <>
-      <Table table={table} className={className} />
+      {listings.length < 1 ? (
+        <GhostEmptyState text="Be the first to create a listing for this token.">
+          <Button
+            color="primary"
+            className="mt-6"
+            onClick={() => onListClick()}
+          >
+            Sell {token.ticker} tokens
+          </Button>
+        </GhostEmptyState>
+      ) : (
+        <Table table={table} className={className} />
+      )}
+
       <TxDialog
         ref={txDialogRef}
         txInscription={txInscription}
@@ -296,6 +312,8 @@ export default function MarketPage() {
   const data = useLoaderData<typeof loader>()
   const { dialogRef, handleShow } = useDialog()
   const amount = data.token.token_holders?.[0]?.amount
+  const { token } = data
+  const minted = token.circulating_supply / token.max_supply
 
   return (
     <div>
@@ -303,25 +321,36 @@ export default function MarketPage() {
         <div className="flex flex-row justify-between">
           <BackHeader to="/app/tokens">
             <Button color="ghost" className="text-lg font-medium">
-              {data.token.ticker} / ATOM Market
+              {token.ticker} / ATOM Market
             </Button>
           </BackHeader>
-          <Button color="primary" size="sm" onClick={() => handleShow()}>
-            Sell {data.token.ticker} tokens
-          </Button>
-          <SellTokenDialog
-            ref={dialogRef}
-            ticker={data.token.ticker}
-            tokenAmount={amount ?? 0}
-          />
+          <div>
+            {minted < 1 && (
+              <Link
+                className="btn btn-primary btn-sm mr-2"
+                to={`/app/token/${token.ticker}`}
+              >
+                Mint now
+              </Link>
+            )}
+            <Button color="primary" size="sm" onClick={() => handleShow()}>
+              Sell {token.ticker} tokens
+            </Button>{' '}
+            <SellTokenDialog
+              ref={dialogRef}
+              ticker={token.ticker}
+              tokenAmount={amount ?? 0}
+            />
+          </div>
         </div>
-        <Stats token={data.token} />
+        <Stats token={token} />
       </div>
       <ListingsTable
         className="mt-4"
         listings={data.listings}
         pages={data.pages}
-        token={data.token}
+        token={token}
+        onListClick={() => handleShow()}
       />
     </div>
   )

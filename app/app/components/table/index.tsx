@@ -26,6 +26,7 @@ export default function Table<T = unknown>({
   className,
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
+  const rows = table.getRowModel().rows
 
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
@@ -72,7 +73,7 @@ export default function Table<T = unknown>({
           </tr>
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
+          {rows.map((row) => (
             <tr
               key={row.id}
               className="hover hover:cursor-pointer"
