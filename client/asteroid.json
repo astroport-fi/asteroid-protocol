@@ -17,8 +17,8 @@
         },
         "mainnet": {
             "chainId": "cosmoshub-4",
-            "rpc": "https://rpc-nodes.asteroidprotocol.io",
-            "rest": "https://nodes.asteroidprotocol.io",
+            "rpc": "https://cosmos-rpc.cosmos-apis.com/",
+            "rest": "https://cosmos-rest.cosmos-apis.com",
             "explorer": "https://www.mintscan.io/cosmos/tx/",
             "api": "https://api.asteroidprotocol.io/v1/graphql"
         }
@@ -26,6 +26,9 @@
     "accounts": {
         "test1": {
             "mnemonic": "banner spread envelope side kite person disagree path silver will brother under couch edit food venture squirrel civil budget number acquire point work mass"
+        },
+        "test2": {
+            "mnemonic": "veteran try aware erosion drink dance decade comic dawn museum release episode original list ability owner size tuition surface ceiling depth seminar capable only"
         }
     }
 }
