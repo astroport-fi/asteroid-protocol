@@ -105,7 +105,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     case Sort.LOWEST_ID:
       orderBy = {
         inscription: {
-          id: order_by.desc,
+          id: order_by.asc,
         },
       }
       break
