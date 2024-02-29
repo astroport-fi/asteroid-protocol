@@ -114,7 +114,7 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
       <div className="flex flex-col flex-1">
         <div className="flex flex-row justify-between">
           <div className="flex flex-col">
-            <h2 className="font-medium text-lg">{token.name}</h2>
+            <h2 className="font-medium text-2xl">{token.name}</h2>
             <span className="mt-1">{token.ticker}</span>
           </div>
           <TokenActions token={token} amount={amount} />
@@ -237,7 +237,7 @@ function ListingsTable({
 
   return (
     <>
-      <Table table={table} className={className} />
+      <Table table={table} className={className} showPagination={false} />
       <TxDialog
         ref={txDialogRef}
         txInscription={txInscription}
@@ -314,10 +314,18 @@ export default function WalletToken() {
     <div className="flex flex-col">
       <TokenDetail token={data.token} />
       <Divider className="mt-8" />
-      <h2 className="font-medium text-lg">Your listings</h2>
-      <Divider className="mt-8" />
-      <ListingsTable token={data.token} listings={data.listings} />
-      <h2 className="font-medium text-lg mt-16">Transaction History</h2>
+      {data.listings.length > 0 && (
+        <>
+          <h2 className="font-medium text-lg">Your listings</h2>
+          <Divider className="mt-8" />
+          <ListingsTable
+            token={data.token}
+            listings={data.listings}
+            className="mb-16"
+          />
+        </>
+      )}
+      <h2 className="font-medium text-lg">Transaction History</h2>
       <Divider />
       <TokenAddressHistoryComponent token={data.token} history={data.history} />
     </div>
