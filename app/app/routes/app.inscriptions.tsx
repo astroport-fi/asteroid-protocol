@@ -94,16 +94,19 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       break
     case Sort.RECENTLY_LISTED:
       orderBy = {
+        marketplace_inscription_detail: {
+          id: order_by.desc_nulls_last,
+        },
         inscription: {
           id: order_by.desc,
-        },
-        marketplace_listing: {
-          id: order_by.desc_nulls_last,
         },
       }
       break
     case Sort.LOWEST_ID:
       orderBy = {
+        marketplace_inscription_detail: {
+          inscription_id: order_by.asc_nulls_last,
+        },
         inscription: {
           id: order_by.asc,
         },
@@ -111,6 +114,9 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       break
     case Sort.HIGHEST_ID:
       orderBy = {
+        marketplace_inscription_detail: {
+          inscription_id: order_by.desc_nulls_last,
+        },
         inscription: {
           id: order_by.desc,
         },
@@ -202,7 +208,7 @@ function FilterTitle({
   )
 }
 
-function Filter() {
+function Filter({ onChange }: { onChange: () => void }) {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const sortItems: DropdownItem<Sort>[] = [
@@ -251,37 +257,41 @@ function Filter() {
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
     if (currentStatus !== status) {
+      onChange()
       setSearchParams((prev) => {
         prev.set('status', status)
         return prev
       })
     }
-  }, [searchParams, status, setSearchParams])
+  }, [searchParams, status, setSearchParams, onChange])
 
   useEffect(() => {
     const currentSort = searchParams.get('sort') ?? DEFAULT_SORT
     if (currentSort !== sort) {
+      onChange()
       setSearchParams((prev) => {
         prev.set('sort', sort)
         return prev
       })
     }
-  }, [searchParams, sort, setSearchParams])
+  }, [searchParams, sort, setSearchParams, onChange])
 
   useEffect(() => {
     const currentRange = searchParams.get('range') ?? DEFAULT_RANGE
     if (currentRange !== range) {
+      onChange()
       setSearchParams((prev) => {
         prev.set('range', range)
         return prev
       })
     }
-  }, [searchParams, range, setSearchParams])
+  }, [searchParams, range, setSearchParams, onChange])
 
   useEffect(() => {
     const from = searchParams.get('from') ?? DEFAULT_PRICE_RANGE
     const range = priceRange.split('-')
     if (from !== range[0]) {
+      onChange()
       setSearchParams((prev) => {
         if (range[0] == PriceRange.ALL) {
           prev.delete('from')
@@ -294,7 +304,7 @@ function Filter() {
         return prev
       })
     }
-  }, [searchParams, priceRange, setSearchParams])
+  }, [searchParams, priceRange, setSearchParams, onChange])
 
   return (
     <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
@@ -405,6 +415,7 @@ export default function InscriptionsPage() {
   const data = useLoaderData<typeof loader>()
   const fetcher = useFetcher<typeof loader>()
   const ref = useRef<HTMLDivElement>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const [items, setItems] = useState<InscriptionWithMarket[]>([])
   useEffect(() => {
@@ -423,6 +434,7 @@ export default function InscriptionsPage() {
       ref.current.scrollTop = 0
     }
     setItems(data.inscriptions)
+    setIsLoading(false)
   }, [data.inscriptions, setItems])
 
   function getMoreData() {
@@ -435,7 +447,7 @@ export default function InscriptionsPage() {
 
   return (
     <div className="flex flex-row h-full">
-      <Filter />
+      <Filter onChange={() => setIsLoading(true)} />
       <div className="flex flex-col w-full">
         <BuyInscriptionDialog inscription={inscription!} ref={dialogRef} />
         {data.inscriptions.length > 0 ? (
@@ -455,14 +467,16 @@ export default function InscriptionsPage() {
               }
               scrollableTarget="scrollableDiv"
             >
-              <Inscriptions
-                className="p-8"
-                inscriptions={items}
-                onClick={(inscription) => {
-                  setInscription(inscription)
-                  handleShow()
-                }}
-              />
+              {!isLoading && (
+                <Inscriptions
+                  className="p-8"
+                  inscriptions={items}
+                  onClick={(inscription) => {
+                    setInscription(inscription)
+                    handleShow()
+                  }}
+                />
+              )}
             </InfiniteScroll>
           </div>
         ) : (

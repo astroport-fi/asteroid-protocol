@@ -34,6 +34,7 @@ import {
   tokenListingSelector,
   tokenSelector,
 } from '~/api/token'
+import { marketplaceListingSelector } from './marketplace'
 
 export type TokenMarketResult = {
   tokens: TokenMarket[]
@@ -561,7 +562,14 @@ export class AsteroidClient extends AsteroidService {
         },
       ],
     })
-    return result.inscription[0]
+
+    const inscription = result.inscription[0]
+
+    return {
+      ...inscription,
+      marketplace_listing:
+        inscription?.marketplace_inscription_details?.[0].marketplace_listing,
+    }
   }
 
   async getInscription(hash: string): Promise<Inscription | undefined> {
@@ -627,18 +635,17 @@ export class AsteroidClient extends AsteroidService {
     }
 
     if (where.onlyBuy) {
-      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
-        marketplace_inscription_details: {
-          marketplace_listing: {
-            is_cancelled: {
-              _eq: false,
-            },
-            is_filled: {
-              _eq: false,
-            },
+      queryWhere.marketplace_listing = Object.assign(
+        queryWhere.marketplace_listing || {},
+        {
+          is_cancelled: {
+            _eq: false,
+          },
+          is_filled: {
+            _eq: false,
           },
         },
-      })
+      )
     }
 
     if (where.idLTE) {
@@ -676,23 +683,18 @@ export class AsteroidClient extends AsteroidService {
         {
           inscription: {
             ...inscriptionSelector,
-            marketplace_inscription_details: [
-              {
-                where: {
-                  marketplace_listing: {
-                    is_cancelled: { _eq: false },
-                    is_filled: { _eq: false },
-                  },
-                },
-              },
-              inscriptionListingSelector,
-            ],
+          },
+          marketplace_listing: {
+            ...marketplaceListingSelector,
           },
         },
       ],
     })
     return {
-      inscriptions: result.inscription_market.map((i) => i.inscription!),
+      inscriptions: result.inscription_market.map((i) => ({
+        ...i.inscription!,
+        marketplace_listing: i.marketplace_listing,
+      })),
       count:
         result.inscription_market_aggregate.aggregate?.count ??
         result.inscription_market.length,

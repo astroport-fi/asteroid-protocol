@@ -25,8 +25,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
   function BuyInscriptionDialog({ inscription }, ref) {
     const fRef = useForwardRef(ref)
 
-    const listing =
-      inscription?.marketplace_inscription_details?.[0]?.marketplace_listing
+    const listing = inscription?.marketplace_listing
 
     const address = useAddress()
 

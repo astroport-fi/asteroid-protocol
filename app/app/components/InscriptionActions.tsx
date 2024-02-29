@@ -15,8 +15,7 @@ export function InscriptionActions({ inscription }: Props) {
   const { dialogRef: transferDialogRef, handleShow: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
-  const listing =
-    inscription?.marketplace_inscription_details?.[0]?.marketplace_listing
+  const listing = inscription?.marketplace_listing
 
   if (address == inscription.current_owner) {
     return (

@@ -4,7 +4,7 @@ import {
   ScalarDefinition,
   Selector,
 } from '@asteroid-protocol/sdk/client'
-import { marketplaceListingSelector } from './marketplace'
+import { MarketplaceListing, marketplaceListingSelector } from './marketplace'
 
 export const inscriptionSelector = Selector('inscription')({
   id: true,
@@ -73,7 +73,7 @@ export type InscriptionMarketplaceListing = InputType<
 >
 
 export type InscriptionWithMarket = Inscription & {
-  marketplace_inscription_details: (InscriptionMarketplaceListing | undefined)[]
+  marketplace_listing?: MarketplaceListing | undefined
 }
 
 export const inscriptionTradeHistorySelector = Selector(
