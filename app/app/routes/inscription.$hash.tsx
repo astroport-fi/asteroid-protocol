@@ -8,6 +8,7 @@ import { AsteroidClient } from '~/api/client'
 import { Inscription } from '~/api/inscription'
 import InscriptionImage from '~/components/InscriptionImage'
 import { getMimeTitle } from '~/utils/string'
+import logo from '../images/logo/white.svg'
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -95,7 +96,7 @@ function InscriptionContent({ inscription }: { inscription: Inscription }) {
       src={inscription.content_path}
       isExplicit={inscription.is_explicit}
       mime={inscription.mime}
-      className="object-none rounded"
+      className="w-fit object-none rounded"
     />
   )
 }
@@ -107,8 +108,10 @@ export default function InscriptionPage() {
     <div className="flex flex-col p-8">
       <header className="flex flex-row items-center justify-between">
         <div className="flex items-center">
-          <Link to="/app">Asteroid</Link>
-          <h1 className="text-2xl font-bold flex items-center ml-2">
+          <Link to="/app/inscriptions">
+            <img src={logo} alt="Asteroid protocol" />
+          </Link>
+          <h1 className="text-2xl font-bold flex items-center ml-8">
             Inscription #{data.inscription.id - 1}: {data.inscription.name}
             <span className="text-sm font-extralight ml-2">
               {data.inscription.mime}
