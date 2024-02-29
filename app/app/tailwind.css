@@ -78,6 +78,11 @@ strong {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  .w-available {
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
 }
 
 ::-webkit-scrollbar {

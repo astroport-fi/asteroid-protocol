@@ -202,7 +202,7 @@ function ListingsTable({
                 size="sm"
                 onClick={() => reserveListing(listingHash)}
               >
-                Reserve
+                Buy
               </Button>
             )
           case ListingState.Buy:

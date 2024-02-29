@@ -568,7 +568,7 @@ export class AsteroidClient extends AsteroidService {
     return {
       ...inscription,
       marketplace_listing:
-        inscription?.marketplace_inscription_details?.[0].marketplace_listing,
+        inscription?.marketplace_inscription_details?.[0]?.marketplace_listing,
     }
   }
 

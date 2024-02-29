@@ -11,7 +11,7 @@ export default function App() {
     <div>
       <Navbar />
       <div
-        className={clsx('mt-16 overflow-y-scroll h-[calc(100vh-6rem)]', {
+        className={clsx('mt-16 h-[calc(100vh-6rem)]', {
           ['px-16 py-8']: padding,
         })}
       >

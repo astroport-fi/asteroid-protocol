@@ -343,7 +343,7 @@ function LatestTransactions({
 
   return (
     <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
-      <div className="fixed py-8 flex flex-col pl-2 w-[-webkit-fill-available]">
+      <div className="fixed py-8 flex flex-col w-available">
         <div>Latest transactions</div>
         <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
           <span className="p-2 w-1/12">
