@@ -323,16 +323,6 @@ function Filter({ onChange }: { onChange: () => void }) {
         <div className="flex flex-col items-start w-full px-6">
           <FilterTitle>Status</FilterTitle>
           <StatusFilter selected={status} onChange={setStatus} />
-          <FilterTitle className="mt-6">Sort</FilterTitle>
-          <Select items={sortItems} onSelect={setSort} selected={sort} />
-          <FilterTitle className="mt-6">Price</FilterTitle>
-          <Select
-            items={priceRangeItems}
-            onSelect={setPriceRange}
-            selected={priceRange}
-          />
-          <FilterTitle className="mt-6">Inscription range</FilterTitle>
-          <Select items={rangeItems} onSelect={setRange} selected={range} />
           <FilterTitle className="mt-6">Search</FilterTitle>
           <Form method="get" onSubmit={() => onChange()}>
             <Input
@@ -343,6 +333,17 @@ function Filter({ onChange }: { onChange: () => void }) {
               defaultValue={defaultSearch}
             />
           </Form>
+          <FilterTitle className="mt-6">Sort</FilterTitle>
+          <Select items={sortItems} onSelect={setSort} selected={sort} />
+          <FilterTitle className="mt-6">Price</FilterTitle>
+          <Select
+            items={priceRangeItems}
+            onSelect={setPriceRange}
+            selected={priceRange}
+          />
+          <FilterTitle className="mt-6">Inscription range</FilterTitle>
+          <Select items={rangeItems} onSelect={setRange} selected={range} />
+
           <Link
             to="/app/wallet/inscriptions"
             className="btn btn-primary mt-8"
