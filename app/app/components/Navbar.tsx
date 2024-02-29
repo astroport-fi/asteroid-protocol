@@ -54,7 +54,10 @@ export default function Navbar() {
             </li>
           </Dropdown.Menu>
         </Dropdown>
-        <Link className="btn btn-ghost normal-case text-xl px-8" to="/app/">
+        <Link
+          className="btn btn-ghost normal-case text-xl px-8"
+          to="/app/inscriptions"
+        >
           <img src={logo} alt="Asteroid protocol" />
         </Link>
       </DaisyNavbar.Start>

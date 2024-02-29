@@ -2,6 +2,7 @@ import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import {
+  Form,
   Link,
   useFetcher,
   useLoaderData,
@@ -9,7 +10,14 @@ import {
   useSearchParams,
 } from '@remix-run/react'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
-import { Button, Divider, Form, Loading, Radio } from 'react-daisyui'
+import {
+  Button,
+  Form as DaisyForm,
+  Divider,
+  Input,
+  Loading,
+  Radio,
+} from 'react-daisyui'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { NumericFormat } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
@@ -69,6 +77,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const from = searchParams.get('from')
   const to = searchParams.get('to')
   const sort = searchParams.get('sort') ?? DEFAULT_SORT
+  const search = searchParams.get('search') ?? ''
 
   let orderBy: ValueTypes['inscription_market_order_by'] | undefined
   switch (sort) {
@@ -134,6 +143,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       idLTE: range != Range.ALL ? parseInt(range) : undefined,
       priceGTE: from ? parseFloat(from) * 10e5 : undefined,
       priceLTE: to ? parseFloat(to) * 10e5 : undefined,
+      search,
     },
     orderBy,
   )
@@ -166,7 +176,7 @@ function StatusFilter({
 }) {
   return (
     <div className="flex flex-col">
-      <Form.Label
+      <DaisyForm.Label
         title="Only buy now"
         className="flex flex-row-reverse items-center justify-end px-0"
       >
@@ -177,9 +187,9 @@ function StatusFilter({
           checked={selected == 'buy'}
           onChange={() => onChange('buy')}
         />
-      </Form.Label>
+      </DaisyForm.Label>
 
-      <Form.Label
+      <DaisyForm.Label
         title="Show all"
         className="flex flex-row-reverse items-center justify-end px-0"
       >
@@ -190,7 +200,7 @@ function StatusFilter({
           checked={selected == 'all'}
           onChange={() => onChange('all')}
         />
-      </Form.Label>
+      </DaisyForm.Label>
     </div>
   )
 }
@@ -253,6 +263,7 @@ function Filter({ onChange }: { onChange: () => void }) {
   const [status, setStatus] = useState<Status>(
     (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
   )
+  const defaultSearch = searchParams.get('search') ?? ''
 
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
@@ -309,26 +320,37 @@ function Filter({ onChange }: { onChange: () => void }) {
   return (
     <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
       <div className="flex flex-col items-start absolute py-8">
-        <FilterTitle>Status</FilterTitle>
-        <StatusFilter selected={status} onChange={setStatus} />
-        <FilterTitle className="mt-6">Sort</FilterTitle>
-        <Select items={sortItems} onSelect={setSort} selected={sort} />
-        <FilterTitle className="mt-6">Price</FilterTitle>
-        <Select
-          items={priceRangeItems}
-          onSelect={setPriceRange}
-          selected={priceRange}
-        />
-        <FilterTitle className="mt-6">Inscription range</FilterTitle>
-        <Select items={rangeItems} onSelect={setRange} selected={range} />
-
-        <Link
-          to="/app/wallet/inscriptions"
-          className="btn btn-primary mt-8"
-          color="accent"
-        >
-          List inscription
-        </Link>
+        <div className="flex flex-col items-start w-full px-6">
+          <FilterTitle>Status</FilterTitle>
+          <StatusFilter selected={status} onChange={setStatus} />
+          <FilterTitle className="mt-6">Sort</FilterTitle>
+          <Select items={sortItems} onSelect={setSort} selected={sort} />
+          <FilterTitle className="mt-6">Price</FilterTitle>
+          <Select
+            items={priceRangeItems}
+            onSelect={setPriceRange}
+            selected={priceRange}
+          />
+          <FilterTitle className="mt-6">Inscription range</FilterTitle>
+          <Select items={rangeItems} onSelect={setRange} selected={range} />
+          <FilterTitle className="mt-6">Search</FilterTitle>
+          <Form method="get" onSubmit={() => onChange()}>
+            <Input
+              className="w-full mt-2"
+              placeholder="Name"
+              name="search"
+              size="sm"
+              defaultValue={defaultSearch}
+            />
+          </Form>
+          <Link
+            to="/app/wallet/inscriptions"
+            className="btn btn-primary mt-8"
+            color="accent"
+          >
+            List inscription
+          </Link>
+        </div>
       </div>
     </div>
   )

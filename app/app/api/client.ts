@@ -601,6 +601,7 @@ export class AsteroidClient extends AsteroidService {
       idLTE?: number
       priceGTE?: number
       priceLTE?: number
+      search?: string | null
     } = {},
     orderBy?: ValueTypes['inscription_market_order_by'],
   ): Promise<InscriptionsResult> {
@@ -632,6 +633,24 @@ export class AsteroidClient extends AsteroidService {
           },
         },
       ]
+    }
+
+    if (where.search) {
+      const searchResult = await this.query({
+        find_inscription_by_name: [
+          {
+            args: {
+              query_name: '%' + where.search + '%',
+            },
+          },
+          {
+            id: true,
+          },
+        ],
+      })
+      queryWhere.id = {
+        _in: searchResult.find_inscription_by_name.map((i) => i.id as number),
+      }
     }
 
     if (where.onlyBuy) {

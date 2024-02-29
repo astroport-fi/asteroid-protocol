@@ -76,10 +76,10 @@ function InscriptionDetail({
       </div>
       <div className="flex flex-col flex-1">
         <div className="flex items-center justify-between">
-          <h2 className="font-medium text-lg">{inscription.name}</h2>
+          <h2 className="font-medium text-2xl">{inscription.name}</h2>
           <InscriptionActions inscription={inscription} />
         </div>
-        <p className="whitespace-pre-wrap">{inscription.description}</p>
+        <p className="whitespace-pre-wrap mt-4">{inscription.description}</p>
         <Divider />
         <div className="flex flex-row w-full">
           <div className="flex flex-col flex-1">
