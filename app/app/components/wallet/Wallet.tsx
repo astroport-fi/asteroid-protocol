@@ -6,7 +6,7 @@ import { ButtonProps } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
 import useChain from '~/hooks/useChain'
 import { USER_ADDRESS_COOKIE, serializeCookieValue } from '~/utils/cookies'
-import { getEllipsisTxt } from '~/utils/string'
+import Address from '../Address'
 import {
   ButtonConnect,
   ButtonConnected,
@@ -83,7 +83,7 @@ export function Wallet({
     [WalletStatus.Connected]: (
       <ButtonConnected
         onClick={openView}
-        text={getEllipsisTxt(address)}
+        text={<Address address={address ?? ''} start={6} />}
         className={className}
         color={color}
       />

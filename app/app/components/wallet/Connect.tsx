@@ -1,12 +1,12 @@
 import { WalletIcon } from '@heroicons/react/20/solid'
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 import {
   Button as DaisyButton,
   ButtonProps as DaisyButtonProps,
 } from 'react-daisyui'
 
 export type ButtonProps = {
-  text?: string
+  text?: ReactNode
   className?: string
   loading?: boolean
   disabled?: boolean
