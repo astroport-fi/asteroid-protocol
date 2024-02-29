@@ -55,7 +55,7 @@ enum PriceRange {
 }
 
 type Status = 'all' | 'buy'
-const DEFAULT_STATUS: Status = 'all'
+const DEFAULT_STATUS: Status = 'buy'
 const DEFAULT_SORT = Sort.RECENTLY_LISTED
 const DEFAULT_RANGE = Range.ALL
 const DEFAULT_PRICE_RANGE = PriceRange.ALL
@@ -251,7 +251,7 @@ function Filter({ onChange }: { onChange: () => void }) {
     (searchParams.get('range') as Range) ?? DEFAULT_RANGE,
   )
   const [status, setStatus] = useState<Status>(
-    (searchParams.get('status') as Status) ?? 'all',
+    (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
   )
 
   useEffect(() => {
