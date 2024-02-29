@@ -11,6 +11,15 @@ object_relationships:
         remote_table:
           name: inscription
           schema: public
+  - name: marketplace_inscription_detail
+    using:
+      manual_configuration:
+        column_mapping:
+          listing_id: listing_id
+        insertion_order: null
+        remote_table:
+          name: marketplace_inscription_detail
+          schema: public
   - name: marketplace_listing
     using:
       manual_configuration:
