@@ -1968,6 +1968,8 @@ export type ValueTypes = {
     inscription?: ValueTypes['inscription']
     listing_id?: boolean | `@${string}`
     /** An object relationship */
+    marketplace_inscription_detail?: ValueTypes['marketplace_inscription_detail']
+    /** An object relationship */
     marketplace_listing?: ValueTypes['marketplace_listing']
     __typename?: boolean | `@${string}`
   }>
@@ -2040,6 +2042,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    marketplace_inscription_detail?:
+      | ValueTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     marketplace_listing?:
       | ValueTypes['marketplace_listing_bool_exp']
       | undefined
@@ -2068,6 +2075,11 @@ export type ValueTypes = {
       | Variable<any, string>
     listing_id?:
       | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    marketplace_inscription_detail?:
+      | ValueTypes['marketplace_inscription_detail_order_by']
       | undefined
       | null
       | Variable<any, string>
@@ -12169,6 +12181,8 @@ export type ResolverInputTypes = {
     inscription?: ResolverInputTypes['inscription']
     listing_id?: boolean | `@${string}`
     /** An object relationship */
+    marketplace_inscription_detail?: ResolverInputTypes['marketplace_inscription_detail']
+    /** An object relationship */
     marketplace_listing?: ResolverInputTypes['marketplace_listing']
     __typename?: boolean | `@${string}`
   }>
@@ -12222,6 +12236,10 @@ export type ResolverInputTypes = {
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     inscription?: ResolverInputTypes['inscription_bool_exp'] | undefined | null
     listing_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    marketplace_inscription_detail?:
+      | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
     marketplace_listing?:
       | ResolverInputTypes['marketplace_listing_bool_exp']
       | undefined
@@ -12244,6 +12262,10 @@ export type ResolverInputTypes = {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription?: ResolverInputTypes['inscription_order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
+    marketplace_inscription_detail?:
+      | ResolverInputTypes['marketplace_inscription_detail_order_by']
+      | undefined
+      | null
     marketplace_listing?:
       | ResolverInputTypes['marketplace_listing_order_by']
       | undefined
@@ -18463,6 +18485,10 @@ export type ModelTypes = {
     inscription?: ModelTypes['inscription'] | undefined
     listing_id?: number | undefined
     /** An object relationship */
+    marketplace_inscription_detail?:
+      | ModelTypes['marketplace_inscription_detail']
+      | undefined
+    /** An object relationship */
     marketplace_listing?: ModelTypes['marketplace_listing'] | undefined
   }
   /** aggregated selection of "inscription_market" */
@@ -18499,6 +18525,9 @@ export type ModelTypes = {
     id?: ModelTypes['Int_comparison_exp'] | undefined
     inscription?: ModelTypes['inscription_bool_exp'] | undefined
     listing_id?: ModelTypes['Int_comparison_exp'] | undefined
+    marketplace_inscription_detail?:
+      | ModelTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
     marketplace_listing?: ModelTypes['marketplace_listing_bool_exp'] | undefined
   }
   /** aggregate max on columns */
@@ -18516,6 +18545,9 @@ export type ModelTypes = {
     id?: ModelTypes['order_by'] | undefined
     inscription?: ModelTypes['inscription_order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
+    marketplace_inscription_detail?:
+      | ModelTypes['marketplace_inscription_detail_order_by']
+      | undefined
     marketplace_listing?: ModelTypes['marketplace_listing_order_by'] | undefined
   }
   ['inscription_market_select_column']: inscription_market_select_column
@@ -22330,6 +22362,10 @@ export type GraphQLTypes = {
     inscription?: GraphQLTypes['inscription'] | undefined
     listing_id?: number | undefined
     /** An object relationship */
+    marketplace_inscription_detail?:
+      | GraphQLTypes['marketplace_inscription_detail']
+      | undefined
+    /** An object relationship */
     marketplace_listing?: GraphQLTypes['marketplace_listing'] | undefined
   }
   /** aggregated selection of "inscription_market" */
@@ -22371,6 +22407,9 @@ export type GraphQLTypes = {
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     inscription?: GraphQLTypes['inscription_bool_exp'] | undefined
     listing_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    marketplace_inscription_detail?:
+      | GraphQLTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
     marketplace_listing?:
       | GraphQLTypes['marketplace_listing_bool_exp']
       | undefined
@@ -22392,6 +22431,9 @@ export type GraphQLTypes = {
     id?: GraphQLTypes['order_by'] | undefined
     inscription?: GraphQLTypes['inscription_order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
+    marketplace_inscription_detail?:
+      | GraphQLTypes['marketplace_inscription_detail_order_by']
+      | undefined
     marketplace_listing?:
       | GraphQLTypes['marketplace_listing_order_by']
       | undefined

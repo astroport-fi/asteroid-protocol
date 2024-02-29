@@ -243,12 +243,14 @@ export const AllTypesProps: Record<string, any> = {
     id: 'Int_comparison_exp',
     inscription: 'inscription_bool_exp',
     listing_id: 'Int_comparison_exp',
+    marketplace_inscription_detail: 'marketplace_inscription_detail_bool_exp',
     marketplace_listing: 'marketplace_listing_bool_exp',
   },
   inscription_market_order_by: {
     id: 'order_by',
     inscription: 'inscription_order_by',
     listing_id: 'order_by',
+    marketplace_inscription_detail: 'marketplace_inscription_detail_order_by',
     marketplace_listing: 'marketplace_listing_order_by',
   },
   inscription_market_select_column: 'enum' as const,
@@ -2610,6 +2612,7 @@ export const ReturnTypes: Record<string, any> = {
     id: 'Int',
     inscription: 'inscription',
     listing_id: 'Int',
+    marketplace_inscription_detail: 'marketplace_inscription_detail',
     marketplace_listing: 'marketplace_listing',
   },
   inscription_market_aggregate: {
