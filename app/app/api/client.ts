@@ -264,6 +264,7 @@ export class AsteroidClient extends AsteroidService {
     limit: number = 20,
     where: {
       userAddress?: string
+      search?: string | null
     } = {},
     orderBy?: ValueTypes['token_order_by'],
   ): Promise<TokenMarketResult> {
@@ -291,10 +292,22 @@ export class AsteroidClient extends AsteroidService {
       ]
     }
 
+    let queryWhere: ValueTypes['token_bool_exp'] | undefined
+    if (where.search) {
+      queryWhere = {
+        _or: [
+          { name: { _like: `%${where.search}%` } },
+          { name: { _like: `%${where.search.toUpperCase()}%` } },
+          { ticker: { _like: `%${where.search}%` } },
+          { ticker: { _like: `%${where.search.toUpperCase()}%` } },
+        ],
+      }
+    }
+
     const result = await this.query({
-      token_aggregate: [{}, aggregateCountSelector],
+      token_aggregate: [{ where: queryWhere }, aggregateCountSelector],
       token: [
-        { offset, limit, order_by: [orderBy] },
+        { offset, limit, order_by: [orderBy], where: queryWhere },
         {
           id: true,
           name: true,

@@ -1,19 +1,29 @@
 import { order_by } from '@asteroid-protocol/sdk/client'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData, useNavigate } from '@remix-run/react'
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import { Button } from 'react-daisyui'
+import { Button, Form as DaisyForm } from 'react-daisyui'
+import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import { TokenMarket } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import InscriptionImage from '~/components/InscriptionImage'
+import Stat from '~/components/Stat'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import Table from '~/components/table'
+import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
@@ -25,6 +35,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
   const { offset, limit } = parsePagination(url.searchParams)
   const { sort, direction } = parseSorting(url.searchParams, 'id', order_by.asc)
+  const search = url.searchParams.get('search')
 
   const address = await getAddress(request)
 
@@ -32,7 +43,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const res = await asteroidClient.getTokenMarkets(
     offset,
     limit,
-    { userAddress: address },
+    { userAddress: address, search },
     {
       [sort]: direction,
     },
@@ -57,6 +68,12 @@ export default function MarketsPage() {
     ticker: '',
     amount: 0,
   })
+  const [searchParams] = useSearchParams()
+  const defaultSearch = searchParams.get('search') ?? ''
+
+  const {
+    status: { baseTokenUsd },
+  } = useRootContext()
 
   const columns = [
     columnHelper.accessor('content_path', {
@@ -160,7 +177,29 @@ export default function MarketsPage() {
 
   return (
     <>
+      <div className="flex flex-row items-center justify-between">
+        <Stat title="ATOM / USD" className="max-w-80">
+          <NumericFormat prefix="$" displayType="text" value={baseTokenUsd} />
+        </Stat>
+        <Form method="get">
+          <DaisyForm.Label
+            className="input input-bordered flex items-center gap-2"
+            htmlFor="search"
+          >
+            <input
+              type="text"
+              id="search"
+              name="search"
+              className="grow"
+              placeholder="Search by name or ticker"
+              defaultValue={defaultSearch}
+            />
+            <MagnifyingGlassIcon className="size-5" />
+          </DaisyForm.Label>
+        </Form>
+      </div>
       <Table
+        className="mt-4"
         table={table}
         onClick={(tokenSelection) =>
           navigate(`/app/market/${tokenSelection.ticker}`)
