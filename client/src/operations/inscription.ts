@@ -18,7 +18,7 @@ export class InscriptionOperations<
     options: Options<T> = getDefaultOptions(),
   ) {
     super()
-    this.protocol = new InscriptionProtocol(chainId)
+    this.protocol = new InscriptionProtocol(chainId, options.fee)
     this.address = address
     this.options = options
   }

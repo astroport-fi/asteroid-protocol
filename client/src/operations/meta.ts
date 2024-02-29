@@ -15,7 +15,7 @@ export class MetaOperations<
     options: Options<T> = getDefaultOptions(),
   ) {
     super()
-    this.protocol = new MetaProtocol(chainId)
+    this.protocol = new MetaProtocol(chainId, options.fee)
     this.address = address
     this.options = options
   }

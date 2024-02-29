@@ -23,7 +23,7 @@ export class CFT20Operations<
     options: Options<T> = getDefaultOptions(),
   ) {
     super()
-    this.protocol = new CFT20Protocol(chainId)
+    this.protocol = new CFT20Protocol(chainId, options.fee)
     this.address = address
     this.options = options
   }

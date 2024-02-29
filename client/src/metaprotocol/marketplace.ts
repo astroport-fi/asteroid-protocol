@@ -7,7 +7,8 @@ import {
 
 const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',
-  receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
+  receiver:
+    'neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p',
   denom: 'uatom',
   operations: {
     'buy.cft20': {
@@ -24,6 +25,7 @@ const DEFAULT_FEE: ProtocolFee = {
 export type BuyType = 'cft20' | 'inscription'
 
 export default class MarketplaceProtocol extends BaseProtocol {
+  static DEFAULT_FEE = DEFAULT_FEE
   version = 'v1'
   name = 'marketplace'
 

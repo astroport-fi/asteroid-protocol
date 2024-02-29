@@ -21,7 +21,8 @@ export type Parent = {
 
 const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',
-  receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv',
+  receiver:
+    'neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p',
   denom: 'uatom',
   operations: {},
 }
@@ -34,6 +35,7 @@ export function accountIdentifier(accountAddress: string) {
 }
 
 export default class InscriptionProtocol extends BaseProtocol {
+  static DEFAULT_FEE = DEFAULT_FEE
   version = 'v1'
   name = 'inscription'
 

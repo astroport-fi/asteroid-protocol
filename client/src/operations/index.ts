@@ -3,12 +3,14 @@ import {
   BaseProtocol,
   InscriptionData,
   Operation,
+  ProtocolFee,
 } from '../metaprotocol/index.js'
 import { TxData, TxInscription, prepareTx } from '../metaprotocol/tx.js'
 
 export interface Options<T extends boolean> {
   useIbc?: boolean
   useExtensionData?: boolean
+  fee?: ProtocolFee
   multi: T
 }
 
