@@ -19,7 +19,7 @@ export class MarketplaceOperations<
     options: Options<T> = getDefaultOptions(),
   ) {
     super()
-    this.protocol = new MarketplaceProtocol(chainId)
+    this.protocol = new MarketplaceProtocol(chainId, options.fee)
     this.address = address
     this.asteroidService = asteroidService
     this.options = options
