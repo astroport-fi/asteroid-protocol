@@ -1,6 +1,10 @@
 import { toBase64, toUtf8 } from '@cosmjs/encoding'
 import { EncodeObject } from '@cosmjs/proto-signing'
-import { MsgSendEncodeObject, MsgTransferEncodeObject } from '@cosmjs/stargate'
+import {
+  MsgSendEncodeObject,
+  MsgTransferEncodeObject,
+  StdFee,
+} from '@cosmjs/stargate'
 import { MsgRevoke } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
 import { SigningStargateClient } from '../client.js'
 import { InscriptionData, ProtocolFee } from '../metaprotocol/index.js'
@@ -195,11 +199,12 @@ export function broadcastTx(
   client: SigningStargateClient,
   address: string,
   txData: TxData,
+  fee: StdFee | 'auto' | number = 'auto',
 ) {
   return client.signAndBroadcast(
     address,
     txData.messages,
-    'auto',
+    fee,
     txData.memo,
     undefined,
     txData.nonCriticalExtensionOptions,
