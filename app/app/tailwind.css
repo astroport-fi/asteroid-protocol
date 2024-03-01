@@ -13,13 +13,6 @@
   font-display: swap;
 }
 
-@font-face {
-  src: url('./fonts/Nosifer-Regular.ttf') format('truetype');
-  font-family: 'Nosifer';
-  font-weight: 400;
-  font-style: normal;
-}
-
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -106,7 +99,7 @@ strong {
   .menu li > *:not(ul, .menu-title, .btn).active {
     @apply text-primary;
     @apply bg-inherit;
-    @apply font-heading;
+    @apply font-bold;
   }
 }
 

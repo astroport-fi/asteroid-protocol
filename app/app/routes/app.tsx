@@ -8,7 +8,7 @@ export default function App() {
   const padding = location.pathname !== '/app/inscriptions'
 
   return (
-    <div>
+    <div className="bg-main-gradient">
       <Navbar />
       <div
         className={clsx('mt-16 h-[calc(100vh-6rem)]', {

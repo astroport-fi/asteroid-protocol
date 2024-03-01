@@ -33,7 +33,7 @@ export default function Navbar() {
               <NavLink to="/app/inscriptions">Inscriptions</NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
-              <NavLink to="/app/tokens">CFT-20</NavLink>
+              <NavLink to="/app/tokens">Tokens</NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
               <NavLink to="/app/wallet">Portfolio</NavLink>
@@ -50,7 +50,7 @@ export default function Navbar() {
                   <NavLink to="/app/create/inscription">Inscription</NavLink>
                 </li>
                 <li>
-                  <NavLink to="/app/create/token">CFT-20</NavLink>
+                  <NavLink to="/app/create/token">Token</NavLink>
                 </li>
               </ul>
             </li>
@@ -69,7 +69,7 @@ export default function Navbar() {
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>
           <Menu.Item>
-            <NavLink to="/app/tokens">CFT-20</NavLink>
+            <NavLink to="/app/tokens">Tokens</NavLink>
           </Menu.Item>
           <Menu.Item>
             <NavLink to="/app/wallet">Portfolio</NavLink>
@@ -95,7 +95,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item onClick={close}>
                 <NavLink to="/app/create/token" onClick={close}>
-                  CFT-20
+                  Token
                 </NavLink>
               </Menu.Item>
             </Menu.Details>

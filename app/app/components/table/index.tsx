@@ -30,7 +30,7 @@ export default function Table<T = unknown>({
 
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
-      <DaisyTable pinCols>
+      <DaisyTable>
         <thead>
           <tr>
             {headerGroup.headers.map((header) => (

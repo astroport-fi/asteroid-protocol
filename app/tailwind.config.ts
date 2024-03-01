@@ -13,11 +13,12 @@ export default {
       'fill-56': 'repeat(auto-fill, minmax(14rem, 1fr))',
     },
     extend: {
-      fontFamily: {
-        heading: ['Nosifer', 'sans-serif'],
-      },
       colors: {
         'header-content': '#929292',
+      },
+      backgroundImage: {
+        'main-gradient':
+          'linear-gradient(251.43deg, #151515 17.97%, #1E1E1E 43.41%, #303030 51.83%, #1E1E1E 58.81%, #151515 87.04%)',
       },
     },
     fontFamily: {
