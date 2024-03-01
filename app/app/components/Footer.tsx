@@ -1,11 +1,29 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-daisyui'
+import { clientOnly$ } from 'vite-env-only'
+import { Status } from '~/api/status'
 import { useRootContext } from '~/context/root'
+import useAsteroidClient from '~/hooks/useAsteroidClient'
 
 export default function Footer() {
-  const {
-    status: { baseTokenUsd, lastProcessedHeight, lastKnownHeight },
-  } = useRootContext()
-  const lag = lastKnownHeight - lastProcessedHeight
+  const { chainId, status: initialStatus } = useRootContext()
+  const [status, setStatus] = useState<Status>({
+    base_token: initialStatus.baseToken,
+    base_token_usd: initialStatus.baseTokenUsd,
+    last_processed_height: initialStatus.lastProcessedHeight,
+    last_known_height: initialStatus.lastKnownHeight,
+  })
+  const lag = status.last_known_height! - status.last_processed_height
+
+  const asteroidClient = useAsteroidClient(clientOnly$(true))
+
+  useEffect(() => {
+    asteroidClient.statusSubscription(chainId).on(({ status: newStatus }) => {
+      if (newStatus[0]) {
+        setStatus(newStatus[0])
+      }
+    })
+  }, [asteroidClient, chainId])
 
   return (
     <footer className="footer fixed left-0 bottom-0 items-center bg-base-200 text-neutral-content border-t border-t-neutral">
@@ -58,7 +76,7 @@ export default function Footer() {
           </Link>
         </div>
         <div className="flex border-r border-r-neutral px-4 py-2">
-          ATOM ${baseTokenUsd}
+          ATOM ${status.base_token_usd}
         </div>
       </nav>
     </footer>

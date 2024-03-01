@@ -832,6 +832,21 @@ export class AsteroidClient extends AsteroidService {
     return result.inscription_trade_history
   }
 
+  statusSubscription(chainId: string) {
+    return this.ws!('subscription')({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: chainId,
+            },
+          },
+        },
+        statusSelector,
+      ],
+    })
+  }
+
   // inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
   //   return this.ws<'subscription', ScalarDefinition>('subscription')({
   //     inscription_trade_history: [
