@@ -38,7 +38,9 @@ export default function Navbar() {
             <Dropdown.Item anchor={false}>
               <NavLink to="/app/wallet">Portfolio</NavLink>
             </Dropdown.Item>
-            <Dropdown.Item anchor={false}>Create</Dropdown.Item>
+            <Dropdown.Item anchor={false}>
+              <span>Create</span>
+            </Dropdown.Item>
             <li>
               <ul className="p-2 z-10">
                 {/* <li>

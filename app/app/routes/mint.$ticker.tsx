@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
@@ -25,6 +25,59 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   }
 
   return json({ token })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
+    return []
+  }
+
+  const { name, ticker, content_path, id } = data.token
+  const title = `${ticker} | ${name} | on Asteroid Protocol`
+
+  return [
+    { title },
+    {
+      property: 'og:url',
+      content: `https://asteroidprotocol.io/mint/${ticker}`,
+    },
+    {
+      property: 'og:title',
+      content: title,
+    },
+    {
+      property: 'og:image',
+      content: content_path,
+    },
+    {
+      property: 'og:description',
+      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
+    },
+    {
+      name: 'description',
+      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
+    },
+    {
+      property: 'twitter:url',
+      content: `https://asteroidprotocol.io/mint/${ticker}`,
+    },
+    {
+      property: 'twitter:title',
+      content: title,
+    },
+    {
+      property: 'twitter:image',
+      content: content_path,
+    },
+    {
+      property: 'twitter:description',
+      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
+    },
+    {
+      property: 'twitter:card',
+      content: 'summary',
+    },
+  ]
 }
 
 export default function MintTokenPage() {

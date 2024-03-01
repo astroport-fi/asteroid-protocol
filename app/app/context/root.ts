@@ -9,6 +9,7 @@ export const RootContext = createContext({
   asteroidWs: '', // @todo add default asteroid ws
   chainId: '', // @todo add default chain id
   useIbc: true,
+  useExtensionData: false,
   chainName: '', // @todo add default chain name
   gasPrice: '0.005uatom',
   status: {

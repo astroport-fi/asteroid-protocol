@@ -24,7 +24,7 @@ function getFee(fee: ProtocolFee, useIbc: boolean): ProtocolFee | undefined {
 export function useInscriptionOperations<T extends boolean = true>(
   multi = true as T,
 ) {
-  const { chainId, useIbc } = useRootContext()
+  const { chainId, useIbc, useExtensionData } = useRootContext()
   const address = useAddress()
 
   return useMemo(() => {
@@ -36,16 +36,17 @@ export function useInscriptionOperations<T extends boolean = true>(
       new InscriptionOperations(chainId, address, {
         multi,
         useIbc,
+        useExtensionData,
         fee: getFee(InscriptionProtocol.DEFAULT_FEE, useIbc),
       }),
     )
-  }, [chainId, address, useIbc, multi])
+  }, [chainId, address, useIbc, useExtensionData, multi])
 }
 
 export function useCFT20Operations<T extends boolean = true>(
   multi = true as T,
 ) {
-  const { chainId, useIbc } = useRootContext()
+  const { chainId, useIbc, useExtensionData } = useRootContext()
   const address = useAddress()
 
   return useMemo(() => {
@@ -57,16 +58,17 @@ export function useCFT20Operations<T extends boolean = true>(
       new CFT20Operations(chainId, address, {
         multi,
         useIbc,
+        useExtensionData,
         fee: getFee(CFT20Protocol.DEFAULT_FEE, useIbc),
       }),
     )
-  }, [chainId, address, useIbc, multi])
+  }, [chainId, address, useIbc, useExtensionData, multi])
 }
 
 export function useMarketplaceOperations<T extends boolean = true>(
   multi = true as T,
 ) {
-  const { chainId, useIbc } = useRootContext()
+  const { chainId, useIbc, useExtensionData } = useRootContext()
   const address = useAddress()
   const asteroidClient = useAsteroidClient()
 
@@ -79,8 +81,9 @@ export function useMarketplaceOperations<T extends boolean = true>(
       new MarketplaceOperations(chainId, address, asteroidClient, {
         multi,
         useIbc,
+        useExtensionData,
         fee: getFee(MarketplaceProtocol.DEFAULT_FEE, useIbc),
       }),
     )
-  }, [chainId, address, useIbc, asteroidClient, multi])
+  }, [chainId, address, useIbc, useExtensionData, asteroidClient, multi])
 }

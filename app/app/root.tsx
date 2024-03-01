@@ -1,4 +1,8 @@
-import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
+import {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/cloudflare'
 import {
   Links,
   Meta,
@@ -31,6 +35,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
       ASTEROID_API: context.cloudflare.env.ASTEROID_API,
       ASTEROID_API_WSS: context.cloudflare.env.ASTEROID_API_WSS,
       USE_IBC: context.cloudflare.env.USE_IBC,
+      USE_EXTENSION_DATA: context.cloudflare.env.USE_EXTENSION_DATA,
       REST: context.cloudflare.env.REST,
       RPC: context.cloudflare.env.RPC,
     },
@@ -53,8 +58,62 @@ function WalletProviderWrapper() {
   return <Outlet />
 }
 
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      href: '/apple-touch-icon.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      href: '/favicon-32x32.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      href: '/favicon-16x16.png',
+    },
+  ]
+}
+
 export const meta: MetaFunction = () => {
-  return [{ title: 'Asteroid Protocol | Inscribe anything on the Hub' }]
+  return [
+    { title: 'Asteroid Protocol | Inscribe anything on the Hub' },
+    { name: 'color-scheme', content: 'light dark' },
+    {
+      name: 'viewport',
+      content:
+        'viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no',
+    },
+    { name: 'format-detection', content: 'telephone=no' },
+    { name: 'msapplication-tap-highlight', content: 'no' },
+
+    {
+      name: 'description',
+      content: 'Asteroid Protocol allows you to inscribe anything on the Hub',
+    },
+    { name: 'theme-color', content: '#ebb348' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { property: 'twitter:domain', content: 'https://asteroidprotocol.io' },
+    {
+      property: 'twitter:image',
+      content: 'https://asteroidprotocol.io/assets/socials/banner.png',
+    },
+    { property: 'og:site_name', content: 'Asteroid Protocol' },
+    { property: 'og:type', content: 'website' },
+    {
+      property: 'og:image',
+      content: 'https://asteroidprotocol.io/assets/socials/banner.png',
+    },
+    {
+      tagName: 'link',
+      rel: 'canonical',
+    },
+  ]
 }
 
 export default function App() {
@@ -81,6 +140,7 @@ export default function App() {
             asteroidApi: data.ENV.ASTEROID_API,
             asteroidWs: data.ENV.ASTEROID_API_WSS,
             useIbc: data.ENV.USE_IBC != 'false',
+            useExtensionData: data.ENV.USE_EXTENSION_DATA == 'true',
             status: {
               baseToken: data.status?.base_token ?? '',
               baseTokenUsd: data.status?.base_token_usd ?? 0,

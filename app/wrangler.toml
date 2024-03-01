@@ -12,6 +12,7 @@ CHAIN_NAME = "localcosmoshub"
 MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
 USE_IBC = false
+USE_EXTENSION_DATA = true
 
 [env.testnet.vars]
 ENVIRONMENT = "development"
@@ -25,6 +26,7 @@ CHAIN_NAME = "cosmoshubtestnet"
 MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
 USE_IBC = true
+USE_EXTENSION_DATA = true
 
 [env.mainnet.vars]
 ENVIRONMENT = "production"
@@ -38,6 +40,7 @@ CHAIN_NAME = "cosmoshub"
 MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
 USE_IBC = true
+USE_EXTENSION_DATA = false
 
 [dev]
 ip = "192.168.1.1"

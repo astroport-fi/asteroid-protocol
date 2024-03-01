@@ -60,7 +60,7 @@ export interface MetaprotocolFee {
 
 export default function useSubmitTx(txInscription: TxInscription | null) {
   const [retryCounter, setRetryCounter] = useState(0)
-  const { useIbc } = useRootContext()
+  const { useIbc, useExtensionData } = useRootContext()
 
   // deps
   const client = clientOnly$(useClient(retryCounter))
@@ -79,9 +79,12 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     }
 
     return clientOnly$(
-      prepareTx(address, txInscription.urn, [txInscription], { useIbc }),
+      prepareTx(address, txInscription.urn, [txInscription], {
+        useIbc,
+        useExtensionData,
+      }),
     )
-  }, [txInscription, address, useIbc])
+  }, [txInscription, address, useIbc, useExtensionData])
 
   const metaprotocolFee = useMemo<MetaprotocolFee>(() => {
     if (!txInscription) {
