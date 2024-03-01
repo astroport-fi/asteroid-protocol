@@ -27,8 +27,12 @@ export const Networks: Record<string, Network> = {
   },
 }
 
+const DEFAULT_GAS_PRICE = '0.005uatom'
+const DEFAULT_FEE_MULTIPLIER = 1.5
+
 export const DEFAULT_CONFIG: Config = {
-  gasPrice: '0.005uatom',
+  gasPrice: DEFAULT_GAS_PRICE,
+  feeMultiplier: DEFAULT_FEE_MULTIPLIER,
   networks: Networks,
   accounts: {
     test1: {
@@ -53,7 +57,8 @@ const Account = z.object({
 export type Account = z.infer<typeof Account>
 
 export const Config = z.object({
-  gasPrice: z.string(),
+  gasPrice: z.string().default(DEFAULT_GAS_PRICE),
+  feeMultiplier: z.number().default(DEFAULT_FEE_MULTIPLIER),
   networks: z.record(z.string(), Network),
   accounts: z.record(z.string(), Account),
 })

@@ -199,7 +199,7 @@ export class SigningStargateClient extends StargateClient {
     messages: readonly EncodeObject[],
     memo: string | undefined,
     nonCriticalExtensionOptions?: EncodeObject[],
-    fee: StdFee | 'auto' = 'auto',
+    fee: StdFee | 'auto' | number = 'auto',
   ) {
     assertDefined(
       this.gasPrice,
