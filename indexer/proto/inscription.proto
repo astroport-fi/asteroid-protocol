@@ -1,0 +1,11 @@
+syntax = "proto3";
+package asteroid;
+
+option go_package = "github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types";
+
+message Inscription {
+    string parent_type = 1;
+    string parent_identifier = 2;
+    bytes metadata = 3;
+    bytes content = 4;
+}

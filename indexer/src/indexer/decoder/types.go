@@ -24,6 +24,7 @@ import (
 func RegisterDefaultInterfaces(interfaceRegistry types.InterfaceRegistry) {
 	std.RegisterInterfaces(interfaceRegistry)
 
+	RegisterInterfaces(interfaceRegistry)
 	authtypes.RegisterInterfaces(interfaceRegistry)
 	banktypes.RegisterInterfaces(interfaceRegistry)
 	crisistypes.RegisterInterfaces(interfaceRegistry)

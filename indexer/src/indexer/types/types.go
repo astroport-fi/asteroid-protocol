@@ -1,10 +1,14 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
+	fmt "fmt"
 	"strings"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 	// "github.com/calvinlauyh/cosmosutils"
 )
 
@@ -169,15 +173,10 @@ type RawTransaction struct {
 				Denom  string `json:"denom"`
 			} `json:"token"`
 		} `json:"messages"`
-		Memo                        string `json:"memo"`
-		TimeoutHeight               string `json:"timeout_height"`
-		ExtensionOptions            []any  `json:"extension_options"`
-		NonCriticalExtensionOptions []struct {
-			Type       string `json:"@type"`
-			Granter    string `json:"granter"`
-			Grantee    string `json:"grantee"`
-			MsgTypeURL string `json:"msg_type_url"`
-		} `json:"non_critical_extension_options"`
+		Memo                        string         `json:"memo"`
+		TimeoutHeight               string         `json:"timeout_height"`
+		ExtensionOptions            []any          `json:"extension_options"`
+		NonCriticalExtensionOptions []RawExtension `json:"non_critical_extension_options"`
 	} `json:"body"`
 	AuthInfo struct {
 		SignerInfos []struct {
@@ -205,11 +204,126 @@ type RawTransaction struct {
 	Signatures []string `json:"signatures"`
 }
 
-type RawInscription struct {
-	Type       string `json:"@type"`
+type RawExtension struct {
+	json.RawMessage
+}
+
+type RawGenericMsg struct {
+	Type string `json:"@type"`
+}
+
+type RawExtensionData struct {
+	MsgType         string `json:"@type"`
+	Data            []byte `json:"data"`
+	ProtocolId      string `json:"protocol_id"`
+	ProtocolVersion string `json:"protocol_version"`
+}
+
+type ExtensionDataWrapper struct {
+	*Inscription
+}
+
+func (ed ExtensionDataWrapper) Type() string {
+	return "/gaia.metaprotocols.ExtensionData"
+}
+
+func (ed ExtensionDataWrapper) GetMetadata() (*InscriptionMetadata, error) {
+	var metadata Metadata
+	err := json.Unmarshal(ed.Metadata, &metadata)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	return &InscriptionMetadata{Metadata: metadata, Parent: InscriptionMetadataParent{Type: ed.ParentType, Identifier: ed.ParentIdentifier}}, nil
+}
+
+func (ed ExtensionDataWrapper) GetContent() ([]byte, error) {
+	return ed.Content, nil
+}
+
+type ExtensionMsg interface {
+	GetMetadata() (*InscriptionMetadata, error)
+	GetContent() ([]byte, error)
+}
+
+func (re RawExtension) UnmarshalData() (ExtensionMsg, error) {
+	var rawMsg RawGenericMsg
+	err := json.Unmarshal(re.RawMessage, &rawMsg)
+	if err != nil {
+		return nil, err
+	}
+
+	switch rawMsg.Type {
+	case "/cosmos.authz.v1beta1.MsgRevoke":
+		var msg RawMsgRevoke
+		err := json.Unmarshal(re.RawMessage, &msg)
+		if err != nil {
+			return nil, err
+		}
+		return msg, nil
+	case "/gaia.metaprotocols.ExtensionData":
+		var msg RawExtensionData
+		err := json.Unmarshal(re.RawMessage, &msg)
+		if err != nil {
+			return nil, err
+		}
+
+		deserializedInscription := &Inscription{}
+		if err := proto.Unmarshal(msg.Data, deserializedInscription); err != nil {
+			return nil, err
+		}
+
+		return ExtensionDataWrapper{deserializedInscription}, nil
+	default:
+		return nil, errors.New("unknown extension type")
+	}
+}
+
+type RawMsgRevoke struct {
+	MsgType    string `json:"@type"`
 	Granter    string `json:"granter"`
 	Grantee    string `json:"grantee"`
 	MsgTypeURL string `json:"msg_type_url"`
+}
+
+type Metadata struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Mime        string `json:"mime"`
+}
+
+type InscriptionMetadataParent struct {
+	Type       string `json:"type"`
+	Identifier string `json:"identifier"`
+}
+
+type InscriptionMetadata struct {
+	Parent   InscriptionMetadataParent `json:"parent"`
+	Metadata Metadata                  `json:"metadata"`
+}
+
+func (msg RawMsgRevoke) GetMetadata() (*InscriptionMetadata, error) {
+	metadata, err := base64.StdEncoding.DecodeString(msg.Granter)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
+	}
+
+	var inscriptionMetadata InscriptionMetadata
+	err = json.Unmarshal(metadata, &inscriptionMetadata)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	return &inscriptionMetadata, nil
+}
+
+func (msg RawMsgRevoke) GetContent() ([]byte, error) {
+	content, err := base64.StdEncoding.DecodeString(msg.Grantee)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode grantee content '%s'", err)
+	}
+
+	return content, nil
 }
 
 func (tx RawTransaction) ToJSON() string {

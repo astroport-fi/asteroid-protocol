@@ -2,8 +2,6 @@ package metaprotocol
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 	"math"
@@ -186,40 +184,34 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		if len(rawTransaction.Body.NonCriticalExtensionOptions) == 1 {
 			// Logo is stored in the non_critical_extension_options
 			// section of the transaction
-			var logoContent []byte
-			var metadata []byte
+			var msg types.ExtensionMsg
 			for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
-				// The type of the option must be MsgRevoke
-				if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
-					// The granter field contains the metadata
-					metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
-					if err != nil {
-						return fmt.Errorf("unable to decode granter metadata '%s'", err)
-					}
-					// The grantee field contains the content base64
-					logoContent, err = base64.StdEncoding.DecodeString(extension.Grantee)
-					if err != nil {
-						return fmt.Errorf("unable to decode grantee content '%s'", err)
-					}
-
-					// We only process the first extension option
-					break
+				msg, err = extension.UnmarshalData()
+				if err != nil {
+					return fmt.Errorf("unable to unmarshal extension data '%s'", err)
 				}
+
+				// We only process the first extension option
+				break
 			}
 
-			var inscriptionMetadata InscriptionMetadata
-			err = json.Unmarshal(metadata, &inscriptionMetadata)
+			inscriptionMetadata, err := msg.GetMetadata()
 			if err != nil {
-				return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+				return err
+			}
+
+			content, err := msg.GetContent()
+			if err != nil {
+				return err
 			}
 
 			// Store the content with the correct mime type on DO
-			contentPath, err = protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, logoContent)
+			contentPath, err = protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, content)
 			if err != nil {
 				return fmt.Errorf("unable to store content '%s'", err)
 			}
 
-			contentLength = len(logoContent)
+			contentLength = len(content)
 		}
 
 		// Create the token model
@@ -722,7 +714,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 
 // TODO: This is reused, move to common helpers
 // storeContent stores the content in the S3 bucket
-func (protocol *CFT20) storeContent(metadata InscriptionMetadata, txHash string, content []byte) (string, error) {
+func (protocol *CFT20) storeContent(metadata *types.InscriptionMetadata, txHash string, content []byte) (string, error) {
 	ext, err := mime.ExtensionsByType(metadata.Metadata.Mime)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin

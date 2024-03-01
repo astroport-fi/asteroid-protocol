@@ -2,7 +2,6 @@ package metaprotocol
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -28,18 +27,6 @@ type InscriptionConfig struct {
 	S3ID       string `envconfig:"S3_ID" required:"true"`
 	S3Secret   string `envconfig:"S3_SECRET" required:"true"`
 	S3Token    string `envconfig:"S3_TOKEN"`
-}
-
-type InscriptionMetadata struct {
-	Parent struct {
-		Type       string `json:"type"`
-		Identifier string `json:"identifier"`
-	} `json:"parent"`
-	Metadata struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Mime        string `json:"mime"`
-	} `json:"metadata"`
 }
 
 type Inscription struct {
@@ -109,32 +96,25 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		// Inscription metadata is stored in the non_critical_extension_options
 		// section of the transaction
-		var metadata []byte
-		var content []byte
+		var msg types.ExtensionMsg
 		for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
-			// The type of the option must be MsgRevoke
-			if extension.Type == "/cosmos.authz.v1beta1.MsgRevoke" {
-				// The granter field contains the metadata
-				metadata, err = base64.StdEncoding.DecodeString(extension.Granter)
-				if err != nil {
-					return fmt.Errorf("unable to decode granter metadata '%s'", err)
-				}
-
-				// The grantee field contains the content base64
-				content, err = base64.StdEncoding.DecodeString(extension.Grantee)
-				if err != nil {
-					return fmt.Errorf("unable to decode grantee content '%s'", err)
-				}
-
-				// We only process the first extension option
-				break
+			msg, err = extension.UnmarshalData()
+			if err != nil {
+				return fmt.Errorf("unable to unmarshal extension data '%s'", err)
 			}
+
+			// We only process the first extension option
+			break
 		}
 
-		var inscriptionMetadata InscriptionMetadata
-		err = json.Unmarshal(metadata, &inscriptionMetadata)
+		inscriptionMetadata, err := msg.GetMetadata()
 		if err != nil {
-			return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+			return err
+		}
+
+		content, err := msg.GetContent()
+		if err != nil {
+			return err
 		}
 
 		// Store the content with the correct mime type on DO
@@ -142,6 +122,8 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		if err != nil {
 			return fmt.Errorf("unable to store content '%s'", err)
 		}
+
+		jsonBytes, err := json.Marshal(inscriptionMetadata)
 
 		inscriptionModel := models.Inscription{
 			ChainID:          parsedURN.ChainID,
@@ -152,7 +134,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			Creator:          sender,
 			CurrentOwner:     sender,
 			Type:             "content",
-			Metadata:         datatypes.JSON(metadata),
+			Metadata:         datatypes.JSON(jsonBytes),
 			ContentPath:      contentPath,
 			ContentSizeBytes: uint64(len(content)),
 			DateCreated:      transactionModel.DateCreated,
@@ -226,7 +208,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 }
 
 // storeContent stores the content in the S3 bucket
-func (protocol *Inscription) storeContent(metadata InscriptionMetadata, txHash string, content []byte) (string, error) {
+func (protocol *Inscription) storeContent(metadata *types.InscriptionMetadata, txHash string, content []byte) (string, error) {
 	ext, err := mime.ExtensionsByType(metadata.Metadata.Mime)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin
