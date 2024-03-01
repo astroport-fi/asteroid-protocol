@@ -7,10 +7,16 @@ import useChain from './useChain'
 export class SigningClient {
   client: SigningStargateClient
   address: string
+  feeMultiplier: number
 
-  constructor(client: SigningStargateClient, address: string) {
+  constructor(
+    client: SigningStargateClient,
+    address: string,
+    feeMultiplier = 1.5,
+  ) {
     this.client = client
     this.address = address
+    this.feeMultiplier = feeMultiplier
   }
 
   async simulate(txData: TxData) {
@@ -28,6 +34,7 @@ export class SigningClient {
       txData.messages,
       txData.memo,
       txData.nonCriticalExtensionOptions,
+      this.feeMultiplier,
     )
     return parseInt(usedFee.amount[0].amount)
   }
@@ -36,7 +43,7 @@ export class SigningClient {
     return this.client.signAndBroadcast(
       this.address,
       txData.messages,
-      'auto',
+      this.feeMultiplier,
       txData.memo,
       undefined,
       txData.nonCriticalExtensionOptions,
