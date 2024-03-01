@@ -1,6 +1,6 @@
 import { order_by } from '@asteroid-protocol/sdk/client'
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
-import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import {
   createColumnHelper,
@@ -19,6 +19,7 @@ import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
 import useSorting from '~/hooks/useSorting'
 import { DATETIME_FORMAT } from '~/utils/date'
+import { inscriptionMeta } from '~/utils/meta'
 import { parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -51,6 +52,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   })
 
   return json({ inscription, history })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
+    return []
+  }
+
+  return inscriptionMeta(data.inscription)
 }
 
 function InscriptionDetail({

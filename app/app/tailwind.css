@@ -101,6 +101,10 @@ strong {
     @apply bg-inherit;
     @apply font-bold;
   }
+
+  .image-pixelated {
+    image-rendering: pixelated;
+  }
 }
 
 .cosmoskit-content * {

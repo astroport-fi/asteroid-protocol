@@ -7,6 +7,7 @@ import Markdown from 'react-markdown'
 import { AsteroidClient } from '~/api/client'
 import { Inscription } from '~/api/inscription'
 import InscriptionImage from '~/components/InscriptionImage'
+import { inscriptionMeta } from '~/utils/meta'
 import { getMimeTitle } from '~/utils/string'
 import logo from '../images/logo/white.svg'
 
@@ -37,52 +38,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return []
   }
 
-  const { name, description, content_path, id, transaction } = data.inscription
-  const title = `${name} Inscription #${id} on Asteroid Protocol`
-
-  return [
-    { title },
-    {
-      property: 'og:url',
-      content: `https://asteroidprotocol.io/app/inscription/${transaction.hash}`,
-    },
-    {
-      property: 'og:title',
-      content: `${name} Inscription #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'og:image',
-      content: content_path,
-    },
-    {
-      property: 'og:description',
-      content: description,
-    },
-    {
-      name: 'description',
-      content: description,
-    },
-    {
-      property: 'twitter:url',
-      content: `https://asteroidprotocol.io/app/inscription/${transaction.hash}`,
-    },
-    {
-      property: 'twitter:title',
-      content: `${name} Inscription #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:image',
-      content: content_path,
-    },
-    {
-      property: 'twitter:description',
-      content: description,
-    },
-    {
-      property: 'twitter:card',
-      content: 'summary',
-    },
-  ]
+  return inscriptionMeta(data.inscription)
 }
 
 function RemoteMarkdown({ src, isJson }: { src: string; isJson?: boolean }) {
