@@ -1,16 +1,22 @@
 import { Pubkey } from '@cosmjs/amino'
-import { encodePubkey } from '@cosmjs/proto-signing'
+import { toBase64 } from '@cosmjs/encoding'
+import { EncodeObject, encodePubkey } from '@cosmjs/proto-signing'
 import { SimulateResponse } from 'cosmjs-types/cosmos/tx/v1beta1/service.js'
-import { Any } from 'cosmjs-types/google/protobuf/any.js'
+import { ExtensionData } from './proto-types/extensions.js'
 
-export const api = <T>(url: string, init?: RequestInit): Promise<T> => {
-  return fetch(url, init).then((response) => {
+async function api<T>(url: string, init?: RequestInit): Promise<T | null> {
+  try {
+    const response = await fetch(url, init)
     if (!response.ok) {
-      console.error('error response', response)
-      throw new Error(response.statusText)
+      const text = await response.text()
+      console.error('error response', text)
+      return null
     }
-    return response.json() as Promise<T>
-  })
+    return response.json()
+  } catch (err) {
+    console.error('request error', err)
+    return null
+  }
 }
 
 export interface GasSimulateResponse {
@@ -22,13 +28,33 @@ export interface GasInfo {
   gas_used: string
 }
 
+function serializeExtensionData(msg: EncodeObject) {
+  const { protocolId, protocolVersion, data } = msg.value as ExtensionData
+  return {
+    '@type': msg.typeUrl,
+    protocolId,
+    protocolVersion,
+    data: toBase64(data),
+  }
+}
+
+function serializeNonCriticalOptions(msg: EncodeObject) {
+  if (msg.typeUrl === ExtensionData.typeUrl) {
+    return serializeExtensionData(msg)
+  }
+  return {
+    ...msg.value,
+    '@type': msg.typeUrl,
+  }
+}
+
 export default async function simulateTxRest(
   endpoint: string,
-  messages: readonly Any[],
+  messages: readonly EncodeObject[],
   memo: string | undefined,
   signer: Pubkey,
   sequence: number,
-  nonCriticalExtensionOptions?: Any[],
+  nonCriticalExtensionOptions?: EncodeObject[],
 ): Promise<SimulateResponse> {
   const pubkey = encodePubkey(signer)
   const signDoc = {
@@ -40,11 +66,8 @@ export default async function simulateTxRest(
       memo,
       timeout_height: '0',
       extension_options: [],
-      nonCriticalExtensionOptions: nonCriticalExtensionOptions?.map(
-        (message) => ({
-          ...message.value,
-          '@type': message.typeUrl,
-        }),
+      non_critical_extension_options: nonCriticalExtensionOptions?.map(
+        serializeNonCriticalOptions,
       ),
     },
     auth_info: {
@@ -65,7 +88,6 @@ export default async function simulateTxRest(
       fee: {},
     },
   }
-
   const tx = {
     tx: {
       body: signDoc.body,
@@ -88,6 +110,10 @@ export default async function simulateTxRest(
   const uri = `${endpoint}/cosmos/tx/v1beta1/simulate`
 
   const response = await api<GasSimulateResponse>(uri, call)
+  if (!response) {
+    throw new Error('Unable to simulate with Rest endpoint')
+  }
+
   return {
     gasInfo: {
       gasWanted: BigInt(response.gas_info.gas_wanted),
