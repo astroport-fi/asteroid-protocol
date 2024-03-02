@@ -113,9 +113,6 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       break
     case Sort.LOWEST_ID:
       orderBy = {
-        marketplace_inscription_detail: {
-          inscription_id: order_by.asc_nulls_last,
-        },
         inscription: {
           id: order_by.asc,
         },
@@ -123,9 +120,6 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       break
     case Sort.HIGHEST_ID:
       orderBy = {
-        marketplace_inscription_detail: {
-          inscription_id: order_by.desc_nulls_last,
-        },
         inscription: {
           id: order_by.desc,
         },
@@ -326,7 +320,7 @@ function Filter({ onChange }: { onChange: () => void }) {
           <FilterTitle className="mt-6">Search</FilterTitle>
           <Form method="get" onSubmit={() => onChange()}>
             <Input
-              className="w-full mt-2"
+              className="mt-2 max-w-40"
               placeholder="Name"
               name="search"
               size="sm"
