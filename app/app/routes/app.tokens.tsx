@@ -83,7 +83,8 @@ export default function MarketsPage() {
 
   const columns = [
     columnHelper.accessor('content_path', {
-      header: '#',
+      header: '',
+      enableSorting: false,
       cell: (info) => (
         <InscriptionImage
           mime="image/png"
