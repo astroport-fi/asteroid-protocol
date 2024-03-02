@@ -25,7 +25,7 @@ code {
 }
 
 html {
-  font-variation-settings: 'wght' 500;
+  font-variation-settings: 'wght' 400;
   @apply font-sans;
 }
 
