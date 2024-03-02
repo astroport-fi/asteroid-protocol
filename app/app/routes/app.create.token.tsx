@@ -139,7 +139,7 @@ export default function CreateToken() {
               id="content"
               className="opacity-0"
               {...register('content', {
-                required: false,
+                required: true,
                 validate: async (files) => {
                   const file = files[0]
                   if (!file) {
@@ -183,7 +183,11 @@ export default function CreateToken() {
               }}
             />
             {errors.content && (
-              <span className="text-error">{errors.content.message}</span>
+              <span className="text-error">
+                {errors.content.message
+                  ? errors.content.message
+                  : 'Token logo is required'}
+              </span>
             )}
           </div>
         </div>
