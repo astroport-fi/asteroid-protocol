@@ -1,5 +1,5 @@
 import { useChain as useChainOriginal } from '@cosmos-kit/react'
-import type { WalletStatus } from 'cosmos-kit'
+import type { SignerOptions, WalletStatus } from 'cosmos-kit'
 import { clientOnly$ } from 'vite-env-only'
 
 export default function useChain(chainName: string) {
@@ -13,6 +13,7 @@ export default function useChain(chainName: string) {
       wallet: undefined,
       getRpcEndpoint: () => '',
       getRestEndpoint: () => '',
+      setDefaultSignOptions: (options: SignerOptions) => {},
       getOfflineSignerDirect: undefined,
       isWalletConnected: false,
       address: undefined,
