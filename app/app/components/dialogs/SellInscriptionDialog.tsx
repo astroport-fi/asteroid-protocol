@@ -60,7 +60,7 @@ const SellInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     })
 
     return (
-      <Modal ref={ref}>
+      <Modal ref={ref} backdrop>
         <Modal.Header className="text-center">
           List &quot;{inscription.name}&quot; for sale
         </Modal.Header>

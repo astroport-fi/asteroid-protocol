@@ -71,7 +71,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     })
 
     return (
-      <Modal ref={ref}>
+      <Modal ref={ref} backdrop>
         <Modal.Header className="text-center">
           List {ticker} for sale
         </Modal.Header>

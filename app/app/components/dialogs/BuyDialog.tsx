@@ -77,7 +77,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal ref={ref}>
+    <Modal ref={ref} backdrop>
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}

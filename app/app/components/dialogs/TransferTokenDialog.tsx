@@ -64,7 +64,7 @@ const TransferTokenDialog = forwardRef<HTMLDialogElement, Props>(
     })
 
     return (
-      <Modal ref={ref}>
+      <Modal ref={ref} backdrop>
         <Modal.Header className="text-center">
           Send {token.ticker} tokens
         </Modal.Header>

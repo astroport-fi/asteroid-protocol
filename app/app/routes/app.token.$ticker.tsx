@@ -126,7 +126,7 @@ function TokenDetailComponent({
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl w-2/3"
+          className="rounded-xl max-w-lg object-contain"
         />
       </div>
       <div className="flex flex-col flex-1">

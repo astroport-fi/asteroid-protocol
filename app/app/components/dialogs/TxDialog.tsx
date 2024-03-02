@@ -34,7 +34,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal ref={ref}>
+    <Modal ref={ref} backdrop>
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
@@ -45,7 +45,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           resultCTA={resultCTA}
           onClose={() => {
             fRef.current?.close()
-            navigate(resultLink ?? `/inscription/${txHash}`)
+            navigate(resultLink ?? `/app/inscription/${txHash}`)
             resetState()
           }}
         >

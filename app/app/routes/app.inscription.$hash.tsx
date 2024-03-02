@@ -74,7 +74,7 @@ function InscriptionDetail({
           mime={inscription.mime}
           src={inscription.content_path}
           isExplicit={inscription.is_explicit}
-          className="rounded-xl w-2/3"
+          className="rounded-xl max-w-lg object-contain"
         />
         <Link
           to={`/inscription/${inscription.transaction.hash}`}

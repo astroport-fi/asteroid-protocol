@@ -55,7 +55,7 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     })
 
     return (
-      <Modal ref={ref}>
+      <Modal ref={ref} backdrop>
         <Modal.Header className="text-center">
           Transfer inscription
         </Modal.Header>
