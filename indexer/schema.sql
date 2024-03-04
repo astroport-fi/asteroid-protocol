@@ -65,7 +65,7 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date_created);
-
+CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btree ("current_owner");
 
 -- public.inscription_history definition
 
@@ -114,6 +114,10 @@ CREATE TABLE public.marketplace_listing (
     CONSTRAINT marketplace_listing_pkey PRIMARY KEY (id),
     CONSTRAINT marketplace_listing_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+CREATE INDEX "idx_marketplace_listing_depositor_address" ON "public"."marketplace_listing" USING btree ("depositor_address");
+CREATE INDEX "idx_marketplace_listing_depositor_timedout_block" ON "public"."marketplace_listing" USING btree ("depositor_timedout_block");
+CREATE INDEX "idx_marketplace_listing_seller_address" ON "public"."marketplace_listing" USING btree ("seller_address");
 
 
 -- public.marketplace_listing_history definition
@@ -170,6 +174,7 @@ CREATE TABLE public."token" (
     CONSTRAINT token_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+CREATE INDEX "idx_token_current_owner" ON "public"."token" USING btree ("current_owner");
 
 -- public.token_address_history definition
 
@@ -193,6 +198,9 @@ CREATE TABLE public.token_address_history (
     CONSTRAINT token_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+CREATE INDEX "idx_token_address_history_receiver" ON "public"."token_address_history" USING btree ("receiver");
+CREATE INDEX "idx_token_address_history_sender" ON "public"."token_address_history" USING btree ("sender");
+
 
 -- public.token_holder definition
 
@@ -211,6 +219,7 @@ CREATE TABLE public.token_holder (
     CONSTRAINT token_id_fk FOREIGN KEY (token_id) REFERENCES public."token"(id)
 );
 CREATE INDEX token_holder_ticker_idx ON public.token_holder USING btree (token_id);
+CREATE INDEX "idx_token_holder_address" ON "public"."token_holder" USING btree ("address");
 
 
 -- public.token_open_position definition
