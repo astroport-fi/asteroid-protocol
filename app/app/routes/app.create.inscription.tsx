@@ -16,6 +16,9 @@ type FormData = {
   content: File[]
 }
 
+const NAME_MIN_LENGTH = 3
+const NAME_MAX_LENGTH = 32
+
 export default function CreateInscription() {
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
@@ -155,10 +158,12 @@ export default function CreateInscription() {
               id="name"
               placeholder="Name your inscription"
               color={errors.name ? 'error' : undefined}
+              maxLength={NAME_MAX_LENGTH}
+              minLength={NAME_MIN_LENGTH}
               {...register('name', {
                 required: true,
-                minLength: 3,
-                maxLength: 32,
+                minLength: NAME_MIN_LENGTH,
+                maxLength: NAME_MAX_LENGTH,
               })}
             />
             <label className="label" htmlFor="name">
