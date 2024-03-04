@@ -60,7 +60,7 @@ export default function NumericInput<
 
               onChange(value)
             }}
-            thousandSeparator
+            thousandSeparator=" "
             customInput={Input}
             placeholder={title}
             color={error ? 'error' : undefined}
