@@ -492,28 +492,26 @@ function InscriptionsList({
   }
 
   return (
-    <div className="flex flex-col w-full">
-      <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
-        <InfiniteScroll
-          dataLength={items.length}
-          next={getMoreData}
-          hasMore={count > items.length}
-          loader={
-            <div className="flex justify-center mb-12">
-              {!isLoading && <Loading variant="dots" size="lg" />}
-            </div>
-          }
-          scrollableTarget="scrollableDiv"
-        >
-          {!isLoading && (
-            <Inscriptions
-              className="px-8"
-              inscriptions={items}
-              onClick={onClick}
-            />
-          )}
-        </InfiniteScroll>
-      </div>
+    <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
+      <InfiniteScroll
+        dataLength={items.length}
+        next={getMoreData}
+        hasMore={count > items.length}
+        loader={
+          <div className="flex justify-center mb-12">
+            {!isLoading && <Loading variant="dots" size="lg" />}
+          </div>
+        }
+        scrollableTarget="scrollableDiv"
+      >
+        {!isLoading && (
+          <Inscriptions
+            className="p-8"
+            inscriptions={items}
+            onClick={onClick}
+          />
+        )}
+      </InfiniteScroll>
     </div>
   )
 }
@@ -528,13 +526,13 @@ export default function InscriptionsPage() {
   return (
     <div className="flex flex-row h-full">
       <Filter />
-      <div className="flex flex-col w-full pt-8">
+      <div className="flex flex-col w-full h-full">
         <Suspense>
           <Await resolve={data.reservedListings}>
             {(reservedListing) =>
               reservedListing &&
               reservedListing.length > 0 && (
-                <div className="flex flex-col px-8">
+                <div className="flex flex-col px-8 mt-8">
                   <h3 className="text-lg">Reserved by you</h3>
                   <Inscriptions
                     className="mt-4"
@@ -544,7 +542,7 @@ export default function InscriptionsPage() {
                       handleShow()
                     }}
                   />
-                  <h3 className="text-lg mt-16 mb-4">All listings</h3>
+                  <h3 className="text-lg mt-16">All listings</h3>
                 </div>
               )
             }
@@ -552,7 +550,7 @@ export default function InscriptionsPage() {
         </Suspense>
         <Suspense
           fallback={
-            <div className="flex flex-col w-full">
+            <div className="flex items-start justify-center w-full">
               <Loading variant="dots" size="lg" />
             </div>
           }
