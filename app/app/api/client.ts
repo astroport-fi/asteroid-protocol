@@ -864,7 +864,7 @@ export class AsteroidClient extends AsteroidService {
     })
   }
 
-  // inscriptionTradeHistorySubscription(offset = 0, limit = 500) {
+  // inscriptionTradeHistorySubscription(offset = 0, limit = 200) {
   //   return this.ws<'subscription', ScalarDefinition>('subscription')({
   //     inscription_trade_history: [
   //       {

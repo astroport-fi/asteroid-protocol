@@ -223,7 +223,7 @@ export default function MarketsPage() {
       <SellTokenDialog
         ticker={selected.ticker}
         tokenAmount={selected.amount}
-        lastPrice={selected.lastPrice}
+        lastPrice={selected.lastPrice ?? 0}
         ref={dialogRef}
       />
     </>

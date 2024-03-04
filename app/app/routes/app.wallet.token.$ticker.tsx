@@ -94,7 +94,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     500,
     getTokenMarketplaceListingSort(listingsSort, listingsDirection),
     false,
-    address,
+    { seller: address },
   )
 
   return json({ token, history, listings: listingsResult.listings })
