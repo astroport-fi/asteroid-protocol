@@ -22,6 +22,11 @@ type FormData = {
   content: File[]
 }
 
+const NAME_MIN_LENGTH = 1
+const NAME_MAX_LENGTH = 32
+const TICKER_MIN_LENGTH = 1
+const TICKER_MAX_LENGTH = 10
+
 export default function CreateToken() {
   const { maxFileSize } = useRootContext()
   const operations = useCFT20Operations()
@@ -72,7 +77,7 @@ export default function CreateToken() {
       maxSupply: data.maxSupply,
       mintLimit: data.mintLimit,
       name: data.name,
-      ticker: data.ticker,
+      ticker: data.ticker.toUpperCase(),
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
     })
 
@@ -203,11 +208,12 @@ export default function CreateToken() {
               color={errors.name ? 'error' : undefined}
               {...register('name', {
                 required: true,
-                minLength: 1,
-                maxLength: 32,
+                minLength: NAME_MIN_LENGTH,
+                maxLength: NAME_MAX_LENGTH,
                 pattern: /^[a-zA-Z0-9-. ]+$/,
               })}
-              maxLength={32}
+              maxLength={NAME_MAX_LENGTH}
+              minLength={NAME_MIN_LENGTH}
             />
             <label className="label" htmlFor="name">
               <span
@@ -228,14 +234,16 @@ export default function CreateToken() {
             <Input
               placeholder="TOKEN"
               id="ticker"
+              className="uppercase"
               color={errors.ticker ? 'error' : undefined}
               {...register('ticker', {
                 required: true,
-                minLength: 1,
-                maxLength: 10,
+                minLength: TICKER_MIN_LENGTH,
+                maxLength: TICKER_MAX_LENGTH,
                 pattern: /^[a-zA-Z0-9-.]+$/,
               })}
-              maxLength={10}
+              minLength={TICKER_MIN_LENGTH}
+              maxLength={TICKER_MAX_LENGTH}
             />
             <label className="label" htmlFor="ticker">
               <span
@@ -329,7 +337,7 @@ export default function CreateToken() {
       <TxDialog
         ref={dialogRef}
         txInscription={txInscription}
-        resultLink={`/app/token/${ticker}`}
+        resultLink={`/app/token/${ticker.toLocaleUpperCase()}`}
         resultCTA="View Token"
       />
     </div>
