@@ -3,10 +3,10 @@ import { Link, Outlet, useLocation, useParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { PropsWithChildren } from 'react'
 import { Link as DaisyLink, Tabs } from 'react-daisyui'
-import Address from '~/components/Address'
 import Lottie from '~/components/Lottie'
 import { Wallet } from '~/components/wallet/Wallet'
 import useAddress from '~/hooks/useAddress'
+import useStargazeName from '~/hooks/useStargazeName'
 import noWalletAnimationData from '~/lottie/no-wallet.json'
 import logo from '../images/logo/white.svg'
 
@@ -38,6 +38,8 @@ export default function WalletPage() {
   if (!address) {
     address = walletAddress
   }
+
+  const { name: stargazeName } = useStargazeName(address ?? '')
 
   const location = useLocation()
   const paths = location.pathname.split('/')
@@ -83,9 +85,12 @@ export default function WalletPage() {
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center">
         <img src={logo} alt="Asteroid protocol" className="w-40" />
-        <DaisyLink className="btn btn-outline btn-primary mt-8 rounded-full btn-md">
-          <WalletIcon className="w-5" />
-          <Address address={address} full />
+        {stargazeName && (
+          <span className="mt-8 text-md font-light">{stargazeName}</span>
+        )}
+        <DaisyLink className="text-primary border border-primary flex items-center mt-8 rounded-full btn-md">
+          <WalletIcon className="w-5 mr-2" />
+          {address}
         </DaisyLink>
       </div>
       <Tabs variant="bordered" className="w-full mt-16">
