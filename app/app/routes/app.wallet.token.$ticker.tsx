@@ -21,6 +21,7 @@ import {
 } from '~/api/token'
 import Address from '~/components/Address'
 import AtomValue from '~/components/AtomValue'
+import { BackHeader } from '~/components/Back'
 import InscriptionImage from '~/components/InscriptionImage'
 import { TokenActions } from '~/components/TokenActions'
 import TokenBalance from '~/components/TokenBalance'
@@ -102,7 +103,7 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
   const amount = token.token_holders?.[0]?.amount
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row w-full mt-8">
       <div className="flex flex-1 flex-col px-16 items-center">
         <InscriptionImage
           mime="image/png"
@@ -312,12 +313,17 @@ export default function WalletToken() {
   const data = useLoaderData<typeof loader>()
   return (
     <div className="flex flex-col">
+      <BackHeader to="/app/wallet">
+        <Button color="ghost" className="text-lg font-medium">
+          Manage Token #{data.token.id - 1}
+        </Button>
+      </BackHeader>
       <TokenDetail token={data.token} />
-      <Divider className="mt-8" />
       {data.listings.length > 0 && (
         <>
-          <h2 className="font-medium text-lg">Your listings</h2>
           <Divider className="mt-8" />
+          <h2 className="font-medium text-lg">Your listings</h2>
+          <Divider />
           <ListingsTable
             token={data.token}
             listings={data.listings}
@@ -325,6 +331,7 @@ export default function WalletToken() {
           />
         </>
       )}
+      <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Transaction History</h2>
       <Divider />
       <TokenAddressHistoryComponent token={data.token} history={data.history} />

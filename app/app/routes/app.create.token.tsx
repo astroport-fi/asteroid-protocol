@@ -337,7 +337,7 @@ export default function CreateToken() {
       <TxDialog
         ref={dialogRef}
         txInscription={txInscription}
-        resultLink={`/app/token/${ticker.toLocaleUpperCase()}`}
+        resultLink={`/app/token/${ticker?.toUpperCase()}`}
         resultCTA="View Token"
       />
     </div>
