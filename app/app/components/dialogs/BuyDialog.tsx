@@ -1,6 +1,6 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Modal, Steps } from 'react-daisyui'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
@@ -32,12 +32,6 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
 
-  useEffect(() => {
-    if (listingHashProp) {
-      setListingHash(listingHashProp)
-    }
-  }, [listingHashProp, setListingHash])
-
   const [step, setStep] = useState(Step.Initial)
   const {
     chainFee,
@@ -50,11 +44,18 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     retry,
   } = useSubmitTx(txInscription)
 
-  function resetState() {
+  const resetState = useCallback(() => {
     setListingHash(null)
     setStep(Step.Initial)
     resetTxState()
-  }
+  }, [resetTxState])
+
+  useEffect(() => {
+    if (listingHashProp != listingHash) {
+      resetState()
+      setListingHash(listingHashProp)
+    }
+  }, [listingHashProp, listingHash, setListingHash, resetState])
 
   useEffect(() => {
     if (!listingHash || !operations) {
@@ -125,7 +126,6 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           onSubmit={sendTx}
           onClose={() => {
             fRef.current?.close()
-            resetState()
           }}
           onRetry={retry}
         />

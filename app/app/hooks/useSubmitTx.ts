@@ -200,12 +200,12 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   }, [txHash, txState, client, asteroidClient])
 
   // Reset state
-  function resetState() {
+  const resetState = useCallback(() => {
     setChainFee(0)
     setTxState(TxState.Initial)
     setTxHash('')
     setError(null)
-  }
+  }, [])
 
   // Retry
   function retry() {

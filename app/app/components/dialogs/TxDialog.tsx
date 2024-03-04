@@ -1,6 +1,6 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import { Modal } from 'react-daisyui'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
@@ -18,9 +18,16 @@ interface Props {
 }
 
 const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
-  { txInscription, resultCTA, resultLink, feeOperationTitle },
+  {
+    txInscription: txInscriptionProp,
+    resultCTA,
+    resultLink,
+    feeOperationTitle,
+  },
   ref,
 ) {
+  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+
   const {
     chainFee,
     metaprotocolFee,
@@ -33,6 +40,13 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   } = useSubmitTx(txInscription)
   const navigate = useNavigate()
   const fRef = useForwardRef(ref)
+
+  useEffect(() => {
+    if (txInscriptionProp != txInscription) {
+      resetState()
+      setTxInscription(txInscriptionProp)
+    }
+  }, [txInscriptionProp, txInscription, setTxInscription, resetState])
 
   return (
     <Modal ref={ref} backdrop>
@@ -48,7 +62,6 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           onClose={() => {
             fRef.current?.close()
             navigate(resultLink ?? `/app/inscription/${txHash}`)
-            resetState()
           }}
         >
           <Lottie animationData={scanAnimationData} />
@@ -70,7 +83,6 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           onSubmit={sendTx}
           onClose={() => {
             fRef.current?.close()
-            resetState()
           }}
           onRetry={retry}
         />
