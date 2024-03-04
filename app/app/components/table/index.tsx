@@ -27,6 +27,9 @@ export default function Table<T = unknown>({
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
   const rows = table.getRowModel().rows
+  const rowClassName = clsx({
+    'hover hover:cursor-pointer': typeof onClick === 'function',
+  })
 
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
@@ -76,7 +79,7 @@ export default function Table<T = unknown>({
           {rows.map((row) => (
             <tr
               key={row.id}
-              className="hover hover:cursor-pointer"
+              className={rowClassName}
               onClick={() => onClick?.(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
