@@ -96,9 +96,33 @@ export class MarketplaceOperations<
   }
 
   async deposit(listingHash: string) {
+    // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
       throw new Error('Listing not found')
+    }
+
+    // check if listing is already cancelled or filled
+    if (listing.is_cancelled || listing.is_filled) {
+      throw new Error('This listing has already been cancelled or filled')
+    }
+
+    const status = await this.asteroidService.getStatus(this.protocol.chainId)
+
+    // check if someone else has already deposited
+    if (listing.is_deposited && this.address != listing.depositor_address) {
+      if (listing.depositor_timedout_block! > status.last_known_height!) {
+        throw new Error(
+          'This listing already has a deposit, wait for the deposit to expire or choose a different listing',
+        )
+      }
+    } else if (this.address == listing.depositor_address) {
+      // we are the depositor, let's check if timeout didn't expire yet
+      if (listing.depositor_timedout_block! > status.last_known_height!) {
+        throw new Error(
+          'You already have a deposit on this listing, you need to buy it now',
+        )
+      }
     }
 
     const deposit = BigInt(listing.deposit_total)
@@ -119,9 +143,24 @@ export class MarketplaceOperations<
   }
 
   async buy(listingHash: string, buyType: BuyType) {
+    // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
       throw new Error('Listing not found')
+    }
+
+    // check if listing is already cancelled or filled
+    if (listing.is_cancelled || listing.is_filled) {
+      throw new Error('This listing has already been cancelled or filled')
+    }
+
+    if (!listing.is_deposited || listing.depositor_address != this.address) {
+      throw new Error('You need to deposit first and you must be the depositor')
+    }
+    // check timeout didn't expire
+    const status = await this.asteroidService.getStatus(this.protocol.chainId)
+    if (status.last_known_height! > listing.depositor_timedout_block!) {
+      throw new Error('Deposit timeout expired')
     }
 
     let totaluatom = BigInt(listing.total)

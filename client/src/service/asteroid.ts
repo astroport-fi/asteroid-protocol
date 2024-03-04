@@ -69,24 +69,39 @@ export type QueryOptions<T extends keyof ValueTypes['query_root']> = First<
 >
 
 export type WSSubscription<T> = {
-  ws: WebSocket;
-  on: (fn: (args: T) => void) => void;
+  ws: WebSocket
+  on: (fn: (args: T) => void) => void
   off: (
     fn: (e: {
-      data?: T;
-      code?: number;
-      reason?: string;
-      message?: string;
+      data?: T
+      code?: number
+      reason?: string
+      message?: string
     }) => void,
-  ) => void;
-  error: (fn: (e: { data?: T; errors?: string[] }) => void) => void;
-  open: () => void;
-};
+  ) => void
+  error: (fn: (e: { data?: T; errors?: string[] }) => void) => void
+  open: () => void
+}
+
+export const statusSelector = Selector('status')({
+  base_token: true,
+  base_token_usd: true,
+  last_processed_height: true,
+  last_known_height: true,
+})
+
+export type Status = InputType<
+  GraphQLTypes['status'],
+  typeof statusSelector,
+  ScalarDefinition
+>
 
 const listingSelector = Selector('marketplace_listing')({
   seller_address: true,
   total: true,
   deposit_total: true,
+  depositor_address: true,
+  depositor_timedout_block: true,
   is_deposited: true,
   is_cancelled: true,
   is_filled: true,
@@ -124,6 +139,23 @@ export class AsteroidService {
     return this.ws<'subscription', ScalarDefinition>(
       'subscription',
     ) as OperationsWS<'subscription', ScalarDefinition>
+  }
+
+  async getStatus(chainId: string): Promise<Status> {
+    const statusResult = await this.query({
+      status: [
+        {
+          where: {
+            chain_id: {
+              _eq: chainId,
+            },
+          },
+        },
+        statusSelector,
+      ],
+    })
+
+    return statusResult.status[0]
   }
 
   async fetchListing(listingHash: string): Promise<Listing | undefined> {
