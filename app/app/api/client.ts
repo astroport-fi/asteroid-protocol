@@ -354,7 +354,7 @@ export class AsteroidClient extends AsteroidService {
     limit: number = 20,
     orderBy?: ValueTypes['marketplace_cft20_detail_order_by'],
     aggregate = false,
-    seller?: string,
+    where: { seller?: string; depositor?: string; currentBlock?: number } = {},
   ): Promise<TokenListings> {
     if (!orderBy) {
       orderBy = {
@@ -362,7 +362,7 @@ export class AsteroidClient extends AsteroidService {
       }
     }
 
-    const where: ValueTypes['marketplace_cft20_detail_bool_exp'] = {
+    const queryWhere: ValueTypes['marketplace_cft20_detail_bool_exp'] = {
       token_id: {
         _eq: tokenId,
       },
@@ -376,12 +376,29 @@ export class AsteroidClient extends AsteroidService {
       },
     }
 
-    if (seller) {
-      where.marketplace_listing = Object.assign(
-        where.marketplace_listing || {},
+    if (where.seller) {
+      queryWhere.marketplace_listing = Object.assign(
+        queryWhere.marketplace_listing || {},
         {
           seller_address: {
-            _eq: seller,
+            _eq: where.seller,
+          },
+        },
+      )
+    }
+
+    if (where.depositor && where.currentBlock) {
+      queryWhere.marketplace_listing = Object.assign(
+        queryWhere.marketplace_listing || {},
+        {
+          depositor_address: {
+            _eq: where.seller,
+          },
+          depositor_timedout_block: {
+            _gt: where.currentBlock,
+          },
+          is_deposited: {
+            _eq: true,
           },
         },
       )
@@ -401,7 +418,7 @@ export class AsteroidClient extends AsteroidService {
     const query: Query = {
       marketplace_cft20_detail: [
         {
-          where,
+          where: queryWhere,
           offset,
           limit,
           order_by: [orderBy],
@@ -413,7 +430,7 @@ export class AsteroidClient extends AsteroidService {
     if (aggregate) {
       query.marketplace_cft20_detail_aggregate = [
         {
-          where,
+          where: queryWhere,
         },
         {
           aggregate: {

@@ -3,8 +3,10 @@ import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import {
+  TableOptions,
   createColumnHelper,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
@@ -93,9 +95,32 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     true,
   )
 
+  if (address) {
+    const status = await asteroidClient.getStatus(
+      context.cloudflare.env.CHAIN_ID,
+    )
+    if (status) {
+      const reservedListings = await asteroidClient.getTokenListings(
+        token.id,
+        0,
+        100,
+        orderBy,
+        false,
+        { currentBlock: status.last_processed_height, depositor: address },
+      )
+      return json({
+        token,
+        listings: res.listings,
+        reservedListings: reservedListings.listings,
+        pages: Math.ceil(res.count! / limit),
+      })
+    }
+  }
+
   return json({
     token,
     listings: res.listings,
+    reservedListings: [],
     pages: Math.ceil(res.count! / limit),
   })
 }
@@ -111,12 +136,14 @@ function ListingsTable({
   token,
   listings,
   pages,
+  serverSorting,
   className,
   onListClick,
 }: {
   token: Token
   listings: MarketplaceTokenListing[]
-  pages: number
+  pages?: number
+  serverSorting: boolean
   onListClick: () => void
   className?: string
 }) {
@@ -246,34 +273,35 @@ function ListingsTable({
               </Button>
             )
           case ListingState.Reserved:
-            return (
-              <Button
-                color="neutral"
-                size="sm"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Reserved ({blocks})
-              </Button>
-            )
+            return `Reserved (${blocks})`
         }
       },
     }),
   ]
 
-  const table = useReactTable<MarketplaceTokenListing>({
+  const tableOptions: TableOptions<MarketplaceTokenListing> = {
     columns,
     data: listings,
-    pageCount: pages,
-    onPaginationChange: setPagination,
-    state: {
-      sorting,
-      pagination,
-    },
-    onSortingChange: setSorting,
+    state: {},
     getCoreRowModel: getCoreRowModel(),
-    manualSorting: true,
-    manualPagination: true,
-  })
+  }
+
+  if (pages) {
+    tableOptions.pageCount = pages
+    tableOptions.onPaginationChange = setPagination
+    tableOptions.state!.pagination = pagination
+    tableOptions.manualPagination = true
+  }
+
+  if (serverSorting) {
+    tableOptions.onSortingChange = setSorting
+    tableOptions.state!.sorting = sorting
+    tableOptions.manualSorting = true
+  } else {
+    tableOptions.getSortedRowModel = getSortedRowModel()
+  }
+
+  const table = useReactTable<MarketplaceTokenListing>(tableOptions)
 
   return (
     <>
@@ -288,7 +316,11 @@ function ListingsTable({
           </Button>
         </GhostEmptyState>
       ) : (
-        <Table table={table} className={className} />
+        <Table
+          table={table}
+          className={className}
+          showPagination={pages != null}
+        />
       )}
 
       <TxDialog
@@ -337,7 +369,7 @@ export default function MarketPage() {
 
   return (
     <div>
-      <div className="flex flex-col">
+      <div className="flex flex-col mb-2">
         <div className="flex flex-row justify-between">
           <BackHeader to="/app/tokens">
             <Button color="ghost" className="text-lg font-medium">
@@ -366,12 +398,27 @@ export default function MarketPage() {
         </div>
         <Stats token={token} />
       </div>
+      {data.reservedListings?.length > 0 && (
+        <div>
+          <h3 className="mt-10 text-lg">Your reserved listing</h3>
+          <ListingsTable
+            className="mt-2"
+            listings={data.reservedListings}
+            token={token}
+            onListClick={() => handleShow()}
+            serverSorting={false}
+          />
+          <h3 className="mt-16 text-lg">All listings</h3>
+        </div>
+      )}
+
       <ListingsTable
-        className="mt-4"
+        className="mt-2"
         listings={data.listings}
         pages={data.pages}
         token={token}
         onListClick={() => handleShow()}
+        serverSorting={true}
       />
     </div>
   )

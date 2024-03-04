@@ -27,7 +27,7 @@ export default function Table<T = unknown>({
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
   const rows = table.getRowModel().rows
-  const rowClassName = clsx({
+  const rowClassName = clsx('border-neutral', {
     'hover hover:cursor-pointer': typeof onClick === 'function',
   })
 
@@ -35,7 +35,7 @@ export default function Table<T = unknown>({
     <div className={twMerge('flex flex-col w-full', className)}>
       <DaisyTable>
         <thead>
-          <tr>
+          <tr className="border-neutral">
             {headerGroup.headers.map((header) => (
               <th
                 key={header.id}
