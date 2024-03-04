@@ -102,6 +102,11 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 
 const DEFAULT_SORT = { id: 'ppt', desc: false }
 
+interface Operation {
+  inscription: TxInscription
+  feeTitle?: string
+}
+
 function ListingsTable({
   token,
   listings,
@@ -124,7 +129,7 @@ function ListingsTable({
   } = useRootContext()
   const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
   const { dialogRef: buyDialogRef, handleShow: showBuyDialog } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const [operation, setOperation] = useState<Operation | null>(null)
   const [listingHash, setListingHash] = useState<string | null>(null)
   const operations = useMarketplaceOperations()
 
@@ -136,9 +141,24 @@ function ListingsTable({
 
     const txInscription = operations.delist(listingHash)
 
-    setTxInscription(txInscription)
+    setOperation({ inscription: txInscription })
 
     showTxDialog()
+  }
+
+  function buyListing(listingHash: string) {
+    if (!operations) {
+      console.warn('No address')
+      return
+    }
+
+    operations.buy(listingHash, 'cft20').then((txInscription) => {
+      setOperation({
+        inscription: txInscription,
+        feeTitle: 'Token listing price',
+      })
+      showTxDialog()
+    })
   }
 
   function reserveListing(listingHash: string) {
@@ -206,12 +226,11 @@ function ListingsTable({
               </Button>
             )
           case ListingState.Buy:
-            // @todo handle this button
             return (
               <Button
                 color="accent"
                 size="sm"
-                onClick={(e) => e.stopPropagation()}
+                onClick={() => buyListing(listingHash)}
               >
                 Buy ({blocks})
               </Button>
@@ -274,7 +293,8 @@ function ListingsTable({
 
       <TxDialog
         ref={txDialogRef}
-        txInscription={txInscription}
+        txInscription={operation?.inscription ?? null}
+        feeOperationTitle={operation?.feeTitle}
         resultCTA="Back to market"
         resultLink={`/app/market/${token.ticker}`}
       />

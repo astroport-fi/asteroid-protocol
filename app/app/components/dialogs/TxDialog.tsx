@@ -14,10 +14,11 @@ interface Props {
   txInscription: TxInscription | null
   resultCTA?: string
   resultLink?: To
+  feeOperationTitle?: string
 }
 
 const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
-  { txInscription, resultCTA, resultLink },
+  { txInscription, resultCTA, resultLink, feeOperationTitle },
   ref,
 ) {
   const {
@@ -43,6 +44,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           txHash={txHash}
           txState={txState}
           resultCTA={resultCTA}
+          feeOperationTitle={feeOperationTitle}
           onClose={() => {
             fRef.current?.close()
             navigate(resultLink ?? `/app/inscription/${txHash}`)

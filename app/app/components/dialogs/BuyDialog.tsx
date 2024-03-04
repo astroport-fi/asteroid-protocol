@@ -86,7 +86,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           txHash={txHash}
           txState={txState}
           feeOperationTitle={
-            step === Step.Purchase ? 'Inscription price' : 'Deposit (0.01%)'
+            step === Step.Purchase
+              ? buyType === 'inscription'
+                ? 'Inscription price'
+                : 'Token listing price'
+              : 'Deposit (0.01%)'
           }
           resultCTA="Back to market"
           onClose={
