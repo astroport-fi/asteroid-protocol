@@ -39,6 +39,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'marketplace_inscription_detail_order_by',
       where: 'marketplace_inscription_detail_bool_exp',
     },
+    marketplace_inscription_details_aggregate: {
+      distinct_on: 'marketplace_inscription_detail_select_column',
+      order_by: 'marketplace_inscription_detail_order_by',
+      where: 'marketplace_inscription_detail_bool_exp',
+    },
     metadata: {},
   },
   inscription_aggregate_bool_exp: {
@@ -106,6 +111,8 @@ export const AllTypesProps: Record<string, any> = {
       'inscription_trade_history_aggregate_bool_exp',
     is_explicit: 'Boolean_comparison_exp',
     marketplace_inscription_details: 'marketplace_inscription_detail_bool_exp',
+    marketplace_inscription_details_aggregate:
+      'marketplace_inscription_detail_aggregate_bool_exp',
     metadata: 'json_comparison_exp',
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
@@ -813,6 +820,19 @@ export const AllTypesProps: Record<string, any> = {
     total_usd: 'order_by',
     transaction_id: 'order_by',
   },
+  marketplace_inscription_detail_aggregate_bool_exp: {
+    count: 'marketplace_inscription_detail_aggregate_bool_exp_count',
+  },
+  marketplace_inscription_detail_aggregate_bool_exp_count: {
+    arguments: 'marketplace_inscription_detail_select_column',
+    filter: 'marketplace_inscription_detail_bool_exp',
+    predicate: 'Int_comparison_exp',
+  },
+  marketplace_inscription_detail_aggregate_fields: {
+    count: {
+      columns: 'marketplace_inscription_detail_select_column',
+    },
+  },
   marketplace_inscription_detail_aggregate_order_by: {
     avg: 'marketplace_inscription_detail_avg_order_by',
     count: 'order_by',
@@ -926,6 +946,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'marketplace_inscription_detail_order_by',
       where: 'marketplace_inscription_detail_bool_exp',
     },
+    marketplace_inscription_details_aggregate: {
+      distinct_on: 'marketplace_inscription_detail_select_column',
+      order_by: 'marketplace_inscription_detail_order_by',
+      where: 'marketplace_inscription_detail_bool_exp',
+    },
     marketplace_listing_histories: {
       distinct_on: 'marketplace_listing_history_select_column',
       order_by: 'marketplace_listing_history_order_by',
@@ -974,6 +999,8 @@ export const AllTypesProps: Record<string, any> = {
     marketplace_cft20_trade_histories:
       'marketplace_cft20_trade_history_bool_exp',
     marketplace_inscription_details: 'marketplace_inscription_detail_bool_exp',
+    marketplace_inscription_details_aggregate:
+      'marketplace_inscription_detail_aggregate_bool_exp',
     marketplace_listing_histories: 'marketplace_listing_history_bool_exp',
     seller_address: 'String_comparison_exp',
     total: 'bigint_comparison_exp',
@@ -1277,6 +1304,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'marketplace_inscription_detail_order_by',
       where: 'marketplace_inscription_detail_bool_exp',
     },
+    marketplace_inscription_detail_aggregate: {
+      distinct_on: 'marketplace_inscription_detail_select_column',
+      order_by: 'marketplace_inscription_detail_order_by',
+      where: 'marketplace_inscription_detail_bool_exp',
+    },
     marketplace_inscription_detail_by_pk: {},
     marketplace_listing: {
       distinct_on: 'marketplace_listing_select_column',
@@ -1498,6 +1530,11 @@ export const AllTypesProps: Record<string, any> = {
       where: 'marketplace_cft20_trade_history_bool_exp',
     },
     marketplace_inscription_detail: {
+      distinct_on: 'marketplace_inscription_detail_select_column',
+      order_by: 'marketplace_inscription_detail_order_by',
+      where: 'marketplace_inscription_detail_bool_exp',
+    },
+    marketplace_inscription_detail_aggregate: {
       distinct_on: 'marketplace_inscription_detail_select_column',
       order_by: 'marketplace_inscription_detail_order_by',
       where: 'marketplace_inscription_detail_bool_exp',
@@ -2607,6 +2644,8 @@ export const ReturnTypes: Record<string, any> = {
       'inscription_trade_history_aggregate',
     is_explicit: 'Boolean',
     marketplace_inscription_details: 'marketplace_inscription_detail',
+    marketplace_inscription_details_aggregate:
+      'marketplace_inscription_detail_aggregate',
     metadata: 'json',
     transaction: 'transaction',
     transaction_id: 'Int',
@@ -3015,6 +3054,75 @@ export const ReturnTypes: Record<string, any> = {
     listing_id: 'Int',
     marketplace_listing: 'marketplace_listing',
   },
+  marketplace_inscription_detail_aggregate: {
+    aggregate: 'marketplace_inscription_detail_aggregate_fields',
+    nodes: 'marketplace_inscription_detail',
+  },
+  marketplace_inscription_detail_aggregate_fields: {
+    avg: 'marketplace_inscription_detail_avg_fields',
+    count: 'Int',
+    max: 'marketplace_inscription_detail_max_fields',
+    min: 'marketplace_inscription_detail_min_fields',
+    stddev: 'marketplace_inscription_detail_stddev_fields',
+    stddev_pop: 'marketplace_inscription_detail_stddev_pop_fields',
+    stddev_samp: 'marketplace_inscription_detail_stddev_samp_fields',
+    sum: 'marketplace_inscription_detail_sum_fields',
+    var_pop: 'marketplace_inscription_detail_var_pop_fields',
+    var_samp: 'marketplace_inscription_detail_var_samp_fields',
+    variance: 'marketplace_inscription_detail_variance_fields',
+  },
+  marketplace_inscription_detail_avg_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_max_fields: {
+    date_created: 'timestamp',
+    id: 'Int',
+    inscription_id: 'Int',
+    listing_id: 'Int',
+  },
+  marketplace_inscription_detail_min_fields: {
+    date_created: 'timestamp',
+    id: 'Int',
+    inscription_id: 'Int',
+    listing_id: 'Int',
+  },
+  marketplace_inscription_detail_stddev_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_stddev_pop_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_stddev_samp_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_sum_fields: {
+    id: 'Int',
+    inscription_id: 'Int',
+    listing_id: 'Int',
+  },
+  marketplace_inscription_detail_var_pop_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_var_samp_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
+  marketplace_inscription_detail_variance_fields: {
+    id: 'Float',
+    inscription_id: 'Float',
+    listing_id: 'Float',
+  },
   marketplace_listing: {
     chain_id: 'String',
     date_created: 'timestamp',
@@ -3031,6 +3139,8 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_cft20_details_aggregate: 'marketplace_cft20_detail_aggregate',
     marketplace_cft20_trade_histories: 'marketplace_cft20_trade_history',
     marketplace_inscription_details: 'marketplace_inscription_detail',
+    marketplace_inscription_details_aggregate:
+      'marketplace_inscription_detail_aggregate',
     marketplace_listing_histories: 'marketplace_listing_history',
     seller_address: 'String',
     total: 'bigint',
@@ -3066,6 +3176,8 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_cft20_trade_history: 'marketplace_cft20_trade_history',
     marketplace_cft20_trade_history_by_pk: 'marketplace_cft20_trade_history',
     marketplace_inscription_detail: 'marketplace_inscription_detail',
+    marketplace_inscription_detail_aggregate:
+      'marketplace_inscription_detail_aggregate',
     marketplace_inscription_detail_by_pk: 'marketplace_inscription_detail',
     marketplace_listing: 'marketplace_listing',
     marketplace_listing_by_pk: 'marketplace_listing',
@@ -3134,6 +3246,8 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_cft20_trade_history_by_pk: 'marketplace_cft20_trade_history',
     marketplace_cft20_trade_history_stream: 'marketplace_cft20_trade_history',
     marketplace_inscription_detail: 'marketplace_inscription_detail',
+    marketplace_inscription_detail_aggregate:
+      'marketplace_inscription_detail_aggregate',
     marketplace_inscription_detail_by_pk: 'marketplace_inscription_detail',
     marketplace_inscription_detail_stream: 'marketplace_inscription_detail',
     marketplace_listing: 'marketplace_listing',

@@ -1298,6 +1298,40 @@ export type ValueTypes = {
       },
       ValueTypes['marketplace_inscription_detail'],
     ]
+    marketplace_inscription_details_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['marketplace_inscription_detail_aggregate'],
+    ]
     metadata?: [
       {
         /** JSON select path */
@@ -1559,6 +1593,11 @@ export type ValueTypes = {
       | Variable<any, string>
     marketplace_inscription_details?:
       | ValueTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    marketplace_inscription_details_aggregate?:
+      | ValueTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -4267,6 +4306,58 @@ export type ValueTypes = {
     marketplace_listing?: ValueTypes['marketplace_listing']
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate']: AliasType<{
+    aggregate?: ValueTypes['marketplace_inscription_detail_aggregate_fields']
+    nodes?: ValueTypes['marketplace_inscription_detail']
+    __typename?: boolean | `@${string}`
+  }>
+  ['marketplace_inscription_detail_aggregate_bool_exp']: {
+    count?:
+      | ValueTypes['marketplace_inscription_detail_aggregate_bool_exp_count']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+      | undefined
+      | null
+      | Variable<any, string>
+    distinct?: boolean | undefined | null | Variable<any, string>
+    filter?:
+      | ValueTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    predicate: ValueTypes['Int_comparison_exp'] | Variable<any, string>
+  }
+  /** aggregate fields of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['marketplace_inscription_detail_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['marketplace_inscription_detail_max_fields']
+    min?: ValueTypes['marketplace_inscription_detail_min_fields']
+    stddev?: ValueTypes['marketplace_inscription_detail_stddev_fields']
+    stddev_pop?: ValueTypes['marketplace_inscription_detail_stddev_pop_fields']
+    stddev_samp?: ValueTypes['marketplace_inscription_detail_stddev_samp_fields']
+    sum?: ValueTypes['marketplace_inscription_detail_sum_fields']
+    var_pop?: ValueTypes['marketplace_inscription_detail_var_pop_fields']
+    var_samp?: ValueTypes['marketplace_inscription_detail_var_samp_fields']
+    variance?: ValueTypes['marketplace_inscription_detail_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
   /** order by aggregate values of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_aggregate_order_by']: {
     avg?:
@@ -4321,6 +4412,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate avg on columns */
+  ['marketplace_inscription_detail_avg_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by avg() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_avg_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4383,6 +4481,14 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate max on columns */
+  ['marketplace_inscription_detail_max_fields']: AliasType<{
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by max() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_max_order_by']: {
     date_created?:
@@ -4402,6 +4508,14 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate min on columns */
+  ['marketplace_inscription_detail_min_fields']: AliasType<{
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by min() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_min_order_by']: {
     date_created?:
@@ -4452,6 +4566,13 @@ export type ValueTypes = {
   }
   /** select columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_select_column']: marketplace_inscription_detail_select_column
+  /** aggregate stddev on columns */
+  ['marketplace_inscription_detail_stddev_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4466,6 +4587,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate stddev_pop on columns */
+  ['marketplace_inscription_detail_stddev_pop_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_pop_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4480,6 +4608,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate stddev_samp on columns */
+  ['marketplace_inscription_detail_stddev_samp_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_samp_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4518,6 +4653,13 @@ export type ValueTypes = {
     inscription_id?: number | undefined | null | Variable<any, string>
     listing_id?: number | undefined | null | Variable<any, string>
   }
+  /** aggregate sum on columns */
+  ['marketplace_inscription_detail_sum_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by sum() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_sum_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4532,6 +4674,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate var_pop on columns */
+  ['marketplace_inscription_detail_var_pop_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_pop_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4546,6 +4695,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate var_samp on columns */
+  ['marketplace_inscription_detail_var_samp_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_samp_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4560,6 +4716,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate variance on columns */
+  ['marketplace_inscription_detail_variance_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by variance() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_variance_order_by']: {
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -4722,6 +4885,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_details_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_listing_histories?: [
       {
@@ -4932,6 +5129,11 @@ export type ValueTypes = {
       | Variable<any, string>
     marketplace_inscription_details?:
       | ValueTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    marketplace_inscription_details_aggregate?:
+      | ValueTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -6163,6 +6365,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_detail_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_inscription_detail_by_pk?: [
       { id: number | Variable<any, string> },
@@ -7417,6 +7653,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_detail_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['marketplace_inscription_detail_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_inscription_detail_by_pk?: [
       { id: number | Variable<any, string> },
@@ -11997,6 +12267,34 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['marketplace_inscription_detail'],
     ]
+    marketplace_inscription_details_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['marketplace_inscription_detail_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['marketplace_inscription_detail_aggregate'],
+    ]
     metadata?: [
       {
         /** JSON select path */ path?: string | undefined | null
@@ -12169,6 +12467,10 @@ export type ResolverInputTypes = {
       | null
     marketplace_inscription_details?:
       | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+    marketplace_inscription_details_aggregate?:
+      | ResolverInputTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
       | null
     metadata?: ResolverInputTypes['json_comparison_exp'] | undefined | null
@@ -13761,6 +14063,58 @@ export type ResolverInputTypes = {
     marketplace_listing?: ResolverInputTypes['marketplace_listing']
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['marketplace_inscription_detail_aggregate_fields']
+    nodes?: ResolverInputTypes['marketplace_inscription_detail']
+    __typename?: boolean | `@${string}`
+  }>
+  ['marketplace_inscription_detail_aggregate_bool_exp']: {
+    count?:
+      | ResolverInputTypes['marketplace_inscription_detail_aggregate_bool_exp_count']
+      | undefined
+      | null
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<
+          ResolverInputTypes['marketplace_inscription_detail_select_column']
+        >
+      | undefined
+      | null
+    distinct?: boolean | undefined | null
+    filter?:
+      | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+    predicate: ResolverInputTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['marketplace_inscription_detail_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<
+              ResolverInputTypes['marketplace_inscription_detail_select_column']
+            >
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['marketplace_inscription_detail_max_fields']
+    min?: ResolverInputTypes['marketplace_inscription_detail_min_fields']
+    stddev?: ResolverInputTypes['marketplace_inscription_detail_stddev_fields']
+    stddev_pop?: ResolverInputTypes['marketplace_inscription_detail_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['marketplace_inscription_detail_stddev_samp_fields']
+    sum?: ResolverInputTypes['marketplace_inscription_detail_sum_fields']
+    var_pop?: ResolverInputTypes['marketplace_inscription_detail_var_pop_fields']
+    var_samp?: ResolverInputTypes['marketplace_inscription_detail_var_samp_fields']
+    variance?: ResolverInputTypes['marketplace_inscription_detail_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
   /** order by aggregate values of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_aggregate_order_by']: {
     avg?:
@@ -13805,6 +14159,13 @@ export type ResolverInputTypes = {
       | undefined
       | null
   }
+  /** aggregate avg on columns */
+  ['marketplace_inscription_detail_avg_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by avg() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_avg_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13838,6 +14199,14 @@ export type ResolverInputTypes = {
       | undefined
       | null
   }
+  /** aggregate max on columns */
+  ['marketplace_inscription_detail_max_fields']: AliasType<{
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by max() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_max_order_by']: {
     date_created?: ResolverInputTypes['order_by'] | undefined | null
@@ -13845,6 +14214,14 @@ export type ResolverInputTypes = {
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate min on columns */
+  ['marketplace_inscription_detail_min_fields']: AliasType<{
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by min() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_min_order_by']: {
     date_created?: ResolverInputTypes['order_by'] | undefined | null
@@ -13866,18 +14243,39 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_select_column']: marketplace_inscription_detail_select_column
+  /** aggregate stddev on columns */
+  ['marketplace_inscription_detail_stddev_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate stddev_pop on columns */
+  ['marketplace_inscription_detail_stddev_pop_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_pop_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate stddev_samp on columns */
+  ['marketplace_inscription_detail_stddev_samp_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_samp_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13898,24 +14296,52 @@ export type ResolverInputTypes = {
     inscription_id?: number | undefined | null
     listing_id?: number | undefined | null
   }
+  /** aggregate sum on columns */
+  ['marketplace_inscription_detail_sum_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by sum() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_sum_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate var_pop on columns */
+  ['marketplace_inscription_detail_var_pop_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_pop_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate var_samp on columns */
+  ['marketplace_inscription_detail_var_samp_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_samp_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_id?: ResolverInputTypes['order_by'] | undefined | null
     listing_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate variance on columns */
+  ['marketplace_inscription_detail_variance_fields']: AliasType<{
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    listing_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by variance() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_variance_order_by']: {
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -14044,6 +14470,34 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_details_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['marketplace_inscription_detail_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_listing_histories?: [
       {
@@ -14193,6 +14647,10 @@ export type ResolverInputTypes = {
       | null
     marketplace_inscription_details?:
       | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+      | null
+    marketplace_inscription_details_aggregate?:
+      | ResolverInputTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
       | null
     marketplace_listing_histories?:
@@ -14891,6 +15349,34 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_detail_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['marketplace_inscription_detail_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_inscription_detail_by_pk?: [
       { id: number },
@@ -15763,6 +16249,34 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['marketplace_inscription_detail'],
+    ]
+    marketplace_inscription_detail_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['marketplace_inscription_detail_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['marketplace_inscription_detail_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['marketplace_inscription_detail_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['marketplace_inscription_detail_aggregate'],
     ]
     marketplace_inscription_detail_by_pk?: [
       { id: number },
@@ -18536,6 +19050,8 @@ export type ModelTypes = {
     marketplace_inscription_details: Array<
       ModelTypes['marketplace_inscription_detail']
     >
+    /** An aggregate relationship */
+    marketplace_inscription_details_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     metadata: ModelTypes['json']
     /** An object relationship */
     transaction: ModelTypes['transaction']
@@ -18639,6 +19155,9 @@ export type ModelTypes = {
     is_explicit?: ModelTypes['Boolean_comparison_exp'] | undefined
     marketplace_inscription_details?:
       | ModelTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+    marketplace_inscription_details_aggregate?:
+      | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: ModelTypes['json_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
@@ -19986,6 +20505,52 @@ export type ModelTypes = {
     /** An object relationship */
     marketplace_listing: ModelTypes['marketplace_listing']
   }
+  /** aggregated selection of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate']: {
+    aggregate?:
+      | ModelTypes['marketplace_inscription_detail_aggregate_fields']
+      | undefined
+    nodes: Array<ModelTypes['marketplace_inscription_detail']>
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp']: {
+    count?:
+      | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp_count']
+      | undefined
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<ModelTypes['marketplace_inscription_detail_select_column']>
+      | undefined
+    distinct?: boolean | undefined
+    filter?: ModelTypes['marketplace_inscription_detail_bool_exp'] | undefined
+    predicate: ModelTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate_fields']: {
+    avg?: ModelTypes['marketplace_inscription_detail_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['marketplace_inscription_detail_max_fields'] | undefined
+    min?: ModelTypes['marketplace_inscription_detail_min_fields'] | undefined
+    stddev?:
+      | ModelTypes['marketplace_inscription_detail_stddev_fields']
+      | undefined
+    stddev_pop?:
+      | ModelTypes['marketplace_inscription_detail_stddev_pop_fields']
+      | undefined
+    stddev_samp?:
+      | ModelTypes['marketplace_inscription_detail_stddev_samp_fields']
+      | undefined
+    sum?: ModelTypes['marketplace_inscription_detail_sum_fields'] | undefined
+    var_pop?:
+      | ModelTypes['marketplace_inscription_detail_var_pop_fields']
+      | undefined
+    var_samp?:
+      | ModelTypes['marketplace_inscription_detail_var_samp_fields']
+      | undefined
+    variance?:
+      | ModelTypes['marketplace_inscription_detail_variance_fields']
+      | undefined
+  }
   /** order by aggregate values of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_aggregate_order_by']: {
     avg?: ModelTypes['marketplace_inscription_detail_avg_order_by'] | undefined
@@ -20012,6 +20577,12 @@ export type ModelTypes = {
       | ModelTypes['marketplace_inscription_detail_variance_order_by']
       | undefined
   }
+  /** aggregate avg on columns */
+  ['marketplace_inscription_detail_avg_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by avg() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_avg_order_by']: {
     id?: ModelTypes['order_by'] | undefined
@@ -20034,12 +20605,26 @@ export type ModelTypes = {
     listing_id?: ModelTypes['Int_comparison_exp'] | undefined
     marketplace_listing?: ModelTypes['marketplace_listing_bool_exp'] | undefined
   }
+  /** aggregate max on columns */
+  ['marketplace_inscription_detail_max_fields']: {
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by max() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_max_order_by']: {
     date_created?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate min on columns */
+  ['marketplace_inscription_detail_min_fields']: {
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by min() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_min_order_by']: {
@@ -20058,17 +20643,35 @@ export type ModelTypes = {
     marketplace_listing?: ModelTypes['marketplace_listing_order_by'] | undefined
   }
   ['marketplace_inscription_detail_select_column']: marketplace_inscription_detail_select_column
+  /** aggregate stddev on columns */
+  ['marketplace_inscription_detail_stddev_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by stddev() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_order_by']: {
     id?: ModelTypes['order_by'] | undefined
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
   }
+  /** aggregate stddev_pop on columns */
+  ['marketplace_inscription_detail_stddev_pop_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by stddev_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_pop_order_by']: {
     id?: ModelTypes['order_by'] | undefined
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['marketplace_inscription_detail_stddev_samp_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_samp_order_by']: {
@@ -20090,11 +20693,23 @@ export type ModelTypes = {
     inscription_id?: number | undefined
     listing_id?: number | undefined
   }
+  /** aggregate sum on columns */
+  ['marketplace_inscription_detail_sum_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by sum() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_sum_order_by']: {
     id?: ModelTypes['order_by'] | undefined
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['marketplace_inscription_detail_var_pop_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by var_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_pop_order_by']: {
@@ -20102,11 +20717,23 @@ export type ModelTypes = {
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
   }
+  /** aggregate var_samp on columns */
+  ['marketplace_inscription_detail_var_samp_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by var_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_samp_order_by']: {
     id?: ModelTypes['order_by'] | undefined
     inscription_id?: ModelTypes['order_by'] | undefined
     listing_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate variance on columns */
+  ['marketplace_inscription_detail_variance_fields']: {
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by variance() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_variance_order_by']: {
@@ -20139,6 +20766,8 @@ export type ModelTypes = {
     marketplace_inscription_details: Array<
       ModelTypes['marketplace_inscription_detail']
     >
+    /** An aggregate relationship */
+    marketplace_inscription_details_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     /** An array relationship */
     marketplace_listing_histories: Array<
       ModelTypes['marketplace_listing_history']
@@ -20203,6 +20832,9 @@ export type ModelTypes = {
       | undefined
     marketplace_inscription_details?:
       | ModelTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+    marketplace_inscription_details_aggregate?:
+      | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     marketplace_listing_histories?:
       | ModelTypes['marketplace_listing_history_bool_exp']
@@ -20563,6 +21195,8 @@ export type ModelTypes = {
     marketplace_inscription_detail: Array<
       ModelTypes['marketplace_inscription_detail']
     >
+    /** fetch aggregated fields from the table: "marketplace_inscription_detail" */
+    marketplace_inscription_detail_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     /** fetch data from the table: "marketplace_inscription_detail" using primary key columns */
     marketplace_inscription_detail_by_pk?:
       | ModelTypes['marketplace_inscription_detail']
@@ -20782,6 +21416,8 @@ export type ModelTypes = {
     marketplace_inscription_detail: Array<
       ModelTypes['marketplace_inscription_detail']
     >
+    /** fetch aggregated fields from the table: "marketplace_inscription_detail" */
+    marketplace_inscription_detail_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     /** fetch data from the table: "marketplace_inscription_detail" using primary key columns */
     marketplace_inscription_detail_by_pk?:
       | ModelTypes['marketplace_inscription_detail']
@@ -22453,6 +23089,8 @@ export type GraphQLTypes = {
     marketplace_inscription_details: Array<
       GraphQLTypes['marketplace_inscription_detail']
     >
+    /** An aggregate relationship */
+    marketplace_inscription_details_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     metadata: GraphQLTypes['json']
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
@@ -22561,6 +23199,9 @@ export type GraphQLTypes = {
     is_explicit?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     marketplace_inscription_details?:
       | GraphQLTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+    marketplace_inscription_details_aggregate?:
+      | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: GraphQLTypes['json_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
@@ -23997,6 +24638,54 @@ export type GraphQLTypes = {
     /** An object relationship */
     marketplace_listing: GraphQLTypes['marketplace_listing']
   }
+  /** aggregated selection of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate']: {
+    __typename: 'marketplace_inscription_detail_aggregate'
+    aggregate?:
+      | GraphQLTypes['marketplace_inscription_detail_aggregate_fields']
+      | undefined
+    nodes: Array<GraphQLTypes['marketplace_inscription_detail']>
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp']: {
+    count?:
+      | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp_count']
+      | undefined
+  }
+  ['marketplace_inscription_detail_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<GraphQLTypes['marketplace_inscription_detail_select_column']>
+      | undefined
+    distinct?: boolean | undefined
+    filter?: GraphQLTypes['marketplace_inscription_detail_bool_exp'] | undefined
+    predicate: GraphQLTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "marketplace_inscription_detail" */
+  ['marketplace_inscription_detail_aggregate_fields']: {
+    __typename: 'marketplace_inscription_detail_aggregate_fields'
+    avg?: GraphQLTypes['marketplace_inscription_detail_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['marketplace_inscription_detail_max_fields'] | undefined
+    min?: GraphQLTypes['marketplace_inscription_detail_min_fields'] | undefined
+    stddev?:
+      | GraphQLTypes['marketplace_inscription_detail_stddev_fields']
+      | undefined
+    stddev_pop?:
+      | GraphQLTypes['marketplace_inscription_detail_stddev_pop_fields']
+      | undefined
+    stddev_samp?:
+      | GraphQLTypes['marketplace_inscription_detail_stddev_samp_fields']
+      | undefined
+    sum?: GraphQLTypes['marketplace_inscription_detail_sum_fields'] | undefined
+    var_pop?:
+      | GraphQLTypes['marketplace_inscription_detail_var_pop_fields']
+      | undefined
+    var_samp?:
+      | GraphQLTypes['marketplace_inscription_detail_var_samp_fields']
+      | undefined
+    variance?:
+      | GraphQLTypes['marketplace_inscription_detail_variance_fields']
+      | undefined
+  }
   /** order by aggregate values of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_aggregate_order_by']: {
     avg?:
@@ -24031,6 +24720,13 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_inscription_detail_variance_order_by']
       | undefined
   }
+  /** aggregate avg on columns */
+  ['marketplace_inscription_detail_avg_fields']: {
+    __typename: 'marketplace_inscription_detail_avg_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by avg() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_avg_order_by']: {
     id?: GraphQLTypes['order_by'] | undefined
@@ -24055,12 +24751,28 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_listing_bool_exp']
       | undefined
   }
+  /** aggregate max on columns */
+  ['marketplace_inscription_detail_max_fields']: {
+    __typename: 'marketplace_inscription_detail_max_fields'
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by max() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_max_order_by']: {
     date_created?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate min on columns */
+  ['marketplace_inscription_detail_min_fields']: {
+    __typename: 'marketplace_inscription_detail_min_fields'
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by min() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_min_order_by']: {
@@ -24082,17 +24794,38 @@ export type GraphQLTypes = {
   }
   /** select columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_select_column']: marketplace_inscription_detail_select_column
+  /** aggregate stddev on columns */
+  ['marketplace_inscription_detail_stddev_fields']: {
+    __typename: 'marketplace_inscription_detail_stddev_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by stddev() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_order_by']: {
     id?: GraphQLTypes['order_by'] | undefined
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** aggregate stddev_pop on columns */
+  ['marketplace_inscription_detail_stddev_pop_fields']: {
+    __typename: 'marketplace_inscription_detail_stddev_pop_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by stddev_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_pop_order_by']: {
     id?: GraphQLTypes['order_by'] | undefined
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['marketplace_inscription_detail_stddev_samp_fields']: {
+    __typename: 'marketplace_inscription_detail_stddev_samp_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_stddev_samp_order_by']: {
@@ -24114,11 +24847,25 @@ export type GraphQLTypes = {
     inscription_id?: number | undefined
     listing_id?: number | undefined
   }
+  /** aggregate sum on columns */
+  ['marketplace_inscription_detail_sum_fields']: {
+    __typename: 'marketplace_inscription_detail_sum_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by sum() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_sum_order_by']: {
     id?: GraphQLTypes['order_by'] | undefined
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['marketplace_inscription_detail_var_pop_fields']: {
+    __typename: 'marketplace_inscription_detail_var_pop_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by var_pop() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_pop_order_by']: {
@@ -24126,11 +24873,25 @@ export type GraphQLTypes = {
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** aggregate var_samp on columns */
+  ['marketplace_inscription_detail_var_samp_fields']: {
+    __typename: 'marketplace_inscription_detail_var_samp_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
+  }
   /** order by var_samp() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_var_samp_order_by']: {
     id?: GraphQLTypes['order_by'] | undefined
     inscription_id?: GraphQLTypes['order_by'] | undefined
     listing_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate variance on columns */
+  ['marketplace_inscription_detail_variance_fields']: {
+    __typename: 'marketplace_inscription_detail_variance_fields'
+    id?: number | undefined
+    inscription_id?: number | undefined
+    listing_id?: number | undefined
   }
   /** order by variance() on columns of table "marketplace_inscription_detail" */
   ['marketplace_inscription_detail_variance_order_by']: {
@@ -24164,6 +24925,8 @@ export type GraphQLTypes = {
     marketplace_inscription_details: Array<
       GraphQLTypes['marketplace_inscription_detail']
     >
+    /** An aggregate relationship */
+    marketplace_inscription_details_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     /** An array relationship */
     marketplace_listing_histories: Array<
       GraphQLTypes['marketplace_listing_history']
@@ -24228,6 +24991,9 @@ export type GraphQLTypes = {
       | undefined
     marketplace_inscription_details?:
       | GraphQLTypes['marketplace_inscription_detail_bool_exp']
+      | undefined
+    marketplace_inscription_details_aggregate?:
+      | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     marketplace_listing_histories?:
       | GraphQLTypes['marketplace_listing_history_bool_exp']
@@ -24601,6 +25367,8 @@ export type GraphQLTypes = {
     marketplace_inscription_detail: Array<
       GraphQLTypes['marketplace_inscription_detail']
     >
+    /** fetch aggregated fields from the table: "marketplace_inscription_detail" */
+    marketplace_inscription_detail_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     /** fetch data from the table: "marketplace_inscription_detail" using primary key columns */
     marketplace_inscription_detail_by_pk?:
       | GraphQLTypes['marketplace_inscription_detail']
@@ -24824,6 +25592,8 @@ export type GraphQLTypes = {
     marketplace_inscription_detail: Array<
       GraphQLTypes['marketplace_inscription_detail']
     >
+    /** fetch aggregated fields from the table: "marketplace_inscription_detail" */
+    marketplace_inscription_detail_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     /** fetch data from the table: "marketplace_inscription_detail" using primary key columns */
     marketplace_inscription_detail_by_pk?:
       | GraphQLTypes['marketplace_inscription_detail']
@@ -26761,6 +27531,8 @@ type ZEUS_VARIABLES = {
   ['marketplace_cft20_trade_history_var_pop_order_by']: ValueTypes['marketplace_cft20_trade_history_var_pop_order_by']
   ['marketplace_cft20_trade_history_var_samp_order_by']: ValueTypes['marketplace_cft20_trade_history_var_samp_order_by']
   ['marketplace_cft20_trade_history_variance_order_by']: ValueTypes['marketplace_cft20_trade_history_variance_order_by']
+  ['marketplace_inscription_detail_aggregate_bool_exp']: ValueTypes['marketplace_inscription_detail_aggregate_bool_exp']
+  ['marketplace_inscription_detail_aggregate_bool_exp_count']: ValueTypes['marketplace_inscription_detail_aggregate_bool_exp_count']
   ['marketplace_inscription_detail_aggregate_order_by']: ValueTypes['marketplace_inscription_detail_aggregate_order_by']
   ['marketplace_inscription_detail_avg_order_by']: ValueTypes['marketplace_inscription_detail_avg_order_by']
   ['marketplace_inscription_detail_bool_exp']: ValueTypes['marketplace_inscription_detail_bool_exp']
