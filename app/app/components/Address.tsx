@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { getStargazeName } from '~/api/stargaze'
+import useStargazeName from '~/hooks/useStargazeName'
 import { getEllipsisTxt } from '~/utils/string'
 
 interface Props {
@@ -9,10 +8,7 @@ interface Props {
 }
 
 export default function Address({ address, full, start }: Props) {
-  const [stargazeName, setStargazeName] = useState<string | null>(null)
-  useEffect(() => {
-    getStargazeName(address).then(setStargazeName)
-  }, [address])
+  const { name: stargazeName } = useStargazeName(address)
 
   if (stargazeName) {
     return stargazeName

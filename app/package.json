@@ -39,6 +39,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-markdown": "^9.0.1",
     "react-number-format": "^5.3.1",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.2.1",
     "vite-env-only": "^2.2.0"
   },
