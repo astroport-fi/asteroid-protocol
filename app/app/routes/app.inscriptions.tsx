@@ -1,15 +1,17 @@
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { ClockIcon } from '@heroicons/react/24/outline'
-import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, defer, json } from '@remix-run/cloudflare'
 import {
+  Await,
   Form,
   Link,
   useFetcher,
   useLoaderData,
   useNavigate,
+  useNavigation,
   useSearchParams,
 } from '@remix-run/react'
-import { PropsWithChildren, useEffect, useRef, useState } from 'react'
+import { PropsWithChildren, Suspense, useEffect, useRef, useState } from 'react'
 import {
   Button,
   Form as DaisyForm,
@@ -21,7 +23,7 @@ import {
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { NumericFormat } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
-import { AsteroidClient } from '~/api/client'
+import { AsteroidClient, InscriptionsResult } from '~/api/client'
 import {
   InscriptionTradeHistory,
   InscriptionWithMarket,
@@ -129,7 +131,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
   const { offset, limit, page } = parsePagination(searchParams, LIMIT)
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const result = await asteroidClient.getInscriptions(
+  const result = asteroidClient.getInscriptions(
     offset,
     limit,
     {
@@ -143,19 +145,18 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   )
 
   if (page > 1) {
+    const awaitedResult = await result
     return json({
-      inscriptions: result.inscriptions,
-      count: result.count,
+      data: awaitedResult,
       page,
-      transactions: [],
+      transactions: [] as InscriptionTradeHistory[],
     })
   }
 
-  const transactions = await asteroidClient.getInscriptionTradeHistory()
+  const transactions = asteroidClient.getInscriptionTradeHistory()
 
-  return json({
-    inscriptions: result.inscriptions,
-    count: result.count,
+  return defer({
+    data: result,
     page,
     transactions,
   })
@@ -212,7 +213,7 @@ function FilterTitle({
   )
 }
 
-function Filter({ onChange }: { onChange: () => void }) {
+function Filter() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const sortItems: DropdownItem<Sort>[] = [
@@ -262,41 +263,37 @@ function Filter({ onChange }: { onChange: () => void }) {
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
     if (currentStatus !== status) {
-      onChange()
       setSearchParams((prev) => {
         prev.set('status', status)
         return prev
       })
     }
-  }, [searchParams, status, setSearchParams, onChange])
+  }, [searchParams, status, setSearchParams])
 
   useEffect(() => {
     const currentSort = searchParams.get('sort') ?? DEFAULT_SORT
     if (currentSort !== sort) {
-      onChange()
       setSearchParams((prev) => {
         prev.set('sort', sort)
         return prev
       })
     }
-  }, [searchParams, sort, setSearchParams, onChange])
+  }, [searchParams, sort, setSearchParams])
 
   useEffect(() => {
     const currentRange = searchParams.get('range') ?? DEFAULT_RANGE
     if (currentRange !== range) {
-      onChange()
       setSearchParams((prev) => {
         prev.set('range', range)
         return prev
       })
     }
-  }, [searchParams, range, setSearchParams, onChange])
+  }, [searchParams, range, setSearchParams])
 
   useEffect(() => {
     const from = searchParams.get('from') ?? DEFAULT_PRICE_RANGE
     const range = priceRange.split('-')
     if (from !== range[0]) {
-      onChange()
       setSearchParams((prev) => {
         if (range[0] == PriceRange.ALL) {
           prev.delete('from')
@@ -309,7 +306,7 @@ function Filter({ onChange }: { onChange: () => void }) {
         return prev
       })
     }
-  }, [searchParams, priceRange, setSearchParams, onChange])
+  }, [searchParams, priceRange, setSearchParams])
 
   return (
     <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
@@ -318,7 +315,7 @@ function Filter({ onChange }: { onChange: () => void }) {
           <FilterTitle>Status</FilterTitle>
           <StatusFilter selected={status} onChange={setStatus} />
           <FilterTitle className="mt-6">Search</FilterTitle>
-          <Form method="get" onSubmit={() => onChange()}>
+          <Form method="get">
             <Input
               className="mt-2 max-w-40"
               placeholder="Name"
@@ -423,25 +420,33 @@ function LatestTransactions({
   )
 }
 
-export default function InscriptionsPage() {
+function InscriptionsList({
+  inscriptions,
+  count,
+  page,
+}: {
+  inscriptions: InscriptionWithMarket[]
+  count: number
+  page: number
+}) {
   const [searchParams] = useSearchParams()
-  const { dialogRef, handleShow } = useDialog()
   const [inscription, setInscription] = useState<InscriptionWithMarket | null>(
     null,
   )
-  const data = useLoaderData<typeof loader>()
-  const fetcher = useFetcher<typeof loader>()
+  const { dialogRef, handleShow } = useDialog()
   const ref = useRef<HTMLDivElement>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
+  const navigation = useNavigation()
+  const isLoading = navigation.state === 'loading'
+  const fetcher = useFetcher<typeof loader>()
   const [items, setItems] = useState<InscriptionWithMarket[]>([])
+
   useEffect(() => {
     if (!fetcher.data || fetcher.state === 'loading') {
       return
     }
 
     if (fetcher.data) {
-      const newItems = fetcher.data.inscriptions
+      const newItems = (fetcher.data.data as InscriptionsResult).inscriptions
       setItems((prevItems) => [...prevItems, ...newItems])
     }
   }, [fetcher.data, fetcher.state])
@@ -450,59 +455,80 @@ export default function InscriptionsPage() {
     if (ref.current) {
       ref.current.scrollTop = 0
     }
-    setItems(data.inscriptions)
-    setIsLoading(false)
-  }, [data.inscriptions, setItems])
+    setItems(inscriptions)
+  }, [inscriptions, setItems])
 
   function getMoreData() {
-    const page = items.length == LIMIT ? data.page + 1 : fetcher.data!.page + 1
+    const nextPage = items.length == LIMIT ? page + 1 : fetcher.data!.page + 1
     const queryParams = new URLSearchParams(searchParams)
-    queryParams.set('page', `${page}`)
+    queryParams.set('page', `${nextPage}`)
     const query = `?${queryParams.toString()}`
     fetcher.load(query)
   }
 
+  if (inscriptions.length < 1) {
+    return (
+      <div className="flex flex-col w-full">
+        <span className="mt-8 ml-8">No inscriptions for selected filters</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col w-full">
+      <BuyInscriptionDialog inscription={inscription!} ref={dialogRef} />
+      <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
+        <InfiniteScroll
+          dataLength={items.length}
+          next={getMoreData}
+          hasMore={count > items.length}
+          loader={
+            <div className="flex justify-center mb-12">
+              {!isLoading && <Loading variant="dots" size="lg" />}
+            </div>
+          }
+          scrollableTarget="scrollableDiv"
+        >
+          {!isLoading && (
+            <Inscriptions
+              className="p-8"
+              inscriptions={items}
+              onClick={(inscription) => {
+                setInscription(inscription)
+                handleShow()
+              }}
+            />
+          )}
+        </InfiniteScroll>
+      </div>
+    </div>
+  )
+}
+
+export default function InscriptionsPage() {
+  const data = useLoaderData<typeof loader>()
+
   return (
     <div className="flex flex-row h-full">
-      <Filter onChange={() => setIsLoading(true)} />
-      <div className="flex flex-col w-full">
-        <BuyInscriptionDialog inscription={inscription!} ref={dialogRef} />
-        {data.inscriptions.length > 0 ? (
-          <div
-            id="scrollableDiv"
-            ref={ref}
-            className="overflow-y-scroll h-full"
-          >
-            <InfiniteScroll
-              dataLength={items.length}
-              next={getMoreData}
-              hasMore={data.count > items.length}
-              loader={
-                <div className="flex justify-center mb-12">
-                  <Loading variant="dots" size="lg" />
-                </div>
-              }
-              scrollableTarget="scrollableDiv"
-            >
-              {!isLoading && (
-                <Inscriptions
-                  className="p-8"
-                  inscriptions={items}
-                  onClick={(inscription) => {
-                    setInscription(inscription)
-                    handleShow()
-                  }}
-                />
-              )}
-            </InfiniteScroll>
-          </div>
-        ) : (
-          <span className="mt-8 ml-8">
-            No inscriptions for selected filters
-          </span>
-        )}
-      </div>
-      <LatestTransactions transactions={data.transactions!} />
+      <Filter />
+      <Suspense fallback={<div className="flex flex-col w-full"></div>}>
+        <Await resolve={data.data}>
+          {(inscriptionsData) => (
+            <InscriptionsList
+              page={data.page}
+              inscriptions={inscriptionsData.inscriptions}
+              count={inscriptionsData.count}
+            />
+          )}
+        </Await>
+      </Suspense>
+      <Suspense fallback={<LatestTransactions transactions={[]} />}>
+        <Await resolve={data.transactions}>
+          {(transactions) => (
+            <LatestTransactions transactions={transactions!} />
+          )}
+        </Await>
+      </Suspense>
     </div>
   )
 }

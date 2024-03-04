@@ -68,7 +68,8 @@ export default function Select<T extends string = string>({
     (acc, item) => {
       acc.dropdownItems.push(
         <Dropdown.Item
-          onClick={() => {
+          tabIndex={0}
+          onMouseDown={() => {
             setOpen(false)
             onSelect(item.value)
           }}
@@ -88,6 +89,8 @@ export default function Select<T extends string = string>({
   return (
     <Details
       open={open}
+      tabIndex={-1}
+      onBlur={() => setOpen(false)}
       onToggle={(e) => {
         setOpen(e.currentTarget.open)
       }}

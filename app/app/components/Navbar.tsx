@@ -1,8 +1,37 @@
-import { Link, NavLink } from '@remix-run/react'
+import {
+  Link,
+  LinkProps,
+  Location,
+  Navigation,
+  useLocation,
+  useNavigation,
+} from '@remix-run/react'
+import clsx from 'clsx'
 import { useCallback, useState } from 'react'
 import { Button, Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
 import { Wallet } from './wallet/Wallet'
 import logo from '../images/logo/white.svg'
+
+function isActive(navigation: Navigation, location: Location, to: string) {
+  if (navigation.state === 'loading') {
+    return navigation.location.pathname.includes(to)
+  }
+
+  return location.pathname.includes(to)
+}
+
+function NavLink(props: LinkProps) {
+  const navigation = useNavigation()
+  const location = useLocation()
+  return (
+    <Link
+      {...props}
+      className={clsx({
+        active: isActive(navigation, location, props.to as string),
+      })}
+    />
+  )
+}
 
 export default function Navbar() {
   const [detailOpen, setDetailOpen] = useState(false)
@@ -82,19 +111,28 @@ export default function Navbar() {
               onToggle={(e) => {
                 setDetailOpen(e.currentTarget.open)
               }}
+              onBlur={() => setDetailOpen(false)}
             >
               {/* <Menu.Item onClick={close}>
                 <NavLink to="/app/create/collection" onClick={close}>
                   Collection
                 </NavLink>
               </Menu.Item> */}
-              <Menu.Item onClick={close}>
-                <NavLink to="/app/create/inscription" onClick={close}>
+              <Menu.Item>
+                <NavLink
+                  to="/app/create/inscription"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={close}
+                >
                   Inscription
                 </NavLink>
               </Menu.Item>
-              <Menu.Item onClick={close}>
-                <NavLink to="/app/create/token" onClick={close}>
+              <Menu.Item>
+                <NavLink
+                  to="/app/create/token"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={close}
+                >
                   Token
                 </NavLink>
               </Menu.Item>
