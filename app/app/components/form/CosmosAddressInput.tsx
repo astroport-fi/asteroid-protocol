@@ -7,6 +7,8 @@ import {
 } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 
+const ADDRESS_LENGTH = 45
+
 export default function CosmosAddressInput<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -31,11 +33,13 @@ export default function CosmosAddressInput<
       <Input
         id={name}
         placeholder="cosmos1xxxxxx"
+        minLength={ADDRESS_LENGTH}
+        maxLength={ADDRESS_LENGTH}
         color={error ? 'error' : undefined}
         {...register(name, {
           required: true,
-          minLength: 45,
-          maxLength: 45,
+          minLength: ADDRESS_LENGTH,
+          maxLength: ADDRESS_LENGTH,
         })}
       />
       <label className="label" htmlFor="name">
