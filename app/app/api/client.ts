@@ -16,7 +16,7 @@ import {
   inscriptionSelector,
   inscriptionTradeHistorySelector,
 } from '~/api/inscription'
-import { Status, statusSelector } from '~/api/status'
+import { statusSelector } from '~/api/status'
 import {
   MarketplaceTokenListing,
   Token,
@@ -59,23 +59,6 @@ export type TokenHoldings = {
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
-  }
-
-  async getStatus(chainId: string): Promise<Status | undefined> {
-    const statusResult = await this.query({
-      status: [
-        {
-          where: {
-            chain_id: {
-              _eq: chainId,
-            },
-          },
-        },
-        statusSelector,
-      ],
-    })
-
-    return statusResult.status[0]
   }
 
   async getToken<T extends boolean = false>(
@@ -277,7 +260,7 @@ export class AsteroidClient extends AsteroidService {
 
     let tokenHolders:
       | [QueryOptions<'token_holder'>, { amount: boolean }]
-      | undefined
+      | undefined = undefined
     if (where.userAddress) {
       tokenHolders = [
         {
@@ -605,6 +588,57 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
     return result.inscription[0]
+  }
+
+  async getReservedInscriptions(
+    depositor: string,
+    currentBlock: number,
+    limit: number,
+  ): Promise<InscriptionWithMarket[]> {
+    const res = await this.query({
+      marketplace_inscription_detail: [
+        {
+          where: {
+            marketplace_listing: {
+              is_cancelled: {
+                _eq: false,
+              },
+              is_filled: {
+                _eq: false,
+              },
+              is_deposited: {
+                _eq: true,
+              },
+              depositor_address: {
+                _eq: depositor,
+              },
+              depositor_timedout_block: {
+                _gt: currentBlock,
+              },
+            },
+          },
+          limit,
+          order_by: [
+            {
+              id: order_by.asc,
+            },
+          ],
+        },
+        {
+          inscription: {
+            ...inscriptionSelector,
+          },
+          marketplace_listing: {
+            ...marketplaceListingSelector,
+          },
+        },
+      ],
+    })
+
+    return res.marketplace_inscription_detail.map((i) => ({
+      ...i.inscription!,
+      marketplace_listing: i.marketplace_listing,
+    }))
   }
 
   async getInscriptions(

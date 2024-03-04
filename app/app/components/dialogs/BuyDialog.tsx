@@ -3,9 +3,13 @@ import { useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Modal, Steps } from 'react-daisyui'
 import type { To } from 'react-router'
+import { ListingState, getListingState } from '~/api/marketplace'
+import { useRootContext } from '~/context/root'
+import useAddress from '~/hooks/useAddress'
+import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
-import useSubmitTx, { TxState } from '~/hooks/useSubmitTx'
+import useSubmitTx, { ErrorKind, TxState } from '~/hooks/useSubmitTx'
 import Actions from '../SubmitTx/Actions'
 import Body from '../SubmitTx/Body'
 
@@ -28,6 +32,10 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   ref,
 ) {
   const operations = useMarketplaceOperations()
+  const address = useAddress()
+  const {
+    status: { lastKnownHeight },
+  } = useRootContext()
 
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -40,22 +48,45 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     txState,
     txHash,
     sendTx,
+    setError,
     resetState: resetTxState,
     retry,
   } = useSubmitTx(txInscription)
+  const asteroidClient = useAsteroidClient()
 
   const resetState = useCallback(() => {
     setListingHash(null)
+    setTxInscription(null)
     setStep(Step.Initial)
     resetTxState()
   }, [resetTxState])
 
   useEffect(() => {
-    if (listingHashProp != listingHash) {
+    if (listingHashProp && listingHashProp != listingHash) {
       resetState()
-      setListingHash(listingHashProp)
+      asteroidClient.fetchListing(listingHashProp).then((listing) => {
+        if (listing) {
+          const listingState = getListingState(
+            listing,
+            address,
+            lastKnownHeight,
+          )
+          if (listingState === ListingState.Buy) {
+            setStep(Step.Reserve)
+          }
+          setListingHash(listingHashProp)
+        }
+      })
     }
-  }, [listingHashProp, listingHash, setListingHash, resetState])
+  }, [
+    listingHashProp,
+    listingHash,
+    address,
+    lastKnownHeight,
+    asteroidClient,
+    setListingHash,
+    resetState,
+  ])
 
   useEffect(() => {
     if (!listingHash || !operations) {
@@ -64,15 +95,35 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
 
     if (step === Step.Initial && txState === TxState.Initial) {
       setStep(Step.Reserve)
-      operations.deposit(listingHash).then(setTxInscription)
+      operations
+        .deposit(listingHash)
+        .then(setTxInscription)
+        .catch((err: Error) =>
+          setError({ kind: ErrorKind.Validation, message: err.message }),
+        )
+    } else if (step === Step.Reserve && txState === TxState.Initial) {
+      operations
+        .buy(listingHash, buyType)
+        .then((buyTxData) => {
+          setTxInscription(buyTxData)
+          setStep(Step.Purchase)
+        })
+        .catch((err: Error) =>
+          setError({ kind: ErrorKind.Validation, message: err.message }),
+        )
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
-      operations.buy(listingHash, buyType).then((buyTxData) => {
-        setTxInscription(buyTxData)
-        setStep(Step.Purchase)
-        resetTxState()
-      })
+      operations
+        .buy(listingHash, buyType)
+        .then((buyTxData) => {
+          setTxInscription(buyTxData)
+          setStep(Step.Purchase)
+          resetTxState()
+        })
+        .catch((err: Error) =>
+          setError({ kind: ErrorKind.Validation, message: err.message }),
+        )
     }
-  }, [listingHash, buyType, operations, step, txState, resetTxState])
+  }, [listingHash, buyType, operations, step, txState, resetTxState, setError])
 
   const navigate = useNavigate()
   const fRef = useForwardRef(ref)

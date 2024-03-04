@@ -1,12 +1,12 @@
 import { Button } from 'react-daisyui'
 import useAddress from '~/hooks/useAddress'
-import { TxState } from '~/hooks/useSubmitTx'
+import { SubmitTxError, TxState } from '~/hooks/useSubmitTx'
 import { Wallet } from '../wallet/Wallet'
 
 interface ActionsProps {
   txState: TxState
   txHash: string | null
-  error: string | null
+  error: SubmitTxError | null
   onRetry: () => void
   onClose: () => void
   onSubmit: () => void

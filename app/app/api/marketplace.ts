@@ -30,7 +30,7 @@ export enum ListingState {
 }
 
 export function getListingState(
-  listing: MarketplaceListing,
+  listing: Omit<MarketplaceListing, 'transaction'>,
   walletAddress: string | undefined,
   currentBlock: number,
 ) {

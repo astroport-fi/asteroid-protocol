@@ -58,6 +58,18 @@ export interface MetaprotocolFee {
   operation: number
 }
 
+export enum ErrorKind {
+  Generic,
+  Estimation,
+  Validation,
+  Transaction,
+}
+
+export interface SubmitTxError {
+  message: string
+  kind: ErrorKind
+}
+
 export default function useSubmitTx(txInscription: TxInscription | null) {
   const [retryCounter, setRetryCounter] = useState(0)
   const { useIbc, useExtensionData } = useRootContext()
@@ -70,7 +82,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   // state
   const [txState, setTxState] = useState<TxState>(TxState.Initial)
   const [txHash, setTxHash] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<SubmitTxError | null>(null)
   const [chainFee, setChainFee] = useState(0)
 
   const txData = useMemo(() => {
@@ -117,7 +129,10 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     }
 
     if (!client) {
-      setError('There is no client to estimate chain fee')
+      setError({
+        kind: ErrorKind.Estimation,
+        message: 'There is no client to estimate chain fee',
+      })
       return
     }
 
@@ -128,24 +143,30 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
         setError(null)
       })
       .catch((err) => {
-        setError((err as Error).message)
+        setError({
+          kind: ErrorKind.Estimation,
+          message: (err as Error).message,
+        })
       })
   }, [txData, client, retryCounter, chainFee])
 
   // Send transaction
   const sendTx = useCallback(async () => {
     if (!address) {
-      setError('no address, connect wallet first')
+      setError({
+        message: 'no address, connect wallet first',
+        kind: ErrorKind.Generic,
+      })
       return
     }
 
     if (!client) {
-      setError('invalid client')
+      setError({ message: 'invalid client', kind: ErrorKind.Generic })
       return
     }
 
     if (!txData) {
-      setError('invalid txData')
+      setError({ message: 'invalid txData', kind: ErrorKind.Generic })
       return
     }
 
@@ -156,14 +177,17 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       const res = await client.signAndBroadcast(txData)
 
       if (res.code) {
-        setError(`Transaction failed with error code: ${res.code}`)
+        setError({
+          message: `Transaction failed with error code: ${res.code}`,
+          kind: ErrorKind.Transaction,
+        })
         return
       }
 
       setTxState(TxState.Submit)
       setTxHash(res.transactionHash)
     } catch (err) {
-      setError((err as Error).message)
+      setError({ message: (err as Error).message, kind: ErrorKind.Transaction })
       setTxState(TxState.Failed)
       console.error(err)
     }
@@ -191,7 +215,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       if (res) {
         setTxState(res.status)
         if (res.error) {
-          setError(res.error)
+          setError({ message: res.error, kind: ErrorKind.Transaction })
         }
       }
     }, 1000)
@@ -223,6 +247,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     chainFee,
     metaprotocolFee,
     sendTx,
+    setError,
     resetState,
     retry,
   }

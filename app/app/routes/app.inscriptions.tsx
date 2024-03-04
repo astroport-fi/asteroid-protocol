@@ -33,6 +33,7 @@ import { Inscriptions } from '~/components/Inscriptions'
 import BuyInscriptionDialog from '~/components/dialogs/BuyInscriptionDialog'
 import Select, { DropdownItem } from '~/components/form/Select'
 import useDialog from '~/hooks/useDialog'
+import { getAddress } from '~/utils/cookies'
 import { getDateAgo } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination } from '~/utils/pagination'
@@ -150,14 +151,31 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       data: awaitedResult,
       page,
       transactions: [] as InscriptionTradeHistory[],
+      reservedListings: [] as InscriptionWithMarket[],
     })
   }
 
   const transactions = asteroidClient.getInscriptionTradeHistory()
 
+  const address = await getAddress(request)
+  let reservedListings: Promise<InscriptionWithMarket[]> | undefined
+  if (address) {
+    const status = await asteroidClient.getStatus(
+      context.cloudflare.env.CHAIN_ID,
+    )
+    if (status) {
+      reservedListings = asteroidClient.getReservedInscriptions(
+        address,
+        status.last_processed_height,
+        25,
+      )
+    }
+  }
+
   return defer({
     data: result,
     page,
+    reservedListings,
     transactions,
   })
 }
@@ -424,16 +442,15 @@ function InscriptionsList({
   inscriptions,
   count,
   page,
+  onClick,
 }: {
   inscriptions: InscriptionWithMarket[]
   count: number
   page: number
+  onClick: (inscription: InscriptionWithMarket) => void
 }) {
   const [searchParams] = useSearchParams()
-  const [inscription, setInscription] = useState<InscriptionWithMarket | null>(
-    null,
-  )
-  const { dialogRef, handleShow } = useDialog()
+
   const ref = useRef<HTMLDivElement>(null)
   const navigation = useNavigation()
   const isLoading = navigation.state === 'loading'
@@ -476,7 +493,6 @@ function InscriptionsList({
 
   return (
     <div className="flex flex-col w-full">
-      <BuyInscriptionDialog inscription={inscription!} ref={dialogRef} />
       <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
         <InfiniteScroll
           dataLength={items.length}
@@ -491,12 +507,9 @@ function InscriptionsList({
         >
           {!isLoading && (
             <Inscriptions
-              className="p-8"
+              className="px-8"
               inscriptions={items}
-              onClick={(inscription) => {
-                setInscription(inscription)
-                handleShow()
-              }}
+              onClick={onClick}
             />
           )}
         </InfiniteScroll>
@@ -507,21 +520,59 @@ function InscriptionsList({
 
 export default function InscriptionsPage() {
   const data = useLoaderData<typeof loader>()
+  const [inscription, setInscription] = useState<InscriptionWithMarket | null>(
+    null,
+  )
+  const { dialogRef, handleShow } = useDialog()
 
   return (
     <div className="flex flex-row h-full">
       <Filter />
-      <Suspense fallback={<div className="flex flex-col w-full"></div>}>
-        <Await resolve={data.data}>
-          {(inscriptionsData) => (
-            <InscriptionsList
-              page={data.page}
-              inscriptions={inscriptionsData.inscriptions}
-              count={inscriptionsData.count}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <div className="flex flex-col w-full pt-8">
+        <Suspense>
+          <Await resolve={data.reservedListings}>
+            {(reservedListing) =>
+              reservedListing &&
+              reservedListing.length > 0 && (
+                <div className="flex flex-col px-8">
+                  <h3 className="text-lg">Reserved by you</h3>
+                  <Inscriptions
+                    className="mt-4"
+                    inscriptions={reservedListing}
+                    onClick={(inscription) => {
+                      setInscription(inscription)
+                      handleShow()
+                    }}
+                  />
+                  <h3 className="text-lg mt-16 mb-4">All listings</h3>
+                </div>
+              )
+            }
+          </Await>
+        </Suspense>
+        <Suspense
+          fallback={
+            <div className="flex flex-col w-full">
+              <Loading variant="dots" size="lg" />
+            </div>
+          }
+        >
+          <Await resolve={data.data}>
+            {(inscriptionsData) => (
+              <InscriptionsList
+                page={data.page}
+                inscriptions={inscriptionsData.inscriptions}
+                count={inscriptionsData.count}
+                onClick={(inscription) => {
+                  setInscription(inscription)
+                  handleShow()
+                }}
+              />
+            )}
+          </Await>
+        </Suspense>
+        <BuyInscriptionDialog inscription={inscription!} ref={dialogRef} />
+      </div>
       <Suspense fallback={<LatestTransactions transactions={[]} />}>
         <Await resolve={data.transactions}>
           {(transactions) => (

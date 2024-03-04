@@ -128,7 +128,6 @@ export default function MarketsPage() {
       header: 'Volume',
       cell: (info) => <AtomValue value={info.getValue()} />,
     }),
-    // @todo open sell modal
     columnHelper.accessor('token_holders', {
       header: 'Actions',
       enableSorting: false,

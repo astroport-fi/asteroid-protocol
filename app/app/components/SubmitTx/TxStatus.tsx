@@ -1,6 +1,6 @@
 import type { LottieOptions } from 'lottie-react'
 import { Button } from 'react-daisyui'
-import { TxState } from '~/hooks/useSubmitTx'
+import { SubmitTxError, TxState } from '~/hooks/useSubmitTx'
 import errorAnimationData from '~/lottie/error.json'
 import hourglassAnimationData from '~/lottie/hourglass.json'
 import successAnimationData from '~/lottie/success.json'
@@ -11,7 +11,7 @@ interface TxStatusProps {
   resultCTA?: string
   txHash?: string
   txState: TxState
-  txError: string | null
+  txError: SubmitTxError | null
   onClose?: () => void
 }
 
@@ -75,7 +75,7 @@ export default function TxStatus({
       <h2 className={`text-xl font-semibold ${headerColor}`}>{title}</h2>
       <p className="mt-4">{description}</p>
       {txState == TxState.Failed && txError && (
-        <p className="text-error">{txErrorToText(txError)}</p>
+        <p className="text-error">{txErrorToText(txError.message)}</p>
       )}
       {typeof onClose === 'function' && txState == TxState.SuccessInscribed && (
         <Button color="primary" className="mt-8" onClick={() => onClose()}>

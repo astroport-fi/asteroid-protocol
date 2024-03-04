@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { MetaprotocolFee, TxState } from '~/hooks/useSubmitTx'
+import { MetaprotocolFee, SubmitTxError, TxState } from '~/hooks/useSubmitTx'
 import { EstimateError, SignError } from './Errors'
 import { FeeBreakdown } from './FeeBreakdown'
 import TxStatus from './TxStatus'
@@ -7,7 +7,7 @@ import TxStatus from './TxStatus'
 interface BodyProps {
   chainFee: number
   metaprotocolFee: MetaprotocolFee
-  error: string | null
+  error: SubmitTxError | null
   txHash: string | null
   txState: TxState
   resultCTA?: string
@@ -15,7 +15,6 @@ interface BodyProps {
   onClose?: () => void
 }
 
-// @todo add loading state
 export default function Body({
   error,
   chainFee,
@@ -27,13 +26,6 @@ export default function Body({
   children,
   onClose,
 }: PropsWithChildren<BodyProps>) {
-  if (error) {
-    if (chainFee) {
-      return <SignError />
-    }
-    return <EstimateError error={error} />
-  }
-
   if (txHash) {
     return (
       <TxStatus
@@ -44,6 +36,13 @@ export default function Body({
         onClose={onClose}
       />
     )
+  }
+
+  if (error) {
+    if (chainFee) {
+      return <SignError />
+    }
+    return <EstimateError error={error} />
   }
 
   return (

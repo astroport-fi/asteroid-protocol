@@ -140,7 +140,7 @@ function ListingsTable({
   const columnHelper = createColumnHelper<MarketplaceTokenListing>()
   const [sorting, setSorting] = useSorting(LISTING_DEFAULT_SORT, 'listings')
   const {
-    status: { lastProcessedHeight },
+    status: { lastKnownHeight },
   } = useRootContext()
   const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -189,15 +189,14 @@ function ListingsTable({
       id: 'state',
       cell: (info) => {
         const listing = info.row.original.marketplace_listing
-        const blocks =
-          (listing.depositor_timedout_block ?? 0) - lastProcessedHeight
+        const blocks = (listing.depositor_timedout_block ?? 0) - lastKnownHeight
         const listingHash = listing.transaction.hash
 
         switch (
           getListingState(
             info.row.original.marketplace_listing,
             address,
-            lastProcessedHeight,
+            lastKnownHeight,
           )
         ) {
           case ListingState.Cancel:

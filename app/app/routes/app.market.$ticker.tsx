@@ -152,7 +152,7 @@ function ListingsTable({
   const [pagination, setPagination] = usePagination()
   const address = useAddress()
   const {
-    status: { lastProcessedHeight },
+    status: { lastKnownHeight },
   } = useRootContext()
   const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
   const { dialogRef: buyDialogRef, handleShow: showBuyDialog } = useDialog()
@@ -231,15 +231,14 @@ function ListingsTable({
       id: 'state',
       cell: (info) => {
         const listing = info.row.original.marketplace_listing
-        const blocks =
-          (listing.depositor_timedout_block ?? 0) - lastProcessedHeight
+        const blocks = (listing.depositor_timedout_block ?? 0) - lastKnownHeight
         const listingHash = listing.transaction.hash
 
         switch (
           getListingState(
             info.row.original.marketplace_listing,
             address,
-            lastProcessedHeight,
+            lastKnownHeight,
           )
         ) {
           case ListingState.Reserve:

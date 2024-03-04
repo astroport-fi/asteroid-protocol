@@ -1,3 +1,5 @@
+import { ErrorKind, SubmitTxError } from '~/hooks/useSubmitTx'
+
 export function SignError() {
   return (
     <div className="text-warning">
@@ -13,13 +15,26 @@ export function SignError() {
   )
 }
 
-export function EstimateError({ error }: { error: string }) {
+function getErrorKindMessage(kind: ErrorKind) {
+  switch (kind) {
+    case ErrorKind.Validation:
+      return 'Validation error'
+    case ErrorKind.Estimation:
+      return 'Unable to estimate transaction fees'
+    case ErrorKind.Transaction:
+      return 'Unable to submit transaction'
+    case ErrorKind.Generic:
+      return 'Unknown error'
+  }
+}
+
+export function EstimateError({ error }: { error: SubmitTxError }) {
   return (
     <div className="text-error">
       <h2 className="text-xl font-semibold">
-        Unable to estimate transaction fees
+        {getErrorKindMessage(error.kind)}
       </h2>
-      <p className="mt-4">Error details: {error}</p>
+      <p className="mt-4">Error details: {error.message}</p>
     </div>
   )
 }
