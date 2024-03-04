@@ -813,7 +813,7 @@ export class AsteroidClient extends AsteroidService {
 
   async getInscriptionTradeHistory(
     offset = 0,
-    limit = 500,
+    limit = 200,
   ): Promise<InscriptionTradeHistory[]> {
     const result = await this.query({
       inscription_trade_history: [
