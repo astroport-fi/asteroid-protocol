@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 
 export function BackButton({ to }: { to: string }) {
   return (
-    <Link className="btn btn-ghost btn-circle" to={to}>
+    <Link className="btn btn-ghost btn-circle mr-1" to={to}>
       <ArrowLeftIcon className="size-5" />
     </Link>
   )
@@ -15,9 +15,9 @@ export function BackHeader({
   children,
 }: PropsWithChildren<{ to: string }>) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row items-center">
       <BackButton to={to} />
-      {children}
+      <div className="flex items-center text-lg font-medium">{children}</div>
     </div>
   )
 }

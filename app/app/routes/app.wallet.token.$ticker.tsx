@@ -120,7 +120,7 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
           </div>
           <TokenActions token={token} amount={amount} />
         </div>
-        <TokenBalance token={token} amount={amount} className="mt-2" />
+        <TokenBalance token={token} amount={amount} className="mt-4" />
       </div>
     </div>
   )
@@ -313,11 +313,7 @@ export default function WalletToken() {
   const data = useLoaderData<typeof loader>()
   return (
     <div className="flex flex-col">
-      <BackHeader to="/app/wallet">
-        <Button color="ghost" className="text-lg font-medium">
-          Manage Token #{data.token.id - 1}
-        </Button>
-      </BackHeader>
+      <BackHeader to="/app/wallet">Manage Token #{data.token.id}</BackHeader>
       <TokenDetail token={data.token} />
       {data.listings.length > 0 && (
         <>

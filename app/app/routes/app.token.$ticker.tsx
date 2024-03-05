@@ -18,6 +18,7 @@ import {
 } from '~/api/token'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
+import { BackHeader } from '~/components/Back'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintToken from '~/components/MintToken'
 import { TokenActions } from '~/components/TokenActions'
@@ -125,7 +126,7 @@ function TokenDetailComponent({
   const amount = token.token_holders?.[0]?.amount
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row w-full mt-4">
       <div className="flex flex-1 flex-col px-16 items-center">
         <InscriptionImage
           mime="image/png"
@@ -234,6 +235,7 @@ export default function TokenPage() {
   const data = useLoaderData<typeof loader>()
   return (
     <div className="flex flex-col">
+      <BackHeader to="/app/tokens">Token #{data.token.id}</BackHeader>
       <TokenDetailComponent token={data.token} />
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Tokenomics</h2>
