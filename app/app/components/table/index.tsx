@@ -22,6 +22,7 @@ interface Props<T> {
   table: TableData<T>
   showPagination?: boolean
   className?: string
+  emptyText?: string
   onClick?: (row: T) => void
 }
 
@@ -30,12 +31,14 @@ export default function Table<T = unknown>({
   showPagination,
   onClick,
   className,
+  emptyText,
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
   const rows = table.getRowModel().rows
   const rowClassName = clsx(twMerge, {
     'hover hover:cursor-pointer': typeof onClick === 'function',
   })
+  showPagination = showPagination !== false && rows.length > 0
 
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
@@ -48,6 +51,7 @@ export default function Table<T = unknown>({
                 className={clsx({
                   ['cursor-pointer select-none']: header.column.getCanSort(),
                 })}
+                style={{ width: `${header.getSize()}px` }}
                 onClick={header.column.getToggleSortingHandler()}
                 colSpan={header.colSpan}
               >
@@ -90,6 +94,7 @@ export default function Table<T = unknown>({
             >
               {row.getVisibleCells().map((cell) => (
                 <td
+                  style={{ width: `${cell.column.getSize()}px` }}
                   key={cell.id}
                   className={cell.column.columnDef.meta?.className}
                 >
@@ -160,6 +165,7 @@ export default function Table<T = unknown>({
           </div>
         </>
       )}
+      {rows.length < 1 && <span className="p-4">{emptyText ?? 'No rows'}</span>}
     </div>
   )
 }
