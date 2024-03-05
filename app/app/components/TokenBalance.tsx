@@ -13,7 +13,6 @@ export default function TokenBalance({ token, amount, className }: Props) {
     <div className={twMerge('flex flex-col', className)}>
       <strong>Your balance</strong>
       <TokenValue
-        className="mt-0"
         amount={amount ?? 0}
         decimals={token.decimals}
         price={token.last_price_base}

@@ -32,6 +32,7 @@ import {
   tokenHolderSelector,
   tokenHoldingSelector,
   tokenListingSelector,
+  tokenMarketTokenSelector,
   tokenSelector,
 } from '~/api/token'
 import { marketplaceListingSelector } from './marketplace'
@@ -293,15 +294,7 @@ export class AsteroidClient extends AsteroidService {
       token: [
         { offset, limit, order_by: [orderBy], where: queryWhere },
         {
-          id: true,
-          name: true,
-          ticker: true,
-          decimals: true,
-          content_path: true,
-          circulating_supply: true,
-          last_price_base: true,
-          volume_24_base: true,
-          max_supply: true,
+          ...tokenMarketTokenSelector,
           token_holders: tokenHolders,
           marketplace_cft20_details_aggregate: [
             {

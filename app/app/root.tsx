@@ -60,7 +60,7 @@ function WalletProviderWrapper() {
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: styles, as: 'style' },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',

@@ -55,7 +55,7 @@ export type TokenDetail = InputType<
   ScalarDefinition
 >
 
-export function isTokenLaunched(token: Token) {
+export function isTokenLaunched(token: Pick<Token, 'launch_timestamp'>) {
   const now = new Date().getTime() / 1000
   return now > token.launch_timestamp
 }
@@ -151,6 +151,7 @@ export const tokenMarketTokenSelector = Selector('token')({
   last_price_base: true,
   volume_24_base: true,
   max_supply: true,
+  launch_timestamp: true,
 })
 
 export type TokenMarketToken = InputType<
