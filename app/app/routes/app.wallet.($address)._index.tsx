@@ -10,6 +10,7 @@ import { AsteroidClient } from '~/api/client'
 import { TokenHolding } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import GhostEmptyState from '~/components/GhostEmptyState'
+import { TokenCell } from '~/components/TokenCell'
 import TokenValue from '~/components/TokenValue'
 import Table from '~/components/table'
 import usePagination from '~/hooks/usePagination'
@@ -80,14 +81,10 @@ export default function WalletTokens() {
   const columns = [
     columnHelper.accessor('token.name', {
       header: 'Name',
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor('token.last_price_base', {
-      header: 'Price',
-      cell: (info) => <AtomValue value={info.getValue()} />,
+      cell: (info) => <TokenCell token={info.row.original.token} />,
     }),
     columnHelper.accessor('amount', {
-      header: 'Amount',
+      header: 'Balance',
       cell: (info) => (
         <TokenValue
           amount={info.getValue()}
@@ -96,6 +93,10 @@ export default function WalletTokens() {
           ticker={info.row.original.token.ticker}
         />
       ),
+    }),
+    columnHelper.accessor('token.last_price_base', {
+      header: 'Price',
+      cell: (info) => <AtomValue value={info.getValue()} />,
     }),
   ]
 

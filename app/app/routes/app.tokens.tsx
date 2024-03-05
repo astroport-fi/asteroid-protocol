@@ -17,10 +17,10 @@ import { useState } from 'react'
 import { Button, Form as DaisyForm } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
-import { TokenMarket } from '~/api/token'
+import { TokenMarket, isTokenLaunched } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
-import InscriptionImage from '~/components/InscriptionImage'
 import Stat from '~/components/Stat'
+import { TokenCell } from '~/components/TokenCell'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
@@ -82,30 +82,15 @@ export default function MarketsPage() {
   } = useRootContext()
 
   const columns = [
-    columnHelper.accessor('content_path', {
-      header: '',
-      enableSorting: false,
-      cell: (info) => (
-        <InscriptionImage
-          mime="image/png"
-          src={info.getValue()!}
-          // isExplicit={token.is_explicit} @todo
-          className="rounded-xl w-6"
-        />
-      ),
-    }),
     columnHelper.accessor('id', {
       header: '#',
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor('ticker', {
-      header: 'Ticker',
+      size: 40,
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('name', {
       header: 'Name',
 
-      cell: (info) => info.getValue(),
+      cell: (info) => <TokenCell token={info.row.original} />,
     }),
     columnHelper.accessor((row) => row.circulating_supply / row.max_supply, {
       enableSorting: false,
@@ -146,9 +131,16 @@ export default function MarketsPage() {
         const token = info.row.original
         return (
           <>
-            {minted < 1 && (
+            <Link
+              className="btn btn-primary btn-outline btn-sm mr-4"
+              to={`/app/market/${token.ticker}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Trade
+            </Link>
+            {minted < 1 && isTokenLaunched(token) && (
               <Link
-                className="btn btn-neutral btn-sm mr-2"
+                className="btn btn-neutral btn-outline btn-sm mr-4"
                 to={`/app/token/${token.ticker}`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -158,6 +150,7 @@ export default function MarketsPage() {
             {amount > 0 && (
               <Button
                 color="neutral"
+                variant="outline"
                 size="sm"
                 onClick={(e) => {
                   e.stopPropagation()
@@ -227,8 +220,9 @@ export default function MarketsPage() {
       <Table
         className="mt-4"
         table={table}
+        emptyText="No tokens found"
         onClick={(tokenSelection) =>
-          navigate(`/app/market/${tokenSelection.ticker}`)
+          navigate(`/app/token/${tokenSelection.ticker}`)
         }
       />
       <SellTokenDialog
