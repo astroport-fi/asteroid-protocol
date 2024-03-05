@@ -1,4 +1,3 @@
-import '@interchain-ui/react/styles'
 import { useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'

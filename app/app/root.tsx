@@ -15,10 +15,10 @@ import {
   useRouteError,
 } from '@remix-run/react'
 import { clientOnly$, serverOnly$ } from 'vite-env-only'
+import styles from '~/tailwind.css?url'
 import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
 import WalletProvider from './context/wallet'
-import '~/tailwind.css'
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -60,6 +60,7 @@ function WalletProviderWrapper() {
 
 export const links: LinksFunction = () => {
   return [
+    { rel: 'stylesheet', href: styles },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
