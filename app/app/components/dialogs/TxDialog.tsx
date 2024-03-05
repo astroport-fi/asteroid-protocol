@@ -1,7 +1,6 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
 import { forwardRef, useEffect, useState } from 'react'
-import { Modal } from 'react-daisyui'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
 import useSubmitTx from '~/hooks/useSubmitTx'
@@ -9,6 +8,7 @@ import scanAnimationData from '~/lottie/scan.json'
 import Lottie from '../Lottie'
 import Actions from '../SubmitTx/Actions'
 import Body from '../SubmitTx/Body'
+import Modal from './Modal'
 
 interface Props {
   txInscription: TxInscription | null
@@ -49,7 +49,13 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   }, [txInscriptionProp, txInscription, setTxInscription, resetState])
 
   return (
-    <Modal ref={ref} backdrop>
+    <Modal
+      ref={ref}
+      backdrop
+      onClose={() => {
+        navigate({ hash: '' })
+      }}
+    >
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}

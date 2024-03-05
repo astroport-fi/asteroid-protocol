@@ -1,7 +1,7 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
-import { Modal, Steps } from 'react-daisyui'
+import { Steps } from 'react-daisyui'
 import type { To } from 'react-router'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { useRootContext } from '~/context/root'
@@ -12,6 +12,7 @@ import { useMarketplaceOperations } from '~/hooks/useOperations'
 import useSubmitTx, { ErrorKind, TxState } from '~/hooks/useSubmitTx'
 import Actions from '../SubmitTx/Actions'
 import Body from '../SubmitTx/Body'
+import Modal from './Modal'
 
 export type BuyType = 'cft20' | 'inscription'
 
@@ -130,7 +131,13 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal ref={ref} backdrop>
+    <Modal
+      ref={ref}
+      backdrop
+      onClose={() => {
+        navigate(resultLink)
+      }}
+    >
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}

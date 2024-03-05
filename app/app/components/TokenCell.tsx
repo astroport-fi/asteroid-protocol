@@ -14,9 +14,9 @@ export function TokenCell({
         // isExplicit={token.is_explicit} @todo
         className="rounded-xl w-6"
       />
-      <span className="items-baseline ml-1">
+      <span className="items-baseline ml-1.5">
         <span className="text-base">{token.name}</span>
-        <span className="text-sm text-header-content font-light ml-2">
+        <span className="text-sm text-header-content font-light ml-1">
           {token.ticker}
         </span>
       </span>
