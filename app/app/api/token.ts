@@ -55,6 +55,11 @@ export type TokenDetail = InputType<
   ScalarDefinition
 >
 
+export function isTokenLaunched(token: TokenDetail) {
+  const now = new Date().getTime() / 1000
+  return now > token.launch_timestamp
+}
+
 export type TokenTypeWithHolder<T> = T & {
   token_holders?: (TokenHolderAmount | undefined)[]
 }

@@ -1,6 +1,7 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useState } from 'react'
 import { Button } from 'react-daisyui'
+import { TokenDetail } from '~/api/token'
 import TxDialog from '~/components/dialogs/TxDialog'
 import useDialog from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
@@ -8,11 +9,9 @@ import { Wallet } from './wallet/Wallet'
 
 export default function MintToken({
   className,
-  amount,
-  ticker,
+  token,
 }: {
-  ticker: string
-  amount: number
+  token: TokenDetail
   className?: string
 }) {
   const operations = useCFT20Operations()
@@ -25,7 +24,7 @@ export default function MintToken({
       return
     }
 
-    const txInscription = operations.mint(ticker, amount)
+    const txInscription = operations.mint(token.ticker, token.per_mint_limit)
 
     setTxInscription(txInscription)
 
@@ -45,7 +44,7 @@ export default function MintToken({
         ref={dialogRef}
         txInscription={txInscription}
         resultCTA="Back to mint"
-        resultLink={`/mint/${ticker}`}
+        resultLink={`/mint/${token.ticker}`}
       />
     </div>
   )

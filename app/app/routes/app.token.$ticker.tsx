@@ -10,7 +10,12 @@ import {
 import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
-import { TokenDetail, TokenHolder, TokenTypeWithHolder } from '~/api/token'
+import {
+  TokenDetail,
+  TokenHolder,
+  TokenTypeWithHolder,
+  isTokenLaunched,
+} from '~/api/token'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
 import InscriptionImage from '~/components/InscriptionImage'
@@ -135,10 +140,7 @@ function TokenDetailComponent({
           <div className="flex items-center">
             {token.circulating_supply < token.max_supply && (
               <>
-                <MintToken
-                  amount={token.per_mint_limit}
-                  ticker={token.ticker}
-                />
+                {isTokenLaunched(token) && <MintToken token={token} />}
                 <Link
                   to={`/mint/${token.ticker}`}
                   className="text-primary flex items-center ml-4 hover:underline"
@@ -174,7 +176,7 @@ function TokenDetailComponent({
           <TxLink txHash={token.transaction.hash} />
         </div>
         <TokenBalance token={token} amount={amount} className="mt-6" />
-        <TokenActions token={token} amount={amount} />
+        <TokenActions token={token} amount={amount} className="mt-4" />
       </div>
     </div>
   )

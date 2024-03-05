@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 import { PropsWithChildren } from 'react'
 import { NumericFormat } from 'react-number-format'
-import { TokenDetail } from '~/api/token'
+import { TokenDetail, isTokenLaunched } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { round2 } from '~/utils/math'
@@ -32,7 +32,6 @@ export default function Tokenomics({
     status: { baseTokenUsd },
   } = useRootContext()
   const now = new Date().getTime() / 1000
-  const tokenIsLaunched = now > token.launch_timestamp
 
   return (
     <div>
@@ -77,7 +76,7 @@ export default function Tokenomics({
             value={getDecimalValue(token.per_mint_limit, token.decimals)}
           />
         </Column>
-        <Column title={tokenIsLaunched ? 'Launched at' : 'Launching'}>
+        <Column title={isTokenLaunched(token) ? 'Launched at' : 'Launching'}>
           <span>{format(token.launch_timestamp * 1000, DATETIME_FORMAT)}</span>
         </Column>
       </Row>
