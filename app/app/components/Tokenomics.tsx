@@ -51,7 +51,7 @@ export default function Tokenomics({
       {showPrice && (
         <Row>
           <Column title="Price">
-            <AtomValue value={token.last_price_base} />
+            <AtomValue horizontal value={token.last_price_base} />
           </Column>
           <Column title="Market cap">
             <NumericFormat

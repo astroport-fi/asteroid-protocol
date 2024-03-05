@@ -7,42 +7,39 @@ export default function TokenValue({
   decimals,
   price,
   ticker,
-  className,
 }: {
   amount: number
   decimals: number
   price: number
   ticker: string
-  className?: string
 }) {
   const {
     status: { baseTokenUsd },
   } = useRootContext()
 
+  const tokenAmount = getDecimalValue(amount, decimals)
+  const dollarsAmount =
+    (((amount / Math.pow(10, decimals)) * price) / Math.pow(10, decimals)) *
+    baseTokenUsd
+
   return (
-    <span className={className}>
+    <span className="flex flex-col">
       <NumericFormat
         className="font-mono mr-1"
         displayType="text"
         thousandSeparator
-        decimalScale={decimals}
+        decimalScale={tokenAmount < 1 ? 6 : 2}
         suffix={` ${ticker}`}
-        value={getDecimalValue(amount, decimals)}
+        value={tokenAmount}
       />
-      (
       <NumericFormat
         displayType="text"
-        className="font-mono"
+        className="font-mono text-sm text-header-content font-light mt-0.5"
         thousandSeparator
         prefix="$"
-        decimalScale={decimals}
-        value={
-          (((amount / Math.pow(10, decimals)) * price) /
-            Math.pow(10, decimals)) *
-          baseTokenUsd
-        }
+        decimalScale={dollarsAmount < 1 ? 6 : 2}
+        value={dollarsAmount}
       />
-      )
     </span>
   )
 }
