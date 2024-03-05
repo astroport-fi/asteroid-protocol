@@ -10,9 +10,11 @@ import { Wallet } from './wallet/Wallet'
 export default function MintToken({
   className,
   token,
+  showConnectWallet,
 }: {
   token: TokenDetail
   className?: string
+  showConnectWallet?: boolean
 }) {
   const operations = useCFT20Operations()
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -21,6 +23,7 @@ export default function MintToken({
   function mint() {
     if (!operations) {
       console.warn('No address')
+      handleShow()
       return
     }
 
@@ -33,7 +36,7 @@ export default function MintToken({
 
   return (
     <div className={className}>
-      {operations ? (
+      {operations || !showConnectWallet ? (
         <Button onClick={() => mint()} color="primary">
           Mint now
         </Button>

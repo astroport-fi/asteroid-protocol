@@ -103,7 +103,11 @@ export default function MintTokenPage() {
           <Divider />
           <Tokenomics token={data.token} />
           {isTokenLaunched(data.token) ? (
-            <MintToken className="mt-16 text-center" token={data.token} />
+            <MintToken
+              className="mt-16 text-center"
+              token={data.token}
+              showConnectWallet
+            />
           ) : (
             <div>
               <Divider />
