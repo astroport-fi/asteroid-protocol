@@ -13,23 +13,19 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
-import { Button, Form as DaisyForm } from 'react-daisyui'
+import { Form as DaisyForm } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import { TokenMarket, isTokenLaunched } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import Stat from '~/components/Stat'
 import { TokenCell } from '~/components/TokenCell'
-import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
-import useDialog from '~/hooks/useDialog'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { round2 } from '~/utils/math'
-import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -64,16 +60,6 @@ export default function MarketsPage() {
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
-  const { dialogRef, handleShow } = useDialog()
-  const [selected, setSelected] = useState<{
-    ticker: string
-    amount: number
-    lastPrice: number | undefined
-  }>({
-    ticker: '',
-    amount: 0,
-    lastPrice: undefined,
-  })
   const [searchParams] = useSearchParams()
   const defaultSearch = searchParams.get('search') ?? ''
 
@@ -126,8 +112,6 @@ export default function MarketsPage() {
       cell: (info) => {
         const minted = info.row.getValue<number>('minted')
 
-        const value = info.getValue()
-        const amount = value?.[0]?.amount ?? 0
         const token = info.row.original
         return (
           <>
@@ -146,27 +130,6 @@ export default function MarketsPage() {
               >
                 Mint
               </Link>
-            )}
-            {amount > 0 && (
-              <Button
-                color="neutral"
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelected({
-                    ticker: token.ticker,
-                    amount,
-                    lastPrice: getDecimalValue(
-                      token.last_price_base,
-                      token.decimals,
-                    ),
-                  })
-                  handleShow()
-                }}
-              >
-                Sell
-              </Button>
             )}
           </>
         )
@@ -224,12 +187,6 @@ export default function MarketsPage() {
         onClick={(tokenSelection) =>
           navigate(`/app/token/${tokenSelection.ticker}`)
         }
-      />
-      <SellTokenDialog
-        ticker={selected.ticker}
-        tokenAmount={selected.amount}
-        lastPrice={selected.lastPrice ?? 0}
-        ref={dialogRef}
       />
     </>
   )
