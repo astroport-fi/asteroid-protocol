@@ -50,6 +50,17 @@ export class SigningClient {
     )
   }
 
+  async signAndBroadcastSync(txData: TxData) {
+    return this.client.signAndBroadcastSync(
+      this.address,
+      txData.messages,
+      this.feeMultiplier,
+      txData.memo,
+      undefined,
+      txData.nonCriticalExtensionOptions,
+    )
+  }
+
   getTx(hash: string) {
     return this.client.getTx(hash)
   }

@@ -174,18 +174,9 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     setTxState(TxState.Sign)
 
     try {
-      const res = await client.signAndBroadcast(txData)
-
-      if (res.code) {
-        setError({
-          message: `Transaction failed with error code: ${res.code}`,
-          kind: ErrorKind.Transaction,
-        })
-        return
-      }
-
+      const res = await client.signAndBroadcastSync(txData)
       setTxState(TxState.Submit)
-      setTxHash(res.transactionHash)
+      setTxHash(res)
     } catch (err) {
       setError({ message: (err as Error).message, kind: ErrorKind.Transaction })
       setTxState(TxState.Failed)
