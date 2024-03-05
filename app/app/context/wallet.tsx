@@ -18,7 +18,7 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   const clipboard = useClipboard({ copiedTimeout: 800 })
 
   useEffect(() => {
-    if (status === WalletStatus.Error) {
+    if (status === WalletStatus.Error || status === WalletStatus.Rejected) {
       walletRepo.current?.disconnect()
     }
   }, [status, walletRepo])
@@ -90,9 +90,26 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
 
 const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const status = walletRepo?.current?.walletStatus ?? WalletStatus.Disconnected
+  const prevStatus = useRef(status)
+
   useEffect(() => {
     if (isOpen) dialogRef?.current?.showModal()
   }, [isOpen])
+
+  useEffect(() => {
+    if (
+      status === WalletStatus.Connected &&
+      prevStatus.current === WalletStatus.Connecting
+    ) {
+      setOpen(false)
+      dialogRef?.current?.close()
+    }
+  }, [prevStatus, status, setOpen])
+
+  useEffect(() => {
+    prevStatus.current = status
+  }, [status])
 
   return (
     <Modal
