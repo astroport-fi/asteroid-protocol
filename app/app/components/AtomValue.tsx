@@ -6,7 +6,7 @@ export default function AtomValue({ value }: { value: number }) {
     status: { baseTokenUsd, baseToken },
   } = useRootContext()
   return (
-    <span>
+    <span className="font-mono">
       {value / 10e5} {baseToken} (
       <NumericFormat
         displayType="text"

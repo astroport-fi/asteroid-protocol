@@ -31,16 +31,16 @@ export default function Tokenomics({
   const {
     status: { baseTokenUsd },
   } = useRootContext()
-  const now = new Date().getTime() / 1000
-
   return (
     <div>
       <Row>
         <Column title="Max supply">
-          {getSupplyTitle(getDecimalValue(token.max_supply, token.decimals))}
+          <span className="font-mono">
+            {getSupplyTitle(getDecimalValue(token.max_supply, token.decimals))}
+          </span>
         </Column>
         <Column title="Circulating">
-          <span>
+          <span className="font-mono">
             {getSupplyTitle(
               getDecimalValue(token.circulating_supply, token.decimals),
             )}{' '}
@@ -55,6 +55,7 @@ export default function Tokenomics({
           </Column>
           <Column title="Market cap">
             <NumericFormat
+              className="font-mono"
               displayType="text"
               thousandSeparator
               decimalScale={2}
@@ -71,6 +72,7 @@ export default function Tokenomics({
       <Row>
         <Column title="Limit per mint">
           <NumericFormat
+            className="font-mono"
             displayType="text"
             thousandSeparator
             value={getDecimalValue(token.per_mint_limit, token.decimals)}

@@ -104,17 +104,24 @@ export default function MarketsPage() {
     }),
     columnHelper.accessor('name', {
       header: 'Name',
+
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor((row) => row.circulating_supply / row.max_supply, {
       enableSorting: false,
       header: 'Minted',
       id: 'minted',
+      meta: {
+        className: 'font-mono',
+      },
       cell: (info) => `${round2(info.getValue() * 100)}%`,
     }),
     columnHelper.accessor(
       'marketplace_cft20_details_aggregate.aggregate.count',
       {
+        meta: {
+          className: 'font-mono',
+        },
         header: 'Listings',
         enableSorting: false,
         cell: (info) => info.getValue(),
@@ -193,7 +200,12 @@ export default function MarketsPage() {
     <>
       <div className="flex flex-row items-center justify-between">
         <Stat title="ATOM / USD" className="max-w-80">
-          <NumericFormat prefix="$" displayType="text" value={baseTokenUsd} />
+          <NumericFormat
+            className="font-mono"
+            prefix="$"
+            displayType="text"
+            value={baseTokenUsd}
+          />
         </Stat>
         <Form method="get">
           <DaisyForm.Label

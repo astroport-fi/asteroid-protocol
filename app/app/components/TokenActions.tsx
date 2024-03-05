@@ -1,7 +1,8 @@
 import { Link } from '@remix-run/react'
+import clsx from 'clsx'
 import { Button } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
-import { Token } from '~/api/token'
+import { Token, isTokenLaunched } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
 import { getDecimalValue } from '~/utils/number'
 import SellTokenDialog from './dialogs/SellTokenDialog'
@@ -17,6 +18,8 @@ export function TokenActions({ amount, token, className }: Props) {
   const { dialogRef: transferDialogRef, handleShow: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
+
+  const isLaunched = isTokenLaunched(token)
 
   return (
     <div className={twMerge('flex flex-row', className)}>
@@ -35,7 +38,12 @@ export function TokenActions({ amount, token, className }: Props) {
       >
         Sell
       </Button>
-      <Link className="btn btn-primary ml-2" to={`/app/market/${token.ticker}`}>
+      <Link
+        className={clsx('btn btn-primary ml-2', {
+          'btn-disabled': !isLaunched,
+        })}
+        to={`/app/market/${token.ticker}`}
+      >
         Trade
       </Link>
       <TransferTokenDialog token={token} ref={transferDialogRef} />

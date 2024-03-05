@@ -173,6 +173,7 @@ function ListingsTable({
       header: `${token.ticker} Tokens`,
       cell: (info) => (
         <NumericFormat
+          className="font-mono"
           displayType="text"
           thousandSeparator
           value={getDecimalValue(info.getValue(), token.decimals)}

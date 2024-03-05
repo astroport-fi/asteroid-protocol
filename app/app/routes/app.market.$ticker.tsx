@@ -206,6 +206,7 @@ function ListingsTable({
       header: `${token.ticker} Tokens`,
       cell: (info) => (
         <NumericFormat
+          className="font-mono"
           displayType="text"
           thousandSeparator
           value={getDecimalValue(info.getValue(), token.decimals)}
@@ -218,6 +219,9 @@ function ListingsTable({
     }),
     columnHelper.accessor('marketplace_listing.deposit_total', {
       header: 'Minimum Deposit',
+      meta: {
+        className: 'font-mono',
+      },
       cell: (info) =>
         `${round2((info.getValue() / info.row.original.marketplace_listing.total) * 100)}%`,
     }),
@@ -347,7 +351,12 @@ function Stats({ token }: { token: Token }) {
   return (
     <div className="flex flex-row gap-8 mt-4">
       <Stat title="ATOM / USD">
-        <NumericFormat prefix="$" displayType="text" value={baseTokenUsd} />
+        <NumericFormat
+          className="font-mono"
+          prefix="$"
+          displayType="text"
+          value={baseTokenUsd}
+        />
       </Stat>
       <Stat title={`${token.ticker} / ATOM`}>
         <AtomValue value={token.last_price_base} />

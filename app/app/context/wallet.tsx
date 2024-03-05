@@ -91,7 +91,7 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
 const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   useEffect(() => {
-    if (isOpen) dialogRef.current?.showModal()
+    if (isOpen) dialogRef?.current?.showModal()
   }, [isOpen])
 
   return (

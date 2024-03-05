@@ -22,7 +22,7 @@ export default function TokenValue({
   return (
     <span className={className}>
       <NumericFormat
-        className="mr-1"
+        className="font-mono mr-1"
         displayType="text"
         thousandSeparator
         decimalScale={decimals}
@@ -32,6 +32,7 @@ export default function TokenValue({
       (
       <NumericFormat
         displayType="text"
+        className="font-mono"
         thousandSeparator
         prefix="$"
         decimalScale={decimals}

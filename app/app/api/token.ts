@@ -55,7 +55,7 @@ export type TokenDetail = InputType<
   ScalarDefinition
 >
 
-export function isTokenLaunched(token: TokenDetail) {
+export function isTokenLaunched(token: Token) {
   const now = new Date().getTime() / 1000
   return now > token.launch_timestamp
 }

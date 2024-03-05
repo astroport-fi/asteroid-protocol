@@ -7,10 +7,16 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/20/solid'
-import { Table as TableData, flexRender } from '@tanstack/react-table'
+import { RowData, Table as TableData, flexRender } from '@tanstack/react-table'
 import clsx from 'clsx'
 import { Button, Table as DaisyTable, Divider, Select } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
+
+declare module '@tanstack/table-core' {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    className?: string
+  }
+}
 
 interface Props<T> {
   table: TableData<T>
@@ -27,7 +33,7 @@ export default function Table<T = unknown>({
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
   const rows = table.getRowModel().rows
-  const rowClassName = clsx('border-neutral', {
+  const rowClassName = clsx(twMerge, {
     'hover hover:cursor-pointer': typeof onClick === 'function',
   })
 
@@ -83,7 +89,10 @@ export default function Table<T = unknown>({
               onClick={() => onClick?.(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  className={cell.column.columnDef.meta?.className}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

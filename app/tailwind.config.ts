@@ -39,6 +39,7 @@ export default {
         '"Segoe UI Symbol"',
         '"Noto Color Emoji"',
       ],
+      mono: ['Fira Code', 'monospace'],
     },
   },
   daisyui: {

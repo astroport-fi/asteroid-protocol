@@ -242,7 +242,11 @@ export default function TokenPage() {
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Holders</h2>
       <Divider />
-      <TokenHolders token={data.token} holders={data.holders} />
+      {data.holders.length > 0 ? (
+        <TokenHolders token={data.token} holders={data.holders} />
+      ) : (
+        <span>Token has no holders</span>
+      )}
     </div>
   )
 }
