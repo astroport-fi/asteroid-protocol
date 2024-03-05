@@ -106,3 +106,8 @@ strong {
     image-rendering: pixelated;
   }
 }
+
+.react-datepicker-time__input {
+  @apply bg-neutral;
+  @apply text-neutral-content;
+}

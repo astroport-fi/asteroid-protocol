@@ -3,7 +3,8 @@ import { CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, FileInput, Form, Input, Link, Radio } from 'react-daisyui'
-import { useForm } from 'react-hook-form'
+import DatePicker from 'react-datepicker'
+import { Controller, useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
 import NumericInput from '~/components/form/NumericInput'
 import { Wallet } from '~/components/wallet/Wallet'
@@ -11,6 +12,7 @@ import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
 import { loadImage } from '~/utils/file'
+import 'react-datepicker/dist/react-datepicker.css'
 
 type FormData = {
   name: string
@@ -299,13 +301,31 @@ export default function CreateToken() {
 
           {launch === 'specific' && (
             <div className="flex flex-row w-full">
-              <Input
-                type="datetime-local"
-                className="w-full"
-                {...register('launchDate', {
-                  required: true,
-                  valueAsDate: true,
-                })}
+              <Controller
+                rules={{ required: true }}
+                control={control}
+                name="launchDate"
+                render={({
+                  field: { name, onChange, value, ref, onBlur, disabled },
+                }) => (
+                  <DatePicker
+                    name={name}
+                    ref={ref}
+                    disabled={disabled}
+                    minDate={new Date()}
+                    onBlur={onBlur}
+                    className="input"
+                    selected={value}
+                    onChange={onChange}
+                    timeInputLabel="Time:"
+                    placeholderText="Click to select a launch date"
+                    dateFormat="MM/dd/yyyy h:mm aa"
+                    shouldCloseOnSelect={false}
+                    showTimeInput
+                    showTimeSelect
+                    timeIntervals={5}
+                  />
+                )}
               />
             </div>
           )}
