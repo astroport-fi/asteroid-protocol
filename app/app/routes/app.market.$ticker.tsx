@@ -18,6 +18,7 @@ import { MarketplaceTokenListing, Token } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import GhostEmptyState from '~/components/GhostEmptyState'
+import InscriptionImage from '~/components/InscriptionImage'
 import Stat from '~/components/Stat'
 import BuyDialog from '~/components/dialogs/BuyDialog'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
@@ -262,7 +263,7 @@ function ListingsTable({
                 size="sm"
                 onClick={() => buyListing(listingHash)}
               >
-                Buy ({blocks})
+                Complete order ({blocks})
               </Button>
             )
           case ListingState.Cancel:
@@ -344,25 +345,13 @@ function ListingsTable({
 }
 
 function Stats({ token }: { token: Token }) {
-  const {
-    status: { baseTokenUsd },
-  } = useRootContext()
-
   return (
     <div className="flex flex-row gap-8 mt-4">
-      <Stat title="ATOM / USD">
-        <NumericFormat
-          className="font-mono"
-          prefix="$"
-          displayType="text"
-          value={baseTokenUsd}
-        />
-      </Stat>
-      <Stat title={`${token.ticker} / ATOM`}>
-        <AtomValue value={token.last_price_base} />
+      <Stat title={`Price`}>
+        <AtomValue value={token.last_price_base} horizontal />
       </Stat>
       <Stat title="24H Volume">
-        <AtomValue value={token.volume_24_base} />
+        <AtomValue value={token.volume_24_base} horizontal />
       </Stat>
     </div>
   )
@@ -380,9 +369,18 @@ export default function MarketPage() {
       <div className="flex flex-col mb-2">
         <div className="flex flex-row justify-between">
           <BackHeader to="/app/tokens">
-            <Button color="ghost" className="text-lg font-medium">
-              {token.ticker} / ATOM Market
-            </Button>
+            <InscriptionImage
+              mime="image/png"
+              src={token.content_path!}
+              // isExplicit={token.is_explicit} @todo
+              className="rounded-xl w-6"
+            />
+            <span className="ml-2 flex items-baseline">
+              Trade {token.name}
+              <span className="text-sm font-light text-header-content ml-1">
+                {token.ticker}
+              </span>
+            </span>
           </BackHeader>
           <div>
             {minted < 1 && (
