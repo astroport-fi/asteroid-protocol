@@ -23,6 +23,7 @@ interface Props {
 
 enum Step {
   Initial,
+  InitialBuy,
   Reserve,
   Purchase,
 }
@@ -72,7 +73,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
             lastKnownHeight,
           )
           if (listingState === ListingState.Buy) {
-            setStep(Step.Reserve)
+            setStep(Step.InitialBuy)
           }
           setListingHash(listingHashProp)
         }
@@ -101,7 +102,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         .catch((err: Error) =>
           setError({ kind: ErrorKind.Validation, message: err.message }),
         )
-    } else if (step === Step.Reserve && txState === TxState.Initial) {
+    } else if (step === Step.InitialBuy && txState === TxState.Initial) {
       operations
         .buy(listingHash, buyType)
         .then((buyTxData) => {
