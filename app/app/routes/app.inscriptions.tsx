@@ -67,11 +67,16 @@ enum PriceRange {
 
 type Status = 'all' | 'buy'
 const DEFAULT_STATUS: Status = 'buy'
-const DEFAULT_SORT = Sort.RECENTLY_LISTED
+const DEFAULT_SORT_BUY: Sort = Sort.RECENTLY_LISTED
+const DEFAULT_SORT_ALL: Sort = Sort.HIGHEST_ID
 const DEFAULT_RANGE = Range.ALL
 const DEFAULT_PRICE_RANGE = PriceRange.ALL
 
 const LIMIT = 30
+
+function getDefaultSort(status: Status) {
+  return status == 'buy' ? DEFAULT_SORT_BUY : DEFAULT_SORT_ALL
+}
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const searchParams = new URL(request.url).searchParams
@@ -79,7 +84,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   const range = searchParams.get('range') ?? DEFAULT_RANGE
   const from = searchParams.get('from')
   const to = searchParams.get('to')
-  const sort = searchParams.get('sort') ?? DEFAULT_SORT
+  const sort = searchParams.get('sort') ?? getDefaultSort(status as Status)
   const search = searchParams.get('search') ?? ''
 
   let orderBy: ValueTypes['inscription_market_order_by'] | undefined
@@ -260,8 +265,12 @@ function Filter() {
     { label: 'Sub 50 000', value: Range.SUB_50_000 },
   ]
 
+  const [status, setStatus] = useState<Status>(
+    (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
+  )
+
   const [sort, setSort] = useState<Sort>(
-    (searchParams.get('sort') as Sort) ?? DEFAULT_SORT,
+    (searchParams.get('sort') as Sort) ?? getDefaultSort(status),
   )
 
   const priceFrom = searchParams.get('from')
@@ -273,15 +282,14 @@ function Filter() {
   const [range, setRange] = useState<Range>(
     (searchParams.get('range') as Range) ?? DEFAULT_RANGE,
   )
-  const [status, setStatus] = useState<Status>(
-    (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
-  )
+
   const defaultSearch = searchParams.get('search') ?? ''
 
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
     if (currentStatus !== status) {
       setSearchParams((prev) => {
+        prev.delete('sort')
         prev.set('status', status)
         return prev
       })
@@ -289,14 +297,19 @@ function Filter() {
   }, [searchParams, status, setSearchParams])
 
   useEffect(() => {
-    const currentSort = searchParams.get('sort') ?? DEFAULT_SORT
+    const defaultSort = getDefaultSort(status)
+    const currentSort = searchParams.get('sort') ?? defaultSort
     if (currentSort !== sort) {
       setSearchParams((prev) => {
-        prev.set('sort', sort)
+        if (sort === defaultSort) {
+          prev.delete('sort')
+        } else {
+          prev.set('sort', sort)
+        }
         return prev
       })
     }
-  }, [searchParams, sort, setSearchParams])
+  }, [searchParams, sort, status, setSearchParams])
 
   useEffect(() => {
     const currentRange = searchParams.get('range') ?? DEFAULT_RANGE
@@ -331,7 +344,13 @@ function Filter() {
       <div className="flex flex-col items-start absolute py-8">
         <div className="flex flex-col items-start w-full px-6">
           <FilterTitle>Status</FilterTitle>
-          <StatusFilter selected={status} onChange={setStatus} />
+          <StatusFilter
+            selected={status}
+            onChange={(newStatus) => {
+              setStatus(newStatus)
+              setSort(getDefaultSort(newStatus))
+            }}
+          />
           <FilterTitle className="mt-6">Search</FilterTitle>
           <Form method="get">
             <Input
