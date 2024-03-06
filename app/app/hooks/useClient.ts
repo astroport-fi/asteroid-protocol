@@ -1,4 +1,5 @@
 import { SigningStargateClient, TxData } from '@asteroid-protocol/sdk'
+import { StdFee } from '@cosmjs/amino'
 import { GasPrice } from '@cosmjs/stargate'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
@@ -7,15 +8,18 @@ import useChain from './useChain'
 export class SigningClient {
   client: SigningStargateClient
   address: string
+  gasMultiplier: number
   feeMultiplier: number
 
   constructor(
     client: SigningStargateClient,
     address: string,
-    feeMultiplier = 1.7,
+    gasMultiplier = 1.6,
+    feeMultiplier = 1.4,
   ) {
     this.client = client
     this.address = address
+    this.gasMultiplier = gasMultiplier
     this.feeMultiplier = feeMultiplier
   }
 
@@ -34,27 +38,35 @@ export class SigningClient {
       txData.messages,
       txData.memo,
       txData.nonCriticalExtensionOptions,
-      this.feeMultiplier,
+      this.gasMultiplier,
     )
-    return parseInt(usedFee.amount[0].amount)
+
+    const amount = parseInt(usedFee.amount[0].amount) * this.feeMultiplier
+
+    const fee: StdFee = {
+      amount: [{ amount: amount.toFixed(), denom: 'uatom' }],
+      gas: usedFee.gas,
+    }
+
+    return fee
   }
 
-  async signAndBroadcast(txData: TxData) {
+  async signAndBroadcast(txData: TxData, fee?: StdFee) {
     return this.client.signAndBroadcast(
       this.address,
       txData.messages,
-      this.feeMultiplier,
+      fee ?? this.gasMultiplier,
       txData.memo,
       undefined,
       txData.nonCriticalExtensionOptions,
     )
   }
 
-  async signAndBroadcastSync(txData: TxData) {
+  async signAndBroadcastSync(txData: TxData, fee?: StdFee) {
     return this.client.signAndBroadcastSync(
       this.address,
       txData.messages,
-      this.feeMultiplier,
+      fee ?? this.gasMultiplier,
       txData.memo,
       undefined,
       txData.nonCriticalExtensionOptions,

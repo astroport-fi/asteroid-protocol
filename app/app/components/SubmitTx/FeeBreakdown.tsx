@@ -1,3 +1,4 @@
+import { StdFee } from '@cosmjs/stargate'
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
 import { PropsWithChildren } from 'react'
 import { Divider, Skeleton, Tooltip } from 'react-daisyui'
@@ -7,7 +8,7 @@ import { getDecimalValue } from '~/utils/number'
 
 interface FeeBreakdownProps {
   metaprotocolFee: MetaprotocolFee
-  chainFee: number
+  chainFee: StdFee | null
   operationTitle?: string
 }
 
@@ -25,14 +26,16 @@ export function FeeBreakdown({
   metaprotocolFee,
   operationTitle,
 }: FeeBreakdownProps) {
+  const chainFeeAmount = chainFee ? parseInt(chainFee.amount[0].amount) : 0
+
   return (
     <div className="flex flex-col w-full mt-8">
       <span className="text-md">Estimated fee breakdown</span>
       <div className="flex flex-col px-16 mt-4">
         <Row title="Cosmos Hub">
-          {chainFee > 0 ? (
+          {chainFeeAmount > 0 ? (
             <NumericFormat
-              value={getDecimalValue(chainFee, 6)}
+              value={getDecimalValue(chainFeeAmount, 6)}
               suffix=" ATOM"
               displayType="text"
               fixedDecimalScale
@@ -43,7 +46,7 @@ export function FeeBreakdown({
           )}
         </Row>
         <Row title="Metaprotocol">
-          {chainFee > 0 ? (
+          {chainFeeAmount > 0 ? (
             <NumericFormat
               value={getDecimalValue(metaprotocolFee.base, 6)}
               suffix=" ATOM"
@@ -57,7 +60,7 @@ export function FeeBreakdown({
         </Row>
         {metaprotocolFee.operation > 0 && (
           <Row title={operationTitle ?? 'Operation'}>
-            {chainFee > 0 ? (
+            {chainFeeAmount > 0 ? (
               <NumericFormat
                 value={getDecimalValue(metaprotocolFee.operation, 6)}
                 suffix=" ATOM"
@@ -72,11 +75,13 @@ export function FeeBreakdown({
         )}
         <Divider />
         <Row title="Estimated total">
-          {chainFee > 0 ? (
+          {chainFeeAmount > 0 ? (
             <>
               <NumericFormat
                 value={getDecimalValue(
-                  chainFee + metaprotocolFee.base + metaprotocolFee.operation,
+                  chainFeeAmount +
+                    metaprotocolFee.base +
+                    metaprotocolFee.operation,
                   6,
                 )}
                 suffix=" ATOM"

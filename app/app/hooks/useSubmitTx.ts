@@ -1,4 +1,5 @@
 import { TxInscription, prepareTx } from '@asteroid-protocol/sdk'
+import { StdFee } from '@cosmjs/stargate'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { clientOnly$ } from 'vite-env-only'
@@ -89,7 +90,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   const [txState, setTxState] = useState<TxState>(TxState.Initial)
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState<SubmitTxError | null>(null)
-  const [chainFee, setChainFee] = useState(0)
+  const [chainFee, setChainFee] = useState<StdFee | null>(null)
 
   const txData = useMemo(() => {
     if (!address || !txInscription) {
@@ -142,6 +143,8 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       return
     }
 
+    console.log('estimate')
+
     client
       .estimate(txData)
       .then((res) => {
@@ -154,7 +157,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
           message: (err as Error).message,
         })
       })
-  }, [txData, client, retryCounter, chainFee])
+  }, [txData, client, retryCounter])
 
   // Send transaction
   const sendTx = useCallback(async () => {
@@ -180,7 +183,15 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     setTxState(TxState.Sign)
 
     try {
-      const res = await client.signAndBroadcastSync(txData)
+      if (!chainFee) {
+        setError({
+          message: 'no chain fee, cannot send transaction',
+          kind: ErrorKind.Validation,
+        })
+        return
+      }
+
+      const res = await client.signAndBroadcastSync(txData, chainFee)
       setTxState(TxState.Submit)
       setTxHash(res)
     } catch (err) {
@@ -188,7 +199,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       setTxState(TxState.Failed)
       console.error(err)
     }
-  }, [address, client, txData, setTxState])
+  }, [address, client, chainFee, txData, setTxState])
 
   // Check transaction status
   useEffect(() => {
@@ -222,7 +233,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
 
   // Reset state
   const resetState = useCallback(() => {
-    setChainFee(0)
+    setChainFee(null)
     setTxState(TxState.Initial)
     setTxHash('')
     setError(null)
