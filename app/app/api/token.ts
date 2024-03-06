@@ -164,3 +164,20 @@ export type TokenMarket = TokenMarketToken & {
   marketplace_cft20_details_aggregate: Aggregate
   token_holders: (TokenHolderAmount | undefined)[]
 }
+
+// Token trade history
+export const tokenTradeHistorySelector = Selector('token_trade_history')({
+  id: true,
+  amount_quote: true,
+  amount_base: true,
+  total_usd: true,
+  seller_address: true,
+  buyer_address: true,
+  date_created: true,
+})
+
+export type TokenTradeHistory = InputType<
+  GraphQLTypes['token_trade_history'],
+  typeof tokenTradeHistorySelector,
+  ScalarDefinition
+>

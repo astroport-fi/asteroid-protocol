@@ -17,7 +17,7 @@ export function BackHeader({
   return (
     <div className="flex flex-row items-center">
       <BackButton to={to} />
-      <div className="flex items-center text-lg font-medium">{children}</div>
+      <div className="flex items-center text-xl font-medium">{children}</div>
     </div>
   )
 }

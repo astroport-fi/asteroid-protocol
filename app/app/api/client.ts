@@ -25,6 +25,7 @@ import {
   TokenHolderAmount,
   TokenHolding,
   TokenMarket,
+  TokenTradeHistory,
   TokenType,
   tokenAddressHistorySelector,
   tokenDetailSelector,
@@ -34,6 +35,7 @@ import {
   tokenListingSelector,
   tokenMarketTokenSelector,
   tokenSelector,
+  tokenTradeHistorySelector,
 } from '~/api/token'
 import { marketplaceListingSelector } from './marketplace'
 
@@ -874,6 +876,33 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
     return result.inscription_trade_history
+  }
+
+  async getTokenTradeHistory(
+    token_id: number,
+    offset = 0,
+    limit = 100,
+  ): Promise<TokenTradeHistory[]> {
+    const result = await this.query({
+      token_trade_history: [
+        {
+          where: {
+            token_id: {
+              _eq: token_id,
+            },
+          },
+          offset,
+          limit,
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+        },
+        tokenTradeHistorySelector,
+      ],
+    })
+    return result.token_trade_history
   }
 
   statusSubscription(chainId: string) {

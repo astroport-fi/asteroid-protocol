@@ -8,7 +8,9 @@ export default function App() {
   const location = useLocation()
   const navigation = useNavigation()
   const isLoading = navigation.state === 'loading'
-  const padding = location.pathname !== '/app/inscriptions'
+  const padding =
+    location.pathname !== '/app/inscriptions' &&
+    !location.pathname.includes('/app/market')
 
   return (
     <div className="flex flex-col bg-main-gradient">

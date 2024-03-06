@@ -1,5 +1,6 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
+import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import {
@@ -10,11 +11,11 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useState } from 'react'
-import { Button } from 'react-daisyui'
+import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
-import { MarketplaceTokenListing, Token } from '~/api/token'
+import { MarketplaceTokenListing, Token, TokenTradeHistory } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import GhostEmptyState from '~/components/GhostEmptyState'
@@ -35,6 +36,7 @@ import { getDateAgo } from '~/utils/date'
 import { round2 } from '~/utils/math'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
+import { shortAddress } from '~/utils/string'
 
 export function getTokenMarketplaceListingSort(
   sort: string,
@@ -68,7 +70,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   }
 
   const url = new URL(request.url)
-  const { offset, limit } = parsePagination(url.searchParams)
+  const { offset, limit, page } = parsePagination(url.searchParams)
   const { sort, direction } = parseSorting(
     url.searchParams,
     'ppt',
@@ -96,6 +98,12 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     true,
   )
 
+  const transactions = await asteroidClient.getTokenTradeHistory(
+    token.id,
+    0,
+    50,
+  )
+
   if (address) {
     const status = await asteroidClient.getStatus(
       context.cloudflare.env.CHAIN_ID,
@@ -111,6 +119,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
       )
       return json({
         token,
+        transactions,
         listings: res.listings,
         reservedListings: reservedListings.listings,
         pages: Math.ceil(res.count! / limit),
@@ -120,6 +129,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 
   return json({
     token,
+    transactions,
     listings: res.listings,
     reservedListings: [],
     pages: Math.ceil(res.count! / limit),
@@ -233,10 +243,13 @@ function ListingsTable({
     columnHelper.accessor('marketplace_listing.transaction.hash', {
       enableSorting: false,
       header: '',
+      meta: {
+        className: 'text-center',
+      },
       id: 'state',
       cell: (info) => {
         const listing = info.row.original.marketplace_listing
-        const blocks = (listing.depositor_timedout_block ?? 0) - lastKnownHeight
+        // const blocks = (listing.depositor_timedout_block ?? 0) - lastKnownHeight
         const listingHash = listing.transaction.hash
 
         switch (
@@ -263,7 +276,7 @@ function ListingsTable({
                 size="sm"
                 onClick={() => buyListing(listingHash)}
               >
-                Complete order ({blocks})
+                Complete order
               </Button>
             )
           case ListingState.Cancel:
@@ -277,7 +290,7 @@ function ListingsTable({
               </Button>
             )
           case ListingState.Reserved:
-            return `Reserved (${blocks})`
+            return `Reserved`
         }
       },
     }),
@@ -357,6 +370,74 @@ function Stats({ token }: { token: Token }) {
   )
 }
 
+function LatestTransactions({
+  token,
+  transactions,
+}: {
+  token: Token
+  transactions: TokenTradeHistory[]
+}) {
+  return (
+    <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
+      <div className="fixed py-8 flex flex-col w-available">
+        <div>Latest transactions</div>
+        <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
+          <span className="p-2 w-1/12">
+            <ClockIcon className="size-5" />
+          </span>
+          <span className="p-2 w-3/12">Amount</span>
+          <span className="p-2 w-2/12">Price</span>
+          <span className="p-2 w-2/12">Seller</span>
+          <span className="p-2 w-2/12">Buyer</span>
+        </div>
+        <Divider className="my-1" />
+        <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
+          {transactions.map((tx) => (
+            <span
+              key={tx.id}
+              className="flex flex-row justify-between items-center w-full rounded-none px-4 py-3 border-b border-b-neutral text-sm"
+            >
+              <span className="mx-1 shrink-0 w-1/12">
+                {getDateAgo(tx.date_created, true)}
+              </span>
+              <span className="shrink-0 w-3/12 flex flex-col font-mono items-center">
+                <NumericFormat
+                  displayType="text"
+                  thousandSeparator
+                  value={getDecimalValue(tx.amount_base, 6)}
+                />
+                <span className="mt-1">{token.ticker}</span>
+              </span>
+              <span className="shrink-0 w-2/12 flex flex-col font-mono items-center">
+                <NumericFormat
+                  displayType="text"
+                  thousandSeparator
+                  value={getDecimalValue(tx.amount_quote, 6)}
+                />
+                <span className="mt-1">ATOM</span>
+              </span>
+              <Link
+                to={`/app/wallet/${tx.seller_address}`}
+                className="shrink-0 w-2/12 hover:text-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {shortAddress(tx.seller_address)}
+              </Link>
+              <Link
+                to={`/app/wallet/${tx.buyer_address}`}
+                className="shrink-0 w-2/12 hover:text-primary"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {shortAddress(tx.buyer_address!)}
+              </Link>
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function MarketPage() {
   const data = useLoaderData<typeof loader>()
   const { dialogRef, handleShow } = useDialog()
@@ -365,67 +446,75 @@ export default function MarketPage() {
   const minted = token.circulating_supply / token.max_supply
 
   return (
-    <div>
-      <div className="flex flex-col mb-2">
-        <div className="flex flex-row justify-between">
-          <BackHeader to="/app/tokens">
-            <InscriptionImage
-              mime="image/png"
-              src={token.content_path!}
-              // isExplicit={token.is_explicit} @todo
-              className="rounded-xl w-6"
-            />
-            <span className="ml-2 flex items-baseline">
-              Trade {token.name}
-              <span className="text-sm font-light text-header-content ml-1">
-                {token.ticker}
+    <div className="flex flex-row h-full">
+      <div className="flex flex-col w-full h-full">
+        <div className="flex flex-col mb-2 mt-8 px-8">
+          <div className="flex flex-row justify-between">
+            <BackHeader to="/app/tokens">
+              <InscriptionImage
+                mime="image/png"
+                src={token.content_path!}
+                // isExplicit={token.is_explicit} @todo
+                className="rounded-xl w-6"
+              />
+              <span className="ml-2 flex items-baseline">
+                Trade {token.name}
+                <span className="text-sm font-light text-header-content ml-1">
+                  {token.ticker}
+                </span>
               </span>
-            </span>
-          </BackHeader>
-          <div>
-            {minted < 1 && (
-              <Link
-                className="btn btn-primary btn-sm mr-2"
-                to={`/app/token/${token.ticker}`}
-              >
-                Mint now
-              </Link>
-            )}
-            <Button color="primary" size="sm" onClick={() => handleShow()}>
-              Sell {token.ticker} tokens
-            </Button>{' '}
-            <SellTokenDialog
-              ref={dialogRef}
-              ticker={token.ticker}
-              tokenAmount={amount ?? 0}
-              lastPrice={getDecimalValue(token.last_price_base, token.decimals)}
-            />
+            </BackHeader>
+            <div>
+              {minted < 1 && (
+                <Link
+                  className="btn btn-primary btn-sm mr-2"
+                  to={`/app/token/${token.ticker}`}
+                >
+                  Mint now
+                </Link>
+              )}
+              <Button color="primary" size="sm" onClick={() => handleShow()}>
+                Sell {token.ticker} tokens
+              </Button>{' '}
+              <SellTokenDialog
+                ref={dialogRef}
+                ticker={token.ticker}
+                tokenAmount={amount ?? 0}
+                lastPrice={getDecimalValue(
+                  token.last_price_base,
+                  token.decimals,
+                )}
+              />
+            </div>
           </div>
+          <Stats token={token} />
         </div>
-        <Stats token={token} />
-      </div>
-      {data.reservedListings?.length > 0 && (
-        <div>
-          <h3 className="mt-10 text-lg">Your reserved listing</h3>
-          <ListingsTable
-            className="mt-2"
-            listings={data.reservedListings}
-            token={token}
-            onListClick={() => handleShow()}
-            serverSorting={false}
-          />
-          <h3 className="mt-16 text-lg">All listings</h3>
-        </div>
-      )}
+        {data.reservedListings?.length > 0 && (
+          <div className="ml-8">
+            <h3 className="mt-10 text-lg">Your reserved listing</h3>
+            <ListingsTable
+              className="mt-2"
+              listings={data.reservedListings}
+              token={token}
+              onListClick={() => handleShow()}
+              serverSorting={false}
+            />
+            <h3 className="mt-16 text-lg">All listings</h3>
+          </div>
+        )}
 
-      <ListingsTable
-        className="mt-2"
-        listings={data.listings}
-        pages={data.pages}
-        token={token}
-        onListClick={() => handleShow()}
-        serverSorting={true}
-      />
+        <ListingsTable
+          className="mt-2 mb-6 px-8 overflow-y-scroll"
+          listings={data.listings}
+          pages={data.pages}
+          token={token}
+          onListClick={() => handleShow()}
+          serverSorting={true}
+        />
+      </div>
+      {data.transactions.length > 0 && (
+        <LatestTransactions token={token} transactions={data.transactions} />
+      )}
     </div>
   )
 }
