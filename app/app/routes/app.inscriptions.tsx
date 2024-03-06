@@ -414,7 +414,7 @@ function LatestTransactions({
               }}
               key={tx.id}
               color="ghost"
-              className="flex flex-row justify-between w-full rounded-none px-4"
+              className="flex flex-row font-normal justify-between w-full rounded-none px-4"
             >
               <span className="mx-1 shrink-0 w-1/12">
                 {getDateAgo(tx.date_created, true)}
@@ -429,7 +429,7 @@ function LatestTransactions({
                 />
               </span>
               <NumericFormat
-                className="shrink-0 w-3/12"
+                className="font-mono shrink-0 w-3/12"
                 displayType="text"
                 thousandSeparator
                 suffix=" ATOM"

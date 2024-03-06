@@ -12,7 +12,7 @@ export class SigningClient {
   constructor(
     client: SigningStargateClient,
     address: string,
-    feeMultiplier = 1.6,
+    feeMultiplier = 1.7,
   ) {
     this.client = client
     this.address = address

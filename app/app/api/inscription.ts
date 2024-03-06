@@ -43,14 +43,15 @@ export const inscriptionSelector = Selector('inscription')({
         true,
       ],
     },
-    attributes: {
-      metadata: [
-        {
-          path: '$.metadata.attributes',
-        },
-        true,
-      ],
-    },
+    // @todo collections
+    // attributes: {
+    //   metadata: [
+    //     {
+    //       path: '$.metadata.attributes',
+    //     },
+    //     true,
+    //   ],
+    // },
   },
 })
 
@@ -60,6 +61,32 @@ export type Inscription = InputType<
   ScalarDefinition
 >
 
+// Inscription image
+export const inscriptionImageSelector = Selector('inscription')({
+  transaction: {
+    hash: true,
+  },
+  is_explicit: true,
+  content_path: true,
+  __alias: {
+    mime: {
+      metadata: [
+        {
+          path: '$.metadata.mime',
+        },
+        true,
+      ],
+    },
+  },
+})
+
+export type InscriptionImage = InputType<
+  GraphQLTypes['inscription'],
+  typeof inscriptionImageSelector,
+  ScalarDefinition
+>
+
+// Inscription listing
 export const inscriptionListingSelector = Selector(
   'marketplace_inscription_detail',
 )({
@@ -76,6 +103,7 @@ export type InscriptionWithMarket = Inscription & {
   marketplace_listing?: MarketplaceListing | undefined
 }
 
+// Inscription trade history
 export const inscriptionTradeHistorySelector = Selector(
   'inscription_trade_history',
 )({
@@ -85,7 +113,7 @@ export const inscriptionTradeHistorySelector = Selector(
   seller_address: true,
   buyer_address: true,
   date_created: true,
-  inscription: inscriptionSelector,
+  inscription: inscriptionImageSelector,
 })
 
 export type InscriptionTradeHistory = InputType<
