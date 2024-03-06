@@ -31,7 +31,13 @@ async function checkTransaction(
 ): Promise<CheckResult | undefined> {
   if (txState == TxState.Submit) {
     const tx = await client.getTx(txHash)
-    if (tx && tx.code == 0) {
+    if (tx) {
+      if (tx.code) {
+        return {
+          status: TxState.Failed,
+          error: `Transaction failed with error code ${tx.code}`,
+        }
+      }
       return { status: TxState.SuccessOnchain }
     }
   } else {
