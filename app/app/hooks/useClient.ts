@@ -1,0 +1,121 @@
+import { SigningStargateClient, TxData } from '@asteroid-protocol/sdk'
+import { StdFee } from '@cosmjs/amino'
+import { GasPrice } from '@cosmjs/stargate'
+import { useEffect, useState } from 'react'
+import { useRootContext } from '~/context/root'
+import useChain from './useChain'
+
+export class SigningClient {
+  client: SigningStargateClient
+  address: string
+  gasMultiplier: number
+  feeMultiplier: number
+
+  constructor(
+    client: SigningStargateClient,
+    address: string,
+    gasMultiplier = 1.6,
+    feeMultiplier = 1.4,
+  ) {
+    this.client = client
+    this.address = address
+    this.gasMultiplier = gasMultiplier
+    this.feeMultiplier = feeMultiplier
+  }
+
+  async simulate(txData: TxData) {
+    return this.client.simulate(
+      this.address,
+      txData.messages,
+      txData.memo,
+      txData.nonCriticalExtensionOptions,
+    )
+  }
+
+  async estimate(txData: TxData) {
+    const usedFee = await this.client.estimate(
+      this.address,
+      txData.messages,
+      txData.memo,
+      txData.nonCriticalExtensionOptions,
+      this.gasMultiplier,
+    )
+
+    const amount = parseInt(usedFee.amount[0].amount) * this.feeMultiplier
+
+    const fee: StdFee = {
+      amount: [{ amount: amount.toFixed(), denom: 'uatom' }],
+      gas: usedFee.gas,
+    }
+
+    return fee
+  }
+
+  async signAndBroadcast(txData: TxData, fee?: StdFee) {
+    return this.client.signAndBroadcast(
+      this.address,
+      txData.messages,
+      fee ?? this.gasMultiplier,
+      txData.memo,
+      undefined,
+      txData.nonCriticalExtensionOptions,
+    )
+  }
+
+  async signAndBroadcastSync(txData: TxData, fee?: StdFee) {
+    return this.client.signAndBroadcastSync(
+      this.address,
+      txData.messages,
+      fee ?? this.gasMultiplier,
+      txData.memo,
+      undefined,
+      txData.nonCriticalExtensionOptions,
+    )
+  }
+
+  getTx(hash: string) {
+    return this.client.getTx(hash)
+  }
+}
+
+export default function useClient(retry = 0) {
+  const { chainName, gasPrice, restEndpoint, rpcEndpoint } = useRootContext()
+  const {
+    getOfflineSignerDirect,
+    setDefaultSignOptions,
+    isWalletConnected,
+    address,
+  } = useChain(chainName)
+
+  const [client, setClient] = useState<SigningClient>()
+  useEffect(() => {
+    if (!isWalletConnected || !address || !getOfflineSignerDirect) {
+      return
+    }
+    async function createSigningClient(address: string) {
+      const signer = getOfflineSignerDirect!()
+      setDefaultSignOptions({ preferNoSetFee: true, preferNoSetMemo: true })
+      const signingClient = await SigningStargateClient.connectWithSigner(
+        rpcEndpoint,
+        signer,
+        {
+          gasPrice: GasPrice.fromString(gasPrice),
+          simulateEndpoint: restEndpoint as string,
+        },
+      )
+      setClient(new SigningClient(signingClient, address))
+    }
+    createSigningClient(address)
+  }, [
+    restEndpoint,
+    rpcEndpoint,
+    getOfflineSignerDirect,
+    setDefaultSignOptions,
+    isWalletConnected,
+    gasPrice,
+    address,
+    retry,
+  ])
+
+  return client
+}

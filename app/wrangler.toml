@@ -1,0 +1,51 @@
+name = "asteroid"
+
+[vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "http://localhost:8080/v1/graphql"
+ASTEROID_API_WSS = "ws://localhost:8080/v1/graphql"
+TX_EXPLORER = "http://localhost:1316/cosmos/tx/v1beta1/txs/"
+RPC = "http://localhost:16657"
+REST = "http://localhost:1316"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+
+[env.testnet.vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "https://testnet-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://testnet-api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
+RPC = "https://rpc.sentry-01.theta-testnet.polypore.xyz"
+REST = "https://rest.sentry-01.theta-testnet.polypore.xyz"
+CHAIN_ID = "theta-testnet-001"
+CHAIN_NAME = "cosmoshubtestnet"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = true
+USE_EXTENSION_DATA = true
+
+[env.mainnet.vars]
+ENVIRONMENT = "production"
+ASTEROID_API = "https://api-lb.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmos/tx/"
+RPC = "https://cosmos-rpc.cosmos-apis.com"
+REST = "https://cosmos-rest.cosmos-apis.com"
+CHAIN_ID = "cosmoshub-4"
+CHAIN_NAME = "cosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = true
+USE_EXTENSION_DATA = false
+
+[dev]
+ip = "192.168.1.1"
+port = 8080
+local_protocol = "http"
+
+[limits]
+cpu_ms = 50

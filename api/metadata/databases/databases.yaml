@@ -6,4 +6,71 @@
         from_env: HASURA_GRAPHQL_DATABASE_URL
       isolation_level: read-committed
       use_prepared_statements: false
+  logical_models:
+    - fields:
+        - name: id
+          type:
+            nullable: true
+            scalar: integer
+        - name: transaction_hash
+          type:
+            nullable: true
+            scalar: varchar
+        - name: current_owner
+          type:
+            nullable: true
+            scalar: varchar
+        - name: content_path
+          type:
+            nullable: true
+            scalar: varchar
+        - name: content_size_bytes
+          type:
+            nullable: true
+            scalar: integer
+        - name: date_created
+          type:
+            nullable: true
+            scalar: timestamp
+        - name: is_explicit
+          type:
+            nullable: true
+            scalar: boolean
+        - name: name
+          type:
+            nullable: true
+            scalar: text
+        - name: description
+          type:
+            nullable: true
+            scalar: text
+        - name: mime
+          type:
+            nullable: true
+            scalar: text
+      name: search_result
+      select_permissions:
+        - permission:
+            columns:
+              - id
+              - transaction_hash
+              - current_owner
+              - content_path
+              - content_size_bytes
+              - date_created
+              - is_explicit
+              - name
+              - description
+              - mime
+            filter: {}
+          role: anonymous
+  native_queries:
+    - arguments:
+        query_name:
+          description: ""
+          nullable: false
+          type: text
+      code: "SELECT \n  id,\n  (select hash from \"transaction\" t where id = inscription.transaction_id) as transaction_hash,\n  current_owner,\n  content_path,\n  content_size_bytes,\n  date_created,\n  is_explicit,\n  metadata->'metadata'->>'name' as name,\n  metadata->'metadata'->>'description' as description,\n  metadata->'metadata'->>'mime' as mime\nFROM inscription\nWHERE metadata->'metadata'->>'name' ILIKE {{query_name}};"
+      returns: search_result
+      root_field_name: find_inscription_by_name
   tables: "!include Meteors/tables/tables.yaml"
