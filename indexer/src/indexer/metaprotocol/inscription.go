@@ -2,6 +2,7 @@ package metaprotocol
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -124,6 +125,33 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		jsonBytes, err := json.Marshal(inscriptionMetadata)
+		if err != nil {
+			return fmt.Errorf("unable to marshal metadata '%s'", err)
+		}
+
+		// Check if the inscription is a Collection
+		if inscriptionMetadata.Metadata.Symbol != "" {
+			collectionModel := models.Collection{
+				ChainID:          parsedURN.ChainID,
+				Height:           transactionModel.Height,
+				Version:          parsedURN.Version,
+				TransactionID:    transactionModel.ID,
+				ContentHash:      contentHash,
+				Creator:          sender,
+				Name:             inscriptionMetadata.Metadata.Name,
+				Symbol:           inscriptionMetadata.Metadata.Symbol,
+				Metadata:         datatypes.JSON(jsonBytes),
+				ContentPath:      contentPath,
+				ContentSizeBytes: uint64(len(content)),
+				DateCreated:      transactionModel.DateCreated,
+			}
+
+			result := protocol.db.Save(&collectionModel)
+			if result.Error != nil {
+				return result.Error
+			}
+			return nil
+		}
 
 		inscriptionModel := models.Inscription{
 			ChainID:          parsedURN.ChainID,
@@ -140,6 +168,34 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			DateCreated:      transactionModel.DateCreated,
 		}
 
+		// Check if inscription is part of a Collection
+		if inscriptionMetadata.Parent.Type == "/collection" {
+			// Fetch transaction from database with the given hash
+			var transaction models.Transaction
+			result := protocol.db.Where("hash = ?", inscriptionMetadata.Parent.Identifier).First(&transaction)
+			if result.Error != nil {
+				// Invalid hash
+				return result.Error
+			}
+
+			// Fetch the collection for this transaction ID
+			var collection models.Collection
+			result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&collection)
+			if result.Error != nil {
+				// Invalid transaction ID
+				return result.Error
+			}
+
+			// Check that the sender is the collection owner
+			if collection.Creator != sender {
+				return fmt.Errorf("invalid sender, must be collection owner")
+			}
+
+			// set collection id to the inscription
+			inscriptionModel.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
+		}
+
+		// insert inscription to DB
 		result := protocol.db.Save(&inscriptionModel)
 		if result.Error != nil {
 			return result.Error

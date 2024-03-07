@@ -28,3 +28,5 @@ curl -sSf https://atlasgo.sh | sh
 ```bash
 atlas migrate apply --env local
 ```
+
+If you are running migration for first time, but on existing database there is a optional `--baseline` version argument. Atlas will mark this version as already applied and proceed with the next version after it.

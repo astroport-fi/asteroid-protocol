@@ -290,6 +290,7 @@ type Metadata struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Mime        string `json:"mime"`
+	Symbol      string `json:"symbol"`
 }
 
 type InscriptionMetadataParent struct {
