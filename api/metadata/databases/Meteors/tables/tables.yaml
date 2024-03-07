@@ -1,3 +1,5 @@
+- "!include public_collection.yaml"
+- "!include public_collection_traits.yaml"
 - "!include public_inscription.yaml"
 - "!include public_inscription_history.yaml"
 - "!include public_inscription_market.yaml"

@@ -1,0 +1,23 @@
+table:
+  name: collection_traits
+  schema: public
+object_relationships:
+  - name: collection
+    using:
+      manual_configuration:
+        column_mapping:
+          collection_id: id
+        insertion_order: null
+        remote_table:
+          name: collection
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - count
+        - collection_id
+        - trait_type
+        - trait_value
+      filter: {}
+    comment: ""

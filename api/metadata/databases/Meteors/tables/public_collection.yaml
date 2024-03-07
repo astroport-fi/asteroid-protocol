@@ -1,0 +1,25 @@
+table:
+  name: collection
+  schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - is_explicit
+        - chain_id
+        - content_hash
+        - content_path
+        - creator
+        - minter
+        - name
+        - symbol
+        - version
+        - content_size_bytes
+        - height
+        - id
+        - transaction_id
+        - metadata
+        - date_created
+      filter: {}
+      allow_aggregations: true
+    comment: ""
