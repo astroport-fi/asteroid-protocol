@@ -17,4 +17,5 @@ select_permissions:
         - listing_id
         - date_created
       filter: {}
+      allow_aggregations: true
     comment: ""
