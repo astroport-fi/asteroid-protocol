@@ -3,7 +3,6 @@ package metaprotocol
 import (
 	"bytes"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"mime"
@@ -108,7 +107,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			break
 		}
 
-		inscriptionMetadata, err := msg.GetMetadata()
+		jsonBytes, inscriptionMetadata, err := msg.GetMetadata()
 		if err != nil {
 			return err
 		}
@@ -122,11 +121,6 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, content)
 		if err != nil {
 			return fmt.Errorf("unable to store content '%s'", err)
-		}
-
-		jsonBytes, err := json.Marshal(inscriptionMetadata)
-		if err != nil {
-			return fmt.Errorf("unable to marshal metadata '%s'", err)
 		}
 
 		// Check if the inscription is a Collection

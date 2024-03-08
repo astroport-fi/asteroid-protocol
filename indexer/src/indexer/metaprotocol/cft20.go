@@ -195,7 +195,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 				break
 			}
 
-			inscriptionMetadata, err := msg.GetMetadata()
+			_, inscriptionMetadata, err := msg.GetMetadata()
 			if err != nil {
 				return err
 			}

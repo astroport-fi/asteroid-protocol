@@ -145,7 +145,7 @@ func TestOldTx(t *testing.T) {
 		t.Fatalf("error unmarshalling: %v", err)
 	}
 
-	metadata, err := msg.GetMetadata()
+	_, metadata, err := msg.GetMetadata()
 	if err != nil {
 		t.Fatalf("error getting metadata: %v", err)
 	}
@@ -183,7 +183,7 @@ func TestNewTx(t *testing.T) {
 		t.Fatalf("error unmarshalling: %v", err)
 	}
 
-	metadata, err := msg.GetMetadata()
+	_, metadata, err := msg.GetMetadata()
 	if err != nil {
 		t.Fatalf("error getting metadata: %v", err)
 	}
