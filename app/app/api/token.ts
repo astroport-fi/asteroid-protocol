@@ -174,6 +174,9 @@ export const tokenTradeHistorySelector = Selector('token_trade_history')({
   seller_address: true,
   buyer_address: true,
   date_created: true,
+  token: {
+    ticker: true,
+  },
 })
 
 export type TokenTradeHistory = InputType<
