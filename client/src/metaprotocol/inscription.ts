@@ -14,6 +14,23 @@ export type ContentMetadata = {
   isExplicit?: boolean
 }
 
+export interface CollectionMetadata extends ContentMetadata {
+  symbol: string
+  minter?: string
+  royalty_percentage?: number
+  payment_address?: string
+}
+
+export interface Trait {
+  display_type?: string | null
+  trait_type: string
+  value: string
+}
+
+export interface NFTMetadata extends ContentMetadata {
+  attributes?: Trait[] | null
+}
+
 export type Parent = {
   type: string
   identifier: string
@@ -31,6 +48,13 @@ export function accountIdentifier(accountAddress: string) {
   return {
     type: '/cosmos.bank.Account',
     identifier: accountAddress,
+  }
+}
+
+export function collectionIdentifier(collection: string) {
+  return {
+    type: '/collection',
+    identifier: collection,
   }
 }
 

@@ -1144,10 +1144,13 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+<<<<<<< HEAD
   /** club_statsNative Query Arguments */
   ['club_stats_arguments']: {
     max_id: number | Variable<any, string>
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** columns and relationships of "collection" */
   ['collection']: AliasType<{
     chain_id?: boolean | `@${string}`
@@ -1168,8 +1171,11 @@ export type ValueTypes = {
     ]
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     traits?: [
       {
@@ -1247,7 +1253,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1328,6 +1337,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+<<<<<<< HEAD
     payment_address?:
       | ValueTypes['String_comparison_exp']
       | undefined
@@ -1338,6 +1348,8 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?:
       | ValueTypes['String_comparison_exp']
       | undefined
@@ -1376,8 +1388,11 @@ export type ValueTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -1395,8 +1410,11 @@ export type ValueTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -1436,6 +1454,7 @@ export type ValueTypes = {
     metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     minter?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     name?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+<<<<<<< HEAD
     payment_address?:
       | ValueTypes['order_by']
       | undefined
@@ -1446,6 +1465,8 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     traits_aggregate?:
       | ValueTypes['collection_traits_aggregate_order_by']
@@ -1466,6 +1487,7 @@ export type ValueTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+<<<<<<< HEAD
   ['collection_stats']: AliasType<{
     floor_price?: boolean | `@${string}`
     listed?: boolean | `@${string}`
@@ -1534,12 +1556,17 @@ export type ValueTypes = {
     supply?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     volume?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: AliasType<{
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1548,7 +1575,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1557,7 +1587,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1592,12 +1625,15 @@ export type ValueTypes = {
     metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
     minter?: string | undefined | null | Variable<any, string>
     name?: string | undefined | null | Variable<any, string>
+<<<<<<< HEAD
     payment_address?: string | undefined | null | Variable<any, string>
     royalty_percentage?:
       | ValueTypes['numeric']
       | undefined
       | null
       | Variable<any, string>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
@@ -1607,7 +1643,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1871,7 +1910,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1880,7 +1922,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1889,7 +1934,10 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -2405,11 +2453,14 @@ export type ValueTypes = {
       | Variable<any, string>
     metadata?:
       | ValueTypes['jsonb_comparison_exp']
+<<<<<<< HEAD
       | undefined
       | null
       | Variable<any, string>
     migration_permission_grants?:
       | ValueTypes['migration_permission_grant_bool_exp']
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
       | undefined
       | null
       | Variable<any, string>
@@ -6911,6 +6962,7 @@ export type ValueTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+<<<<<<< HEAD
     club_stats?: [
       {
         /** club_statsNative Query Arguments */
@@ -6948,6 +7000,8 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection?: [
       {
         /** distinct select on columns */
@@ -7020,6 +7074,7 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['collection'],
     ]
+<<<<<<< HEAD
     collection_stats?: [
       {
         /** collection_statsNative Query Arguments */
@@ -7057,6 +7112,8 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_traits?: [
       {
         /** distinct select on columns */
@@ -8339,6 +8396,7 @@ export type ValueTypes = {
     last_processed_height?: number | undefined | null | Variable<any, string>
   }
   ['subscription_root']: AliasType<{
+<<<<<<< HEAD
     club_stats?: [
       {
         /** club_statsNative Query Arguments */
@@ -8376,6 +8434,8 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection?: [
       {
         /** distinct select on columns */
@@ -8448,6 +8508,7 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['collection'],
     ]
+<<<<<<< HEAD
     collection_stats?: [
       {
         /** collection_statsNative Query Arguments */
@@ -8485,6 +8546,8 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_stream?: [
       {
         /** maximum number of rows returned in a single batch */
@@ -14091,10 +14154,13 @@ export type ResolverInputTypes = {
     _neq?: ResolverInputTypes['bigint'] | undefined | null
     _nin?: Array<ResolverInputTypes['bigint']> | undefined | null
   }
+<<<<<<< HEAD
   /** club_statsNative Query Arguments */
   ['club_stats_arguments']: {
     max_id: number
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** columns and relationships of "collection" */
   ['collection']: AliasType<{
     chain_id?: boolean | `@${string}`
@@ -14114,8 +14180,11 @@ export type ResolverInputTypes = {
     ]
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     traits?: [
       {
@@ -14184,7 +14253,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14220,6 +14292,7 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
     minter?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     name?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+<<<<<<< HEAD
     payment_address?:
       | ResolverInputTypes['String_comparison_exp']
       | undefined
@@ -14228,6 +14301,8 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['numeric_comparison_exp']
       | undefined
       | null
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     traits?: ResolverInputTypes['collection_traits_bool_exp'] | undefined | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
@@ -14246,8 +14321,11 @@ export type ResolverInputTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -14265,8 +14343,11 @@ export type ResolverInputTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+<<<<<<< HEAD
     payment_address?: boolean | `@${string}`
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -14286,8 +14367,11 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['order_by'] | undefined | null
     minter?: ResolverInputTypes['order_by'] | undefined | null
     name?: ResolverInputTypes['order_by'] | undefined | null
+<<<<<<< HEAD
     payment_address?: ResolverInputTypes['order_by'] | undefined | null
     royalty_percentage?: ResolverInputTypes['order_by'] | undefined | null
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: ResolverInputTypes['order_by'] | undefined | null
     traits_aggregate?:
       | ResolverInputTypes['collection_traits_aggregate_order_by']
@@ -14299,6 +14383,7 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+<<<<<<< HEAD
   ['collection_stats']: AliasType<{
     floor_price?: boolean | `@${string}`
     listed?: boolean | `@${string}`
@@ -14340,12 +14425,17 @@ export type ResolverInputTypes = {
     supply?: ResolverInputTypes['order_by'] | undefined | null
     volume?: ResolverInputTypes['order_by'] | undefined | null
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: AliasType<{
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14354,7 +14444,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14363,7 +14456,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14388,8 +14484,11 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['jsonb'] | undefined | null
     minter?: string | undefined | null
     name?: string | undefined | null
+<<<<<<< HEAD
     payment_address?: string | undefined | null
     royalty_percentage?: ResolverInputTypes['numeric'] | undefined | null
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined | null
     transaction_id?: number | undefined | null
     version?: string | undefined | null
@@ -14399,7 +14498,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14563,7 +14665,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14572,7 +14677,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14581,7 +14689,10 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+<<<<<<< HEAD
     royalty_percentage?: boolean | `@${string}`
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14951,10 +15062,13 @@ export type ResolverInputTypes = {
       | undefined
       | null
     metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+<<<<<<< HEAD
     migration_permission_grants?:
       | ResolverInputTypes['migration_permission_grant_bool_exp']
       | undefined
       | null
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     type?: ResolverInputTypes['String_comparison_exp'] | undefined | null
@@ -17598,6 +17712,7 @@ export type ResolverInputTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+<<<<<<< HEAD
     club_stats?: [
       {
         /** club_statsNative Query Arguments */
@@ -17625,6 +17740,8 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection?: [
       {
         /** distinct select on columns */
@@ -17672,6 +17789,7 @@ export type ResolverInputTypes = {
       ResolverInputTypes['collection_aggregate'],
     ]
     collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+<<<<<<< HEAD
     collection_stats?: [
       {
         /** collection_statsNative Query Arguments */
@@ -17699,6 +17817,8 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_traits?: [
       {
         /** distinct select on columns */
@@ -18606,6 +18726,7 @@ export type ResolverInputTypes = {
     last_processed_height?: number | undefined | null
   }
   ['subscription_root']: AliasType<{
+<<<<<<< HEAD
     club_stats?: [
       {
         /** club_statsNative Query Arguments */
@@ -18633,6 +18754,8 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection?: [
       {
         /** distinct select on columns */
@@ -18680,6 +18803,7 @@ export type ResolverInputTypes = {
       ResolverInputTypes['collection_aggregate'],
     ]
     collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+<<<<<<< HEAD
     collection_stats?: [
       {
         /** collection_statsNative Query Arguments */
@@ -18707,6 +18831,8 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats'],
     ]
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_stream?: [
       {
         /** maximum number of rows returned in a single batch */
@@ -22281,10 +22407,13 @@ export type ModelTypes = {
     _neq?: ModelTypes['bigint'] | undefined
     _nin?: Array<ModelTypes['bigint']> | undefined
   }
+<<<<<<< HEAD
   /** club_statsNative Query Arguments */
   ['club_stats_arguments']: {
     max_id: number
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** columns and relationships of "collection" */
   ['collection']: {
     chain_id: string
@@ -22299,8 +22428,11 @@ export type ModelTypes = {
     metadata: ModelTypes['jsonb']
     minter?: string | undefined
     name: string
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: ModelTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: string
     /** An array relationship */
     traits: Array<ModelTypes['collection_traits']>
@@ -22333,7 +22465,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
@@ -22353,8 +22488,11 @@ export type ModelTypes = {
     metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
     minter?: ModelTypes['String_comparison_exp'] | undefined
     name?: ModelTypes['String_comparison_exp'] | undefined
+<<<<<<< HEAD
     payment_address?: ModelTypes['String_comparison_exp'] | undefined
     royalty_percentage?: ModelTypes['numeric_comparison_exp'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: ModelTypes['String_comparison_exp'] | undefined
     traits?: ModelTypes['collection_traits_bool_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
@@ -22373,8 +22511,11 @@ export type ModelTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: ModelTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -22391,8 +22532,11 @@ export type ModelTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: ModelTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -22411,8 +22555,11 @@ export type ModelTypes = {
     metadata?: ModelTypes['order_by'] | undefined
     minter?: ModelTypes['order_by'] | undefined
     name?: ModelTypes['order_by'] | undefined
+<<<<<<< HEAD
     payment_address?: ModelTypes['order_by'] | undefined
     royalty_percentage?: ModelTypes['order_by'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: ModelTypes['order_by'] | undefined
     traits_aggregate?:
       | ModelTypes['collection_traits_aggregate_order_by']
@@ -22422,6 +22569,7 @@ export type ModelTypes = {
     version?: ModelTypes['order_by'] | undefined
   }
   ['collection_select_column']: collection_select_column
+<<<<<<< HEAD
   ['collection_stats']: {
     floor_price: ModelTypes['bigint']
     listed: ModelTypes['bigint']
@@ -22453,12 +22601,17 @@ export type ModelTypes = {
     supply?: ModelTypes['order_by'] | undefined
     volume?: ModelTypes['order_by'] | undefined
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -22466,7 +22619,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -22474,7 +22630,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "collection" */
@@ -22498,8 +22657,11 @@ export type ModelTypes = {
     metadata?: ModelTypes['jsonb'] | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: ModelTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -22509,7 +22671,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: ModelTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** columns and relationships of "collection_traits" */
@@ -22626,7 +22791,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -22634,7 +22802,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -22642,7 +22813,10 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   ['cursor_ordering']: cursor_ordering
@@ -22678,8 +22852,11 @@ export type ModelTypes = {
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     metadata: ModelTypes['jsonb']
+<<<<<<< HEAD
     /** An array relationship */
     migration_permission_grants: Array<ModelTypes['migration_permission_grant']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** An object relationship */
     transaction: ModelTypes['transaction']
     transaction_id: number
@@ -22791,9 +22968,12 @@ export type ModelTypes = {
       | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
+<<<<<<< HEAD
     migration_permission_grants?:
       | ModelTypes['migration_permission_grant_bool_exp']
       | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
     type?: ModelTypes['String_comparison_exp'] | undefined
@@ -24865,14 +25045,20 @@ export type ModelTypes = {
   }
   ['order_by']: order_by
   ['query_root']: {
+<<<<<<< HEAD
     club_stats: Array<ModelTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection" */
     collection: Array<ModelTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: ModelTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: ModelTypes['collection'] | undefined
+<<<<<<< HEAD
     collection_stats: Array<ModelTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<ModelTypes['collection_traits']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
@@ -25084,14 +25270,20 @@ export type ModelTypes = {
     last_processed_height?: number | undefined
   }
   ['subscription_root']: {
+<<<<<<< HEAD
     club_stats: Array<ModelTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection" */
     collection: Array<ModelTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: ModelTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: ModelTypes['collection'] | undefined
+<<<<<<< HEAD
     collection_stats: Array<ModelTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table in a streaming manner: "collection" */
     collection_stream: Array<ModelTypes['collection']>
     /** fetch data from the table: "collection_traits" */
@@ -26995,10 +27187,13 @@ export type GraphQLTypes = {
     _neq?: GraphQLTypes['bigint'] | undefined
     _nin?: Array<GraphQLTypes['bigint']> | undefined
   }
+<<<<<<< HEAD
   /** club_statsNative Query Arguments */
   ['club_stats_arguments']: {
     max_id: number
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** columns and relationships of "collection" */
   ['collection']: {
     __typename: 'collection'
@@ -27014,8 +27209,11 @@ export type GraphQLTypes = {
     metadata: GraphQLTypes['jsonb']
     minter?: string | undefined
     name: string
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: GraphQLTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: string
     /** An array relationship */
     traits: Array<GraphQLTypes['collection_traits']>
@@ -27051,7 +27249,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
@@ -27071,8 +27272,11 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
     minter?: GraphQLTypes['String_comparison_exp'] | undefined
     name?: GraphQLTypes['String_comparison_exp'] | undefined
+<<<<<<< HEAD
     payment_address?: GraphQLTypes['String_comparison_exp'] | undefined
     royalty_percentage?: GraphQLTypes['numeric_comparison_exp'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: GraphQLTypes['String_comparison_exp'] | undefined
     traits?: GraphQLTypes['collection_traits_bool_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
@@ -27092,8 +27296,11 @@ export type GraphQLTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: GraphQLTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -27111,8 +27318,11 @@ export type GraphQLTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: GraphQLTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -27131,8 +27341,11 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['order_by'] | undefined
     minter?: GraphQLTypes['order_by'] | undefined
     name?: GraphQLTypes['order_by'] | undefined
+<<<<<<< HEAD
     payment_address?: GraphQLTypes['order_by'] | undefined
     royalty_percentage?: GraphQLTypes['order_by'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: GraphQLTypes['order_by'] | undefined
     traits_aggregate?:
       | GraphQLTypes['collection_traits_aggregate_order_by']
@@ -27143,6 +27356,7 @@ export type GraphQLTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+<<<<<<< HEAD
   ['collection_stats']: {
     __typename: 'collection_stats'
     floor_price: GraphQLTypes['bigint']
@@ -27175,13 +27389,18 @@ export type GraphQLTypes = {
     supply?: GraphQLTypes['order_by'] | undefined
     volume?: GraphQLTypes['order_by'] | undefined
   }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
     __typename: 'collection_stddev_fields'
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -27190,7 +27409,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -27199,7 +27421,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "collection" */
@@ -27223,8 +27448,11 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['jsonb'] | undefined
     minter?: string | undefined
     name?: string | undefined
+<<<<<<< HEAD
     payment_address?: string | undefined
     royalty_percentage?: GraphQLTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -27235,7 +27463,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: GraphQLTypes['numeric'] | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** columns and relationships of "collection_traits" */
@@ -27357,7 +27588,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -27366,7 +27600,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -27375,7 +27612,10 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+<<<<<<< HEAD
     royalty_percentage?: number | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id?: number | undefined
   }
   /** ordering argument of a cursor */
@@ -27415,10 +27655,13 @@ export type GraphQLTypes = {
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     metadata: GraphQLTypes['jsonb']
+<<<<<<< HEAD
     /** An array relationship */
     migration_permission_grants: Array<
       GraphQLTypes['migration_permission_grant']
     >
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
     transaction_id: number
@@ -27535,9 +27778,12 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+<<<<<<< HEAD
     migration_permission_grants?:
       | GraphQLTypes['migration_permission_grant_bool_exp']
       | undefined
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     type?: GraphQLTypes['String_comparison_exp'] | undefined
@@ -29741,14 +29987,20 @@ export type GraphQLTypes = {
   ['order_by']: order_by
   ['query_root']: {
     __typename: 'query_root'
+<<<<<<< HEAD
     club_stats: Array<GraphQLTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection" */
     collection: Array<GraphQLTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: GraphQLTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: GraphQLTypes['collection'] | undefined
+<<<<<<< HEAD
     collection_stats: Array<GraphQLTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<GraphQLTypes['collection_traits']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
@@ -29966,14 +30218,20 @@ export type GraphQLTypes = {
   }
   ['subscription_root']: {
     __typename: 'subscription_root'
+<<<<<<< HEAD
     club_stats: Array<GraphQLTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table: "collection" */
     collection: Array<GraphQLTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: GraphQLTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: GraphQLTypes['collection'] | undefined
+<<<<<<< HEAD
     collection_stats: Array<GraphQLTypes['collection_stats']>
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     /** fetch data from the table in a streaming manner: "collection" */
     collection_stream: Array<GraphQLTypes['collection']>
     /** fetch data from the table: "collection_traits" */
@@ -31864,12 +32122,16 @@ export const enum collection_select_column {
   metadata = 'metadata',
   minter = 'minter',
   name = 'name',
+<<<<<<< HEAD
   payment_address = 'payment_address',
   royalty_percentage = 'royalty_percentage',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   symbol = 'symbol',
   transaction_id = 'transaction_id',
   version = 'version',
 }
+<<<<<<< HEAD
 export const enum collection_stats_enum_name {
   floor_price = 'floor_price',
   listed = 'listed',
@@ -31877,6 +32139,8 @@ export const enum collection_stats_enum_name {
   supply = 'supply',
   volume = 'volume',
 }
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
 /** select columns of table "collection_traits" */
 export const enum collection_traits_select_column {
   collection_id = 'collection_id',
@@ -32142,6 +32406,7 @@ type ZEUS_VARIABLES = {
   ['String_comparison_exp']: ValueTypes['String_comparison_exp']
   ['bigint']: ValueTypes['bigint']
   ['bigint_comparison_exp']: ValueTypes['bigint_comparison_exp']
+<<<<<<< HEAD
   ['club_stats_arguments']: ValueTypes['club_stats_arguments']
   ['collection_bool_exp']: ValueTypes['collection_bool_exp']
   ['collection_order_by']: ValueTypes['collection_order_by']
@@ -32150,6 +32415,11 @@ type ZEUS_VARIABLES = {
   ['collection_stats_bool_exp_bool_exp']: ValueTypes['collection_stats_bool_exp_bool_exp']
   ['collection_stats_enum_name']: ValueTypes['collection_stats_enum_name']
   ['collection_stats_order_by']: ValueTypes['collection_stats_order_by']
+=======
+  ['collection_bool_exp']: ValueTypes['collection_bool_exp']
+  ['collection_order_by']: ValueTypes['collection_order_by']
+  ['collection_select_column']: ValueTypes['collection_select_column']
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   ['collection_stream_cursor_input']: ValueTypes['collection_stream_cursor_input']
   ['collection_stream_cursor_value_input']: ValueTypes['collection_stream_cursor_value_input']
   ['collection_traits_aggregate_order_by']: ValueTypes['collection_traits_aggregate_order_by']

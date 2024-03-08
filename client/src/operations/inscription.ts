@@ -1,7 +1,10 @@
 import InscriptionProtocol, {
+  CollectionMetadata,
   ContentMetadata,
+  NFTMetadata,
   Parent,
   accountIdentifier,
+  collectionIdentifier,
 } from '../metaprotocol/inscription.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
@@ -39,6 +42,18 @@ export class InscriptionOperations<
     )
     const operation = this.protocol.inscribe(inscriptionData.hash)
     return this.prepareOperation(operation, inscriptionData)
+  }
+
+  inscribeCollectionInscription(
+    collection: string,
+    content: Uint8Array,
+    metadata: NFTMetadata,
+  ) {
+    return this.inscribe(content, metadata, collectionIdentifier(collection))
+  }
+
+  inscribeCollection(content: Uint8Array, metadata: CollectionMetadata) {
+    return this.inscribe(content, metadata)
   }
 
   transfer(hash: string, destination: string) {

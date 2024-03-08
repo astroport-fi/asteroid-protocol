@@ -16,7 +16,10 @@ export const AllTypesProps: Record<string, any> = {
     _neq: 'bigint',
     _nin: 'bigint',
   },
+<<<<<<< HEAD
   club_stats_arguments: {},
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   collection: {
     metadata: {},
     traits: {
@@ -46,8 +49,11 @@ export const AllTypesProps: Record<string, any> = {
     metadata: 'jsonb_comparison_exp',
     minter: 'String_comparison_exp',
     name: 'String_comparison_exp',
+<<<<<<< HEAD
     payment_address: 'String_comparison_exp',
     royalty_percentage: 'numeric_comparison_exp',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: 'String_comparison_exp',
     traits: 'collection_traits_bool_exp',
     transaction: 'transaction_bool_exp',
@@ -67,8 +73,11 @@ export const AllTypesProps: Record<string, any> = {
     metadata: 'order_by',
     minter: 'order_by',
     name: 'order_by',
+<<<<<<< HEAD
     payment_address: 'order_by',
     royalty_percentage: 'order_by',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: 'order_by',
     traits_aggregate: 'collection_traits_aggregate_order_by',
     transaction: 'transaction_order_by',
@@ -76,6 +85,7 @@ export const AllTypesProps: Record<string, any> = {
     version: 'order_by',
   },
   collection_select_column: 'enum' as const,
+<<<<<<< HEAD
   collection_stats_arguments: {},
   collection_stats_bool_exp_bool_exp: {
     _and: 'collection_stats_bool_exp_bool_exp',
@@ -95,6 +105,8 @@ export const AllTypesProps: Record<string, any> = {
     supply: 'order_by',
     volume: 'order_by',
   },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   collection_stream_cursor_input: {
     initial_value: 'collection_stream_cursor_value_input',
     ordering: 'cursor_ordering',
@@ -102,7 +114,10 @@ export const AllTypesProps: Record<string, any> = {
   collection_stream_cursor_value_input: {
     date_created: 'timestamp',
     metadata: 'jsonb',
+<<<<<<< HEAD
     royalty_percentage: 'numeric',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   },
   collection_traits: {
     trait_type: {},
@@ -294,7 +309,10 @@ export const AllTypesProps: Record<string, any> = {
     marketplace_inscription_details_aggregate:
       'marketplace_inscription_detail_aggregate_bool_exp',
     metadata: 'jsonb_comparison_exp',
+<<<<<<< HEAD
     migration_permission_grants: 'migration_permission_grant_bool_exp',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
     type: 'String_comparison_exp',
@@ -1464,12 +1482,15 @@ export const AllTypesProps: Record<string, any> = {
   },
   order_by: 'enum' as const,
   query_root: {
+<<<<<<< HEAD
     club_stats: {
       args: 'club_stats_arguments',
       distinct_on: 'collection_stats_enum_name',
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp_bool_exp',
     },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection: {
       distinct_on: 'collection_select_column',
       order_by: 'collection_order_by',
@@ -1481,12 +1502,15 @@ export const AllTypesProps: Record<string, any> = {
       where: 'collection_bool_exp',
     },
     collection_by_pk: {},
+<<<<<<< HEAD
     collection_stats: {
       args: 'collection_stats_arguments',
       distinct_on: 'collection_stats_enum_name',
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp_bool_exp',
     },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_traits: {
       distinct_on: 'collection_traits_select_column',
       order_by: 'collection_traits_order_by',
@@ -1713,12 +1737,15 @@ export const AllTypesProps: Record<string, any> = {
     date_updated: 'timestamp',
   },
   subscription_root: {
+<<<<<<< HEAD
     club_stats: {
       args: 'club_stats_arguments',
       distinct_on: 'collection_stats_enum_name',
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp_bool_exp',
     },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection: {
       distinct_on: 'collection_select_column',
       order_by: 'collection_order_by',
@@ -1730,12 +1757,15 @@ export const AllTypesProps: Record<string, any> = {
       where: 'collection_bool_exp',
     },
     collection_by_pk: {},
+<<<<<<< HEAD
     collection_stats: {
       args: 'collection_stats_arguments',
       distinct_on: 'collection_stats_enum_name',
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp_bool_exp',
     },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_stream: {
       cursor: 'collection_stream_cursor_input',
       where: 'collection_bool_exp',
@@ -3013,8 +3043,11 @@ export const ReturnTypes: Record<string, any> = {
     metadata: 'jsonb',
     minter: 'String',
     name: 'String',
+<<<<<<< HEAD
     payment_address: 'String',
     royalty_percentage: 'numeric',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: 'String',
     traits: 'collection_traits',
     transaction: 'transaction',
@@ -3042,7 +3075,10 @@ export const ReturnTypes: Record<string, any> = {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_max_fields: {
@@ -3056,8 +3092,11 @@ export const ReturnTypes: Record<string, any> = {
     id: 'Int',
     minter: 'String',
     name: 'String',
+<<<<<<< HEAD
     payment_address: 'String',
     royalty_percentage: 'numeric',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: 'String',
     transaction_id: 'Int',
     version: 'String',
@@ -3073,12 +3112,16 @@ export const ReturnTypes: Record<string, any> = {
     id: 'Int',
     minter: 'String',
     name: 'String',
+<<<<<<< HEAD
     payment_address: 'String',
     royalty_percentage: 'numeric',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     symbol: 'String',
     transaction_id: 'Int',
     version: 'String',
   },
+<<<<<<< HEAD
   collection_stats: {
     floor_price: 'bigint',
     listed: 'bigint',
@@ -3086,32 +3129,46 @@ export const ReturnTypes: Record<string, any> = {
     supply: 'bigint',
     volume: 'numeric',
   },
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
   collection_stddev_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_stddev_pop_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_stddev_samp_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_sum_fields: {
     content_size_bytes: 'Int',
     height: 'Int',
     id: 'Int',
+<<<<<<< HEAD
     royalty_percentage: 'numeric',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Int',
   },
   collection_traits: {
@@ -3125,21 +3182,30 @@ export const ReturnTypes: Record<string, any> = {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_var_samp_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   collection_variance_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
     id: 'Float',
+<<<<<<< HEAD
     royalty_percentage: 'Float',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction_id: 'Float',
   },
   inscription: {
@@ -3163,7 +3229,10 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_inscription_details_aggregate:
       'marketplace_inscription_detail_aggregate',
     metadata: 'jsonb',
+<<<<<<< HEAD
     migration_permission_grants: 'migration_permission_grant',
+=======
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     transaction: 'transaction',
     transaction_id: 'Int',
     type: 'String',
@@ -3689,11 +3758,17 @@ export const ReturnTypes: Record<string, any> = {
   },
   numeric: `scalar.numeric` as const,
   query_root: {
+<<<<<<< HEAD
     club_stats: 'collection_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
     collection_by_pk: 'collection',
     collection_stats: 'collection_stats',
+=======
+    collection: 'collection',
+    collection_aggregate: 'collection_aggregate',
+    collection_by_pk: 'collection',
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_traits: 'collection_traits',
     find_inscription_by_name: 'search_result',
     inscription: 'inscription',
@@ -3762,11 +3837,17 @@ export const ReturnTypes: Record<string, any> = {
     last_processed_height: 'Int',
   },
   subscription_root: {
+<<<<<<< HEAD
     club_stats: 'collection_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
     collection_by_pk: 'collection',
     collection_stats: 'collection_stats',
+=======
+    collection: 'collection',
+    collection_aggregate: 'collection_aggregate',
+    collection_by_pk: 'collection',
+>>>>>>> bb9e156 (client - collection and inscription traits support)
     collection_stream: 'collection',
     collection_traits: 'collection_traits',
     collection_traits_stream: 'collection_traits',
