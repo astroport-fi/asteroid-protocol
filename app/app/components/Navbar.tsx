@@ -72,11 +72,11 @@ export default function Navbar() {
             </Dropdown.Item>
             <li>
               <ul className="p-2 z-10">
-                {/* <li>
-                  <NavLink to="/app/create/collection">Collection</NavLink>
-                </li> */}
                 <li>
                   <NavLink to="/app/create/inscription">Inscription</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/app/create/collection">Collection</NavLink>
                 </li>
                 <li>
                   <NavLink to="/app/create/token">Token</NavLink>
@@ -125,6 +125,15 @@ export default function Navbar() {
                   onClick={close}
                 >
                   Inscription
+                </NavLink>
+              </Menu.Item>
+              <Menu.Item>
+                <NavLink
+                  to="/app/create/collection"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={close}
+                >
+                  Collection
                 </NavLink>
               </Menu.Item>
               <Menu.Item>
