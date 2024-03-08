@@ -2,12 +2,18 @@
 import { Command, program } from 'commander'
 import fs from 'fs/promises'
 import mime from 'mime'
+import path from 'path'
 import { Context, Options, createContext } from './context.js'
+import {
+  CollectionMetadata,
+  NFTMetadata,
+  Trait,
+} from './metaprotocol/inscription.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
-import { MetaOperations } from './operations/meta.js'
+import { readCSV } from './utils.js'
 
 export function setupCommand(command?: Command) {
   if (!command) {
@@ -49,19 +55,6 @@ async function action(
   }
 }
 
-async function metaAction(
-  options: Options,
-  fn: (context: Context, operations: MetaOperations) => Promise<TxData | void>,
-) {
-  return action(options, (context) => {
-    const operations = new MetaOperations(
-      context.network.chainId,
-      context.account.address,
-    )
-    return fn(context, operations)
-  })
-}
-
 async function inscriptionAction(
   options: Options,
   fn: (
@@ -73,6 +66,7 @@ async function inscriptionAction(
     const operations = new InscriptionOperations(
       context.network.chainId,
       context.account.address,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -86,6 +80,7 @@ async function cft20Action(
     const operations = new CFT20Operations(
       context.network.chainId,
       context.account.address,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -103,6 +98,7 @@ async function marketplaceAction(
       context.network.chainId,
       context.account.address,
       context.api,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -112,6 +108,7 @@ interface InscriptionOptions extends Options {
   dataPath: string
   name: string
   description: string
+  collection?: string
 }
 
 setupCommand(inscriptionCommand.command('inscribe'))
@@ -119,6 +116,7 @@ setupCommand(inscriptionCommand.command('inscribe'))
   .requiredOption('-p, --data-path <DATA_PATH>', 'Inscription data path')
   .requiredOption('-i, --name <NAME>', 'Inscription name')
   .requiredOption('-d, --description <DESCRIPTION>', 'Inscription description')
+  .option('-c, --collection <COLLECTION>', 'The collection transaction hash')
   .action(async (options: InscriptionOptions) => {
     inscriptionAction(options, async (context, operations) => {
       const mimeType = mime.getType(options.dataPath)
@@ -131,7 +129,102 @@ setupCommand(inscriptionCommand.command('inscribe'))
         name: options.name,
         mime: mimeType,
       }
+      if (options.collection) {
+        return operations.inscribeCollectionInscription(
+          options.collection,
+          data,
+          metadata,
+        )
+      }
+
       return operations.inscribe(data, metadata)
+    })
+  })
+
+interface CollectionOptions extends Omit<InscriptionOptions, 'collection'> {
+  symbol: string
+}
+
+setupCommand(inscriptionCommand.command('collection'))
+  .description('Create a new collection')
+  .requiredOption('-s, --symbol <SYMBOL>', 'Collection symbol')
+  .requiredOption('-p, --data-path <DATA_PATH>', 'Inscription data path')
+  .requiredOption('-i, --name <NAME>', 'Inscription name')
+  .requiredOption('-d, --description <DESCRIPTION>', 'Inscription description')
+  .action(async (options: CollectionOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const mimeType = mime.getType(options.dataPath)
+      if (!mimeType) {
+        throw new Error('Unknown mime type')
+      }
+      const data = await fs.readFile(options.dataPath)
+      const metadata: CollectionMetadata = {
+        description: options.description,
+        name: options.name,
+        mime: mimeType,
+        symbol: options.symbol,
+      }
+      return operations.inscribe(data, metadata)
+    })
+  })
+
+interface CSVOptions extends Options {
+  csvPath: string
+  collection: string
+}
+
+setupCommand(inscriptionCommand.command('inscribe-csv'))
+  .description('Create collection inscriptions from Metadata CSV and images')
+  .requiredOption('-p, --csv-path <CSV_PATH>', 'Metadata CSV path')
+  .requiredOption(
+    '-c, --collection <COLLECTION>',
+    'The collection transaction hash',
+  )
+  .action(async (options: CSVOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const rows = await readCSV(options.csvPath)
+      const dir = path.dirname(options.csvPath)
+
+      for (const row of rows) {
+        const attributes: Trait[] = []
+        let name = ''
+        let imagePath = ''
+
+        for (const [key, value] of Object.entries(row)) {
+          if (key == 'name') {
+            name = value
+          } else if (key == 'file') {
+            imagePath = path.join(dir, value)
+          } else {
+            attributes.push({ trait_type: key, value })
+          }
+        }
+
+        console.log(imagePath)
+        const mimeType = mime.getType(imagePath)
+        if (!mimeType) {
+          throw new Error('Unknown mime type')
+        }
+        const data = await fs.readFile(imagePath)
+        const metadata: NFTMetadata = {
+          description: '',
+          name,
+          mime: mimeType,
+          attributes,
+        }
+
+        const txData = operations.inscribeCollectionInscription(
+          options.collection,
+          data,
+          metadata,
+        )
+        const res = await broadcastTx(
+          context.client,
+          context.account.address,
+          txData,
+        )
+        console.log(`${context.network.explorer}${res.transactionHash}`)
+      }
     })
   })
 
