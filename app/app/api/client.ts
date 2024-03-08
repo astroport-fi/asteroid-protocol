@@ -879,18 +879,21 @@ export class AsteroidClient extends AsteroidService {
   }
 
   async getTokenTradeHistory(
-    token_id: number,
+    tokenId?: number,
     offset = 0,
     limit = 100,
   ): Promise<TokenTradeHistory[]> {
+    const where: ValueTypes['token_trade_history_bool_exp'] = {}
+    if (tokenId) {
+      where.token_id = {
+        _eq: tokenId,
+      }
+    }
+
     const result = await this.query({
       token_trade_history: [
         {
-          where: {
-            token_id: {
-              _eq: token_id,
-            },
-          },
+          where,
           offset,
           limit,
           order_by: [

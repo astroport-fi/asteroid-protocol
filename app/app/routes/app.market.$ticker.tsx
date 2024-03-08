@@ -2,7 +2,7 @@ import type { TxInscription } from '@asteroid-protocol/sdk'
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import {
   TableOptions,
   createColumnHelper,
@@ -70,12 +70,13 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   }
 
   const url = new URL(request.url)
-  const { offset, limit, page } = parsePagination(url.searchParams)
+  const { offset, limit } = parsePagination(url.searchParams)
   const { sort, direction } = parseSorting(
     url.searchParams,
     'ppt',
     order_by.asc,
   )
+  const txsType = url.searchParams.get('txs')
 
   const address = await getAddress(request)
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -99,7 +100,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   )
 
   const transactions = await asteroidClient.getTokenTradeHistory(
-    token.id,
+    txsType === 'token' ? token.id : undefined,
     0,
     50,
   )
@@ -377,10 +378,39 @@ function LatestTransactions({
   token: Token
   transactions: TokenTradeHistory[]
 }) {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const txs = searchParams.get('txs')
+  const tokenOnlyTxs = txs === 'token'
+
   return (
     <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
       <div className="fixed py-8 flex flex-col w-available">
-        <div>Latest transactions</div>
+        <div className="text-lg">Latest transactions</div>
+        <div className="flex justify-center items-center text-sm">
+          <button
+            className={tokenOnlyTxs ? 'text-header-content' : 'text-primary'}
+            onClick={() =>
+              setSearchParams((prev) => {
+                prev.delete('txs')
+                return prev
+              })
+            }
+          >
+            All
+          </button>{' '}
+          <span className="mx-1">|</span>
+          <button
+            className={tokenOnlyTxs ? 'text-primary' : 'text-header-content'}
+            onClick={() =>
+              setSearchParams((prev) => {
+                prev.set('txs', 'token')
+                return prev
+              })
+            }
+          >
+            {token.ticker} only
+          </button>
+        </div>
         <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
           <span className="p-2 w-1/12">
             <ClockIcon className="size-5" />
@@ -400,14 +430,17 @@ function LatestTransactions({
               <span className="mx-1 shrink-0 w-1/12">
                 {getDateAgo(tx.date_created, true)}
               </span>
-              <span className="shrink-0 w-3/12 flex flex-col font-mono items-center">
+              <Link
+                to={`/app/market/${tx.token.ticker}`}
+                className="shrink-0 w-3/12 flex flex-col font-mono items-center"
+              >
                 <NumericFormat
                   displayType="text"
                   thousandSeparator
                   value={getDecimalValue(tx.amount_base, 6)}
                 />
-                <span className="mt-1">{token.ticker}</span>
-              </span>
+                <span className="mt-1">{tx.token.ticker}</span>
+              </Link>
               <span className="shrink-0 w-2/12 flex flex-col font-mono items-center">
                 <NumericFormat
                   displayType="text"
