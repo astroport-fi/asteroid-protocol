@@ -227,14 +227,16 @@ func (ed ExtensionDataWrapper) Type() string {
 	return "/gaia.metaprotocols.ExtensionData"
 }
 
-func (ed ExtensionDataWrapper) GetMetadata() (*InscriptionMetadata, error) {
+func (ed ExtensionDataWrapper) GetMetadata() ([]byte, *InscriptionMetadata, error) {
 	var metadata Metadata
 	err := json.Unmarshal(ed.Metadata, &metadata)
 	if err != nil {
-		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		return nil, nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
-	return &InscriptionMetadata{Metadata: metadata, Parent: InscriptionMetadataParent{Type: ed.ParentType, Identifier: ed.ParentIdentifier}}, nil
+	metadataString := fmt.Sprintf(`{"metadata":%v,"parent":{"type":"%v","identifier":"%v"}}`, string(ed.Metadata), ed.ParentType, ed.ParentIdentifier)
+
+	return []byte(metadataString), &InscriptionMetadata{Metadata: metadata, Parent: InscriptionMetadataParent{Type: ed.ParentType, Identifier: ed.ParentIdentifier}}, nil
 }
 
 func (ed ExtensionDataWrapper) GetContent() ([]byte, error) {
@@ -242,7 +244,7 @@ func (ed ExtensionDataWrapper) GetContent() ([]byte, error) {
 }
 
 type ExtensionMsg interface {
-	GetMetadata() (*InscriptionMetadata, error)
+	GetMetadata() ([]byte, *InscriptionMetadata, error)
 	GetContent() ([]byte, error)
 }
 
@@ -303,19 +305,19 @@ type InscriptionMetadata struct {
 	Metadata Metadata                  `json:"metadata"`
 }
 
-func (msg RawMsgRevoke) GetMetadata() (*InscriptionMetadata, error) {
+func (msg RawMsgRevoke) GetMetadata() ([]byte, *InscriptionMetadata, error) {
 	metadata, err := base64.StdEncoding.DecodeString(msg.Granter)
 	if err != nil {
-		return nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
+		return nil, nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
 	}
 
 	var inscriptionMetadata InscriptionMetadata
 	err = json.Unmarshal(metadata, &inscriptionMetadata)
 	if err != nil {
-		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		return nil, nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
-	return &inscriptionMetadata, nil
+	return metadata, &inscriptionMetadata, nil
 }
 
 func (msg RawMsgRevoke) GetContent() ([]byte, error) {
