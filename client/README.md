@@ -80,7 +80,7 @@ const res = await client.signAndBroadcast(
 )
 ```
 
-Simple example: [inscribe.js](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/example/inscribe.js)
+Simple example: [inscribe.js](https://github.com/astroport-fi/asteroid-protocol/blob/main/client/example/inscribe.js)
 
 How to integrate Asteroid Protocol SDK with Next.js and CosmosKit Wallet provider - https://github.com/astroport-fi/asteroid-sdk-cca-example/
 
@@ -151,7 +151,7 @@ Commands:
 
 ### Config file
 
-To customize configuration create `asteroid.json`, see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/feat/client/client/asteroid.json)
+To customize configuration create `asteroid.json`, see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/main/client/example/asteroid.json)
 
 ### Inscription
 
@@ -384,6 +384,10 @@ npx asteroid cft20 transfer --ticker ROIDS --amount 500 -d cosmos10h9stc5v6ntgey
 npx asteroid marketplace list cft20 --ticker ROIDS --amount 10 --price 0.1
 npx asteroid marketplace deposit --hash 4C79CA69034AB97A49581E56FDE376E10D9FFB3E71567C0462A3729DA1B04E60
 npx asteroid marketplace buy cft20 --hash 4C79CA69034AB97A49581E56FDE376E10D9FFB3E71567C0462A3729DA1B04E60
+
+npx asteroid inscription collection -p ~/Downloads/collection/logo.png --name Rocks --description Rocks --symbol ROCK
+npx asteroid inscription inscribe-csv -c DEAC410DF14EE4F7B0D74D5CA34B1DC3FD210F9CD039B917AF4311BA4976626D -p  ~/Downloads/collection/metadata.csv
+
 ```
 
 ## Development
