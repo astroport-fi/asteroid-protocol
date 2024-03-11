@@ -676,6 +676,85 @@ export class AsteroidClient extends AsteroidService {
     }))
   }
 
+  async getUserListedInscriptions(
+    address: string,
+    offset: number,
+    limit: number,
+  ): Promise<InscriptionsResult> {
+    const where: ValueTypes['marketplace_inscription_detail_bool_exp'] = {
+      marketplace_listing: {
+        seller_address: {
+          _eq: address,
+        },
+      },
+    }
+
+    const res = await this.query({
+      marketplace_inscription_detail: [
+        {
+          limit,
+          offset,
+          where,
+          order_by: [{ id: order_by.desc }],
+        },
+        {
+          inscription: inscriptionSelector,
+          marketplace_listing: marketplaceListingSelector,
+        },
+      ],
+      marketplace_inscription_detail_aggregate: [
+        {
+          where,
+        },
+        aggregateCountSelector,
+      ],
+    })
+    return {
+      inscriptions: res.marketplace_inscription_detail.map((i) => ({
+        ...i.inscription!,
+        marketplace_listing: i.marketplace_listing,
+      })),
+      count:
+        res.marketplace_inscription_detail_aggregate.aggregate?.count ??
+        res.marketplace_inscription_detail.length,
+    }
+  }
+
+  async getUserInscriptions(
+    address: string,
+    offset: number,
+    limit: number,
+  ): Promise<InscriptionsResult> {
+    const where: ValueTypes['inscription_bool_exp'] = {
+      current_owner: {
+        _eq: address,
+      },
+    }
+
+    const res = await this.query({
+      inscription: [
+        {
+          limit,
+          offset,
+          where,
+          order_by: [{ id: order_by.desc }],
+        },
+        inscriptionSelector,
+      ],
+      inscription_aggregate: [
+        {
+          where,
+        },
+        aggregateCountSelector,
+      ],
+    })
+    return {
+      inscriptions: res.inscription,
+      count:
+        res.inscription_aggregate.aggregate?.count ?? res.inscription.length,
+    }
+  }
+
   async getInscriptions(
     offset: number,
     limit: number,

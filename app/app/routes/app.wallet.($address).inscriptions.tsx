@@ -1,6 +1,6 @@
-import { order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
+import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import GhostEmptyState from '~/components/GhostEmptyState'
 import { Inscriptions } from '~/components/Inscriptions'
@@ -17,26 +17,18 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     address = await getAddress(request)
   }
   if (!address) {
-    return json({ inscriptions: [], pages: 0 })
+    return json({ inscriptions: [], pages: 0, listed: [] })
   }
-  const res = await asteroidClient.getInscriptions(
-    offset,
-    limit,
-    {
-      currentOwner: address,
-    },
-    {
-      inscription: {
-        id: order_by.desc,
-      },
-      marketplace_listing: {
-        id: order_by.desc_nulls_last,
-      },
-    },
+  const res = await asteroidClient.getUserInscriptions(address, offset, limit)
+  const listedRes = await asteroidClient.getUserListedInscriptions(
+    address,
+    0,
+    500,
   )
 
   return json({
     inscriptions: res.inscriptions,
+    listed: listedRes.inscriptions,
     pages: Math.ceil(res.count / limit),
   })
 }
@@ -61,6 +53,13 @@ export default function WalletInscriptions() {
   }
   return (
     <div>
+      {data.listed.length > 0 && (
+        <>
+          <Divider>Listed</Divider>
+          <Inscriptions className="w-full" inscriptions={data.listed} />
+          <Divider className="mt-16">Unlisted</Divider>
+        </>
+      )}
       <Inscriptions className="w-full" inscriptions={data.inscriptions} />
       <Pagination
         pageCount={data.pages}
