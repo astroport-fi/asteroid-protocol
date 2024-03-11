@@ -7,8 +7,12 @@ export default function usePagination() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: DEFAULT_LIMIT,
+    pageIndex: searchParams.has('page')
+      ? parseInt(searchParams.get('page') as string) - 1
+      : 0,
+    pageSize: searchParams.has('limit')
+      ? parseInt(searchParams.get('limit') as string)
+      : DEFAULT_LIMIT,
   })
 
   const pagination = useMemo(
