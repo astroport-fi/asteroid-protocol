@@ -99,6 +99,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   return json({ token, history, listings: listingsResult.listings })
 }
+
 function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
   const amount = token.token_holders?.[0]?.amount
 

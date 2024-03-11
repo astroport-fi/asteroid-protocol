@@ -145,8 +145,6 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       return
     }
 
-    console.log('estimate')
-
     client
       .estimate(txData)
       .then((res) => {

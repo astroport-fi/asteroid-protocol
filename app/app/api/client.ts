@@ -1,4 +1,5 @@
 import {
+  $,
   AsteroidService,
   QueryOptions,
   ValueTypes,
@@ -39,6 +40,12 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import {
+  Collection,
+  CollectionDetail,
+  collectionDetailSelector,
+  collectionSelector,
+} from './collection'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 
@@ -78,6 +85,11 @@ export type TradeHistoryResult = {
 }
 
 export type Royalty = { recipient: string; percentage: number }
+
+export interface TraitFilterItem {
+  trait_type: string
+  value: string
+}
 
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
@@ -555,57 +567,73 @@ export class AsteroidClient extends AsteroidService {
     return listing.ppt
   }
 
-  // async getCollections(
-  //   offset: number,
-  //   limit: number,
-  //   where: {
-  //     creator?: string
-  //   } = {},
-  //   orderBy?: ValueTypes['collection_order_by'],
-  // ): Promise<Collection[]> {
-  //   if (!orderBy) {
-  //     orderBy = {
-  //       date_created: order_by.desc,
-  //     }
-  //   }
+  async getCollections(
+    offset: number,
+    limit: number,
+    where: {
+      creator?: string
+    } = {},
+    orderBy?: ValueTypes['collection_order_by'],
+  ): Promise<Collection[]> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      }
+    }
 
-  //   const queryWhere: ValueTypes['collection_bool_exp'] | undefined = {}
-  //   if (where.creator) {
-  //     queryWhere.creator = {
-  //       _eq: where.creator,
-  //     }
-  //   }
+    const queryWhere: ValueTypes['collection_bool_exp'] | undefined = {}
+    if (where.creator) {
+      queryWhere.creator = {
+        _eq: where.creator,
+      }
+    }
 
-  //   const result = await this.query({
-  //     collection: [
-  //       {
-  //         offset,
-  //         limit,
-  //         where: queryWhere,
-  //         order_by: [orderBy],
-  //       },
-  //       collectionSelector,
-  //     ],
-  //   })
+    const result = await this.query({
+      collection: [
+        {
+          offset,
+          limit,
+          where: queryWhere,
+          order_by: [orderBy],
+        },
+        collectionSelector,
+      ],
+    })
 
-  //   return result.collection
-  // }
+    return result.collection
+  }
 
-  // async getCollection(symbol: string): Promise<Collection | undefined> {
-  //   const result = await this.query({
-  //     collection: [
-  //       {
-  //         where: {
-  //           symbol: {
-  //             _eq: symbol,
-  //           },
-  //         },
-  //       },
-  //       collectionSelector,
-  //     ],
-  //   })
-  //   return result.collection[0]
-  // }
+  async getCollection(symbol: string): Promise<CollectionDetail | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            symbol: {
+              _eq: symbol,
+            },
+          },
+        },
+        collectionDetailSelector,
+      ],
+    })
+    return result.collection[0]
+  }
+
+  async getCollectionById(id: number): Promise<CollectionDetail | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            id: {
+              _eq: id,
+            },
+          },
+        },
+        collectionDetailSelector,
+      ],
+    })
+    return result.collection[0]
+  }
 
   async getInscriptionWithMarket(
     hash: string,
@@ -813,20 +841,56 @@ export class AsteroidClient extends AsteroidService {
       priceGTE?: number
       priceLTE?: number
       search?: string | null
+      traitFilters?: TraitFilterItem[][]
     } = {},
     orderBy?: ValueTypes['inscription_market_order_by'],
   ): Promise<InscriptionsResult> {
     const queryWhere: ValueTypes['inscription_market_bool_exp'] | undefined = {}
 
-    // if (where.collectionId) {
-    //   queryWhere.collection_id = {
-    //     _eq: where.collectionId,
-    //   }
-    // } else if (where.onlySingle) {
-    //   queryWhere.collection_id = {
-    //     _is_null: true,
-    //   }
-    // }
+    if (where.collectionId) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        collection_id: {
+          _eq: where.collectionId,
+        },
+      })
+    } else if (where.onlySingle) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        collection_id: {
+          _is_null: true,
+        },
+      })
+    }
+
+    let variables: Record<string, unknown> | undefined
+    if (where.traitFilters && where.traitFilters.length > 0) {
+      variables = {}
+      const metadataWhere = []
+
+      for (const traitFilter of where.traitFilters) {
+        let i = 0
+        const traitWhere = []
+        for (const valueFilter of traitFilter) {
+          const variableName = `${valueFilter.trait_type}${i}`
+          variables[variableName] = {
+            metadata: {
+              attributes: [valueFilter],
+            },
+          }
+          traitWhere.push({
+            metadata: {
+              _contains: $(variableName, 'jsonb'),
+            },
+          })
+          i += 1
+        }
+        metadataWhere.push({ _or: traitWhere })
+      }
+
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        _and: metadataWhere,
+      })
+    }
+
     if (where.currentOwner) {
       queryWhere._or = [
         {
@@ -898,28 +962,33 @@ export class AsteroidClient extends AsteroidService {
       )
     }
 
-    const result = await this.query({
-      inscription_market_aggregate: [
-        { where: queryWhere },
-        aggregateCountSelector,
-      ],
-      inscription_market: [
-        {
-          offset,
-          limit,
-          order_by: orderBy ? [orderBy] : undefined,
-          where: queryWhere,
-        },
-        {
-          inscription: {
-            ...inscriptionSelector,
+    const result = await this.query(
+      {
+        inscription_market_aggregate: [
+          { where: queryWhere },
+          aggregateCountSelector,
+        ],
+        inscription_market: [
+          {
+            offset,
+            limit,
+            order_by: orderBy ? [orderBy] : undefined,
+            where: queryWhere,
           },
-          marketplace_listing: {
-            ...marketplaceListingSelector,
+          {
+            inscription: {
+              ...inscriptionSelector,
+            },
+            marketplace_listing: {
+              ...marketplaceListingSelector,
+            },
           },
-        },
-      ],
-    })
+        ],
+      },
+      {
+        variables,
+      },
+    )
     return {
       inscriptions: result.inscription_market.map((i) => ({
         ...i.inscription!,

@@ -1,51 +1,52 @@
-// import {
-//   GraphQLTypes,
-//   InputType,
-//   ScalarDefinition,
-//   Selector,
-// } from '@asteroid-protocol/sdk/client'
+import {
+  GraphQLTypes,
+  InputType,
+  ScalarDefinition,
+  Selector,
+} from '@asteroid-protocol/sdk/client'
 
-// export const collectionSelector = Selector('collection')({
-//   id: true,
-//   transaction: {
-//     hash: true,
-//   },
-//   symbol: true,
-//   creator: true,
-//   content_path: true,
-//   content_size_bytes: true,
-//   date_created: true,
-//   is_explicit: true,
-//   __alias: {
-//     name: {
-//       metadata: [
-//         {
-//           path: '$.metadata.name',
-//         },
-//         true,
-//       ],
-//     },
-//     description: {
-//       metadata: [
-//         {
-//           path: '$.metadata.description',
-//         },
-//         true,
-//       ],
-//     },
-//     mime: {
-//       metadata: [
-//         {
-//           path: '$.metadata.mime',
-//         },
-//         true,
-//       ],
-//     },
-//   },
-// })
+export const collectionSelector = Selector('collection')({
+  id: true,
+  transaction: {
+    hash: true,
+  },
+  symbol: true,
+  name: true,
+  creator: true,
+  content_path: true,
+  date_created: true,
+  is_explicit: true,
+})
 
-// export type Collection = InputType<
-//   GraphQLTypes['collection'],
-//   typeof collectionSelector,
-//   ScalarDefinition
-// >
+export type Collection = InputType<
+  GraphQLTypes['collection'],
+  typeof collectionSelector,
+  ScalarDefinition
+>
+
+export const collectionTraitSelector = Selector('collection_traits')({
+  count: true,
+  trait_type: [{}, true],
+  trait_value: [{}, true],
+})
+
+export type CollectionTrait = Required<
+  InputType<
+    GraphQLTypes['collection_traits'],
+    typeof collectionTraitSelector,
+    ScalarDefinition
+  >
+>
+
+// Collection detail
+export const collectionDetailSelector = Selector('collection')({
+  ...collectionSelector,
+  traits: [{}, collectionTraitSelector],
+  metadata: [{ path: '$.metadata' }, true],
+})
+
+export type CollectionDetail = InputType<
+  GraphQLTypes['collection'],
+  typeof collectionDetailSelector,
+  ScalarDefinition
+>
