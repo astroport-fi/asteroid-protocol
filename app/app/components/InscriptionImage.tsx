@@ -52,5 +52,17 @@ export default function InscriptionImage({
     )
   }
 
+  if (mimeTitle === 'Video') {
+    return (
+      <video
+        className={twMerge('w-full h-full object-cover', className)}
+        controls
+      >
+        <source src={src} type={mime} />
+        Video not supported by browser
+      </video>
+    )
+  }
+
   return <span className={twMerge(noImageClass, className)}>{mimeTitle}</span>
 }

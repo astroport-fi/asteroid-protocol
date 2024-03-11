@@ -68,13 +68,13 @@ function InscriptionDetail({
   inscription: InscriptionWithMarket
 }) {
   return (
-    <div className="flex flex-row w-full">
-      <div className="flex flex-1 flex-col px-16 items-center">
+    <div className="flex flex-col xl:flex-row w-full">
+      <div className="flex flex-1 flex-col px-8 items-center">
         <InscriptionImage
           mime={inscription.mime}
           src={inscription.content_path}
           isExplicit={inscription.is_explicit}
-          className="rounded-xl max-w-lg object-contain"
+          className="rounded-xl h-fit max-w-3xl object-contain"
         />
         <Link
           to={`/inscription/${inscription.transaction.hash}`}
