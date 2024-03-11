@@ -66,6 +66,11 @@ export type TokensResult = {
   count: number
 }
 
+export type TokenHolders = {
+  holders: TokenHolder[]
+  count: number
+}
+
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
@@ -174,11 +179,20 @@ export class AsteroidClient extends AsteroidService {
     offset: number,
     limit: number,
     orderBy?: ValueTypes['token_holder_order_by'],
-  ): Promise<TokenHolder[]> {
+  ): Promise<TokenHolders> {
     if (!orderBy) {
       orderBy = {
         amount: order_by.desc,
       }
+    }
+
+    const where: ValueTypes['token_holder_bool_exp'] = {
+      token_id: {
+        _eq: tokenId,
+      },
+      amount: {
+        _gt: 0,
+      },
     }
 
     const result = await this.query({
@@ -187,19 +201,18 @@ export class AsteroidClient extends AsteroidService {
           offset,
           limit,
           order_by: [orderBy],
-          where: {
-            token_id: {
-              _eq: tokenId,
-            },
-            amount: {
-              _gt: 0,
-            },
-          },
+          where,
         },
         tokenHolderSelector,
       ],
+      token_holder_aggregate: [{ where }, aggregateCountSelector],
     })
-    return result.token_holder
+    return {
+      holders: result.token_holder,
+      count:
+        result.token_holder_aggregate.aggregate?.count ??
+        result.token_holder.length,
+    }
   }
 
   async getTokenHolding(

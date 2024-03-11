@@ -2,10 +2,30 @@ import { useSearchParams } from '@remix-run/react'
 import { ColumnSort, SortingState } from '@tanstack/react-table'
 import { useEffect, useState } from 'react'
 
+function getDefaultSort(
+  searchParams: URLSearchParams,
+  defaultSorting: ColumnSort,
+  prefix = '',
+) {
+  const name = prefix != '' ? `${prefix}_sort` : 'sort'
+  const directionName = prefix != '' ? `${prefix}_direction` : 'direction'
+
+  const currentSort = searchParams.get(name) ?? defaultSorting.id
+  const queryDirection = searchParams.get(directionName)
+  let currentDesc = defaultSorting.desc
+  if (queryDirection) {
+    currentDesc = queryDirection === 'desc'
+  }
+
+  return [{ id: currentSort, desc: currentDesc }]
+}
+
 export default function useSorting(defaultSorting: ColumnSort, prefix = '') {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [sorting, setSorting] = useState<SortingState>([defaultSorting])
+  const [sorting, setSorting] = useState<SortingState>(
+    getDefaultSort(searchParams, defaultSorting, prefix),
+  )
 
   useEffect(() => {
     if (!sorting || sorting.length === 0) {

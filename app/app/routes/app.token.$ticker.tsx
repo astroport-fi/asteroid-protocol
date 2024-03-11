@@ -26,11 +26,12 @@ import TokenBalance from '~/components/TokenBalance'
 import Tokenomics from '~/components/Tokenomics'
 import TxLink from '~/components/TxLink'
 import Table from '~/components/table'
+import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
-import { parseSorting } from '~/utils/pagination'
+import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!params.ticker) {
@@ -52,17 +53,23 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
+  const { searchParams } = new URL(request.url)
   const { sort, direction } = parseSorting(
-    new URL(request.url).searchParams,
+    searchParams,
     'amount',
     order_by.desc,
   )
+  const { offset, limit } = parsePagination(searchParams)
 
-  const holders = await asteroidClient.getTokenHolders(token.id, 0, 100, {
+  const res = await asteroidClient.getTokenHolders(token.id, offset, limit, {
     [sort]: direction,
   })
 
-  return json({ token, holders })
+  return json({
+    token,
+    holders: res.holders,
+    pages: Math.ceil(res.count / limit),
+  })
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -188,12 +195,15 @@ const DEFAULT_SORT = { id: 'amount', desc: true }
 function TokenHolders({
   token,
   holders,
+  pages,
 }: {
   token: TokenDetail
   holders: TokenHolder[]
+  pages: number
 }) {
   const columnHelper = createColumnHelper<TokenHolder>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
+  const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
 
   const columns = [
@@ -214,18 +224,21 @@ function TokenHolders({
   const table = useReactTable<TokenHolder>({
     columns,
     data: holders,
+    pageCount: pages,
     state: {
       sorting,
+      pagination,
     },
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
+    manualPagination: true,
   })
 
   return (
     <Table
       table={table}
-      showPagination={false}
       onClick={(holder) => navigate(`/app/wallet/${holder.address}`)}
     />
   )
@@ -245,7 +258,11 @@ export default function TokenPage() {
       <h2 className="font-medium text-lg">Holders</h2>
       <Divider />
       {data.holders.length > 0 ? (
-        <TokenHolders token={data.token} holders={data.holders} />
+        <TokenHolders
+          token={data.token}
+          holders={data.holders}
+          pages={data.pages}
+        />
       ) : (
         <span>Token has no holders</span>
       )}
