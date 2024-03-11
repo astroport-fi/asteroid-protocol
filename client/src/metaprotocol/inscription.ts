@@ -19,6 +19,10 @@ export interface CollectionMetadata extends ContentMetadata {
   minter?: string
   royalty_percentage?: number
   payment_address?: string
+  website?: string
+  twitter?: string
+  discord?: string
+  telegram?: string
 }
 
 export interface Trait {
