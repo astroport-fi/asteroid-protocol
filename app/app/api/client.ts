@@ -686,6 +686,12 @@ export class AsteroidClient extends AsteroidService {
         seller_address: {
           _eq: address,
         },
+        is_cancelled: {
+          _eq: false,
+        },
+        is_filled: {
+          _eq: false,
+        },
       },
     }
 
