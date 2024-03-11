@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-import { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
+import type { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
 import { DetailsHTMLAttributes, forwardRef, useState } from 'react'
 import { Dropdown } from 'react-daisyui'
 

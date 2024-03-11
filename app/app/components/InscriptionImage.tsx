@@ -16,10 +16,10 @@ export default function InscriptionImage({
   isExplicit?: boolean
   className?: string
   src: string
-  mime: string
+  mime?: string
   min?: boolean
 }) {
-  const mimeTitle = getMimeTitle(mime)
+  const mimeTitle = getMimeTitle(mime ?? 'image/png')
   const [smallImage, setSmallImage] = useState(false)
   const noImageClass = clsx(
     'flex flex-col items-center justify-center w-full h-full uppercase',

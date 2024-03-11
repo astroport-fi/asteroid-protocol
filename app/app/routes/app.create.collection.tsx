@@ -1,10 +1,15 @@
-import type { TxInscription } from '@asteroid-protocol/sdk'
+import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
+import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, FileInput, Form, Input, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
+import Label from '~/components/Label'
 import TxDialog from '~/components/dialogs/TxDialog'
+import Discord from '~/components/icons/discord'
+import Telegram from '~/components/icons/telegram'
+import Twitter from '~/components/icons/twitter'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useDialog from '~/hooks/useDialog'
@@ -17,6 +22,10 @@ type FormData = {
   ticker: string
   description: string
   content: File[]
+  website: string
+  twitter: string
+  telegram: string
+  discord: string
 }
 
 const NAME_MIN_LENGTH = 1
@@ -61,12 +70,26 @@ export default function CreateCollection() {
       return
     }
 
-    const txInscription = operations.inscribeCollection(byteArray, {
+    const metadata: CollectionMetadata = {
       name: data.name,
       mime: mime,
       symbol: data.ticker.toUpperCase(),
       description: data.description,
-    })
+    }
+    if (data.website) {
+      metadata.website = data.website
+    }
+    if (data.twitter) {
+      metadata.twitter = data.twitter
+    }
+    if (data.telegram) {
+      metadata.telegram = data.telegram
+    }
+    if (data.discord) {
+      metadata.discord = data.discord
+    }
+
+    const txInscription = operations.inscribeCollection(byteArray, metadata)
 
     setTxInscription(txInscription)
 
@@ -228,6 +251,58 @@ export default function CreateCollection() {
               </span>
               <span className="label-text-alt">{ticker?.length ?? 0} / 10</span>
             </label>
+          </div>
+
+          <div className="form-control w-full mt-4">
+            <Label
+              title="Website"
+              htmlFor="website"
+              icon={<GlobeAltIcon className="size-5" />}
+            />
+            <Input
+              id="website"
+              placeholder="Website URL"
+              {...register('website')}
+            />
+          </div>
+
+          <div className="form-control w-full mt-4">
+            <Label
+              title="Twitter"
+              htmlFor="twitter"
+              icon={<Twitter className="size-4" />}
+            />
+            <Input
+              id="twitter"
+              placeholder="Twitter handle"
+              {...register('twitter')}
+            />
+          </div>
+
+          <div className="form-control w-full mt-4">
+            <Label
+              title="Telegram"
+              htmlFor="telegram"
+              icon={<Telegram className="size-4" />}
+            />
+            <Input
+              id="telegram"
+              placeholder="Telegram username"
+              {...register('telegram')}
+            />
+          </div>
+
+          <div className="form-control w-full mt-4">
+            <Label
+              title="Discord"
+              htmlFor="discord"
+              icon={<Discord className="size-5" />}
+            />
+            <Input
+              id="discord"
+              placeholder="Discord username"
+              {...register('discord')}
+            />
           </div>
 
           <div className="form-control w-full mt-4">
