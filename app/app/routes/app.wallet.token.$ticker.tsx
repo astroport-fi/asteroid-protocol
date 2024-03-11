@@ -268,6 +268,9 @@ function TokenAddressHistoryComponent({
     }),
     columnHelper.accessor('height', {
       header: 'Block',
+      meta: {
+        className: 'font-mono',
+      },
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('action', {
@@ -276,7 +279,15 @@ function TokenAddressHistoryComponent({
     }),
     columnHelper.accessor('amount', {
       header: 'Amount',
-      cell: (info) => getDecimalValue(info.getValue(), token.decimals),
+      cell: (info) => (
+        <NumericFormat
+          className="font-mono"
+          value={getDecimalValue(info.getValue(), token.decimals)}
+          thousandSeparator
+          displayType="text"
+          decimalScale={6}
+        />
+      ),
     }),
     columnHelper.accessor('sender', {
       header: 'Sender',

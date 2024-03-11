@@ -16,7 +16,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     address = await getAddress(request)
   }
   if (!address) {
-    return json({ tokens: [], pages: 0 })
+    return json({ tokens: [], pages: 0, total: 0 })
   }
   const res = await asteroidClient.getTokens(offset, limit, {
     currentOwner: address,
@@ -25,6 +25,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   return json({
     tokens: res.tokens,
     pages: Math.ceil(res.count / limit),
+    total: res.count,
   })
 }
 
@@ -51,6 +52,7 @@ export default function WalletDeployed() {
       <Tokens tokens={data.tokens} />
       <Pagination
         pageCount={data.pages}
+        total={data.total}
         pagination={pagination}
         setPagination={setPagination}
         className="mt-8"

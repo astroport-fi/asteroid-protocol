@@ -124,6 +124,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
         listings: res.listings,
         reservedListings: reservedListings.listings,
         pages: Math.ceil(res.count! / limit),
+        total: res.count!,
       })
     }
   }
@@ -134,6 +135,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     listings: res.listings,
     reservedListings: [],
     pages: Math.ceil(res.count! / limit),
+    total: res.count!,
   })
 }
 
@@ -148,6 +150,7 @@ function ListingsTable({
   token,
   listings,
   pages,
+  total,
   serverSorting,
   className,
   onListClick,
@@ -155,6 +158,7 @@ function ListingsTable({
   token: Token
   listings: MarketplaceTokenListing[]
   pages?: number
+  total?: number
   serverSorting: boolean
   onListClick: () => void
   className?: string
@@ -338,6 +342,7 @@ function ListingsTable({
           table={table}
           className={className}
           showPagination={pages != null}
+          total={total}
         />
       )}
 
@@ -432,7 +437,7 @@ function LatestTransactions({
               </span>
               <Link
                 to={`/app/market/${tx.token.ticker}`}
-                className="shrink-0 w-3/12 flex flex-col font-mono items-center"
+                className="shrink-0 w-3/12 flex flex-col font-mono items-center hover:text-primary"
               >
                 <NumericFormat
                   displayType="text"
@@ -540,6 +545,7 @@ export default function MarketPage() {
           className="mt-2 mb-6 px-8 overflow-y-scroll"
           listings={data.listings}
           pages={data.pages}
+          total={data.total}
           token={token}
           onListClick={() => handleShow()}
           serverSorting={true}

@@ -49,6 +49,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   return json({
     tokens: res.tokens,
     pages: Math.ceil(res.count / limit),
+    total: res.count,
   })
 }
 
@@ -184,6 +185,7 @@ export default function MarketsPage() {
         className="mt-4"
         table={table}
         emptyText="No tokens found"
+        total={data.total}
         onClick={(tokenSelection) =>
           navigate(`/app/token/${tokenSelection.ticker}`)
         }

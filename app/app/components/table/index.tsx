@@ -21,14 +21,91 @@ declare module '@tanstack/table-core' {
 interface Props<T> {
   table: TableData<T>
   showPagination?: boolean
+  total?: number
   className?: string
   emptyText?: string
   onClick?: (row: T) => void
 }
 
+function Pagination<T>({
+  table,
+  total,
+}: {
+  table: TableData<T>
+  total?: number
+}) {
+  const { pageIndex, pageSize } = table.getState().pagination
+
+  const fromItem = pageIndex * pageSize + 1
+  const toItem = Math.min(fromItem + pageSize - 1, total ?? 0)
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {total && (
+        <span className="text-sm">
+          Showing {fromItem} to {toItem} of {total}
+        </span>
+      )}
+      <Button
+        shape="circle"
+        color="ghost"
+        onClick={() => table.setPageIndex(0)}
+        disabled={!table.getCanPreviousPage()}
+      >
+        <ChevronDoubleLeftIcon className="h-5 w-5" />
+      </Button>
+      <Button
+        shape="circle"
+        color="ghost"
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        <ChevronLeftIcon className="h-5 w-5" />
+      </Button>
+      <Button
+        shape="circle"
+        color="ghost"
+        onClick={() => table.nextPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        <ChevronRightIcon className="h-5 w-5" />
+      </Button>
+      <Button
+        shape="circle"
+        color="ghost"
+        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+        disabled={!table.getCanNextPage()}
+      >
+        <ChevronDoubleRightIcon className="h-5 w-5" />
+      </Button>
+      <span className="flex items-center gap-1">
+        <div>Page</div>
+        <strong>
+          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        </strong>
+      </span>
+
+      <Select
+        size="sm"
+        value={table.getState().pagination.pageSize}
+        onChange={(e) => {
+          table.setPageSize(Number(e.target.value))
+        }}
+      >
+        {[10, 20, 30, 40, 50].map((pageSize) => (
+          <option key={pageSize} value={pageSize}>
+            Show {pageSize}
+          </option>
+        ))}
+      </Select>
+    </div>
+  )
+}
+
 export default function Table<T = unknown>({
   table,
   showPagination,
+  total,
   onClick,
   className,
   emptyText,
@@ -108,61 +185,7 @@ export default function Table<T = unknown>({
       {showPagination !== false && (
         <>
           <Divider />
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              shape="circle"
-              color="ghost"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronDoubleLeftIcon className="h-5 w-5" />
-            </Button>
-            <Button
-              shape="circle"
-              color="ghost"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronLeftIcon className="h-5 w-5" />
-            </Button>
-            <Button
-              shape="circle"
-              color="ghost"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronRightIcon className="h-5 w-5" />
-            </Button>
-            <Button
-              shape="circle"
-              color="ghost"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronDoubleRightIcon className="h-5 w-5" />
-            </Button>
-            <span className="flex items-center gap-1">
-              <div>Page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{' '}
-                {table.getPageCount()}
-              </strong>
-            </span>
-
-            <Select
-              size="sm"
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value))
-              }}
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <Pagination table={table} total={total} />
         </>
       )}
       {rows.length < 1 && <span className="p-4">{emptyText ?? 'No rows'}</span>}
