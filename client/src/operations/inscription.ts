@@ -1,6 +1,5 @@
 import InscriptionProtocol, {
   CollectionMetadata,
-  ContentMetadata,
   NFTMetadata,
   Parent,
   accountIdentifier,
@@ -26,11 +25,7 @@ export class InscriptionOperations<
     this.options = options
   }
 
-  inscribe<M = ContentMetadata>(
-    content: Uint8Array,
-    metadata: M,
-    parent?: Parent,
-  ) {
+  inscribe<M = NFTMetadata>(content: Uint8Array, metadata: M, parent?: Parent) {
     if (!parent) {
       parent = accountIdentifier(this.address)
     }

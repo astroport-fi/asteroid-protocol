@@ -50,7 +50,7 @@ export type Operations<
   R extends keyof ValueTypes = GenericOperation<O>,
 > = <Z extends ValueTypes[R]>(
   o: (Z & ValueTypes[R]) | ValueTypes[R],
-  ops?: OperationOptions & { variables?: ExtractVariables<Z> },
+  ops?: OperationOptions & { variables?: Record<string, unknown> },
 ) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>
 
 export type OperationsWS<
