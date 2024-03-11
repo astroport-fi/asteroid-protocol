@@ -126,13 +126,13 @@ function TokenDetailComponent({
   const amount = token.token_holders?.[0]?.amount
 
   return (
-    <div className="flex flex-row w-full mt-4">
-      <div className="flex flex-1 flex-col px-16 items-center">
+    <div className="flex flex-col xl:flex-row w-full mt-4">
+      <div className="flex flex-1 flex-col xl:px-16 pb-8 items-center justify-center">
         <InscriptionImage
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl max-w-lg object-contain"
+          className="rounded-xl w-fit h-fit max-w-lg items-center justify-center object-contain"
         />
       </div>
       <div className="flex flex-col flex-1">
