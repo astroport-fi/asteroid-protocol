@@ -25,6 +25,7 @@ import {
   TokenHolderAmount,
   TokenHolding,
   TokenMarket,
+  TokenSupply,
   TokenTradeHistory,
   TokenType,
   tokenAddressHistorySelector,
@@ -35,6 +36,7 @@ import {
   tokenListingSelector,
   tokenMarketTokenSelector,
   tokenSelector,
+  tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
 import { marketplaceListingSelector } from './marketplace'
@@ -56,6 +58,11 @@ export type InscriptionsResult = {
 
 export type TokenHoldings = {
   holdings: TokenHolding[]
+  count: number
+}
+
+export type TokensResult = {
+  tokens: Token[]
   count: number
 }
 
@@ -107,6 +114,22 @@ export class AsteroidClient extends AsteroidService {
     }
   }
 
+  async getTokenSupply(id: number): Promise<TokenSupply> {
+    const result = await this.query({
+      token: [
+        {
+          where: {
+            id: {
+              _eq: id,
+            },
+          },
+        },
+        tokenSupplySelector,
+      ],
+    })
+    return result.token[0]
+  }
+
   async getTokens(
     offset: number,
     limit: number,
@@ -114,7 +137,7 @@ export class AsteroidClient extends AsteroidService {
       currentOwner?: string
     } = {},
     orderBy?: ValueTypes['token_order_by'],
-  ): Promise<Token[]> {
+  ): Promise<TokensResult> {
     if (!orderBy) {
       orderBy = {
         date_created: order_by.desc,
@@ -138,8 +161,12 @@ export class AsteroidClient extends AsteroidService {
         },
         tokenSelector,
       ],
+      token_aggregate: [{ where: queryWhere }, aggregateCountSelector],
     })
-    return result.token
+    return {
+      tokens: result.token,
+      count: result.token_aggregate.aggregate?.count ?? result.token.length,
+    }
   }
 
   async getTokenHolders(

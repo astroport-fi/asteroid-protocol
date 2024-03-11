@@ -184,3 +184,16 @@ export type TokenTradeHistory = InputType<
   typeof tokenTradeHistorySelector,
   ScalarDefinition
 >
+
+// Token supply
+export const tokenSupplySelector = Selector('token')({
+  decimals: true,
+  circulating_supply: true,
+  max_supply: true,
+})
+
+export type TokenSupply = InputType<
+  GraphQLTypes['token'],
+  typeof tokenSupplySelector,
+  ScalarDefinition
+>
