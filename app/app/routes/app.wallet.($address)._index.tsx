@@ -51,7 +51,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     address = await getAddress(request)
   }
   if (!address) {
-    return json({ tokens: [], pages: 0 })
+    return json({ tokens: [], pages: 0, total: 0 })
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -66,6 +66,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   return json({
     tokens: result.holdings,
     pages: Math.ceil(result.count / limit),
+    total: result.count,
   })
 }
 
@@ -133,6 +134,7 @@ export default function WalletTokens() {
   return (
     <Table
       table={table}
+      total={data.total}
       onClick={(tokenSelection) =>
         navigate(`/app/wallet/token/${tokenSelection.token.ticker}`)
       }

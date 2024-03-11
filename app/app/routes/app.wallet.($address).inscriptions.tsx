@@ -17,7 +17,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     address = await getAddress(request)
   }
   if (!address) {
-    return json({ inscriptions: [], pages: 0, listed: [] })
+    return json({ inscriptions: [], pages: 0, total: 0, listed: [] })
   }
   const res = await asteroidClient.getUserInscriptions(address, offset, limit)
   const listedRes = await asteroidClient.getUserListedInscriptions(
@@ -30,6 +30,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     inscriptions: res.inscriptions,
     listed: listedRes.inscriptions,
     pages: Math.ceil(res.count / limit),
+    total: res.count,
   })
 }
 
@@ -64,6 +65,7 @@ export default function WalletInscriptions() {
       <Pagination
         pageCount={data.pages}
         pagination={pagination}
+        total={data.total}
         setPagination={setPagination}
         className="mt-8"
       />

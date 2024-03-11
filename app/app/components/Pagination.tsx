@@ -10,6 +10,7 @@ import { twMerge } from 'tailwind-merge'
 
 interface Props {
   pageCount: number
+  total: number
   pagination: PaginationState
   setPagination: React.Dispatch<React.SetStateAction<PaginationState>>
   className?: string
@@ -17,6 +18,7 @@ interface Props {
 
 export default function Pagination({
   pageCount,
+  total,
   pagination: { pageIndex, pageSize },
   setPagination,
   className,
@@ -75,11 +77,18 @@ export default function Pagination({
     })
   }
 
+  const fromItem = pageIndex * pageSize + 1
+  const toItem = Math.min(fromItem + pageSize - 1, total)
+
   return (
     <div
       className={twMerge('flex items-center justify-center gap-2', className)}
     >
+      <span className="text-sm">
+        Showing {fromItem} to {toItem} of {total}
+      </span>
       <Button
+        className="ml-4"
         shape="circle"
         color="ghost"
         onClick={() => setPageIndex(0)}
@@ -117,7 +126,6 @@ export default function Pagination({
           {pageIndex + 1} of {pageCount}
         </strong>
       </span>
-
       <Select
         size="sm"
         value={pageSize}

@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { Divider } from 'react-daisyui'
+import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import {
   TokenDetail,
@@ -69,6 +70,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     token,
     holders: res.holders,
     pages: Math.ceil(res.count / limit),
+    total: res.count,
   })
 }
 
@@ -196,10 +198,12 @@ function TokenHolders({
   token,
   holders,
   pages,
+  total,
 }: {
   token: TokenDetail
   holders: TokenHolder[]
   pages: number
+  total: number
 }) {
   const columnHelper = createColumnHelper<TokenHolder>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
@@ -217,7 +221,15 @@ function TokenHolders({
     }),
     columnHelper.accessor('amount', {
       header: 'Amount',
-      cell: (info) => getDecimalValue(info.getValue(), token.decimals),
+      cell: (info) => (
+        <NumericFormat
+          className="font-mono"
+          value={getDecimalValue(info.getValue(), token.decimals)}
+          thousandSeparator
+          displayType="text"
+          decimalScale={6}
+        />
+      ),
     }),
   ]
 
@@ -239,6 +251,7 @@ function TokenHolders({
   return (
     <Table
       table={table}
+      total={total}
       onClick={(holder) => navigate(`/app/wallet/${holder.address}`)}
     />
   )
@@ -262,6 +275,7 @@ export default function TokenPage() {
           token={data.token}
           holders={data.holders}
           pages={data.pages}
+          total={data.total}
         />
       ) : (
         <span>Token has no holders</span>
