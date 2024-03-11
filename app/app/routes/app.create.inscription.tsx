@@ -1,25 +1,61 @@
-import type { TxInscription } from '@asteroid-protocol/sdk'
-import { CheckIcon } from '@heroicons/react/20/solid'
+import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
+import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import { useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
-import { useState } from 'react'
-import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
-import { useForm } from 'react-hook-form'
+import { useMemo, useState } from 'react'
+import {
+  Button,
+  Divider,
+  FileInput,
+  Form,
+  Input,
+  Link,
+  Select,
+  Textarea,
+} from 'react-daisyui'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import { AsteroidClient } from '~/api/client'
+import { CollectionTrait } from '~/api/collection'
+import Autocomplete from '~/components/Autocomplete'
 import TxDialog from '~/components/dialogs/TxDialog'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
+import useCollection from '~/hooks/useCollection'
 import useDialog from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
+import { getAddress } from '~/utils/cookies'
+import { getTraitsMap } from '~/utils/traits'
+
+export async function loader({ context, request }: LoaderFunctionArgs) {
+  const address = await getAddress(request)
+  if (!address) {
+    return json({ collections: [] })
+  }
+
+  const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
+  const collections = await asteroidClient.getCollections(0, 500, {
+    creator: address,
+  })
+
+  return json({ collections })
+}
 
 type FormData = {
   name: string
   description: string
   content: File[]
+  collection: string | null
+  traits: Record<string, string>
+  newTraits: { trait_type: string; value: string }[]
 }
 
 const NAME_MIN_LENGTH = 3
 const NAME_MAX_LENGTH = 32
 
 export default function CreateInscription() {
+  const data = useLoaderData<typeof loader>()
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
 
@@ -28,9 +64,54 @@ export default function CreateInscription() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<FormData>()
   const name = watch('name')
+  const collectionId = watch('collection')
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'newTraits',
+  })
+
+  const { data: collection } = useCollection(parseInt(collectionId ?? '0'))
+  const traitsMap = useMemo(() => {
+    if (!collection) {
+      return null
+    }
+    return getTraitsMap(collection.traits as CollectionTrait[])
+  }, [collection])
+
+  const traitsComponents: JSX.Element[] = []
+  if (traitsMap) {
+    for (const [trait, values] of traitsMap) {
+      traitsComponents.push(
+        <div className="form-control w-full mb-4" key={trait}>
+          <Form.Label title={trait} htmlFor={trait} />
+
+          <Controller
+            control={control}
+            name={`traits.${trait}`}
+            render={({
+              field: { name, onChange, value, ref, onBlur, disabled },
+            }) => (
+              <Autocomplete
+                key={trait}
+                items={values.map((v) => v.value)}
+                name={name}
+                onChange={onChange}
+                value={value ?? ''}
+                ref={ref}
+                disabled={disabled}
+                onBlur={onBlur}
+              />
+            )}
+          />
+        </div>,
+      )
+    }
+  }
 
   // preview
   const [preview, setPreview] = useState<string | null>(null)
@@ -54,11 +135,34 @@ export default function CreateInscription() {
       return
     }
 
-    const txInscription = operations.inscribe(byteArray, {
+    const traits = Object.entries(data.traits)
+      .map(([trait_type, value]) => ({
+        trait_type,
+        value,
+      }))
+      .concat(data.newTraits)
+      .filter((trait) => trait.trait_type && trait.value)
+
+    const metadata: NFTMetadata = {
       name: data.name,
       description: data.description,
       mime: file.type,
-    })
+    }
+
+    if (traits.length > 0) {
+      metadata.attributes = traits
+    }
+
+    let txInscription
+    if (data.collection) {
+      txInscription = operations.inscribeCollectionInscription(
+        data.collection,
+        byteArray,
+        metadata,
+      )
+    } else {
+      txInscription = operations.inscribe(byteArray, metadata)
+    }
 
     setTxInscription(txInscription)
 
@@ -153,6 +257,22 @@ export default function CreateInscription() {
           <p className="mt-2">Add detail to your inscription</p>
 
           <div className="form-control w-full mt-6">
+            <Form.Label title="Collection" htmlFor="collection" />
+            <Select
+              id="collection"
+              color={errors.collection ? 'error' : undefined}
+              {...register('collection')}
+            >
+              <Select.Option value={0}>Select collection</Select.Option>
+              {data.collections.map((collection) => (
+                <Select.Option key={collection.id} value={collection.id}>
+                  {collection.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="form-control w-full mt-6">
             <Form.Label title="Name" htmlFor="name" />
             <Input
               id="name"
@@ -184,6 +304,59 @@ export default function CreateInscription() {
               {...register('description')}
             />
           </div>
+
+          <Divider className="mt-8">Traits</Divider>
+
+          {traitsMap && traitsComponents}
+
+          {fields.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex  w-full justify-between gap-4 mb-2"
+            >
+              <div className="form-control w-full">
+                <Form.Label
+                  title="Name"
+                  htmlFor={`newTraits.${index}.trait_type`}
+                />
+                <Input
+                  id={`newTraits.${index}.trait_type`}
+                  {...register(`newTraits.${index}.trait_type`)}
+                />
+              </div>
+              <div className="form-control w-full">
+                <Form.Label
+                  title="Value"
+                  htmlFor={`newTraits.${index}.value`}
+                />
+                <Input
+                  id={`newTraits.${index}.value`}
+                  {...register(`newTraits.${index}.value`)}
+                />
+              </div>
+              <Button
+                type="button"
+                shape="circle"
+                className="mt-12"
+                color="error"
+                size="xs"
+                onClick={() => remove(index)}
+              >
+                <XMarkIcon className="size-5" />
+              </Button>
+            </div>
+          ))}
+
+          <Button
+            color="accent"
+            className="mt-4"
+            startIcon={<PlusIcon className="size-5" />}
+            type="button"
+            onClick={() => append({ trait_type: '', value: '' })}
+          >
+            Add trait
+          </Button>
+          <Divider />
 
           {operations ? (
             <Button
