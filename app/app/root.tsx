@@ -102,13 +102,13 @@ export const meta: MetaFunction = () => {
     { property: 'twitter:domain', content: 'https://asteroidprotocol.io' },
     {
       property: 'twitter:image',
-      content: 'https://asteroidprotocol.io/assets/socials/banner.png',
+      content: 'https://asteroidprotocol.io/banner.png',
     },
     { property: 'og:site_name', content: 'Asteroid Protocol' },
     { property: 'og:type', content: 'website' },
     {
       property: 'og:image',
-      content: 'https://asteroidprotocol.io/assets/socials/banner.png',
+      content: 'https://asteroidprotocol.io/banner.png',
     },
     {
       tagName: 'link',
