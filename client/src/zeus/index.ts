@@ -6773,6 +6773,74 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['token_trade_history'],
     ]
+    trade_history?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['trade_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['trade_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['trade_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['trade_history'],
+    ]
+    trade_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['trade_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['trade_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['trade_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['trade_history_aggregate'],
+    ]
     transaction?: [
       {
         /** distinct select on columns */
@@ -8266,6 +8334,96 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['token_trade_history'],
+    ]
+    trade_history?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['trade_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['trade_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['trade_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['trade_history'],
+    ]
+    trade_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['trade_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['trade_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['trade_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['trade_history_aggregate'],
+    ]
+    trade_history_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              ValueTypes['trade_history_stream_cursor_input'] | undefined | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['trade_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['trade_history'],
     ]
     transaction?: [
       {
@@ -11449,6 +11607,322 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** columns and relationships of "trade_history" */
+  ['trade_history']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    /** An object relationship */
+    inscription?: ValueTypes['inscription']
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    /** An object relationship */
+    token?: ValueTypes['token']
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "trade_history" */
+  ['trade_history_aggregate']: AliasType<{
+    aggregate?: ValueTypes['trade_history_aggregate_fields']
+    nodes?: ValueTypes['trade_history']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "trade_history" */
+  ['trade_history_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['trade_history_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['trade_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['trade_history_max_fields']
+    min?: ValueTypes['trade_history_min_fields']
+    stddev?: ValueTypes['trade_history_stddev_fields']
+    stddev_pop?: ValueTypes['trade_history_stddev_pop_fields']
+    stddev_samp?: ValueTypes['trade_history_stddev_samp_fields']
+    sum?: ValueTypes['trade_history_sum_fields']
+    var_pop?: ValueTypes['trade_history_var_pop_fields']
+    var_samp?: ValueTypes['trade_history_var_samp_fields']
+    variance?: ValueTypes['trade_history_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['trade_history_avg_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "trade_history". All fields are combined with a logical 'AND'. */
+  ['trade_history_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['trade_history_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['trade_history_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['trade_history_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    amount_base?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    amount_quote?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    buyer_address?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    inscription?:
+      | ValueTypes['inscription_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    inscription_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    seller_address?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    token?:
+      | ValueTypes['token_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    total_usd?:
+      | ValueTypes['Float_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** aggregate max on columns */
+  ['trade_history_max_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['trade_history_min_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "trade_history". */
+  ['trade_history_order_by']: {
+    amount_base?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    amount_quote?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    buyer_address?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    inscription?:
+      | ValueTypes['inscription_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    inscription_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    seller_address?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    token?:
+      | ValueTypes['token_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    total_usd?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** select columns of table "trade_history" */
+  ['trade_history_select_column']: trade_history_select_column
+  /** aggregate stddev on columns */
+  ['trade_history_stddev_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['trade_history_stddev_pop_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['trade_history_stddev_samp_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "trade_history" */
+  ['trade_history_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['trade_history_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['trade_history_stream_cursor_value_input']: {
+    amount_base?:
+      | ValueTypes['bigint']
+      | undefined
+      | null
+      | Variable<any, string>
+    amount_quote?:
+      | ValueTypes['bigint']
+      | undefined
+      | null
+      | Variable<any, string>
+    buyer_address?: string | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: number | undefined | null | Variable<any, string>
+    inscription_id?: number | undefined | null | Variable<any, string>
+    seller_address?: string | undefined | null | Variable<any, string>
+    token_id?: number | undefined | null | Variable<any, string>
+    total_usd?: number | undefined | null | Variable<any, string>
+  }
+  /** aggregate sum on columns */
+  ['trade_history_sum_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['trade_history_var_pop_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['trade_history_var_samp_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['trade_history_variance_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** columns and relationships of "transaction" */
   ['transaction']: AliasType<{
     content?: boolean | `@${string}`
@@ -15652,6 +16126,52 @@ export type ResolverInputTypes = {
       { id: number },
       ResolverInputTypes['token_trade_history'],
     ]
+    trade_history?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['trade_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['trade_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['trade_history'],
+    ]
+    trade_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['trade_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['trade_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['trade_history_aggregate'],
+    ]
     transaction?: [
       {
         /** distinct select on columns */
@@ -16682,6 +17202,65 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['token_trade_history'],
+    ]
+    trade_history?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['trade_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['trade_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['trade_history'],
+    ]
+    trade_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['trade_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['trade_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['trade_history_aggregate'],
+    ]
+    trade_history_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['trade_history_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['trade_history'],
     ]
     transaction?: [
       {
@@ -18514,6 +19093,226 @@ export type ResolverInputTypes = {
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** columns and relationships of "trade_history" */
+  ['trade_history']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    /** An object relationship */
+    inscription?: ResolverInputTypes['inscription']
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    /** An object relationship */
+    token?: ResolverInputTypes['token']
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "trade_history" */
+  ['trade_history_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['trade_history_aggregate_fields']
+    nodes?: ResolverInputTypes['trade_history']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "trade_history" */
+  ['trade_history_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['trade_history_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ResolverInputTypes['trade_history_select_column']>
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['trade_history_max_fields']
+    min?: ResolverInputTypes['trade_history_min_fields']
+    stddev?: ResolverInputTypes['trade_history_stddev_fields']
+    stddev_pop?: ResolverInputTypes['trade_history_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['trade_history_stddev_samp_fields']
+    sum?: ResolverInputTypes['trade_history_sum_fields']
+    var_pop?: ResolverInputTypes['trade_history_var_pop_fields']
+    var_samp?: ResolverInputTypes['trade_history_var_samp_fields']
+    variance?: ResolverInputTypes['trade_history_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['trade_history_avg_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "trade_history". All fields are combined with a logical 'AND'. */
+  ['trade_history_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['trade_history_bool_exp']>
+      | undefined
+      | null
+    _not?: ResolverInputTypes['trade_history_bool_exp'] | undefined | null
+    _or?: Array<ResolverInputTypes['trade_history_bool_exp']> | undefined | null
+    amount_base?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    amount_quote?:
+      | ResolverInputTypes['bigint_comparison_exp']
+      | undefined
+      | null
+    buyer_address?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    inscription?: ResolverInputTypes['inscription_bool_exp'] | undefined | null
+    inscription_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    seller_address?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    token?: ResolverInputTypes['token_bool_exp'] | undefined | null
+    token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    total_usd?: ResolverInputTypes['Float_comparison_exp'] | undefined | null
+  }
+  /** aggregate max on columns */
+  ['trade_history_max_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['trade_history_min_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    buyer_address?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    seller_address?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "trade_history". */
+  ['trade_history_order_by']: {
+    amount_base?: ResolverInputTypes['order_by'] | undefined | null
+    amount_quote?: ResolverInputTypes['order_by'] | undefined | null
+    buyer_address?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    inscription?: ResolverInputTypes['inscription_order_by'] | undefined | null
+    inscription_id?: ResolverInputTypes['order_by'] | undefined | null
+    seller_address?: ResolverInputTypes['order_by'] | undefined | null
+    token?: ResolverInputTypes['token_order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+    total_usd?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "trade_history" */
+  ['trade_history_select_column']: trade_history_select_column
+  /** aggregate stddev on columns */
+  ['trade_history_stddev_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['trade_history_stddev_pop_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['trade_history_stddev_samp_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "trade_history" */
+  ['trade_history_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['trade_history_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['trade_history_stream_cursor_value_input']: {
+    amount_base?: ResolverInputTypes['bigint'] | undefined | null
+    amount_quote?: ResolverInputTypes['bigint'] | undefined | null
+    buyer_address?: string | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
+    id?: number | undefined | null
+    inscription_id?: number | undefined | null
+    seller_address?: string | undefined | null
+    token_id?: number | undefined | null
+    total_usd?: number | undefined | null
+  }
+  /** aggregate sum on columns */
+  ['trade_history_sum_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['trade_history_var_pop_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['trade_history_var_samp_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['trade_history_variance_fields']: AliasType<{
+    amount_base?: boolean | `@${string}`
+    amount_quote?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    inscription_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    total_usd?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** columns and relationships of "transaction" */
   ['transaction']: AliasType<{
     content?: boolean | `@${string}`
@@ -21243,6 +22042,10 @@ export type ModelTypes = {
     token_trade_history: Array<ModelTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
+    /** fetch data from the table: "trade_history" */
+    trade_history: Array<ModelTypes['trade_history']>
+    /** fetch aggregated fields from the table: "trade_history" */
+    trade_history_aggregate: ModelTypes['trade_history_aggregate']
     /** fetch data from the table: "transaction" */
     transaction: Array<ModelTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
@@ -21486,6 +22289,12 @@ export type ModelTypes = {
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<ModelTypes['token_trade_history']>
+    /** fetch data from the table: "trade_history" */
+    trade_history: Array<ModelTypes['trade_history']>
+    /** fetch aggregated fields from the table: "trade_history" */
+    trade_history_aggregate: ModelTypes['trade_history_aggregate']
+    /** fetch data from the table in a streaming manner: "trade_history" */
+    trade_history_stream: Array<ModelTypes['trade_history']>
     /** fetch data from the table: "transaction" */
     transaction: Array<ModelTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
@@ -22836,6 +23645,188 @@ export type ModelTypes = {
     per_mint_limit?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
+  }
+  /** columns and relationships of "trade_history" */
+  ['trade_history']: {
+    amount_base?: ModelTypes['bigint'] | undefined
+    amount_quote?: ModelTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    /** An object relationship */
+    inscription?: ModelTypes['inscription'] | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    /** An object relationship */
+    token?: ModelTypes['token'] | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregated selection of "trade_history" */
+  ['trade_history_aggregate']: {
+    aggregate?: ModelTypes['trade_history_aggregate_fields'] | undefined
+    nodes: Array<ModelTypes['trade_history']>
+  }
+  /** aggregate fields of "trade_history" */
+  ['trade_history_aggregate_fields']: {
+    avg?: ModelTypes['trade_history_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['trade_history_max_fields'] | undefined
+    min?: ModelTypes['trade_history_min_fields'] | undefined
+    stddev?: ModelTypes['trade_history_stddev_fields'] | undefined
+    stddev_pop?: ModelTypes['trade_history_stddev_pop_fields'] | undefined
+    stddev_samp?: ModelTypes['trade_history_stddev_samp_fields'] | undefined
+    sum?: ModelTypes['trade_history_sum_fields'] | undefined
+    var_pop?: ModelTypes['trade_history_var_pop_fields'] | undefined
+    var_samp?: ModelTypes['trade_history_var_samp_fields'] | undefined
+    variance?: ModelTypes['trade_history_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['trade_history_avg_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "trade_history". All fields are combined with a logical 'AND'. */
+  ['trade_history_bool_exp']: {
+    _and?: Array<ModelTypes['trade_history_bool_exp']> | undefined
+    _not?: ModelTypes['trade_history_bool_exp'] | undefined
+    _or?: Array<ModelTypes['trade_history_bool_exp']> | undefined
+    amount_base?: ModelTypes['bigint_comparison_exp'] | undefined
+    amount_quote?: ModelTypes['bigint_comparison_exp'] | undefined
+    buyer_address?: ModelTypes['String_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    inscription?: ModelTypes['inscription_bool_exp'] | undefined
+    inscription_id?: ModelTypes['Int_comparison_exp'] | undefined
+    seller_address?: ModelTypes['String_comparison_exp'] | undefined
+    token?: ModelTypes['token_bool_exp'] | undefined
+    token_id?: ModelTypes['Int_comparison_exp'] | undefined
+    total_usd?: ModelTypes['Float_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['trade_history_max_fields']: {
+    amount_base?: ModelTypes['bigint'] | undefined
+    amount_quote?: ModelTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate min on columns */
+  ['trade_history_min_fields']: {
+    amount_base?: ModelTypes['bigint'] | undefined
+    amount_quote?: ModelTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Ordering options when selecting data from "trade_history". */
+  ['trade_history_order_by']: {
+    amount_base?: ModelTypes['order_by'] | undefined
+    amount_quote?: ModelTypes['order_by'] | undefined
+    buyer_address?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    inscription?: ModelTypes['inscription_order_by'] | undefined
+    inscription_id?: ModelTypes['order_by'] | undefined
+    seller_address?: ModelTypes['order_by'] | undefined
+    token?: ModelTypes['token_order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+    total_usd?: ModelTypes['order_by'] | undefined
+  }
+  ['trade_history_select_column']: trade_history_select_column
+  /** aggregate stddev on columns */
+  ['trade_history_stddev_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['trade_history_stddev_pop_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['trade_history_stddev_samp_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Streaming cursor of the table "trade_history" */
+  ['trade_history_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['trade_history_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['trade_history_stream_cursor_value_input']: {
+    amount_base?: ModelTypes['bigint'] | undefined
+    amount_quote?: ModelTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate sum on columns */
+  ['trade_history_sum_fields']: {
+    amount_base?: ModelTypes['bigint'] | undefined
+    amount_quote?: ModelTypes['bigint'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['trade_history_var_pop_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['trade_history_var_samp_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['trade_history_variance_fields']: {
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
   }
   /** columns and relationships of "transaction" */
   ['transaction']: {
@@ -25415,6 +26406,10 @@ export type GraphQLTypes = {
     token_trade_history: Array<GraphQLTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
+    /** fetch data from the table: "trade_history" */
+    trade_history: Array<GraphQLTypes['trade_history']>
+    /** fetch aggregated fields from the table: "trade_history" */
+    trade_history_aggregate: GraphQLTypes['trade_history_aggregate']
     /** fetch data from the table: "transaction" */
     transaction: Array<GraphQLTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
@@ -25662,6 +26657,12 @@ export type GraphQLTypes = {
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<GraphQLTypes['token_trade_history']>
+    /** fetch data from the table: "trade_history" */
+    trade_history: Array<GraphQLTypes['trade_history']>
+    /** fetch aggregated fields from the table: "trade_history" */
+    trade_history_aggregate: GraphQLTypes['trade_history_aggregate']
+    /** fetch data from the table in a streaming manner: "trade_history" */
+    trade_history_stream: Array<GraphQLTypes['trade_history']>
     /** fetch data from the table: "transaction" */
     transaction: Array<GraphQLTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
@@ -27051,6 +28052,202 @@ export type GraphQLTypes = {
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
+  /** columns and relationships of "trade_history" */
+  ['trade_history']: {
+    __typename: 'trade_history'
+    amount_base?: GraphQLTypes['bigint'] | undefined
+    amount_quote?: GraphQLTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    /** An object relationship */
+    inscription?: GraphQLTypes['inscription'] | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    /** An object relationship */
+    token?: GraphQLTypes['token'] | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregated selection of "trade_history" */
+  ['trade_history_aggregate']: {
+    __typename: 'trade_history_aggregate'
+    aggregate?: GraphQLTypes['trade_history_aggregate_fields'] | undefined
+    nodes: Array<GraphQLTypes['trade_history']>
+  }
+  /** aggregate fields of "trade_history" */
+  ['trade_history_aggregate_fields']: {
+    __typename: 'trade_history_aggregate_fields'
+    avg?: GraphQLTypes['trade_history_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['trade_history_max_fields'] | undefined
+    min?: GraphQLTypes['trade_history_min_fields'] | undefined
+    stddev?: GraphQLTypes['trade_history_stddev_fields'] | undefined
+    stddev_pop?: GraphQLTypes['trade_history_stddev_pop_fields'] | undefined
+    stddev_samp?: GraphQLTypes['trade_history_stddev_samp_fields'] | undefined
+    sum?: GraphQLTypes['trade_history_sum_fields'] | undefined
+    var_pop?: GraphQLTypes['trade_history_var_pop_fields'] | undefined
+    var_samp?: GraphQLTypes['trade_history_var_samp_fields'] | undefined
+    variance?: GraphQLTypes['trade_history_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['trade_history_avg_fields']: {
+    __typename: 'trade_history_avg_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "trade_history". All fields are combined with a logical 'AND'. */
+  ['trade_history_bool_exp']: {
+    _and?: Array<GraphQLTypes['trade_history_bool_exp']> | undefined
+    _not?: GraphQLTypes['trade_history_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['trade_history_bool_exp']> | undefined
+    amount_base?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    amount_quote?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    buyer_address?: GraphQLTypes['String_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    inscription?: GraphQLTypes['inscription_bool_exp'] | undefined
+    inscription_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    seller_address?: GraphQLTypes['String_comparison_exp'] | undefined
+    token?: GraphQLTypes['token_bool_exp'] | undefined
+    token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    total_usd?: GraphQLTypes['Float_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['trade_history_max_fields']: {
+    __typename: 'trade_history_max_fields'
+    amount_base?: GraphQLTypes['bigint'] | undefined
+    amount_quote?: GraphQLTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate min on columns */
+  ['trade_history_min_fields']: {
+    __typename: 'trade_history_min_fields'
+    amount_base?: GraphQLTypes['bigint'] | undefined
+    amount_quote?: GraphQLTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Ordering options when selecting data from "trade_history". */
+  ['trade_history_order_by']: {
+    amount_base?: GraphQLTypes['order_by'] | undefined
+    amount_quote?: GraphQLTypes['order_by'] | undefined
+    buyer_address?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    inscription?: GraphQLTypes['inscription_order_by'] | undefined
+    inscription_id?: GraphQLTypes['order_by'] | undefined
+    seller_address?: GraphQLTypes['order_by'] | undefined
+    token?: GraphQLTypes['token_order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+    total_usd?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "trade_history" */
+  ['trade_history_select_column']: trade_history_select_column
+  /** aggregate stddev on columns */
+  ['trade_history_stddev_fields']: {
+    __typename: 'trade_history_stddev_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['trade_history_stddev_pop_fields']: {
+    __typename: 'trade_history_stddev_pop_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['trade_history_stddev_samp_fields']: {
+    __typename: 'trade_history_stddev_samp_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** Streaming cursor of the table "trade_history" */
+  ['trade_history_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['trade_history_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['trade_history_stream_cursor_value_input']: {
+    amount_base?: GraphQLTypes['bigint'] | undefined
+    amount_quote?: GraphQLTypes['bigint'] | undefined
+    buyer_address?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    seller_address?: string | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate sum on columns */
+  ['trade_history_sum_fields']: {
+    __typename: 'trade_history_sum_fields'
+    amount_base?: GraphQLTypes['bigint'] | undefined
+    amount_quote?: GraphQLTypes['bigint'] | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['trade_history_var_pop_fields']: {
+    __typename: 'trade_history_var_pop_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['trade_history_var_samp_fields']: {
+    __typename: 'trade_history_var_samp_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['trade_history_variance_fields']: {
+    __typename: 'trade_history_variance_fields'
+    amount_base?: number | undefined
+    amount_quote?: number | undefined
+    id?: number | undefined
+    inscription_id?: number | undefined
+    token_id?: number | undefined
+    total_usd?: number | undefined
+  }
   /** columns and relationships of "transaction" */
   ['transaction']: {
     __typename: 'transaction'
@@ -27412,6 +28609,18 @@ export const enum token_trade_history_select_column {
   total_usd = 'total_usd',
   transaction_id = 'transaction_id',
 }
+/** select columns of table "trade_history" */
+export const enum trade_history_select_column {
+  amount_base = 'amount_base',
+  amount_quote = 'amount_quote',
+  buyer_address = 'buyer_address',
+  date_created = 'date_created',
+  id = 'id',
+  inscription_id = 'inscription_id',
+  seller_address = 'seller_address',
+  token_id = 'token_id',
+  total_usd = 'total_usd',
+}
 /** select columns of table "transaction" */
 export const enum transaction_select_column {
   content = 'content',
@@ -27680,6 +28889,11 @@ type ZEUS_VARIABLES = {
   ['token_var_pop_order_by']: ValueTypes['token_var_pop_order_by']
   ['token_var_samp_order_by']: ValueTypes['token_var_samp_order_by']
   ['token_variance_order_by']: ValueTypes['token_variance_order_by']
+  ['trade_history_bool_exp']: ValueTypes['trade_history_bool_exp']
+  ['trade_history_order_by']: ValueTypes['trade_history_order_by']
+  ['trade_history_select_column']: ValueTypes['trade_history_select_column']
+  ['trade_history_stream_cursor_input']: ValueTypes['trade_history_stream_cursor_input']
+  ['trade_history_stream_cursor_value_input']: ValueTypes['trade_history_stream_cursor_value_input']
   ['transaction_bool_exp']: ValueTypes['transaction_bool_exp']
   ['transaction_order_by']: ValueTypes['transaction_order_by']
   ['transaction_select_column']: ValueTypes['transaction_select_column']
