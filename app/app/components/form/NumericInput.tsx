@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Form, Input } from 'react-daisyui'
+import { Form, Input, InputProps } from 'react-daisyui'
 import {
   Control,
   Controller,
@@ -7,7 +7,7 @@ import {
   FieldPath,
   FieldValues,
 } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
+import { NumericFormat, NumericFormatProps } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
 
 export default function NumericInput<
@@ -20,6 +20,7 @@ export default function NumericInput<
   error,
   isFloat,
   className,
+  ...props
 }: {
   control: Control<TFieldValues>
   name: TName
@@ -27,7 +28,7 @@ export default function NumericInput<
   error: FieldError | undefined
   isFloat?: boolean
   className?: string
-}) {
+} & NumericFormatProps<InputProps>) {
   return (
     <div className={twMerge('form-control w-full', className)}>
       <Form.Label title={title} htmlFor={name} />
@@ -39,6 +40,7 @@ export default function NumericInput<
           field: { name, onChange, value, ref, onBlur, disabled },
         }) => (
           <NumericFormat
+            {...props}
             className="w-full"
             getInputRef={ref}
             value={value}
