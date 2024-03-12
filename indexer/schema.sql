@@ -271,6 +271,9 @@ CREATE TABLE public.token_trade_history (
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+CREATE INDEX "idx_token_trade_history_seller_address" ON "public"."token_trade_history" USING btree ("seller_address");
+CREATE INDEX "idx_token_trade_history_buyer_address" ON "public"."token_trade_history" USING btree ("buyer_address");
+
 -- public.marketplace_inscription_detail definition
 
 -- Drop table
@@ -308,6 +311,9 @@ CREATE TABLE public.inscription_trade_history (
     CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id),
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+CREATE INDEX "idx_inscription_trade_history_seller_address" ON "public"."inscription_trade_history" USING btree ("seller_address");
+CREATE INDEX "idx_inscription_trade_history_buyer_address" ON "public"."inscription_trade_history" USING btree ("buyer_address");
 
 
 -- public.marketplace_cft20_detail definition
@@ -353,3 +359,41 @@ CREATE TABLE public.marketplace_cft20_trade_history (
     CONSTRAINT marketplace_cft20_history_tk_fk FOREIGN KEY (token_id) REFERENCES public."token"(id),
     CONSTRAINT marketplace_cft20_history_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+-- public.inscription_market view definition
+
+CREATE OR REPLACE VIEW public.inscription_market AS 
+    SELECT DISTINCT i.id, ml.id AS listing_id
+    FROM inscription i
+        LEFT JOIN marketplace_inscription_detail mid ON i.id = mid.inscription_id
+        LEFT JOIN marketplace_listing ml ON mid.listing_id = ml.id AND (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)
+    WHERE ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)
+
+-- public.trade_history view definition
+
+CREATE OR REPLACE VIEW public.trade_history AS
+    SELECT
+        id,
+        seller_address,
+        buyer_address,
+        total_usd,
+        date_created,
+        inscription_id,
+        NULL AS token_id,
+        amount_quote,
+        1 AS amount_base
+    FROM
+        inscription_trade_history
+    UNION ALL
+    SELECT
+        id,
+        seller_address,
+        buyer_address,
+        total_usd,
+        date_created,
+        NULL AS inscription_id,
+        token_id,
+        amount_quote,
+        amount_base
+    FROM
+        token_trade_history
