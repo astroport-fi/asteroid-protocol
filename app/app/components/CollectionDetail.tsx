@@ -10,13 +10,13 @@ export default function CollectionDetailComponent({
   collection: Collection
 }) {
   return (
-    <div className="flex p-5 border-b border-b-neutral items-center">
+    <div className="flex p-5 pb-6  border-b border-b-neutral items-center">
       <InscriptionImage
         src={collection.content_path!}
         isExplicit={collection.is_explicit}
-        className="rounded-t-xl size-16 rounded-full"
+        className="rounded-t-xl size-20 rounded-full"
       />
-      <div className="flex flex-col ml-4">
+      <div className="flex flex-col ml-4 mt-1 h-full">
         <h2 className="text-xl">{collection.name} collection</h2>
         <div className="flex mt-3">
           <Link
