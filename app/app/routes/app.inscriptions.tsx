@@ -175,18 +175,9 @@ export default function InscriptionsPage() {
     null,
   )
   const { dialogRef, handleShow } = useDialog()
-  const isCollection = data.collection != null
 
   return (
-    <div
-      className={clsx('flex flex-col', {
-        'h-[calc(100%-7rem)]': isCollection,
-        'h-full': !isCollection,
-      })}
-    >
-      {data.collection && (
-        <CollectionDetailComponent collection={data.collection} />
-      )}
+    <div className="flex flex-col h-full">
       <div className="flex flex-row h-full">
         <Filter
           traits={data.collection?.traits as CollectionTrait[] | undefined}
@@ -222,15 +213,20 @@ export default function InscriptionsPage() {
           >
             <Await resolve={data.data}>
               {(inscriptionsData) => (
-                <InscriptionsList
-                  page={data.page}
-                  inscriptions={inscriptionsData.inscriptions}
-                  count={inscriptionsData.count}
-                  onClick={(inscription) => {
-                    setInscription(inscription)
-                    handleShow()
-                  }}
-                />
+                <>
+                  {data.collection && (
+                    <CollectionDetailComponent collection={data.collection} />
+                  )}
+                  <InscriptionsList
+                    page={data.page}
+                    inscriptions={inscriptionsData.inscriptions}
+                    count={inscriptionsData.count}
+                    onClick={(inscription) => {
+                      setInscription(inscription)
+                      handleShow()
+                    }}
+                  />
+                </>
               )}
             </Await>
           </Suspense>
