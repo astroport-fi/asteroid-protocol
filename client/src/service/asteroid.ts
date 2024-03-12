@@ -34,6 +34,10 @@ export type ScalarDefinition = {
     encode: (e: unknown) => string
     decode: (e: unknown) => string
   }
+  jsonb: {
+    encode: (e: unknown) => string
+    decode: (e: unknown) => string
+  }
 }
 
 // O - operation - query | mutation | subscription
