@@ -13,4 +13,5 @@
 - "!include public_token_holder.yaml"
 - "!include public_token_open_position.yaml"
 - "!include public_token_trade_history.yaml"
+- "!include public_trade_history.yaml"
 - "!include public_transaction.yaml"
