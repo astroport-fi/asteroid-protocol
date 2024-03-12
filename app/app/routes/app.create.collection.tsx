@@ -7,6 +7,7 @@ import { Button, FileInput, Form, Input, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import Label from '~/components/Label'
 import TxDialog from '~/components/dialogs/TxDialog'
+import NumericInput from '~/components/form/NumericInput'
 import Discord from '~/components/icons/discord'
 import Telegram from '~/components/icons/telegram'
 import Twitter from '~/components/icons/twitter'
@@ -26,6 +27,7 @@ type FormData = {
   twitter: string
   telegram: string
   discord: string
+  royaltyPercentage: number
 }
 
 const NAME_MIN_LENGTH = 1
@@ -42,6 +44,7 @@ export default function CreateCollection() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<FormData>()
   const name = watch('name')
@@ -87,6 +90,9 @@ export default function CreateCollection() {
     }
     if (data.discord) {
       metadata.discord = data.discord
+    }
+    if (data.royaltyPercentage) {
+      metadata.royalty_percentage = data.royaltyPercentage / 100
     }
 
     const txInscription = operations.inscribeCollection(byteArray, metadata)
@@ -252,6 +258,25 @@ export default function CreateCollection() {
               <span className="label-text-alt">{ticker?.length ?? 0} / 10</span>
             </label>
           </div>
+
+          <NumericInput
+            control={control}
+            error={errors.royaltyPercentage}
+            isFloat
+            suffix="%"
+            decimalScale={2}
+            allowNegative={false}
+            isAllowed={(values) => {
+              const { floatValue } = values
+              if (floatValue === undefined) {
+                return true
+              }
+              return floatValue! <= 100
+            }}
+            name="royaltyPercentage"
+            title="Royalty %"
+            className="mt-4"
+          />
 
           <div className="form-control w-full mt-4">
             <Label
