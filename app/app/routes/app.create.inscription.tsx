@@ -2,16 +2,16 @@ import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { useMemo, useState } from 'react'
 import {
   Button,
+  Link as DaisyLink,
   Divider,
   FileInput,
   Form,
   Input,
-  Link,
   Select,
   Textarea,
 } from 'react-daisyui'
@@ -154,7 +154,7 @@ export default function CreateInscription() {
     }
 
     let txInscription
-    if (data.collection) {
+    if (data.collection && data.collection !== '0') {
       txInscription = operations.inscribeCollectionInscription(
         data.collection,
         byteArray,
@@ -178,14 +178,14 @@ export default function CreateInscription() {
       </p>
       <p>
         Learn more in the
-        <Link
+        <DaisyLink
           className="mx-1"
           color="primary"
           href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
           target="_blank"
         >
           inscription metaprotocol
-        </Link>
+        </DaisyLink>
         documentation
       </p>
       <Form onSubmit={onSubmit} className="flex flex-row mt-8">
@@ -258,18 +258,30 @@ export default function CreateInscription() {
 
           <div className="form-control w-full mt-6">
             <Form.Label title="Collection" htmlFor="collection" />
-            <Select
-              id="collection"
-              color={errors.collection ? 'error' : undefined}
-              {...register('collection')}
-            >
-              <Select.Option value={0}>Select collection</Select.Option>
-              {data.collections.map((collection) => (
-                <Select.Option key={collection.id} value={collection.id}>
-                  {collection.name}
-                </Select.Option>
-              ))}
-            </Select>
+            <div className="flex w-full gap-4 items-center">
+              <Select
+                id="collection"
+                className="w-full"
+                color={errors.collection ? 'error' : undefined}
+                {...register('collection')}
+              >
+                <Select.Option value={0}>Select collection</Select.Option>
+                {data.collections.map((collection) => (
+                  <Select.Option
+                    key={collection.transaction.hash}
+                    value={collection.transaction.hash}
+                  >
+                    {collection.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              <Link
+                className="btn btn-accent btn-sm btn-circle mr-1"
+                to="/app/create/collection"
+              >
+                <PlusIcon className="size-5" />
+              </Link>
+            </div>
           </div>
 
           <div className="form-control w-full mt-6">
