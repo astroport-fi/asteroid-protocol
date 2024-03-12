@@ -40,6 +40,7 @@ import {
   tokenTradeHistorySelector,
 } from '~/api/token'
 import { marketplaceListingSelector } from './marketplace'
+import { TradeHistory, tradeHistorySelector } from './trade-history'
 
 export type TokenMarketResult = {
   tokens: TokenMarket[]
@@ -68,6 +69,11 @@ export type TokensResult = {
 
 export type TokenHolders = {
   holders: TokenHolder[]
+  count: number
+}
+
+export type TradeHistoryResult = {
+  history: TradeHistory[]
   count: number
 }
 
@@ -1031,6 +1037,48 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
     return result.token_trade_history
+  }
+
+  async getTradeHistory(
+    seller: string,
+    offset = 0,
+    limit = 100,
+    orderBy?: ValueTypes['trade_history_order_by'],
+  ): Promise<TradeHistoryResult> {
+    if (!orderBy) {
+      orderBy = { date_created: order_by.desc }
+    }
+
+    const where: ValueTypes['trade_history_bool_exp'] = {
+      seller_address: {
+        _eq: seller,
+      },
+    }
+
+    const result = await this.query({
+      trade_history: [
+        {
+          where,
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        tradeHistorySelector,
+      ],
+      trade_history_aggregate: [
+        {
+          where,
+        },
+        aggregateCountSelector,
+      ],
+    })
+
+    return {
+      history: result.trade_history,
+      count:
+        result.trade_history_aggregate.aggregate?.count ??
+        result.trade_history.length,
+    }
   }
 
   statusSubscription(chainId: string) {

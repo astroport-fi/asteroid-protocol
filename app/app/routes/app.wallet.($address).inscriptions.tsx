@@ -38,7 +38,7 @@ export default function WalletInscriptions() {
   const data = useLoaderData<typeof loader>()
   const [pagination, setPagination] = usePagination()
 
-  if (data.inscriptions.length < 1) {
+  if (data.inscriptions.length < 1 && data.listed.length < 1) {
     return (
       <GhostEmptyState>
         <div className="flex mt-8">
@@ -58,7 +58,9 @@ export default function WalletInscriptions() {
         <>
           <Divider>Listed</Divider>
           <Inscriptions className="w-full" inscriptions={data.listed} />
-          <Divider className="mt-16">Unlisted</Divider>
+          {data.inscriptions.length > 0 && (
+            <Divider className="mt-16">Unlisted</Divider>
+          )}
         </>
       )}
       <Inscriptions className="w-full" inscriptions={data.inscriptions} />
