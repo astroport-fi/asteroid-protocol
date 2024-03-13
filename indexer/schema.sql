@@ -1,3 +1,7 @@
+-- Create extensions
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- public.status definition
 
 -- Drop table
@@ -66,6 +70,7 @@ CREATE TABLE public.inscription (
 );
 CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date_created);
 CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btree ("current_owner");
+CREATE INDEX idx_trgm_inscription_metadata_name ON inscription USING gin ((metadata -> 'metadata' ->>'name') gin_trgm_ops);
 
 -- public.inscription_history definition
 
@@ -175,6 +180,9 @@ CREATE TABLE public."token" (
 );
 
 CREATE INDEX "idx_token_current_owner" ON "public"."token" USING btree ("current_owner");
+CREATE INDEX idx_trgm_token_name ON "public"."token" USING gin (("name") gin_trgm_ops);
+CREATE INDEX idx_trgm_token_ticker ON "public"."token" USING gin (("ticker") gin_trgm_ops);
+
 
 -- public.token_address_history definition
 
@@ -367,7 +375,7 @@ CREATE OR REPLACE VIEW public.inscription_market AS
     FROM inscription i
         LEFT JOIN marketplace_inscription_detail mid ON i.id = mid.inscription_id
         LEFT JOIN marketplace_listing ml ON mid.listing_id = ml.id AND (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)
-    WHERE ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)
+    WHERE ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE);
 
 -- public.trade_history view definition
 
@@ -396,4 +404,4 @@ CREATE OR REPLACE VIEW public.trade_history AS
         amount_quote,
         amount_base
     FROM
-        token_trade_history
+        token_trade_history;
