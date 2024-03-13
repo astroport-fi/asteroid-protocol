@@ -188,7 +188,7 @@ export default function WalletTransactions() {
           <Link to="/app/create/token" className="btn btn-primary">
             Create token
           </Link>
-          <Link to="/app/create/inscription" className="btn btn-primary">
+          <Link to="/app/create/inscription" className="btn btn-primary ml-4">
             Create inscription
           </Link>
         </div>

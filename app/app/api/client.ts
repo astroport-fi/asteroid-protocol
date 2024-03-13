@@ -1074,7 +1074,7 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return {
-      history: result.trade_history,
+      history: result.trade_history as TradeHistory[],
       count:
         result.trade_history_aggregate.aggregate?.count ??
         result.trade_history.length,
