@@ -1,0 +1,38 @@
+table:
+  name: trade_history
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      manual_configuration:
+        column_mapping:
+          inscription_id: id
+        insertion_order: null
+        remote_table:
+          name: inscription
+          schema: public
+  - name: token
+    using:
+      manual_configuration:
+        column_mapping:
+          token_id: id
+        insertion_order: null
+        remote_table:
+          name: token
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - amount_base
+        - amount_quote
+        - buyer_address
+        - seller_address
+        - id
+        - inscription_id
+        - token_id
+        - total_usd
+        - date_created
+      filter: {}
+      allow_aggregations: true
+    comment: ""

@@ -1,3 +1,7 @@
+-- Create extensions
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- public.status definition
 
 -- Drop table
@@ -66,6 +70,7 @@ CREATE TABLE public.inscription (
 );
 CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date_created);
 CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btree ("current_owner");
+CREATE INDEX idx_trgm_inscription_metadata_name ON inscription USING gin ((metadata -> 'metadata' ->>'name') gin_trgm_ops);
 
 -- public.inscription_history definition
 
@@ -175,6 +180,9 @@ CREATE TABLE public."token" (
 );
 
 CREATE INDEX "idx_token_current_owner" ON "public"."token" USING btree ("current_owner");
+CREATE INDEX idx_trgm_token_name ON "public"."token" USING gin (("name") gin_trgm_ops);
+CREATE INDEX idx_trgm_token_ticker ON "public"."token" USING gin (("ticker") gin_trgm_ops);
+
 
 -- public.token_address_history definition
 
@@ -271,6 +279,9 @@ CREATE TABLE public.token_trade_history (
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+CREATE INDEX "idx_token_trade_history_seller_address" ON "public"."token_trade_history" USING btree ("seller_address");
+CREATE INDEX "idx_token_trade_history_buyer_address" ON "public"."token_trade_history" USING btree ("buyer_address");
+
 -- public.marketplace_inscription_detail definition
 
 -- Drop table
@@ -308,6 +319,9 @@ CREATE TABLE public.inscription_trade_history (
     CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id),
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+CREATE INDEX "idx_inscription_trade_history_seller_address" ON "public"."inscription_trade_history" USING btree ("seller_address");
+CREATE INDEX "idx_inscription_trade_history_buyer_address" ON "public"."inscription_trade_history" USING btree ("buyer_address");
 
 
 -- public.marketplace_cft20_detail definition
@@ -353,3 +367,41 @@ CREATE TABLE public.marketplace_cft20_trade_history (
     CONSTRAINT marketplace_cft20_history_tk_fk FOREIGN KEY (token_id) REFERENCES public."token"(id),
     CONSTRAINT marketplace_cft20_history_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+-- public.inscription_market view definition
+
+CREATE OR REPLACE VIEW public.inscription_market AS 
+    SELECT DISTINCT i.id, ml.id AS listing_id
+    FROM inscription i
+        LEFT JOIN marketplace_inscription_detail mid ON i.id = mid.inscription_id
+        LEFT JOIN marketplace_listing ml ON mid.listing_id = ml.id AND (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)
+    WHERE ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE);
+
+-- public.trade_history view definition
+
+CREATE OR REPLACE VIEW public.trade_history AS
+    SELECT
+        id,
+        seller_address,
+        buyer_address,
+        total_usd,
+        date_created,
+        inscription_id,
+        NULL AS token_id,
+        amount_quote,
+        1 AS amount_base
+    FROM
+        inscription_trade_history
+    UNION ALL
+    SELECT
+        id,
+        seller_address,
+        buyer_address,
+        total_usd,
+        date_created,
+        NULL AS inscription_id,
+        token_id,
+        amount_quote,
+        amount_base
+    FROM
+        token_trade_history;

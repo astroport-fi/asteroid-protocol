@@ -25,7 +25,7 @@ export default function TokenValue({
   return (
     <span className="flex flex-col">
       <NumericFormat
-        className="font-mono mr-1"
+        className="font-mono"
         displayType="text"
         thousandSeparator
         decimalScale={tokenAmount < 1 ? 6 : 2}

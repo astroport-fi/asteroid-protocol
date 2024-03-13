@@ -29,6 +29,7 @@ enum WalletTab {
   Tokens,
   Inscriptions,
   Deployed,
+  Sales,
 }
 
 export default function WalletPage() {
@@ -49,6 +50,8 @@ export default function WalletPage() {
     active = WalletTab.Inscriptions
   } else if (lastPath === 'deployed') {
     active = WalletTab.Deployed
+  } else if (lastPath === 'sales') {
+    active = WalletTab.Sales
   }
 
   if (!address) {
@@ -102,6 +105,9 @@ export default function WalletPage() {
         </Tab>
         <Tab to="deployed" active={active === WalletTab.Deployed}>
           Deployed
+        </Tab>
+        <Tab to="sales" active={active === WalletTab.Sales}>
+          Marketplace Sales
         </Tab>
       </Tabs>
       <div className="py-8 w-full">
