@@ -239,12 +239,17 @@ func (ed ExtensionDataWrapper) GetMetadata() ([]byte, *InscriptionMetadata, erro
 	return []byte(metadataString), &InscriptionMetadata{Metadata: metadata, Parent: InscriptionMetadataParent{Type: ed.ParentType, Identifier: ed.ParentIdentifier}}, nil
 }
 
+func (ed ExtensionDataWrapper) GetMetadataBytes() ([]byte, error) {
+	return ed.Metadata, nil
+}
+
 func (ed ExtensionDataWrapper) GetContent() ([]byte, error) {
 	return ed.Content, nil
 }
 
 type ExtensionMsg interface {
 	GetMetadata() ([]byte, *InscriptionMetadata, error)
+	GetMetadataBytes() ([]byte, error)
 	GetContent() ([]byte, error)
 }
 
@@ -318,6 +323,15 @@ func (msg RawMsgRevoke) GetMetadata() ([]byte, *InscriptionMetadata, error) {
 	}
 
 	return metadata, &inscriptionMetadata, nil
+}
+
+func (msg RawMsgRevoke) GetMetadataBytes() ([]byte, error) {
+	metadata, err := base64.StdEncoding.DecodeString(msg.Granter)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
+	}
+
+	return metadata, nil
 }
 
 func (msg RawMsgRevoke) GetContent() ([]byte, error) {
