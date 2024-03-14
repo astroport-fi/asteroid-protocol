@@ -8,6 +8,38 @@
       use_prepared_statements: false
   logical_models:
     - fields:
+        - name: listed
+          type:
+            nullable: false
+            scalar: bigint
+        - name: supply
+          type:
+            nullable: false
+            scalar: bigint
+        - name: owners
+          type:
+            nullable: false
+            scalar: bigint
+        - name: volume
+          type:
+            nullable: false
+            scalar: numeric
+        - name: floor_price
+          type:
+            nullable: false
+            scalar: bigint
+      name: collection_stats
+      select_permissions:
+        - permission:
+            columns:
+              - listed
+              - supply
+              - owners
+              - volume
+              - floor_price
+            filter: {}
+          role: anonymous
+    - fields:
         - name: id
           type:
             nullable: true
@@ -65,6 +97,37 @@
             filter: {}
           role: anonymous
   native_queries:
+    - arguments:
+        max_id:
+          description: ""
+          nullable: false
+          type: integer
+      code: |-
+        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
+          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE id <= {{max_id}}),
+          (SELECT count(id) as supply FROM inscription WHERE id <= {{max_id}}),
+          (SELECT SUM(amount_quote) as volume FROM inscription_trade_history WHERE inscription_id <= {{max_id}})
+        	FROM marketplace_inscription_detail mid
+            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+            WHERE ml.is_filled is false and ml.is_cancelled is false and mid.inscription_id <= {{max_id}}
+      returns: collection_stats
+      root_field_name: club_stats
+    - arguments:
+        collection_id:
+          description: ""
+          nullable: false
+          type: integer
+      code: |-
+        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
+          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE collection_id = {{collection_id}}),
+          (SELECT count(id) as supply FROM inscription WHERE collection_id = {{collection_id}}),
+          (SELECT COALESCE(SUM(amount_quote), 0) as volume FROM inscription_trade_history ith INNER JOIN inscription i ON i.id = ith.inscription_id WHERE collection_id = {{collection_id}})
+        	FROM marketplace_inscription_detail mid
+            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+            INNER JOIN inscription i ON i.id = mid.inscription_id
+            WHERE ml.is_filled is false and ml.is_cancelled is false and i.collection_id = {{collection_id}}
+      returns: collection_stats
+      root_field_name: collection_stats
     - arguments:
         query_name:
           description: ""
