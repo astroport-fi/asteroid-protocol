@@ -16,6 +16,7 @@ export const AllTypesProps: Record<string, any> = {
     _neq: 'bigint',
     _nin: 'bigint',
   },
+  club_stats_arguments: {},
   collection: {
     metadata: {},
     traits: {
@@ -71,6 +72,25 @@ export const AllTypesProps: Record<string, any> = {
     version: 'order_by',
   },
   collection_select_column: 'enum' as const,
+  collection_stats_arguments: {},
+  collection_stats_bool_exp_bool_exp: {
+    _and: 'collection_stats_bool_exp_bool_exp',
+    _not: 'collection_stats_bool_exp_bool_exp',
+    _or: 'collection_stats_bool_exp_bool_exp',
+    floor_price: 'bigint_comparison_exp',
+    listed: 'bigint_comparison_exp',
+    owners: 'bigint_comparison_exp',
+    supply: 'bigint_comparison_exp',
+    volume: 'numeric_comparison_exp',
+  },
+  collection_stats_enum_name: 'enum' as const,
+  collection_stats_order_by: {
+    floor_price: 'order_by',
+    listed: 'order_by',
+    owners: 'order_by',
+    supply: 'order_by',
+    volume: 'order_by',
+  },
   collection_stream_cursor_input: {
     initial_value: 'collection_stream_cursor_value_input',
     ordering: 'cursor_ordering',
@@ -1405,6 +1425,12 @@ export const AllTypesProps: Record<string, any> = {
   },
   order_by: 'enum' as const,
   query_root: {
+    club_stats: {
+      args: 'club_stats_arguments',
+      distinct_on: 'collection_stats_enum_name',
+      order_by: 'collection_stats_order_by',
+      where: 'collection_stats_bool_exp_bool_exp',
+    },
     collection: {
       distinct_on: 'collection_select_column',
       order_by: 'collection_order_by',
@@ -1416,6 +1442,12 @@ export const AllTypesProps: Record<string, any> = {
       where: 'collection_bool_exp',
     },
     collection_by_pk: {},
+    collection_stats: {
+      args: 'collection_stats_arguments',
+      distinct_on: 'collection_stats_enum_name',
+      order_by: 'collection_stats_order_by',
+      where: 'collection_stats_bool_exp_bool_exp',
+    },
     collection_traits: {
       distinct_on: 'collection_traits_select_column',
       order_by: 'collection_traits_order_by',
@@ -1637,6 +1669,12 @@ export const AllTypesProps: Record<string, any> = {
     date_updated: 'timestamp',
   },
   subscription_root: {
+    club_stats: {
+      args: 'club_stats_arguments',
+      distinct_on: 'collection_stats_enum_name',
+      order_by: 'collection_stats_order_by',
+      where: 'collection_stats_bool_exp_bool_exp',
+    },
     collection: {
       distinct_on: 'collection_select_column',
       order_by: 'collection_order_by',
@@ -1648,6 +1686,12 @@ export const AllTypesProps: Record<string, any> = {
       where: 'collection_bool_exp',
     },
     collection_by_pk: {},
+    collection_stats: {
+      args: 'collection_stats_arguments',
+      distinct_on: 'collection_stats_enum_name',
+      order_by: 'collection_stats_order_by',
+      where: 'collection_stats_bool_exp_bool_exp',
+    },
     collection_stream: {
       cursor: 'collection_stream_cursor_input',
       where: 'collection_bool_exp',
@@ -2975,6 +3019,13 @@ export const ReturnTypes: Record<string, any> = {
     transaction_id: 'Int',
     version: 'String',
   },
+  collection_stats: {
+    floor_price: 'bigint',
+    listed: 'bigint',
+    owners: 'bigint',
+    supply: 'bigint',
+    volume: 'numeric',
+  },
   collection_stddev_fields: {
     content_size_bytes: 'Float',
     height: 'Float',
@@ -3567,9 +3618,11 @@ export const ReturnTypes: Record<string, any> = {
   },
   numeric: `scalar.numeric` as const,
   query_root: {
+    club_stats: 'collection_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
     collection_by_pk: 'collection',
+    collection_stats: 'collection_stats',
     collection_traits: 'collection_traits',
     find_inscription_by_name: 'search_result',
     inscription: 'inscription',
@@ -3637,9 +3690,11 @@ export const ReturnTypes: Record<string, any> = {
     last_processed_height: 'Int',
   },
   subscription_root: {
+    club_stats: 'collection_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
     collection_by_pk: 'collection',
+    collection_stats: 'collection_stats',
     collection_stream: 'collection',
     collection_traits: 'collection_traits',
     collection_traits_stream: 'collection_traits',

@@ -1144,6 +1144,10 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number | Variable<any, string>
+  }
   /** columns and relationships of "collection" */
   ['collection']: AliasType<{
     chain_id?: boolean | `@${string}`
@@ -1435,6 +1439,74 @@ export type ValueTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+  ['collection_stats']: AliasType<{
+    floor_price?: boolean | `@${string}`
+    listed?: boolean | `@${string}`
+    owners?: boolean | `@${string}`
+    supply?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number | Variable<any, string>
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['collection_stats_bool_exp_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    listed?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    owners?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    supply?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    volume?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    listed?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    owners?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    supply?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    volume?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: AliasType<{
     content_size_bytes?: boolean | `@${string}`
@@ -6682,6 +6754,43 @@ export type ValueTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args:
+          | ValueTypes['club_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
     collection?: [
       {
         /** distinct select on columns */
@@ -6753,6 +6862,43 @@ export type ValueTypes = {
     collection_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['collection'],
+    ]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args:
+          | ValueTypes['collection_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
     ]
     collection_traits?: [
       {
@@ -8002,6 +8148,43 @@ export type ValueTypes = {
     last_processed_height?: number | undefined | null | Variable<any, string>
   }
   ['subscription_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args:
+          | ValueTypes['club_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
     collection?: [
       {
         /** distinct select on columns */
@@ -8073,6 +8256,43 @@ export type ValueTypes = {
     collection_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['collection'],
+    ]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args:
+          | ValueTypes['collection_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
     ]
     collection_stream?: [
       {
@@ -13622,6 +13842,10 @@ export type ResolverInputTypes = {
     _neq?: ResolverInputTypes['bigint'] | undefined | null
     _nin?: Array<ResolverInputTypes['bigint']> | undefined | null
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
   /** columns and relationships of "collection" */
   ['collection']: AliasType<{
     chain_id?: boolean | `@${string}`
@@ -13809,6 +14033,47 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+  ['collection_stats']: AliasType<{
+    floor_price?: boolean | `@${string}`
+    listed?: boolean | `@${string}`
+    owners?: boolean | `@${string}`
+    supply?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+    floor_price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    listed?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    owners?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    supply?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    volume?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: ResolverInputTypes['order_by'] | undefined | null
+    listed?: ResolverInputTypes['order_by'] | undefined | null
+    owners?: ResolverInputTypes['order_by'] | undefined | null
+    supply?: ResolverInputTypes['order_by'] | undefined | null
+    volume?: ResolverInputTypes['order_by'] | undefined | null
+  }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: AliasType<{
     content_size_bytes?: boolean | `@${string}`
@@ -16964,6 +17229,33 @@ export type ResolverInputTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args: ResolverInputTypes['club_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
     collection?: [
       {
         /** distinct select on columns */
@@ -17011,6 +17303,33 @@ export type ResolverInputTypes = {
       ResolverInputTypes['collection_aggregate'],
     ]
     collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args: ResolverInputTypes['collection_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
     collection_traits?: [
       {
         /** distinct select on columns */
@@ -17890,6 +18209,33 @@ export type ResolverInputTypes = {
     last_processed_height?: number | undefined | null
   }
   ['subscription_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args: ResolverInputTypes['club_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
     collection?: [
       {
         /** distinct select on columns */
@@ -17937,6 +18283,33 @@ export type ResolverInputTypes = {
       ResolverInputTypes['collection_aggregate'],
     ]
     collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args: ResolverInputTypes['collection_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
     collection_stream?: [
       {
         /** maximum number of rows returned in a single batch */
@@ -21467,6 +21840,10 @@ export type ModelTypes = {
     _neq?: ModelTypes['bigint'] | undefined
     _nin?: Array<ModelTypes['bigint']> | undefined
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
   /** columns and relationships of "collection" */
   ['collection']: {
     chain_id: string
@@ -21593,6 +21970,37 @@ export type ModelTypes = {
     version?: ModelTypes['order_by'] | undefined
   }
   ['collection_select_column']: collection_select_column
+  ['collection_stats']: {
+    floor_price: ModelTypes['bigint']
+    listed: ModelTypes['bigint']
+    owners: ModelTypes['bigint']
+    supply: ModelTypes['bigint']
+    volume: ModelTypes['numeric']
+  }
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?: Array<ModelTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    _not?: ModelTypes['collection_stats_bool_exp_bool_exp'] | undefined
+    _or?: Array<ModelTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    floor_price?: ModelTypes['bigint_comparison_exp'] | undefined
+    listed?: ModelTypes['bigint_comparison_exp'] | undefined
+    owners?: ModelTypes['bigint_comparison_exp'] | undefined
+    supply?: ModelTypes['bigint_comparison_exp'] | undefined
+    volume?: ModelTypes['numeric_comparison_exp'] | undefined
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: ModelTypes['order_by'] | undefined
+    listed?: ModelTypes['order_by'] | undefined
+    owners?: ModelTypes['order_by'] | undefined
+    supply?: ModelTypes['order_by'] | undefined
+    volume?: ModelTypes['order_by'] | undefined
+  }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
     content_size_bytes?: number | undefined
@@ -23947,12 +24355,14 @@ export type ModelTypes = {
   }
   ['order_by']: order_by
   ['query_root']: {
+    club_stats: Array<ModelTypes['collection_stats']>
     /** fetch data from the table: "collection" */
     collection: Array<ModelTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: ModelTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: ModelTypes['collection'] | undefined
+    collection_stats: Array<ModelTypes['collection_stats']>
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<ModelTypes['collection_traits']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
@@ -24162,12 +24572,14 @@ export type ModelTypes = {
     last_processed_height?: number | undefined
   }
   ['subscription_root']: {
+    club_stats: Array<ModelTypes['collection_stats']>
     /** fetch data from the table: "collection" */
     collection: Array<ModelTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: ModelTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: ModelTypes['collection'] | undefined
+    collection_stats: Array<ModelTypes['collection_stats']>
     /** fetch data from the table in a streaming manner: "collection" */
     collection_stream: Array<ModelTypes['collection']>
     /** fetch data from the table: "collection_traits" */
@@ -26065,6 +26477,10 @@ export type GraphQLTypes = {
     _neq?: GraphQLTypes['bigint'] | undefined
     _nin?: Array<GraphQLTypes['bigint']> | undefined
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
   /** columns and relationships of "collection" */
   ['collection']: {
     __typename: 'collection'
@@ -26198,6 +26614,38 @@ export type GraphQLTypes = {
   }
   /** select columns of table "collection" */
   ['collection_select_column']: collection_select_column
+  ['collection_stats']: {
+    __typename: 'collection_stats'
+    floor_price: GraphQLTypes['bigint']
+    listed: GraphQLTypes['bigint']
+    owners: GraphQLTypes['bigint']
+    supply: GraphQLTypes['bigint']
+    volume: GraphQLTypes['numeric']
+  }
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?: Array<GraphQLTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    _not?: GraphQLTypes['collection_stats_bool_exp_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    floor_price?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    listed?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    owners?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    supply?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    volume?: GraphQLTypes['numeric_comparison_exp'] | undefined
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: GraphQLTypes['order_by'] | undefined
+    listed?: GraphQLTypes['order_by'] | undefined
+    owners?: GraphQLTypes['order_by'] | undefined
+    supply?: GraphQLTypes['order_by'] | undefined
+    volume?: GraphQLTypes['order_by'] | undefined
+  }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
     __typename: 'collection_stddev_fields'
@@ -28700,12 +29148,14 @@ export type GraphQLTypes = {
   ['order_by']: order_by
   ['query_root']: {
     __typename: 'query_root'
+    club_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch data from the table: "collection" */
     collection: Array<GraphQLTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: GraphQLTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: GraphQLTypes['collection'] | undefined
+    collection_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<GraphQLTypes['collection_traits']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
@@ -28919,12 +29369,14 @@ export type GraphQLTypes = {
   }
   ['subscription_root']: {
     __typename: 'subscription_root'
+    club_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch data from the table: "collection" */
     collection: Array<GraphQLTypes['collection']>
     /** fetch aggregated fields from the table: "collection" */
     collection_aggregate: GraphQLTypes['collection_aggregate']
     /** fetch data from the table: "collection" using primary key columns */
     collection_by_pk?: GraphQLTypes['collection'] | undefined
+    collection_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch data from the table in a streaming manner: "collection" */
     collection_stream: Array<GraphQLTypes['collection']>
     /** fetch data from the table: "collection_traits" */
@@ -30811,6 +31263,13 @@ export const enum collection_select_column {
   transaction_id = 'transaction_id',
   version = 'version',
 }
+export const enum collection_stats_enum_name {
+  floor_price = 'floor_price',
+  listed = 'listed',
+  owners = 'owners',
+  supply = 'supply',
+  volume = 'volume',
+}
 /** select columns of table "collection_traits" */
 export const enum collection_traits_select_column {
   collection_id = 'collection_id',
@@ -31072,9 +31531,14 @@ type ZEUS_VARIABLES = {
   ['String_comparison_exp']: ValueTypes['String_comparison_exp']
   ['bigint']: ValueTypes['bigint']
   ['bigint_comparison_exp']: ValueTypes['bigint_comparison_exp']
+  ['club_stats_arguments']: ValueTypes['club_stats_arguments']
   ['collection_bool_exp']: ValueTypes['collection_bool_exp']
   ['collection_order_by']: ValueTypes['collection_order_by']
   ['collection_select_column']: ValueTypes['collection_select_column']
+  ['collection_stats_arguments']: ValueTypes['collection_stats_arguments']
+  ['collection_stats_bool_exp_bool_exp']: ValueTypes['collection_stats_bool_exp_bool_exp']
+  ['collection_stats_enum_name']: ValueTypes['collection_stats_enum_name']
+  ['collection_stats_order_by']: ValueTypes['collection_stats_order_by']
   ['collection_stream_cursor_input']: ValueTypes['collection_stream_cursor_input']
   ['collection_stream_cursor_value_input']: ValueTypes['collection_stream_cursor_value_input']
   ['collection_traits_aggregate_order_by']: ValueTypes['collection_traits_aggregate_order_by']
