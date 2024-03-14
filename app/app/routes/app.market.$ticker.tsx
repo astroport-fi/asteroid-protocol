@@ -10,7 +10,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useState } from 'react'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
@@ -27,7 +26,7 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
-import useDialog from '~/hooks/useDialog'
+import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
@@ -170,10 +169,16 @@ function ListingsTable({
   const {
     status: { lastKnownHeight },
   } = useRootContext()
-  const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
-  const { dialogRef: buyDialogRef, handleShow: showBuyDialog } = useDialog()
-  const [operation, setOperation] = useState<Operation | null>(null)
-  const [listingHash, setListingHash] = useState<string | null>(null)
+  const {
+    dialogRef: txDialogRef,
+    value: operation,
+    showDialog: showTxDialog,
+  } = useDialogWithValue<Operation>()
+  const {
+    dialogRef: buyDialogRef,
+    value: listingHash,
+    showDialog: showBuyDialog,
+  } = useDialogWithValue<string>()
   const operations = useMarketplaceOperations()
 
   function cancelListing(listingHash: string) {
@@ -184,9 +189,7 @@ function ListingsTable({
 
     const txInscription = operations.delist(listingHash)
 
-    setOperation({ inscription: txInscription })
-
-    showTxDialog()
+    showTxDialog({ inscription: txInscription })
   }
 
   function buyListing(listingHash: string) {
@@ -196,17 +199,15 @@ function ListingsTable({
     }
 
     operations.buy(listingHash, 'cft20').then((txInscription) => {
-      setOperation({
+      showTxDialog({
         inscription: txInscription,
         feeTitle: 'Token listing price',
       })
-      showTxDialog()
     })
   }
 
   function reserveListing(listingHash: string) {
-    setListingHash(listingHash)
-    showBuyDialog()
+    showBuyDialog(listingHash)
   }
 
   const columns = [
@@ -478,7 +479,7 @@ function LatestTransactions({
 
 export default function MarketPage() {
   const data = useLoaderData<typeof loader>()
-  const { dialogRef, handleShow } = useDialog()
+  const { dialogRef, showDialog } = useDialog()
   const amount = data.token.token_holders?.[0]?.amount
   const { token } = data
   const minted = token.circulating_supply / token.max_supply
@@ -511,7 +512,7 @@ export default function MarketPage() {
                   Mint now
                 </Link>
               )}
-              <Button color="primary" size="sm" onClick={() => handleShow()}>
+              <Button color="primary" size="sm" onClick={() => showDialog()}>
                 Sell {token.ticker} tokens
               </Button>{' '}
               <SellTokenDialog
@@ -534,7 +535,7 @@ export default function MarketPage() {
               className="mt-2"
               listings={data.reservedListings}
               token={token}
-              onListClick={() => handleShow()}
+              onListClick={() => showDialog()}
               serverSorting={false}
             />
             <h3 className="mt-16 text-lg">All listings</h3>
@@ -547,7 +548,7 @@ export default function MarketPage() {
           pages={data.pages}
           total={data.total}
           token={token}
-          onListClick={() => handleShow()}
+          onListClick={() => showDialog()}
           serverSorting={true}
         />
       </div>

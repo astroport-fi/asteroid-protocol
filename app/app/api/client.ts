@@ -6,12 +6,14 @@ import {
   WSSubscription,
   order_by,
 } from '@asteroid-protocol/sdk/client'
-import { aggregateCountSelector } from '~/api/common'
+import { aggregateCountSelector, collectionStatsSelector } from '~/api/common'
 import {
   Inscription,
+  InscriptionDetail,
   InscriptionHistory,
   InscriptionTradeHistory,
   InscriptionWithMarket,
+  inscriptionDetailSelector,
   inscriptionHistorySelector,
   inscriptionListingSelector,
   inscriptionSelector,
@@ -84,7 +86,7 @@ export type TradeHistoryResult = {
   count: number
 }
 
-export interface TraitFilterItem {
+export interface TraitItem {
   trait_type: string
   value: string
 }
@@ -569,6 +571,34 @@ export class AsteroidClient extends AsteroidService {
     return result.collection
   }
 
+  async getCollectionStats(collectionId: number) {
+    const result = await this.query({
+      collection_stats: [
+        {
+          args: {
+            collection_id: collectionId,
+          },
+        },
+        collectionStatsSelector,
+      ],
+    })
+    return result.collection_stats[0]
+  }
+
+  async getClubStats(maxId: number) {
+    const result = await this.query({
+      club_stats: [
+        {
+          args: {
+            max_id: maxId,
+          },
+        },
+        collectionStatsSelector,
+      ],
+    })
+    return result.club_stats[0]
+  }
+
   async getCollection(symbol: string): Promise<CollectionDetail | undefined> {
     const result = await this.query({
       collection: [
@@ -582,7 +612,7 @@ export class AsteroidClient extends AsteroidService {
         collectionDetailSelector,
       ],
     })
-    return result.collection[0]
+    return result.collection[0] as CollectionDetail | undefined
   }
 
   async getCollectionById(id: number): Promise<CollectionDetail | undefined> {
@@ -598,12 +628,12 @@ export class AsteroidClient extends AsteroidService {
         collectionDetailSelector,
       ],
     })
-    return result.collection[0]
+    return result.collection[0] as CollectionDetail | undefined
   }
 
   async getInscriptionWithMarket(
     hash: string,
-  ): Promise<InscriptionWithMarket | undefined> {
+  ): Promise<InscriptionWithMarket<InscriptionDetail> | undefined> {
     const result = await this.query({
       inscription: [
         {
@@ -616,7 +646,7 @@ export class AsteroidClient extends AsteroidService {
           },
         },
         {
-          ...inscriptionSelector,
+          ...inscriptionDetailSelector,
           marketplace_inscription_details: [
             {
               where: {
@@ -638,7 +668,7 @@ export class AsteroidClient extends AsteroidService {
       ...inscription,
       marketplace_listing:
         inscription?.marketplace_inscription_details?.[0]?.marketplace_listing,
-    }
+    } as InscriptionWithMarket<InscriptionDetail>
   }
 
   async getInscription(hash: string): Promise<Inscription | undefined> {
@@ -656,7 +686,7 @@ export class AsteroidClient extends AsteroidService {
         inscriptionSelector,
       ],
     })
-    return result.inscription[0]
+    return result.inscription[0] as Inscription
   }
 
   async getReservedInscriptions(
@@ -707,7 +737,7 @@ export class AsteroidClient extends AsteroidService {
     return res.marketplace_inscription_detail.map((i) => ({
       ...i.inscription!,
       marketplace_listing: i.marketplace_listing,
-    }))
+    })) as InscriptionWithMarket[]
   }
 
   async getUserListedInscriptions(
@@ -757,7 +787,7 @@ export class AsteroidClient extends AsteroidService {
       count:
         res.marketplace_inscription_detail_aggregate.aggregate?.count ??
         res.marketplace_inscription_detail.length,
-    }
+    } as InscriptionsResult
   }
 
   async getUserInscriptions(
@@ -792,7 +822,7 @@ export class AsteroidClient extends AsteroidService {
       inscriptions: res.inscription,
       count:
         res.inscription_aggregate.aggregate?.count ?? res.inscription.length,
-    }
+    } as InscriptionsResult
   }
 
   async getInscriptions(
@@ -807,7 +837,7 @@ export class AsteroidClient extends AsteroidService {
       priceGTE?: number
       priceLTE?: number
       search?: string | null
-      traitFilters?: TraitFilterItem[][]
+      traitFilters?: TraitItem[][]
     } = {},
     orderBy?: ValueTypes['inscription_market_order_by'],
   ): Promise<InscriptionsResult> {
@@ -963,7 +993,7 @@ export class AsteroidClient extends AsteroidService {
       count:
         result.inscription_market_aggregate.aggregate?.count ??
         result.inscription_market.length,
-    }
+    } as InscriptionsResult
   }
 
   async getInscriptionHistory(
@@ -1075,7 +1105,7 @@ export class AsteroidClient extends AsteroidService {
         inscriptionTradeHistorySelector,
       ],
     })
-    return result.inscription_trade_history
+    return result.inscription_trade_history as InscriptionTradeHistory[]
   }
 
   async getTokenTradeHistory(

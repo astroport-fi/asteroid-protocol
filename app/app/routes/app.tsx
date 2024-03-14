@@ -9,7 +9,7 @@ export default function App() {
   const navigation = useNavigation()
   const isLoading = navigation.state === 'loading'
   const padding =
-    location.pathname !== '/app/inscriptions' &&
+    !location.pathname.includes('/app/inscriptions/') &&
     !location.pathname.includes('/app/market') &&
     !location.pathname.includes('/app/collection/')
 
