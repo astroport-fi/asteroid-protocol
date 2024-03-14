@@ -3,6 +3,7 @@ package metaprotocol
 import (
 	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"mime"
@@ -68,6 +69,147 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
+func (protocol *Inscription) GetCollection(collectionHash string, sender string) (*models.Collection, error) {
+	// Fetch transaction from database with the given hash
+	var transaction models.Transaction
+	result := protocol.db.Where("hash = ?", collectionHash).First(&transaction)
+	if result.Error != nil {
+		// Invalid hash
+		return nil, result.Error
+	}
+
+	// Fetch the collection for this transaction ID
+	var collection models.Collection
+	result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&collection)
+	if result.Error != nil {
+		// Invalid transaction ID
+		return nil, result.Error
+	}
+
+	// Check that the sender is the collection owner
+	if collection.Creator != sender {
+		return nil, fmt.Errorf("invalid sender, must be collection owner")
+	}
+
+	return &collection, nil
+}
+
+func (protocol *Inscription) GetInscription(inscriptionHash string, sender string, checkCreator bool) (*models.Inscription, error) {
+	// Fetch transaction from database with the given hash
+	var transaction models.Transaction
+	result := protocol.db.Where("hash = ?", inscriptionHash).First(&transaction)
+	if result.Error != nil {
+		// Invalid hash
+		return nil, result.Error
+	}
+
+	// Fetch the inscription for this transaction ID
+	var inscription models.Inscription
+	result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&inscription)
+	if result.Error != nil {
+		// Invalid transaction ID
+		return nil, result.Error
+	}
+
+	if checkCreator {
+		// Check that the sender is the inscription creator
+		if inscription.Creator != sender {
+			return nil, fmt.Errorf("invalid sender, must be creator")
+		}
+
+	} else {
+		// Check that the sender is the current owner
+		if inscription.CurrentOwner != sender {
+			return nil, fmt.Errorf("invalid sender, must be current owner")
+		}
+	}
+
+	return &inscription, nil
+}
+
+func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender string) error {
+	// get migration data from non_critical_extension_options
+	var msg types.ExtensionMsg
+	var err error
+	for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
+		msg, err = extension.UnmarshalData()
+		if err != nil {
+			return fmt.Errorf("unable to unmarshal extension data '%s'", err)
+		}
+
+		// We only process the first extension option
+		break
+	}
+
+	var migrationData types.InscriptionMigrationData
+	jsonBytes, err := msg.GetMetadataBytes()
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(jsonBytes, &migrationData)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	// get collection
+	var collection *models.Collection
+	if migrationData.Collection != "" {
+		collection, err = protocol.GetCollection(migrationData.Collection, sender)
+		if err != nil {
+			return err
+		}
+	}
+
+	// iterate over the rows and migrate the inscriptions
+	// verify that the sender is the inscription owner
+	attributeNames := migrationData.Header[1:]
+	for _, row := range migrationData.Rows {
+		// get the inscription
+		inscriptionHash := row[0]
+		inscription, err := protocol.GetInscription(inscriptionHash, sender, true)
+		if err != nil {
+			return err
+		}
+
+		// check if the inscription is already migrated
+		if inscription.Version != "v1" {
+			return fmt.Errorf("inscription already migrated")
+		}
+
+		// update inscription metadata
+		traits := types.GetTraits(attributeNames, row[1:])
+		var metadata types.InscriptionNftMetadata
+		err = json.Unmarshal(inscription.Metadata, &metadata)
+		if err != nil {
+			return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		}
+		metadata.Metadata.Attributes = traits
+		metadataBytes, err := json.Marshal(metadata)
+		if err != nil {
+			return fmt.Errorf("unable to marshal metadata '%s'", err)
+		}
+
+		inscription.Metadata = datatypes.JSON(metadataBytes)
+
+		// update inscription collection
+		if collection != nil {
+			inscription.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
+		}
+
+		// update inscription version
+		inscription.Version = "v2"
+
+		// save updated inscription
+		result := protocol.db.Save(&inscription)
+		if result.Error != nil {
+			return result.Error
+		}
+	}
+
+	return nil
+}
+
 func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
@@ -83,15 +225,16 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 	}
 
 	// TODO: Rework validation
-	if parsedURN.KeyValuePairs["h"] == "" {
-		return fmt.Errorf("missing content hash")
-	}
 	if parsedURN.ChainID != protocol.chainID {
 		return fmt.Errorf("invalid chain ID '%s'", parsedURN.ChainID)
 	}
 
 	switch parsedURN.Operation {
 	case "inscribe":
+		if parsedURN.KeyValuePairs["h"] == "" {
+			return fmt.Errorf("missing content hash")
+		}
+
 		contentHash := parsedURN.KeyValuePairs["h"]
 
 		// Inscription metadata is stored in the non_critical_extension_options
@@ -164,25 +307,9 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		// Check if inscription is part of a Collection
 		if inscriptionMetadata.Parent.Type == "/collection" {
-			// Fetch transaction from database with the given hash
-			var transaction models.Transaction
-			result := protocol.db.Where("hash = ?", inscriptionMetadata.Parent.Identifier).First(&transaction)
-			if result.Error != nil {
-				// Invalid hash
-				return result.Error
-			}
-
-			// Fetch the collection for this transaction ID
-			var collection models.Collection
-			result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&collection)
-			if result.Error != nil {
-				// Invalid transaction ID
-				return result.Error
-			}
-
-			// Check that the sender is the collection owner
-			if collection.Creator != sender {
-				return fmt.Errorf("invalid sender, must be collection owner")
+			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
+			if err != nil {
+				return err
 			}
 
 			// set collection id to the inscription
@@ -209,6 +336,10 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		protocol.db.Save(&inscriptionHistory)
 
 	case "transfer":
+		if parsedURN.KeyValuePairs["h"] == "" {
+			return fmt.Errorf("missing content hash")
+		}
+
 		txHash := parsedURN.KeyValuePairs["h"]
 
 		// Fetch transaction from database with the given hash
@@ -253,6 +384,8 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)
+	case "migrate":
+		return protocol.Migrate(rawTransaction, sender)
 	}
 	return nil
 }
