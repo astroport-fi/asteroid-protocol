@@ -1,5 +1,5 @@
-import { parseFile } from '@fast-csv/parse'
 import fs from 'fs/promises'
+import { inferSchema, initParser } from 'udsv'
 
 export async function fileExists(file: string) {
   try {
@@ -13,11 +13,8 @@ export async function fileExists(file: string) {
 export async function readCSV(
   csvPath: string,
 ): Promise<Record<string, string>[]> {
-  return new Promise((resolve, reject) => {
-    const rows: Record<string, string>[] = []
-    parseFile(csvPath, { headers: true })
-      .on('error', (error) => reject(error))
-      .on('data', (row) => rows.push(row))
-      .on('end', () => resolve(rows))
-  })
+  const csvStr = await fs.readFile(csvPath, 'utf8')
+  const schema = inferSchema(csvStr, { trim: true })
+  const parser = initParser(schema)
+  return parser.typedObjs(csvStr)
 }
