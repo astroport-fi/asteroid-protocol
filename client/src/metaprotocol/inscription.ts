@@ -1,11 +1,10 @@
+import { buildInscriptionData, buildOperation } from './build.js'
 import {
   BaseProtocol,
   InscriptionData,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscriptionData,
-  buildOperation,
-} from './index.js'
+} from './types.js'
 
 export type ContentMetadata = {
   name: string
@@ -38,6 +37,12 @@ export interface NFTMetadata extends ContentMetadata {
 export type Parent = {
   type: string
   identifier: string
+}
+
+export interface MigrationData {
+  header: string[]
+  rows: string[][]
+  collection?: string
 }
 
 const DEFAULT_FEE: ProtocolFee = {
@@ -95,5 +100,9 @@ export default class InscriptionProtocol extends BaseProtocol {
       ['dst', destination],
     ]
     return buildOperation(this, this.fee, this.chainId, 'transfer', params)
+  }
+
+  migrate() {
+    return buildOperation(this, this.fee, this.chainId, 'migrate', [])
   }
 }

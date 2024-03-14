@@ -1,5 +1,6 @@
 import InscriptionProtocol, {
   CollectionMetadata,
+  MigrationData,
   NFTMetadata,
   Parent,
   accountIdentifier,
@@ -53,5 +54,17 @@ export class InscriptionOperations<
 
   transfer(hash: string, destination: string) {
     return this.prepareOperation(this.protocol.transfer(hash, destination))
+  }
+
+  migrate(data: MigrationData) {
+    const parent = accountIdentifier(this.address)
+
+    const inscriptionData = this.protocol.createInscriptionData(
+      Uint8Array.from([]),
+      data,
+      parent,
+    )
+    const operation = this.protocol.migrate()
+    return this.prepareOperation(operation, inscriptionData)
   }
 }

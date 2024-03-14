@@ -36,7 +36,7 @@ export type ScalarDefinition = {
   }
   jsonb: {
     encode: (e: unknown) => string
-    decode: (e: unknown) => string
+    decode: (e: unknown) => unknown
   }
 }
 
