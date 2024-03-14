@@ -8,11 +8,16 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Divider } from 'react-daisyui'
-import { AsteroidClient } from '~/api/client'
-import { InscriptionHistory, InscriptionWithMarket } from '~/api/inscription'
+import { Badge, Divider } from 'react-daisyui'
+import { AsteroidClient, TraitItem } from '~/api/client'
+import {
+  InscriptionDetail,
+  InscriptionHistory,
+  InscriptionWithMarket,
+} from '~/api/inscription'
 import Address from '~/components/Address'
 import AddressChip from '~/components/AddressChip'
+import { BackHeader } from '~/components/Back'
 import { InscriptionActions } from '~/components/InscriptionActions'
 import InscriptionImage from '~/components/InscriptionImage'
 import TxLink from '~/components/TxLink'
@@ -62,13 +67,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return inscriptionMeta(data.inscription)
 }
 
-function InscriptionDetail({
+function InscriptionDetailComponent({
   inscription,
 }: {
-  inscription: InscriptionWithMarket
+  inscription: InscriptionWithMarket<InscriptionDetail>
 }) {
   return (
-    <div className="flex flex-col xl:flex-row w-full">
+    <div className="flex flex-col xl:flex-row w-full mt-4">
       <div className="flex flex-1 flex-col px-8 items-center">
         <InscriptionImage
           mime={inscription.mime}
@@ -110,6 +115,35 @@ function InscriptionDetail({
           <strong>Transaction</strong>
           <TxLink txHash={inscription.transaction.hash} />
         </div>
+        {inscription.collection && (
+          <div className="flex flex-col mt-6">
+            <strong>Collection</strong>
+            <Link to={`/app/collection/${inscription.collection.symbol}`}>
+              {inscription.collection.name}
+            </Link>
+          </div>
+        )}
+        {inscription.attributes && (
+          <div className="flex flex-col mt-6">
+            <strong>Traits</strong>
+            <div className="flex flex-row gap-4 mt-2">
+              {inscription.attributes.map((attr: TraitItem) => (
+                <Link
+                  key={attr.trait_type}
+                  className="btn btn-neutral btn-sm"
+                  to={
+                    inscription.collection
+                      ? `/app/collection/${inscription.collection.symbol}?${attr.trait_type}=${attr.value}&status=all`
+                      : '/inscriptions'
+                  }
+                >
+                  {attr.trait_type}
+                  <Badge>{attr.value}</Badge>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -173,7 +207,16 @@ export default function InscriptionPage() {
   const data = useLoaderData<typeof loader>()
   return (
     <div className="flex flex-col">
-      <InscriptionDetail inscription={data.inscription} />
+      <BackHeader
+        to={
+          data.inscription.collection
+            ? `/app/collection/${data.inscription.collection.symbol}`
+            : `/app/inscriptions`
+        }
+      >
+        Inscription #{data.inscription.id - 1}
+      </BackHeader>
+      <InscriptionDetailComponent inscription={data.inscription} />
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Transaction History</h2>
       <Divider />

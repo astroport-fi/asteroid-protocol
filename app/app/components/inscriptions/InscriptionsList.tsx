@@ -48,6 +48,7 @@ export default function InscriptionsList({
     const nextPage = items.length == LIMIT ? page + 1 : fetcher.data!.page + 1
     const queryParams = new URLSearchParams(searchParams)
     queryParams.set('page', `${nextPage}`)
+    queryParams.set('index', '')
     const query = `?${queryParams.toString()}`
     fetcher.load(query)
   }

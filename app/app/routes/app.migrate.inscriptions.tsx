@@ -1,4 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
+import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
@@ -17,7 +18,7 @@ import { AsteroidClient } from '~/api/client'
 import TxDialog from '~/components/dialogs/TxDialog'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
 
@@ -55,8 +56,7 @@ export default function CreateInscription() {
   const [fileName, setFileName] = useState<string | null>(null)
 
   // dialog
-  const { dialogRef, handleShow } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const { dialogRef, showDialog, value } = useDialogWithValue<TxInscription>()
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -71,12 +71,10 @@ export default function CreateInscription() {
       return
     }
 
-    console.log('csv', csvStr)
-
     const schema = inferSchema(csvStr, { trim: true })
     const parser = initParser(schema)
 
-    const metadata: any = {
+    const metadata: inscription.MigrationData = {
       header: schema.cols.map((col) => col.name),
       rows: parser.stringArrs(csvStr),
     }
@@ -84,12 +82,8 @@ export default function CreateInscription() {
       metadata.collection = data.collection
     }
 
-    console.log(metadata)
-
-    // @todo
-    // const txInscription = txInscription = operations.inscribe(byteArray, metadata)
-    // setTxInscription(txInscription)
-    // handleShow()
+    const txInscription = operations.migrate(metadata)
+    showDialog(txInscription)
   })
 
   return (
@@ -200,7 +194,7 @@ export default function CreateInscription() {
           )}
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txInscription={txInscription} />
+      <TxDialog ref={dialogRef} txInscription={value} />
     </div>
   )
 }

@@ -14,10 +14,8 @@ import Select, { DropdownItem } from '~/components/form/Select'
 import { TraitValue, getTraitsMap } from '~/utils/traits'
 import {
   DEFAULT_PRICE_RANGE,
-  DEFAULT_RANGE,
   DEFAULT_STATUS,
   PriceRange,
-  Range,
   Sort,
   Status,
   getDefaultSort,
@@ -160,34 +158,26 @@ function TraitsFilter({ traits }: { traits: CollectionTrait[] }) {
   )
 }
 
+const sortItems: DropdownItem<Sort>[] = [
+  { label: 'Recently listed', value: Sort.RECENTLY_LISTED },
+  { label: 'Lowest ID', value: Sort.LOWEST_ID },
+  { label: 'Lowest price', value: Sort.LOWEST_PRICE },
+  { label: 'Highest price', value: Sort.HIGHEST_PRICE },
+  { label: 'Highest ID', value: Sort.HIGHEST_ID },
+]
+
+const priceRangeItems: DropdownItem<PriceRange>[] = [
+  { label: 'All', value: PriceRange.ALL },
+  { label: '< 0.1 ATOM', value: PriceRange.BELOW_0_1 },
+  { label: '0.1 - 1 ATOM', value: PriceRange.BETWEEN_0_1_AND_1 },
+  { label: '1 - 5 ATOM', value: PriceRange.BETWEEN_1_AND_5 },
+  { label: '5 - 10 ATOM', value: PriceRange.BETWEEN_5_AND_10 },
+  { label: '10 - 100 ATOM', value: PriceRange.BETWEEN_10_AND_100 },
+  { label: '100 ATOM+', value: PriceRange.ABOVE_100 },
+]
+
 export function Filter({ traits }: Props) {
   const [searchParams, setSearchParams] = useSearchParams()
-
-  const sortItems: DropdownItem<Sort>[] = [
-    { label: 'Recently listed', value: Sort.RECENTLY_LISTED },
-    { label: 'Lowest ID', value: Sort.LOWEST_ID },
-    { label: 'Lowest price', value: Sort.LOWEST_PRICE },
-    { label: 'Highest price', value: Sort.HIGHEST_PRICE },
-    { label: 'Highest ID', value: Sort.HIGHEST_ID },
-  ]
-
-  const priceRangeItems: DropdownItem<PriceRange>[] = [
-    { label: 'All', value: PriceRange.ALL },
-    { label: '< 0.1 ATOM', value: PriceRange.BELOW_0_1 },
-    { label: '0.1 - 1 ATOM', value: PriceRange.BETWEEN_0_1_AND_1 },
-    { label: '1 - 5 ATOM', value: PriceRange.BETWEEN_1_AND_5 },
-    { label: '5 - 10 ATOM', value: PriceRange.BETWEEN_5_AND_10 },
-    { label: '10 - 100 ATOM', value: PriceRange.BETWEEN_10_AND_100 },
-    { label: '100 ATOM+', value: PriceRange.ABOVE_100 },
-  ]
-
-  const rangeItems: DropdownItem<Range>[] = [
-    { label: 'All', value: Range.ALL },
-    { label: 'Sub 100', value: Range.SUB_100 },
-    { label: 'Sub 1 000', value: Range.SUB_1_000 },
-    { label: 'Sub 10 000', value: Range.SUB_10_000 },
-    { label: 'Sub 50 000', value: Range.SUB_50_000 },
-  ]
 
   const [status, setStatus] = useState<Status>(
     (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
@@ -203,9 +193,6 @@ export function Filter({ traits }: Props) {
     defaultPriceRange = `${priceFrom}-${searchParams.get('to')}` as PriceRange
   }
   const [priceRange, setPriceRange] = useState<PriceRange>(defaultPriceRange)
-  const [range, setRange] = useState<Range>(
-    (searchParams.get('range') as Range) ?? DEFAULT_RANGE,
-  )
 
   const defaultSearch = searchParams.get('search') ?? ''
 
@@ -234,16 +221,6 @@ export function Filter({ traits }: Props) {
       })
     }
   }, [searchParams, sort, status, setSearchParams])
-
-  useEffect(() => {
-    const currentRange = searchParams.get('range') ?? DEFAULT_RANGE
-    if (currentRange !== range) {
-      setSearchParams((prev) => {
-        prev.set('range', range)
-        return prev
-      })
-    }
-  }, [searchParams, range, setSearchParams])
 
   useEffect(() => {
     const from = searchParams.get('from') ?? DEFAULT_PRICE_RANGE
@@ -293,8 +270,6 @@ export function Filter({ traits }: Props) {
             onSelect={setPriceRange}
             selected={priceRange}
           />
-          <FilterTitle className="mt-6">Inscription range</FilterTitle>
-          <Select items={rangeItems} onSelect={setRange} selected={range} />
           {traits && (
             <>
               <Divider />

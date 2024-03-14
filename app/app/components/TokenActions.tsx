@@ -15,9 +15,9 @@ interface Props {
 }
 
 export function TokenActions({ amount, token, className }: Props) {
-  const { dialogRef: transferDialogRef, handleShow: showTransferDialog } =
+  const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
-  const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
+  const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
 
   const isLaunched = isTokenLaunched(token)
 

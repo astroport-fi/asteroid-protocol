@@ -4,6 +4,7 @@ import {
   ScalarDefinition,
   Selector,
 } from '@asteroid-protocol/sdk/client'
+import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 
 export const collectionSelector = Selector('collection')({
   id: true,
@@ -30,13 +31,11 @@ export const collectionTraitSelector = Selector('collection_traits')({
   trait_value: [{}, true],
 })
 
-export type CollectionTrait = Required<
-  InputType<
-    GraphQLTypes['collection_traits'],
-    typeof collectionTraitSelector,
-    ScalarDefinition
-  >
->
+export interface CollectionTrait {
+  count: number
+  trait_type: string
+  trait_value: string
+}
 
 // Collection detail
 export const collectionDetailSelector = Selector('collection')({
@@ -45,8 +44,11 @@ export const collectionDetailSelector = Selector('collection')({
   metadata: [{ path: '$.metadata' }, true],
 })
 
-export type CollectionDetail = InputType<
-  GraphQLTypes['collection'],
-  typeof collectionDetailSelector,
-  ScalarDefinition
->
+export type CollectionDetail = Omit<
+  InputType<
+    GraphQLTypes['collection'],
+    typeof collectionDetailSelector,
+    ScalarDefinition
+  >,
+  'traits' | 'metadata'
+> & { traits: CollectionTrait[]; metadata: inscription.CollectionMetadata }

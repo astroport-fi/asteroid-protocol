@@ -13,7 +13,7 @@ import Telegram from '~/components/icons/telegram'
 import Twitter from '~/components/icons/twitter'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { loadImage } from '~/utils/file'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -55,8 +55,7 @@ export default function CreateCollection() {
   const [fileName, setFileName] = useState<string | null>(null)
 
   // dialog
-  const { dialogRef, handleShow } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -97,9 +96,7 @@ export default function CreateCollection() {
 
     const txInscription = operations.inscribeCollection(byteArray, metadata)
 
-    setTxInscription(txInscription)
-
-    handleShow()
+    showDialog(txInscription)
   })
 
   return (
@@ -356,7 +353,7 @@ export default function CreateCollection() {
       </Form>
       <TxDialog
         ref={dialogRef}
-        txInscription={txInscription}
+        txInscription={value}
         resultLink={`/app/collection/${ticker?.toUpperCase()}`}
         resultCTA="View Collection"
       />

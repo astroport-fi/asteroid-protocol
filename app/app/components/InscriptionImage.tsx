@@ -1,6 +1,6 @@
 import { EyeSlashIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { getMimeTitle } from '~/utils/string'
 
@@ -25,6 +25,14 @@ export default function InscriptionImage({
     'flex flex-col items-center justify-center w-full h-full uppercase',
     { 'bg-base-200 px-8 py-16': !min },
   )
+  const ref = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    if (!smallImage && ref.current?.complete) {
+      if (ref.current.naturalHeight < SMALL_IMAGE_THRESHOLD) {
+        setSmallImage(true)
+      }
+    }
+  }, [smallImage])
 
   if (isExplicit) {
     return (
@@ -39,12 +47,16 @@ export default function InscriptionImage({
     return (
       <img
         src={src}
+        ref={ref}
         alt=""
         className={clsx(twMerge('w-full h-full object-cover', className), {
           'image-pixelated': smallImage,
         })}
         onLoad={(e) => {
-          if (e.currentTarget.naturalHeight < SMALL_IMAGE_THRESHOLD) {
+          if (
+            !smallImage &&
+            e.currentTarget.naturalHeight < SMALL_IMAGE_THRESHOLD
+          ) {
             setSmallImage(true)
           }
         }}

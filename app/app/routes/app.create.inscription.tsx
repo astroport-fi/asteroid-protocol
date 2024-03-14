@@ -23,7 +23,7 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useCollection from '~/hooks/useCollection'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
 import { getTraitsMap } from '~/utils/traits'
@@ -118,8 +118,7 @@ export default function CreateInscription() {
   const [fileName, setFileName] = useState<string | null>(null)
 
   // dialog
-  const { dialogRef, handleShow } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -164,9 +163,7 @@ export default function CreateInscription() {
       txInscription = operations.inscribe(byteArray, metadata)
     }
 
-    setTxInscription(txInscription)
-
-    handleShow()
+    showDialog(txInscription)
   })
 
   return (
@@ -384,7 +381,7 @@ export default function CreateInscription() {
           )}
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txInscription={txInscription} />
+      <TxDialog ref={dialogRef} txInscription={value} />
     </div>
   )
 }

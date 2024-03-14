@@ -9,7 +9,7 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import NumericInput from '~/components/form/NumericInput'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useCFT20Operations } from '~/hooks/useOperations'
 import { loadImage } from '~/utils/file'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -56,8 +56,7 @@ export default function CreateToken() {
   const [fileName, setFileName] = useState<string | null>(null)
 
   // dialog
-  const { dialogRef, handleShow } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
   const onSubmit = handleSubmit(async (data) => {
     if (!operations) {
@@ -83,9 +82,7 @@ export default function CreateToken() {
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
     })
 
-    setTxInscription(txInscription)
-
-    handleShow()
+    showDialog(txInscription)
   })
 
   return (
@@ -356,7 +353,7 @@ export default function CreateToken() {
       </Form>
       <TxDialog
         ref={dialogRef}
-        txInscription={txInscription}
+        txInscription={value}
         resultLink={`/app/token/${ticker?.toUpperCase()}`}
         resultCTA="View Token"
       />

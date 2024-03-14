@@ -32,8 +32,9 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     const address = useAddress()
 
     // dialog
-    const { dialogRef, handleShow } = useDialog()
-    const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
+    const { dialogRef, showDialog } = useDialog()
+    const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
+
     const [royalty, setRoyalty] = useState<Royalty | null>(null)
 
     const asteroidClient = useAsteroidClient()
@@ -131,7 +132,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                       type="submit"
                       onClick={() => {
                         fRef.current?.close()
-                        handleShow()
+                        showDialog()
                       }}
                     >
                       Buy now
