@@ -76,6 +76,7 @@ const SellInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                 name="price"
                 error={errors.price}
                 title="Price (ATOM)"
+                required
                 isFloat
               />
             </div>

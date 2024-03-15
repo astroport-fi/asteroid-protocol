@@ -71,6 +71,7 @@ const TransferTokenDialog = forwardRef<HTMLDialogElement, Props>(
               name="amount"
               error={errors.amount}
               title="Amount to transfer"
+              required
             />
             <CosmosAddressInput
               register={register}
