@@ -33,7 +33,7 @@ export default function NumericInput<
     <div className={twMerge('form-control w-full', className)}>
       <Form.Label title={title} htmlFor={name} />
       <Controller
-        rules={{ required: true, pattern: /^[0-9]+$/ }}
+        rules={{ required: props.required, pattern: /^[0-9]+$/ }}
         control={control}
         name={name}
         render={({

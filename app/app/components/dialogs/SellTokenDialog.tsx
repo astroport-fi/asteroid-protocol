@@ -87,6 +87,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 name="amount"
                 error={errors.amount}
                 title="Amount to sell"
+                required
               />
 
               <NumericInput
@@ -95,6 +96,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 error={errors.ppt}
                 title="Price per token"
                 className="ml-4"
+                required
                 isFloat
               />
             </div>

@@ -264,6 +264,7 @@ export default function CreateToken() {
             name="maxSupply"
             title="Maximum supply"
             className="mt-4"
+            required
           />
 
           <NumericInput
@@ -272,6 +273,7 @@ export default function CreateToken() {
             name="mintLimit"
             title="Per transaction mint limit"
             className="mt-4"
+            required
           />
 
           <div className="mt-4">
