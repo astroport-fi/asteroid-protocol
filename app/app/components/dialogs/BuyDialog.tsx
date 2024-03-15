@@ -21,7 +21,7 @@ interface Props {
   listingHash: string | null
   buyType: BuyType
   royalty?: Royalty
-  resultLink?: To
+  resultLink?: To | ((txHash: string) => To)
 }
 
 enum Step {
@@ -42,9 +42,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   } = useRootContext()
   const location = useLocation()
   const navigate = useNavigate()
-  const onNavigate = useCallback(() => {
-    navigate(resultLink ?? `${location.pathname}${location.search}`)
-  }, [location, resultLink, navigate])
+  const [url, setUrl] = useState<To | undefined>()
 
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -146,7 +144,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal ref={ref} backdrop onClose={onNavigate}>
+    <Modal
+      ref={ref}
+      backdrop
+      onClose={() => navigate(url ?? `${location.pathname}${location.search}`)}
+    >
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
@@ -162,11 +164,17 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
               : 'Deposit (0.01%)'
           }
           resultCTA="Back to market"
-          onClose={
+          onCTAClick={
             step === Step.Purchase
               ? () => {
+                  if (typeof resultLink === 'function') {
+                    setUrl(resultLink(txHash))
+                  } else {
+                    setUrl(
+                      resultLink ?? `${location.pathname}${location.search}`,
+                    )
+                  }
                   fRef.current?.close()
-                  onNavigate()
                   resetState()
                 }
               : undefined

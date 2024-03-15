@@ -12,8 +12,8 @@ import Modal from './Modal'
 
 interface Props {
   txInscription: TxInscription | null
-  resultCTA?: string
-  resultLink?: To
+  resultCTA: string
+  resultLink?: To | ((txHash: string) => To)
   feeOperationTitle?: string
 }
 
@@ -27,7 +27,6 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   ref,
 ) {
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
-  const location = useLocation()
 
   const {
     chainFee,
@@ -39,8 +38,11 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
     resetState,
     retry,
   } = useSubmitTx(txInscription)
-  const navigate = useNavigate()
   const fRef = useForwardRef(ref)
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [url, setUrl] = useState<To | undefined>()
 
   useEffect(() => {
     if (txInscriptionProp != txInscription) {
@@ -54,7 +56,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       ref={ref}
       backdrop
       onClose={() => {
-        navigate(`${location.pathname}${location.search}`)
+        navigate(url ?? `${location.pathname}${location.search}`)
       }}
     >
       <Modal.Body className="text-center">
@@ -66,8 +68,13 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           txState={txState}
           resultCTA={resultCTA}
           feeOperationTitle={feeOperationTitle}
-          onClose={() => {
-            navigate(resultLink ?? `/app/inscription/${txHash}`)
+          onCTAClick={() => {
+            if (typeof resultLink === 'function') {
+              setUrl(resultLink(txHash))
+            } else {
+              setUrl(resultLink ?? `${location.pathname}${location.search}`)
+            }
+            fRef.current?.close()
           }}
         >
           <Lottie animationData={scanAnimationData} />

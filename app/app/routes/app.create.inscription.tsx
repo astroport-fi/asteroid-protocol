@@ -388,7 +388,12 @@ export default function CreateInscription() {
           )}
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txInscription={value} />
+      <TxDialog
+        ref={dialogRef}
+        txInscription={value}
+        resultLink={(txHash) => `/app/inscription/${txHash}`}
+        resultCTA="View inscription"
+      />
     </div>
   )
 }

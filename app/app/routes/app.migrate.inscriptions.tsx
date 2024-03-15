@@ -194,7 +194,12 @@ export default function CreateInscription() {
           )}
         </div>
       </Form>
-      <TxDialog ref={dialogRef} txInscription={value} />
+      <TxDialog
+        ref={dialogRef}
+        txInscription={value}
+        resultCTA="View inscriptions"
+        resultLink="/app/wallet/inscriptions"
+      />
     </div>
   )
 }
