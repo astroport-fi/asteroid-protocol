@@ -1,3 +1,4 @@
+import { MsgSendEncodeObject } from '@cosmjs/stargate'
 import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
 import MarketplaceProtocol, { BuyType } from '../metaprotocol/marketplace.js'
@@ -142,7 +143,11 @@ export class MarketplaceOperations<
     )
   }
 
-  async buy(listingHash: string, buyType: BuyType) {
+  async buy(
+    listingHash: string,
+    buyType: BuyType,
+    royalty?: { recipient: string; percentage: number },
+  ) {
     // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
@@ -173,12 +178,38 @@ export class MarketplaceOperations<
       totaluatom -= deposit
     }
 
+    const messages: MsgSendEncodeObject[] = []
+
+    // Add royalty if exists
+    if (
+      royalty &&
+      totaluatom > 1 &&
+      royalty.recipient != listing.seller_address
+    ) {
+      const royaltyFloatAmount = listing.total * royalty.percentage
+      if (royaltyFloatAmount > 1) {
+        const royaltyAmount = BigInt(royaltyFloatAmount)
+
+        const royaltyMessage = createSendMessage(
+          this.address,
+          royalty.recipient,
+          'uatom',
+          royaltyAmount.toString(),
+        )
+        messages.push(royaltyMessage)
+
+        totaluatom -= royaltyAmount
+      }
+    }
+
+    // add purchase message
     const purchaseMessage = createSendMessage(
       this.address,
       listing.seller_address,
       'uatom',
       totaluatom.toString(),
     )
+    messages.push(purchaseMessage)
 
     // Calculate the trading fee
     const operation = this.protocol.buy(listingHash, buyType)
@@ -196,8 +227,6 @@ export class MarketplaceOperations<
       buyFee = fee.toFixed(0)
     }
 
-    return this.prepareOperation(operation, undefined, buyFee, [
-      purchaseMessage,
-    ])
+    return this.prepareOperation(operation, undefined, buyFee, messages)
   }
 }

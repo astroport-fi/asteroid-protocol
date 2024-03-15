@@ -1168,6 +1168,8 @@ export type ValueTypes = {
     ]
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     traits?: [
       {
@@ -1245,6 +1247,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1325,6 +1328,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    payment_address?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     symbol?:
       | ValueTypes['String_comparison_exp']
       | undefined
@@ -1363,6 +1376,8 @@ export type ValueTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -1380,6 +1395,8 @@ export type ValueTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -1419,6 +1436,16 @@ export type ValueTypes = {
     metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     minter?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     name?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    payment_address?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     symbol?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     traits_aggregate?:
       | ValueTypes['collection_traits_aggregate_order_by']
@@ -1512,6 +1539,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1520,6 +1548,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1528,6 +1557,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1562,6 +1592,12 @@ export type ValueTypes = {
     metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
     minter?: string | undefined | null | Variable<any, string>
     name?: string | undefined | null | Variable<any, string>
+    payment_address?: string | undefined | null | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
     symbol?: string | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
@@ -1571,6 +1607,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1834,6 +1871,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1842,6 +1880,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -1850,6 +1889,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -13865,6 +13905,8 @@ export type ResolverInputTypes = {
     ]
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     traits?: [
       {
@@ -13933,6 +13975,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -13968,6 +14011,14 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
     minter?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     name?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    payment_address?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    royalty_percentage?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
     symbol?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     traits?: ResolverInputTypes['collection_traits_bool_exp'] | undefined | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
@@ -13986,6 +14037,8 @@ export type ResolverInputTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -14003,6 +14056,8 @@ export type ResolverInputTypes = {
     id?: boolean | `@${string}`
     minter?: boolean | `@${string}`
     name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     symbol?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -14022,6 +14077,8 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['order_by'] | undefined | null
     minter?: ResolverInputTypes['order_by'] | undefined | null
     name?: ResolverInputTypes['order_by'] | undefined | null
+    payment_address?: ResolverInputTypes['order_by'] | undefined | null
+    royalty_percentage?: ResolverInputTypes['order_by'] | undefined | null
     symbol?: ResolverInputTypes['order_by'] | undefined | null
     traits_aggregate?:
       | ResolverInputTypes['collection_traits_aggregate_order_by']
@@ -14079,6 +14136,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14087,6 +14145,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14095,6 +14154,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14119,6 +14179,8 @@ export type ResolverInputTypes = {
     metadata?: ResolverInputTypes['jsonb'] | undefined | null
     minter?: string | undefined | null
     name?: string | undefined | null
+    payment_address?: string | undefined | null
+    royalty_percentage?: ResolverInputTypes['numeric'] | undefined | null
     symbol?: string | undefined | null
     transaction_id?: number | undefined | null
     version?: string | undefined | null
@@ -14128,6 +14190,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14291,6 +14354,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14299,6 +14363,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -14307,6 +14372,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -21858,6 +21924,8 @@ export type ModelTypes = {
     metadata: ModelTypes['jsonb']
     minter?: string | undefined
     name: string
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
     symbol: string
     /** An array relationship */
     traits: Array<ModelTypes['collection_traits']>
@@ -21890,6 +21958,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
@@ -21909,6 +21978,8 @@ export type ModelTypes = {
     metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
     minter?: ModelTypes['String_comparison_exp'] | undefined
     name?: ModelTypes['String_comparison_exp'] | undefined
+    payment_address?: ModelTypes['String_comparison_exp'] | undefined
+    royalty_percentage?: ModelTypes['numeric_comparison_exp'] | undefined
     symbol?: ModelTypes['String_comparison_exp'] | undefined
     traits?: ModelTypes['collection_traits_bool_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
@@ -21927,6 +21998,8 @@ export type ModelTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -21943,6 +22016,8 @@ export type ModelTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -21961,6 +22036,8 @@ export type ModelTypes = {
     metadata?: ModelTypes['order_by'] | undefined
     minter?: ModelTypes['order_by'] | undefined
     name?: ModelTypes['order_by'] | undefined
+    payment_address?: ModelTypes['order_by'] | undefined
+    royalty_percentage?: ModelTypes['order_by'] | undefined
     symbol?: ModelTypes['order_by'] | undefined
     traits_aggregate?:
       | ModelTypes['collection_traits_aggregate_order_by']
@@ -22006,6 +22083,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -22013,6 +22091,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -22020,6 +22099,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "collection" */
@@ -22043,6 +22123,8 @@ export type ModelTypes = {
     metadata?: ModelTypes['jsonb'] | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -22052,6 +22134,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
     transaction_id?: number | undefined
   }
   /** columns and relationships of "collection_traits" */
@@ -22168,6 +22251,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -22175,6 +22259,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -22182,6 +22267,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   ['cursor_ordering']: cursor_ordering
@@ -26496,6 +26582,8 @@ export type GraphQLTypes = {
     metadata: GraphQLTypes['jsonb']
     minter?: string | undefined
     name: string
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
     symbol: string
     /** An array relationship */
     traits: Array<GraphQLTypes['collection_traits']>
@@ -26531,6 +26619,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
@@ -26550,6 +26639,8 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
     minter?: GraphQLTypes['String_comparison_exp'] | undefined
     name?: GraphQLTypes['String_comparison_exp'] | undefined
+    payment_address?: GraphQLTypes['String_comparison_exp'] | undefined
+    royalty_percentage?: GraphQLTypes['numeric_comparison_exp'] | undefined
     symbol?: GraphQLTypes['String_comparison_exp'] | undefined
     traits?: GraphQLTypes['collection_traits_bool_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
@@ -26569,6 +26660,8 @@ export type GraphQLTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -26586,6 +26679,8 @@ export type GraphQLTypes = {
     id?: number | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -26604,6 +26699,8 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['order_by'] | undefined
     minter?: GraphQLTypes['order_by'] | undefined
     name?: GraphQLTypes['order_by'] | undefined
+    payment_address?: GraphQLTypes['order_by'] | undefined
+    royalty_percentage?: GraphQLTypes['order_by'] | undefined
     symbol?: GraphQLTypes['order_by'] | undefined
     traits_aggregate?:
       | GraphQLTypes['collection_traits_aggregate_order_by']
@@ -26652,6 +26749,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -26660,6 +26758,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -26668,6 +26767,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "collection" */
@@ -26691,6 +26791,8 @@ export type GraphQLTypes = {
     metadata?: GraphQLTypes['jsonb'] | undefined
     minter?: string | undefined
     name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
     symbol?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -26701,6 +26803,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
     transaction_id?: number | undefined
   }
   /** columns and relationships of "collection_traits" */
@@ -26822,6 +26925,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -26830,6 +26934,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -26838,6 +26943,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    royalty_percentage?: number | undefined
     transaction_id?: number | undefined
   }
   /** ordering argument of a cursor */
@@ -31259,6 +31365,8 @@ export const enum collection_select_column {
   metadata = 'metadata',
   minter = 'minter',
   name = 'name',
+  payment_address = 'payment_address',
+  royalty_percentage = 'royalty_percentage',
   symbol = 'symbol',
   transaction_id = 'transaction_id',
   version = 'version',
