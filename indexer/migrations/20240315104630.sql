@@ -10,6 +10,8 @@ CREATE TABLE "public"."collection" (
   "minter" character varying(128) NULL,
   "name" character varying(32) NOT NULL,
   "symbol" character varying(10) NOT NULL,
+  "royalty_percentage" numeric(5,4) NULL,
+  "payment_address" character varying(128) NULL,
   "metadata" jsonb NOT NULL,
   "content_path" character varying(255) NULL DEFAULT NULL::character varying,
   "content_size_bytes" integer NULL,
@@ -34,8 +36,10 @@ CREATE INDEX "idx_collection_name" ON "public"."collection" ("name");
 CREATE INDEX "idx_collection_symbol" ON "public"."collection" ("symbol");
 -- Create index "idx_collection_transaction_id" to table: "collection"
 CREATE INDEX "idx_collection_transaction_id" ON "public"."collection" ("transaction_id");
+-- Create index "idx_trgm_collection_name" to table: "collection"
+CREATE INDEX "idx_trgm_collection_name" ON "public"."collection" USING gin ("name" gin_trgm_ops);
 -- Modify "inscription" table
-ALTER TABLE "public"."inscription" ADD COLUMN "collection_id" integer NULL, ADD
+ALTER TABLE "public"."inscription" ALTER COLUMN "metadata" TYPE jsonb, ADD COLUMN "collection_id" integer NULL, ADD
  CONSTRAINT "inscription_collection_fk" FOREIGN KEY ("collection_id") REFERENCES "public"."collection" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
 -- Create index "idx_inscription_collection_id" to table: "inscription"
 CREATE INDEX "idx_inscription_collection_id" ON "public"."inscription" ("collection_id");

@@ -227,16 +227,16 @@ func (ed ExtensionDataWrapper) Type() string {
 	return "/gaia.metaprotocols.ExtensionData"
 }
 
-func (ed ExtensionDataWrapper) GetMetadata() ([]byte, *InscriptionMetadata, error) {
-	var metadata Metadata
-	err := json.Unmarshal(ed.Metadata, &metadata)
+func (ed ExtensionDataWrapper) GetMetadata(v any) ([]byte, error) {
+	metadataString := fmt.Sprintf(`{"metadata":%v,"parent":{"type":"%v","identifier":"%v"}}`, string(ed.Metadata), ed.ParentType, ed.ParentIdentifier)
+	metadataBytes := []byte(metadataString)
+
+	err := json.Unmarshal(metadataBytes, v)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
-	metadataString := fmt.Sprintf(`{"metadata":%v,"parent":{"type":"%v","identifier":"%v"}}`, string(ed.Metadata), ed.ParentType, ed.ParentIdentifier)
-
-	return []byte(metadataString), &InscriptionMetadata{Metadata: metadata, Parent: InscriptionMetadataParent{Type: ed.ParentType, Identifier: ed.ParentIdentifier}}, nil
+	return metadataBytes, nil
 }
 
 func (ed ExtensionDataWrapper) GetMetadataBytes() ([]byte, error) {
@@ -248,7 +248,7 @@ func (ed ExtensionDataWrapper) GetContent() ([]byte, error) {
 }
 
 type ExtensionMsg interface {
-	GetMetadata() ([]byte, *InscriptionMetadata, error)
+	GetMetadata(v any) ([]byte, error)
 	GetMetadataBytes() ([]byte, error)
 	GetContent() ([]byte, error)
 }
@@ -297,7 +297,6 @@ type Metadata struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Mime        string `json:"mime"`
-	Symbol      string `json:"symbol"`
 }
 
 type InscriptionMetadataParent struct {
@@ -305,24 +304,23 @@ type InscriptionMetadataParent struct {
 	Identifier string `json:"identifier"`
 }
 
-type InscriptionMetadata struct {
+type InscriptionMetadata[T any] struct {
 	Parent   InscriptionMetadataParent `json:"parent"`
-	Metadata Metadata                  `json:"metadata"`
+	Metadata T                         `json:"metadata"`
 }
 
-func (msg RawMsgRevoke) GetMetadata() ([]byte, *InscriptionMetadata, error) {
+func (msg RawMsgRevoke) GetMetadata(v any) ([]byte, error) {
 	metadata, err := base64.StdEncoding.DecodeString(msg.Granter)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
+		return nil, fmt.Errorf("unable to decode granter metadata '%s'", err)
 	}
 
-	var inscriptionMetadata InscriptionMetadata
-	err = json.Unmarshal(metadata, &inscriptionMetadata)
+	err = json.Unmarshal(metadata, v)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
-	return metadata, &inscriptionMetadata, nil
+	return metadata, nil
 }
 
 func (msg RawMsgRevoke) GetMetadataBytes() ([]byte, error) {

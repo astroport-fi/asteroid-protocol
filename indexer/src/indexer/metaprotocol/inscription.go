@@ -250,7 +250,8 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			break
 		}
 
-		jsonBytes, inscriptionMetadata, err := msg.GetMetadata()
+		var inscriptionMetadata types.InscriptionMetadata[types.CollectionMetadata]
+		jsonBytes, err := msg.GetMetadata(&inscriptionMetadata)
 		if err != nil {
 			return err
 		}
@@ -261,7 +262,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// Store the content with the correct mime type on DO
-		contentPath, err := protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, content)
+		contentPath, err := protocol.storeContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
 		if err != nil {
 			return fmt.Errorf("unable to store content '%s'", err)
 		}
@@ -281,6 +282,16 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				ContentPath:      contentPath,
 				ContentSizeBytes: uint64(len(content)),
 				DateCreated:      transactionModel.DateCreated,
+			}
+
+			if inscriptionMetadata.Metadata.Minter != "" {
+				collectionModel.Minter = sql.NullString{String: inscriptionMetadata.Metadata.Minter, Valid: true}
+			}
+			if inscriptionMetadata.Metadata.RoyaltyPercentage != 0 {
+				collectionModel.RoyaltyPercentage = sql.NullFloat64{Float64: float64(inscriptionMetadata.Metadata.RoyaltyPercentage), Valid: true}
+			}
+			if inscriptionMetadata.Metadata.PaymentAddress != "" {
+				collectionModel.PaymentAddress = sql.NullString{String: inscriptionMetadata.Metadata.PaymentAddress, Valid: true}
 			}
 
 			result := protocol.db.Save(&collectionModel)
@@ -391,8 +402,8 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 }
 
 // storeContent stores the content in the S3 bucket
-func (protocol *Inscription) storeContent(metadata *types.InscriptionMetadata, txHash string, content []byte) (string, error) {
-	ext, err := mime.ExtensionsByType(metadata.Metadata.Mime)
+func (protocol *Inscription) storeContent(mimeType string, txHash string, content []byte) (string, error) {
+	ext, err := mime.ExtensionsByType(mimeType)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin
 		ext = []string{".bin"}
@@ -425,7 +436,7 @@ func (protocol *Inscription) storeContent(metadata *types.InscriptionMetadata, t
 		Bucket:      aws.String(myBucket),
 		Key:         aws.String(filename),
 		Body:        bytes.NewReader(content),
-		ContentType: aws.String(metadata.Metadata.Mime),
+		ContentType: aws.String(mimeType),
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to upload file, %v", err)

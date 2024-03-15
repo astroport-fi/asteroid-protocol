@@ -58,6 +58,8 @@ CREATE TABLE public."collection" (
     minter varchar(128) NULL,
     "name" varchar(32) NOT NULL,
     symbol varchar(10) NOT NULL,
+    royalty_percentage decimal(5, 4) NULL,
+    payment_address varchar(128) NULL,
     metadata jsonb NOT NULL,
     content_path varchar(255) NULL DEFAULT NULL::character varying,
     content_size_bytes int4 NULL,
@@ -75,7 +77,7 @@ CREATE INDEX "idx_collection_creator" ON "public"."collection" USING btree ("cre
 CREATE INDEX "idx_collection_name" ON "public"."collection" USING btree ("name");
 CREATE INDEX "idx_collection_symbol" ON "public"."collection" USING btree ("symbol");
 CREATE INDEX "idx_collection_transaction_id" ON "public"."collection" USING btree ("transaction_id");
-
+CREATE INDEX idx_trgm_collection_name ON "public"."collection" USING gin (("name") gin_trgm_ops);
 
 -- public.inscription definition
 
@@ -203,7 +205,7 @@ CREATE TABLE public."token" (
     per_mint_limit int8 NOT NULL,
     launch_timestamp int8 NOT NULL,
     mint_page varchar(128) NOT NULL DEFAULT 'default'::character varying,
-    metadata jsonb NULL,
+    metadata text NULL,
     content_path varchar(255) NULL DEFAULT NULL::character varying,
     content_size_bytes int4 NULL,
     circulating_supply int8 NOT NULL DEFAULT 0,

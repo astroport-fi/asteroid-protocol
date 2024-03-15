@@ -890,6 +890,29 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("listing has not been deposited, buyer must deposit first")
 		}
 
+		// Get royalty info
+		var inscriptionModel models.Inscription
+		result = protocol.db.Where("chain_id = ? AND id = ?", parsedURN.ChainID, listingDetailModel.InscriptionID).First(&inscriptionModel)
+		if result.Error != nil {
+			return fmt.Errorf("inscription with id '%d' doesn't exist", listingDetailModel.InscriptionID)
+		}
+		if inscriptionModel.CollectionID.Valid {
+			var collectionModel models.Collection
+			result = protocol.db.Where("id = ?", inscriptionModel.CollectionID).First(&collectionModel)
+			if result.Error != nil {
+				return fmt.Errorf("collection with id '%d' doesn't exist", inscriptionModel.CollectionID)
+			}
+
+			if collectionModel.RoyaltyPercentage.Valid {
+				royaltyAddress := collectionModel.Creator
+				if collectionModel.PaymentAddress.Valid {
+					royaltyAddress = collectionModel.PaymentAddress.String
+				}
+
+				royaltyAmount := int64(float64(listingModel.Total) * collectionModel.RoyaltyPercentage.Float64)
+			}
+		}
+
 		// Check the amount still owed after deposit
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
@@ -930,13 +953,6 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Set the sender as the new owner of the inscription
-		var inscriptionModel models.Inscription
-		result = protocol.db.Where("chain_id = ? AND id = ?", parsedURN.ChainID, listingDetailModel.InscriptionID).First(&inscriptionModel)
-		if result.Error != nil {
-			// Somehow this inscription doesn't exist?
-			return result.Error
-		}
-
 		inscriptionModel.CurrentOwner = sender
 		result = protocol.db.Save(&inscriptionModel)
 		if result.Error != nil {

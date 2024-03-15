@@ -195,7 +195,8 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 				break
 			}
 
-			_, inscriptionMetadata, err := msg.GetMetadata()
+			var inscriptionMetadata types.InscriptionMetadata[types.Metadata]
+			_, err = msg.GetMetadata(&inscriptionMetadata)
 			if err != nil {
 				return err
 			}
@@ -206,7 +207,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			}
 
 			// Store the content with the correct mime type on DO
-			contentPath, err = protocol.storeContent(inscriptionMetadata, rawTransaction.Hash, content)
+			contentPath, err = protocol.storeContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
 			if err != nil {
 				return fmt.Errorf("unable to store content '%s'", err)
 			}
@@ -714,8 +715,8 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 
 // TODO: This is reused, move to common helpers
 // storeContent stores the content in the S3 bucket
-func (protocol *CFT20) storeContent(metadata *types.InscriptionMetadata, txHash string, content []byte) (string, error) {
-	ext, err := mime.ExtensionsByType(metadata.Metadata.Mime)
+func (protocol *CFT20) storeContent(mimeType string, txHash string, content []byte) (string, error) {
+	ext, err := mime.ExtensionsByType(mimeType)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin
 		ext = []string{".bin"}
@@ -744,7 +745,7 @@ func (protocol *CFT20) storeContent(metadata *types.InscriptionMetadata, txHash 
 		Bucket:      aws.String(myBucket),
 		Key:         aws.String(filename),
 		Body:        bytes.NewReader(content),
-		ContentType: aws.String(metadata.Metadata.Mime),
+		ContentType: aws.String(mimeType),
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to upload file, %v", err)

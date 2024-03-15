@@ -18,6 +18,16 @@ type NftMetadata struct {
 	Attributes  []Trait `json:"attributes"`
 }
 
+type CollectionMetadata struct {
+	Name              string  `json:"name"`
+	Description       string  `json:"description"`
+	Mime              string  `json:"mime"`
+	Symbol            string  `json:"symbol"`
+	Minter            string  `json:"minter"`
+	RoyaltyPercentage float32 `json:"royalty_percentage"`
+	PaymentAddress    string  `json:"payment_address"`
+}
+
 type InscriptionNftMetadata struct {
 	Parent   InscriptionMetadataParent `json:"parent"`
 	Metadata NftMetadata               `json:"metadata"`
