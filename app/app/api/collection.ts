@@ -17,6 +17,7 @@ export const collectionSelector = Selector('collection')({
   content_path: true,
   date_created: true,
   is_explicit: true,
+  royalty_percentage: true,
 })
 
 export type Collection = InputType<

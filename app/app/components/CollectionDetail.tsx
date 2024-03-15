@@ -35,14 +35,13 @@ export default function CollectionDetailComponent({
           'justify-center': !hasSocials,
         })}
       >
-        <h2 className="text-xl">{collection.name} collection</h2>
-        <div className="flex mt-3">
+        <h2 className="text-xl">{collection.name}</h2>
+        <div className="flex items-start mt-3 gap-2">
           {metadata.website && (
             <Link
               href="https://twitter.com/asteroidxyz"
               title={`${collection.name} website`}
               target="_blank"
-              className="ml-3"
             >
               <GlobeAltIcon className="size-5" />
             </Link>
@@ -76,7 +75,12 @@ export default function CollectionDetailComponent({
           )}
         </div>
       </div>
-      {stats && <CollectionStatsComponent stats={stats} />}
+      {stats && (
+        <CollectionStatsComponent
+          stats={stats}
+          royaltyPercentage={collection.royalty_percentage}
+        />
+      )}
     </div>
   )
 }

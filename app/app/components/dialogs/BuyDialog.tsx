@@ -1,5 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Steps } from 'react-daisyui'
 import type { To } from 'react-router'
@@ -21,7 +21,7 @@ interface Props {
   listingHash: string | null
   buyType: BuyType
   royalty?: Royalty
-  resultLink: To
+  resultLink?: To
 }
 
 enum Step {
@@ -40,6 +40,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const {
     status: { lastKnownHeight },
   } = useRootContext()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const onNavigate = useCallback(() => {
+    navigate(resultLink ?? `${location.pathname}${location.search}`)
+  }, [location, resultLink, navigate])
 
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -138,17 +143,10 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     setError,
   ])
 
-  const navigate = useNavigate()
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal
-      ref={ref}
-      backdrop
-      onClose={() => {
-        navigate(resultLink)
-      }}
-    >
+    <Modal ref={ref} backdrop onClose={onNavigate}>
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
@@ -168,7 +166,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
             step === Step.Purchase
               ? () => {
                   fRef.current?.close()
-                  navigate(resultLink)
+                  onNavigate()
                   resetState()
                 }
               : undefined

@@ -18,6 +18,7 @@ import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import { TokenMarket, isTokenLaunched } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
+import PercentageText from '~/components/PercentageText'
 import Stat from '~/components/Stat'
 import { TokenCell } from '~/components/TokenCell'
 import Table from '~/components/table'
@@ -25,7 +26,6 @@ import { useRootContext } from '~/context/root'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
-import { round2 } from '~/utils/math'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -86,7 +86,7 @@ export default function MarketsPage() {
       meta: {
         className: 'font-mono',
       },
-      cell: (info) => `${round2(info.getValue() * 100)}%`,
+      cell: (info) => <PercentageText value={info.getValue()} />,
     }),
     columnHelper.accessor(
       'marketplace_cft20_details_aggregate.aggregate.count',

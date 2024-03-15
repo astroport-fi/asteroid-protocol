@@ -1,5 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useEffect, useState } from 'react'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
@@ -27,6 +27,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   ref,
 ) {
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const location = useLocation()
 
   const {
     chainFee,
@@ -53,7 +54,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       ref={ref}
       backdrop
       onClose={() => {
-        navigate({ hash: '' })
+        navigate(`${location.pathname}${location.search}`)
       }}
     >
       <Modal.Body className="text-center">
@@ -66,7 +67,6 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           resultCTA={resultCTA}
           feeOperationTitle={feeOperationTitle}
           onClose={() => {
-            fRef.current?.close()
             navigate(resultLink ?? `/app/inscription/${txHash}`)
           }}
         >

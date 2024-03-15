@@ -157,7 +157,6 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                 buyType="inscription"
                 royalty={royalty ?? undefined}
                 listingHash={listing?.transaction.hash ?? null}
-                resultLink={`/app/inscriptions`}
                 ref={dialogRef}
               />
               <SellInscriptionDialog

@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react'
 import { CollectionStats } from '~/api/common'
 import { getSupplyTitle } from '~/utils/number'
 import DecimalText from './DecimalText'
+import PercentageText from './PercentageText'
 
 function Stat({ title, children }: PropsWithChildren<{ title: string }>) {
   return (
@@ -14,8 +15,10 @@ function Stat({ title, children }: PropsWithChildren<{ title: string }>) {
 
 export default function CollectionStatsComponent({
   stats,
+  royaltyPercentage,
 }: {
   stats: CollectionStats
+  royaltyPercentage?: number
 }) {
   return (
     <div className="flex gap-8 w-full justify-center">
@@ -28,6 +31,11 @@ export default function CollectionStatsComponent({
       <Stat title="Owners">{getSupplyTitle(stats.owners)}</Stat>
       <Stat title="Listed">{getSupplyTitle(stats.listed)}</Stat>
       <Stat title="Total supply">{getSupplyTitle(stats.supply)}</Stat>
+      {royaltyPercentage && royaltyPercentage > 0 && (
+        <Stat title="Royalty">
+          <PercentageText value={royaltyPercentage} />
+        </Stat>
+      )}
     </div>
   )
 }
