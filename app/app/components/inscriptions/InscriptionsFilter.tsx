@@ -151,7 +151,7 @@ function TraitsFilter({ traits }: { traits: CollectionTrait[] }) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <FilterTitle>Traits</FilterTitle>
       {traitsComponents}
     </div>

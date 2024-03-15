@@ -19,6 +19,7 @@ import AtomValue from '~/components/AtomValue'
 import { BackHeader } from '~/components/Back'
 import GhostEmptyState from '~/components/GhostEmptyState'
 import InscriptionImage from '~/components/InscriptionImage'
+import PercentageText from '~/components/PercentageText'
 import Stat from '~/components/Stat'
 import BuyDialog from '~/components/dialogs/BuyDialog'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
@@ -32,7 +33,6 @@ import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { getDateAgo } from '~/utils/date'
-import { round2 } from '~/utils/math'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 import { shortAddress } from '~/utils/string'
@@ -239,8 +239,11 @@ function ListingsTable({
       meta: {
         className: 'font-mono',
       },
-      cell: (info) =>
-        `${round2((info.getValue() / info.row.original.marketplace_listing.total) * 100)}%`,
+      cell: (info) => (
+        <PercentageText
+          value={info.getValue() / info.row.original.marketplace_listing.total}
+        />
+      ),
     }),
     columnHelper.accessor('date_created', {
       header: 'Listed',

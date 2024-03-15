@@ -1,5 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Steps } from 'react-daisyui'
 import type { To } from 'react-router'
@@ -15,11 +15,13 @@ import Body from '../SubmitTx/Body'
 import Modal from './Modal'
 
 export type BuyType = 'cft20' | 'inscription'
+export type Royalty = { recipient: string; percentage: number }
 
 interface Props {
   listingHash: string | null
   buyType: BuyType
-  resultLink: To
+  royalty?: Royalty
+  resultLink?: To
 }
 
 enum Step {
@@ -30,7 +32,7 @@ enum Step {
 }
 
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
-  { buyType, listingHash: listingHashProp, resultLink },
+  { buyType, royalty, listingHash: listingHashProp, resultLink },
   ref,
 ) {
   const operations = useMarketplaceOperations()
@@ -38,6 +40,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const {
     status: { lastKnownHeight },
   } = useRootContext()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const onNavigate = useCallback(() => {
+    navigate(resultLink ?? `${location.pathname}${location.search}`)
+  }, [location, resultLink, navigate])
 
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -105,7 +112,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.InitialBuy && txState === TxState.Initial) {
       operations
-        .buy(listingHash, buyType)
+        .buy(listingHash, buyType, royalty)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -115,7 +122,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
       operations
-        .buy(listingHash, buyType)
+        .buy(listingHash, buyType, royalty)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -125,19 +132,21 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           setError({ kind: ErrorKind.Validation, message: err.message }),
         )
     }
-  }, [listingHash, buyType, operations, step, txState, resetTxState, setError])
+  }, [
+    listingHash,
+    buyType,
+    royalty,
+    operations,
+    step,
+    txState,
+    resetTxState,
+    setError,
+  ])
 
-  const navigate = useNavigate()
   const fRef = useForwardRef(ref)
 
   return (
-    <Modal
-      ref={ref}
-      backdrop
-      onClose={() => {
-        navigate(resultLink)
-      }}
-    >
+    <Modal ref={ref} backdrop onClose={onNavigate}>
       <Modal.Body className="text-center">
         <Body
           chainFee={chainFee}
@@ -157,7 +166,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
             step === Step.Purchase
               ? () => {
                   fRef.current?.close()
-                  navigate(resultLink)
+                  onNavigate()
                   resetState()
                 }
               : undefined

@@ -14,15 +14,16 @@ import { getDecimalValue } from '~/utils/number'
 import AddressChip from '../AddressChip'
 import CancelListing from '../CancelListing'
 import InscriptionImage from '../InscriptionImage'
-import BuyDialog from './BuyDialog'
+import BuyDialog, { Royalty } from './BuyDialog'
 import SellInscriptionDialog from './SellInscriptionDialog'
 
 interface Props {
   inscription: InscriptionWithMarket | null
+  royalty?: Royalty
 }
 
 const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
-  function BuyInscriptionDialog({ inscription }, ref) {
+  function BuyInscriptionDialog({ inscription, royalty }, ref) {
     const fRef = useForwardRef(ref)
 
     const listing = inscription?.marketplace_listing
@@ -142,8 +143,8 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
 
               <BuyDialog
                 buyType="inscription"
+                royalty={royalty}
                 listingHash={listing?.transaction.hash ?? null}
-                resultLink={`/app/inscriptions`}
                 ref={dialogRef}
               />
               <SellInscriptionDialog

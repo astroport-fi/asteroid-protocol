@@ -68,6 +68,14 @@ export default function InscriptionsParentPage() {
     () => (clubId ? getClubBySlug(clubId) : undefined),
     [clubId],
   )
+  const royalty = useMemo(() => {
+    if (collection && collection.royalty_percentage) {
+      return {
+        recipient: collection.creator,
+        percentage: collection.royalty_percentage,
+      }
+    }
+  }, [collection])
 
   return (
     <div className="flex flex-col h-full">
@@ -92,7 +100,11 @@ export default function InscriptionsParentPage() {
             </div>
           )}
           <Outlet context={{ showDialog }} />
-          <BuyInscriptionDialog inscription={value} ref={dialogRef} />
+          <BuyInscriptionDialog
+            inscription={value}
+            ref={dialogRef}
+            royalty={royalty}
+          />
         </div>
         <LatestInscriptionTxs transactions={transactions} />
       </div>

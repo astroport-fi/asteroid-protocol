@@ -4,9 +4,9 @@ import { NumericFormat } from 'react-number-format'
 import { TokenDetail, isTokenLaunched } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import { DATETIME_FORMAT } from '~/utils/date'
-import { round2 } from '~/utils/math'
 import { getDecimalValue, getSupplyTitle } from '~/utils/number'
 import AtomValue from './AtomValue'
+import PercentageText from './PercentageText'
 
 function Row({ children }: PropsWithChildren) {
   return <div className="flex flex-row w-full mt-4">{children}</div>
@@ -44,7 +44,11 @@ export default function Tokenomics({
             {getSupplyTitle(
               getDecimalValue(token.circulating_supply, token.decimals),
             )}{' '}
-            ({round2((token.circulating_supply / token.max_supply) * 100)}%)
+            (
+            <PercentageText
+              value={token.circulating_supply / token.max_supply}
+            />
+            )
           </span>
         </Column>
       </Row>

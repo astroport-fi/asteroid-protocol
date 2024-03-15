@@ -1,4 +1,5 @@
 import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
+import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
@@ -48,7 +49,7 @@ type FormData = {
   content: File[]
   collection: string | null
   traits: Record<string, string>
-  newTraits: { trait_type: string; value: string }[]
+  newTraits: inscription.Trait[]
 }
 
 const NAME_MIN_LENGTH = 3
@@ -134,13 +135,17 @@ export default function CreateInscription() {
       return
     }
 
-    const traits = Object.entries(data.traits)
-      .map(([trait_type, value]) => ({
+    let traits: inscription.Trait[] = []
+    if (data.traits) {
+      traits = Object.entries(data.traits).map(([trait_type, value]) => ({
         trait_type,
         value,
       }))
-      .concat(data.newTraits)
-      .filter((trait) => trait.trait_type && trait.value)
+    }
+
+    if (data.newTraits) {
+      traits = traits.concat(data.newTraits)
+    }
 
     const metadata: NFTMetadata = {
       name: data.name,
@@ -149,7 +154,9 @@ export default function CreateInscription() {
     }
 
     if (traits.length > 0) {
-      metadata.attributes = traits
+      metadata.attributes = traits.filter(
+        (trait) => trait.trait_type && trait.value,
+      )
     }
 
     let txInscription

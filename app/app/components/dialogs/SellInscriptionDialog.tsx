@@ -88,7 +88,6 @@ const SellInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
             txInscription={value}
             ref={dialogRef}
             resultCTA="Back to market"
-            resultLink={`/app/inscriptions`}
           />
         </Modal.Body>
         <Modal.Actions className="flex justify-center">

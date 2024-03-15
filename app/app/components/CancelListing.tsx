@@ -28,7 +28,6 @@ export default function CancelListing({
     showDialog(txInscription)
   }
 
-  // @todo resultLink - handle both marketplace kinds
   return (
     <div className={className}>
       <Button onClick={() => cancelListing()} color="primary">
@@ -38,7 +37,6 @@ export default function CancelListing({
         ref={dialogRef}
         txInscription={value}
         resultCTA="Back to market"
-        resultLink={`/app/inscriptions`}
       />
     </div>
   )
