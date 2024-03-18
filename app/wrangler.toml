@@ -15,6 +15,20 @@ USE_IBC = false
 USE_EXTENSION_DATA = true
 MAINTENANCE_MODE = false
 
+[env.vars.localroids]
+ENVIRONMENT = "development"
+ASTEROID_API = "http://api-localroids.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "ws://api-localroids.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "http://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+RPC = "http://rpc-localroids.asteroidprotocol.io"
+REST = "http://rest-localroids.asteroidprotocol.io"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+
 [env.testnet.vars]
 ENVIRONMENT = "development"
 ASTEROID_API = "https://testnet-api.asteroidprotocol.io/v1/graphql"
