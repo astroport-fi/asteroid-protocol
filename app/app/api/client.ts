@@ -278,10 +278,8 @@ export class AsteroidClient extends AsteroidService {
     if (search) {
       where.token = {
         _or: [
-          { name: { _like: `%${search}%` } },
-          { name: { _like: `%${search.toUpperCase()}%` } },
-          { ticker: { _like: `%${search}%` } },
-          { ticker: { _like: `%${search.toUpperCase()}%` } },
+          { name: { _ilike: `%${search}%` } },
+          { ticker: { _ilike: `%${search}%` } },
         ],
       }
     }
@@ -540,6 +538,7 @@ export class AsteroidClient extends AsteroidService {
     limit: number,
     where: {
       creator?: string
+      search?: string | null
     } = {},
     orderBy?: ValueTypes['collection_order_by'],
   ): Promise<Collection[]> {
@@ -553,6 +552,12 @@ export class AsteroidClient extends AsteroidService {
     if (where.creator) {
       queryWhere.creator = {
         _eq: where.creator,
+      }
+    }
+
+    if (where.search) {
+      queryWhere.name = {
+        _ilike: `%${where.search}%`,
       }
     }
 
