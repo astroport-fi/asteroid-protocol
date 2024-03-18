@@ -5,8 +5,8 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, FileInput, Form, Input, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
-import Label from '~/components/form/Label'
 import TxDialog from '~/components/dialogs/TxDialog'
+import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
 import Discord from '~/components/icons/discord'
 import Telegram from '~/components/icons/telegram'
@@ -123,7 +123,7 @@ export default function CreateCollection() {
               <span className="text-center">{fileName}</span>
             ) : (
               <>
-                <span className="text-lg text-center">Logo</span>
+                <span className="text-lg text-center">Collection Logo</span>
                 <span className="mt-4">Minimum dimensions</span>
                 <span>250x250</span>
                 <span className="mt-4">Maximum dimensions</span>
@@ -296,7 +296,7 @@ export default function CreateCollection() {
             />
             <Input
               id="twitter"
-              placeholder="Twitter handle"
+              placeholder="https://twitter.com/handle"
               {...register('twitter')}
             />
           </div>
@@ -309,7 +309,7 @@ export default function CreateCollection() {
             />
             <Input
               id="telegram"
-              placeholder="Telegram username"
+              placeholder="https://t.me/channel_name"
               {...register('telegram')}
             />
           </div>
@@ -322,7 +322,7 @@ export default function CreateCollection() {
             />
             <Input
               id="discord"
-              placeholder="Discord username"
+              placeholder="https://discord.com/invite/channel_name"
               {...register('discord')}
             />
           </div>
@@ -331,7 +331,7 @@ export default function CreateCollection() {
             <Form.Label title="Description" htmlFor="description" />
             <Textarea
               id="description"
-              placeholder="Describe your inscription"
+              placeholder="Describe your collection"
               rows={10}
               {...register('description')}
             />

@@ -1,9 +1,9 @@
 import { Link } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
-import { twMerge } from 'tailwind-merge'
 import { InscriptionWithMarket } from '~/api/inscription'
 import { getDecimalValue } from '~/utils/number'
+import Grid from './Grid'
 import InscriptionImage from './InscriptionImage'
 
 function InscriptionBox<T extends InscriptionWithMarket>({
@@ -75,7 +75,7 @@ export function Inscriptions<T extends InscriptionWithMarket>({
   onClick?: (inscription: T) => void
 }) {
   return (
-    <div className={twMerge('grid grid-cols-fill-56 gap-4', className)}>
+    <Grid className={className}>
       {inscriptions.map((inscription) => (
         <InscriptionBox
           key={inscription.id}
@@ -83,6 +83,6 @@ export function Inscriptions<T extends InscriptionWithMarket>({
           onClick={onClick}
         />
       ))}
-    </div>
+    </Grid>
   )
 }

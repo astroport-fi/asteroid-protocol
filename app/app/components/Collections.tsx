@@ -1,6 +1,7 @@
 import { Link } from '@remix-run/react'
 import { Club } from '~/api/clubs'
 import { Collection } from '~/api/collection'
+import Grid from './Grid'
 import InscriptionImage from './InscriptionImage'
 
 export function CollectionBox({ collection }: { collection: Collection }) {
@@ -47,14 +48,16 @@ export function ClubBox({ club }: { club: Club }) {
 
 export default function Collections({
   collections,
+  className,
 }: {
   collections: Collection[]
+  className?: string
 }) {
   return (
-    <div className="grid grid-cols-fill-56 gap-4 mt-8">
+    <Grid className={className}>
       {collections.map((collection) => (
         <CollectionBox key={collection.id} collection={collection} />
       ))}
-    </div>
+    </Grid>
   )
 }
