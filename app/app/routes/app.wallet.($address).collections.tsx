@@ -34,8 +34,6 @@ export default function WalletCollections() {
   const data = useLoaderData<typeof loader>()
   const [pagination, setPagination] = usePagination()
 
-  console.log(data.collections)
-
   if (data.collections.length < 1) {
     return (
       <GhostEmptyState>
