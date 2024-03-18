@@ -20,6 +20,7 @@ export default function CollectionStatsComponent({
   stats: CollectionStats
   royaltyPercentage?: number
 }) {
+  const hasRoyalty = !!royaltyPercentage
   return (
     <div className="flex gap-8 w-full justify-center">
       <Stat title="Floor">
@@ -31,7 +32,7 @@ export default function CollectionStatsComponent({
       <Stat title="Owners">{getSupplyTitle(stats.owners)}</Stat>
       <Stat title="Listed">{getSupplyTitle(stats.listed)}</Stat>
       <Stat title="Total supply">{getSupplyTitle(stats.supply)}</Stat>
-      {royaltyPercentage && royaltyPercentage > 0 && (
+      {hasRoyalty && (
         <Stat title="Royalty">
           <PercentageText value={royaltyPercentage} />
         </Stat>
