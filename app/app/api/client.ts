@@ -93,6 +93,11 @@ export interface TraitItem {
   value: string
 }
 
+export interface Collections {
+  collections: Collection[]
+  count: number
+}
+
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
     super(url, wssUrl)
@@ -575,7 +580,7 @@ export class AsteroidClient extends AsteroidService {
       search?: string | null
     } = {},
     orderBy?: ValueTypes['collection_order_by'],
-  ): Promise<Collection[]> {
+  ): Promise<Collections> {
     if (!orderBy) {
       orderBy = {
         date_created: order_by.desc,
@@ -605,9 +610,20 @@ export class AsteroidClient extends AsteroidService {
         },
         collectionSelector,
       ],
+      collection_aggregate: [
+        {
+          where: queryWhere,
+        },
+        aggregateCountSelector,
+      ],
     })
 
-    return result.collection
+    return {
+      collections: result.collection,
+      count:
+        result.collection_aggregate.aggregate?.count ??
+        result.collection.length,
+    }
   }
 
   async getCollectionStats(collectionId: number) {
