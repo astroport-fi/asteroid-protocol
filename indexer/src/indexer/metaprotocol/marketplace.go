@@ -24,6 +24,7 @@ type MarketplaceConfig struct {
 	LCDEndpoints    []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
 	EndpointHeaders map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
 	IbcEnabled      bool              `envconfig:"IBC_ENABLED" default:"true"`
+	IbcReceiver     string            `envconfig:"IBC_RECEIVER" default:"neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p"`
 }
 
 type Marketplace struct {
@@ -35,6 +36,7 @@ type Marketplace struct {
 	minimumTradeSize     float64
 	tradeFee             float64
 	ibcEnabled           bool
+	ibcReceiver          string
 	db                   *gorm.DB
 
 	lcdEndpoints    []string
@@ -58,6 +60,7 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		minimumTradeSize:     config.MinimumTradeSize,
 		tradeFee:             config.TradeFee,
 		ibcEnabled:           config.IbcEnabled,
+		ibcReceiver:          config.IbcReceiver,
 		db:                   db,
 		lcdEndpoints:         config.LCDEndpoints,
 		endpointHeaders:      config.EndpointHeaders,
@@ -172,7 +175,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Verify that the sender has sent enough tokens to cover the listing fee
-		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		amountSent, err := GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -336,7 +339,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		amountSent, err := GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -451,7 +454,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Check that the correct amount was sent with the deposit
-		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
+		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -676,7 +679,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
+		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -695,7 +698,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Verify that the sender has sent enough tokens to cover the fee
-		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		amountSent, err = GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -891,7 +894,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction, Send, protocol.ibcEnabled)
+		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
@@ -910,7 +913,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 		// Check that the correct amount was sent with the buy
-		amountSent, err = GetBaseTokensSent(rawTransaction, IbcTransfer, protocol.ibcEnabled)
+		amountSent, err = GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
 		if err != nil {
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}

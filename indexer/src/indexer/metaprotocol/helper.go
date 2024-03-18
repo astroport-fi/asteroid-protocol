@@ -15,15 +15,23 @@ const (
 )
 
 // GetBaseTokensSent returns the amount of base tokens sent in a transaction
-func GetBaseTokensSent(rawTransaction types.RawTransaction, kind TokensTransferKind, ibcEnabled bool) (uint64, error) {
+func GetBaseTokensSent(rawTransaction types.RawTransaction, receiver string, kind TokensTransferKind, ibcEnabled bool) (uint64, error) {
 	if ibcEnabled && kind == IbcTransfer {
-		return GetBaseTokensSentIBC(rawTransaction)
+		return GetBaseTokensSentIBC(rawTransaction, receiver)
 	}
 
 	var err error
 	var amountSent uint64
+	validReceiver := false
+
 	for _, v := range rawTransaction.Body.Messages {
 		if v.Type == "/cosmos.bank.v1beta1.MsgSend" {
+			if v.ToAddress == receiver {
+				validReceiver = true
+			} else {
+				continue
+			}
+
 			if v.Amount[0].Denom != "uatom" {
 				return 0, fmt.Errorf("incorrect denom sent, got %s, expected uatom", v.Amount[0].Denom)
 			}
@@ -35,12 +43,18 @@ func GetBaseTokensSent(rawTransaction types.RawTransaction, kind TokensTransferK
 			break
 		}
 	}
+
+	if !validReceiver {
+		return 0, fmt.Errorf("invalid receiver, expected %s", receiver)
+
+	}
+
 	return amountSent, nil
 }
 
 // GetBaseTokensSentIBC returns the amount of base tokens sent in a transaction
 // to be IBC'd
-func GetBaseTokensSentIBC(rawTransaction types.RawTransaction) (uint64, error) {
+func GetBaseTokensSentIBC(rawTransaction types.RawTransaction, receiver string) (uint64, error) {
 	var err error
 	var amountSent uint64
 	for _, v := range rawTransaction.Body.Messages {
@@ -51,8 +65,8 @@ func GetBaseTokensSentIBC(rawTransaction types.RawTransaction) (uint64, error) {
 			if v.SourceChannel != "channel-569" {
 				return 0, fmt.Errorf("incorrect IBC channel, got %s, expected channel-569", v.SourceChannel)
 			}
-			if v.Receiver != "neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p" {
-				return 0, fmt.Errorf("incorrect IBC receiver, got %s, expected neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p", v.Receiver)
+			if v.Receiver != receiver {
+				return 0, fmt.Errorf("incorrect IBC receiver, got %s, expected %s", v.Receiver, receiver)
 			}
 
 			amountSent, err = strconv.ParseUint(v.Token.Amount, 10, 64)
