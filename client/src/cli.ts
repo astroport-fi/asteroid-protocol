@@ -174,12 +174,9 @@ interface CSVOptions extends Options {
 }
 
 setupCommand(inscriptionCommand.command('inscribe-csv'))
-  .description('Create collection inscriptions from Metadata CSV and images')
+  .description('Create inscriptions from Metadata CSV and images')
   .requiredOption('-p, --csv-path <CSV_PATH>', 'Metadata CSV path')
-  .requiredOption(
-    '-c, --collection <COLLECTION>',
-    'The collection transaction hash',
-  )
+  .option('-c, --collection <COLLECTION>', 'The collection transaction hash')
   .action(async (options: CSVOptions) => {
     inscriptionAction(options, async (context, operations) => {
       const rows = await readCSV(options.csvPath)
@@ -213,11 +210,17 @@ setupCommand(inscriptionCommand.command('inscribe-csv'))
           attributes,
         }
 
-        const txData = operations.inscribeCollectionInscription(
-          options.collection,
-          data,
-          metadata,
-        )
+        let txData: TxData
+        if (options.collection) {
+          txData = operations.inscribeCollectionInscription(
+            options.collection,
+            data,
+            metadata,
+          )
+        } else {
+          txData = operations.inscribe(data, metadata)
+        }
+
         const res = await broadcastTx(
           context.client,
           context.account.address,
