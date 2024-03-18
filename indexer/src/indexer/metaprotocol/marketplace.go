@@ -890,7 +890,10 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("listing has not been deposited, buyer must deposit first")
 		}
 
-		// Get royalty info
+		// Check the amount still owed after deposit
+		amountOwed := listingModel.Total - listingModel.DepositTotal
+
+		// Check royalty
 		var inscriptionModel models.Inscription
 		result = protocol.db.Where("chain_id = ? AND id = ?", parsedURN.ChainID, listingDetailModel.InscriptionID).First(&inscriptionModel)
 		if result.Error != nil {
@@ -900,7 +903,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			var collectionModel models.Collection
 			result = protocol.db.Where("id = ?", inscriptionModel.CollectionID).First(&collectionModel)
 			if result.Error != nil {
-				return fmt.Errorf("collection with id '%d' doesn't exist", inscriptionModel.CollectionID)
+				return fmt.Errorf("collection with id '%d' doesn't exist", inscriptionModel.CollectionID.Int64)
 			}
 
 			if collectionModel.RoyaltyPercentage.Valid {
@@ -909,12 +912,21 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 					royaltyAddress = collectionModel.PaymentAddress.String
 				}
 
-				royaltyAmount := int64(float64(listingModel.Total) * collectionModel.RoyaltyPercentage.Float64)
+				if royaltyAddress != listingModel.SellerAddress {
+					expectedRoyalty := uint64(float64(listingModel.Total) * collectionModel.RoyaltyPercentage.Float64)
+					royaltySent, err := GetBaseTokensSent(rawTransaction, royaltyAddress, Send, protocol.ibcEnabled)
+					if err != nil {
+						return fmt.Errorf("invalid royalty tokens sent '%s'", err)
+					}
+
+					if royaltySent < expectedRoyalty {
+						return fmt.Errorf("sender did not send enough tokens to complete the buy")
+					}
+
+					amountOwed -= expectedRoyalty
+				}
 			}
 		}
-
-		// Check the amount still owed after deposit
-		amountOwed := listingModel.Total - listingModel.DepositTotal
 
 		// Check that the correct amount was sent with the buy
 		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
