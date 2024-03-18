@@ -2,6 +2,7 @@ import { Link } from '@remix-run/react'
 import { Token } from '~/api/token'
 import { getDateAgo } from '~/utils/date'
 import { getDecimalValue, getSupplyTitle } from '~/utils/number'
+import Grid from './Grid'
 import logo from '../images/logo/a-white-on-transparent-250.png'
 
 function TokenLogo({
@@ -42,10 +43,10 @@ function TokenComponent({ token }: { token: Token }) {
 
 export function Tokens({ tokens }: { tokens: Token[] }) {
   return (
-    <div className="grid grid-cols-fill-56 gap-4">
+    <Grid>
       {tokens.map((token) => (
         <TokenComponent key={token.id} token={token} />
       ))}
-    </div>
+    </Grid>
   )
 }

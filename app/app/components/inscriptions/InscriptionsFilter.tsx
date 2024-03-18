@@ -194,8 +194,6 @@ export function Filter({ traits }: Props) {
   }
   const [priceRange, setPriceRange] = useState<PriceRange>(defaultPriceRange)
 
-  const defaultSearch = searchParams.get('search') ?? ''
-
   useEffect(() => {
     const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
     if (currentStatus !== status) {

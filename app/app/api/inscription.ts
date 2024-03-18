@@ -106,6 +106,15 @@ export const inscriptionImageSelector = Selector('inscription')({
         true,
       ],
     },
+    // @todo
+    name: {
+      metadata: [
+        {
+          path: '$.metadata.name',
+        },
+        true,
+      ],
+    },
   },
 })
 
@@ -116,7 +125,7 @@ export type InscriptionImage = Omit<
     ScalarDefinition
   >,
   'mime'
-> & { mime: string }
+> & { mime: string; name: string }
 
 // Inscription listing
 export const inscriptionListingSelector = Selector(

@@ -17,9 +17,9 @@ export enum PriceRange {
 }
 
 export type Status = 'all' | 'buy'
-export const DEFAULT_STATUS: Status = 'buy'
+export const DEFAULT_STATUS: Status = 'all'
 export const DEFAULT_SORT_BUY: Sort = Sort.RECENTLY_LISTED
-export const DEFAULT_SORT_ALL: Sort = Sort.HIGHEST_ID
+export const DEFAULT_SORT_ALL: Sort = Sort.LOWEST_PRICE
 export const DEFAULT_PRICE_RANGE = PriceRange.ALL
 
 export const LIMIT = 30
