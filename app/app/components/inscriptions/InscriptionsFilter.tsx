@@ -1,11 +1,10 @@
-import { Form, Link, useSearchParams } from '@remix-run/react'
+import { Link, useSearchParams } from '@remix-run/react'
 import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import {
   Checkbox,
   Collapse,
   Form as DaisyForm,
   Divider,
-  Input,
   Radio,
 } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
@@ -20,6 +19,7 @@ import {
   Status,
   getDefaultSort,
 } from '.'
+import SearchInput from '../form/SearchInput'
 
 function FilterTitle({
   children,
@@ -253,15 +253,7 @@ export function Filter({ traits }: Props) {
             }}
           />
           <FilterTitle className="mt-6">Search</FilterTitle>
-          <Form method="get">
-            <Input
-              className="mt-2 max-w-40"
-              placeholder="Name"
-              name="search"
-              size="sm"
-              defaultValue={defaultSearch}
-            />
-          </Form>
+          <SearchInput placeholder="Name" className="input-sm mt-2 max-w-40" />
           <FilterTitle className="mt-6">Sort</FilterTitle>
           <Select items={sortItems} onSelect={setSort} selected={sort} />
           <FilterTitle className="mt-6">Price</FilterTitle>
