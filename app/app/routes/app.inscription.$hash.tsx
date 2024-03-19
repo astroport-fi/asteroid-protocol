@@ -83,9 +83,9 @@ function InscriptionDetailComponent({
         />
         <Link
           to={`/inscription/${inscription.transaction.hash}`}
-          className="btn btn-link"
+          className="inline-flex items-center mt-4 link link-primary link-hover"
         >
-          Open in viewer <ArrowTopRightOnSquareIcon className="size-5" />
+          Open in viewer <ArrowTopRightOnSquareIcon className="size-5 ml-1" />
         </Link>
       </div>
       <div className="flex flex-col flex-1">
@@ -118,7 +118,10 @@ function InscriptionDetailComponent({
         {inscription.collection && (
           <div className="flex flex-col mt-6">
             <strong>Collection</strong>
-            <Link to={`/app/collection/${inscription.collection.symbol}`}>
+            <Link
+              to={`/app/collection/${inscription.collection.symbol}`}
+              className="link link-primary link-hover"
+            >
               {inscription.collection.name}
             </Link>
           </div>
