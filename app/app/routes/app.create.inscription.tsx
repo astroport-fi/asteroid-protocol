@@ -174,25 +174,8 @@ export default function CreateInscription() {
   })
 
   return (
-    <div>
-      <p>
-        Inscriptions allow you to permanently write arbitrary data to the
-        blockchain. The maximum size of an inscription is currently{' '}
-        {maxFileSize / 1000}kb.
-      </p>
-      <p>
-        Learn more in the
-        <DaisyLink
-          className="mx-1"
-          color="primary"
-          href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
-          target="_blank"
-        >
-          inscription metaprotocol
-        </DaisyLink>
-        documentation
-      </p>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-8">
+    <div className="flex flex-col items-center w-full">
+      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
         <div className="flex flex-1 flex-col items-center">
           {preview && (
             <img
@@ -212,7 +195,7 @@ export default function CreateInscription() {
               <span className="text-center">{fileName}</span>
             ) : (
               <>
-                <span className="text-lg text-center">Content</span>
+                <span className="text-lg text-center">Inscription Content</span>
                 <span className="mt-4">Max file size</span>
                 <span>550kb</span>
               </>
@@ -258,35 +241,24 @@ export default function CreateInscription() {
         </div>
         <div className="flex flex-1 flex-col ml-8">
           <strong>Inscription information</strong>
-          <p className="mt-2">Add detail to your inscription</p>
 
-          <div className="form-control w-full mt-6">
-            <Form.Label title="Collection" htmlFor="collection" />
-            <div className="flex w-full gap-4 items-center">
-              <Select
-                id="collection"
-                className="w-full"
-                color={errors.collection ? 'error' : undefined}
-                {...register('collection')}
-              >
-                <Select.Option value={0}>Select collection</Select.Option>
-                {data.collections.map((collection) => (
-                  <Select.Option
-                    key={collection.transaction.hash}
-                    value={collection.transaction.hash}
-                  >
-                    {collection.name}
-                  </Select.Option>
-                ))}
-              </Select>
-              <Link
-                className="btn btn-accent btn-sm btn-circle mr-1"
-                to="/app/create/collection"
-              >
-                <PlusIcon className="size-5" />
-              </Link>
-            </div>
-          </div>
+          <p className="mt-2">
+            Inscriptions allow you to permanently write arbitrary data to the
+            blockchain. The maximum size of an inscription is currently{' '}
+            {maxFileSize / 1000}kb.
+          </p>
+          <p>
+            Learn more in the
+            <DaisyLink
+              className="mx-1"
+              color="primary"
+              href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
+              target="_blank"
+            >
+              inscription metaprotocol
+            </DaisyLink>
+            documentation
+          </p>
 
           <div className="form-control w-full mt-6">
             <Form.Label title="Name" htmlFor="name" />
@@ -319,6 +291,34 @@ export default function CreateInscription() {
               rows={10}
               {...register('description')}
             />
+          </div>
+
+          <div className="form-control w-full mt-6">
+            <Form.Label title="Collection (optional)" htmlFor="collection" />
+            <div className="flex w-full gap-4 items-center">
+              <Select
+                id="collection"
+                className="w-full"
+                color={errors.collection ? 'error' : undefined}
+                {...register('collection')}
+              >
+                <Select.Option value={0}>Select collection</Select.Option>
+                {data.collections.map((collection) => (
+                  <Select.Option
+                    key={collection.transaction.hash}
+                    value={collection.transaction.hash}
+                  >
+                    {collection.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              <Link
+                className="btn btn-accent btn-sm btn-circle mr-1"
+                to="/app/create/collection"
+              >
+                <PlusIcon className="size-5" />
+              </Link>
+            </div>
           </div>
 
           <Divider className="mt-8">Traits</Divider>
