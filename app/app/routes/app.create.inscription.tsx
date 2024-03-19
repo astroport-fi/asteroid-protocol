@@ -69,14 +69,17 @@ export default function CreateInscription() {
     formState: { errors },
   } = useForm<FormData>()
   const name = watch('name')
-  const collectionId = watch('collection')
+  const collectionHash = watch('collection')
+  const selectedCollection = data.collections.find(
+    (c) => c.transaction.hash === collectionHash,
+  )
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'newTraits',
   })
 
-  const { data: collection } = useCollection(parseInt(collectionId ?? '0'))
+  const { data: collection } = useCollection(selectedCollection?.id ?? 0)
   const traitsMap = useMemo(() => {
     if (!collection) {
       return null
