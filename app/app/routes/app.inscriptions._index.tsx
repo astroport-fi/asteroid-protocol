@@ -14,7 +14,11 @@ import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const url = new URL(request.url)
-  const { sort, direction } = parseSorting(url.searchParams, 'id', order_by.asc)
+  const { sort, direction } = parseSorting(
+    url.searchParams,
+    'id',
+    order_by.desc,
+  )
   const { offset, limit } = parsePagination(new URL(request.url).searchParams)
   const search = url.searchParams.get('search')
 
