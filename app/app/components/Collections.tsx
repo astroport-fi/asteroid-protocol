@@ -7,13 +7,13 @@ import InscriptionImage from './InscriptionImage'
 export function CollectionBox({ collection }: { collection: Collection }) {
   return (
     <Link
-      className="flex flex-col justify-between bg-base-200 rounded-xl"
+      className="flex flex-col justify-between bg-base-200 rounded-xl group"
       to={`/app/collection/${collection.symbol}`}
     >
       <InscriptionImage
         src={collection.content_path!}
         isExplicit={collection.is_explicit}
-        className="rounded-t-xl h-60"
+        containerClassName="h-60 rounded-t-xl"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
@@ -29,10 +29,10 @@ export function CollectionBox({ collection }: { collection: Collection }) {
 export function ClubBox({ club }: { club: Club }) {
   return (
     <Link
-      className="flex flex-col justify-between bg-base-200 rounded-xl"
+      className="flex flex-col justify-between bg-base-200 rounded-xl group"
       to={`/app/inscriptions/${club.slug}`}
     >
-      <span className="flex items-center justify-center w-full h-60 rounded-t-xl text-2xl font-bold">
+      <span className="flex items-center justify-center w-full h-60 rounded-t-xl text-2xl font-bold group-hover:scale-125 transition duration-500">
         &lt; {club.id}
       </span>
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">

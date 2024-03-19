@@ -1,9 +1,10 @@
 import { order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
-import { Divider } from 'react-daisyui'
+import { Button, Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import clubs from '~/api/clubs'
+import { Collection } from '~/api/collection'
 import { InscriptionTradeHistory } from '~/api/inscription'
 import Collections, { ClubBox } from '~/components/Collections'
 import DecimalText from '~/components/DecimalText'
@@ -48,15 +49,16 @@ export function TransactionBox({
   const { inscription } = transaction
   return (
     <Link
-      className="carousel-item flex flex-col bg-base-200 rounded-xl"
+      className="carousel-item flex flex-col bg-base-200 rounded-xl group"
       to={`/app/inscription/${transaction.inscription.transaction.hash}`}
     >
       <InscriptionImage
-        className="rounded-t-xl h-60 w-60"
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
+        containerClassName="size-60 rounded-t-xl"
       />
+
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
           <strong className="text-nowrap overflow-hidden text-ellipsis">
@@ -71,6 +73,31 @@ export function TransactionBox({
           <span className="uppercase text-sm text-header-content">
             Sale Price
           </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function TopCollection({ collection }: { collection: Collection }) {
+  return (
+    <Link
+      className="flex flex-col justify-between group relative border-mask rounded-xl"
+      to={`/app/collection/${collection.symbol}`}
+    >
+      <InscriptionImage
+        src={collection.content_path!}
+        isExplicit={collection.is_explicit}
+        className="w-full h-full"
+        containerClassName="size-96"
+      />
+      <div className="absolute inset-0 transition-all duration-500 bg-gradient-to-t from-black/70 via-transparent to-transparent max-md:via-black/40 group-hover:bg-black/40"></div>
+      <div className="absolute flex flex-col z-10 h-full justify-end p-4 text-white-1 w-full max-md:p-2">
+        <strong className="absolute text-lg bottom-4 text-nowrap overflow-hidden text-ellipsis transition duration-500 group-hover:translate-y-[-80px]">
+          {collection.name}
+        </strong>
+        <div className="absolute w-[calc(100%-2rem)] flex flex-col py-4 translate-y-full group-hover:translate-y-0 transition duration-500">
+          <Button color="primary">Explore Collection</Button>
         </div>
       </div>
     </Link>
@@ -102,7 +129,13 @@ export default function CollectionsPage() {
         <SearchInput placeholder="Search by collection name" />
       </div>
 
-      <h3 className="text-xl text-white">Inscription Clubs</h3>
+      <div className="carousel gap-5 mt-4">
+        {data.collections.map((collection) => (
+          <TopCollection key={collection.id} collection={collection} />
+        ))}
+      </div>
+
+      <h3 className="text-xl text-white mt-12">Inscription Clubs</h3>
 
       <Grid className="mt-4">
         {clubs.map((club) => (
