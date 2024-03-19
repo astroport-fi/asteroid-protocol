@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-daisyui'
 import { clientOnly$ } from 'vite-env-only'
 import { Status } from '~/api/status'
@@ -16,14 +16,26 @@ export default function Footer() {
   const lag = status.last_known_height! - status.last_processed_height
 
   const asteroidClient = useAsteroidClient(clientOnly$(true))
+  const wsSubscription = clientOnly$(
+    useMemo(() => {
+      if (!asteroidClient) {
+        return null
+      }
+      return asteroidClient.statusSubscription(chainId)
+    }, [asteroidClient, chainId]),
+  )
 
   useEffect(() => {
-    asteroidClient.statusSubscription(chainId).on(({ status: newStatus }) => {
+    if (!wsSubscription) {
+      return
+    }
+
+    wsSubscription.on(({ status: newStatus }) => {
       if (newStatus[0]) {
         setStatus(newStatus[0])
       }
     })
-  }, [asteroidClient, chainId])
+  }, [wsSubscription, chainId])
 
   return (
     <footer className="footer fixed left-0 bottom-0 items-center bg-base-200 text-neutral-content border-t border-t-neutral">
