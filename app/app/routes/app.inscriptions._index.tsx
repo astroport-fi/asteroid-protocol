@@ -129,7 +129,7 @@ export default function CollectionsPage() {
         <SearchInput placeholder="Search by collection name" />
       </div>
 
-      <div className="carousel gap-5 mt-4">
+      <div className="carousel gap-5 mt-4 overflow-hidden">
         {data.collections.map((collection) => (
           <TopCollection key={collection.id} collection={collection} />
         ))}
