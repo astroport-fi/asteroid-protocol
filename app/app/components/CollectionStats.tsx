@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { PropsWithChildren } from 'react'
 import { CollectionStats } from '~/api/common'
 import { getSupplyTitle } from '~/utils/number'
@@ -6,7 +7,7 @@ import PercentageText from './PercentageText'
 
 function Stat({ title, children }: PropsWithChildren<{ title: string }>) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col shrink-0">
       <span className="uppercase text-header-content text-sm">{title}</span>
       <div className="mt-1 font-semibold text-center">{children}</div>
     </div>
@@ -16,13 +17,20 @@ function Stat({ title, children }: PropsWithChildren<{ title: string }>) {
 export default function CollectionStatsComponent({
   stats,
   royaltyPercentage,
+  className,
 }: {
   stats: CollectionStats
   royaltyPercentage?: number
+  className?: string
 }) {
   const hasRoyalty = !!royaltyPercentage
   return (
-    <div className="flex gap-8 w-full justify-center">
+    <div
+      className={clsx(
+        'flex flex-grow gap-8 justify-center shrink-0',
+        className,
+      )}
+    >
       <Stat title="Floor">
         <DecimalText value={stats.floor_price} suffix=" ATOM" />
       </Stat>
