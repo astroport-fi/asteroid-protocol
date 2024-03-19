@@ -78,7 +78,7 @@ export default function CreateToken() {
       decimals: 6,
       maxSupply: data.maxSupply,
       mintLimit: data.mintLimit,
-      name: data.name,
+      name: encodeURI(data.name.trim()),
       ticker: data.ticker.toUpperCase(),
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
     })
