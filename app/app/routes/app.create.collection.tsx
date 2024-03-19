@@ -3,7 +3,7 @@ import { CheckIcon } from '@heroicons/react/20/solid'
 import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { Button, FileInput, Form, Input, Textarea } from 'react-daisyui'
+import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Label from '~/components/form/Label'
@@ -101,10 +101,12 @@ export default function CreateCollection() {
 
   return (
     <div>
-      <p>Collection allows you to group inscriptions together.</p>
-
       <Form onSubmit={onSubmit} className="flex flex-row mt-8">
         <div className="flex flex-1 flex-col items-center">
+          <p className="mb-8">
+            Collection allows you to group inscriptions together.
+          </p>
+
           {preview && (
             <img
               src={preview}
@@ -195,7 +197,14 @@ export default function CreateCollection() {
         </div>
         <div className="flex flex-1 flex-col ml-8">
           <strong>Collection information</strong>
-          <p className="mt-2">Add detail to your collection</p>
+          <p className="mt-2">
+            Collection information will appear on your collection&apos;s landing
+            page on{' '}
+            <Link href="https://asteroidprotocol.io">asteroidprotocol.io</Link>.
+            Note that collection inscriptions are non-transferrable and instead
+            serve as a container for a set of inscriptions. Each collection gets
+            its own page in the inscription marketplace.
+          </p>
 
           <div className="form-control w-full mt-4">
             <Form.Label title="Name" htmlFor="name" />
