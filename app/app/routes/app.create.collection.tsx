@@ -101,12 +101,8 @@ export default function CreateCollection() {
 
   return (
     <div>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-8">
+      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
         <div className="flex flex-1 flex-col items-center">
-          <p className="mb-8">
-            Collection allows you to group inscriptions together.
-          </p>
-
           {preview && (
             <img
               src={preview}

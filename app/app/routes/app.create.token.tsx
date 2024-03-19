@@ -87,25 +87,7 @@ export default function CreateToken() {
 
   return (
     <div>
-      <p>
-        The CFT-20 metaprotocol allows you to create, transfer, mint, buy and
-        sell fungible tokens. When used in combination with the inscriptions
-        metaprotocol, you can inscribe a logo for your token on the chain. The
-        maximum size of a logo is currently {maxFileSize / 1000}kb.
-      </p>
-      <p>
-        Learn more in the
-        <Link
-          className="mx-1"
-          color="primary"
-          href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
-          target="_blank"
-        >
-          CFT-20 metaprotocol
-        </Link>
-        documentation
-      </p>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-8">
+      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
         <div className="flex flex-1 flex-col items-center">
           {preview && (
             <img
@@ -125,7 +107,7 @@ export default function CreateToken() {
               <span className="text-center">{fileName}</span>
             ) : (
               <>
-                <span className="text-lg text-center">Logo</span>
+                <span className="text-lg text-center">Token Logo</span>
                 <span className="mt-4">Minimum dimensions</span>
                 <span>250x250</span>
                 <span className="mt-4">Maximum dimensions</span>
@@ -197,7 +179,25 @@ export default function CreateToken() {
         </div>
         <div className="flex flex-1 flex-col ml-8">
           <strong>Token information</strong>
-          <p className="mt-2">Add detail to your inscription</p>
+          <p className="mt-2">
+            The CFT-20 Tokens metaprotocol allows you to create, transfer, mint,
+            buy and sell fungible tokens. When used in combination with the
+            inscriptions metaprotocol, you can inscribe a logo for your token on
+            the chain. The maximum size of a logo is currently{' '}
+            {maxFileSize / 1000}kb.
+          </p>
+          <p>
+            Learn more in the
+            <Link
+              className="mx-1"
+              color="primary"
+              href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
+              target="_blank"
+            >
+              CFT-20 metaprotocol
+            </Link>
+            documentation
+          </p>
 
           <div className="form-control w-full mt-4">
             <Form.Label title="Name" htmlFor="name" />
