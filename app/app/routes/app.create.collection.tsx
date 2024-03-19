@@ -283,9 +283,17 @@ export default function CreateCollection() {
             />
             <Input
               id="website"
+              color={errors.website ? 'error' : undefined}
               placeholder="Website URL"
-              {...register('website')}
+              {...register('website', { pattern: /^https?:\/\/.+/ })}
             />
+            {errors.website && (
+              <label className="label" htmlFor="website">
+                <span className="label-text-alt text-error">
+                  Website URL is invalid
+                </span>
+              </label>
+            )}
           </div>
 
           <div className="form-control w-full mt-4">
@@ -296,9 +304,19 @@ export default function CreateCollection() {
             />
             <Input
               id="twitter"
+              color={errors.twitter ? 'error' : undefined}
               placeholder="https://twitter.com/handle"
-              {...register('twitter')}
+              {...register('twitter', {
+                pattern: /^https:\/\/twitter.com\/.+/,
+              })}
             />
+            {errors.twitter && (
+              <label className="label" htmlFor="twitter">
+                <span className="label-text-alt text-error">
+                  Twitter URL is invalid
+                </span>
+              </label>
+            )}
           </div>
 
           <div className="form-control w-full mt-4">
@@ -309,9 +327,17 @@ export default function CreateCollection() {
             />
             <Input
               id="telegram"
+              color={errors.telegram ? 'error' : undefined}
               placeholder="https://t.me/channel_name"
-              {...register('telegram')}
+              {...register('telegram', { pattern: /^https:\/\/t.me\/.+/ })}
             />
+            {errors.telegram && (
+              <label className="label" htmlFor="telegram">
+                <span className="label-text-alt text-error">
+                  Telegram URL is invalid
+                </span>
+              </label>
+            )}
           </div>
 
           <div className="form-control w-full mt-4">
@@ -322,9 +348,19 @@ export default function CreateCollection() {
             />
             <Input
               id="discord"
+              color={errors.discord ? 'error' : undefined}
               placeholder="https://discord.com/invite/channel_name"
-              {...register('discord')}
+              {...register('discord', {
+                pattern: /^https:\/\/discord.com\/.+/,
+              })}
             />
+            {errors.discord && (
+              <label className="label" htmlFor="discord">
+                <span className="label-text-alt text-error">
+                  Discord URL is invalid
+                </span>
+              </label>
+            )}
           </div>
 
           <div className="form-control w-full mt-4">
