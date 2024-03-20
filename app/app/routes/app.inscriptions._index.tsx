@@ -36,6 +36,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
   return json({
     collections: res.collections,
+    topCollections: res.collections.slice(0, 6),
     transactions,
     pages: Math.ceil(res.count / limit),
   })
@@ -82,7 +83,7 @@ export function TransactionBox({
 function TopCollection({ collection }: { collection: Collection }) {
   return (
     <Link
-      className="flex flex-col justify-between group relative border-mask rounded-xl"
+      className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl"
       to={`/app/collection/${collection.symbol}`}
     >
       <InscriptionImage
@@ -129,8 +130,8 @@ export default function CollectionsPage() {
         <SearchInput placeholder="Search by collection name" />
       </div>
 
-      <div className="carousel gap-5 mt-4 overflow-hidden">
-        {data.collections.map((collection) => (
+      <div className="carousel gap-5 mt-4 overflow-y-hidden overflow-x-scroll">
+        {data.topCollections.map((collection) => (
           <TopCollection key={collection.id} collection={collection} />
         ))}
       </div>

@@ -9,6 +9,7 @@ import {
 } from 'react-hook-form'
 import { NumericFormat, NumericFormatProps } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
+import InfoTooltip from '../InfoTooltip'
 
 export default function NumericInput<
   TFieldValues extends FieldValues = FieldValues,
@@ -17,6 +18,7 @@ export default function NumericInput<
   control,
   name,
   title,
+  tooltip,
   error,
   isFloat,
   className,
@@ -28,10 +30,13 @@ export default function NumericInput<
   error: FieldError | undefined
   isFloat?: boolean
   className?: string
+  tooltip?: string
 } & NumericFormatProps<InputProps>) {
   return (
     <div className={twMerge('form-control w-full', className)}>
-      <Form.Label title={title} htmlFor={name} />
+      <Form.Label title={title} htmlFor={name} className="justify-start">
+        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+      </Form.Label>
       <Controller
         rules={{ required: props.required, pattern: /^[0-9]+$/ }}
         control={control}

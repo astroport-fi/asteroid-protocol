@@ -1,15 +1,17 @@
 import type { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
+import InfoTooltip from '../InfoTooltip'
 
 export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement> &
   IComponentBaseProps & {
     title?: string
     icon?: React.ReactNode
+    tooltip?: string
   }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Label(
-  { children, title, icon, className, ...props },
+  { children, title, icon, tooltip, className, ...props },
   ref,
 ): JSX.Element {
   const classes = twMerge('label', className)
@@ -28,6 +30,7 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Label(
         ) : (
           title
         )}
+        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
       </span>
       {children}
     </label>
