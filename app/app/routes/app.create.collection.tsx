@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
+import InfoTooltip from '~/components/InfoTooltip'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
@@ -121,7 +122,13 @@ export default function CreateCollection() {
               <span className="text-center">{fileName}</span>
             ) : (
               <>
-                <span className="text-lg text-center">Collection Logo</span>
+                <span className="flex items-center justify-center text-lg">
+                  Collection Logo
+                  <InfoTooltip
+                    message="Can be a custom image or one of your favorite inscriptions from your collection"
+                    className="ml-2"
+                  />
+                </span>
                 <span className="mt-4">Minimum dimensions</span>
                 <span>250x250</span>
                 <span className="mt-4">Maximum dimensions</span>
@@ -203,7 +210,11 @@ export default function CreateCollection() {
           </p>
 
           <div className="form-control w-full mt-4">
-            <Form.Label title="Name" htmlFor="name" />
+            <Label
+              title="Name"
+              htmlFor="name"
+              tooltip="Your collection must have a unique name"
+            />
             <Input
               id="name"
               placeholder="Name your collection"
@@ -232,7 +243,16 @@ export default function CreateCollection() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <Form.Label title="Ticker" htmlFor="ticker" />
+            <Form.Label
+              title="Ticker"
+              htmlFor="ticker"
+              className="justify-start"
+            >
+              <InfoTooltip
+                className="ml-2"
+                message="Your collection must have a unique ticker"
+              />
+            </Form.Label>
             <Input
               placeholder="NFT"
               id="ticker"
@@ -277,6 +297,7 @@ export default function CreateCollection() {
             }}
             name="royaltyPercentage"
             title="Royalty %"
+            tooltip="Can range from 0% to x%. New artists typically choose 5% or less while established artists can command royalties of 5%-15%"
             className="mt-4"
           />
 
@@ -284,6 +305,7 @@ export default function CreateCollection() {
             <Label
               title="Website"
               htmlFor="website"
+              tooltip="A website or URL dedicated to your collection"
               icon={<GlobeAltIcon className="size-5" />}
             />
             <Input
@@ -369,7 +391,11 @@ export default function CreateCollection() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <Form.Label title="Description" htmlFor="description" />
+            <Label
+              title="Description"
+              htmlFor="description"
+              tooltip="Will appear at the top of your collection's landing page, and can also be used by third-party apps"
+            />
             <Textarea
               id="description"
               placeholder="Describe your collection"

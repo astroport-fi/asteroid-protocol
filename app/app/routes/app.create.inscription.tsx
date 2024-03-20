@@ -19,8 +19,10 @@ import {
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { CollectionTrait } from '~/api/collection'
+import InfoTooltip from '~/components/InfoTooltip'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Autocomplete from '~/components/form/Autocomplete'
+import Label from '~/components/form/Label'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useCollection from '~/hooks/useCollection'
@@ -198,7 +200,13 @@ export default function CreateInscription() {
               <span className="text-center">{fileName}</span>
             ) : (
               <>
-                <span className="text-lg text-center">Inscription Content</span>
+                <span className="flex items-center justify-center text-lg">
+                  Inscription Content
+                  <InfoTooltip
+                    message="Inscribe any filetype that a browser can display (i.e. JPGs, PDFs, HTML and more!)"
+                    className="ml-2"
+                  />
+                </span>
                 <span className="mt-4">Max file size</span>
                 <span>550kb</span>
               </>
@@ -297,7 +305,11 @@ export default function CreateInscription() {
           </div>
 
           <div className="form-control w-full mt-6">
-            <Form.Label title="Collection (optional)" htmlFor="collection" />
+            <Label
+              title="Collection (optional)"
+              htmlFor="collection"
+              tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
+            />
             <div className="flex w-full gap-4 items-center">
               <Select
                 id="collection"
@@ -324,7 +336,13 @@ export default function CreateInscription() {
             </div>
           </div>
 
-          <Divider className="mt-8">Traits</Divider>
+          <Divider className="mt-8 flex !gap-2">
+            <span>Traits</span>
+            <InfoTooltip
+              className="whitespace-pre-wrap"
+              message="Add as many traits as you'd like(i.e. hair color, strength, weaknesses, etc.)"
+            />
+          </Divider>
 
           {traitsMap && traitsComponents}
 
@@ -334,9 +352,10 @@ export default function CreateInscription() {
               className="flex  w-full justify-between gap-4 mb-2"
             >
               <div className="form-control w-full">
-                <Form.Label
+                <Label
                   title="Name"
                   htmlFor={`newTraits.${index}.trait_type`}
+                  tooltip="A category for your trait (i.e. hair color)"
                 />
                 <Input
                   id={`newTraits.${index}.trait_type`}
@@ -344,9 +363,10 @@ export default function CreateInscription() {
                 />
               </div>
               <div className="form-control w-full">
-                <Form.Label
+                <Label
                   title="Value"
                   htmlFor={`newTraits.${index}.value`}
+                  tooltip={`The trait's data (i.e. the "hair color" trait could have a value of "red" or "black")`}
                 />
                 <Input
                   id={`newTraits.${index}.value`}
