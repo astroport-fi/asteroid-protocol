@@ -13,6 +13,7 @@ MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
 USE_IBC = false
 USE_EXTENSION_DATA = true
+MAINTENANCE_MODE = false
 
 [env.testnet.vars]
 ENVIRONMENT = "development"
