@@ -4,6 +4,7 @@ import {
   MetaFunction,
 } from '@remix-run/cloudflare'
 import {
+  ErrorResponse,
   Links,
   Meta,
   Outlet,
@@ -14,15 +15,25 @@ import {
   useLoaderData,
   useRouteError,
 } from '@remix-run/react'
+import { Link } from 'react-daisyui'
 import { clientOnly$, serverOnly$ } from 'vite-env-only'
 import styles from '~/tailwind.css?url'
 import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
 import WalletProvider from './context/wallet'
+import error404Image from '~/images/background/404.png'
+import error503Image from '~/images/background/503.png'
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const status = await asteroidClient.getStatus(context.cloudflare.env.CHAIN_ID)
+
+  if ((context.cloudflare.env.MAINTENANCE_MODE as string) === 'true') {
+    throw new Response(null, {
+      status: 503,
+      statusText: 'Service Unavailable',
+    })
+  }
 
   return json({
     status,
@@ -159,27 +170,83 @@ export default function App() {
   )
 }
 
-// @todo
-// export function ErrorBoundary() {
-//   const error = useRouteError()
-//   console.error(error)
-//   return (
-//     <html lang="en">
-//       <head>
-//         <title>Oh no!</title>
-//         <Meta />
-//         <Links />
-//       </head>
-//       <body>
-//         <h1>
-//           {isRouteErrorResponse(error)
-//             ? `${error.status} ${error.statusText}`
-//             : error instanceof Error
-//               ? error.message
-//               : 'Unknown Error'}
-//         </h1>
-//         <Scripts />
-//       </body>
-//     </html>
-//   )
-// }
+function Error503() {
+  return (
+    <div className="flex flex-col w-full justify-center items-center mt-20">
+      <img src={error503Image} alt="503 error" />
+      <p className="max-w-2xl text-xl mt-10 uppercase">
+        Sorry, we&apos;re down for scheduled Cosmos Hub v15 upgrade. We&apos;ll
+        be back soon.
+      </p>
+    </div>
+  )
+}
+
+function Error404() {
+  return (
+    <div className="flex flex-col w-full justify-center items-center mt-20">
+      <img src={error404Image} alt="404 error" />
+      <p className="max-w-2xl text-xl mt-10 uppercase">
+        Beep. Boop. Bop. You&apos;ve discovered an uncharted part of the galaxy.
+        Unfortunately, it&apos;s not suitable for life and/or
+        inscription-related activity. Please return{' '}
+        <Link href="https://asteroidprotocol.io" className="underline">
+          home
+        </Link>{' '}
+        now.
+      </p>
+    </div>
+  )
+}
+
+function ResponseError({ error }: { error: ErrorResponse }) {
+  if (error.status === 503) {
+    return <Error503 />
+  }
+
+  if (error.status === 404) {
+    return <Error404 />
+  }
+
+  return (
+    <div className="flex flex-col w-full justify-center items-center mt-20">
+      <p className="max-w-2xl text-xl mt-10 uppercase">
+        Unknown error, status: {error.status}, statusText: {error.statusText}
+        Please try to reload the page and if the problem persists, contact us in{' '}
+        <Link
+          className="underline"
+          href="https://t.me/asteroidxyz"
+          title="Astroid Protocol Telegram Group"
+        >
+          Astroid Protocol Telegram Group
+        </Link>
+        .
+      </p>
+    </div>
+  )
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError()
+  return (
+    <html lang="en">
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <h1>
+          {isRouteErrorResponse(error) ? (
+            <ResponseError error={error} />
+          ) : error instanceof Error ? (
+            error.message
+          ) : (
+            'Unknown Error'
+          )}
+        </h1>
+        <Scripts />
+      </body>
+    </html>
+  )
+}
