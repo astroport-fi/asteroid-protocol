@@ -175,8 +175,17 @@ function Error503() {
     <div className="flex flex-col w-full justify-center items-center mt-20">
       <img src={error503Image} alt="503 error" />
       <p className="max-w-2xl text-xl mt-10 uppercase">
-        Sorry, we&apos;re down for scheduled Cosmos Hub v15 upgrade. We&apos;ll
-        be back soon.
+        Sorry, we&apos;re down for scheduled maintenance right now. We&apos;ll
+        be back soon. <br />
+        To stay informed about the latest updates please keep an eye on Astroid
+        Protocol{' '}
+        <Link
+          className="underline"
+          href="https://t.me/asteroidxyz"
+          title="Astroid Protocol Telegram Group"
+        >
+          Telegram Group
+        </Link>
       </p>
     </div>
   )
@@ -212,13 +221,14 @@ function ResponseError({ error }: { error: ErrorResponse }) {
     <div className="flex flex-col w-full justify-center items-center mt-20">
       <p className="max-w-2xl text-xl mt-10 uppercase">
         Unknown error, status: {error.status}, statusText: {error.statusText}
-        Please try to reload the page and if the problem persists, contact us in{' '}
+        Please try to reload the page and if the problem persists, contact us in
+        Astroid Protocol{' '}
         <Link
           className="underline"
           href="https://t.me/asteroidxyz"
           title="Astroid Protocol Telegram Group"
         >
-          Astroid Protocol Telegram Group
+          Telegram Group
         </Link>
         .
       </p>
