@@ -35,12 +35,12 @@ ASTEROID_API = "https://testnet-api.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://testnet-api.asteroidprotocol.io/v1/graphql"
 TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
 RPC = "https://rpc.sentry-01.theta-testnet.polypore.xyz"
-REST = "https://rest.sentry-01.theta-testnet.polypore.xyz"
+REST = "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz"
 CHAIN_ID = "theta-testnet-001"
 CHAIN_NAME = "cosmoshubtestnet"
 MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
-USE_IBC = true
+USE_IBC = false
 USE_EXTENSION_DATA = true
 
 [env.mainnet.vars]
