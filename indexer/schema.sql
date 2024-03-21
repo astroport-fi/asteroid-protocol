@@ -408,6 +408,18 @@ CREATE TABLE public.marketplace_cft20_trade_history (
     CONSTRAINT marketplace_cft20_history_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
 
+CREATE TABLE public.migration_permission_grant (
+    id serial NOT NULL,
+    inscription_id int4 NOT NULL,
+    granter varchar(128) NOT NULL,
+    grantee varchar(128) NOT NULL,
+    date_created timestamp NOT NULL,
+    CONSTRAINT migration_permission_grant_pkey PRIMARY KEY (id),
+    CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id)
+);
+
+CREATE INDEX "idx_migration_permission_grant_inscription_id" ON "public"."migration_permission_grant" USING btree ("inscription_id");
+
 -- public.inscription_market view definition
 
 CREATE OR REPLACE VIEW public.inscription_market AS 

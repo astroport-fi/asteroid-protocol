@@ -63,3 +63,8 @@ func TestMetadataMigrationWithoutCollection(t *testing.T) {
 
 	assert.Empty(t, migrationData.Collection, "collection should be empty")
 }
+
+func TestReservations(t *testing.T) {
+	reservationsByName, _ := GetReservations("../../../data/collection-reservations.csv")
+	assert.NotEmpty(t, reservationsByName, "reservationsByName should not be empty")
+}

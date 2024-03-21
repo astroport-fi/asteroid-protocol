@@ -22,12 +22,13 @@ import (
 )
 
 type InscriptionConfig struct {
-	S3Endpoint string `envconfig:"S3_ENDPOINT" required:"true"`
-	S3Region   string `envconfig:"S3_REGION" required:"true"`
-	S3Bucket   string `envconfig:"S3_BUCKET"`
-	S3ID       string `envconfig:"S3_ID" required:"true"`
-	S3Secret   string `envconfig:"S3_SECRET" required:"true"`
-	S3Token    string `envconfig:"S3_TOKEN"`
+	S3Endpoint       string `envconfig:"S3_ENDPOINT" required:"true"`
+	S3Region         string `envconfig:"S3_REGION" required:"true"`
+	S3Bucket         string `envconfig:"S3_BUCKET"`
+	S3ID             string `envconfig:"S3_ID" required:"true"`
+	S3Secret         string `envconfig:"S3_SECRET" required:"true"`
+	S3Token          string `envconfig:"S3_TOKEN"`
+	ReservationsFile string `envconfig:"RESERVATIONS_FILE" required:"true"`
 }
 
 type Inscription struct {
@@ -41,7 +42,9 @@ type Inscription struct {
 	// s3Secret is the S3 credentials secret
 	s3Secret string
 	// s3Token is the S3 credentials token
-	s3Token string
+	s3Token              string
+	reservationsByName   map[string]CollectionReservation
+	reservationsByTicker map[string]CollectionReservation
 }
 
 func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
@@ -53,15 +56,20 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
 		log.Fatalf("Unable to process config: %s", err)
 	}
 
+	// load reservations
+	reservationsByName, reservationsByTicker := GetReservations(config.ReservationsFile)
+
 	return &Inscription{
-		chainID:    chainID,
-		db:         db,
-		s3Endpoint: config.S3Endpoint,
-		s3Region:   config.S3Region,
-		s3Bucket:   config.S3Bucket,
-		s3ID:       config.S3ID,
-		s3Secret:   config.S3Secret,
-		s3Token:    config.S3Token,
+		chainID:              chainID,
+		db:                   db,
+		s3Endpoint:           config.S3Endpoint,
+		s3Region:             config.S3Region,
+		s3Bucket:             config.S3Bucket,
+		s3ID:                 config.S3ID,
+		s3Secret:             config.S3Secret,
+		s3Token:              config.S3Token,
+		reservationsByName:   reservationsByName,
+		reservationsByTicker: reservationsByTicker,
 	}
 }
 
@@ -94,7 +102,7 @@ func (protocol *Inscription) GetCollection(collectionHash string, sender string)
 	return &collection, nil
 }
 
-func (protocol *Inscription) GetInscription(inscriptionHash string, sender string, checkCreator bool) (*models.Inscription, error) {
+func (protocol *Inscription) GetInscriptionFromHash(inscriptionHash string) (*models.Inscription, error) {
 	// Fetch transaction from database with the given hash
 	var transaction models.Transaction
 	result := protocol.db.Where("hash = ?", inscriptionHash).First(&transaction)
@@ -111,20 +119,55 @@ func (protocol *Inscription) GetInscription(inscriptionHash string, sender strin
 		return nil, result.Error
 	}
 
-	if checkCreator {
-		// Check that the sender is the inscription creator
-		if inscription.Creator != sender {
-			return nil, fmt.Errorf("invalid sender, must be creator")
-		}
+	return &inscription, nil
+}
 
-	} else {
-		// Check that the sender is the current owner
-		if inscription.CurrentOwner != sender {
-			return nil, fmt.Errorf("invalid sender, must be current owner")
-		}
+func (protocol *Inscription) GetInscription(inscriptionHash string, sender string) (*models.Inscription, error) {
+	inscription, err := protocol.GetInscriptionFromHash(inscriptionHash)
+	if err != nil {
+		return nil, err
 	}
 
-	return &inscription, nil
+	// Check that the sender is the current owner
+	if inscription.CurrentOwner != sender {
+		return nil, fmt.Errorf("invalid sender, must be current owner")
+	}
+
+	return inscription, nil
+}
+
+func (protocol *Inscription) GrantMigrationPermission(transactionModel models.Transaction, inscriptionHash string, grantee string, granter string) error {
+	// Fetch the inscription for this transaction ID
+	inscription, err := protocol.GetInscriptionFromHash(inscriptionHash)
+	if err != nil {
+		return err
+	}
+
+	// Check that the sender is the inscription creator
+	if inscription.Creator != granter {
+		return fmt.Errorf("invalid granter, must be inscription creator")
+	}
+
+	// Check if the grantee has already been granted migration permission
+	var migrationPermissionGrant models.MigrationPermissionGrant
+	result := protocol.db.Where("inscription_id = ? AND grantee = ?", inscription.ID, grantee).First(&migrationPermissionGrant)
+	if result.Error == nil {
+		return fmt.Errorf("migration permission already granted")
+	}
+
+	// Grant migration permission
+	migrationPermissionGrant = models.MigrationPermissionGrant{
+		InscriptionID: inscription.ID,
+		Granter:       granter,
+		Grantee:       grantee,
+		DateCreated:   transactionModel.DateCreated,
+	}
+	result = protocol.db.Save(&migrationPermissionGrant)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }
 
 func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender string) error {
@@ -167,9 +210,21 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	for _, row := range migrationData.Rows {
 		// get the inscription
 		inscriptionHash := row[0]
-		inscription, err := protocol.GetInscription(inscriptionHash, sender, true)
+		inscription, err := protocol.GetInscriptionFromHash(inscriptionHash)
 		if err != nil {
 			return err
+		}
+
+		// Check that the sender is the inscription creator or has migration permissions
+		if inscription.Creator != sender {
+			// Check if the sender has migration permissions
+			var migrationPermissionGrant models.MigrationPermissionGrant
+			result := protocol.db.Where("inscription_id = ? AND grantee = ?", inscription.ID, sender).First(&migrationPermissionGrant)
+			if result.Error != nil {
+				// Invalid migration permission
+				return fmt.Errorf("invalid sender, must be creator or have migration permissions")
+			}
+			inscription.Creator = sender
 		}
 
 		// check if the inscription is already migrated
@@ -269,6 +324,22 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		// Check if the inscription is a Collection
 		if inscriptionMetadata.Metadata.Symbol != "" {
+			symbol := strings.ToUpper(inscriptionMetadata.Metadata.Symbol)
+
+			// check if symbol is reserved
+			if reservation, ok := protocol.reservationsByTicker[symbol]; ok {
+				if reservation.Address != sender {
+					return fmt.Errorf("ticker '%s' is reserved", symbol)
+				}
+			}
+
+			// check if name is reserved
+			if reservation, ok := protocol.reservationsByName[inscriptionMetadata.Metadata.Name]; ok {
+				if reservation.Address != sender {
+					return fmt.Errorf("name '%s' is reserved", inscriptionMetadata.Metadata.Name)
+				}
+			}
+
 			collectionModel := models.Collection{
 				ChainID:          parsedURN.ChainID,
 				Height:           transactionModel.Height,
@@ -277,7 +348,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				ContentHash:      contentHash,
 				Creator:          sender,
 				Name:             inscriptionMetadata.Metadata.Name,
-				Symbol:           inscriptionMetadata.Metadata.Symbol,
+				Symbol:           symbol,
 				Metadata:         datatypes.JSON(jsonBytes),
 				ContentPath:      contentPath,
 				ContentSizeBytes: uint64(len(content)),
@@ -397,6 +468,19 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		protocol.db.Save(&inscriptionHistory)
 	case "migrate":
 		return protocol.Migrate(rawTransaction, sender)
+	case "grant-migration-permission":
+		if parsedURN.KeyValuePairs["h"] == "" {
+			return fmt.Errorf("missing inscription hash")
+		}
+
+		if parsedURN.KeyValuePairs["grantee"] == "" {
+			return fmt.Errorf("missing grantee")
+		}
+
+		inscriptionHash := parsedURN.KeyValuePairs["h"]
+		grantee := strings.TrimSpace(parsedURN.KeyValuePairs["grantee"])
+
+		return protocol.GrantMigrationPermission(transactionModel, inscriptionHash, grantee, sender)
 	}
 	return nil
 }
