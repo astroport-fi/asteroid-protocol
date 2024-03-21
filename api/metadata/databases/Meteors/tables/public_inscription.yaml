@@ -30,6 +30,13 @@ array_relationships:
         table:
           name: marketplace_inscription_detail
           schema: public
+  - name: migration_permission_grants
+    using:
+      foreign_key_constraint_on:
+        column: inscription_id
+        table:
+          name: migration_permission_grant
+          schema: public
 select_permissions:
   - role: anonymous
     permission:

@@ -9,6 +9,7 @@
 - "!include public_marketplace_inscription_detail.yaml"
 - "!include public_marketplace_listing.yaml"
 - "!include public_marketplace_listing_history.yaml"
+- "!include public_migration_permission_grant.yaml"
 - "!include public_status.yaml"
 - "!include public_token.yaml"
 - "!include public_token_address_history.yaml"

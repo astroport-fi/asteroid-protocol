@@ -1,0 +1,10 @@
+table:
+  name: migration_permission_grant
+  schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - grantee
+      filter: {}
+    comment: ""
