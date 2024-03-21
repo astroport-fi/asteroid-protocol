@@ -31,6 +31,7 @@ import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
+import { tokenMeta } from '~/utils/meta'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
@@ -79,52 +80,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return []
   }
 
-  const { name, ticker, content_path, id } = data.token
-  const title = `${ticker} | ${name} | on Asteroid Protocol`
-
-  return [
-    { title },
-    {
-      property: 'og:url',
-      content: `https://asteroidprotocol.io/app/token/${ticker}`,
-    },
-    {
-      property: 'og:title',
-      content: title,
-    },
-    {
-      property: 'og:image',
-      content: content_path,
-    },
-    {
-      property: 'og:description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      name: 'description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:url',
-      content: `https://asteroidprotocol.io/app/token/${ticker}`,
-    },
-    {
-      property: 'twitter:title',
-      content: title,
-    },
-    {
-      property: 'twitter:image',
-      content: content_path,
-    },
-    {
-      property: 'twitter:description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:card',
-      content: 'summary',
-    },
-  ]
+  return tokenMeta(data.token)
 }
 
 function TokenDetailComponent({
