@@ -67,4 +67,10 @@ export class InscriptionOperations<
     const operation = this.protocol.migrate()
     return this.prepareOperation(operation, inscriptionData)
   }
+
+  grantMigrationPermission(hash: string, grantee: string) {
+    return this.prepareOperation(
+      this.protocol.grantMigrationPermission(hash, grantee),
+    )
+  }
 }

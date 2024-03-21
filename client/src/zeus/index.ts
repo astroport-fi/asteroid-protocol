@@ -2091,6 +2091,40 @@ export type ValueTypes = {
       },
       boolean | `@${string}`,
     ]
+    migration_permission_grants?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
     /** An object relationship */
     transaction?: ValueTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -2371,6 +2405,11 @@ export type ValueTypes = {
       | Variable<any, string>
     metadata?:
       | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    migration_permission_grants?:
+      | ValueTypes['migration_permission_grant_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -3146,6 +3185,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    migration_permission_grants_aggregate?:
+      | ValueTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     transaction?:
       | ValueTypes['transaction_order_by']
       | undefined
@@ -6770,6 +6814,79 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: AliasType<{
+    grantee?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    max?:
+      | ValueTypes['migration_permission_grant_max_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    min?:
+      | ValueTypes['migration_permission_grant_min_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    grantee?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['migration_permission_grant_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined | null | Variable<any, string>
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -7518,6 +7635,40 @@ export type ValueTypes = {
     marketplace_listing_history_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['marketplace_listing_history'],
+    ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
     ]
     status?: [
       {
@@ -9172,6 +9323,64 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['marketplace_listing'],
+    ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
+    migration_permission_grant_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['migration_permission_grant_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
     ]
     status?: [
       {
@@ -14537,6 +14746,34 @@ export type ResolverInputTypes = {
       },
       boolean | `@${string}`,
     ]
+    migration_permission_grants?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -14714,6 +14951,10 @@ export type ResolverInputTypes = {
       | undefined
       | null
     metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+    migration_permission_grants?:
+      | ResolverInputTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     type?: ResolverInputTypes['String_comparison_exp'] | undefined | null
@@ -15167,6 +15408,10 @@ export type ResolverInputTypes = {
       | undefined
       | null
     metadata?: ResolverInputTypes['order_by'] | undefined | null
+    migration_permission_grants_aggregate?:
+      | ResolverInputTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
+      | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     type?: ResolverInputTypes['order_by'] | undefined | null
@@ -17279,6 +17524,64 @@ export type ResolverInputTypes = {
     total?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: AliasType<{
+    grantee?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ResolverInputTypes['order_by'] | undefined | null
+    max?:
+      | ResolverInputTypes['migration_permission_grant_max_order_by']
+      | undefined
+      | null
+    min?:
+      | ResolverInputTypes['migration_permission_grant_min_order_by']
+      | undefined
+      | null
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+    grantee?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined | null
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -17845,6 +18148,34 @@ export type ResolverInputTypes = {
     marketplace_listing_history_by_pk?: [
       { id: number },
       ResolverInputTypes['marketplace_listing_history'],
+    ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
     ]
     status?: [
       {
@@ -18995,6 +19326,50 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['marketplace_listing'],
+    ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
+    migration_permission_grant_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['migration_permission_grant_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
     ]
     status?: [
       {
@@ -22303,6 +22678,8 @@ export type ModelTypes = {
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
     metadata: ModelTypes['jsonb']
+    /** An array relationship */
+    migration_permission_grants: Array<ModelTypes['migration_permission_grant']>
     /** An object relationship */
     transaction: ModelTypes['transaction']
     transaction_id: number
@@ -22414,6 +22791,9 @@ export type ModelTypes = {
       | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
+    migration_permission_grants?:
+      | ModelTypes['migration_permission_grant_bool_exp']
+      | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
     type?: ModelTypes['String_comparison_exp'] | undefined
@@ -22792,6 +23172,9 @@ export type ModelTypes = {
       | ModelTypes['marketplace_inscription_detail_aggregate_order_by']
       | undefined
     metadata?: ModelTypes['order_by'] | undefined
+    migration_permission_grants_aggregate?:
+      | ModelTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     type?: ModelTypes['order_by'] | undefined
@@ -24426,6 +24809,47 @@ export type ModelTypes = {
     total?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: {
+    grantee: string
+  }
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ModelTypes['order_by'] | undefined
+    max?: ModelTypes['migration_permission_grant_max_order_by'] | undefined
+    min?: ModelTypes['migration_permission_grant_min_order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?: Array<ModelTypes['migration_permission_grant_bool_exp']> | undefined
+    _not?: ModelTypes['migration_permission_grant_bool_exp'] | undefined
+    _or?: Array<ModelTypes['migration_permission_grant_bool_exp']> | undefined
+    grantee?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined
+  }
   ['numeric']: any
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -24512,6 +24936,8 @@ export type ModelTypes = {
     marketplace_listing_history_by_pk?:
       | ModelTypes['marketplace_listing_history']
       | undefined
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<ModelTypes['migration_permission_grant']>
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -24761,6 +25187,12 @@ export type ModelTypes = {
     >
     /** fetch data from the table in a streaming manner: "marketplace_listing" */
     marketplace_listing_stream: Array<ModelTypes['marketplace_listing']>
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<ModelTypes['migration_permission_grant']>
+    /** fetch data from the table in a streaming manner: "migration_permission_grant" */
+    migration_permission_grant_stream: Array<
+      ModelTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -26983,6 +27415,10 @@ export type GraphQLTypes = {
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
     metadata: GraphQLTypes['jsonb']
+    /** An array relationship */
+    migration_permission_grants: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
     transaction_id: number
@@ -27099,6 +27535,9 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
     metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+    migration_permission_grants?:
+      | GraphQLTypes['migration_permission_grant_bool_exp']
+      | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     type?: GraphQLTypes['String_comparison_exp'] | undefined
@@ -27501,6 +27940,9 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_inscription_detail_aggregate_order_by']
       | undefined
     metadata?: GraphQLTypes['order_by'] | undefined
+    migration_permission_grants_aggregate?:
+      | GraphQLTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     type?: GraphQLTypes['order_by'] | undefined
@@ -29237,6 +29679,51 @@ export type GraphQLTypes = {
     total?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: {
+    __typename: 'migration_permission_grant'
+    grantee: string
+  }
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: GraphQLTypes['order_by'] | undefined
+    max?: GraphQLTypes['migration_permission_grant_max_order_by'] | undefined
+    min?: GraphQLTypes['migration_permission_grant_min_order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<GraphQLTypes['migration_permission_grant_bool_exp']>
+      | undefined
+    _not?: GraphQLTypes['migration_permission_grant_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['migration_permission_grant_bool_exp']> | undefined
+    grantee?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined
+  }
   ['numeric']: 'scalar' & { name: 'numeric' }
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -29325,6 +29812,10 @@ export type GraphQLTypes = {
     marketplace_listing_history_by_pk?:
       | GraphQLTypes['marketplace_listing_history']
       | undefined
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -29578,6 +30069,14 @@ export type GraphQLTypes = {
     >
     /** fetch data from the table in a streaming manner: "marketplace_listing" */
     marketplace_listing_stream: Array<GraphQLTypes['marketplace_listing']>
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
+    /** fetch data from the table in a streaming manner: "migration_permission_grant" */
+    migration_permission_grant_stream: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -31501,6 +32000,10 @@ export const enum marketplace_listing_select_column {
   total = 'total',
   transaction_id = 'transaction_id',
 }
+/** select columns of table "migration_permission_grant" */
+export const enum migration_permission_grant_select_column {
+  grantee = 'grantee',
+}
 /** column ordering options */
 export const enum order_by {
   asc = 'asc',
@@ -31815,6 +32318,14 @@ type ZEUS_VARIABLES = {
   ['marketplace_listing_var_pop_order_by']: ValueTypes['marketplace_listing_var_pop_order_by']
   ['marketplace_listing_var_samp_order_by']: ValueTypes['marketplace_listing_var_samp_order_by']
   ['marketplace_listing_variance_order_by']: ValueTypes['marketplace_listing_variance_order_by']
+  ['migration_permission_grant_aggregate_order_by']: ValueTypes['migration_permission_grant_aggregate_order_by']
+  ['migration_permission_grant_bool_exp']: ValueTypes['migration_permission_grant_bool_exp']
+  ['migration_permission_grant_max_order_by']: ValueTypes['migration_permission_grant_max_order_by']
+  ['migration_permission_grant_min_order_by']: ValueTypes['migration_permission_grant_min_order_by']
+  ['migration_permission_grant_order_by']: ValueTypes['migration_permission_grant_order_by']
+  ['migration_permission_grant_select_column']: ValueTypes['migration_permission_grant_select_column']
+  ['migration_permission_grant_stream_cursor_input']: ValueTypes['migration_permission_grant_stream_cursor_input']
+  ['migration_permission_grant_stream_cursor_value_input']: ValueTypes['migration_permission_grant_stream_cursor_value_input']
   ['numeric']: ValueTypes['numeric']
   ['numeric_comparison_exp']: ValueTypes['numeric_comparison_exp']
   ['order_by']: ValueTypes['order_by']
