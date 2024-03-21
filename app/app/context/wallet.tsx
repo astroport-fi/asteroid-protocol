@@ -1,9 +1,11 @@
 import { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
+import { wallets as cosmosMetamask } from '@cosmos-kit/cosmos-extension-metamask'
+import { wallets as keplr } from '@cosmos-kit/keplr'
+import { wallets as leap } from '@cosmos-kit/leap'
 import { ChainProvider } from '@cosmos-kit/react'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { WalletIcon } from '@heroicons/react/24/solid'
 import { Outlet } from '@remix-run/react'
-import { wallets } from 'cosmos-kit'
 import { useEffect, useRef } from 'react'
 import { Button, Loading, Modal } from 'react-daisyui'
 import { useClipboard } from 'use-clipboard-copy'
@@ -11,17 +13,30 @@ import { WalletStatus } from '~/components/wallet/Wallet'
 import useAddress from '~/hooks/useAddress'
 import { getAssets, getChains } from '~/utils/chain'
 import { getEllipsisTxt } from '~/utils/string'
+import keplrIcon from '~/images/wallets/keplr.svg'
+import leapIcon from '~/images/wallets/leap-cosmos.svg'
+import metamaskIcon from '~/images/wallets/metamask.svg'
+
+keplr[0].walletInfo.logo = keplrIcon
+leap[0].walletInfo.logo = leapIcon
+cosmosMetamask[0].walletInfo.logo = metamaskIcon
+cosmosMetamask[0].walletInfo.prettyName = 'Cosmos MetaMask Snap'
 
 function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   const status = walletRepo.current?.walletStatus ?? WalletStatus.Disconnected
   const address = useAddress()
   const clipboard = useClipboard({ copiedTimeout: 800 })
+  const errorMessage = walletRepo.current?.message
 
   useEffect(() => {
     if (status === WalletStatus.Error || status === WalletStatus.Rejected) {
       walletRepo.current?.disconnect()
     }
   }, [status, walletRepo])
+
+  if (errorMessage) {
+    console.log(errorMessage)
+  }
 
   if (status === WalletStatus.Disconnected) {
     return (
@@ -30,10 +45,11 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
         {walletRepo.wallets.map(({ walletName, walletInfo, connect }) => (
           <Button
             key={walletName}
-            className="mb-4 text-lg justify-start"
+            className="mb-4 text-lg justify-start flex flex-row"
             size="lg"
             startIcon={
               <img
+                color="transparent"
                 src={walletInfo.logo as string}
                 alt={walletInfo.prettyName}
                 className="w-8"
@@ -41,7 +57,7 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
             }
             onClick={() => connect()}
           >
-            <span className="ml-1">{walletInfo.prettyName}</span>
+            <span className="ml-1 max-w-56">{walletInfo.prettyName}</span>
           </Button>
         ))}
       </>
@@ -116,7 +132,7 @@ const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
       tabIndex={-1}
       ref={dialogRef}
       backdrop
-      className="max-w-80"
+      className="max-w-96"
       onBlur={() => {
         setOpen(false)
       }}
@@ -133,7 +149,7 @@ export default function WalletProvider() {
     <ChainProvider
       chains={getChains()}
       assetLists={getAssets()}
-      wallets={[wallets[0], wallets[2]]}
+      wallets={[keplr[0], leap[0], cosmosMetamask[0]]}
       walletModal={MyModal}
       // walletConnectOptions={{
       //   signClient: {

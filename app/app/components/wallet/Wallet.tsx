@@ -1,3 +1,5 @@
+import { wallets as cosmosMetamask } from '@cosmos-kit/cosmos-extension-metamask'
+import { CosmJSOfflineSigner } from '@cosmsnap/snapper'
 import { useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
@@ -23,6 +25,15 @@ export enum WalletStatus {
   Error = 'Error',
 }
 
+function patchCosmosMetamaskGetDirectSigner() {
+  const first = cosmosMetamask[0]
+  if (first && first.client) {
+    first.client.getOfflineSignerDirect = (chainId: string) => {
+      return new CosmJSOfflineSigner(chainId)
+    }
+  }
+}
+
 export function Wallet({
   className,
   color,
@@ -35,11 +46,20 @@ export function Wallet({
   onClick?: () => void
 }) {
   const { chainName } = useRootContext()
-  const { status, connect, openView, address } = useChain(chainName)
+  const { status, connect, openView, address, wallet } = useChain(chainName)
   const [previousStatus, setPreviousStatus] = useState<WalletStatus | null>(
     null,
   )
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (
+      status === WalletStatus.Connected &&
+      wallet?.name === 'cosmos-extension-metamask'
+    ) {
+      patchCosmosMetamaskGetDirectSigner()
+    }
+  }, [status, wallet?.name])
 
   const [cookies, setCookie, removeCookie] = useCookies([USER_ADDRESS_COOKIE])
   useEffect(() => {
