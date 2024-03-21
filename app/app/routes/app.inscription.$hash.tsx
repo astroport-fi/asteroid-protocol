@@ -83,7 +83,7 @@ function Migration({
     return
   }
 
-  if (address == grantee) {
+  if (grantee && address == grantee) {
     return (
       <div className="flex flex-col mt-6">
         <strong>Migration</strong>
