@@ -4,6 +4,7 @@ import { useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 import { ButtonProps } from 'react-daisyui'
+import { clientOnly$ } from 'vite-env-only'
 import { useRootContext } from '~/context/root'
 import useChain from '~/hooks/useChain'
 import { USER_ADDRESS_COOKIE, serializeCookieValue } from '~/utils/cookies'
@@ -25,14 +26,14 @@ export enum WalletStatus {
   Error = 'Error',
 }
 
-function patchCosmosMetamaskGetDirectSigner() {
+const patchCosmosMetamaskGetDirectSigner = clientOnly$(() => {
   const first = cosmosMetamask[0]
   if (first && first.client) {
     first.client.getOfflineSignerDirect = (chainId: string) => {
       return new CosmJSOfflineSigner(chainId)
     }
   }
-}
+})
 
 export function Wallet({
   className,
@@ -57,7 +58,7 @@ export function Wallet({
       status === WalletStatus.Connected &&
       wallet?.name === 'cosmos-extension-metamask'
     ) {
-      patchCosmosMetamaskGetDirectSigner()
+      patchCosmosMetamaskGetDirectSigner?.()
     }
   }, [status, wallet?.name])
 
