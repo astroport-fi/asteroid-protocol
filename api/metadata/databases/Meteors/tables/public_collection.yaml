@@ -19,21 +19,23 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
-        - is_explicit
         - chain_id
         - content_hash
         - content_path
-        - creator
-        - minter
-        - name
-        - symbol
-        - version
         - content_size_bytes
+        - creator
+        - date_created
         - height
         - id
-        - transaction_id
+        - is_explicit
         - metadata
-        - date_created
+        - minter
+        - name
+        - payment_address
+        - royalty_percentage
+        - symbol
+        - transaction_id
+        - version
       filter: {}
       allow_aggregations: true
     comment: ""
