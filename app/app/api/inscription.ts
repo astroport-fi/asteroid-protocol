@@ -59,10 +59,12 @@ export type Inscription = Omit<
 // Inscription detail
 export const inscriptionDetailSelector = Selector('inscription')({
   ...inscriptionSelector,
+  version: true,
   collection: {
     symbol: true,
     name: true,
   },
+  migration_permission_grants: [{}, { grantee: true }],
   __alias: {
     ...inscriptionSelector.__alias,
     attributes: {
@@ -88,6 +90,7 @@ export type InscriptionDetail = Omit<
   description: string
   mime: string
   attributes?: TraitItem[]
+  migration_permission_grants?: { grantee: string }[]
 }
 
 // Inscription image
