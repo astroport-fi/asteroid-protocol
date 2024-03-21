@@ -8,7 +8,6 @@ import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
 import useAddress from './useAddress'
-import useShouldUseExtensionData from './useShouldUseExtensionData'
 
 export enum TxState {
   Initial,
@@ -81,7 +80,6 @@ export interface SubmitTxError {
 export default function useSubmitTx(txInscription: TxInscription | null) {
   const [retryCounter, setRetryCounter] = useState(0)
   const { useIbc } = useRootContext()
-  const useExtensionData = clientOnly$(useShouldUseExtensionData(retryCounter))
 
   // deps
   const client = clientOnly$(useClient(retryCounter))
@@ -102,10 +100,10 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     return clientOnly$(
       prepareTx(address, txInscription.urn, [txInscription], {
         useIbc,
-        useExtensionData,
+        useExtensionData: true,
       }),
     )
-  }, [txInscription, address, useIbc, useExtensionData])
+  }, [txInscription, address, useIbc])
 
   const metaprotocolFee = useMemo<MetaprotocolFee>(() => {
     if (!txInscription) {
