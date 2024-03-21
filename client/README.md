@@ -392,6 +392,4 @@ npx asteroid inscription inscribe-csv -c DEAC410DF14EE4F7B0D74D5CA34B1DC3FD210F9
 
 ## Development
 
-```bash
-npx ts-node src/cli.ts
-```
+see [DEV.mod](./DEV.md)
