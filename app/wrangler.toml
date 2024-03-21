@@ -17,11 +17,11 @@ MAINTENANCE_MODE = false
 
 [env.vars.localroids]
 ENVIRONMENT = "development"
-ASTEROID_API = "http://api-localroids.asteroidprotocol.io/v1/graphql"
-ASTEROID_API_WSS = "ws://api-localroids.asteroidprotocol.io/v1/graphql"
-TX_EXPLORER = "http://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
-RPC = "http://rpc-localroids.asteroidprotocol.io"
-REST = "http://rest-localroids.asteroidprotocol.io"
+ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+RPC = "https://rpc-localroids.asteroidprotocol.io"
+REST = "https://rest-localroids.asteroidprotocol.io"
 CHAIN_ID = "gaialocal-1"
 CHAIN_NAME = "localcosmoshub"
 MAX_FILE_SIZE = 550000
