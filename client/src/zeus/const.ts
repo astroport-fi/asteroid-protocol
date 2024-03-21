@@ -217,6 +217,11 @@ export const AllTypesProps: Record<string, any> = {
       where: 'marketplace_inscription_detail_bool_exp',
     },
     metadata: {},
+    migration_permission_grants: {
+      distinct_on: 'migration_permission_grant_select_column',
+      order_by: 'migration_permission_grant_order_by',
+      where: 'migration_permission_grant_bool_exp',
+    },
   },
   inscription_aggregate_bool_exp: {
     bool_and: 'inscription_aggregate_bool_exp_bool_and',
@@ -289,6 +294,7 @@ export const AllTypesProps: Record<string, any> = {
     marketplace_inscription_details_aggregate:
       'marketplace_inscription_detail_aggregate_bool_exp',
     metadata: 'jsonb_comparison_exp',
+    migration_permission_grants: 'migration_permission_grant_bool_exp',
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
     type: 'String_comparison_exp',
@@ -491,6 +497,8 @@ export const AllTypesProps: Record<string, any> = {
     marketplace_inscription_details_aggregate:
       'marketplace_inscription_detail_aggregate_order_by',
     metadata: 'order_by',
+    migration_permission_grants_aggregate:
+      'migration_permission_grant_aggregate_order_by',
     transaction: 'transaction_order_by',
     transaction_id: 'order_by',
     type: 'order_by',
@@ -1417,6 +1425,32 @@ export const AllTypesProps: Record<string, any> = {
     total: 'order_by',
     transaction_id: 'order_by',
   },
+  migration_permission_grant_aggregate_order_by: {
+    count: 'order_by',
+    max: 'migration_permission_grant_max_order_by',
+    min: 'migration_permission_grant_min_order_by',
+  },
+  migration_permission_grant_bool_exp: {
+    _and: 'migration_permission_grant_bool_exp',
+    _not: 'migration_permission_grant_bool_exp',
+    _or: 'migration_permission_grant_bool_exp',
+    grantee: 'String_comparison_exp',
+  },
+  migration_permission_grant_max_order_by: {
+    grantee: 'order_by',
+  },
+  migration_permission_grant_min_order_by: {
+    grantee: 'order_by',
+  },
+  migration_permission_grant_order_by: {
+    grantee: 'order_by',
+  },
+  migration_permission_grant_select_column: 'enum' as const,
+  migration_permission_grant_stream_cursor_input: {
+    initial_value: 'migration_permission_grant_stream_cursor_value_input',
+    ordering: 'cursor_ordering',
+  },
+  migration_permission_grant_stream_cursor_value_input: {},
   numeric: `scalar.numeric` as const,
   numeric_comparison_exp: {
     _eq: 'numeric',
@@ -1542,6 +1576,11 @@ export const AllTypesProps: Record<string, any> = {
       where: 'marketplace_listing_history_bool_exp',
     },
     marketplace_listing_history_by_pk: {},
+    migration_permission_grant: {
+      distinct_on: 'migration_permission_grant_select_column',
+      order_by: 'migration_permission_grant_order_by',
+      where: 'migration_permission_grant_bool_exp',
+    },
     status: {
       distinct_on: 'status_select_column',
       order_by: 'status_order_by',
@@ -1829,6 +1868,15 @@ export const AllTypesProps: Record<string, any> = {
     marketplace_listing_stream: {
       cursor: 'marketplace_listing_stream_cursor_input',
       where: 'marketplace_listing_bool_exp',
+    },
+    migration_permission_grant: {
+      distinct_on: 'migration_permission_grant_select_column',
+      order_by: 'migration_permission_grant_order_by',
+      where: 'migration_permission_grant_bool_exp',
+    },
+    migration_permission_grant_stream: {
+      cursor: 'migration_permission_grant_stream_cursor_input',
+      where: 'migration_permission_grant_bool_exp',
     },
     status: {
       distinct_on: 'status_select_column',
@@ -3115,6 +3163,7 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_inscription_details_aggregate:
       'marketplace_inscription_detail_aggregate',
     metadata: 'jsonb',
+    migration_permission_grants: 'migration_permission_grant',
     transaction: 'transaction',
     transaction_id: 'Int',
     type: 'String',
@@ -3635,6 +3684,9 @@ export const ReturnTypes: Record<string, any> = {
     transaction: 'transaction',
     transaction_id: 'Int',
   },
+  migration_permission_grant: {
+    grantee: 'String',
+  },
   numeric: `scalar.numeric` as const,
   query_root: {
     club_stats: 'collection_stats',
@@ -3667,6 +3719,7 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_listing_by_pk: 'marketplace_listing',
     marketplace_listing_history: 'marketplace_listing_history',
     marketplace_listing_history_by_pk: 'marketplace_listing_history',
+    migration_permission_grant: 'migration_permission_grant',
     status: 'status',
     status_by_pk: 'status',
     token: 'token',
@@ -3750,6 +3803,8 @@ export const ReturnTypes: Record<string, any> = {
     marketplace_listing_history_by_pk: 'marketplace_listing_history',
     marketplace_listing_history_stream: 'marketplace_listing_history',
     marketplace_listing_stream: 'marketplace_listing',
+    migration_permission_grant: 'migration_permission_grant',
+    migration_permission_grant_stream: 'migration_permission_grant',
     status: 'status',
     status_by_pk: 'status',
     status_stream: 'status',

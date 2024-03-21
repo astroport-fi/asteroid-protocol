@@ -105,4 +105,18 @@ export default class InscriptionProtocol extends BaseProtocol {
   migrate() {
     return buildOperation(this, this.fee, this.chainId, 'migrate', [])
   }
+
+  grantMigrationPermission(hash: string, grantee: string) {
+    const params: MetaProtocolParams = [
+      ['h', hash],
+      ['grantee', grantee],
+    ]
+    return buildOperation(
+      this,
+      this.fee,
+      this.chainId,
+      'grant-migration-permission',
+      params,
+    )
+  }
 }
