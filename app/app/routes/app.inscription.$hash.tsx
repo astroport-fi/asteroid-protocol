@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { Badge, Divider } from 'react-daisyui'
+import { Badge, Button, Divider } from 'react-daisyui'
 import { AsteroidClient, TraitItem } from '~/api/client'
 import {
   InscriptionDetail,
@@ -21,7 +21,10 @@ import { BackHeader } from '~/components/Back'
 import { InscriptionActions } from '~/components/InscriptionActions'
 import InscriptionImage from '~/components/InscriptionImage'
 import TxLink from '~/components/TxLink'
+import GrantMigrationPermissionDialog from '~/components/dialogs/GrantMigrationPermissionDialog'
 import Table from '~/components/table'
+import useAddress from '~/hooks/useAddress'
+import useDialog from '~/hooks/useDialog'
 import useSorting from '~/hooks/useSorting'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { inscriptionMeta } from '~/utils/meta'
@@ -65,6 +68,70 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   return inscriptionMeta(data.inscription)
+}
+
+function Migration({
+  inscription,
+}: {
+  inscription: InscriptionWithMarket<InscriptionDetail>
+}) {
+  const address = useAddress()
+  const { dialogRef, showDialog } = useDialog()
+  const grantee = inscription.migration_permission_grants?.[0]?.grantee
+
+  if (inscription.version != 'v1') {
+    return
+  }
+
+  if (address == grantee) {
+    return (
+      <div className="flex flex-col mt-6">
+        <strong>Migration</strong>
+        <p>You have permission to migrate this inscription</p>
+        <div className="mt-2">
+          <Link
+            className="btn btn-primary btn-sm"
+            to="/app/migrate/inscriptions"
+          >
+            Migrate Inscription
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (address != inscription.creator) {
+    return
+  }
+
+  return (
+    <div className="flex flex-col mt-6">
+      <strong>Migration</strong>
+      <div className="mt-2">
+        <Link className="btn btn-primary btn-sm" to="/app/migrate/inscriptions">
+          Migrate Inscription
+        </Link>
+
+        {grantee ? (
+          <div className="flex mt-2 items-center">
+            <span className="mr-2">Migration permission granted to:</span>
+            <AddressChip address={grantee} />
+          </div>
+        ) : (
+          <>
+            <span className="mx-2">or</span>
+            <Button color="primary" size="sm" onClick={() => showDialog()}>
+              Grant Migration Permission
+            </Button>
+            <GrantMigrationPermissionDialog
+              inscription={inscription}
+              ref={dialogRef}
+            />
+          </>
+        )}
+      </div>
+    </div>
+  )
 }
 
 function InscriptionDetailComponent({
@@ -115,6 +182,7 @@ function InscriptionDetailComponent({
           <strong>Transaction</strong>
           <TxLink txHash={inscription.transaction.hash} />
         </div>
+        <Migration inscription={inscription} />
         {inscription.collection && (
           <div className="flex flex-col mt-6">
             <strong>Collection</strong>
@@ -137,7 +205,7 @@ function InscriptionDetailComponent({
                   to={
                     inscription.collection
                       ? `/app/collection/${inscription.collection.symbol}?${attr.trait_type}=${attr.value}&status=all`
-                      : '/inscriptions'
+                      : '/app/inscriptions'
                   }
                 >
                   {attr.trait_type}

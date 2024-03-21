@@ -153,7 +153,7 @@ export default function CreateInscription() {
           <strong>Inscription migration</strong>
 
           <div className="form-control w-full mt-6">
-            <Form.Label title="Collection" htmlFor="collection" />
+            <Form.Label title="Collection (optional)" htmlFor="collection" />
             <div className="flex w-full gap-4 items-center">
               <Select
                 id="collection"
