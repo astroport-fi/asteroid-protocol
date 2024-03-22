@@ -71,7 +71,7 @@ function WalletProviderWrapper() {
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: styles, as: 'style' },
+    { rel: 'stylesheet', href: styles },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
@@ -139,7 +139,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <RootContext.Provider
           value={{
             chainId: data.ENV.CHAIN_ID,

@@ -19,9 +19,9 @@
     "@cosmjs/stargate": "^0.32.2",
     "@cosmos-kit/react": "^2.10.10",
     "@heroicons/react": "^2.1.1",
-    "@remix-run/cloudflare": "^2.7.2",
-    "@remix-run/cloudflare-pages": "^2.7.2",
-    "@remix-run/react": "^2.7.2",
+    "@remix-run/cloudflare": "^2.8.1",
+    "@remix-run/cloudflare-pages": "^2.8.1",
+    "@remix-run/react": "^2.8.1",
     "@tanstack/react-table": "^8.12.0",
     "chain-registry": "^1.28.1",
     "clsx": "^2.1.0",
@@ -31,11 +31,11 @@
     "lottie-react": "^2.4.0",
     "mime": "^4.0.1",
     "miniflare": "^3.20231030.4",
-    "react": "^18.2.0",
+    "react": "18.3.0-canary-01ab35a9a-20240228",
+    "react-dom": "18.3.0-canary-01ab35a9a-20240228",
     "react-cookie": "^7.0.2",
     "react-daisyui": "^5.0.0",
     "react-datepicker": "^6.2.0",
-    "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-markdown": "^9.0.1",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230518.0",
-    "@remix-run/dev": "^2.7.2",
+    "@remix-run/dev": "^2.8.1",
     "@tailwindcss/typography": "^0.5.10",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/react": "^18.2.20",
@@ -74,6 +74,10 @@
     "vite-plugin-node-polyfills": "^0.21.0",
     "vite-tsconfig-paths": "^4.2.1",
     "wrangler": "^3.24.0"
+  },
+  "overrides": {
+    "react": "18.3.0-canary-01ab35a9a-20240228",
+    "react-dom": "18.3.0-canary-01ab35a9a-20240228"
   },
   "engines": {
     "node": ">=18.0.0"
