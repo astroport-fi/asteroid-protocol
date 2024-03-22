@@ -134,6 +134,8 @@ const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
   )
 }
 
+const SESSION_MAX_DURATION = 1000 * 60 * 60 * 24 * 30 // 30 days
+
 export default function WalletProvider() {
   return (
     <ChainProvider
@@ -141,6 +143,7 @@ export default function WalletProvider() {
       assetLists={getAssets()}
       wallets={[...keplr, ...leap]}
       walletModal={MyModal}
+      sessionOptions={{ duration: SESSION_MAX_DURATION }}
       // walletConnectOptions={{
       //   signClient: {
       //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
