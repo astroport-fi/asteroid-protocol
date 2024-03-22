@@ -240,7 +240,7 @@ export function Filter({ traits }: Props) {
 
   return (
     <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
-      <div className="flex flex-col items-start absolute py-8 overflow-y-scroll h-[calc(100vh-13rem)]">
+      <div className="flex flex-col items-start absolute py-8 overflow-y-scroll h-[calc(100vh-8rem)]">
         <div className="flex flex-col items-start w-full px-6">
           <FilterTitle>Status</FilterTitle>
           <StatusFilter

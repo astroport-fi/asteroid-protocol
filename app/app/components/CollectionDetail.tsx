@@ -98,8 +98,8 @@ export default function CollectionDetailComponent({
           />
         )}
       </div>
-      <Collapse icon="arrow" open={open} className="mt-4">
-        <Collapse.Content className="p-0 whitespace-pre-wrap">
+      <Collapse icon="arrow" open={open}>
+        <Collapse.Content className="p-0 whitespace-pre-wrap mt-4">
           {collection.metadata.description}
         </Collapse.Content>
       </Collapse>
