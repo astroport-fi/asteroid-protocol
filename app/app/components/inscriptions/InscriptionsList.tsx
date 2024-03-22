@@ -22,9 +22,9 @@ export default function InscriptionsList({
 
   const ref = useRef<HTMLDivElement>(null)
   const navigation = useNavigation()
-  const isLoading = navigation.state === 'loading'
   const fetcher = useFetcher<{ data: InscriptionsResult; page: number }>()
   const [items, setItems] = useState<InscriptionWithMarket[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (!fetcher.data || fetcher.state === 'loading') {
@@ -43,6 +43,10 @@ export default function InscriptionsList({
     }
     setItems(inscriptions)
   }, [inscriptions, setItems])
+
+  useEffect(() => {
+    setIsLoading(navigation.state === 'loading')
+  }, [navigation.state])
 
   function getMoreData() {
     const nextPage = items.length == LIMIT ? page + 1 : fetcher.data!.page + 1
