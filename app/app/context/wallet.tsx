@@ -1,9 +1,10 @@
 import { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
-import { ChainProvider } from '@cosmos-kit/react'
+import { wallets as keplr } from '@cosmos-kit/keplr-extension'
+import { wallets as leap } from '@cosmos-kit/leap-extension'
+import { ChainProvider } from '@cosmos-kit/react-lite'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { WalletIcon } from '@heroicons/react/24/solid'
 import { Outlet } from '@remix-run/react'
-import { wallets } from 'cosmos-kit'
 import { useEffect, useRef } from 'react'
 import { Button, Loading, Modal } from 'react-daisyui'
 import { useClipboard } from 'use-clipboard-copy'
@@ -16,9 +17,14 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   const status = walletRepo.current?.walletStatus ?? WalletStatus.Disconnected
   const address = useAddress()
   const clipboard = useClipboard({ copiedTimeout: 800 })
+  const message = walletRepo.current?.message
+  if (message) {
+    console.log('wallet message', message)
+  }
 
   useEffect(() => {
     if (status === WalletStatus.Error || status === WalletStatus.Rejected) {
+      console.log('wallet disconnect')
       walletRepo.current?.disconnect()
     }
   }, [status, walletRepo])
@@ -133,7 +139,7 @@ export default function WalletProvider() {
     <ChainProvider
       chains={getChains()}
       assetLists={getAssets()}
-      wallets={[wallets[0], wallets[2]]}
+      wallets={[...keplr, ...leap]}
       walletModal={MyModal}
       // walletConnectOptions={{
       //   signClient: {
