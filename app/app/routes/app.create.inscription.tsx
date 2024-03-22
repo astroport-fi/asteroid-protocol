@@ -251,24 +251,12 @@ export default function CreateInscription() {
           </div>
         </div>
         <div className="flex flex-1 flex-col ml-8">
-          <strong>Inscription information</strong>
+          <strong>Create an inscription</strong>
 
           <p className="mt-2">
             Inscriptions allow you to permanently write arbitrary data to the
             blockchain. The maximum size of an inscription is currently{' '}
             {maxFileSize / 1000}kb.
-          </p>
-          <p>
-            Learn more in the
-            <DaisyLink
-              className="mx-1"
-              color="primary"
-              href="https://medium.com/@delphilabs/introducing-asteroid-protocol-an-open-source-framework-for-inscriptions-and-tokens-on-cosmos-hub-03df146d48b1"
-              target="_blank"
-            >
-              inscription metaprotocol
-            </DaisyLink>
-            documentation
           </p>
 
           <div className="form-control w-full mt-6">
@@ -295,7 +283,11 @@ export default function CreateInscription() {
           </div>
 
           <div className="form-control w-full">
-            <Form.Label title="Description" htmlFor="description" />
+            <Label
+              title="Description"
+              htmlFor="description"
+              tooltip="This content will appear on your inscription’s detail page"
+            />
             <Textarea
               id="description"
               placeholder="Describe your inscription"
@@ -330,6 +322,7 @@ export default function CreateInscription() {
               <Link
                 className="btn btn-accent btn-sm btn-circle mr-1"
                 to="/app/create/collection"
+                target="_blank"
               >
                 <PlusIcon className="size-5" />
               </Link>

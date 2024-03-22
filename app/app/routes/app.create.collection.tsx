@@ -1,9 +1,17 @@
 import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { GlobeAltIcon } from '@heroicons/react/24/outline'
+import { Link } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { Button, FileInput, Form, Input, Link, Textarea } from 'react-daisyui'
+import {
+  Button,
+  Link as DaisyLink,
+  FileInput,
+  Form,
+  Input,
+  Textarea,
+} from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
 import TxDialog from '~/components/dialogs/TxDialog'
@@ -199,14 +207,24 @@ export default function CreateCollection() {
           </div>
         </div>
         <div className="flex flex-1 flex-col ml-8">
-          <strong>Collection information</strong>
+          <strong>Create a collection</strong>
           <p className="mt-2">
-            Collection information will appear on your collection&apos;s landing
-            page on{' '}
-            <Link href="https://asteroidprotocol.io">asteroidprotocol.io</Link>.
-            Note that collection inscriptions are non-transferrable and instead
-            serve as a container for a set of inscriptions. Each collection gets
-            its own page in the inscription marketplace.
+            Creating a collection is a two-step process. First, create a
+            collection inscription using the form below. Then, you can add
+            inscriptions to your collection on the{' '}
+            <Link
+              className="link link-hover"
+              to="/app/create/inscription"
+              target="_blank"
+            >
+              Create Inscription
+            </Link>{' '}
+            page. All information below will appear on your collection&apos;s
+            landing page on{` `}
+            <DaisyLink href="https://asteroidprotocol.io">
+              asteroidprotocol.io
+            </DaisyLink>
+            . Note that collection inscriptions are non-transferrable.
           </p>
 
           <div className="form-control w-full mt-4">
@@ -250,7 +268,7 @@ export default function CreateCollection() {
             >
               <InfoTooltip
                 className="ml-2"
-                message="Your collection must have a unique ticker"
+                message="Your collection must have a unique ticker, which will be used in your collection's URL"
               />
             </Form.Label>
             <Input
