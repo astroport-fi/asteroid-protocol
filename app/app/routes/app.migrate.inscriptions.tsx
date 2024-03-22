@@ -88,17 +88,6 @@ export default function CreateInscription() {
 
   return (
     <div>
-      <p>
-        Migrate your inscriptions to the new format to take advantage of the
-        collection and traits support.
-      </p>
-      <p>
-        Learn more in the
-        <DaisyLink className="mx-1" color="primary" href="" target="_blank">
-          migration
-        </DaisyLink>
-        documentation
-      </p>
       <Form onSubmit={onSubmit} className="flex flex-row mt-8">
         <div className="flex flex-1 flex-col items-center">
           <div
@@ -112,6 +101,18 @@ export default function CreateInscription() {
             ) : (
               <>
                 <span className="text-lg text-center">Migration CSV</span>
+                <p className="mt-4">
+                  Learn how to create and format your CSV
+                  <DaisyLink
+                    className="mx-1"
+                    color="primary"
+                    href="https://www.notion.so/Asteroid-Protocol-Docs-c3fb7993254b4c2e814c42e76a1acec3?pvs=4#10b905a54c734095b57007f54ed1183a"
+                    target="_blank"
+                  >
+                    here
+                  </DaisyLink>
+                  .
+                </p>
                 <span className="mt-4">Max file size</span>
                 <span>550kb</span>
               </>
@@ -151,6 +152,20 @@ export default function CreateInscription() {
         </div>
         <div className="flex flex-1 flex-col ml-8">
           <strong>Inscription migration</strong>
+          <p className="mt-2">
+            Use this form to migrate any pre-existing inscriptions into a
+            collection to take advantage of new collections-related features
+            including royalties and rarity traits. Learn more
+            <DaisyLink
+              className="mx-1"
+              color="primary"
+              href="https://www.notion.so/Asteroid-Protocol-Docs-c3fb7993254b4c2e814c42e76a1acec3?pvs=4#225d1e61b7e7482fb89aab7941c0b65b"
+              target="_blank"
+            >
+              here
+            </DaisyLink>
+            .
+          </p>
 
           <div className="form-control w-full mt-6">
             <Form.Label title="Collection (optional)" htmlFor="collection" />
