@@ -20,7 +20,7 @@ export default function Index() {
           vast new world of possibilities on the Hub
         </p>
         <div className="flex flex-row mt-12 items-center">
-          <Link to="/app/wallet" className="btn btn-primary btn-md">
+          <Link to="/app/inscriptions" className="btn btn-primary btn-md">
             Continue to app
           </Link>
           <DaisyLink
