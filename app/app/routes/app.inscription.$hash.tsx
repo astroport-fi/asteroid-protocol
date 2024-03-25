@@ -140,13 +140,14 @@ function InscriptionDetailComponent({
   inscription: InscriptionWithMarket<InscriptionDetail>
 }) {
   return (
-    <div className="flex flex-col xl:flex-row w-full mt-4">
+    <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4">
       <div className="flex flex-1 flex-col px-8 items-center">
         <InscriptionImage
           mime={inscription.mime}
           src={inscription.content_path}
           isExplicit={inscription.is_explicit}
-          className="rounded-xl h-fit max-w-3xl object-contain"
+          imageClassName="rounded-xl object-contain"
+          className="max-w-3xl"
         />
         <Link
           to={`/inscription/${inscription.transaction.hash}`}

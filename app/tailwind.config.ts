@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     gridTemplateColumns: {
+      '2': 'repeat(2, minmax(0, 1fr))',
+      '3': 'repeat(3, minmax(0, 1fr))',
+      '4': 'repeat(4, minmax(0, 1fr))',
       'fill-56': 'repeat(auto-fill, minmax(14rem, 1fr))',
     },
     extend: {

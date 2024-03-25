@@ -12,7 +12,8 @@ export function TokenCell({
         mime="image/png"
         src={token.content_path!}
         // isExplicit={token.is_explicit} @todo
-        className="rounded-xl w-6"
+        className="size-6"
+        imageClassName="rounded-xl"
       />
       <span className="items-baseline ml-1.5">
         <span className="text-base">{token.name}</span>

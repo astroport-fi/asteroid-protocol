@@ -109,7 +109,8 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl max-w-60"
+          imageClassName="rounded-xl"
+          className="max-w-60"
         />
       </div>
       <div className="flex flex-col flex-1">

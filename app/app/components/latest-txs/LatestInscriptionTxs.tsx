@@ -48,7 +48,8 @@ export default function LatestInscriptionTxs({
                   mime={tx.inscription.mime}
                   src={tx.inscription.content_path}
                   isExplicit={tx.inscription.is_explicit}
-                  className="rounded-xl size-8"
+                  imageClassName="rounded-xl"
+                  className="size-8"
                 />
               </span>
               <NumericFormat

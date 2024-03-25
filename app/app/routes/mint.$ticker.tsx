@@ -49,7 +49,8 @@ export default function MintTokenPage() {
               mime="image/png"
               src={data.token.content_path!}
               // isExplicit={token.is_explicit} @todo
-              className="rounded-xl max-w-40 bg-base-200 relative top-[-5rem]"
+              imageClassName="rounded-xl"
+              className="max-w-40 bg-base-200 relative top-[-5rem]"
             />
             <span className="mt-[-4rem]">${data.token.ticker}</span>
             <h1 className="font-medium text-2xl mt-2">{data.token.name}</h1>

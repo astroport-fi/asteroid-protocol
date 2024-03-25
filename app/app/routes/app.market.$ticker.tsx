@@ -497,7 +497,8 @@ export default function MarketPage() {
                 mime="image/png"
                 src={token.content_path!}
                 // isExplicit={token.is_explicit} @todo
-                className="rounded-xl w-6"
+                className="size-6"
+                imageClassName="rounded-xl"
               />
               <span className="ml-2 flex items-baseline">
                 Trade {token.name}
