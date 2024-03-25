@@ -21,7 +21,7 @@ export default function useChain(chainName: string) {
       setDefaultSignOptions: (options: SignerOptions) => {},
       getOfflineSignerDirect: undefined,
       isWalletConnected: false,
-      address: undefined,
+      address: undefined as string | undefined,
     }
   return chain
 }

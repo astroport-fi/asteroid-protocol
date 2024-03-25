@@ -1,4 +1,4 @@
-import { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
+import type { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
 import { wallets as keplr } from '@cosmos-kit/keplr-extension'
 import { wallets as leap } from '@cosmos-kit/leap-extension'
 import { ChainProvider } from '@cosmos-kit/react-lite'
