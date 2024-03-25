@@ -1,8 +1,10 @@
 import { EyeSlashIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
+import { Skeleton } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { getMimeTitle } from '~/utils/string'
+import LazyImage from './LazyImage'
 
 const SMALL_IMAGE_THRESHOLD = 200
 
@@ -12,11 +14,13 @@ export default function InscriptionImage({
   mime,
   className,
   containerClassName,
+  imageClassName,
   min,
 }: {
   isExplicit?: boolean
   className?: string
   containerClassName?: string
+  imageClassName?: string
   src: string
   mime?: string
   min?: boolean
@@ -25,7 +29,10 @@ export default function InscriptionImage({
   const [smallImage, setSmallImage] = useState(false)
   const generalClass = 'group-hover:scale-125 transition duration-500'
   const noImageClass = clsx(
-    'flex flex-col items-center justify-center w-full h-full uppercase',
+    twMerge(
+      'flex flex-col items-center justify-center w-full h-full uppercase',
+      imageClassName,
+    ),
     { 'bg-base-200 px-8 py-16': !min },
   )
   const ref = useRef<HTMLImageElement>(null)
@@ -48,16 +55,12 @@ export default function InscriptionImage({
     )
   } else if (mimeTitle === 'Image') {
     imageComponent = (
-      <img
-        src={src}
-        ref={ref}
-        alt=""
-        className={clsx(
-          twMerge('w-full h-full object-cover', generalClass, className),
-          {
-            'image-pixelated': smallImage,
-          },
-        )}
+      <LazyImage
+        placeholder={
+          <Skeleton
+            className={twMerge('w-full h-full rounded-none', imageClassName)}
+          />
+        }
         onLoad={(e) => {
           if (
             !smallImage &&
@@ -66,7 +69,16 @@ export default function InscriptionImage({
             setSmallImage(true)
           }
         }}
-      />
+        imageClassName={clsx(
+          twMerge('object-cover w-full h-full', imageClassName),
+          {
+            'image-pixelated': smallImage,
+          },
+        )}
+        containerClassName={twMerge('w-full h-full', generalClass, className)}
+        src={src}
+        // ref={ref}
+      ></LazyImage>
     )
   } else if (mimeTitle === 'Video') {
     imageComponent = (

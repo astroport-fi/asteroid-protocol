@@ -32,7 +32,8 @@ export default function CollectionDetailComponent({
         <InscriptionImage
           src={collection.content_path!}
           isExplicit={collection.is_explicit}
-          className="size-20 rounded-full"
+          className="size-20"
+          imageClassName="rounded-full"
         />
         <div
           className={clsx('flex flex-col ml-4 mt-1 h-full', {

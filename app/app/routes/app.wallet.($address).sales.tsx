@@ -110,7 +110,8 @@ function WalletTransactionsTable({
                 mime={inscription.mime}
                 src={inscription.content_path}
                 isExplicit={inscription.is_explicit}
-                className="rounded-xl size-8"
+                imageClassName="rounded-xl"
+                className="size-8"
               />
             )
           }
