@@ -35,14 +35,6 @@ export default function InscriptionImage({
     ),
     { 'bg-base-200 px-8 py-16': !min },
   )
-  const ref = useRef<HTMLImageElement>(null)
-  useEffect(() => {
-    if (!smallImage && ref.current?.complete) {
-      if (ref.current.naturalHeight < SMALL_IMAGE_THRESHOLD) {
-        setSmallImage(true)
-      }
-    }
-  }, [smallImage])
 
   let imageComponent: JSX.Element
 
@@ -77,7 +69,6 @@ export default function InscriptionImage({
         )}
         containerClassName={twMerge('w-full h-full', generalClass, className)}
         src={src}
-        // ref={ref}
       ></LazyImage>
     )
   } else if (mimeTitle === 'Video') {
