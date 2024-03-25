@@ -162,6 +162,30 @@ export class AsteroidService {
     return statusResult.status[0]
   }
 
+  async getTransactionStatus(txHash: string) {
+    const result = await this.query({
+      transaction: [
+        {
+          where: {
+            hash: {
+              _eq: txHash,
+            },
+          },
+        },
+        {
+          status_message: true,
+        },
+      ],
+    })
+
+    const transaction = result.transaction[0]
+    if (!transaction) {
+      return
+    }
+
+    return transaction.status_message
+  }
+
   async fetchListing(listingHash: string): Promise<Listing | undefined> {
     const res = await this.query({
       marketplace_listing: [
