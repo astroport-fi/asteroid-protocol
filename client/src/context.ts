@@ -47,7 +47,7 @@ export default async function loadConfig(): Promise<Config> {
   if (exists) {
     const configStr = await fs.readFile(CONFIG_PATH, 'utf8')
     try {
-      return Config.parse(JSON.parse(configStr))
+      return Config.parse({ ...DEFAULT_CONFIG, ...JSON.parse(configStr) })
     } catch (err) {
       console.error('Config parsing error')
       throw err
