@@ -181,7 +181,7 @@ export default function CreateInscription() {
             isExplicit={inscription.is_explicit}
             mime={inscription.mime}
             imageClassName="rounded-xl object-contain"
-            className="max-w-2xl"
+            className="max-w-2xl w-full"
           />
           <span className="text-center text-lg mt-2">{inscription.name}</span>
         </div>

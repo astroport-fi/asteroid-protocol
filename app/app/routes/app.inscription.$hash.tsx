@@ -157,7 +157,7 @@ function InscriptionDetailComponent({
           src={inscription.content_path}
           isExplicit={inscription.is_explicit}
           imageClassName="rounded-xl object-contain"
-          className="max-w-3xl"
+          className="max-w-3xl w-full"
         />
         <Link
           to={`/inscription/${inscription.transaction.hash}`}
