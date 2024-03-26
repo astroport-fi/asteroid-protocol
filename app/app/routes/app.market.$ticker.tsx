@@ -431,6 +431,9 @@ function LatestTransactions({
         </div>
         <Divider className="my-1" />
         <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
+          {transactions.length < 1 && (
+            <span>No transactions for {token.ticker}</span>
+          )}
           {transactions.map((tx) => (
             <span
               key={tx.id}
@@ -556,9 +559,7 @@ export default function MarketPage() {
           serverSorting={true}
         />
       </div>
-      {data.transactions.length > 0 && (
-        <LatestTransactions token={token} transactions={data.transactions} />
-      )}
+      <LatestTransactions token={token} transactions={data.transactions} />
     </div>
   )
 }
