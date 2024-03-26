@@ -1158,10 +1158,21 @@ export class AsteroidClient extends AsteroidService {
   async getInscriptionTradeHistory(
     offset = 0,
     limit = 200,
+    collectionId?: number,
   ): Promise<InscriptionTradeHistory[]> {
+    const where: ValueTypes['inscription_trade_history_bool_exp'] = {}
+    if (collectionId) {
+      where.inscription = {
+        collection_id: {
+          _eq: collectionId,
+        },
+      }
+    }
+
     const result = await this.query({
       inscription_trade_history: [
         {
+          where,
           offset,
           limit,
           order_by: [

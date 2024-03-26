@@ -1,5 +1,5 @@
 import { ClockIcon } from '@heroicons/react/24/outline'
-import { Link, useNavigate } from '@remix-run/react'
+import { Link, useNavigate, useSearchParams } from '@remix-run/react'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { InscriptionTradeHistory } from '~/api/inscription'
@@ -10,15 +10,51 @@ import { shortAddress } from '~/utils/string'
 
 export default function LatestInscriptionTxs({
   transactions,
+  collectionName,
 }: {
   transactions: InscriptionTradeHistory[]
+  collectionName?: string
 }) {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const txs = searchParams.get('txs')
+  const collectionOnlyTxs = txs === 'collection'
 
   return (
     <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
       <div className="fixed py-8 flex flex-col w-available">
-        <div>Latest transactions</div>
+        <div className="text-lg">Latest transactions</div>
+        {collectionName && (
+          <div className="flex justify-center items-center text-sm">
+            <button
+              className={
+                collectionOnlyTxs ? 'text-header-content' : 'text-primary'
+              }
+              onClick={() =>
+                setSearchParams((prev) => {
+                  prev.delete('txs')
+                  return prev
+                })
+              }
+            >
+              All
+            </button>{' '}
+            <span className="mx-1">|</span>
+            <button
+              className={
+                collectionOnlyTxs ? 'text-primary' : 'text-header-content'
+              }
+              onClick={() =>
+                setSearchParams((prev) => {
+                  prev.set('txs', 'collection')
+                  return prev
+                })
+              }
+            >
+              {collectionName} only
+            </button>
+          </div>
+        )}
         <div className="flex flex-row justify-between mt-4 uppercase text-header-content px-4">
           <span className="p-2 w-1/12">
             <ClockIcon className="size-5" />
@@ -30,6 +66,9 @@ export default function LatestInscriptionTxs({
         </div>
         <Divider className="my-1" />
         <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
+          {transactions.length < 1 && (
+            <span>No transactions for {collectionName}</span>
+          )}
           {transactions.map((tx) => (
             <Button
               onClick={() => {
