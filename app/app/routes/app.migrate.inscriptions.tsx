@@ -71,12 +71,12 @@ export default function CreateInscription() {
       return
     }
 
-    const schema = inferSchema(csvStr, { trim: true })
+    const schema = inferSchema(csvStr, { trim: true, col: ',' })
     const parser = initParser(schema)
 
     const metadata: inscription.MigrationData = {
       header: schema.cols.map((col) => col.name),
-      rows: parser.stringArrs(csvStr),
+      rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
     }
     if (data.collection && data.collection !== '0') {
       metadata.collection = data.collection
