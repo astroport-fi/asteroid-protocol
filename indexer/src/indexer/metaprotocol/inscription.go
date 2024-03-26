@@ -267,6 +267,14 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	})
 }
 
+func (protocol *Inscription) RequiresV2(version string) error {
+	if version != "v2" {
+		return fmt.Errorf("requires v2 version of the inscription protocol")
+	}
+	return nil
+
+}
+
 func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
@@ -307,10 +315,23 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			break
 		}
 
-		var inscriptionMetadata types.InscriptionMetadata[types.CollectionMetadata]
+		var inscriptionMetadata types.InscriptionMetadata[types.NftMetadata]
 		jsonBytes, err := msg.GetMetadata(&inscriptionMetadata)
 		if err != nil {
 			return err
+		}
+
+		// If inscription has attributes require v2
+		if len(inscriptionMetadata.Metadata.Attributes) > 0 {
+			if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+				return err
+			}
+		}
+
+		var collectionMetadata types.InscriptionMetadata[types.CollectionMetadata]
+		err = json.Unmarshal(jsonBytes, &collectionMetadata)
+		if err != nil {
+			return fmt.Errorf("unable to unmarshal metadata '%s'", err)
 		}
 
 		content, err := msg.GetContent()
@@ -325,8 +346,12 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// Check if the inscription is a Collection
-		if inscriptionMetadata.Metadata.Symbol != "" {
-			symbol := strings.ToUpper(inscriptionMetadata.Metadata.Symbol)
+		if collectionMetadata.Metadata.Symbol != "" {
+			if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+				return err
+			}
+
+			symbol := strings.ToUpper(collectionMetadata.Metadata.Symbol)
 
 			// check if symbol is reserved
 			if reservation, ok := protocol.reservationsByTicker[symbol]; ok {
@@ -336,9 +361,9 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			}
 
 			// check if name is reserved
-			if reservation, ok := protocol.reservationsByName[inscriptionMetadata.Metadata.Name]; ok {
+			if reservation, ok := protocol.reservationsByName[collectionMetadata.Metadata.Name]; ok {
 				if reservation.Address != sender {
-					return fmt.Errorf("name '%s' is reserved", inscriptionMetadata.Metadata.Name)
+					return fmt.Errorf("name '%s' is reserved", collectionMetadata.Metadata.Name)
 				}
 			}
 
@@ -349,7 +374,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				TransactionID:    transactionModel.ID,
 				ContentHash:      contentHash,
 				Creator:          sender,
-				Name:             inscriptionMetadata.Metadata.Name,
+				Name:             collectionMetadata.Metadata.Name,
 				Symbol:           symbol,
 				Metadata:         datatypes.JSON(jsonBytes),
 				ContentPath:      contentPath,
@@ -357,14 +382,14 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				DateCreated:      transactionModel.DateCreated,
 			}
 
-			if inscriptionMetadata.Metadata.Minter != "" {
-				collectionModel.Minter = sql.NullString{String: inscriptionMetadata.Metadata.Minter, Valid: true}
+			if collectionMetadata.Metadata.Minter != "" {
+				collectionModel.Minter = sql.NullString{String: collectionMetadata.Metadata.Minter, Valid: true}
 			}
-			if inscriptionMetadata.Metadata.RoyaltyPercentage != 0 {
-				collectionModel.RoyaltyPercentage = sql.NullFloat64{Float64: float64(inscriptionMetadata.Metadata.RoyaltyPercentage), Valid: true}
+			if collectionMetadata.Metadata.RoyaltyPercentage != 0 {
+				collectionModel.RoyaltyPercentage = sql.NullFloat64{Float64: float64(collectionMetadata.Metadata.RoyaltyPercentage), Valid: true}
 			}
-			if inscriptionMetadata.Metadata.PaymentAddress != "" {
-				collectionModel.PaymentAddress = sql.NullString{String: inscriptionMetadata.Metadata.PaymentAddress, Valid: true}
+			if collectionMetadata.Metadata.PaymentAddress != "" {
+				collectionModel.PaymentAddress = sql.NullString{String: collectionMetadata.Metadata.PaymentAddress, Valid: true}
 			}
 
 			result := protocol.db.Save(&collectionModel)
@@ -391,6 +416,10 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 		// Check if inscription is part of a Collection
 		if inscriptionMetadata.Parent.Type == "/collection" {
+			if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+				return err
+			}
+
 			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
 			if err != nil {
 				return err
@@ -469,8 +498,16 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)
 	case "migrate":
+		if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+			return err
+		}
+
 		return protocol.Migrate(rawTransaction, sender)
 	case "grant-migration-permission":
+		if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+			return err
+		}
+
 		if parsedURN.KeyValuePairs["h"] == "" {
 			return fmt.Errorf("missing inscription hash")
 		}
