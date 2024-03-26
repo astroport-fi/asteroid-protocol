@@ -211,12 +211,12 @@ function InscriptionDetailComponent({
                       : '/app/inscriptions'
                   }
                 >
-                  <span className="w-full text-nowrap overflow-hidden text-ellipsis capitalize">
+                  <span className="w-full text-nowrap overflow-hidden text-ellipsis capitalize leading-5">
                     {attr.trait_type}
                   </span>
                   <Badge
                     color="ghost"
-                    className="inline w-full text-nowrap h-[inherit] py-0.25 overflow-hidden text-ellipsis"
+                    className="inline w-full text-nowrap h-[inherit] overflow-hidden text-ellipsis"
                   >
                     {attr.value}
                   </Badge>
