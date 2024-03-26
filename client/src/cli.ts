@@ -295,12 +295,12 @@ setupCommand(inscriptionCommand.command('migrate'))
     inscriptionAction(options, async (context, operations) => {
       const csvStr = await fs.readFile(options.csvPath, 'utf8')
 
-      const schema = inferSchema(csvStr, { trim: true })
+      const schema = inferSchema(csvStr, { trim: true, col: ',' })
       const parser = initParser(schema)
 
       const metadata: MigrationData = {
         header: schema.cols.map((col) => col.name),
-        rows: parser.stringArrs(csvStr),
+        rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
       }
       if (options.collection) {
         metadata.collection = options.collection
