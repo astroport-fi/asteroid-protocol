@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import clsx from 'clsx'
 import { forwardRef, useRef, useState } from 'react'
 
 interface Props {
@@ -6,12 +7,13 @@ interface Props {
   value?: React.InputHTMLAttributes<HTMLInputElement>['value']
   name?: string
   disabled?: React.InputHTMLAttributes<HTMLInputElement>['disabled']
+  error?: boolean
   onBlur?: React.InputHTMLAttributes<HTMLInputElement>['onBlur']
   onChange: (value: string) => void
 }
 
 const Autocomplete = forwardRef<HTMLInputElement, Props>(function Autocomplete(
-  { items, value, name, disabled, onChange, onBlur },
+  { items, value, name, disabled, error, onChange, onBlur },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -29,7 +31,9 @@ const Autocomplete = forwardRef<HTMLInputElement, Props>(function Autocomplete(
         ref={ref}
         name={name}
         disabled={disabled}
-        className="input input-bordered w-full"
+        className={clsx('input input-bordered w-full', {
+          'input-error': !!error,
+        })}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}

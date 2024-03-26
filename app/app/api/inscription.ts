@@ -121,6 +121,10 @@ export const inscriptionImageSelector = Selector('inscription')({
   },
 })
 
+export type InscriptionType<T> = T extends true
+  ? InscriptionDetail
+  : Inscription
+
 export type InscriptionImage = Omit<
   InputType<
     GraphQLTypes['inscription'],
