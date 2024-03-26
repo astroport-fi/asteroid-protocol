@@ -98,11 +98,13 @@ export default function CreateInscription() {
           <Controller
             control={control}
             name={`traits.${trait}`}
+            rules={{ pattern: /^[a-zA-Z0-9-. ]+$/ }}
             render={({
               field: { name, onChange, value, ref, onBlur, disabled },
             }) => (
               <Autocomplete
                 key={trait}
+                error={errors['traits']?.[trait] != null}
                 items={values.map((v) => v.value)}
                 name={name}
                 onChange={onChange}
@@ -350,8 +352,15 @@ export default function CreateInscription() {
                   tooltip="A category for your trait (i.e. hair color)"
                 />
                 <Input
+                  color={
+                    errors['newTraits']?.[index]?.trait_type
+                      ? 'error'
+                      : undefined
+                  }
                   id={`newTraits.${index}.trait_type`}
-                  {...register(`newTraits.${index}.trait_type`)}
+                  {...register(`newTraits.${index}.trait_type`, {
+                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                  })}
                 />
               </div>
               <div className="form-control w-full">
@@ -361,8 +370,13 @@ export default function CreateInscription() {
                   tooltip={`The trait's data (i.e. the "hair color" trait could have a value of "red" or "black")`}
                 />
                 <Input
+                  color={
+                    errors['newTraits']?.[index]?.value ? 'error' : undefined
+                  }
                   id={`newTraits.${index}.value`}
-                  {...register(`newTraits.${index}.value`)}
+                  {...register(`newTraits.${index}.value`, {
+                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                  })}
                 />
               </div>
               <Button

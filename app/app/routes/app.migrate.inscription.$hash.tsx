@@ -1,11 +1,11 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
-import { Button, Divider, Form, Input, Select } from 'react-daisyui'
+import { Alert, Button, Divider, Form, Input, Select } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { Collection, CollectionTrait } from '~/api/collection'
@@ -36,7 +36,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
 
-  const inscription = await asteroidClient.getInscription(params.hash)
+  const inscription = await asteroidClient.getInscription(params.hash, true)
   if (!inscription) {
     throw new Response(null, {
       status: 404,
@@ -97,11 +97,13 @@ export default function CreateInscription() {
           <Controller
             control={control}
             name={`traits.${trait}`}
+            rules={{ pattern: /^[a-zA-Z0-9-. ]+$/ }}
             render={({
               field: { name, onChange, value, ref, onBlur, disabled },
             }) => (
               <Autocomplete
                 key={trait}
+                error={errors['traits']?.[trait] != null}
                 items={values.map((v) => v.value)}
                 name={name}
                 onChange={onChange}
@@ -168,6 +170,25 @@ export default function CreateInscription() {
 
   if (!inscription) {
     return <div>Not found</div>
+  }
+
+  if (inscription.version === 'v2') {
+    return (
+      <Alert icon={<InformationCircleIcon className="size-6 text-warning" />}>
+        <div>
+          <h3 className="font-bold">{inscription.name}</h3>
+          <div className="text-xs">
+            The inscription has been successfully migrated
+          </div>
+        </div>
+        <Link
+          to={`/app/inscription/${inscription.transaction.hash}`}
+          className="link link-hover"
+        >
+          See inscription
+        </Link>
+      </Alert>
+    )
   }
 
   return (
@@ -254,8 +275,15 @@ export default function CreateInscription() {
                   tooltip="A category for your trait (i.e. hair color)"
                 />
                 <Input
+                  color={
+                    errors['newTraits']?.[index]?.trait_type
+                      ? 'error'
+                      : undefined
+                  }
                   id={`newTraits.${index}.trait_type`}
-                  {...register(`newTraits.${index}.trait_type`)}
+                  {...register(`newTraits.${index}.trait_type`, {
+                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                  })}
                 />
               </div>
               <div className="form-control w-full">
@@ -265,8 +293,13 @@ export default function CreateInscription() {
                   tooltip={`The trait's data (i.e. the "hair color" trait could have a value of "red" or "black")`}
                 />
                 <Input
+                  color={
+                    errors['newTraits']?.[index]?.value ? 'error' : undefined
+                  }
                   id={`newTraits.${index}.value`}
-                  {...register(`newTraits.${index}.value`)}
+                  {...register(`newTraits.${index}.value`, {
+                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                  })}
                 />
               </div>
               <Button

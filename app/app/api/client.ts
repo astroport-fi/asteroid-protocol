@@ -8,10 +8,10 @@ import {
 } from '@asteroid-protocol/sdk/client'
 import { aggregateCountSelector, collectionStatsSelector } from '~/api/common'
 import {
-  Inscription,
   InscriptionDetail,
   InscriptionHistory,
   InscriptionTradeHistory,
+  InscriptionType,
   InscriptionWithMarket,
   inscriptionDetailSelector,
   inscriptionHistorySelector,
@@ -692,7 +692,16 @@ export class AsteroidClient extends AsteroidService {
     } as InscriptionWithMarket<InscriptionDetail>
   }
 
-  async getInscription(hash: string): Promise<Inscription | undefined> {
+  async getInscription<T extends boolean = false>(
+    hash: string,
+    detail = false as T,
+  ): Promise<InscriptionType<T> | undefined> {
+    let selector: ValueTypes['inscription'] = inscriptionSelector
+
+    if (detail) {
+      selector = inscriptionDetailSelector
+    }
+
     const result = await this.query({
       inscription: [
         {
@@ -704,10 +713,10 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        inscriptionSelector,
+        selector,
       ],
     })
-    return result.inscription[0] as Inscription
+    return result.inscription[0] as unknown as InscriptionType<T>
   }
 
   async getReservedInscriptions(
