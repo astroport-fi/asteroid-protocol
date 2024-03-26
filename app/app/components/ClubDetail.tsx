@@ -12,8 +12,10 @@ export default function ClubDetail({
 }) {
   return (
     <div className="flex p-5 pb-6  border-b border-b-neutral items-center">
-      <span className="flex flex-shrink-0 items-center justify-center bg-base-200 size-20 rounded-full text-xl font-bold">
-        &lt; {club.id}
+      <span className="flex flex-shrink-0 items-center justify-center p-2 size-20 bg-no-repeat bg-cover bg-center rounded-full bg-[url('/app/images/clubs/clouds.png')]">
+        <span className="bg-black bg-opacity-60 w-full text-center text-xl font-medium">
+          &lt; {club.id}
+        </span>
       </span>
       <div
         className={clsx(
