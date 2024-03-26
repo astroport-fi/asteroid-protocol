@@ -207,62 +207,64 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	// iterate over the rows and migrate the inscriptions
 	// verify that the sender is the inscription owner
 	attributeNames := migrationData.Header[1:]
-	for _, row := range migrationData.Rows {
-		// get the inscription
-		inscriptionHash := row[0]
-		inscription, err := protocol.GetInscriptionFromHash(inscriptionHash)
-		if err != nil {
-			return err
-		}
 
-		// Check that the sender is the inscription creator or has migration permissions
-		if inscription.Creator != sender {
-			// Check if the sender has migration permissions
-			var migrationPermissionGrant models.MigrationPermissionGrant
-			result := protocol.db.Where("inscription_id = ? AND grantee = ?", inscription.ID, sender).First(&migrationPermissionGrant)
-			if result.Error != nil {
-				// Invalid migration permission
-				return fmt.Errorf("invalid sender, must be creator or have migration permissions")
+	return protocol.db.Transaction(func(tx *gorm.DB) error {
+		for _, row := range migrationData.Rows {
+			// get the inscription
+			inscriptionHash := row[0]
+			inscription, err := protocol.GetInscriptionFromHash(inscriptionHash)
+			if err != nil {
+				return err
 			}
-			inscription.Creator = sender
+
+			// Check that the sender is the inscription creator or has migration permissions
+			if inscription.Creator != sender {
+				// Check if the sender has migration permissions
+				var migrationPermissionGrant models.MigrationPermissionGrant
+				result := protocol.db.Where("inscription_id = ? AND grantee = ?", inscription.ID, sender).First(&migrationPermissionGrant)
+				if result.Error != nil {
+					// Invalid migration permission
+					return fmt.Errorf("invalid sender, must be creator or have migration permissions")
+				}
+				inscription.Creator = sender
+			}
+
+			// check if the inscription is already migrated
+			if inscription.Version != "v1" {
+				return fmt.Errorf("inscription already migrated")
+			}
+
+			// update inscription metadata
+			traits := types.GetTraits(attributeNames, row[1:])
+			var metadata types.InscriptionNftMetadata
+			err = json.Unmarshal(inscription.Metadata, &metadata)
+			if err != nil {
+				return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+			}
+			metadata.Metadata.Attributes = traits
+			metadataBytes, err := json.Marshal(metadata)
+			if err != nil {
+				return fmt.Errorf("unable to marshal metadata '%s'", err)
+			}
+
+			inscription.Metadata = datatypes.JSON(metadataBytes)
+
+			// update inscription collection
+			if collection != nil {
+				inscription.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
+			}
+
+			// update inscription version
+			inscription.Version = "v2"
+
+			// save updated inscription
+			result := tx.Save(&inscription)
+			if result.Error != nil {
+				return result.Error
+			}
 		}
-
-		// check if the inscription is already migrated
-		if inscription.Version != "v1" {
-			return fmt.Errorf("inscription already migrated")
-		}
-
-		// update inscription metadata
-		traits := types.GetTraits(attributeNames, row[1:])
-		var metadata types.InscriptionNftMetadata
-		err = json.Unmarshal(inscription.Metadata, &metadata)
-		if err != nil {
-			return fmt.Errorf("unable to unmarshal metadata '%s'", err)
-		}
-		metadata.Metadata.Attributes = traits
-		metadataBytes, err := json.Marshal(metadata)
-		if err != nil {
-			return fmt.Errorf("unable to marshal metadata '%s'", err)
-		}
-
-		inscription.Metadata = datatypes.JSON(metadataBytes)
-
-		// update inscription collection
-		if collection != nil {
-			inscription.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
-		}
-
-		// update inscription version
-		inscription.Version = "v2"
-
-		// save updated inscription
-		result := protocol.db.Save(&inscription)
-		if result.Error != nil {
-			return result.Error
-		}
-	}
-
-	return nil
+		return nil
+	})
 }
 
 func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
