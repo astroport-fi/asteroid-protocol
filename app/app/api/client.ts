@@ -887,7 +887,7 @@ export class AsteroidClient extends AsteroidService {
         let i = 0
         const traitWhere = []
         for (const valueFilter of traitFilter) {
-          const variableName = `${valueFilter.trait_type}${i}`
+          const variableName = `${valueFilter.trait_type.replace(/\W+/g, '')}${i}`
           variables[variableName] = {
             metadata: {
               attributes: [valueFilter],
