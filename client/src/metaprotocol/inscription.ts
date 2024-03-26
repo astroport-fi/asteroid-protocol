@@ -69,7 +69,7 @@ export function collectionIdentifier(collection: string) {
 
 export default class InscriptionProtocol extends BaseProtocol {
   static DEFAULT_FEE = DEFAULT_FEE
-  version = 'v1'
+  version = 'v2'
   name = 'inscription'
 
   constructor(chainId: string, fee: ProtocolFee = DEFAULT_FEE) {
