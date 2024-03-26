@@ -32,7 +32,7 @@ export default function CollectionDetailComponent({
         <InscriptionImage
           src={collection.content_path!}
           isExplicit={collection.is_explicit}
-          className="size-20"
+          className="size-20 shrink-0"
           imageClassName="rounded-full"
         />
         <div
