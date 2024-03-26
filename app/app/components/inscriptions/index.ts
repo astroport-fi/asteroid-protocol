@@ -24,6 +24,22 @@ export const DEFAULT_PRICE_RANGE = PriceRange.ALL
 
 export const LIMIT = 30
 
-export function getDefaultSort(status: Status) {
-  return status == 'buy' ? DEFAULT_SORT_BUY : DEFAULT_SORT_ALL
+export function getSort(
+  sortParam: string | null,
+  status: Status,
+  clubParam: string | undefined,
+): Sort {
+  if (sortParam) {
+    return sortParam as Sort
+  }
+
+  if (status == 'buy') {
+    return DEFAULT_SORT_BUY
+  }
+
+  if (clubParam == 'latest') {
+    return Sort.HIGHEST_ID
+  }
+
+  return DEFAULT_SORT_ALL
 }

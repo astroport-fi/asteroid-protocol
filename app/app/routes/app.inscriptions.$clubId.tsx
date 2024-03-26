@@ -10,14 +10,19 @@ import ClubDetail from '~/components/ClubDetail'
 import CollectionDetailComponent from '~/components/CollectionDetail'
 import { Inscriptions } from '~/components/Inscriptions'
 import BuyInscriptionDialog from '~/components/dialogs/BuyInscriptionDialog'
+import { DEFAULT_STATUS, Status, getSort } from '~/components/inscriptions'
 import { Filter } from '~/components/inscriptions/InscriptionsFilter'
 import LatestInscriptionTxs from '~/components/latest-txs/LatestInscriptionTxs'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { getAddress } from '~/utils/cookies'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
+  const { searchParams } = new URL(request.url)
+  const status = (searchParams.get('status') as Status | null) ?? DEFAULT_STATUS
+  const sort = getSort(searchParams.get('sort'), status, params.clubId)
+  const txsType = searchParams.get('txs')
+
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const transactions = await asteroidClient.getInscriptionTradeHistory()
 
   const address = await getAddress(request)
   let reservedListings: InscriptionWithMarket[] | undefined
@@ -46,12 +51,25 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   if (params.clubId) {
     const club = getClubBySlug(params.clubId)
-    if (club) {
+    if (club && club.range) {
       stats = await asteroidClient.getClubStats(club.range)
     }
   }
 
-  return json({ transactions, reservedListings, collection, stats })
+  const transactions = await asteroidClient.getInscriptionTradeHistory(
+    0,
+    200,
+    txsType === 'collection' && collection != null ? collection.id : undefined,
+  )
+
+  return json({
+    transactions,
+    reservedListings,
+    collection,
+    stats,
+    status,
+    sort,
+  })
 }
 
 export interface Context {
@@ -59,7 +77,7 @@ export interface Context {
 }
 
 export default function InscriptionsParentPage() {
-  const { reservedListings, transactions, collection, stats } =
+  const { reservedListings, transactions, collection, stats, status, sort } =
     useLoaderData<typeof loader>()
   const { dialogRef, value, showDialog } =
     useDialogWithValue<InscriptionWithMarket>()
@@ -72,7 +90,11 @@ export default function InscriptionsParentPage() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-row h-full">
-        <Filter traits={collection?.traits as CollectionTrait[]} />
+        <Filter
+          traits={collection?.traits as CollectionTrait[]}
+          sort={sort}
+          status={status}
+        />
         <div className="flex flex-col w-full h-full">
           {collection && (
             <CollectionDetailComponent collection={collection} stats={stats} />
@@ -94,7 +116,10 @@ export default function InscriptionsParentPage() {
           <Outlet context={{ showDialog }} />
           <BuyInscriptionDialog inscription={value} ref={dialogRef} />
         </div>
-        <LatestInscriptionTxs transactions={transactions} />
+        <LatestInscriptionTxs
+          transactions={transactions}
+          collectionName={collection?.name}
+        />
       </div>
     </div>
   )

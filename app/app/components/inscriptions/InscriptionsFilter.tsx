@@ -11,14 +11,7 @@ import { twMerge } from 'tailwind-merge'
 import { CollectionTrait } from '~/api/collection'
 import Select, { DropdownItem } from '~/components/form/Select'
 import { TraitValue, getTraitsMap } from '~/utils/traits'
-import {
-  DEFAULT_PRICE_RANGE,
-  DEFAULT_STATUS,
-  PriceRange,
-  Sort,
-  Status,
-  getDefaultSort,
-} from '.'
+import { DEFAULT_PRICE_RANGE, PriceRange, Sort, Status } from '.'
 import SearchInput from '../form/SearchInput'
 
 function FilterTitle({
@@ -74,6 +67,8 @@ function StatusFilter({
 
 interface Props {
   traits?: CollectionTrait[]
+  status: Status
+  sort: Sort
 }
 
 function TraitFilter({
@@ -176,16 +171,27 @@ const priceRangeItems: DropdownItem<PriceRange>[] = [
   { label: '100 ATOM+', value: PriceRange.ABOVE_100 },
 ]
 
-export function Filter({ traits }: Props) {
+export function Filter({
+  traits,
+  sort: defaultServerSort,
+  status: defaultStatus,
+}: Props) {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [status, setStatus] = useState<Status>(
-    (searchParams.get('status') as Status) ?? DEFAULT_STATUS,
+    (searchParams.get('status') as Status) ?? defaultStatus,
   )
+  const [defaultSort, setDefaultSort] = useState<Sort>(defaultServerSort)
 
   const [sort, setSort] = useState<Sort>(
-    (searchParams.get('sort') as Sort) ?? getDefaultSort(status),
+    (searchParams.get('sort') as Sort) ?? defaultServerSort,
   )
+
+  // this is needed because we need to update sort and default sort in the same time
+  useEffect(() => {
+    setSort(defaultServerSort)
+    setDefaultSort(defaultServerSort)
+  }, [defaultServerSort])
 
   const priceFrom = searchParams.get('from')
   let defaultPriceRange = DEFAULT_PRICE_RANGE
@@ -195,7 +201,7 @@ export function Filter({ traits }: Props) {
   const [priceRange, setPriceRange] = useState<PriceRange>(defaultPriceRange)
 
   useEffect(() => {
-    const currentStatus = searchParams.get('status') ?? DEFAULT_STATUS
+    const currentStatus = searchParams.get('status') ?? defaultStatus
     if (currentStatus !== status) {
       setSearchParams((prev) => {
         prev.delete('sort')
@@ -203,11 +209,11 @@ export function Filter({ traits }: Props) {
         return prev
       })
     }
-  }, [searchParams, status, setSearchParams])
+  }, [searchParams, status, defaultStatus, setSearchParams])
 
   useEffect(() => {
-    const defaultSort = getDefaultSort(status)
     const currentSort = searchParams.get('sort') ?? defaultSort
+    console.log('current', currentSort, 'sort', sort)
     if (currentSort !== sort) {
       setSearchParams((prev) => {
         if (sort === defaultSort) {
@@ -218,7 +224,7 @@ export function Filter({ traits }: Props) {
         return prev
       })
     }
-  }, [searchParams, sort, status, setSearchParams])
+  }, [searchParams, sort, status, defaultSort, setSearchParams])
 
   useEffect(() => {
     const from = searchParams.get('from') ?? DEFAULT_PRICE_RANGE
@@ -247,7 +253,6 @@ export function Filter({ traits }: Props) {
             selected={status}
             onChange={(newStatus) => {
               setStatus(newStatus)
-              setSort(getDefaultSort(newStatus))
             }}
           />
           <FilterTitle className="mt-6">Search</FilterTitle>
