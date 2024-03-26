@@ -96,15 +96,15 @@ function TraitFilter({
 
   return (
     <Collapse icon="arrow" checkbox open={open} onToggle={() => setOpen(!open)}>
-      <Collapse.Title className="pl-0 pr-9 flex justify-between items-center text-sm">
+      <Collapse.Title className="pl-0 pr-9 flex justify-between items-center text-sm capitalize cursor-pointer">
         {trait}
         <span className="ml-8">{values.length}</span>
       </Collapse.Title>
-      <Collapse.Content className="pl-0">
+      <Collapse.Content className="px-0">
         {values.map(({ count, value }) => (
           <label
             key={value}
-            className="w-full py-1 flex items-center justify-between text-sm"
+            className="w-full py-2 pl-0.5 pr-2 rounded-md flex items-center justify-between text-sm hover:cursor-pointer hover:bg-base-300"
           >
             <span className="flex items-center">
               <Checkbox

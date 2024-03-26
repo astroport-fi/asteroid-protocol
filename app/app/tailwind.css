@@ -109,6 +109,10 @@ strong {
   .image-pixelated {
     image-rendering: pixelated;
   }
+
+  .collapse > input[type='checkbox'] {
+    @apply cursor-pointer;
+  }
 }
 
 .react-datepicker-time__input {
