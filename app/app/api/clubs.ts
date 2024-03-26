@@ -1,3 +1,4 @@
+import latestImage from '~/images/clubs/latest.png'
 import sub1kImage from '~/images/clubs/sub1k.png'
 import sub5kImage from '~/images/clubs/sub5k.png'
 import sub10kImage from '~/images/clubs/sub10k.png'
@@ -9,11 +10,18 @@ export interface Club {
   id: string
   slug: string
   title: string
-  range: number
+  range: number | null
   image: string
 }
 
 const clubs: Club[] = [
+  {
+    id: 'Latest',
+    slug: 'latest',
+    title: 'Latest Inscriptions',
+    range: null,
+    image: latestImage,
+  },
   {
     id: '100',
     slug: 'sub-100',

@@ -11,18 +11,18 @@ import {
   LIMIT,
   Sort,
   Status,
-  getDefaultSort,
+  getSort,
 } from '~/components/inscriptions'
 import InscriptionsList from '~/components/inscriptions/InscriptionsList'
 import { parsePagination } from '~/utils/pagination'
 import { Context } from './app.inscriptions.$clubId'
 
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
-  const searchParams = new URL(request.url).searchParams
-  const status = searchParams.get('status') ?? DEFAULT_STATUS
+  const { searchParams } = new URL(request.url)
+  const status = (searchParams.get('status') as Status | null) ?? DEFAULT_STATUS
   const from = searchParams.get('from')
   const to = searchParams.get('to')
-  const sort = searchParams.get('sort') ?? getDefaultSort(status as Status)
+  const sort = getSort(searchParams.get('sort'), status, params.clubId)
   const search = searchParams.get('search') ?? ''
 
   let orderBy: ValueTypes['inscription_market_order_by'] | undefined
@@ -103,13 +103,21 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     }
   }
 
+  let idLTE: number | undefined
+  if (params.clubId) {
+    const club = getClubBySlug(params.clubId)
+    if (club && club.range) {
+      idLTE = club.range
+    }
+  }
+
   const { offset, limit, page } = parsePagination(searchParams, LIMIT)
   const result = asteroidClient.getInscriptions(
     offset,
     limit,
     {
       onlyBuy: status == 'buy',
-      idLTE: params.clubId ? getClubBySlug(params.clubId)?.range : undefined,
+      idLTE,
       priceGTE: from ? parseFloat(from) * 10e5 : undefined,
       priceLTE: to ? parseFloat(to) * 10e5 : undefined,
       search,
