@@ -1019,6 +1019,8 @@ export class AsteroidClient extends AsteroidService {
 
   async getInscriptionHistory(
     inscriptionId: number,
+    offset = 0,
+    limit = 50,
     orderBy?: ValueTypes['inscription_history_order_by'],
   ): Promise<InscriptionHistory[]> {
     if (!orderBy) {
@@ -1038,6 +1040,8 @@ export class AsteroidClient extends AsteroidService {
             },
           },
           order_by: [orderBy],
+          offset,
+          limit,
         },
         inscriptionHistorySelector,
       ],

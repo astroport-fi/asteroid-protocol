@@ -55,9 +55,14 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     order_by.desc,
   )
 
-  const history = await asteroidClient.getInscriptionHistory(inscription.id, {
-    [sort]: direction,
-  })
+  const history = await asteroidClient.getInscriptionHistory(
+    inscription.id,
+    0,
+    50,
+    {
+      [sort]: direction,
+    },
+  )
 
   return json({ inscription, history })
 }
@@ -91,7 +96,7 @@ function Migration({
         <div className="mt-2">
           <Link
             className="btn btn-primary btn-sm"
-            to="/app/migrate/inscriptions"
+            to={`/app/migrate/inscription/${inscription.transaction.hash}`}
           >
             Migrate Inscription
           </Link>
@@ -108,7 +113,10 @@ function Migration({
     <div className="flex flex-col mt-6">
       <strong>Migration</strong>
       <div className="mt-2">
-        <Link className="btn btn-primary btn-sm" to="/app/migrate/inscriptions">
+        <Link
+          className="btn btn-primary btn-sm"
+          to={`/app/migrate/inscription/${inscription.transaction.hash}`}
+        >
           Migrate Inscription
         </Link>
 

@@ -1,64 +1,64 @@
-import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
+import type { TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
-import clsx from 'clsx'
-import { useMemo, useState } from 'react'
-import {
-  Button,
-  Divider,
-  FileInput,
-  Form,
-  Input,
-  Select,
-  Textarea,
-} from 'react-daisyui'
+import { useMemo } from 'react'
+import { Button, Divider, Form, Input, Select } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
-import { CollectionTrait } from '~/api/collection'
+import { Collection, CollectionTrait } from '~/api/collection'
 import InfoTooltip from '~/components/InfoTooltip'
+import InscriptionImage from '~/components/InscriptionImage'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Autocomplete from '~/components/form/Autocomplete'
 import Label from '~/components/form/Label'
 import { Wallet } from '~/components/wallet/Wallet'
-import { useRootContext } from '~/context/root'
 import useCollection from '~/hooks/useCollection'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
 import { getTraitsMap } from '~/utils/traits'
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
+export async function loader({ context, request, params }: LoaderFunctionArgs) {
   const address = await getAddress(request)
   if (!address) {
-    return json({ collections: [] })
+    return json({ collections: [] as Collection[], inscription: null })
+  }
+
+  if (!params.hash) {
+    throw new Response(null, {
+      status: 404,
+      statusText: 'Not Found',
+    })
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
+
+  const inscription = await asteroidClient.getInscription(params.hash)
+  if (!inscription) {
+    throw new Response(null, {
+      status: 404,
+      statusText: 'Not Found',
+    })
+  }
+
   const res = await asteroidClient.getCollections(0, 500, {
     creator: address,
   })
 
-  return json({ collections: res.collections })
+  return json({ collections: res.collections, inscription })
 }
 
 type FormData = {
-  name: string
-  description: string
-  content: File[]
   collection: string | null
   traits: Record<string, string>
   newTraits: inscription.Trait[]
 }
 
-const NAME_MIN_LENGTH = 3
-const NAME_MAX_LENGTH = 32
-
 export default function CreateInscription() {
-  const data = useLoaderData<typeof loader>()
-  const { maxFileSize } = useRootContext()
+  const { collections, inscription } = useLoaderData<typeof loader>()
   const operations = useInscriptionOperations()
 
   // form
@@ -69,9 +69,8 @@ export default function CreateInscription() {
     control,
     formState: { errors },
   } = useForm<FormData>()
-  const name = watch('name')
   const collectionHash = watch('collection')
-  const selectedCollection = data.collections.find(
+  const selectedCollection = collections.find(
     (c) => c.transaction.hash === collectionHash,
   )
 
@@ -118,10 +117,6 @@ export default function CreateInscription() {
     }
   }
 
-  // preview
-  const [preview, setPreview] = useState<string | null>(null)
-  const [fileName, setFileName] = useState<string | null>(null)
-
   // dialog
   const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
@@ -131,11 +126,7 @@ export default function CreateInscription() {
       return
     }
 
-    const file = data.content[0]
-    const fileBuffer = await file.arrayBuffer()
-    const byteArray = new Uint8Array(fileBuffer)
-    if (!byteArray.byteLength) {
-      console.warn('No file data')
+    if (!inscription) {
       return
     }
 
@@ -151,149 +142,62 @@ export default function CreateInscription() {
       traits = traits.concat(data.newTraits)
     }
 
-    const metadata: NFTMetadata = {
-      name: data.name,
-      description: data.description,
-      mime: file.type,
-    }
+    let header = ['id']
+    let row = [inscription.transaction.hash]
 
     if (traits.length > 0) {
-      metadata.attributes = traits.filter(
+      const filteredTraits = traits.filter(
         (trait) => trait.trait_type && trait.value,
       )
+      header = header.concat(filteredTraits.map((trait) => trait.trait_type))
+      row = row.concat(filteredTraits.map((trait) => trait.value))
     }
 
-    let txInscription
+    const metadata: inscription.MigrationData = {
+      header,
+      rows: [row],
+    }
+
     if (data.collection && data.collection !== '0') {
-      txInscription = operations.inscribeCollectionInscription(
-        data.collection,
-        byteArray,
-        metadata,
-      )
-    } else {
-      txInscription = operations.inscribe(byteArray, metadata)
+      metadata.collection = data.collection
     }
 
+    const txInscription = operations.migrate(metadata)
     showDialog(txInscription)
   })
 
+  if (!inscription) {
+    return <div>Not found</div>
+  }
+
   return (
     <div className="flex flex-col items-center w-full">
-      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
+      <h2 className="text-xl">Migrate an inscription</h2>
+
+      <Form onSubmit={onSubmit} className="flex flex-row mt-8 max-w-7xl">
         <div className="flex flex-1 flex-col items-center">
-          {preview && (
-            <img
-              src={preview}
-              alt="Inscription preview"
-              className="max-w-48 mb-4"
-            />
-          )}
-
-          <div
-            className={clsx('flex flex-col', {
-              ['bg-base-200 border border-neutral border-dashed rounded-3xl p-8']:
-                fileName == null,
-            })}
-          >
-            {fileName ? (
-              <span className="text-center">{fileName}</span>
-            ) : (
-              <>
-                <span className="flex items-center justify-center text-lg">
-                  Inscription Content
-                  <InfoTooltip
-                    message="Inscribe any filetype that a browser can display (i.e. JPGs, PDFs, HTML and more!)"
-                    className="ml-2"
-                  />
-                </span>
-                <span className="mt-4">Max file size</span>
-                <span>550kb</span>
-              </>
-            )}
-
-            <label htmlFor="content" className="btn btn-accent mt-4">
-              {fileName ? 'Change file' : 'Select file'}
-            </label>
-            <FileInput
-              key="content"
-              id="content"
-              className="opacity-0"
-              {...register('content', {
-                required: true,
-                validate: async (files) => {
-                  const file = files[0]
-
-                  if (file.size > maxFileSize) {
-                    return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
-                  }
-                },
-              })}
-              color={errors.content ? 'error' : undefined}
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                setFileName(file?.name ?? null)
-
-                if (file && file.type.startsWith('image/')) {
-                  setPreview(URL.createObjectURL(file))
-                } else {
-                  setPreview(null)
-                }
-              }}
-            />
-            {errors.content && (
-              <span className="text-error">
-                {errors.content.message
-                  ? errors.content.message
-                  : 'Inscription content is required'}
-              </span>
-            )}
-          </div>
+          <InscriptionImage
+            src={inscription.content_path}
+            isExplicit={inscription.is_explicit}
+            mime={inscription.mime}
+            imageClassName="rounded-xl object-contain"
+            className="max-w-2xl"
+          />
+          <span className="text-center text-lg mt-2">{inscription.name}</span>
         </div>
         <div className="flex flex-1 flex-col ml-8">
-          <strong>Create an inscription</strong>
-
           <p className="mt-2">
-            Inscriptions allow you to permanently write arbitrary data to the
-            blockchain. The maximum size of an inscription is currently{' '}
-            {maxFileSize / 1000}kb.
+            Use this form to migrate any pre-existing inscription into a
+            collection to take advantage of new collections-related features
+            including royalties and rarity traits
           </p>
-
-          <div className="form-control w-full mt-6">
-            <Form.Label title="Name" htmlFor="name" />
-            <Input
-              id="name"
-              placeholder="Name your inscription"
-              color={errors.name ? 'error' : undefined}
-              maxLength={NAME_MAX_LENGTH}
-              minLength={NAME_MIN_LENGTH}
-              {...register('name', {
-                required: true,
-                minLength: NAME_MIN_LENGTH,
-                maxLength: NAME_MAX_LENGTH,
-              })}
-            />
-            <label className="label" htmlFor="name">
-              <span className="label-text-alt text-error">
-                {errors.name &&
-                  'Name is required and must be 3-32 characters long.'}
-              </span>
-              <span className="label-text-alt">{name?.length ?? 0} / 32</span>
-            </label>
-          </div>
-
-          <div className="form-control w-full">
-            <Label
-              title="Description"
-              htmlFor="description"
-              tooltip="This content will appear on your inscription’s detail page"
-            />
-            <Textarea
-              id="description"
-              placeholder="Describe your inscription"
-              rows={10}
-              {...register('description')}
-            />
-          </div>
+          <p>
+            In order to migrate multiple inscriptions at once, please go to the
+            <Link to="/app/migrate/inscriptions" className="ml-1 text-primary">
+              Migrate Inscriptions via CSV
+            </Link>{' '}
+            form
+          </p>
 
           <div className="form-control w-full mt-6">
             <Label
@@ -309,7 +213,7 @@ export default function CreateInscription() {
                 {...register('collection')}
               >
                 <Select.Option value={0}>Select collection</Select.Option>
-                {data.collections.map((collection) => (
+                {collections.map((collection) => (
                   <Select.Option
                     key={collection.transaction.hash}
                     value={collection.transaction.hash}
@@ -396,7 +300,7 @@ export default function CreateInscription() {
               className="mt-4"
               startIcon={<CheckIcon className="size-5" />}
             >
-              Inscribe
+              Migrate
             </Button>
           ) : (
             <Wallet className="mt-4 btn-md w-full" color="primary" />
@@ -406,7 +310,7 @@ export default function CreateInscription() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={(txHash) => `/app/inscription/${txHash}`}
+        resultLink={`/app/inscription/${inscription.transaction.hash}`}
         resultCTA="View inscription"
       />
     </div>

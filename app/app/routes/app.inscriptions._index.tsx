@@ -57,7 +57,8 @@ export function TransactionBox({
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
-        containerClassName="size-60 rounded-t-xl"
+        className="size-60"
+        containerClassName="rounded-t-xl"
       />
 
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">

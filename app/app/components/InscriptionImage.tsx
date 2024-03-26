@@ -67,7 +67,7 @@ export default function InscriptionImage({
             'image-pixelated': smallImage,
           },
         )}
-        containerClassName={twMerge('w-full h-full', generalClass, className)}
+        containerClassName={twMerge(generalClass, className)}
         src={src}
       ></LazyImage>
     )

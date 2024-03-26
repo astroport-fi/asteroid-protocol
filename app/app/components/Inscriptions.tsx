@@ -30,7 +30,8 @@ function InscriptionBox<T extends InscriptionWithMarket>({
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
-        containerClassName="h-60 rounded-t-xl"
+        className="h-60"
+        containerClassName="rounded-t-xl"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
