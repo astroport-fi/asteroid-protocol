@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { useCallback, useState } from 'react'
 import { InView } from 'react-intersection-observer'
+import { twMerge } from 'tailwind-merge'
 
 type ImgProps = React.DetailedHTMLProps<
   React.ImgHTMLAttributes<HTMLImageElement>,
@@ -28,7 +29,13 @@ export default function LazyImage({
   return (
     <InView triggerOnce>
       {({ inView, ref }) => (
-        <div ref={ref} className={containerClassName}>
+        <div
+          ref={ref}
+          className={twMerge(
+            clsx({ 'w-full h-full': !loaded }),
+            containerClassName,
+          )}
+        >
           {!loaded && placeholder}
           {inView && (
             <img

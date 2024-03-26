@@ -13,7 +13,8 @@ export function CollectionBox({ collection }: { collection: Collection }) {
       <InscriptionImage
         src={collection.content_path!}
         isExplicit={collection.is_explicit}
-        containerClassName="h-60 rounded-t-xl"
+        className="h-60"
+        containerClassName="rounded-t-xl"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
@@ -34,7 +35,8 @@ export function ClubBox({ club }: { club: Club }) {
     >
       <InscriptionImage
         src={club.image}
-        containerClassName="h-60 rounded-t-xl"
+        className="h-60"
+        containerClassName="rounded-t-xl"
       />
 
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">

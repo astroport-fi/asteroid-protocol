@@ -151,7 +151,7 @@ export default function CreateInscription() {
           </div>
         </div>
         <div className="flex flex-1 flex-col ml-8">
-          <strong>Inscription migration</strong>
+          <strong>Inscriptions migration</strong>
           <p className="mt-2">
             Use this form to migrate any pre-existing inscriptions into a
             collection to take advantage of new collections-related features
