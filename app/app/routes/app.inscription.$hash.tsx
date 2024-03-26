@@ -139,6 +139,8 @@ function InscriptionDetailComponent({
 }: {
   inscription: InscriptionWithMarket<InscriptionDetail>
 }) {
+  const hasAttributes =
+    inscription.attributes != null && inscription.attributes.length > 0
   return (
     <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4">
       <div className="flex flex-1 flex-col px-8 items-center">
@@ -195,22 +197,29 @@ function InscriptionDetailComponent({
             </Link>
           </div>
         )}
-        {inscription.attributes && (
+        {hasAttributes && (
           <div className="flex flex-col mt-6">
             <strong>Traits</strong>
-            <div className="flex flex-row gap-4 mt-2">
-              {inscription.attributes.map((attr: TraitItem) => (
+            <div className="grid grid-cols-fill-10 gap-4 mt-2">
+              {inscription.attributes!.map((attr: TraitItem) => (
                 <Link
                   key={attr.trait_type}
-                  className="btn btn-neutral btn-sm"
+                  className="btn btn-neutral h-[inherit] max-h-[inherit] py-2 flex flex-col"
                   to={
                     inscription.collection
                       ? `/app/collection/${inscription.collection.symbol}?${attr.trait_type}=${attr.value}&status=all`
                       : '/app/inscriptions'
                   }
                 >
-                  {attr.trait_type}
-                  <Badge>{attr.value}</Badge>
+                  <span className="w-full text-nowrap overflow-hidden text-ellipsis capitalize">
+                    {attr.trait_type}
+                  </span>
+                  <Badge
+                    color="ghost"
+                    className="inline w-full text-nowrap h-[inherit] py-0.25 overflow-hidden text-ellipsis"
+                  >
+                    {attr.value}
+                  </Badge>
                 </Link>
               ))}
             </div>
