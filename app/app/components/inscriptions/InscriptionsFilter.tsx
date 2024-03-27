@@ -213,7 +213,6 @@ export function Filter({
 
   useEffect(() => {
     const currentSort = searchParams.get('sort') ?? defaultSort
-    console.log('current', currentSort, 'sort', sort)
     if (currentSort !== sort) {
       setSearchParams((prev) => {
         if (sort === defaultSort) {
