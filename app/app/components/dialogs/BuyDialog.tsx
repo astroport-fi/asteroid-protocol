@@ -3,6 +3,7 @@ import { useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Steps } from 'react-daisyui'
 import type { To } from 'react-router'
+import { Royalty } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
@@ -19,6 +20,7 @@ export type BuyType = 'cft20' | 'inscription'
 interface Props {
   listingHash: string | null
   buyType: BuyType
+  royalty?: Royalty
   resultLink: To
 }
 
@@ -30,7 +32,7 @@ enum Step {
 }
 
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
-  { buyType, listingHash: listingHashProp, resultLink },
+  { buyType, royalty, listingHash: listingHashProp, resultLink },
   ref,
 ) {
   const operations = useMarketplaceOperations()
@@ -105,7 +107,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.InitialBuy && txState === TxState.Initial) {
       operations
-        .buy(listingHash, buyType)
+        .buy(listingHash, buyType, royalty)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -115,7 +117,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
       operations
-        .buy(listingHash, buyType)
+        .buy(listingHash, buyType, royalty)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -125,7 +127,16 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           setError({ kind: ErrorKind.Validation, message: err.message }),
         )
     }
-  }, [listingHash, buyType, operations, step, txState, resetTxState, setError])
+  }, [
+    listingHash,
+    buyType,
+    royalty,
+    operations,
+    step,
+    txState,
+    resetTxState,
+    setError,
+  ])
 
   const navigate = useNavigate()
   const fRef = useForwardRef(ref)
