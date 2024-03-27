@@ -4,18 +4,18 @@ import { EncodeObject, encodePubkey } from '@cosmjs/proto-signing'
 import { SimulateResponse } from 'cosmjs-types/cosmos/tx/v1beta1/service.js'
 import { ExtensionData } from './proto-types/extensions.js'
 
-async function api<T>(url: string, init?: RequestInit): Promise<T | null> {
+async function api<T>(url: string, init?: RequestInit): Promise<T> {
   try {
     const response = await fetch(url, init)
     if (!response.ok) {
       const text = await response.text()
       console.error('error response', text)
-      return null
+      throw new Error(text)
     }
     return response.json()
   } catch (err) {
     console.error('request error', err)
-    return null
+    throw err
   }
 }
 
@@ -110,9 +110,6 @@ export default async function simulateTxRest(
   const uri = `${endpoint}/cosmos/tx/v1beta1/simulate`
 
   const response = await api<GasSimulateResponse>(uri, call)
-  if (!response) {
-    throw new Error('Unable to simulate with Rest endpoint')
-  }
 
   return {
     gasInfo: {

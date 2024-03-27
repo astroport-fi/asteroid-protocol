@@ -28,13 +28,35 @@ function getErrorKindMessage(kind: ErrorKind) {
   }
 }
 
+function getErrorDetails(kind: ErrorKind, message: string) {
+  if (kind === ErrorKind.Estimation) {
+    try {
+      const { message: details } = JSON.parse(message)
+      if (details.includes('insufficient funds')) {
+        return 'You do not have enough funds to complete this transaction'
+      }
+
+      return details
+    } catch (err) {
+      return message
+    }
+  }
+
+  return message
+}
+
 export function EstimateError({ error }: { error: SubmitTxError }) {
   return (
     <div className="text-error">
       <h2 className="text-xl font-semibold">
         {getErrorKindMessage(error.kind)}
       </h2>
-      <p className="mt-4">Error details: {error.message}</p>
+      <div className="mt-4">
+        <h3 className="text-lg">Error details</h3>
+        <pre className="whitespace-pre-wrap mt-4 text-sm">
+          {getErrorDetails(error.kind, error.message)}
+        </pre>
+      </div>
     </div>
   )
 }
