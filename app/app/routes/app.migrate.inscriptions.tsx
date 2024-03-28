@@ -55,12 +55,11 @@ async function getDataFromCsv(file: File) {
     rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
   }
 
-  const alphanumericRegex = /^[a-zA-Z0-9- ]+$/
-  const invalidCols = metadata.header.some(
-    (col) => !alphanumericRegex.test(col),
-  )
+  const headerRegex = /^[a-zA-Z0-9- ]+$/
+  const rowsRegex = /^[a-zA-Z0-9-. ]+$/
+  const invalidCols = metadata.header.some((col) => !headerRegex.test(col))
   const invalidRows = metadata.rows.some((row) =>
-    row.some((cell) => !alphanumericRegex.test(cell) && cell !== ''),
+    row.some((cell) => !rowsRegex.test(cell) && cell !== ''),
   )
 
   if (invalidCols || invalidRows) {

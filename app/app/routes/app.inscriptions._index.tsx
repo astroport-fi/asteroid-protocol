@@ -20,7 +20,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     'id',
     order_by.desc,
   )
-  const { offset, limit } = parsePagination(new URL(request.url).searchParams)
+  const { offset, limit } = parsePagination(new URL(request.url).searchParams, 100)
   const search = url.searchParams.get('search')
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
