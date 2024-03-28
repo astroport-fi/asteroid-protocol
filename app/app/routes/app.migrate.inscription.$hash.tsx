@@ -97,7 +97,7 @@ export default function CreateInscription() {
           <Controller
             control={control}
             name={`traits.${trait}`}
-            rules={{ pattern: /^[a-zA-Z0-9-. ]+$/ }}
+            rules={{ pattern: /^[a-zA-Z0-9- ]+$/ }}
             render={({
               field: { name, onChange, value, ref, onBlur, disabled },
             }) => (
@@ -282,7 +282,7 @@ export default function CreateInscription() {
                   }
                   id={`newTraits.${index}.trait_type`}
                   {...register(`newTraits.${index}.trait_type`, {
-                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                    pattern: /^[a-zA-Z0-9- ]+$/,
                   })}
                 />
               </div>
@@ -298,7 +298,7 @@ export default function CreateInscription() {
                   }
                   id={`newTraits.${index}.value`}
                   {...register(`newTraits.${index}.value`, {
-                    pattern: /^[a-zA-Z0-9-. ]+$/,
+                    pattern: /^[a-zA-Z0-9- ]+$/,
                   })}
                 />
               </div>
