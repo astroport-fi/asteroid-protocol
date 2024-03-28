@@ -2,7 +2,6 @@ import latestImage from '~/images/clubs/latest.png'
 import sub1kImage from '~/images/clubs/sub1k.png'
 import sub5kImage from '~/images/clubs/sub5k.png'
 import sub10kImage from '~/images/clubs/sub10k.png'
-import sub50kImage from '~/images/clubs/sub50k.png'
 import sub100Image from '~/images/clubs/sub100.png'
 import sub100kImage from '~/images/clubs/sub100k.png'
 
@@ -49,13 +48,6 @@ const clubs: Club[] = [
     title: 'Sub 10k',
     range: 10000,
     image: sub10kImage,
-  },
-  {
-    id: '50k',
-    slug: 'sub-50k',
-    title: 'Sub 50k',
-    range: 50000,
-    image: sub50kImage,
   },
   {
     id: '100k',
