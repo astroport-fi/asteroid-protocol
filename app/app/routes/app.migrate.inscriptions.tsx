@@ -41,6 +41,34 @@ type FormData = {
   collection: string | null
 }
 
+async function getDataFromCsv(file: File) {
+  const csvStr = await file.text()
+  if (!csvStr) {
+    return
+  }
+
+  const schema = inferSchema(csvStr, { trim: true, col: ',' })
+  const parser = initParser(schema)
+
+  const metadata: inscription.MigrationData = {
+    header: schema.cols.map((col) => col.name),
+    rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
+  }
+
+  const alphanumericRegex = /^[a-zA-Z0-9- ]+$/
+  const invalidCols = metadata.header.some(
+    (col) => !alphanumericRegex.test(col),
+  )
+  const invalidRows = metadata.rows.some((row) =>
+    row.some((cell) => !alphanumericRegex.test(cell) && cell !== ''),
+  )
+
+  if (invalidCols || invalidRows) {
+    return
+  }
+  return metadata
+}
+
 export default function CreateInscription() {
   const data = useLoaderData<typeof loader>()
   const { maxFileSize } = useRootContext()
@@ -65,19 +93,12 @@ export default function CreateInscription() {
     }
 
     const file = data.content[0]
-    const csvStr = await file.text()
-    if (!csvStr) {
+    const metadata = await getDataFromCsv(file)
+    if (!metadata) {
       console.warn('Invalid CSV')
       return
     }
 
-    const schema = inferSchema(csvStr, { trim: true, col: ',' })
-    const parser = initParser(schema)
-
-    const metadata: inscription.MigrationData = {
-      header: schema.cols.map((col) => col.name),
-      rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
-    }
     if (data.collection && data.collection !== '0') {
       metadata.collection = data.collection
     }
@@ -132,6 +153,11 @@ export default function CreateInscription() {
 
                   if (file.size > maxFileSize) {
                     return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
+                  }
+
+                  const metadata = await getDataFromCsv(file)
+                  if (!metadata) {
+                    return 'CSV file contains invalid characters'
                   }
                 },
               })}

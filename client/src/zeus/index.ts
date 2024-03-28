@@ -22516,10 +22516,10 @@ export type ModelTypes = {
   ['collection_traits']: {
     /** An object relationship */
     collection?: ModelTypes['collection'] | undefined
-    collection_id?: number | undefined
-    count?: ModelTypes['bigint'] | undefined
-    trait_type?: ModelTypes['jsonb'] | undefined
-    trait_value?: ModelTypes['jsonb'] | undefined
+    collection_id: number
+    count: ModelTypes['bigint']
+    trait_type: ModelTypes['jsonb']
+    trait_value: ModelTypes['jsonb']
   }
   /** order by aggregate values of table "collection_traits" */
   ['collection_traits_aggregate_order_by']: {
@@ -27243,10 +27243,10 @@ export type GraphQLTypes = {
     __typename: 'collection_traits'
     /** An object relationship */
     collection?: GraphQLTypes['collection'] | undefined
-    collection_id?: number | undefined
-    count?: GraphQLTypes['bigint'] | undefined
-    trait_type?: GraphQLTypes['jsonb'] | undefined
-    trait_value?: GraphQLTypes['jsonb'] | undefined
+    collection_id: number
+    count: GraphQLTypes['bigint']
+    trait_type: GraphQLTypes['jsonb']
+    trait_value: GraphQLTypes['jsonb']
   }
   /** order by aggregate values of table "collection_traits" */
   ['collection_traits_aggregate_order_by']: {
