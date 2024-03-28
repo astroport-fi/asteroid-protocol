@@ -111,6 +111,7 @@ CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date
 CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btree ("current_owner");
 CREATE INDEX idx_trgm_inscription_metadata_name ON inscription USING gin ((metadata -> 'metadata' ->>'name') gin_trgm_ops);
 CREATE INDEX "idx_inscription_collection_id" ON "public"."inscription" USING btree ("collection_id");
+CREATE INDEX "idx_inscription_creator" ON "public"."inscription" USING btree ("creator");
 
 -- public.inscription_history definition
 
