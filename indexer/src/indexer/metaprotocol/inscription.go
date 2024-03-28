@@ -2,6 +2,7 @@ package metaprotocol
 
 import (
 	"bytes"
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -15,8 +16,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	workers "github.com/donovansolms/cosmos-inscriptions/indexer/src/worker/workers"
+	"github.com/jackc/pgx/v5"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
+	"github.com/riverqueue/river"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -32,11 +36,12 @@ type InscriptionConfig struct {
 }
 
 type Inscription struct {
-	chainID    string
-	db         *gorm.DB
-	s3Endpoint string
-	s3Region   string
-	s3Bucket   string
+	chainID      string
+	db           *gorm.DB
+	workerClient *river.Client[pgx.Tx]
+	s3Endpoint   string
+	s3Region     string
+	s3Bucket     string
 	// s3ID is the S3 credentials ID
 	s3ID string
 	// s3Secret is the S3 credentials secret
@@ -47,7 +52,7 @@ type Inscription struct {
 	reservationsByTicker map[string]CollectionReservation
 }
 
-func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *river.Client[pgx.Tx]) *Inscription {
 
 	// Parse config environment variables for self
 	var config InscriptionConfig
@@ -70,6 +75,7 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
 		s3Token:              config.S3Token,
 		reservationsByName:   reservationsByName,
 		reservationsByTicker: reservationsByTicker,
+		workerClient:         workerClient,
 	}
 }
 
@@ -447,6 +453,15 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)
+
+		if inscriptionModel.CollectionID.Valid {
+			_, err = protocol.workerClient.Insert(context.Background(), workers.CollectionStatsArgs{
+				CollectionID: inscriptionModel.CollectionID.Int64,
+			}, nil)
+			if err != nil {
+				return fmt.Errorf("failed to insert collection stats job '%s'", err)
+			}
+		}
 
 	case "transfer":
 		if parsedURN.KeyValuePairs["h"] == "" {
