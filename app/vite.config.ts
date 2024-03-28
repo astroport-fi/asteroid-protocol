@@ -4,11 +4,13 @@ import {
 } from '@remix-run/dev'
 import { defineConfig } from 'vite'
 import envOnly from 'vite-env-only'
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [
+    ViteImageOptimizer(),
     envOnly(),
     remixCloudflareDevProxy(),
     remix(),

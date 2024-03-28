@@ -1,0 +1,41 @@
+table:
+  name: collection
+  schema: public
+object_relationships:
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+array_relationships:
+  - name: traits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: collection_id
+        insertion_order: null
+        remote_table:
+          name: collection_traits
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - chain_id
+        - content_hash
+        - content_path
+        - content_size_bytes
+        - creator
+        - date_created
+        - height
+        - id
+        - is_explicit
+        - metadata
+        - minter
+        - name
+        - payment_address
+        - royalty_percentage
+        - symbol
+        - transaction_id
+        - version
+      filter: {}
+      allow_aggregations: true
+    comment: ""

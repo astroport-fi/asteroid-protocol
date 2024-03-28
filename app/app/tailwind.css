@@ -76,6 +76,10 @@ strong {
     width: -webkit-fill-available;
     width: -moz-available;
   }
+
+  .border-mask {
+    -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -104,6 +108,10 @@ strong {
 
   .image-pixelated {
     image-rendering: pixelated;
+  }
+
+  .collapse > input[type='checkbox'] {
+    @apply cursor-pointer;
   }
 }
 

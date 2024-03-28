@@ -20,19 +20,20 @@ export const Networks: Record<string, Network> = {
   },
   mainnet: {
     chainId: 'cosmoshub-4',
-    rpc: 'https://rpc-nodes.asteroidprotocol.io',
-    rest: 'https://nodes.asteroidprotocol.io',
+    rpc: 'https://cosmos-rpc.cosmos-apis.com',
+    rest: 'https://cosmos-rest.cosmos-apis.com',
     explorer: 'https://www.mintscan.io/cosmos/tx/',
     api: 'https://api.asteroidprotocol.io/v1/graphql',
   },
 }
 
 const DEFAULT_GAS_PRICE = '0.005uatom'
-const DEFAULT_FEE_MULTIPLIER = 1.5
+const DEFAULT_FEE_MULTIPLIER = 1.6
 
 export const DEFAULT_CONFIG: Config = {
   gasPrice: DEFAULT_GAS_PRICE,
   feeMultiplier: DEFAULT_FEE_MULTIPLIER,
+  useExtensionData: true,
   networks: Networks,
   accounts: {
     test1: {
@@ -59,6 +60,7 @@ export type Account = z.infer<typeof Account>
 export const Config = z.object({
   gasPrice: z.string().default(DEFAULT_GAS_PRICE),
   feeMultiplier: z.number().default(DEFAULT_FEE_MULTIPLIER),
+  useExtensionData: z.boolean().default(true),
   networks: z.record(z.string(), Network),
   accounts: z.record(z.string(), Account),
 })

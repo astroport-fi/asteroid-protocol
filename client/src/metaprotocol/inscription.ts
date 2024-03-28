@@ -1,11 +1,10 @@
+import { buildInscriptionData, buildOperation } from './build.js'
 import {
   BaseProtocol,
   InscriptionData,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscriptionData,
-  buildOperation,
-} from './index.js'
+} from './types.js'
 
 export type ContentMetadata = {
   name: string
@@ -14,9 +13,36 @@ export type ContentMetadata = {
   isExplicit?: boolean
 }
 
+export interface CollectionMetadata extends ContentMetadata {
+  symbol: string
+  minter?: string
+  royalty_percentage?: number
+  payment_address?: string
+  website?: string
+  twitter?: string
+  discord?: string
+  telegram?: string
+}
+
+export interface Trait {
+  display_type?: string | null
+  trait_type: string
+  value: string
+}
+
+export interface NFTMetadata extends ContentMetadata {
+  attributes?: Trait[] | null
+}
+
 export type Parent = {
   type: string
   identifier: string
+}
+
+export interface MigrationData {
+  header: string[]
+  rows: string[][]
+  collection?: string
 }
 
 const DEFAULT_FEE: ProtocolFee = {
@@ -34,9 +60,16 @@ export function accountIdentifier(accountAddress: string) {
   }
 }
 
+export function collectionIdentifier(collection: string) {
+  return {
+    type: '/collection',
+    identifier: collection,
+  }
+}
+
 export default class InscriptionProtocol extends BaseProtocol {
   static DEFAULT_FEE = DEFAULT_FEE
-  version = 'v1'
+  version = 'v2'
   name = 'inscription'
 
   constructor(chainId: string, fee: ProtocolFee = DEFAULT_FEE) {
@@ -67,5 +100,23 @@ export default class InscriptionProtocol extends BaseProtocol {
       ['dst', destination],
     ]
     return buildOperation(this, this.fee, this.chainId, 'transfer', params)
+  }
+
+  migrate() {
+    return buildOperation(this, this.fee, this.chainId, 'migrate', [])
+  }
+
+  grantMigrationPermission(hash: string, grantee: string) {
+    const params: MetaProtocolParams = [
+      ['h', hash],
+      ['grantee', grantee],
+    ]
+    return buildOperation(
+      this,
+      this.fee,
+      this.chainId,
+      'grant-migration-permission',
+      params,
+    )
   }
 }

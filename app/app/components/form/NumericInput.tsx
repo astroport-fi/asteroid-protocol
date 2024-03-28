@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Form, Input } from 'react-daisyui'
+import { Form, Input, InputProps } from 'react-daisyui'
 import {
   Control,
   Controller,
@@ -7,8 +7,9 @@ import {
   FieldPath,
   FieldValues,
 } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
+import { NumericFormat, NumericFormatProps } from 'react-number-format'
 import { twMerge } from 'tailwind-merge'
+import InfoTooltip from '../InfoTooltip'
 
 export default function NumericInput<
   TFieldValues extends FieldValues = FieldValues,
@@ -17,9 +18,11 @@ export default function NumericInput<
   control,
   name,
   title,
+  tooltip,
   error,
   isFloat,
   className,
+  ...props
 }: {
   control: Control<TFieldValues>
   name: TName
@@ -27,18 +30,22 @@ export default function NumericInput<
   error: FieldError | undefined
   isFloat?: boolean
   className?: string
-}) {
+  tooltip?: string
+} & NumericFormatProps<InputProps>) {
   return (
     <div className={twMerge('form-control w-full', className)}>
-      <Form.Label title={title} htmlFor={name} />
+      <Form.Label title={title} htmlFor={name} className="justify-start">
+        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+      </Form.Label>
       <Controller
-        rules={{ required: true, pattern: /^[0-9]+$/ }}
+        rules={{ required: props.required, pattern: /^[0-9]+$/ }}
         control={control}
         name={name}
         render={({
           field: { name, onChange, value, ref, onBlur, disabled },
         }) => (
           <NumericFormat
+            {...props}
             className="w-full"
             getInputRef={ref}
             value={value}

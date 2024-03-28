@@ -31,6 +31,7 @@ import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT } from '~/utils/date'
+import { tokenMeta } from '~/utils/meta'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
@@ -79,52 +80,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return []
   }
 
-  const { name, ticker, content_path, id } = data.token
-  const title = `${ticker} | ${name} | on Asteroid Protocol`
-
-  return [
-    { title },
-    {
-      property: 'og:url',
-      content: `https://asteroidprotocol.io/app/token/${ticker}`,
-    },
-    {
-      property: 'og:title',
-      content: title,
-    },
-    {
-      property: 'og:image',
-      content: content_path,
-    },
-    {
-      property: 'og:description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      name: 'description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:url',
-      content: `https://asteroidprotocol.io/app/token/${ticker}`,
-    },
-    {
-      property: 'twitter:title',
-      content: title,
-    },
-    {
-      property: 'twitter:image',
-      content: content_path,
-    },
-    {
-      property: 'twitter:description',
-      content: `${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:card',
-      content: 'summary',
-    },
-  ]
+  return tokenMeta(data.token)
 }
 
 function TokenDetailComponent({
@@ -135,13 +91,14 @@ function TokenDetailComponent({
   const amount = token.token_holders?.[0]?.amount
 
   return (
-    <div className="flex flex-col xl:flex-row w-full mt-4">
+    <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4 ">
       <div className="flex flex-1 flex-col xl:px-16 pb-8 items-center justify-center">
         <InscriptionImage
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl w-fit h-fit max-w-lg items-center justify-center object-contain"
+          imageClassName="rounded-xl object-contain"
+          className="max-w-lg items-center justify-center"
         />
       </div>
       <div className="flex flex-col flex-1">

@@ -1,10 +1,10 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { forwardRef, useState } from 'react'
+import { forwardRef } from 'react'
 import { Alert, Button, Form, Modal } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { NumericFormat } from 'react-number-format'
 import { MIN_DEPOSIT_PERCENT, TIMEOUT_BLOCKS } from '~/constants'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import { getDecimalValue } from '~/utils/number'
@@ -45,10 +45,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
     const fRef = useForwardRef(ref)
 
     // dialog
-    const { dialogRef, handleShow } = useDialog()
-    const [txInscription, setTxInscription] = useState<TxInscription | null>(
-      null,
-    )
+    const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
     const onSubmit = handleSubmit(async (data) => {
       if (!operations) {
@@ -64,10 +61,8 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
         TIMEOUT_BLOCKS,
       )
 
-      setTxInscription(txInscription)
-
       fRef.current?.close()
-      handleShow()
+      showDialog(txInscription)
     })
 
     return (
@@ -92,6 +87,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 name="amount"
                 error={errors.amount}
                 title="Amount to sell"
+                required
               />
 
               <NumericInput
@@ -100,6 +96,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                 error={errors.ppt}
                 title="Price per token"
                 className="ml-4"
+                required
                 isFloat
               />
             </div>
@@ -150,7 +147,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             )}
           </Form>
           <TxDialog
-            txInscription={txInscription}
+            txInscription={value}
             ref={dialogRef}
             resultCTA="Back to market"
             resultLink={`/app/market/${ticker}`}

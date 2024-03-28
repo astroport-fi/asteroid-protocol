@@ -1,9 +1,9 @@
 import { Link } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
-import { twMerge } from 'tailwind-merge'
 import { InscriptionWithMarket } from '~/api/inscription'
 import { getDecimalValue } from '~/utils/number'
+import Grid from './Grid'
 import InscriptionImage from './InscriptionImage'
 
 function InscriptionBox<T extends InscriptionWithMarket>({
@@ -17,7 +17,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
 
   return (
     <Link
-      className="flex flex-col justify-between bg-base-200 rounded-xl"
+      className="flex flex-col justify-between bg-base-200 rounded-xl group"
       to={`/app/inscription/${inscription.transaction.hash}`}
       onClick={(e) => {
         if (typeof onClick === 'function') {
@@ -30,7 +30,8 @@ function InscriptionBox<T extends InscriptionWithMarket>({
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
-        className="rounded-t-xl h-60"
+        className="h-60"
+        containerClassName="rounded-t-xl"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
@@ -75,7 +76,7 @@ export function Inscriptions<T extends InscriptionWithMarket>({
   onClick?: (inscription: T) => void
 }) {
   return (
-    <div className={twMerge('grid grid-cols-fill-56 gap-4', className)}>
+    <Grid className={className}>
       {inscriptions.map((inscription) => (
         <InscriptionBox
           key={inscription.id}
@@ -83,6 +84,6 @@ export function Inscriptions<T extends InscriptionWithMarket>({
           onClick={onClick}
         />
       ))}
-    </div>
+    </Grid>
   )
 }

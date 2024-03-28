@@ -1,5 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useEffect, useState } from 'react'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
@@ -12,8 +12,8 @@ import Modal from './Modal'
 
 interface Props {
   txInscription: TxInscription | null
-  resultCTA?: string
-  resultLink?: To
+  resultCTA: string
+  resultLink?: To | ((txHash: string) => To)
   feeOperationTitle?: string
 }
 
@@ -38,8 +38,11 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
     resetState,
     retry,
   } = useSubmitTx(txInscription)
-  const navigate = useNavigate()
   const fRef = useForwardRef(ref)
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [url, setUrl] = useState<To | undefined>()
 
   useEffect(() => {
     if (txInscriptionProp != txInscription) {
@@ -53,7 +56,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       ref={ref}
       backdrop
       onClose={() => {
-        navigate({ hash: '' })
+        navigate(url ?? `${location.pathname}${location.search}`)
       }}
     >
       <Modal.Body className="text-center">
@@ -65,9 +68,13 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
           txState={txState}
           resultCTA={resultCTA}
           feeOperationTitle={feeOperationTitle}
-          onClose={() => {
+          onCTAClick={() => {
+            if (typeof resultLink === 'function') {
+              setUrl(resultLink(txHash))
+            } else {
+              setUrl(resultLink ?? `${location.pathname}${location.search}`)
+            }
             fRef.current?.close()
-            navigate(resultLink ?? `/app/inscription/${txHash}`)
           }}
         >
           <Lottie animationData={scanAnimationData} />

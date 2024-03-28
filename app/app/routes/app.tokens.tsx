@@ -1,31 +1,24 @@
 import { order_by } from '@asteroid-protocol/sdk/client'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useNavigate,
-  useSearchParams,
-} from '@remix-run/react'
+import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Form as DaisyForm } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
 import { TokenMarket, isTokenLaunched } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
+import PercentageText from '~/components/PercentageText'
 import Stat from '~/components/Stat'
 import { TokenCell } from '~/components/TokenCell'
+import SearchInput from '~/components/form/SearchInput'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
-import { round2 } from '~/utils/math'
 import { parsePagination, parseSorting } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -61,8 +54,6 @@ export default function MarketsPage() {
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const defaultSearch = searchParams.get('search') ?? ''
 
   const {
     status: { baseTokenUsd },
@@ -86,7 +77,7 @@ export default function MarketsPage() {
       meta: {
         className: 'font-mono',
       },
-      cell: (info) => `${round2(info.getValue() * 100)}%`,
+      cell: (info) => <PercentageText value={info.getValue()} />,
     }),
     columnHelper.accessor(
       'marketplace_cft20_details_aggregate.aggregate.count',
@@ -164,22 +155,7 @@ export default function MarketsPage() {
             value={baseTokenUsd}
           />
         </Stat>
-        <Form method="get">
-          <DaisyForm.Label
-            className="input input-bordered flex items-center gap-2"
-            htmlFor="search"
-          >
-            <input
-              type="text"
-              id="search"
-              name="search"
-              className="grow"
-              placeholder="Search by name or ticker"
-              defaultValue={defaultSearch}
-            />
-            <MagnifyingGlassIcon className="size-5" />
-          </DaisyForm.Label>
-        </Form>
+        <SearchInput placeholder="Search by name or ticker" />
       </div>
       <Table
         className="mt-4"

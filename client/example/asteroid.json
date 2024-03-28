@@ -17,7 +17,7 @@
         },
         "mainnet": {
             "chainId": "cosmoshub-4",
-            "rpc": "https://cosmos-rpc.cosmos-apis.com/",
+            "rpc": "https://cosmos-rpc.cosmos-apis.com",
             "rest": "https://cosmos-rest.cosmos-apis.com",
             "explorer": "https://www.mintscan.io/cosmos/tx/",
             "api": "https://api.asteroidprotocol.io/v1/graphql"

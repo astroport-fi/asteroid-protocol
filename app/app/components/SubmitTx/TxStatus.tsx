@@ -8,11 +8,11 @@ import Lottie from '../Lottie'
 import TxLink from '../TxLink'
 
 interface TxStatusProps {
-  resultCTA?: string
+  resultCTA: string
   txHash?: string
   txState: TxState
   txError: SubmitTxError | null
-  onClose?: () => void
+  onCTAClick?: () => void
 }
 
 function txErrorToText(error: string) {
@@ -31,7 +31,7 @@ export default function TxStatus({
   txHash,
   txState,
   txError,
-  onClose,
+  onCTAClick,
 }: TxStatusProps) {
   let title = ''
   let description = ''
@@ -77,11 +77,12 @@ export default function TxStatus({
       {txState == TxState.Failed && txError && (
         <p className="text-error">{txErrorToText(txError.message)}</p>
       )}
-      {typeof onClose === 'function' && txState == TxState.SuccessInscribed && (
-        <Button color="primary" className="mt-8" onClick={() => onClose()}>
-          {resultCTA ?? 'View inscription'}
-        </Button>
-      )}
+      {typeof onCTAClick === 'function' &&
+        txState == TxState.SuccessInscribed && (
+          <Button color="primary" className="mt-8" onClick={() => onCTAClick()}>
+            {resultCTA}
+          </Button>
+        )}
       {txHash && (
         <div className="flex flex-col bg-base-200 p-4 mt-4 rounded-xl">
           <strong>Transaction hash</strong>

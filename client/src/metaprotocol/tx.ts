@@ -81,7 +81,7 @@ interface PrepareTxOptions {
 
 const DEFAULT_OPTIONS: PrepareTxOptions = {
   useIbc: true,
-  useExtensionData: false,
+  useExtensionData: true,
 }
 
 export function prepareTx(
