@@ -7963,6 +7963,40 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['token_trade_history'],
     ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['top_collection_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['top_collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['top_collection'],
+    ]
     trade_history?: [
       {
         /** distinct select on columns */
@@ -9808,6 +9842,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['top_collection_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['top_collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -13080,6 +13148,70 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+  }
+  ['top_collection']: AliasType<{
+    content_path?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['top_collection_bool_exp_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    name?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    symbol?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    volume?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    name?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    symbol?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    volume?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
   /** columns and relationships of "trade_history" */
   ['trade_history']: AliasType<{
@@ -18385,6 +18517,32 @@ export type ResolverInputTypes = {
       { id: number },
       ResolverInputTypes['token_trade_history'],
     ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['top_collection_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['top_collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['top_collection'],
+    ]
     trade_history?: [
       {
         /** distinct select on columns */
@@ -19661,6 +19819,32 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['top_collection_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['top_collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -21551,6 +21735,46 @@ export type ResolverInputTypes = {
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  ['top_collection']: AliasType<{
+    content_path?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+    content_path?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    name?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    symbol?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    volume?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    name?: ResolverInputTypes['order_by'] | undefined | null
+    symbol?: ResolverInputTypes['order_by'] | undefined | null
+    volume?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** columns and relationships of "trade_history" */
   ['trade_history']: AliasType<{
@@ -24968,6 +25192,7 @@ export type ModelTypes = {
     token_trade_history: Array<ModelTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
+    top_collections: Array<ModelTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<ModelTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -25235,6 +25460,7 @@ export type ModelTypes = {
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<ModelTypes['token_trade_history']>
+    top_collections: Array<ModelTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<ModelTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -26591,6 +26817,33 @@ export type ModelTypes = {
     per_mint_limit?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
+  }
+  ['top_collection']: {
+    content_path: string
+    id: number
+    name: string
+    symbol: string
+    volume: ModelTypes['numeric']
+  }
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?: Array<ModelTypes['top_collection_bool_exp_bool_exp']> | undefined
+    _not?: ModelTypes['top_collection_bool_exp_bool_exp'] | undefined
+    _or?: Array<ModelTypes['top_collection_bool_exp_bool_exp']> | undefined
+    content_path?: ModelTypes['String_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    name?: ModelTypes['String_comparison_exp'] | undefined
+    symbol?: ModelTypes['String_comparison_exp'] | undefined
+    volume?: ModelTypes['numeric_comparison_exp'] | undefined
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    name?: ModelTypes['order_by'] | undefined
+    symbol?: ModelTypes['order_by'] | undefined
+    volume?: ModelTypes['order_by'] | undefined
   }
   /** columns and relationships of "trade_history" */
   ['trade_history']: {
@@ -29846,6 +30099,7 @@ export type GraphQLTypes = {
     token_trade_history: Array<GraphQLTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
+    top_collections: Array<GraphQLTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<GraphQLTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -30119,6 +30373,7 @@ export type GraphQLTypes = {
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<GraphQLTypes['token_trade_history']>
+    top_collections: Array<GraphQLTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<GraphQLTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -31514,6 +31769,34 @@ export type GraphQLTypes = {
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
+  ['top_collection']: {
+    __typename: 'top_collection'
+    content_path: string
+    id: number
+    name: string
+    symbol: string
+    volume: GraphQLTypes['numeric']
+  }
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?: Array<GraphQLTypes['top_collection_bool_exp_bool_exp']> | undefined
+    _not?: GraphQLTypes['top_collection_bool_exp_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['top_collection_bool_exp_bool_exp']> | undefined
+    content_path?: GraphQLTypes['String_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    name?: GraphQLTypes['String_comparison_exp'] | undefined
+    symbol?: GraphQLTypes['String_comparison_exp'] | undefined
+    volume?: GraphQLTypes['numeric_comparison_exp'] | undefined
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    name?: GraphQLTypes['order_by'] | undefined
+    symbol?: GraphQLTypes['order_by'] | undefined
+    volume?: GraphQLTypes['order_by'] | undefined
+  }
   /** columns and relationships of "trade_history" */
   ['trade_history']: {
     __typename: 'trade_history'
@@ -32110,6 +32393,13 @@ export const enum token_trade_history_select_column {
   total_usd = 'total_usd',
   transaction_id = 'transaction_id',
 }
+export const enum top_collection_enum_name {
+  content_path = 'content_path',
+  id = 'id',
+  name = 'name',
+  symbol = 'symbol',
+  volume = 'volume',
+}
 /** select columns of table "trade_history" */
 export const enum trade_history_select_column {
   amount_base = 'amount_base',
@@ -32425,6 +32715,9 @@ type ZEUS_VARIABLES = {
   ['token_var_pop_order_by']: ValueTypes['token_var_pop_order_by']
   ['token_var_samp_order_by']: ValueTypes['token_var_samp_order_by']
   ['token_variance_order_by']: ValueTypes['token_variance_order_by']
+  ['top_collection_bool_exp_bool_exp']: ValueTypes['top_collection_bool_exp_bool_exp']
+  ['top_collection_enum_name']: ValueTypes['top_collection_enum_name']
+  ['top_collection_order_by']: ValueTypes['top_collection_order_by']
   ['trade_history_bool_exp']: ValueTypes['trade_history_bool_exp']
   ['trade_history_order_by']: ValueTypes['trade_history_order_by']
   ['trade_history_select_column']: ValueTypes['trade_history_select_column']
