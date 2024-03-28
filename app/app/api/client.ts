@@ -45,8 +45,10 @@ import {
 import {
   Collection,
   CollectionDetail,
+  TopCollection,
   collectionDetailSelector,
   collectionSelector,
+  topCollectionSelector,
 } from './collection'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
@@ -570,6 +572,13 @@ export class AsteroidClient extends AsteroidService {
       return 0
     }
     return listing.ppt
+  }
+
+  async getTopCollections(): Promise<TopCollection[]> {
+    const result = await this.query({
+      top_collections: [{}, topCollectionSelector],
+    })
+    return result.top_collections
   }
 
   async getCollections(

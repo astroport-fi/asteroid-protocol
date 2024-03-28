@@ -4,7 +4,7 @@ import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import { Button, Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import clubs from '~/api/clubs'
-import { Collection } from '~/api/collection'
+import { TopCollection } from '~/api/collection'
 import { InscriptionTradeHistory } from '~/api/inscription'
 import Collections, { ClubBox } from '~/components/Collections'
 import DecimalText from '~/components/DecimalText'
@@ -33,10 +33,11 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
       [sort]: direction,
     },
   )
+  const topCollections = await asteroidClient.getTopCollections()
 
   return json({
     collections: res.collections,
-    topCollections: res.collections.slice(0, 6),
+    topCollections,
     transactions,
     pages: Math.ceil(res.count / limit),
   })
@@ -81,7 +82,7 @@ export function TransactionBox({
   )
 }
 
-function TopCollection({ collection }: { collection: Collection }) {
+function TopCollection({ collection }: { collection: TopCollection }) {
   return (
     <Link
       className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl"
@@ -89,7 +90,7 @@ function TopCollection({ collection }: { collection: Collection }) {
     >
       <InscriptionImage
         src={collection.content_path!}
-        isExplicit={collection.is_explicit}
+        isExplicit={false}
         className="w-full h-full"
         containerClassName="size-96"
       />

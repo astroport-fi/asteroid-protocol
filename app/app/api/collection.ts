@@ -53,3 +53,17 @@ export type CollectionDetail = Omit<
   >,
   'traits' | 'metadata'
 > & { traits: CollectionTrait[]; metadata: inscription.CollectionMetadata }
+
+// Top collection
+export const topCollectionSelector = Selector('top_collection')({
+  id: true,
+  content_path: true,
+  name: true,
+  symbol: true,
+})
+
+export type TopCollection = InputType<
+  GraphQLTypes['top_collection'],
+  typeof topCollectionSelector,
+  ScalarDefinition
+>

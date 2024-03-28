@@ -92,7 +92,7 @@ function TraitFilter({
   return (
     <Collapse icon="arrow" checkbox open={open} onToggle={() => setOpen(!open)}>
       <Collapse.Title className="pl-0 pr-9 flex justify-between text-sm capitalize cursor-pointer ">
-        <span className="break-all mt-1">{trait}</span>
+        <span className="break-words mt-1">{trait}</span>
         <span className="ml-8 mt-1">{values.length}</span>
       </Collapse.Title>
       <Collapse.Content className="px-0">
