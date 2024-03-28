@@ -86,6 +86,8 @@ export type TradeHistoryResult = {
   count: number
 }
 
+export type Royalty = { recipient: string; percentage: number }
+
 export interface TraitItem {
   trait_type: string
   value: string
@@ -158,6 +160,38 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
     return result.token[0]
+  }
+
+  async getRoyalty(inscriptionId: number): Promise<Royalty | null> {
+    const result = await this.query({
+      inscription: [
+        {
+          where: {
+            id: {
+              _eq: inscriptionId,
+            },
+          },
+        },
+        {
+          collection: {
+            royalty_percentage: true,
+            creator: true,
+          },
+        },
+      ],
+    })
+    if (
+      result &&
+      result.inscription[0] &&
+      result.inscription[0].collection &&
+      result.inscription[0].collection.royalty_percentage
+    ) {
+      return {
+        recipient: result.inscription[0].collection.creator,
+        percentage: result.inscription[0].collection.royalty_percentage,
+      }
+    }
+    return null
   }
 
   async getTokens(

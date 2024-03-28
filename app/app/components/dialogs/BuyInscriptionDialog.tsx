@@ -2,11 +2,13 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import { Link } from '@remix-run/react'
 import { format } from 'date-fns'
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import { Button, Divider, Modal } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
+import type { Royalty } from '~/api/client'
 import { InscriptionWithMarket } from '~/api/inscription'
 import useAddress from '~/hooks/useAddress'
+import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useDialog from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { DATETIME_FORMAT } from '~/utils/date'
@@ -33,6 +35,17 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     // dialog
     const { dialogRef, showDialog } = useDialog()
     const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
+
+    const [royalty, setRoyalty] = useState<Royalty | null>(null)
+
+    const asteroidClient = useAsteroidClient()
+    useEffect(() => {
+      if (!inscription) {
+        return
+      }
+
+      asteroidClient.getRoyalty(inscription.id).then(setRoyalty)
+    }, [asteroidClient, inscription])
 
     return (
       <Modal ref={ref} backdrop>
@@ -144,7 +157,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
 
               <BuyDialog
                 buyType="inscription"
-                royalty={royalty}
+                royalty={royalty ?? undefined}
                 listingHash={listing?.transaction.hash ?? null}
                 ref={dialogRef}
               />

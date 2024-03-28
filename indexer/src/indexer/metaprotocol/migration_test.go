@@ -64,6 +64,22 @@ func TestMetadataMigrationWithoutCollection(t *testing.T) {
 	assert.Empty(t, migrationData.Collection, "collection should be empty")
 }
 
+func TestMetadataMigrationWithEmptyTrait(t *testing.T) {
+	// load migration data
+	var migrationData types.InscriptionMigrationData
+	err := loadTestData("testdata/migration-empty.json", &migrationData)
+	if err != nil {
+		t.Fatalf("error loading migration data: %v", err)
+	}
+
+	// migrate inscriptions
+	attributeNames := migrationData.Header[1:]
+	for _, row := range migrationData.Rows {
+		traits := types.GetTraits(attributeNames, row[1:])
+		assert.Len(t, traits, 1, "only one trait should be present")
+	}
+}
+
 func TestReservations(t *testing.T) {
 	reservationsByName, _ := GetReservations("../../../data/collection-reservations.csv")
 	assert.NotEmpty(t, reservationsByName, "reservationsByName should not be empty")

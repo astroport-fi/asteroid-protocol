@@ -186,6 +186,7 @@ export function Filter({
   const [sort, setSort] = useState<Sort>(
     (searchParams.get('sort') as Sort) ?? defaultServerSort,
   )
+  const hasTraits = traits != null && traits.length > 0
 
   // this is needed because we need to update sort and default sort in the same time
   useEffect(() => {
@@ -264,7 +265,7 @@ export function Filter({
             onSelect={setPriceRange}
             selected={priceRange}
           />
-          {traits && (
+          {hasTraits && (
             <>
               <Divider />
               <TraitsFilter traits={traits} />

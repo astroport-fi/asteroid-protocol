@@ -36,11 +36,13 @@ type InscriptionNftMetadata struct {
 func GetTraits(attributeNames []string, row []string) []Trait {
 	traits := make([]Trait, 0)
 	for i, attribute := range attributeNames {
-		trait := Trait{
-			TraitType: attribute,
-			Value:     row[i],
+		if attribute != "" && row[i] != "" {
+			trait := Trait{
+				TraitType: attribute,
+				Value:     row[i],
+			}
+			traits = append(traits, trait)
 		}
-		traits = append(traits, trait)
 	}
 	return traits
 }
