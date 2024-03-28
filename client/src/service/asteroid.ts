@@ -36,7 +36,7 @@ export type ScalarDefinition = {
   }
   jsonb: {
     encode: (e: unknown) => string
-    decode: (e: unknown) => string
+    decode: (e: unknown) => unknown
   }
 }
 
@@ -50,7 +50,7 @@ export type Operations<
   R extends keyof ValueTypes = GenericOperation<O>,
 > = <Z extends ValueTypes[R]>(
   o: (Z & ValueTypes[R]) | ValueTypes[R],
-  ops?: OperationOptions & { variables?: ExtractVariables<Z> },
+  ops?: OperationOptions & { variables?: Record<string, unknown> },
 ) => Promise<InputType<GraphQLTypes[R], Z, SCLR>>
 
 export type OperationsWS<
@@ -160,6 +160,30 @@ export class AsteroidService {
     })
 
     return statusResult.status[0]
+  }
+
+  async getTransactionStatus(txHash: string) {
+    const result = await this.query({
+      transaction: [
+        {
+          where: {
+            hash: {
+              _eq: txHash,
+            },
+          },
+        },
+        {
+          status_message: true,
+        },
+      ],
+    })
+
+    const transaction = result.transaction[0]
+    if (!transaction) {
+      return
+    }
+
+    return transaction.status_message
   }
 
   async fetchListing(listingHash: string): Promise<Listing | undefined> {

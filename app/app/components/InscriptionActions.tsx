@@ -12,9 +12,9 @@ interface Props {
 
 export function InscriptionActions({ inscription }: Props) {
   const address = useAddress()
-  const { dialogRef: transferDialogRef, handleShow: showTransferDialog } =
+  const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
-  const { dialogRef: sellDialogRef, handleShow: showSellDialog } = useDialog()
+  const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
   const listing = inscription?.marketplace_listing
 
   if (address == inscription.current_owner) {

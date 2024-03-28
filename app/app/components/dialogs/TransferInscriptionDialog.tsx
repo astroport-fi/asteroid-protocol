@@ -1,9 +1,9 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { forwardRef, useState } from 'react'
+import { forwardRef } from 'react'
 import { Button, Form, Modal } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { Inscription } from '~/api/inscription'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import useForwardRef from '~/hooks/useForwardRef'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import CosmosAddressInput from '../form/CosmosAddressInput'
@@ -32,10 +32,7 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
     const fRef = useForwardRef(ref)
 
     // dialog
-    const { dialogRef, handleShow } = useDialog()
-    const [txInscription, setTxInscription] = useState<TxInscription | null>(
-      null,
-    )
+    const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
     const onSubmit = handleSubmit(async (data) => {
       if (!operations) {
@@ -48,10 +45,8 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
         data.destination,
       )
 
-      setTxInscription(txInscription)
-
       fRef.current?.close()
-      handleShow()
+      showDialog(txInscription)
     })
 
     return (
@@ -76,7 +71,7 @@ const TransferInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
             </Button>
           </Form>
           <TxDialog
-            txInscription={txInscription}
+            txInscription={value}
             ref={dialogRef}
             resultCTA="View transaction"
             resultLink={`/app/inscription/${inscription.transaction.hash}`}

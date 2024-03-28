@@ -11,9 +11,9 @@ interface BodyProps {
   error: SubmitTxError | null
   txHash: string | null
   txState: TxState
-  resultCTA?: string
+  resultCTA: string
   feeOperationTitle?: string
-  onClose?: () => void
+  onCTAClick?: () => void
 }
 
 export default function Body({
@@ -25,7 +25,7 @@ export default function Body({
   resultCTA,
   feeOperationTitle,
   children,
-  onClose,
+  onCTAClick,
 }: PropsWithChildren<BodyProps>) {
   if (txHash) {
     return (
@@ -34,7 +34,7 @@ export default function Body({
         txState={txState}
         txError={error}
         resultCTA={resultCTA}
-        onClose={onClose}
+        onCTAClick={onCTAClick}
       />
     )
   }

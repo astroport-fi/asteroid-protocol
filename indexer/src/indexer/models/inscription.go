@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 
 	"gorm.io/datatypes"
@@ -12,6 +13,7 @@ type Inscription struct {
 	Height           uint64         `gorm:"column:height"`
 	Version          string         `gorm:"column:version"`
 	TransactionID    uint64         `gorm:"column:transaction_id"`
+	CollectionID     sql.NullInt64  `gorm:"column:collection_id"`
 	ContentHash      string         `gorm:"column:content_hash"`
 	Creator          string         `gorm:"column:creator"`
 	CurrentOwner     string         `gorm:"column:current_owner"`

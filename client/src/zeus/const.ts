@@ -1627,6 +1627,11 @@ export const AllTypesProps: Record<string, any> = {
       where: 'token_trade_history_bool_exp',
     },
     token_trade_history_by_pk: {},
+    top_collections: {
+      distinct_on: 'top_collection_enum_name',
+      order_by: 'top_collection_order_by',
+      where: 'top_collection_bool_exp_bool_exp',
+    },
     trade_history: {
       distinct_on: 'trade_history_select_column',
       order_by: 'trade_history_order_by',
@@ -1947,6 +1952,11 @@ export const AllTypesProps: Record<string, any> = {
     token_trade_history_stream: {
       cursor: 'token_trade_history_stream_cursor_input',
       where: 'token_trade_history_bool_exp',
+    },
+    top_collections: {
+      distinct_on: 'top_collection_enum_name',
+      order_by: 'top_collection_order_by',
+      where: 'top_collection_bool_exp_bool_exp',
     },
     trade_history: {
       distinct_on: 'trade_history_select_column',
@@ -2833,6 +2843,24 @@ export const AllTypesProps: Record<string, any> = {
     per_mint_limit: 'order_by',
     transaction_id: 'order_by',
     volume_24_base: 'order_by',
+  },
+  top_collection_bool_exp_bool_exp: {
+    _and: 'top_collection_bool_exp_bool_exp',
+    _not: 'top_collection_bool_exp_bool_exp',
+    _or: 'top_collection_bool_exp_bool_exp',
+    content_path: 'String_comparison_exp',
+    id: 'Int_comparison_exp',
+    name: 'String_comparison_exp',
+    symbol: 'String_comparison_exp',
+    volume: 'numeric_comparison_exp',
+  },
+  top_collection_enum_name: 'enum' as const,
+  top_collection_order_by: {
+    content_path: 'order_by',
+    id: 'order_by',
+    name: 'order_by',
+    symbol: 'order_by',
+    volume: 'order_by',
   },
   trade_history_aggregate_fields: {
     count: {
@@ -3734,6 +3762,7 @@ export const ReturnTypes: Record<string, any> = {
     token_open_position_by_pk: 'token_open_position',
     token_trade_history: 'token_trade_history',
     token_trade_history_by_pk: 'token_trade_history',
+    top_collections: 'top_collection',
     trade_history: 'trade_history',
     trade_history_aggregate: 'trade_history_aggregate',
     transaction: 'transaction',
@@ -3825,6 +3854,7 @@ export const ReturnTypes: Record<string, any> = {
     token_trade_history: 'token_trade_history',
     token_trade_history_by_pk: 'token_trade_history',
     token_trade_history_stream: 'token_trade_history',
+    top_collections: 'top_collection',
     trade_history: 'trade_history',
     trade_history_aggregate: 'trade_history_aggregate',
     trade_history_stream: 'trade_history',
@@ -4158,6 +4188,13 @@ export const ReturnTypes: Record<string, any> = {
     per_mint_limit: 'Float',
     transaction_id: 'Float',
     volume_24_base: 'Float',
+  },
+  top_collection: {
+    content_path: 'String',
+    id: 'Int',
+    name: 'String',
+    symbol: 'String',
+    volume: 'numeric',
   },
   trade_history: {
     amount_base: 'bigint',

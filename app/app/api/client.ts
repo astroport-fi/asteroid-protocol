@@ -1,16 +1,19 @@
 import {
+  $,
   AsteroidService,
   QueryOptions,
   ValueTypes,
   WSSubscription,
   order_by,
 } from '@asteroid-protocol/sdk/client'
-import { aggregateCountSelector } from '~/api/common'
+import { aggregateCountSelector, collectionStatsSelector } from '~/api/common'
 import {
-  Inscription,
+  InscriptionDetail,
   InscriptionHistory,
   InscriptionTradeHistory,
+  InscriptionType,
   InscriptionWithMarket,
+  inscriptionDetailSelector,
   inscriptionHistorySelector,
   inscriptionListingSelector,
   inscriptionSelector,
@@ -39,6 +42,14 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import {
+  Collection,
+  CollectionDetail,
+  TopCollection,
+  collectionDetailSelector,
+  collectionSelector,
+  topCollectionSelector,
+} from './collection'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 
@@ -78,6 +89,16 @@ export type TradeHistoryResult = {
 }
 
 export type Royalty = { recipient: string; percentage: number }
+
+export interface TraitItem {
+  trait_type: string
+  value: string
+}
+
+export interface Collections {
+  collections: Collection[]
+  count: number
+}
 
 export class AsteroidClient extends AsteroidService {
   constructor(url: string, wssUrl?: string) {
@@ -298,10 +319,8 @@ export class AsteroidClient extends AsteroidService {
     if (search) {
       where.token = {
         _or: [
-          { name: { _like: `%${search}%` } },
-          { name: { _like: `%${search.toUpperCase()}%` } },
-          { ticker: { _like: `%${search}%` } },
-          { ticker: { _like: `%${search.toUpperCase()}%` } },
+          { name: { _ilike: `%${search}%` } },
+          { ticker: { _ilike: `%${search}%` } },
         ],
       }
     }
@@ -555,61 +574,130 @@ export class AsteroidClient extends AsteroidService {
     return listing.ppt
   }
 
-  // async getCollections(
-  //   offset: number,
-  //   limit: number,
-  //   where: {
-  //     creator?: string
-  //   } = {},
-  //   orderBy?: ValueTypes['collection_order_by'],
-  // ): Promise<Collection[]> {
-  //   if (!orderBy) {
-  //     orderBy = {
-  //       date_created: order_by.desc,
-  //     }
-  //   }
+  async getTopCollections(): Promise<TopCollection[]> {
+    const result = await this.query({
+      top_collections: [{}, topCollectionSelector],
+    })
+    return result.top_collections
+  }
 
-  //   const queryWhere: ValueTypes['collection_bool_exp'] | undefined = {}
-  //   if (where.creator) {
-  //     queryWhere.creator = {
-  //       _eq: where.creator,
-  //     }
-  //   }
+  async getCollections(
+    offset: number,
+    limit: number,
+    where: {
+      creator?: string
+      search?: string | null
+    } = {},
+    orderBy?: ValueTypes['collection_order_by'],
+  ): Promise<Collections> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      }
+    }
 
-  //   const result = await this.query({
-  //     collection: [
-  //       {
-  //         offset,
-  //         limit,
-  //         where: queryWhere,
-  //         order_by: [orderBy],
-  //       },
-  //       collectionSelector,
-  //     ],
-  //   })
+    const queryWhere: ValueTypes['collection_bool_exp'] | undefined = {}
+    if (where.creator) {
+      queryWhere.creator = {
+        _eq: where.creator,
+      }
+    }
 
-  //   return result.collection
-  // }
+    if (where.search) {
+      queryWhere.name = {
+        _ilike: `%${where.search}%`,
+      }
+    }
 
-  // async getCollection(symbol: string): Promise<Collection | undefined> {
-  //   const result = await this.query({
-  //     collection: [
-  //       {
-  //         where: {
-  //           symbol: {
-  //             _eq: symbol,
-  //           },
-  //         },
-  //       },
-  //       collectionSelector,
-  //     ],
-  //   })
-  //   return result.collection[0]
-  // }
+    const result = await this.query({
+      collection: [
+        {
+          offset,
+          limit,
+          where: queryWhere,
+          order_by: [orderBy],
+        },
+        collectionSelector,
+      ],
+      collection_aggregate: [
+        {
+          where: queryWhere,
+        },
+        aggregateCountSelector,
+      ],
+    })
+
+    return {
+      collections: result.collection,
+      count:
+        result.collection_aggregate.aggregate?.count ??
+        result.collection.length,
+    }
+  }
+
+  async getCollectionStats(collectionId: number) {
+    const result = await this.query({
+      collection_stats: [
+        {
+          args: {
+            collection_id: collectionId,
+          },
+        },
+        collectionStatsSelector,
+      ],
+    })
+    return result.collection_stats[0]
+  }
+
+  async getClubStats(maxId: number) {
+    const result = await this.query({
+      club_stats: [
+        {
+          args: {
+            max_id: maxId,
+          },
+        },
+        collectionStatsSelector,
+      ],
+    })
+    return result.club_stats[0]
+  }
+
+  async getCollection(symbol: string): Promise<CollectionDetail | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            symbol: {
+              _eq: symbol,
+            },
+          },
+        },
+        collectionDetailSelector,
+      ],
+    })
+    return result.collection[0] as CollectionDetail | undefined
+  }
+
+  async getCollectionById(id: number): Promise<CollectionDetail | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            id: {
+              _eq: id,
+            },
+          },
+        },
+        collectionDetailSelector,
+      ],
+    })
+    return result.collection[0] as CollectionDetail | undefined
+  }
 
   async getInscriptionWithMarket(
     hash: string,
-  ): Promise<InscriptionWithMarket | undefined> {
+  ): Promise<InscriptionWithMarket<InscriptionDetail> | undefined> {
     const result = await this.query({
       inscription: [
         {
@@ -622,7 +710,7 @@ export class AsteroidClient extends AsteroidService {
           },
         },
         {
-          ...inscriptionSelector,
+          ...inscriptionDetailSelector,
           marketplace_inscription_details: [
             {
               where: {
@@ -644,10 +732,19 @@ export class AsteroidClient extends AsteroidService {
       ...inscription,
       marketplace_listing:
         inscription?.marketplace_inscription_details?.[0]?.marketplace_listing,
-    }
+    } as InscriptionWithMarket<InscriptionDetail>
   }
 
-  async getInscription(hash: string): Promise<Inscription | undefined> {
+  async getInscription<T extends boolean = false>(
+    hash: string,
+    detail = false as T,
+  ): Promise<InscriptionType<T> | undefined> {
+    let selector: ValueTypes['inscription'] = inscriptionSelector
+
+    if (detail) {
+      selector = inscriptionDetailSelector
+    }
+
     const result = await this.query({
       inscription: [
         {
@@ -659,10 +756,10 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        inscriptionSelector,
+        selector,
       ],
     })
-    return result.inscription[0]
+    return result.inscription[0] as unknown as InscriptionType<T>
   }
 
   async getReservedInscriptions(
@@ -713,7 +810,7 @@ export class AsteroidClient extends AsteroidService {
     return res.marketplace_inscription_detail.map((i) => ({
       ...i.inscription!,
       marketplace_listing: i.marketplace_listing,
-    }))
+    })) as InscriptionWithMarket[]
   }
 
   async getUserListedInscriptions(
@@ -763,7 +860,7 @@ export class AsteroidClient extends AsteroidService {
       count:
         res.marketplace_inscription_detail_aggregate.aggregate?.count ??
         res.marketplace_inscription_detail.length,
-    }
+    } as InscriptionsResult
   }
 
   async getUserInscriptions(
@@ -798,7 +895,7 @@ export class AsteroidClient extends AsteroidService {
       inscriptions: res.inscription,
       count:
         res.inscription_aggregate.aggregate?.count ?? res.inscription.length,
-    }
+    } as InscriptionsResult
   }
 
   async getInscriptions(
@@ -813,20 +910,56 @@ export class AsteroidClient extends AsteroidService {
       priceGTE?: number
       priceLTE?: number
       search?: string | null
+      traitFilters?: TraitItem[][]
     } = {},
     orderBy?: ValueTypes['inscription_market_order_by'],
   ): Promise<InscriptionsResult> {
     const queryWhere: ValueTypes['inscription_market_bool_exp'] | undefined = {}
 
-    // if (where.collectionId) {
-    //   queryWhere.collection_id = {
-    //     _eq: where.collectionId,
-    //   }
-    // } else if (where.onlySingle) {
-    //   queryWhere.collection_id = {
-    //     _is_null: true,
-    //   }
-    // }
+    if (where.collectionId) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        collection_id: {
+          _eq: where.collectionId,
+        },
+      })
+    } else if (where.onlySingle) {
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        collection_id: {
+          _is_null: true,
+        },
+      })
+    }
+
+    let variables: Record<string, unknown> | undefined
+    if (where.traitFilters && where.traitFilters.length > 0) {
+      variables = {}
+      const metadataWhere = []
+
+      for (const traitFilter of where.traitFilters) {
+        let i = 0
+        const traitWhere = []
+        for (const valueFilter of traitFilter) {
+          const variableName = `${valueFilter.trait_type.replace(/\W+/g, '')}${i}`
+          variables[variableName] = {
+            metadata: {
+              attributes: [valueFilter],
+            },
+          }
+          traitWhere.push({
+            metadata: {
+              _contains: $(variableName, 'jsonb'),
+            },
+          })
+          i += 1
+        }
+        metadataWhere.push({ _or: traitWhere })
+      }
+
+      queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
+        _and: metadataWhere,
+      })
+    }
+
     if (where.currentOwner) {
       queryWhere._or = [
         {
@@ -898,28 +1031,33 @@ export class AsteroidClient extends AsteroidService {
       )
     }
 
-    const result = await this.query({
-      inscription_market_aggregate: [
-        { where: queryWhere },
-        aggregateCountSelector,
-      ],
-      inscription_market: [
-        {
-          offset,
-          limit,
-          order_by: orderBy ? [orderBy] : undefined,
-          where: queryWhere,
-        },
-        {
-          inscription: {
-            ...inscriptionSelector,
+    const result = await this.query(
+      {
+        inscription_market_aggregate: [
+          { where: queryWhere },
+          aggregateCountSelector,
+        ],
+        inscription_market: [
+          {
+            offset,
+            limit,
+            order_by: orderBy ? [orderBy] : undefined,
+            where: queryWhere,
           },
-          marketplace_listing: {
-            ...marketplaceListingSelector,
+          {
+            inscription: {
+              ...inscriptionSelector,
+            },
+            marketplace_listing: {
+              ...marketplaceListingSelector,
+            },
           },
-        },
-      ],
-    })
+        ],
+      },
+      {
+        variables,
+      },
+    )
     return {
       inscriptions: result.inscription_market.map((i) => ({
         ...i.inscription!,
@@ -928,11 +1066,13 @@ export class AsteroidClient extends AsteroidService {
       count:
         result.inscription_market_aggregate.aggregate?.count ??
         result.inscription_market.length,
-    }
+    } as InscriptionsResult
   }
 
   async getInscriptionHistory(
     inscriptionId: number,
+    offset = 0,
+    limit = 50,
     orderBy?: ValueTypes['inscription_history_order_by'],
   ): Promise<InscriptionHistory[]> {
     if (!orderBy) {
@@ -952,6 +1092,8 @@ export class AsteroidClient extends AsteroidService {
             },
           },
           order_by: [orderBy],
+          offset,
+          limit,
         },
         inscriptionHistorySelector,
       ],
@@ -1025,10 +1167,21 @@ export class AsteroidClient extends AsteroidService {
   async getInscriptionTradeHistory(
     offset = 0,
     limit = 200,
+    collectionId?: number,
   ): Promise<InscriptionTradeHistory[]> {
+    const where: ValueTypes['inscription_trade_history_bool_exp'] = {}
+    if (collectionId) {
+      where.inscription = {
+        collection_id: {
+          _eq: collectionId,
+        },
+      }
+    }
+
     const result = await this.query({
       inscription_trade_history: [
         {
+          where,
           offset,
           limit,
           order_by: [
@@ -1040,7 +1193,7 @@ export class AsteroidClient extends AsteroidService {
         inscriptionTradeHistorySelector,
       ],
     })
-    return result.inscription_trade_history
+    return result.inscription_trade_history as InscriptionTradeHistory[]
   }
 
   async getTokenTradeHistory(

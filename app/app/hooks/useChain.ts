@@ -1,6 +1,11 @@
-import { useChain as useChainOriginal } from '@cosmos-kit/react'
-import type { SignerOptions, WalletStatus } from 'cosmos-kit'
+import { useChain as useChainOriginal } from '@cosmos-kit/react-lite'
 import { clientOnly$ } from 'vite-env-only'
+import type { WalletStatus } from '~/components/wallet/Wallet'
+
+export interface SignerOptions {
+  preferNoSetFee: boolean
+  preferNoSetMemo: boolean
+}
 
 export default function useChain(chainName: string) {
   const chain = clientOnly$(useChainOriginal(chainName))
@@ -16,7 +21,7 @@ export default function useChain(chainName: string) {
       setDefaultSignOptions: (options: SignerOptions) => {},
       getOfflineSignerDirect: undefined,
       isWalletConnected: false,
-      address: undefined,
+      address: undefined as string | undefined,
     }
   return chain
 }

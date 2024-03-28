@@ -1,0 +1,11 @@
+{
+    "parent": {
+        "type": "/cosmos.bank.Account",
+        "identifier": "cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud"
+    },
+    "metadata": {
+        "mime": "image/png",
+        "name": "aaa",
+        "description": "aaa"
+    }
+}

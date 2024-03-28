@@ -1,8 +1,7 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useState } from 'react'
 import { Button } from 'react-daisyui'
 import TxDialog from '~/components/dialogs/TxDialog'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 
 export default function CancelListing({
@@ -15,8 +14,7 @@ export default function CancelListing({
   onClick?: () => void
 }) {
   const operations = useMarketplaceOperations()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
-  const { dialogRef, handleShow } = useDialog()
+  const { dialogRef, showDialog, value } = useDialogWithValue<TxInscription>()
 
   function cancelListing() {
     if (!operations) {
@@ -26,13 +24,10 @@ export default function CancelListing({
 
     const txInscription = operations.delist(listingHash)
 
-    setTxInscription(txInscription)
-
     onClick?.()
-    handleShow()
+    showDialog(txInscription)
   }
 
-  // @todo resultLink - handle both marketplace kinds
   return (
     <div className={className}>
       <Button onClick={() => cancelListing()} color="primary">
@@ -40,9 +35,8 @@ export default function CancelListing({
       </Button>
       <TxDialog
         ref={dialogRef}
-        txInscription={txInscription}
+        txInscription={value}
         resultCTA="Back to market"
-        resultLink={`/app/inscriptions`}
       />
     </div>
   )

@@ -27,6 +27,7 @@ function Tab({
 
 enum WalletTab {
   Tokens,
+  Collections,
   Inscriptions,
   Deployed,
   Sales,
@@ -52,6 +53,8 @@ export default function WalletPage() {
     active = WalletTab.Deployed
   } else if (lastPath === 'sales') {
     active = WalletTab.Sales
+  } else if (lastPath === 'collections') {
+    active = WalletTab.Collections
   }
 
   if (!address) {
@@ -99,6 +102,9 @@ export default function WalletPage() {
       <Tabs variant="bordered" className="w-full mt-16">
         <Tab to="" active={active === WalletTab.Tokens}>
           Tokens
+        </Tab>
+        <Tab to="collections" active={active === WalletTab.Collections}>
+          Collections
         </Tab>
         <Tab to="inscriptions" active={active === WalletTab.Inscriptions}>
           Inscriptions

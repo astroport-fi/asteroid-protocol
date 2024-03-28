@@ -5,7 +5,7 @@ import {
   Selector,
 } from '@asteroid-protocol/sdk/client'
 import type { Optional } from '~/utils/types'
-import { inscriptionImageSelector } from './inscription'
+import { InscriptionImage, inscriptionImageSelector } from './inscription'
 
 export const tradeHistorySelector = Selector('trade_history')({
   id: true,
@@ -21,11 +21,14 @@ export const tradeHistorySelector = Selector('trade_history')({
   inscription: inscriptionImageSelector,
 })
 
-export type TradeHistory = Optional<
-  InputType<
-    GraphQLTypes['trade_history'],
-    typeof tradeHistorySelector,
-    ScalarDefinition
+export type TradeHistory = Omit<
+  Optional<
+    InputType<
+      GraphQLTypes['trade_history'],
+      typeof tradeHistorySelector,
+      ScalarDefinition
+    >,
+    'token' | 'inscription'
   >,
-  'token' | 'inscription'
->
+  'inscription'
+> & { inscription?: InscriptionImage }

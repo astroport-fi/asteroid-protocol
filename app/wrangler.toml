@@ -15,18 +15,32 @@ USE_IBC = false
 USE_EXTENSION_DATA = true
 MAINTENANCE_MODE = false
 
+[env.vars.localroids]
+ENVIRONMENT = "development"
+ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+RPC = "https://rpc-localroids.asteroidprotocol.io"
+REST = "https://rest-localroids.asteroidprotocol.io"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+
 [env.testnet.vars]
 ENVIRONMENT = "development"
 ASTEROID_API = "https://testnet-api.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://testnet-api.asteroidprotocol.io/v1/graphql"
 TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
 RPC = "https://rpc.sentry-01.theta-testnet.polypore.xyz"
-REST = "https://rest.sentry-01.theta-testnet.polypore.xyz"
+REST = "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz"
 CHAIN_ID = "theta-testnet-001"
 CHAIN_NAME = "cosmoshubtestnet"
 MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
-USE_IBC = true
+USE_IBC = false
 USE_EXTENSION_DATA = true
 
 [env.mainnet.vars]

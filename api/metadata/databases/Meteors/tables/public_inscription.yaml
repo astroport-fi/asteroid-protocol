@@ -2,6 +2,9 @@ table:
   name: inscription
   schema: public
 object_relationships:
+  - name: collection
+    using:
+      foreign_key_constraint_on: collection_id
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id
@@ -27,24 +30,32 @@ array_relationships:
         table:
           name: marketplace_inscription_detail
           schema: public
+  - name: migration_permission_grants
+    using:
+      foreign_key_constraint_on:
+        column: inscription_id
+        table:
+          name: migration_permission_grant
+          schema: public
 select_permissions:
   - role: anonymous
     permission:
       columns:
-        - is_explicit
         - chain_id
+        - collection_id
         - content_hash
         - content_path
+        - content_size_bytes
         - creator
         - current_owner
-        - type
-        - version
-        - content_size_bytes
+        - date_created
         - height
         - id
-        - transaction_id
+        - is_explicit
         - metadata
-        - date_created
+        - transaction_id
+        - type
+        - version
       filter: {}
       allow_aggregations: true
     comment: ""

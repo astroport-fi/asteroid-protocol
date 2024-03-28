@@ -1,5 +1,5 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
-import { useNavigate } from '@remix-run/react'
+import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { Steps } from 'react-daisyui'
 import type { To } from 'react-router'
@@ -21,7 +21,7 @@ interface Props {
   listingHash: string | null
   buyType: BuyType
   royalty?: Royalty
-  resultLink: To
+  resultLink?: To | ((txHash: string) => To)
 }
 
 enum Step {
@@ -40,6 +40,9 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const {
     status: { lastKnownHeight },
   } = useRootContext()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [url, setUrl] = useState<To | undefined>()
 
   const [listingHash, setListingHash] = useState<string | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
@@ -138,16 +141,13 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     setError,
   ])
 
-  const navigate = useNavigate()
   const fRef = useForwardRef(ref)
 
   return (
     <Modal
       ref={ref}
       backdrop
-      onClose={() => {
-        navigate(resultLink)
-      }}
+      onClose={() => navigate(url ?? `${location.pathname}${location.search}`)}
     >
       <Modal.Body className="text-center">
         <Body
@@ -164,11 +164,17 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
               : 'Deposit (0.01%)'
           }
           resultCTA="Back to market"
-          onClose={
+          onCTAClick={
             step === Step.Purchase
               ? () => {
+                  if (typeof resultLink === 'function') {
+                    setUrl(resultLink(txHash))
+                  } else {
+                    setUrl(
+                      resultLink ?? `${location.pathname}${location.search}`,
+                    )
+                  }
                   fRef.current?.close()
-                  navigate(resultLink)
                   resetState()
                 }
               : undefined

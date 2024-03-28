@@ -1,0 +1,21 @@
+{
+    "parent": {
+        "type": "/cosmos.bank.Account",
+        "identifier": "cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud"
+    },
+    "metadata": {
+        "name": "aaa",
+        "description": "aaa",
+        "mime": "image/png",
+        "attributes": [
+            {
+                "trait_type": "Glasses",
+                "value": "Purple"
+            },
+            {
+                "trait_type": "Hat",
+                "value": "Cap"
+            }
+        ]
+    }
+}

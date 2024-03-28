@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/decoder"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -145,13 +146,14 @@ func TestOldTx(t *testing.T) {
 		t.Fatalf("error unmarshalling: %v", err)
 	}
 
-	metadata, err := msg.GetMetadata()
+	var inscriptionMetadata InscriptionMetadata[Metadata]
+	_, err = msg.GetMetadata(&inscriptionMetadata)
 	if err != nil {
 		t.Fatalf("error getting metadata: %v", err)
 	}
 
-	if metadata.Metadata.Name != "ABC" {
-		t.Fatalf("expected ABC, got %v", metadata.Metadata.Name)
+	if inscriptionMetadata.Metadata.Name != "ABC" {
+		t.Fatalf("expected ABC, got %v", inscriptionMetadata.Metadata.Name)
 	}
 }
 
@@ -183,12 +185,16 @@ func TestNewTx(t *testing.T) {
 		t.Fatalf("error unmarshalling: %v", err)
 	}
 
-	metadata, err := msg.GetMetadata()
+	var inscriptionMetadata InscriptionMetadata[CollectionMetadata]
+	_, err = msg.GetMetadata(&inscriptionMetadata)
 	if err != nil {
 		t.Fatalf("error getting metadata: %v", err)
 	}
 
-	if metadata.Metadata.Name != "ABC" {
-		t.Fatalf("expected ABC, got %v", metadata.Metadata.Name)
+	if inscriptionMetadata.Metadata.Name != "ABC" {
+		t.Fatalf("expected ABC, got %v", inscriptionMetadata.Metadata.Name)
 	}
+
+	assert.Empty(t, inscriptionMetadata.Metadata.RoyaltyPercentage)
+	assert.Empty(t, inscriptionMetadata.Metadata.PaymentAddress)
 }
