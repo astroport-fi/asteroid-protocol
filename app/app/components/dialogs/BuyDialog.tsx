@@ -16,7 +16,6 @@ import Body from '../SubmitTx/Body'
 import Modal from './Modal'
 
 export type BuyType = 'cft20' | 'inscription'
-export type Royalty = { recipient: string; percentage: number }
 
 interface Props {
   listingHash: string | null
