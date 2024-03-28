@@ -96,6 +96,38 @@
               - mime
             filter: {}
           role: anonymous
+    - fields:
+        - name: id
+          type:
+            nullable: false
+            scalar: integer
+        - name: symbol
+          type:
+            nullable: false
+            scalar: varchar
+        - name: name
+          type:
+            nullable: false
+            scalar: varchar
+        - name: content_path
+          type:
+            nullable: false
+            scalar: varchar
+        - name: volume
+          type:
+            nullable: false
+            scalar: numeric
+      name: top_collection
+      select_permissions:
+        - permission:
+            columns:
+              - id
+              - symbol
+              - name
+              - content_path
+              - volume
+            filter: {}
+          role: anonymous
   native_queries:
     - arguments:
         max_id:
@@ -136,4 +168,8 @@
       code: "SELECT \n  id,\n  (select hash from \"transaction\" t where id = inscription.transaction_id) as transaction_hash,\n  current_owner,\n  content_path,\n  content_size_bytes,\n  date_created,\n  is_explicit,\n  metadata->'metadata'->>'name' as name,\n  metadata->'metadata'->>'description' as description,\n  metadata->'metadata'->>'mime' as mime\nFROM inscription\nWHERE metadata->'metadata'->>'name' ILIKE {{query_name}};"
       returns: search_result
       root_field_name: find_inscription_by_name
+    - arguments: {}
+      code: "SELECT cl.id, cl.symbol, cl.name, cl.content_path, COALESCE(SUM(amount_quote), 0) as volume \nFROM collection cl \nINNER JOIN inscription i ON i.collection_id = cl.id\nINNER JOIN inscription_trade_history ith ON ith.inscription_id = i.id\nWHERE i.collection_id IS NOT NULL\nGROUP BY cl.id\nORDER BY volume DESC\nLIMIT 6"
+      returns: top_collection
+      root_field_name: top_collections
   tables: "!include Meteors/tables/tables.yaml"
