@@ -13,13 +13,13 @@ SKD exposes Operations class for each metaprotocol and calling a metaprotocol op
 ### Operations
 
 - `InscriptionOperations`
-  - `inscribe(data: string | Buffer, metadata: ContentMetadata): TxData`
+  - `inscribe<M = NFTMetadata>(content: Uint8Array, metadata: M, parent?: Parent): TxData`
   - `inscribeCollectionInscription(collection: string, content: Uint8Array, metadata: NFTMetadata): TxData`
   - `inscribeCollection(content: Uint8Array, metadata: CollectionMetadata): TxData`
   - `transfer(hash: string, destination: string): TxData`
 
 - `CFT20Operations`
-  - `deploy(data: string | Buffer, mime: string, params: DeployParams): TxData`
+  - `deploy(data: Uint8Array, mime: string, params: DeployParams): TxData`
   - `mint(ticker: string, amount: number): TxData`
   - `transfer(ticker: string, amount: number, destination: string): TxData`
 
@@ -109,7 +109,7 @@ const tokens = await asteroid.query({
 If you want to infer the response type then you can update previous example to be more reusable
 
 ```typescript
-import { ScalarDefinition, Selector, InputType, GraphQLTypes } from "@asteroid-protocol/sdk";
+import { ScalarDefinition, Selector, InputType, GraphQLTypes } from "@asteroid-protocol/sdk/client";
 
 const tokenSelector = Selector('token')({
   id: true,
