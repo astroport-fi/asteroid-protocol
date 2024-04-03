@@ -105,15 +105,15 @@ export function prepareTx(
   for (const inscription of inscriptions) {
     // nonCriticalExtensionOptions
     if (inscription.data || isMultiOp) {
-      if (options.useExtensionData) {
-        nonCriticalExtensionOptions.push({
-          typeUrl: ExtensionData.typeUrl,
-          value: getExtensionData(inscription),
-        })
-      } else {
+      if (options.useExtensionData === false) {
         nonCriticalExtensionOptions.push({
           typeUrl: MsgRevoke.typeUrl,
           value: getMsgRevoke(inscription),
+        })
+      } else {
+        nonCriticalExtensionOptions.push({
+          typeUrl: ExtensionData.typeUrl,
+          value: getExtensionData(inscription),
         })
       }
     }

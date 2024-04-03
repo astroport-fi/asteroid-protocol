@@ -29,7 +29,7 @@ async function main() {
   // create a inscription transaction
   const operations = new InscriptionOperations(network.chainId, account.address)
 
-  const data = 'SOME DATA'
+  const data = new TextEncoder().encode('SOME DATA')
   const txData = operations.inscribe(data, {
     mime: 'text/plain',
     name: 'some text',
