@@ -14,7 +14,7 @@ import (
 )
 
 type ClientConfig struct {
-	DatabaseURL string `envconfig:"DATABASE_URL" required:"true"`
+	DatabaseDNS string `envconfig:"DATABASE_DNS" required:"true"`
 }
 
 type WorkerClient struct {
@@ -33,7 +33,7 @@ func NewWorkerClient(logger *logrus.Entry) (*WorkerClient, error) {
 
 	// Setup database connection
 	ctx := context.Background()
-	dbPool, err := pgxpool.New(ctx, config.DatabaseURL)
+	dbPool, err := pgxpool.New(ctx, config.DatabaseDSN)
 	if err != nil {
 		return nil, err
 	}

@@ -17,7 +17,6 @@ import (
 )
 
 type Config struct {
-	DatabaseURL string `envconfig:"DATABASE_URL" required:"true"`
 	DatabaseDSN string `envconfig:"DATABASE_DSN" required:"true"`
 }
 
@@ -36,7 +35,7 @@ func NewWorker(ctx context.Context, log *logrus.Entry) (*Worker, error) {
 	}
 
 	// Setup database connection
-	dbPool, err := pgxpool.New(ctx, config.DatabaseURL)
+	dbPool, err := pgxpool.New(ctx, config.DatabaseDSN)
 	if err != nil {
 		return nil, err
 	}
