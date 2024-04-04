@@ -2,6 +2,15 @@ table:
   name: collection
   schema: public
 object_relationships:
+  - name: stats
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: collection_stats
+          schema: public
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id

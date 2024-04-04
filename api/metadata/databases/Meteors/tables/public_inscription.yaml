@@ -5,6 +5,15 @@ object_relationships:
   - name: collection
     using:
       foreign_key_constraint_on: collection_id
+  - name: rarity
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: inscription_rarity
+          schema: public
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id
@@ -51,6 +60,7 @@ select_permissions:
         - date_created
         - height
         - id
+        - inscription_number
         - is_explicit
         - metadata
         - transaction_id
