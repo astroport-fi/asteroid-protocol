@@ -111,7 +111,6 @@ CREATE TABLE "public"."collection_traits" (
     "trait_value" jsonb NOT NULL,
     "count" bigint NOT NULL,
     "rarity_score" numeric NOT NULL,
-    CONSTRAINT collection_traits_collection_id UNIQUE ("collection_id"),
     CONSTRAINT collection_traits_id_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
     CONSTRAINT "collection_traits_type_value" UNIQUE ("collection_id", "trait_type", "trait_value")
 );
