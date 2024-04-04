@@ -6,7 +6,7 @@ import {
   WSSubscription,
   order_by,
 } from '@asteroid-protocol/sdk/client'
-import { aggregateCountSelector, collectionStatsSelector } from '~/api/common'
+import { aggregateCountSelector } from '~/api/common'
 import {
   InscriptionDetail,
   InscriptionHistory,
@@ -42,12 +42,16 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import { clubStatsSelector } from './clubs'
 import {
   Collection,
   CollectionDetail,
+  CollectionsStatsItem,
   TopCollection,
   collectionDetailSelector,
   collectionSelector,
+  collectionStatsItemSelector,
+  collectionStatsSelector,
   topCollectionSelector,
 } from './collection'
 import { marketplaceListingSelector } from './marketplace'
@@ -98,6 +102,11 @@ export interface TraitItem {
 export interface Collections {
   collections: Collection[]
   count: number
+}
+
+export type CollectionsStats = {
+  stats: CollectionsStatsItem[]
+  count?: number
 }
 
 export class AsteroidClient extends AsteroidService {
@@ -635,12 +644,82 @@ export class AsteroidClient extends AsteroidService {
     }
   }
 
+  async getCollectionsStats(
+    orderBy: ValueTypes['collection_stats_order_by'],
+    where: {
+      search?: string | null
+    } = {},
+    offset: number = 0,
+    limit: number = 15,
+    aggregate = false,
+  ): Promise<CollectionsStats> {
+    let queryWhere: ValueTypes['collection_stats_bool_exp'] | undefined
+    if (where.search) {
+      queryWhere = {
+        collection: {
+          name: {
+            _ilike: `%${where.search}%`,
+          },
+        },
+      }
+    }
+
+    type Query = {
+      collection_stats: [
+        QueryOptions<'collection_stats'>,
+        typeof collectionStatsItemSelector,
+      ]
+      collection_stats_aggregate?: [
+        QueryOptions<'collection_stats_aggregate'>,
+        typeof aggregateCountSelector,
+      ]
+    }
+
+    const query: Query = {
+      collection_stats: [
+        {
+          where: queryWhere,
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        collectionStatsItemSelector,
+      ],
+    }
+
+    if (aggregate) {
+      query.collection_stats_aggregate = [
+        {
+          where: queryWhere,
+        },
+        {
+          aggregate: {
+            count: [{}, true],
+          },
+        },
+      ]
+    }
+
+    const result = await this.query(query)
+    let count: number | undefined
+    if (aggregate) {
+      count = result.collection_stats_aggregate?.aggregate?.count
+    }
+
+    return {
+      count,
+      stats: result.collection_stats as CollectionsStatsItem[],
+    }
+  }
+
   async getCollectionStats(collectionId: number) {
     const result = await this.query({
       collection_stats: [
         {
-          args: {
-            collection_id: collectionId,
+          where: {
+            id: {
+              _eq: collectionId,
+            },
           },
         },
         collectionStatsSelector,
@@ -657,7 +736,7 @@ export class AsteroidClient extends AsteroidService {
             max_id: maxId,
           },
         },
-        collectionStatsSelector,
+        clubStatsSelector,
       ],
     })
     return result.club_stats[0]
@@ -906,7 +985,7 @@ export class AsteroidClient extends AsteroidService {
       currentOwner?: string
       onlySingle?: boolean
       onlyBuy?: boolean
-      idLTE?: number
+      inscriptionNumberLTE?: number
       priceGTE?: number
       priceLTE?: number
       search?: string | null
@@ -1011,10 +1090,10 @@ export class AsteroidClient extends AsteroidService {
       )
     }
 
-    if (where.idLTE) {
+    if (where.inscriptionNumberLTE) {
       queryWhere.inscription = Object.assign(queryWhere.inscription || {}, {
-        id: {
-          _lte: where.idLTE,
+        inscription_number: {
+          _lte: where.inscriptionNumberLTE,
         },
       })
     }

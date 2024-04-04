@@ -67,3 +67,29 @@ export type TopCollection = InputType<
   typeof topCollectionSelector,
   ScalarDefinition
 >
+
+// Collection stats
+
+export const collectionStatsSelector = Selector('collection_stats')({
+  floor_price: true,
+  listed: true,
+  owners: true,
+  supply: true,
+  volume: true,
+  volume_24h: true,
+})
+
+export type CollectionStats = InputType<
+  GraphQLTypes['collection_stats'],
+  typeof collectionStatsSelector,
+  ScalarDefinition
+>
+
+export const collectionStatsItemSelector = {
+  ...collectionStatsSelector,
+  collection: topCollectionSelector,
+}
+
+export type CollectionsStatsItem = CollectionStats & {
+  collection: TopCollection
+}

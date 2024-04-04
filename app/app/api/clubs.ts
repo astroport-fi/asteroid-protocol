@@ -1,3 +1,9 @@
+import {
+  GraphQLTypes,
+  InputType,
+  ScalarDefinition,
+  Selector,
+} from '@asteroid-protocol/sdk/client'
 import latestImage from '~/images/clubs/latest.png'
 import sub1kImage from '~/images/clubs/sub1k.png'
 import sub5kImage from '~/images/clubs/sub5k.png'
@@ -68,3 +74,19 @@ export function getClubBySlug(slug: string) {
 }
 
 export default clubs
+
+// Club stats
+
+export const clubStatsSelector = Selector('club_stats')({
+  floor_price: true,
+  listed: true,
+  owners: true,
+  supply: true,
+  volume: true,
+})
+
+export type ClubStats = InputType<
+  GraphQLTypes['club_stats'],
+  typeof clubStatsSelector,
+  ScalarDefinition
+>

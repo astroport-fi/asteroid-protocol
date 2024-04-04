@@ -159,6 +159,8 @@ const sortItems: DropdownItem<Sort>[] = [
   { label: 'Lowest price', value: Sort.LOWEST_PRICE },
   { label: 'Highest price', value: Sort.HIGHEST_PRICE },
   { label: 'Highest ID', value: Sort.HIGHEST_ID },
+  { label: 'Common to Rare', value: Sort.COMMON },
+  { label: 'Rare to Common', value: Sort.RARE },
 ]
 
 const priceRangeItems: DropdownItem<PriceRange>[] = [

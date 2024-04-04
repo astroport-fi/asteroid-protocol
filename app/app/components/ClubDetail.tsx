@@ -1,6 +1,5 @@
 import clsx from 'clsx'
-import { Club } from '~/api/clubs'
-import { CollectionStats } from '~/api/common'
+import { Club, ClubStats } from '~/api/clubs'
 import CollectionStatsComponent from './CollectionStats'
 
 export default function ClubDetail({
@@ -8,7 +7,7 @@ export default function ClubDetail({
   stats,
 }: {
   club: Club
-  stats: CollectionStats | undefined
+  stats: ClubStats | undefined
 }) {
   return (
     <div className="flex p-5 pb-6  border-b border-b-neutral items-center">

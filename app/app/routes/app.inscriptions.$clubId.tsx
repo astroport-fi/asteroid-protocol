@@ -2,9 +2,12 @@ import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { Outlet, json, useLoaderData, useParams } from '@remix-run/react'
 import { useMemo } from 'react'
 import { AsteroidClient } from '~/api/client'
-import { getClubBySlug } from '~/api/clubs'
-import { CollectionDetail, CollectionTrait } from '~/api/collection'
-import { CollectionStats } from '~/api/common'
+import { ClubStats, getClubBySlug } from '~/api/clubs'
+import {
+  CollectionDetail,
+  CollectionStats,
+  CollectionTrait,
+} from '~/api/collection'
 import { InscriptionWithMarket } from '~/api/inscription'
 import ClubDetail from '~/components/ClubDetail'
 import CollectionDetailComponent from '~/components/CollectionDetail'
@@ -40,7 +43,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   }
 
   let collection: CollectionDetail | undefined
-  let stats: CollectionStats | undefined
+  let stats: CollectionStats | ClubStats | undefined
 
   if (params.symbol) {
     collection = await asteroidClient.getCollection(params.symbol)

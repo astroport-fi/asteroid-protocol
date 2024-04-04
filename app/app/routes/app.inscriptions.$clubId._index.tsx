@@ -71,6 +71,23 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
         },
       }
       break
+    case Sort.COMMON:
+      orderBy = {
+        inscription: {
+          rarity: {
+            rarity_score: order_by.asc,
+          },
+        },
+      }
+      break
+    case Sort.RARE:
+      orderBy = {
+        inscription: {
+          rarity: {
+            rarity_score: order_by.desc,
+          },
+        },
+      }
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
@@ -103,11 +120,11 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     }
   }
 
-  let idLTE: number | undefined
+  let inscriptionNumberLTE: number | undefined
   if (params.clubId) {
     const club = getClubBySlug(params.clubId)
     if (club && club.range) {
-      idLTE = club.range
+      inscriptionNumberLTE = club.range
     }
   }
 
@@ -117,7 +134,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     limit,
     {
       onlyBuy: status == 'buy',
-      idLTE,
+      inscriptionNumberLTE,
       priceGTE: from ? parseFloat(from) * 10e5 : undefined,
       priceLTE: to ? parseFloat(to) * 10e5 : undefined,
       search,

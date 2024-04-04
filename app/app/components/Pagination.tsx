@@ -94,7 +94,7 @@ export default function Pagination({
         onClick={() => setPageIndex(0)}
         disabled={!getCanPreviousPage()}
       >
-        <ChevronDoubleLeftIcon className="h-5 w-5" />
+        <ChevronDoubleLeftIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -102,7 +102,7 @@ export default function Pagination({
         onClick={() => previousPage()}
         disabled={!getCanPreviousPage()}
       >
-        <ChevronLeftIcon className="h-5 w-5" />
+        <ChevronLeftIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -110,7 +110,7 @@ export default function Pagination({
         onClick={() => nextPage()}
         disabled={!getCanNextPage()}
       >
-        <ChevronRightIcon className="h-5 w-5" />
+        <ChevronRightIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -118,7 +118,7 @@ export default function Pagination({
         onClick={() => setPageIndex(pageCount - 1)}
         disabled={!getCanNextPage()}
       >
-        <ChevronDoubleRightIcon className="h-5 w-5" />
+        <ChevronDoubleRightIcon className="size-5" />
       </Button>
       <span className="flex items-center gap-1">
         <div>Page</div>

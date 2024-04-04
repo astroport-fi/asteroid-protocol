@@ -4,6 +4,8 @@ export enum Sort {
   RECENTLY_LISTED = 'recently_listed',
   LOWEST_ID = 'lowest_id',
   HIGHEST_ID = 'highest_id',
+  COMMON = 'common',
+  RARE = 'rare',
 }
 
 export enum PriceRange {

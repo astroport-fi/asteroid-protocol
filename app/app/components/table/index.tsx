@@ -15,6 +15,7 @@ import { twMerge } from 'tailwind-merge'
 declare module '@tanstack/table-core' {
   interface ColumnMeta<TData extends RowData, TValue> {
     className?: string
+    headerClassName?: string
   }
 }
 
@@ -23,6 +24,8 @@ interface Props<T> {
   showPagination?: boolean
   total?: number
   className?: string
+  rowClassName?: string
+  headerClassName?: string
   emptyText?: string
   onClick?: (row: T) => void
 }
@@ -52,7 +55,7 @@ function Pagination<T>({
         onClick={() => table.setPageIndex(0)}
         disabled={!table.getCanPreviousPage()}
       >
-        <ChevronDoubleLeftIcon className="h-5 w-5" />
+        <ChevronDoubleLeftIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -60,7 +63,7 @@ function Pagination<T>({
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
-        <ChevronLeftIcon className="h-5 w-5" />
+        <ChevronLeftIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -68,7 +71,7 @@ function Pagination<T>({
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
-        <ChevronRightIcon className="h-5 w-5" />
+        <ChevronRightIcon className="size-5" />
       </Button>
       <Button
         shape="circle"
@@ -76,7 +79,7 @@ function Pagination<T>({
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
         disabled={!table.getCanNextPage()}
       >
-        <ChevronDoubleRightIcon className="h-5 w-5" />
+        <ChevronDoubleRightIcon className="size-5" />
       </Button>
       <span className="flex items-center gap-1">
         <div>Page</div>
@@ -108,24 +111,28 @@ export default function Table<T = unknown>({
   total,
   onClick,
   className,
+  rowClassName: rowClassNameProp,
+  headerClassName,
   emptyText,
 }: Props<T>) {
   const headerGroup = table.getHeaderGroups()[0]
   const rows = table.getRowModel().rows
-  const rowClassName = clsx(twMerge, {
-    'hover hover:cursor-pointer': typeof onClick === 'function',
-  })
+  const rowClassName = twMerge(
+    clsx(rowClassNameProp, {
+      'hover hover:cursor-pointer': typeof onClick === 'function',
+    }),
+  )
   showPagination = showPagination !== false && rows.length > 0
 
   return (
     <div className={twMerge('flex flex-col w-full', className)}>
       <DaisyTable>
         <thead>
-          <tr className="border-neutral">
+          <tr className={twMerge('border-neutral', headerClassName)}>
             {headerGroup.headers.map((header) => (
               <th
                 key={header.id}
-                className={clsx({
+                className={clsx(header.column.columnDef.meta?.headerClassName, {
                   ['cursor-pointer select-none']: header.column.getCanSort(),
                 })}
                 style={{ width: `${header.getSize()}px` }}
@@ -138,10 +145,10 @@ export default function Table<T = unknown>({
                     color="ghost"
                     endIcon={
                       {
-                        asc: <BarsArrowUpIcon className="h-5 w-5" />,
-                        desc: <BarsArrowDownIcon className="h-5 w-5" />,
+                        asc: <BarsArrowUpIcon className="size-5" />,
+                        desc: <BarsArrowDownIcon className="size-5" />,
                       }[header.column.getIsSorted() as string] ?? (
-                        <ArrowsUpDownIcon className="h-5 w-5" />
+                        <ArrowsUpDownIcon className="size-5" />
                       )
                     }
                   >

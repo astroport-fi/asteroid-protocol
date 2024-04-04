@@ -58,7 +58,9 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               >
                 <ArrowLeftIcon className="size-5" />
               </Button>
-              <span className="ml-2">Inscription #{inscription.id - 1}</span>
+              <span className="ml-2">
+                Inscription #{inscription.inscription_number! - 1}
+              </span>
             </Modal.Header>
             <Modal.Body className="flex flex-col items-center">
               <InscriptionImage

@@ -44,7 +44,7 @@ export default function Navbar() {
           <Button tag="label" color="ghost" tabIndex={0} className="lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="size-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -17,17 +17,3 @@ export type Aggregate = InputType<
   typeof aggregateCountSelector,
   ScalarDefinition
 >
-
-export const collectionStatsSelector = Selector('collection_stats')({
-  floor_price: true,
-  listed: true,
-  owners: true,
-  supply: true,
-  volume: true,
-})
-
-export type CollectionStats = InputType<
-  GraphQLTypes['collection_stats'],
-  typeof collectionStatsSelector,
-  ScalarDefinition
->

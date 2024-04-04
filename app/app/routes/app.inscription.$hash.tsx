@@ -205,6 +205,17 @@ function InscriptionDetailComponent({
             </Link>
           </div>
         )}
+
+        {inscription.rarity && (
+          <div className="flex flex-col mt-6">
+            <strong>Rarity</strong>
+            <span>
+              {inscription.rarity.rarity_rank} /{' '}
+              {inscription.collection?.stats?.supply}
+            </span>
+          </div>
+        )}
+
         {hasAttributes && (
           <div className="flex flex-col mt-6">
             <strong>Traits</strong>
@@ -303,7 +314,7 @@ export default function InscriptionPage() {
             : `/app/inscriptions`
         }
       >
-        Inscription #{data.inscription.id - 1}
+        Inscription #{data.inscription.inscription_number! - 1}
       </BackHeader>
       <InscriptionDetailComponent inscription={data.inscription} />
       <Divider className="mt-8" />

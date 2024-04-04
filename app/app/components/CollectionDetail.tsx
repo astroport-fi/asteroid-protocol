@@ -2,8 +2,8 @@ import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Collapse, Link } from 'react-daisyui'
-import { CollectionDetail } from '~/api/collection'
-import { CollectionStats } from '~/api/common'
+import { ClubStats } from '~/api/clubs'
+import { CollectionDetail, CollectionStats } from '~/api/collection'
 import CollectionStatsComponent from './CollectionStats'
 import InscriptionImage from './InscriptionImage'
 import Discord from './icons/discord'
@@ -15,7 +15,7 @@ export default function CollectionDetailComponent({
   stats,
 }: {
   collection: CollectionDetail
-  stats: CollectionStats | undefined
+  stats: CollectionStats | ClubStats | undefined
 }) {
   const { metadata } = collection
   const hasSocials =
@@ -55,7 +55,7 @@ export default function CollectionDetailComponent({
           <div className="flex items-start mt-3 gap-2">
             {metadata.website && (
               <Link
-                href="https://twitter.com/asteroidxyz"
+                href={metadata.website}
                 title={`${collection.name} website`}
                 target="_blank"
               >
