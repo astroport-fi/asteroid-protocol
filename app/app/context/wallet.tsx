@@ -138,6 +138,7 @@ export default function WalletProvider() {
   return (
     <ChainProvider
       chains={getChains()}
+      subscribeConnectEvents={true}
       assetLists={getAssets()}
       wallets={[...keplr, ...leap]}
       walletModal={MyModal}
