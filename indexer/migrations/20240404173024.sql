@@ -1,3 +1,6 @@
+-- DROP collection traits view
+DROP VIEW collection_traits;
+
 -- Create "collection_stats" table
 CREATE TABLE "public"."collection_stats" (
   "id" integer NOT NULL,
@@ -45,3 +48,81 @@ CREATE TABLE "public"."inscription_rarity" (
 CREATE INDEX "idx_inscription_rarity_id" ON "public"."inscription_rarity" ("id");
 -- Create index "inscription_rarity_id" to table: "inscription_rarity"
 CREATE UNIQUE INDEX "inscription_rarity_id" ON "public"."inscription_rarity" ("id");
+
+-- public.collection_traits_view view definition
+
+CREATE OR REPLACE VIEW public.collection_traits_view AS 
+SELECT r.collection_id,
+    (obj.value -> 'trait_type'::text) AS trait_type,
+    (obj.value -> 'value'::text) AS trait_value,
+    count(*) AS count,
+    (1::decimal / count(*)::decimal / (SELECT count(id) FROM inscription WHERE collection_id = r.collection_id)::decimal) as rarity_score
+FROM inscription r,
+    LATERAL jsonb_array_elements(((r.metadata -> 'metadata'::text) -> 'attributes'::text)) obj(value)
+    WHERE (r.collection_id IS NOT NULL)
+    GROUP BY 
+        r.collection_id,
+        (obj.value -> 'trait_type'::text),
+        (obj.value -> 'value'::text);
+
+-- public.inscription_traits view definition
+
+CREATE OR REPLACE VIEW "public"."inscription_traits" AS
+SELECT
+    r.id,
+    r.collection_id,
+    (obj.value -> 'trait_type' :: text) AS trait_type,
+    (obj.value -> 'value' :: text) AS trait_value 
+FROM 
+    inscription r,
+    LATERAL jsonb_array_elements(((r.metadata -> 'metadata'::text) -> 'attributes'::text)) obj(value);
+
+-- public.inscription_rarity_view view definition
+
+CREATE OR REPLACE VIEW "public"."inscription_rarity_view" AS
+SELECT 
+    it.id,
+    SUM(ct.rarity_score) AS rarity_score,
+    row_number() over (partition by it.collection_id ORDER BY SUM(ct.rarity_score) DESC, it.id) as rarity_rank
+FROM inscription_traits it
+INNER JOIN collection_traits ct ON it.collection_id = ct.collection_id AND it.trait_type = ct.trait_type AND it.trait_value = ct.trait_value
+GROUP BY it.id, it.collection_id;
+
+-- inscription number initial value
+
+UPDATE inscription
+SET inscription_number = s.row_number
+FROM (select i.id, row_number() over () from inscription i order by i.id asc) AS s
+WHERE inscription.id = s.id;
+
+-- fill collection traits table
+
+INSERT INTO collection_traits (collection_id, trait_type, trait_value, count, rarity_score)
+SELECT collection_id, trait_type, trait_value, count, rarity_score FROM collection_traits_view ctv
+ON CONFLICT (collection_id, trait_type, trait_value) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, count = EXCLUDED.count;
+
+
+-- fill inscription rarity table
+
+INSERT INTO inscription_rarity (id, rarity_score, rarity_rank)
+SELECT id, rarity_score, rarity_rank
+FROM inscription_rarity_view
+ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, rarity_rank = EXCLUDED.rarity_rank;
+
+-- fill collection stats table
+
+INSERT INTO collection_stats(id, listed, floor_price, owners, supply, volume, volume_24h)
+		SELECT 
+			i.collection_id,
+			COUNT(mid.id) as listed, 
+			COALESCE(MIN(ml.total), 0) as floor_price,
+			(SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE collection_id = i.collection_id),
+			(SELECT COUNT(id) as supply FROM inscription WHERE collection_id = i.collection_id),
+			(SELECT COALESCE(SUM(amount_quote), 0) as volume FROM inscription_trade_history ith INNER JOIN inscription r ON r.id = ith.inscription_id WHERE collection_id = i.collection_id),
+			(SELECT COALESCE(SUM(amount_quote), 0) as volume_24h FROM inscription_trade_history ith INNER JOIN inscription r ON r.id = ith.inscription_id WHERE collection_id = i.collection_id and NOW() - ith.date_created <= interval '24 HOURS')
+		FROM inscription i
+		LEFT JOIN marketplace_inscription_detail mid ON i.id = mid.inscription_id
+		LEFT JOIN marketplace_listing ml ON ml.id = mid.listing_id
+		WHERE i.collection_id IS NOT NULL and (ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE))
+		GROUP BY i.collection_id
+	ON CONFLICT (id) DO UPDATE SET listed = EXCLUDED.listed, supply = EXCLUDED.supply, owners = EXCLUDED.owners, volume = EXCLUDED.volume, floor_price = EXCLUDED.floor_price;
