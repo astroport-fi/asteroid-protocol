@@ -93,8 +93,11 @@ CREATE TABLE "public"."collection_stats" (
     "volume" numeric NOT NULL,
     "volume_24h" numeric NOT NULL,
     "floor_price" bigint NOT NULL,
-    CONSTRAINT "collection_stats_pkey" PRIMARY KEY ("id")
+    CONSTRAINT collection_stats_id UNIQUE ("id"),
+    CONSTRAINT collection_stats_id_fk FOREIGN KEY ("id") REFERENCES public."collection"(id)
 );
+
+CREATE INDEX "idx_collection_stats_id" ON "public"."collection_stats" USING btree ("id");
 
 -- public.collection_traits definition
 
@@ -108,9 +111,12 @@ CREATE TABLE "public"."collection_traits" (
     "trait_value" jsonb NOT NULL,
     "count" bigint NOT NULL,
     "rarity_score" numeric NOT NULL,
+    CONSTRAINT collection_traits_collection_id UNIQUE ("collection_id"),
+    CONSTRAINT collection_traits_id_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
     CONSTRAINT "collection_traits_type_value" UNIQUE ("collection_id", "trait_type", "trait_value")
 );
 
+CREATE INDEX "idx_collection_traits_collection_id" ON "public"."collection_traits" USING btree ("collection_id");
 
 -- public.inscription definition
 
@@ -159,8 +165,11 @@ CREATE TABLE "public"."inscription_rarity" (
     "id" int4 NOT NULL,
     "rarity_score" numeric NOT NULL,
     "rarity_rank" int4 NOT NULL,
-    CONSTRAINT "inscription_rarity_pkey" PRIMARY KEY ("id")
+    CONSTRAINT inscription_rarity_id UNIQUE ("id"),
+    CONSTRAINT inscription_rarity_id_fk FOREIGN KEY ("id") REFERENCES public."inscription"(id)
 );
+
+CREATE INDEX "idx_inscription_rarity_id" ON "public"."inscription_rarity" USING btree ("id");
 
 -- public.inscription_history definition
 
