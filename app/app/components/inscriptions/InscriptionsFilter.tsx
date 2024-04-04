@@ -69,6 +69,7 @@ interface Props {
   traits?: CollectionTrait[]
   status: Status
   sort: Sort
+  showRaritySort?: boolean
 }
 
 function TraitFilter({
@@ -159,6 +160,10 @@ const sortItems: DropdownItem<Sort>[] = [
   { label: 'Lowest price', value: Sort.LOWEST_PRICE },
   { label: 'Highest price', value: Sort.HIGHEST_PRICE },
   { label: 'Highest ID', value: Sort.HIGHEST_ID },
+]
+
+const sortItemsWithRariry: DropdownItem<Sort>[] = [
+  ...sortItems,
   { label: 'Common to Rare', value: Sort.COMMON },
   { label: 'Rare to Common', value: Sort.RARE },
 ]
@@ -177,6 +182,7 @@ export function Filter({
   traits,
   sort: defaultServerSort,
   status: defaultStatus,
+  showRaritySort = false,
 }: Props) {
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -260,7 +266,11 @@ export function Filter({
           <FilterTitle className="mt-6">Search</FilterTitle>
           <SearchInput placeholder="Name" className="input-sm mt-2 max-w-40" />
           <FilterTitle className="mt-6">Sort</FilterTitle>
-          <Select items={sortItems} onSelect={setSort} selected={sort} />
+          <Select
+            items={showRaritySort ? sortItemsWithRariry : sortItems}
+            onSelect={setSort}
+            selected={sort}
+          />
           <FilterTitle className="mt-6">Price</FilterTitle>
           <Select
             items={priceRangeItems}

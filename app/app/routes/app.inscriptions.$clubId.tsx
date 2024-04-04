@@ -97,6 +97,7 @@ export default function InscriptionsParentPage() {
           traits={collection?.traits as CollectionTrait[]}
           sort={sort}
           status={status}
+          showRaritySort={collection != null}
         />
         <div className="flex flex-col w-full h-full">
           {collection && (
