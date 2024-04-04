@@ -233,7 +233,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 			}
 
 			// check if the inscription is already migrated
-			if inscription.Version != "v1" {
+			if inscription.CollectionID.Valid || (inscription.Version != "v1" && collection == nil) {
 				return fmt.Errorf("inscription already migrated")
 			}
 
