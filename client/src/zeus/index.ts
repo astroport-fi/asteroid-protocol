@@ -7539,10 +7539,6 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats_aggregate'],
     ]
-    collection_stats_by_pk?: [
-      { id: number | Variable<any, string> },
-      ValueTypes['collection_stats'],
-    ]
     collection_traits?: [
       {
         /** distinct select on columns */
@@ -7824,10 +7820,6 @@ export type ValueTypes = {
           | null
           | Variable<any, string>
       },
-      ValueTypes['inscription_rarity'],
-    ]
-    inscription_rarity_by_pk?: [
-      { id: number | Variable<any, string> },
       ValueTypes['inscription_rarity'],
     ]
     inscription_trade_history?: [
@@ -9074,10 +9066,6 @@ export type ValueTypes = {
       },
       ValueTypes['collection_stats_aggregate'],
     ]
-    collection_stats_by_pk?: [
-      { id: number | Variable<any, string> },
-      ValueTypes['collection_stats'],
-    ]
     collection_stats_stream?: [
       {
         /** maximum number of rows returned in a single batch */
@@ -9477,10 +9465,6 @@ export type ValueTypes = {
           | null
           | Variable<any, string>
       },
-      ValueTypes['inscription_rarity'],
-    ]
-    inscription_rarity_by_pk?: [
-      { id: number | Variable<any, string> },
       ValueTypes['inscription_rarity'],
     ]
     inscription_rarity_stream?: [
@@ -18788,10 +18772,6 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats_aggregate'],
     ]
-    collection_stats_by_pk?: [
-      { id: number },
-      ResolverInputTypes['collection_stats'],
-    ]
     collection_traits?: [
       {
         /** distinct select on columns */
@@ -18998,10 +18978,6 @@ export type ResolverInputTypes = {
           | undefined
           | null
       },
-      ResolverInputTypes['inscription_rarity'],
-    ]
-    inscription_rarity_by_pk?: [
-      { id: number },
       ResolverInputTypes['inscription_rarity'],
     ]
     inscription_trade_history?: [
@@ -19881,10 +19857,6 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_stats_aggregate'],
     ]
-    collection_stats_by_pk?: [
-      { id: number },
-      ResolverInputTypes['collection_stats'],
-    ]
     collection_stats_stream?: [
       {
         /** maximum number of rows returned in a single batch */
@@ -20168,10 +20140,6 @@ export type ResolverInputTypes = {
           | undefined
           | null
       },
-      ResolverInputTypes['inscription_rarity'],
-    ]
-    inscription_rarity_by_pk?: [
-      { id: number },
       ResolverInputTypes['inscription_rarity'],
     ]
     inscription_rarity_stream?: [
@@ -26423,8 +26391,6 @@ export type ModelTypes = {
     collection_stats: Array<ModelTypes['collection_stats']>
     /** fetch aggregated fields from the table: "collection_stats" */
     collection_stats_aggregate: ModelTypes['collection_stats_aggregate']
-    /** fetch data from the table: "collection_stats" using primary key columns */
-    collection_stats_by_pk?: ModelTypes['collection_stats'] | undefined
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<ModelTypes['collection_traits']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
@@ -26444,8 +26410,6 @@ export type ModelTypes = {
     inscription_market_aggregate: ModelTypes['inscription_market_aggregate']
     /** fetch data from the table: "inscription_rarity" */
     inscription_rarity: Array<ModelTypes['inscription_rarity']>
-    /** fetch data from the table: "inscription_rarity" using primary key columns */
-    inscription_rarity_by_pk?: ModelTypes['inscription_rarity'] | undefined
     /** fetch data from the table: "inscription_trade_history" */
     inscription_trade_history: Array<ModelTypes['inscription_trade_history']>
     /** fetch aggregated fields from the table: "inscription_trade_history" */
@@ -26652,8 +26616,6 @@ export type ModelTypes = {
     collection_stats: Array<ModelTypes['collection_stats']>
     /** fetch aggregated fields from the table: "collection_stats" */
     collection_stats_aggregate: ModelTypes['collection_stats_aggregate']
-    /** fetch data from the table: "collection_stats" using primary key columns */
-    collection_stats_by_pk?: ModelTypes['collection_stats'] | undefined
     /** fetch data from the table in a streaming manner: "collection_stats" */
     collection_stats_stream: Array<ModelTypes['collection_stats']>
     /** fetch data from the table in a streaming manner: "collection" */
@@ -26683,8 +26645,6 @@ export type ModelTypes = {
     inscription_market_stream: Array<ModelTypes['inscription_market']>
     /** fetch data from the table: "inscription_rarity" */
     inscription_rarity: Array<ModelTypes['inscription_rarity']>
-    /** fetch data from the table: "inscription_rarity" using primary key columns */
-    inscription_rarity_by_pk?: ModelTypes['inscription_rarity'] | undefined
     /** fetch data from the table in a streaming manner: "inscription_rarity" */
     inscription_rarity_stream: Array<ModelTypes['inscription_rarity']>
     /** fetch data from the table in a streaming manner: "inscription" */
@@ -31609,8 +31569,6 @@ export type GraphQLTypes = {
     collection_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch aggregated fields from the table: "collection_stats" */
     collection_stats_aggregate: GraphQLTypes['collection_stats_aggregate']
-    /** fetch data from the table: "collection_stats" using primary key columns */
-    collection_stats_by_pk?: GraphQLTypes['collection_stats'] | undefined
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<GraphQLTypes['collection_traits']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
@@ -31630,8 +31588,6 @@ export type GraphQLTypes = {
     inscription_market_aggregate: GraphQLTypes['inscription_market_aggregate']
     /** fetch data from the table: "inscription_rarity" */
     inscription_rarity: Array<GraphQLTypes['inscription_rarity']>
-    /** fetch data from the table: "inscription_rarity" using primary key columns */
-    inscription_rarity_by_pk?: GraphQLTypes['inscription_rarity'] | undefined
     /** fetch data from the table: "inscription_trade_history" */
     inscription_trade_history: Array<GraphQLTypes['inscription_trade_history']>
     /** fetch aggregated fields from the table: "inscription_trade_history" */
@@ -31844,8 +31800,6 @@ export type GraphQLTypes = {
     collection_stats: Array<GraphQLTypes['collection_stats']>
     /** fetch aggregated fields from the table: "collection_stats" */
     collection_stats_aggregate: GraphQLTypes['collection_stats_aggregate']
-    /** fetch data from the table: "collection_stats" using primary key columns */
-    collection_stats_by_pk?: GraphQLTypes['collection_stats'] | undefined
     /** fetch data from the table in a streaming manner: "collection_stats" */
     collection_stats_stream: Array<GraphQLTypes['collection_stats']>
     /** fetch data from the table in a streaming manner: "collection" */
@@ -31875,8 +31829,6 @@ export type GraphQLTypes = {
     inscription_market_stream: Array<GraphQLTypes['inscription_market']>
     /** fetch data from the table: "inscription_rarity" */
     inscription_rarity: Array<GraphQLTypes['inscription_rarity']>
-    /** fetch data from the table: "inscription_rarity" using primary key columns */
-    inscription_rarity_by_pk?: GraphQLTypes['inscription_rarity'] | undefined
     /** fetch data from the table in a streaming manner: "inscription_rarity" */
     inscription_rarity_stream: Array<GraphQLTypes['inscription_rarity']>
     /** fetch data from the table in a streaming manner: "inscription" */

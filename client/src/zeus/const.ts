@@ -1570,7 +1570,6 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp',
     },
-    collection_stats_by_pk: {},
     collection_traits: {
       distinct_on: 'collection_traits_select_column',
       order_by: 'collection_traits_order_by',
@@ -1614,7 +1613,6 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'inscription_rarity_order_by',
       where: 'inscription_rarity_bool_exp',
     },
-    inscription_rarity_by_pk: {},
     inscription_trade_history: {
       distinct_on: 'inscription_trade_history_select_column',
       order_by: 'inscription_trade_history_order_by',
@@ -1835,7 +1833,6 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'collection_stats_order_by',
       where: 'collection_stats_bool_exp',
     },
-    collection_stats_by_pk: {},
     collection_stats_stream: {
       cursor: 'collection_stats_stream_cursor_input',
       where: 'collection_stats_bool_exp',
@@ -1899,7 +1896,6 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'inscription_rarity_order_by',
       where: 'inscription_rarity_bool_exp',
     },
-    inscription_rarity_by_pk: {},
     inscription_rarity_stream: {
       cursor: 'inscription_rarity_stream_cursor_input',
       where: 'inscription_rarity_bool_exp',
@@ -3968,7 +3964,6 @@ export const ReturnTypes: Record<string, any> = {
     collection_by_pk: 'collection',
     collection_stats: 'collection_stats',
     collection_stats_aggregate: 'collection_stats_aggregate',
-    collection_stats_by_pk: 'collection_stats',
     collection_traits: 'collection_traits',
     find_inscription_by_name: 'search_result',
     inscription: 'inscription',
@@ -3979,7 +3974,6 @@ export const ReturnTypes: Record<string, any> = {
     inscription_market: 'inscription_market',
     inscription_market_aggregate: 'inscription_market_aggregate',
     inscription_rarity: 'inscription_rarity',
-    inscription_rarity_by_pk: 'inscription_rarity',
     inscription_trade_history: 'inscription_trade_history',
     inscription_trade_history_aggregate: 'inscription_trade_history_aggregate',
     inscription_trade_history_by_pk: 'inscription_trade_history',
@@ -4046,7 +4040,6 @@ export const ReturnTypes: Record<string, any> = {
     collection_by_pk: 'collection',
     collection_stats: 'collection_stats',
     collection_stats_aggregate: 'collection_stats_aggregate',
-    collection_stats_by_pk: 'collection_stats',
     collection_stats_stream: 'collection_stats',
     collection_stream: 'collection',
     collection_traits: 'collection_traits',
@@ -4062,7 +4055,6 @@ export const ReturnTypes: Record<string, any> = {
     inscription_market_aggregate: 'inscription_market_aggregate',
     inscription_market_stream: 'inscription_market',
     inscription_rarity: 'inscription_rarity',
-    inscription_rarity_by_pk: 'inscription_rarity',
     inscription_rarity_stream: 'inscription_rarity',
     inscription_stream: 'inscription',
     inscription_trade_history: 'inscription_trade_history',
