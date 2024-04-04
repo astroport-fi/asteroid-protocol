@@ -3,16 +3,26 @@ package workers
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/riverqueue/river"
 	"gorm.io/gorm"
 )
 
 type CollectionTraitsArgs struct {
-	CollectionID int `json:"collection_id"`
+	CollectionID uint64 `json:"collection_id"`
 }
 
 func (CollectionTraitsArgs) Kind() string { return "collection-traits" }
+
+func (CollectionTraitsArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		UniqueOpts: river.UniqueOpts{
+			ByArgs:   true,
+			ByPeriod: 10 * time.Minute,
+		},
+	}
+}
 
 type CollectionTraitsWorker struct {
 	DB *gorm.DB
@@ -22,8 +32,8 @@ type CollectionTraitsWorker struct {
 // Executes the database query to insert or update collection traits and inscription rarity for a given collection id.
 func (w *CollectionTraitsWorker) Work(ctx context.Context, job *river.Job[CollectionTraitsArgs]) error {
 	collectionQuery := `
-		INSERT INTO collection_traits
-		SELECT * FROM collection_traits_view ctv
+		INSERT INTO collection_traits (collection_id, trait_type, trait_value, count, rarity_score)
+		SELECT collection_id, trait_type, trait_value, count, rarity_score FROM collection_traits_view ctv
 		WHERE ctv.collection_id = ?
 		ON CONFLICT (collection_id, trait_type, trait_value) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, count = EXCLUDED.count
 	`

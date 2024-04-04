@@ -20,8 +20,15 @@ dependencies: ## Install dependencies for the service
 build: ## Build the binary for the service
 	CGO_ENABLED=0 go build -o ./bin/${APP_NAME} ./src/*.go
 
+build-worker: ## Build the binary for the service
+	CGO_ENABLED=0 go build -o ./bin/worker src/worker/cmd/main.go
+
+
 run: build ## Build and run the service binary
 	./bin/${APP_NAME}
+
+run-worker: build-worker ## Build and run the service binary
+	./bin/worker
 
 run_race: ## Run the service with race condition checking enabled
 	# Add your environment variable here

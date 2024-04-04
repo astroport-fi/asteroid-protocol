@@ -1,7 +1,6 @@
 package indexer
 
 import (
-	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
@@ -19,12 +18,9 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/worker"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
-	"github.com/riverqueue/river"
-	"github.com/riverqueue/river/riverdriver/riverpgxv5"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,7 +31,6 @@ type Config struct {
 	ChainID                  string            `envconfig:"CHAIN_ID" required:"true"`
 	BaseTokenBinanceEndpoint string            `envconfig:"BASE_TOKEN_BINANCE_ENDPOINT" required:"true"`
 	DatabaseDSN              string            `envconfig:"DATABASE_DSN" required:"true"`
-	DatabaseURL              string            `envconfig:"DATABASE_URL" required:"true"`
 	LCDEndpoints             []string          `envconfig:"LCD_ENDPOINTS" required:"true"`
 	RPCEndpoints             []string          `envconfig:"RPC_ENDPOINTS" required:"true"`
 	EndpointHeaders          map[string]string `envconfig:"ENDPOINT_HEADERS" required:"true"`
@@ -54,7 +49,7 @@ type Indexer struct {
 	metaprotocols            map[string]metaprotocol.Processor
 	stopChannel              chan bool
 	db                       *gorm.DB
-	workerClient             *river.Client[pgx.Tx]
+	workerClient             *worker.WorkerClient
 	wg                       sync.WaitGroup
 }
 
@@ -75,19 +70,11 @@ func New(
 	})
 	if err != nil {
 		return nil, err
-
 	}
 
-	// Setup database connection
-	ctx := context.Background()
-	dbPool, err := pgxpool.New(ctx, config.DatabaseURL)
+	workerClient, err := worker.NewWorkerClient(log)
 	if err != nil {
 		return nil, err
-	}
-
-	workerClient, err := river.NewClient(riverpgxv5.New(dbPool), &river.Config{})
-	if err != nil {
-		panic(err)
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)

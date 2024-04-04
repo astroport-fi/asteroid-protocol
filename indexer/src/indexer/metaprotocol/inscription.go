@@ -2,7 +2,6 @@ package metaprotocol
 
 import (
 	"bytes"
-	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -16,11 +15,9 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
-	workers "github.com/donovansolms/cosmos-inscriptions/indexer/src/worker/workers"
-	"github.com/jackc/pgx/v5"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/worker"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
-	"github.com/riverqueue/river"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -38,7 +35,7 @@ type InscriptionConfig struct {
 type Inscription struct {
 	chainID      string
 	db           *gorm.DB
-	workerClient *river.Client[pgx.Tx]
+	workerClient *worker.WorkerClient
 	s3Endpoint   string
 	s3Region     string
 	s3Bucket     string
@@ -52,7 +49,7 @@ type Inscription struct {
 	reservationsByTicker map[string]CollectionReservation
 }
 
-func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *river.Client[pgx.Tx]) *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Inscription {
 
 	// Parse config environment variables for self
 	var config InscriptionConfig
@@ -214,7 +211,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	// verify that the sender is the inscription owner
 	attributeNames := migrationData.Header[1:]
 
-	return protocol.db.Transaction(func(tx *gorm.DB) error {
+	err = protocol.db.Transaction(func(tx *gorm.DB) error {
 		for _, row := range migrationData.Rows {
 			// get the inscription
 			inscriptionHash := row[0]
@@ -271,6 +268,18 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 		}
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	// update collection stats and traits
+	if collection != nil {
+		protocol.workerClient.UpdateCollectionStats(collection.ID)
+		protocol.workerClient.UpdateCollectionTraits(collection.ID)
+	}
+
+	return nil
 }
 
 func (protocol *Inscription) RequiresV2(version string) error {
@@ -405,19 +414,28 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			return nil
 		}
 
+		// Get the max inscription number
+		var maxInscriptionNumber uint64
+		err = protocol.db.Model(&models.Inscription{}).Select("MAX(inscription_number)").Scan(&maxInscriptionNumber).Error
+		if err != nil {
+			return err
+		}
+		inscriptionNumber := maxInscriptionNumber + 1
+
 		inscriptionModel := models.Inscription{
-			ChainID:          parsedURN.ChainID,
-			Height:           transactionModel.Height,
-			Version:          parsedURN.Version,
-			TransactionID:    transactionModel.ID,
-			ContentHash:      contentHash,
-			Creator:          sender,
-			CurrentOwner:     sender,
-			Type:             "content",
-			Metadata:         datatypes.JSON(jsonBytes),
-			ContentPath:      contentPath,
-			ContentSizeBytes: uint64(len(content)),
-			DateCreated:      transactionModel.DateCreated,
+			InscriptionNumber: inscriptionNumber,
+			ChainID:           parsedURN.ChainID,
+			Height:            transactionModel.Height,
+			Version:           parsedURN.Version,
+			TransactionID:     transactionModel.ID,
+			ContentHash:       contentHash,
+			Creator:           sender,
+			CurrentOwner:      sender,
+			Type:              "content",
+			Metadata:          datatypes.JSON(jsonBytes),
+			ContentPath:       contentPath,
+			ContentSizeBytes:  uint64(len(content)),
+			DateCreated:       transactionModel.DateCreated,
 		}
 
 		// Check if inscription is part of a Collection
@@ -455,12 +473,8 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		protocol.db.Save(&inscriptionHistory)
 
 		if inscriptionModel.CollectionID.Valid {
-			_, err = protocol.workerClient.Insert(context.Background(), workers.CollectionStatsArgs{
-				CollectionID: inscriptionModel.CollectionID.Int64,
-			}, nil)
-			if err != nil {
-				return fmt.Errorf("failed to insert collection stats job '%s'", err)
-			}
+			protocol.workerClient.UpdateCollectionStats(uint64(inscriptionModel.CollectionID.Int64))
+			protocol.workerClient.UpdateCollectionTraits(uint64(inscriptionModel.CollectionID.Int64))
 		}
 
 	case "transfer":

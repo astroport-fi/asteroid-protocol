@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"log"
+	"time"
 
 	workers "github.com/donovansolms/cosmos-inscriptions/indexer/src/worker/workers"
 	"github.com/jackc/pgx/v5"
@@ -10,6 +10,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,7 +27,7 @@ type Worker struct {
 	client *river.Client[pgx.Tx]
 }
 
-func NewWorker(ctx context.Context) (*Worker, error) {
+func NewWorker(ctx context.Context, log *logrus.Entry) (*Worker, error) {
 	// Parse config environment variables for self
 	var config Config
 	err := envconfig.Process("", &config)
@@ -52,28 +53,25 @@ func NewWorker(ctx context.Context) (*Worker, error) {
 	w := river.NewWorkers()
 	river.AddWorker(w, &workers.CollectionStatsWorker{DB: db})
 	river.AddWorker(w, &workers.CollectionTraitsWorker{DB: db})
+	river.AddWorker(w, &workers.CollectionsStatsWorker{DB: db})
 
 	// Setup periodic jobs
-	// periodicJobs := []*river.PeriodicJob{
-	// 	river.NewPeriodicJob(
-	// 		river.PeriodicInterval(10*time.Second),
-	// 		func() (river.JobArgs, *river.InsertOpts) {
-	// 			return workers.CollectionTraitsArgs{
-	// 				Strings: []string{
-	// 					"whale", "tiger", "bear",
-	// 				},
-	// 			}, nil
-	// 		},
-	// 		&river.PeriodicJobOpts{RunOnStart: true},
-	// 	),
-	// }
+	periodicJobs := []*river.PeriodicJob{
+		river.NewPeriodicJob(
+			river.PeriodicInterval(4*time.Hour),
+			func() (river.JobArgs, *river.InsertOpts) {
+				return workers.CollectionsStatsArgs{}, nil
+			},
+			&river.PeriodicJobOpts{RunOnStart: true},
+		),
+	}
 
 	riverClient, err := river.NewClient(riverpgxv5.New(dbPool), &river.Config{
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: 5},
 		},
-		// PeriodicJobs: periodicJobs,
-		Workers: w,
+		PeriodicJobs: periodicJobs,
+		Workers:      w,
 	})
 	if err != nil {
 		panic(err)
