@@ -150,14 +150,6 @@ export default function CollectionsPage() {
         ))}
       </div>
 
-      <h3 className="text-xl text-white mt-12">Inscription Clubs</h3>
-
-      <Grid className="mt-4">
-        {clubs.map((club) => (
-          <ClubBox key={club.id} club={club} />
-        ))}
-      </Grid>
-
       <div className="flex mt-12 items-baseline justify-between text-md">
         <div>
           <Link
@@ -203,6 +195,14 @@ export default function CollectionsPage() {
         collectionsStats={data.collectionsStats}
         defaultSort={{ id: sort ?? 'volume_24h', desc: true }}
       />
+
+      <h3 className="text-xl text-white mt-12">Inscription Clubs</h3>
+
+      <Grid className="mt-4">
+        {clubs.map((club) => (
+          <ClubBox key={club.id} club={club} />
+        ))}
+      </Grid>
 
       <h3 className="text-xl text-white mt-12">Latest Sales</h3>
       <div className="carousel gap-4 mt-4">
