@@ -43,12 +43,12 @@ func (w *CollectionTraitsWorker) Work(ctx context.Context, job *river.Job[Collec
 	}
 
 	query := `
-		INSERT INTO inscription_rarity (id, rarity_score)
-		SELECT i.id, ir.rarity_score
+		INSERT INTO inscription_rarity (id, rarity_score, rarity_rank)
+		SELECT i.id, ir.rarity_score, ir.rarity_rank
 		FROM inscription i
 		INNER JOIN inscription_rarity_view ir ON i.id = ir.id
 		WHERE i.collection_id = ?
-		ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score
+		ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, rarity_rank = EXCLUDED.rarity_rank
 	`
 
 	err = w.DB.Exec(query, job.Args.CollectionID).Error

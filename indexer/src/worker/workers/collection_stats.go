@@ -36,7 +36,7 @@ func (w *CollectionStatsWorker) Work(ctx context.Context, job *river.Job[Collect
 		SELECT 
 			@collectionId as "id", 
 			COUNT(mid.id) as listed, 
-			MIN(ml.total) as floor_price,
+			COALESCE(MIN(ml.total), 0) as floor_price,
 			(SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE collection_id = @collectionId),
 			(SELECT COUNT(id) as supply FROM inscription WHERE collection_id = @collectionId),
 			(SELECT COALESCE(SUM(amount_quote), 0) as volume FROM inscription_trade_history ith INNER JOIN inscription r ON r.id = ith.inscription_id WHERE collection_id = @collectionId),
