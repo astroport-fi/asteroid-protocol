@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"time"
 
 	"github.com/riverqueue/river"
 	"gorm.io/gorm"
@@ -20,7 +19,7 @@ func (CollectionStatsArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		UniqueOpts: river.UniqueOpts{
 			ByArgs:   true,
-			ByPeriod: 10 * time.Minute,
+			ByPeriod: DebouncePeriod,
 		},
 	}
 }

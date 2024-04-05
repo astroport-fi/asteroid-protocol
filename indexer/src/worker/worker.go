@@ -2,7 +2,6 @@ package worker
 
 import (
 	"context"
-	"time"
 
 	workers "github.com/donovansolms/cosmos-inscriptions/indexer/src/worker/workers"
 	"github.com/jackc/pgx/v5"
@@ -57,7 +56,7 @@ func NewWorker(ctx context.Context, log *logrus.Entry) (*Worker, error) {
 	// Setup periodic jobs
 	periodicJobs := []*river.PeriodicJob{
 		river.NewPeriodicJob(
-			river.PeriodicInterval(4*time.Hour),
+			river.PeriodicInterval(workers.CollectionsStatsPeriod),
 			func() (river.JobArgs, *river.InsertOpts) {
 				return workers.CollectionsStatsArgs{}, nil
 			},

@@ -3,7 +3,6 @@ package workers
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/riverqueue/river"
 	"gorm.io/gorm"
@@ -19,7 +18,7 @@ func (CollectionTraitsArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		UniqueOpts: river.UniqueOpts{
 			ByArgs:   true,
-			ByPeriod: 10 * time.Minute,
+			ByPeriod: DebouncePeriod,
 		},
 	}
 }

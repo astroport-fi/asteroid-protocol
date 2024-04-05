@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const CollectionsStatsPeriod = 4 * time.Hour
+
 type CollectionsStatsArgs struct {
 }
 
@@ -18,7 +20,7 @@ func (CollectionsStatsArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		UniqueOpts: river.UniqueOpts{
 			ByArgs:   true,
-			ByPeriod: 24 * time.Hour,
+			ByPeriod: CollectionsStatsPeriod,
 		},
 	}
 }

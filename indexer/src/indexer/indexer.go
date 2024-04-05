@@ -80,7 +80,7 @@ func New(
 	metaprotocols := make(map[string]metaprotocol.Processor)
 	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, workerClient)
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
-	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db)
+	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db, workerClient)
 
 	return &Indexer{
 		chainID:                  config.ChainID,

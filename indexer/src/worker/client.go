@@ -54,7 +54,7 @@ func NewWorkerClient(logger *logrus.Entry) (*WorkerClient, error) {
 func (p *WorkerClient) UpdateCollectionStats(collectionId uint64) {
 	_, err := p.client.Insert(p.ctx, workers.CollectionStatsArgs{
 		CollectionID: collectionId,
-	}, &river.InsertOpts{ScheduledAt: time.Now().Add(10 * time.Minute)})
+	}, &river.InsertOpts{ScheduledAt: time.Now().Add(workers.DebouncePeriod)})
 	if err != nil {
 		p.logger.Errorf("failed to insert collection stats job '%s'", err)
 	}
@@ -63,7 +63,7 @@ func (p *WorkerClient) UpdateCollectionStats(collectionId uint64) {
 func (p *WorkerClient) UpdateCollectionTraits(collectionId uint64) {
 	_, err := p.client.Insert(p.ctx, workers.CollectionTraitsArgs{
 		CollectionID: collectionId,
-	}, nil)
+	}, &river.InsertOpts{ScheduledAt: time.Now().Add(workers.DebouncePeriod)})
 	if err != nil {
 		p.logger.Errorf("failed to insert collection traits job '%s'", err)
 	}
