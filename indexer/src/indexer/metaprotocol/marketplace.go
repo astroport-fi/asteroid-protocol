@@ -10,6 +10,7 @@ import (
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/worker"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/gorm"
@@ -38,12 +39,13 @@ type Marketplace struct {
 	ibcEnabled           bool
 	ibcReceiver          string
 	db                   *gorm.DB
+	workerClient         *worker.WorkerClient
 
 	lcdEndpoints    []string
 	endpointHeaders map[string]string
 }
 
-func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
+func NewMarketplaceProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Marketplace {
 	// Parse config environment variables for self
 	var config MarketplaceConfig
 	err := envconfig.Process("", &config)
@@ -62,6 +64,7 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB) *Marketplace {
 		ibcEnabled:           config.IbcEnabled,
 		ibcReceiver:          config.IbcReceiver,
 		db:                   db,
+		workerClient:         workerClient,
 		lcdEndpoints:         config.LCDEndpoints,
 		endpointHeaders:      config.EndpointHeaders,
 	}
@@ -417,6 +420,10 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return nil
 		}
 
+		if inscriptionModel.CollectionID.Valid {
+			protocol.workerClient.UpdateCollectionStats(uint64(inscriptionModel.CollectionID.Int64))
+		}
+
 	case "deposit":
 		action := "deposit"
 		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
@@ -636,7 +643,11 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			result = protocol.db.Save(&listingHistory)
 			if result.Error != nil {
 				// If we can't store the history, that is fine, we shouldn't fail
-				return nil
+				_ = result
+			}
+
+			if inscriptionModel.CollectionID.Valid {
+				protocol.workerClient.UpdateCollectionStats(uint64(inscriptionModel.CollectionID.Int64))
 			}
 
 		}
@@ -1028,6 +1039,10 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		if result.Error != nil {
 			// Continue, this is not critical
 			_ = result
+		}
+
+		if inscriptionModel.CollectionID.Valid {
+			protocol.workerClient.UpdateCollectionStats(uint64(inscriptionModel.CollectionID.Int64))
 		}
 	}
 
