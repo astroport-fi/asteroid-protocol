@@ -917,7 +917,7 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 				return fmt.Errorf("collection with id '%d' doesn't exist", inscriptionModel.CollectionID.Int64)
 			}
 
-			if collectionModel.RoyaltyPercentage.Valid {
+			if collectionModel.RoyaltyPercentage.Valid && collectionModel.RoyaltyPercentage.Float64 > 0 {
 				royaltyAddress := collectionModel.Creator
 				if collectionModel.PaymentAddress.Valid {
 					royaltyAddress = collectionModel.PaymentAddress.String

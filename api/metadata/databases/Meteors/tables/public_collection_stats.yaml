@@ -16,12 +16,15 @@ select_permissions:
     permission:
       columns:
         - floor_price
+        - floor_price_1d_change
+        - floor_price_1w_change
         - id
         - listed
         - owners
         - supply
         - volume
         - volume_24h
+        - volume_7d
       filter: {}
       allow_aggregations: true
     comment: ""

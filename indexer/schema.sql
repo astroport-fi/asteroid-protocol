@@ -92,7 +92,10 @@ CREATE TABLE "public"."collection_stats" (
     "owners" bigint NOT NULL,
     "volume" numeric NOT NULL,
     "volume_24h" numeric NOT NULL,
+    "volume_7d" numeric NOT NULL,
     "floor_price" bigint NOT NULL,
+    "floor_price_1d_change" decimal(5,4),
+    "floor_price_1w_change" decimal(5,4),
     CONSTRAINT collection_stats_id UNIQUE ("id"),
     CONSTRAINT collection_stats_id_fk FOREIGN KEY ("id") REFERENCES public."collection"(id)
 );

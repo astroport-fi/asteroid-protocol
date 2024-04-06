@@ -11,6 +11,8 @@ import { CollectionsStatsItem } from '~/api/collection'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import AtomValue from '../AtomValue'
+import NA from '../NA'
+import { PercentageTextColored } from '../PercentageText'
 import Table from '../table'
 import { CollectionCell } from './CollectionCell'
 
@@ -34,7 +36,7 @@ export default function CollectionStatsTable({
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
 
-  let columns: ColumnDef<CollectionsStatsItem, any>[] = [
+  let columns = [
     columnHelper.accessor('collection', {
       header: 'Collection',
       meta: {
@@ -52,8 +54,32 @@ export default function CollectionStatsTable({
         <AtomValue className="justify-end" horizontal value={info.getValue()} />
       ),
     }),
+    columnHelper.accessor('floor_price_1d_change', {
+      header: '1D Change',
+      meta: {
+        headerClassName: 'text-right pb-0',
+        className: 'text-right',
+      },
+      cell: (info) => (
+        <NA value={info.getValue()}>
+          {(value) => <PercentageTextColored value={value} />}
+        </NA>
+      ),
+    }),
+    columnHelper.accessor('floor_price_1w_change', {
+      header: '7D Change',
+      meta: {
+        headerClassName: 'text-right pb-0',
+        className: 'text-right',
+      },
+      cell: (info) => (
+        <NA value={info.getValue()}>
+          {(value) => <PercentageTextColored value={value} />}
+        </NA>
+      ),
+    }),
     columnHelper.accessor('volume_24h', {
-      header: '24h Volume',
+      header: '1D Volume',
       meta: {
         headerClassName: 'text-right pb-0',
       },
@@ -61,8 +87,8 @@ export default function CollectionStatsTable({
         <AtomValue className="justify-end" horizontal value={info.getValue()} />
       ),
     }),
-    columnHelper.accessor('volume', {
-      header: 'Total Volume',
+    columnHelper.accessor('volume_7d', {
+      header: '7D Volume',
       meta: {
         headerClassName: 'text-right pb-0',
       },
@@ -84,7 +110,8 @@ export default function CollectionStatsTable({
         headerClassName: 'text-right pb-0',
       },
     }),
-  ]
+  ] as ColumnDef<CollectionsStatsItem>[]
+
   if (showId) {
     columns = [
       columnHelper.accessor('collection.id', {
@@ -96,7 +123,7 @@ export default function CollectionStatsTable({
         },
       }),
       ...columns,
-    ]
+    ] as ColumnDef<CollectionsStatsItem>[]
   }
 
   const tableOptions: TableOptions<CollectionsStatsItem> = {
