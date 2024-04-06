@@ -54,6 +54,7 @@ export default function CreateCollection() {
     handleSubmit,
     watch,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormData>()
   const name = watch('name')
@@ -441,6 +442,10 @@ export default function CreateCollection() {
         txInscription={value}
         resultLink={`/app/collection/${ticker?.toUpperCase()}`}
         resultCTA="View Collection"
+        onSuccess={() => {
+          reset()
+          setFileName(null)
+        }}
       />
     </div>
   )

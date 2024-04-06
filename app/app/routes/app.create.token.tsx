@@ -38,6 +38,7 @@ export default function CreateToken() {
     register,
     handleSubmit,
     control,
+    reset,
     watch,
     formState: { errors },
   } = useForm<FormData>({
@@ -358,6 +359,10 @@ export default function CreateToken() {
         txInscription={value}
         resultLink={`/app/token/${ticker?.toUpperCase()}`}
         resultCTA="View Token"
+        onSuccess={() => {
+          reset()
+          setFileName(null)
+        }}
       />
     </div>
   )

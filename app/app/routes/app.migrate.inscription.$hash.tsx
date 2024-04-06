@@ -67,6 +67,7 @@ export default function CreateInscription() {
     handleSubmit,
     watch,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormData>()
   const collectionHash = watch('collection')
@@ -345,6 +346,9 @@ export default function CreateInscription() {
         txInscription={value}
         resultLink={`/app/inscription/${inscription.transaction.hash}`}
         resultCTA="View inscription"
+        onSuccess={() => {
+          reset()
+        }}
       />
     </div>
   )
