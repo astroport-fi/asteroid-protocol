@@ -22,6 +22,23 @@ import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
 
+const ALLOWED_CHARACTERS_INFO = `
+Trait name allowed characters
+- a lowercase letter (a-z),
+- an uppercase letter (A-Z),
+- a digit (0-9),
+- a hyphen (-)
+- a space ( )
+
+Trait value allowed characters
+- a lowercase letter (a-z),
+- an uppercase letter (A-Z),
+- a digit (0-9),
+- a hyphen (-)
+- a period (.)
+- a space ( )
+`
+
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
   if (!address) {
@@ -156,7 +173,7 @@ export default function CreateInscription() {
 
                   const metadata = await getDataFromCsv(file)
                   if (!metadata) {
-                    return 'CSV file contains invalid characters'
+                    return `CSV file contains invalid characters\n${ALLOWED_CHARACTERS_INFO}`
                   }
                 },
               })}
@@ -167,7 +184,7 @@ export default function CreateInscription() {
               }}
             />
             {errors.content && (
-              <span className="text-error">
+              <span className="text-error whitespace-pre-wrap">
                 {errors.content.message
                   ? errors.content.message
                   : 'Migration CSV file is required'}
