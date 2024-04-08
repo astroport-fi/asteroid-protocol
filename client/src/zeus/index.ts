@@ -1547,12 +1547,15 @@ export type ValueTypes = {
     /** An object relationship */
     collection?: ValueTypes['collection']
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregated selection of "collection_stats" */
@@ -1589,12 +1592,15 @@ export type ValueTypes = {
   /** aggregate avg on columns */
   ['collection_stats_avg_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Boolean expression to filter rows from the table "collection_stats". All fields are combined with a logical 'AND'. */
@@ -1621,6 +1627,16 @@ export type ValueTypes = {
       | Variable<any, string>
     floor_price?:
       | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price_1d_change?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price_1w_change?:
+      | ValueTypes['numeric_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -1654,27 +1670,38 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    volume_7d?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
   }
   /** aggregate max on columns */
   ['collection_stats_max_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate min on columns */
   ['collection_stats_min_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Ordering options when selecting data from "collection_stats". */
@@ -1689,6 +1716,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    floor_price_1d_change?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price_1w_change?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     listed?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     owners?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -1699,40 +1736,54 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    volume_7d?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
   }
   /** select columns of table "collection_stats" */
   ['collection_stats_select_column']: collection_stats_select_column
   /** aggregate stddev on columns */
   ['collection_stats_stddev_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev_pop on columns */
   ['collection_stats_stddev_pop_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev_samp on columns */
   ['collection_stats_stddev_samp_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Streaming cursor of the table "collection_stats" */
@@ -1755,6 +1806,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    floor_price_1d_change?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price_1w_change?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
     listed?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
     owners?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
@@ -1765,49 +1826,62 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    volume_7d?: ValueTypes['numeric'] | undefined | null | Variable<any, string>
   }
   /** aggregate sum on columns */
   ['collection_stats_sum_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate var_pop on columns */
   ['collection_stats_var_pop_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate var_samp on columns */
   ['collection_stats_var_samp_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate variance on columns */
   ['collection_stats_variance_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev on columns */
@@ -15103,12 +15177,15 @@ export type ResolverInputTypes = {
     /** An object relationship */
     collection?: ResolverInputTypes['collection']
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregated selection of "collection_stats" */
@@ -15144,12 +15221,15 @@ export type ResolverInputTypes = {
   /** aggregate avg on columns */
   ['collection_stats_avg_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Boolean expression to filter rows from the table "collection_stats". All fields are combined with a logical 'AND'. */
@@ -15165,79 +15245,106 @@ export type ResolverInputTypes = {
       | null
     collection?: ResolverInputTypes['collection_bool_exp'] | undefined | null
     floor_price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    floor_price_1d_change?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
+    floor_price_1w_change?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     listed?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
     owners?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
     supply?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
     volume?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
     volume_24h?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+    volume_7d?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
   }
   /** aggregate max on columns */
   ['collection_stats_max_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate min on columns */
   ['collection_stats_min_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Ordering options when selecting data from "collection_stats". */
   ['collection_stats_order_by']: {
     collection?: ResolverInputTypes['collection_order_by'] | undefined | null
     floor_price?: ResolverInputTypes['order_by'] | undefined | null
+    floor_price_1d_change?: ResolverInputTypes['order_by'] | undefined | null
+    floor_price_1w_change?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     listed?: ResolverInputTypes['order_by'] | undefined | null
     owners?: ResolverInputTypes['order_by'] | undefined | null
     supply?: ResolverInputTypes['order_by'] | undefined | null
     volume?: ResolverInputTypes['order_by'] | undefined | null
     volume_24h?: ResolverInputTypes['order_by'] | undefined | null
+    volume_7d?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** select columns of table "collection_stats" */
   ['collection_stats_select_column']: collection_stats_select_column
   /** aggregate stddev on columns */
   ['collection_stats_stddev_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev_pop on columns */
   ['collection_stats_stddev_pop_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev_samp on columns */
   ['collection_stats_stddev_samp_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** Streaming cursor of the table "collection_stats" */
@@ -15250,55 +15357,70 @@ export type ResolverInputTypes = {
   /** Initial value of the column from where the streaming should start */
   ['collection_stats_stream_cursor_value_input']: {
     floor_price?: ResolverInputTypes['bigint'] | undefined | null
+    floor_price_1d_change?: ResolverInputTypes['numeric'] | undefined | null
+    floor_price_1w_change?: ResolverInputTypes['numeric'] | undefined | null
     id?: number | undefined | null
     listed?: ResolverInputTypes['bigint'] | undefined | null
     owners?: ResolverInputTypes['bigint'] | undefined | null
     supply?: ResolverInputTypes['bigint'] | undefined | null
     volume?: ResolverInputTypes['numeric'] | undefined | null
     volume_24h?: ResolverInputTypes['numeric'] | undefined | null
+    volume_7d?: ResolverInputTypes['numeric'] | undefined | null
   }
   /** aggregate sum on columns */
   ['collection_stats_sum_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate var_pop on columns */
   ['collection_stats_var_pop_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate var_samp on columns */
   ['collection_stats_var_samp_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate variance on columns */
   ['collection_stats_variance_fields']: AliasType<{
     floor_price?: boolean | `@${string}`
+    floor_price_1d_change?: boolean | `@${string}`
+    floor_price_1w_change?: boolean | `@${string}`
     id?: boolean | `@${string}`
     listed?: boolean | `@${string}`
     owners?: boolean | `@${string}`
     supply?: boolean | `@${string}`
     volume?: boolean | `@${string}`
     volume_24h?: boolean | `@${string}`
+    volume_7d?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
   /** aggregate stddev on columns */
@@ -23732,12 +23854,15 @@ export type ModelTypes = {
     /** An object relationship */
     collection?: ModelTypes['collection'] | undefined
     floor_price: ModelTypes['bigint']
+    floor_price_1d_change?: ModelTypes['numeric'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric'] | undefined
     id: number
     listed: ModelTypes['bigint']
     owners: ModelTypes['bigint']
     supply: ModelTypes['bigint']
     volume: ModelTypes['numeric']
     volume_24h: ModelTypes['numeric']
+    volume_7d: ModelTypes['numeric']
   }
   /** aggregated selection of "collection_stats" */
   ['collection_stats_aggregate']: {
@@ -23761,12 +23886,15 @@ export type ModelTypes = {
   /** aggregate avg on columns */
   ['collection_stats_avg_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection_stats". All fields are combined with a logical 'AND'. */
   ['collection_stats_bool_exp']: {
@@ -23775,74 +23903,95 @@ export type ModelTypes = {
     _or?: Array<ModelTypes['collection_stats_bool_exp']> | undefined
     collection?: ModelTypes['collection_bool_exp'] | undefined
     floor_price?: ModelTypes['bigint_comparison_exp'] | undefined
+    floor_price_1d_change?: ModelTypes['numeric_comparison_exp'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     listed?: ModelTypes['bigint_comparison_exp'] | undefined
     owners?: ModelTypes['bigint_comparison_exp'] | undefined
     supply?: ModelTypes['bigint_comparison_exp'] | undefined
     volume?: ModelTypes['numeric_comparison_exp'] | undefined
     volume_24h?: ModelTypes['numeric_comparison_exp'] | undefined
+    volume_7d?: ModelTypes['numeric_comparison_exp'] | undefined
   }
   /** aggregate max on columns */
   ['collection_stats_max_fields']: {
     floor_price?: ModelTypes['bigint'] | undefined
+    floor_price_1d_change?: ModelTypes['numeric'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric'] | undefined
     id?: number | undefined
     listed?: ModelTypes['bigint'] | undefined
     owners?: ModelTypes['bigint'] | undefined
     supply?: ModelTypes['bigint'] | undefined
     volume?: ModelTypes['numeric'] | undefined
     volume_24h?: ModelTypes['numeric'] | undefined
+    volume_7d?: ModelTypes['numeric'] | undefined
   }
   /** aggregate min on columns */
   ['collection_stats_min_fields']: {
     floor_price?: ModelTypes['bigint'] | undefined
+    floor_price_1d_change?: ModelTypes['numeric'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric'] | undefined
     id?: number | undefined
     listed?: ModelTypes['bigint'] | undefined
     owners?: ModelTypes['bigint'] | undefined
     supply?: ModelTypes['bigint'] | undefined
     volume?: ModelTypes['numeric'] | undefined
     volume_24h?: ModelTypes['numeric'] | undefined
+    volume_7d?: ModelTypes['numeric'] | undefined
   }
   /** Ordering options when selecting data from "collection_stats". */
   ['collection_stats_order_by']: {
     collection?: ModelTypes['collection_order_by'] | undefined
     floor_price?: ModelTypes['order_by'] | undefined
+    floor_price_1d_change?: ModelTypes['order_by'] | undefined
+    floor_price_1w_change?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     listed?: ModelTypes['order_by'] | undefined
     owners?: ModelTypes['order_by'] | undefined
     supply?: ModelTypes['order_by'] | undefined
     volume?: ModelTypes['order_by'] | undefined
     volume_24h?: ModelTypes['order_by'] | undefined
+    volume_7d?: ModelTypes['order_by'] | undefined
   }
   ['collection_stats_select_column']: collection_stats_select_column
   /** aggregate stddev on columns */
   ['collection_stats_stddev_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev_pop on columns */
   ['collection_stats_stddev_pop_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev_samp on columns */
   ['collection_stats_stddev_samp_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** Streaming cursor of the table "collection_stats" */
   ['collection_stats_stream_cursor_input']: {
@@ -23854,52 +24003,67 @@ export type ModelTypes = {
   /** Initial value of the column from where the streaming should start */
   ['collection_stats_stream_cursor_value_input']: {
     floor_price?: ModelTypes['bigint'] | undefined
+    floor_price_1d_change?: ModelTypes['numeric'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric'] | undefined
     id?: number | undefined
     listed?: ModelTypes['bigint'] | undefined
     owners?: ModelTypes['bigint'] | undefined
     supply?: ModelTypes['bigint'] | undefined
     volume?: ModelTypes['numeric'] | undefined
     volume_24h?: ModelTypes['numeric'] | undefined
+    volume_7d?: ModelTypes['numeric'] | undefined
   }
   /** aggregate sum on columns */
   ['collection_stats_sum_fields']: {
     floor_price?: ModelTypes['bigint'] | undefined
+    floor_price_1d_change?: ModelTypes['numeric'] | undefined
+    floor_price_1w_change?: ModelTypes['numeric'] | undefined
     id?: number | undefined
     listed?: ModelTypes['bigint'] | undefined
     owners?: ModelTypes['bigint'] | undefined
     supply?: ModelTypes['bigint'] | undefined
     volume?: ModelTypes['numeric'] | undefined
     volume_24h?: ModelTypes['numeric'] | undefined
+    volume_7d?: ModelTypes['numeric'] | undefined
   }
   /** aggregate var_pop on columns */
   ['collection_stats_var_pop_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate var_samp on columns */
   ['collection_stats_var_samp_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate variance on columns */
   ['collection_stats_variance_fields']: {
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
@@ -28739,12 +28903,15 @@ export type GraphQLTypes = {
     /** An object relationship */
     collection?: GraphQLTypes['collection'] | undefined
     floor_price: GraphQLTypes['bigint']
+    floor_price_1d_change?: GraphQLTypes['numeric'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric'] | undefined
     id: number
     listed: GraphQLTypes['bigint']
     owners: GraphQLTypes['bigint']
     supply: GraphQLTypes['bigint']
     volume: GraphQLTypes['numeric']
     volume_24h: GraphQLTypes['numeric']
+    volume_7d: GraphQLTypes['numeric']
   }
   /** aggregated selection of "collection_stats" */
   ['collection_stats_aggregate']: {
@@ -28773,12 +28940,15 @@ export type GraphQLTypes = {
   ['collection_stats_avg_fields']: {
     __typename: 'collection_stats_avg_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** Boolean expression to filter rows from the table "collection_stats". All fields are combined with a logical 'AND'. */
   ['collection_stats_bool_exp']: {
@@ -28787,45 +28957,57 @@ export type GraphQLTypes = {
     _or?: Array<GraphQLTypes['collection_stats_bool_exp']> | undefined
     collection?: GraphQLTypes['collection_bool_exp'] | undefined
     floor_price?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    floor_price_1d_change?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     listed?: GraphQLTypes['bigint_comparison_exp'] | undefined
     owners?: GraphQLTypes['bigint_comparison_exp'] | undefined
     supply?: GraphQLTypes['bigint_comparison_exp'] | undefined
     volume?: GraphQLTypes['numeric_comparison_exp'] | undefined
     volume_24h?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    volume_7d?: GraphQLTypes['numeric_comparison_exp'] | undefined
   }
   /** aggregate max on columns */
   ['collection_stats_max_fields']: {
     __typename: 'collection_stats_max_fields'
     floor_price?: GraphQLTypes['bigint'] | undefined
+    floor_price_1d_change?: GraphQLTypes['numeric'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric'] | undefined
     id?: number | undefined
     listed?: GraphQLTypes['bigint'] | undefined
     owners?: GraphQLTypes['bigint'] | undefined
     supply?: GraphQLTypes['bigint'] | undefined
     volume?: GraphQLTypes['numeric'] | undefined
     volume_24h?: GraphQLTypes['numeric'] | undefined
+    volume_7d?: GraphQLTypes['numeric'] | undefined
   }
   /** aggregate min on columns */
   ['collection_stats_min_fields']: {
     __typename: 'collection_stats_min_fields'
     floor_price?: GraphQLTypes['bigint'] | undefined
+    floor_price_1d_change?: GraphQLTypes['numeric'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric'] | undefined
     id?: number | undefined
     listed?: GraphQLTypes['bigint'] | undefined
     owners?: GraphQLTypes['bigint'] | undefined
     supply?: GraphQLTypes['bigint'] | undefined
     volume?: GraphQLTypes['numeric'] | undefined
     volume_24h?: GraphQLTypes['numeric'] | undefined
+    volume_7d?: GraphQLTypes['numeric'] | undefined
   }
   /** Ordering options when selecting data from "collection_stats". */
   ['collection_stats_order_by']: {
     collection?: GraphQLTypes['collection_order_by'] | undefined
     floor_price?: GraphQLTypes['order_by'] | undefined
+    floor_price_1d_change?: GraphQLTypes['order_by'] | undefined
+    floor_price_1w_change?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     listed?: GraphQLTypes['order_by'] | undefined
     owners?: GraphQLTypes['order_by'] | undefined
     supply?: GraphQLTypes['order_by'] | undefined
     volume?: GraphQLTypes['order_by'] | undefined
     volume_24h?: GraphQLTypes['order_by'] | undefined
+    volume_7d?: GraphQLTypes['order_by'] | undefined
   }
   /** select columns of table "collection_stats" */
   ['collection_stats_select_column']: collection_stats_select_column
@@ -28833,34 +29015,43 @@ export type GraphQLTypes = {
   ['collection_stats_stddev_fields']: {
     __typename: 'collection_stats_stddev_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev_pop on columns */
   ['collection_stats_stddev_pop_fields']: {
     __typename: 'collection_stats_stddev_pop_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev_samp on columns */
   ['collection_stats_stddev_samp_fields']: {
     __typename: 'collection_stats_stddev_samp_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** Streaming cursor of the table "collection_stats" */
   ['collection_stats_stream_cursor_input']: {
@@ -28872,56 +29063,71 @@ export type GraphQLTypes = {
   /** Initial value of the column from where the streaming should start */
   ['collection_stats_stream_cursor_value_input']: {
     floor_price?: GraphQLTypes['bigint'] | undefined
+    floor_price_1d_change?: GraphQLTypes['numeric'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric'] | undefined
     id?: number | undefined
     listed?: GraphQLTypes['bigint'] | undefined
     owners?: GraphQLTypes['bigint'] | undefined
     supply?: GraphQLTypes['bigint'] | undefined
     volume?: GraphQLTypes['numeric'] | undefined
     volume_24h?: GraphQLTypes['numeric'] | undefined
+    volume_7d?: GraphQLTypes['numeric'] | undefined
   }
   /** aggregate sum on columns */
   ['collection_stats_sum_fields']: {
     __typename: 'collection_stats_sum_fields'
     floor_price?: GraphQLTypes['bigint'] | undefined
+    floor_price_1d_change?: GraphQLTypes['numeric'] | undefined
+    floor_price_1w_change?: GraphQLTypes['numeric'] | undefined
     id?: number | undefined
     listed?: GraphQLTypes['bigint'] | undefined
     owners?: GraphQLTypes['bigint'] | undefined
     supply?: GraphQLTypes['bigint'] | undefined
     volume?: GraphQLTypes['numeric'] | undefined
     volume_24h?: GraphQLTypes['numeric'] | undefined
+    volume_7d?: GraphQLTypes['numeric'] | undefined
   }
   /** aggregate var_pop on columns */
   ['collection_stats_var_pop_fields']: {
     __typename: 'collection_stats_var_pop_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate var_samp on columns */
   ['collection_stats_var_samp_fields']: {
     __typename: 'collection_stats_var_samp_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate variance on columns */
   ['collection_stats_variance_fields']: {
     __typename: 'collection_stats_variance_fields'
     floor_price?: number | undefined
+    floor_price_1d_change?: number | undefined
+    floor_price_1w_change?: number | undefined
     id?: number | undefined
     listed?: number | undefined
     owners?: number | undefined
     supply?: number | undefined
     volume?: number | undefined
     volume_24h?: number | undefined
+    volume_7d?: number | undefined
   }
   /** aggregate stddev on columns */
   ['collection_stddev_fields']: {
@@ -33741,12 +33947,15 @@ export const enum collection_select_column {
 /** select columns of table "collection_stats" */
 export const enum collection_stats_select_column {
   floor_price = 'floor_price',
+  floor_price_1d_change = 'floor_price_1d_change',
+  floor_price_1w_change = 'floor_price_1w_change',
   id = 'id',
   listed = 'listed',
   owners = 'owners',
   supply = 'supply',
   volume = 'volume',
   volume_24h = 'volume_24h',
+  volume_7d = 'volume_7d',
 }
 /** select columns of table "collection_traits" */
 export const enum collection_traits_select_column {
