@@ -14,7 +14,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.7.3-collections.1",
+    "@asteroid-protocol/sdk": "^0.7.3",
     "@chain-registry/types": "^0.18.0",
     "@cosmjs/stargate": "^0.32.2",
     "@cosmos-kit/keplr-extension": "^2.7.9",
