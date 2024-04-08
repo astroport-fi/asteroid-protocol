@@ -3,13 +3,12 @@ import { useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
 import CollectionStatsTable from '~/components/collection/CollectionStatsTable'
 import SearchInput from '~/components/form/SearchInput'
-import usePagination from '~/hooks/usePagination'
 import { getCollectionsStatsOrder } from '~/utils/collection'
 import { parsePagination } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url)
-  const { offset, limit } = parsePagination(searchParams, 100)
+  const { offset, limit } = parsePagination(searchParams)
   const search = searchParams.get('search')
 
   const orderBy = getCollectionsStatsOrder(searchParams, 'volume')
