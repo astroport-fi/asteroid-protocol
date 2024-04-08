@@ -54,8 +54,9 @@ function genericMeta(
 }
 
 export function inscriptionMeta(inscription: Inscription) {
-  const { name, description, content_path, id, transaction } = inscription
-  const title = `${name} Inscription #${id} on Asteroid Protocol`
+  const { name, description, content_path, inscription_number, transaction } =
+    inscription
+  const title = `${name} Inscription #${inscription_number} on Asteroid Protocol`
   const url = `https://asteroidprotocol.io/app/inscription/${transaction.hash}`
   return genericMeta(title, description, content_path, url)
 }

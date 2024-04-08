@@ -28,7 +28,7 @@
           type:
             nullable: false
             scalar: bigint
-      name: collection_stats
+      name: club_stats
       select_permissions:
         - permission:
             columns:
@@ -134,32 +134,9 @@
           description: ""
           nullable: false
           type: integer
-      code: |-
-        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
-          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE id <= {{max_id}}),
-          (SELECT count(id) as supply FROM inscription WHERE id <= {{max_id}}),
-          (SELECT SUM(amount_quote) as volume FROM inscription_trade_history WHERE inscription_id <= {{max_id}})
-        	FROM marketplace_inscription_detail mid
-            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
-            WHERE ml.is_filled is false and ml.is_cancelled is false and mid.inscription_id <= {{max_id}}
-      returns: collection_stats
+      code: "SELECT \n  COUNT(mid.id) as listed,\n  COALESCE(MIN(ml.total), 0) as floor_price,\n  (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE inscription_number <= {{max_id}}),\n  (SELECT count(id) as supply FROM inscription WHERE inscription_number <= {{max_id}}),\n  (SELECT SUM(amount_quote) as volume FROM inscription_trade_history ith INNER JOIN inscription r ON ith.inscription_id = r.id WHERE r.inscription_number <= {{max_id}})\nFROM inscription i\nLEFT JOIN marketplace_inscription_detail mid ON i.id = mid.inscription_id\nLEFT JOIN marketplace_listing ml ON ml.id = mid.listing_id\nWHERE (ml.id IS NULL OR (ml.is_cancelled IS FALSE AND ml.is_filled IS FALSE)) and i.inscription_number <= {{max_id}}"
+      returns: club_stats
       root_field_name: club_stats
-    - arguments:
-        collection_id:
-          description: ""
-          nullable: false
-          type: integer
-      code: |-
-        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
-          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE collection_id = {{collection_id}}),
-          (SELECT count(id) as supply FROM inscription WHERE collection_id = {{collection_id}}),
-          (SELECT COALESCE(SUM(amount_quote), 0) as volume FROM inscription_trade_history ith INNER JOIN inscription i ON i.id = ith.inscription_id WHERE collection_id = {{collection_id}})
-        	FROM marketplace_inscription_detail mid
-            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
-            INNER JOIN inscription i ON i.id = mid.inscription_id
-            WHERE ml.is_filled is false and ml.is_cancelled is false and i.collection_id = {{collection_id}}
-      returns: collection_stats
-      root_field_name: collection_stats
     - arguments:
         query_name:
           description: ""

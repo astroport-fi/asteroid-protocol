@@ -6,6 +6,7 @@ import {
   UseFormRegister,
 } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
+import InfoTooltip from '../InfoTooltip'
 
 const ADDRESS_LENGTH = 45
 
@@ -19,6 +20,7 @@ export default function CosmosAddressInput<
   value,
   error,
   className,
+  tooltip,
 }: {
   register: UseFormRegister<TFieldValues>
   name: TName
@@ -26,10 +28,13 @@ export default function CosmosAddressInput<
   value: string
   error: FieldError | undefined
   className?: string
+  tooltip?: string
 }) {
   return (
     <div className={twMerge('form-control w-full', className)}>
-      <Form.Label title={title} htmlFor={name} />
+      <Form.Label title={title} htmlFor={name} className="justify-start">
+        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+      </Form.Label>
       <Input
         id={name}
         placeholder="cosmos1xxxxxx"
@@ -38,6 +43,7 @@ export default function CosmosAddressInput<
         color={error ? 'error' : undefined}
         {...register(name, {
           required: true,
+          pattern: /^cosmos1[a-zA-Z0-9]{38}$/,
           minLength: ADDRESS_LENGTH,
           maxLength: ADDRESS_LENGTH,
         })}

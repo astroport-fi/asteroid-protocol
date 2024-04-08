@@ -4,6 +4,7 @@ import { useCookies } from 'react-cookie'
 import { ButtonProps } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
 import useChain from '~/hooks/useChain'
+import useReloadWallet from '~/hooks/useReloadWallet'
 import { USER_ADDRESS_COOKIE, serializeCookieValue } from '~/utils/cookies'
 import Address from '../Address'
 import {
@@ -39,6 +40,7 @@ export function Wallet({
   const [previousStatus, setPreviousStatus] = useState<WalletStatus | null>(
     null,
   )
+  useReloadWallet()
   const navigate = useNavigate()
 
   const [cookies, setCookie, removeCookie] = useCookies([USER_ADDRESS_COOKIE])

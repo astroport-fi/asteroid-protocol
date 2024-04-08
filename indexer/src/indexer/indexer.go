@@ -18,6 +18,7 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/metaprotocol"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/worker"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"github.com/sirupsen/logrus"
@@ -48,6 +49,7 @@ type Indexer struct {
 	metaprotocols            map[string]metaprotocol.Processor
 	stopChannel              chan bool
 	db                       *gorm.DB
+	workerClient             *worker.WorkerClient
 	wg                       sync.WaitGroup
 }
 
@@ -68,13 +70,17 @@ func New(
 	})
 	if err != nil {
 		return nil, err
+	}
 
+	workerClient, err := worker.NewWorkerClient(log)
+	if err != nil {
+		return nil, err
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
-	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db)
+	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, workerClient)
 	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
-	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db)
+	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db, workerClient)
 
 	return &Indexer{
 		chainID:                  config.ChainID,
@@ -87,6 +93,7 @@ func New(
 		logger:                   log,
 		stopChannel:              make(chan bool),
 		db:                       db,
+		workerClient:             workerClient,
 	}, nil
 }
 

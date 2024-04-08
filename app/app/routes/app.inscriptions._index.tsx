@@ -1,6 +1,8 @@
-import { order_by } from '@asteroid-protocol/sdk/client'
+import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
+import clsx from 'clsx'
+import { useMemo } from 'react'
 import { Button, Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import clubs from '~/api/clubs'
@@ -10,34 +12,28 @@ import Collections, { ClubBox } from '~/components/Collections'
 import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
 import InscriptionImage from '~/components/InscriptionImage'
+import CollectionStatsTable from '~/components/collection/CollectionStatsTable'
 import SearchInput from '~/components/form/SearchInput'
-import { parsePagination, parseSorting } from '~/utils/pagination'
+import { getCollectionsStatsOrder } from '~/utils/collection'
+import { parsePagination } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
-  const url = new URL(request.url)
-  const { sort, direction } = parseSorting(
-    url.searchParams,
-    'id',
-    order_by.desc,
-  )
-  const { offset, limit } = parsePagination(new URL(request.url).searchParams, 100)
-  const search = url.searchParams.get('search')
+  const { searchParams } = new URL(request.url)
+
+  const { offset, limit } = parsePagination(searchParams, 100)
+  const search = searchParams.get('search')
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const transactions = await asteroidClient.getInscriptionTradeHistory(0, 50)
-  const res = await asteroidClient.getCollections(
-    offset,
-    limit,
-    { search },
-    {
-      [sort]: direction,
-    },
-  )
+  const res = await asteroidClient.getCollections(offset, limit, { search })
   const topCollections = await asteroidClient.getTopCollections()
+  const orderBy = getCollectionsStatsOrder(searchParams, 'volume_24h')
+  const collectionsStats = await asteroidClient.getCollectionsStats(orderBy)
 
   return json({
     collections: res.collections,
     topCollections,
+    collectionsStats: collectionsStats.stats,
     transactions,
     pages: Math.ceil(res.count / limit),
   })
@@ -82,7 +78,7 @@ export function TransactionBox({
   )
 }
 
-function TopCollection({ collection }: { collection: TopCollection }) {
+function TopCollectionComponent({ collection }: { collection: TopCollection }) {
   return (
     <Link
       className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl"
@@ -107,10 +103,26 @@ function TopCollection({ collection }: { collection: TopCollection }) {
   )
 }
 
+export enum CollectionCategory {
+  Trending,
+  Top,
+  New,
+}
+
 export default function CollectionsPage() {
   const data = useLoaderData<typeof loader>()
   const [searchParams] = useSearchParams()
   const hasSearch = !!searchParams.get('search')
+  const sort = searchParams.get('sort')
+  const direction = searchParams.get('direction')
+  const collectionCategory = useMemo(() => {
+    if (sort == 'volume' && direction == 'desc') {
+      return CollectionCategory.Top
+    } else if (sort == 'id' && direction == 'desc') {
+      return CollectionCategory.New
+    }
+    return CollectionCategory.Trending
+  }, [sort, direction])
 
   if (hasSearch) {
     return (
@@ -121,22 +133,68 @@ export default function CollectionsPage() {
         {data.collections.length < 1 && (
           <span className="p-4">{'No collections found'}</span>
         )}
-        <Collections collections={data.collections} />
+        <Collections className="mt-8" collections={data.collections} />
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full max-w-[1920px] ">
       <div className="flex justify-end">
         <SearchInput placeholder="Search by collection name" />
       </div>
 
       <div className="carousel gap-5 mt-4 overflow-y-hidden overflow-x-scroll">
         {data.topCollections.map((collection) => (
-          <TopCollection key={collection.id} collection={collection} />
+          <TopCollectionComponent key={collection.id} collection={collection} />
         ))}
       </div>
+
+      <div className="flex mt-12 items-baseline justify-between text-md">
+        <div>
+          <Link
+            className={clsx({
+              'text-xl text-primary':
+                collectionCategory === CollectionCategory.Trending,
+            })}
+            to="/app/inscriptions"
+          >
+            Trending
+          </Link>
+          <Link
+            className={clsx('ml-3', {
+              'text-xl text-primary':
+                collectionCategory === CollectionCategory.Top,
+            })}
+            to={{
+              pathname: '/app/inscriptions',
+              search: 'sort=volume&direction=desc',
+            }}
+          >
+            Top
+          </Link>
+          <Link
+            className={clsx('ml-3', {
+              'text-xl text-primary':
+                collectionCategory === CollectionCategory.New,
+            })}
+            to={{
+              pathname: '/app/inscriptions',
+              search: 'sort=id&direction=desc',
+            }}
+          >
+            New
+          </Link>
+        </div>
+        <Link to="/app/collections" className="flex items-center">
+          See All <ChevronRightIcon className="size-4" />
+        </Link>
+      </div>
+
+      <CollectionStatsTable
+        collectionsStats={data.collectionsStats}
+        defaultSort={{ id: sort ?? 'volume_24h', desc: true }}
+      />
 
       <h3 className="text-xl text-white mt-12">Inscription Clubs</h3>
 
@@ -145,9 +203,6 @@ export default function CollectionsPage() {
           <ClubBox key={club.id} club={club} />
         ))}
       </Grid>
-
-      <h3 className="text-xl text-white mt-12">Collections</h3>
-      <Collections className="mt-4" collections={data.collections} />
 
       <h3 className="text-xl text-white mt-12">Latest Sales</h3>
       <div className="carousel gap-4 mt-4">

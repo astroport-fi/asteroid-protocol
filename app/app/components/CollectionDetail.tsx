@@ -2,8 +2,9 @@ import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Collapse, Link } from 'react-daisyui'
-import { CollectionDetail } from '~/api/collection'
-import { CollectionStats } from '~/api/common'
+import { ClubStats } from '~/api/clubs'
+import { CollectionDetail, CollectionStats } from '~/api/collection'
+import { CollapseTextContent, CollapseTextTrigger } from './CollapseText'
 import CollectionStatsComponent from './CollectionStats'
 import InscriptionImage from './InscriptionImage'
 import Discord from './icons/discord'
@@ -15,7 +16,7 @@ export default function CollectionDetailComponent({
   stats,
 }: {
   collection: CollectionDetail
-  stats: CollectionStats | undefined
+  stats: CollectionStats | ClubStats | undefined
 }) {
   const { metadata } = collection
   const hasSocials =
@@ -42,20 +43,16 @@ export default function CollectionDetailComponent({
         >
           <h2 className="text-xl">{collection.name}</h2>
           {collection.metadata.description && (
-            <Collapse.Title
-              className="p-0 hover:cursor-pointer min-h-[initial]"
-              onClick={() => setOpen(!open)}
-            >
-              <p className="text-ellipsis line-clamp-2">
-                {collection.metadata.description}
-              </p>
-            </Collapse.Title>
+            <CollapseTextTrigger
+              onToggle={() => setOpen(!open)}
+              title={collection.metadata.description}
+            />
           )}
 
           <div className="flex items-start mt-3 gap-2">
             {metadata.website && (
               <Link
-                href="https://twitter.com/asteroidxyz"
+                href={metadata.website}
                 title={`${collection.name} website`}
                 target="_blank"
               >
@@ -99,10 +96,10 @@ export default function CollectionDetailComponent({
           />
         )}
       </div>
-      <Collapse icon="arrow" open={open}>
-        <Collapse.Content className="p-0 whitespace-pre-wrap mt-4">
+      <Collapse open={open}>
+        <CollapseTextContent>
           {collection.metadata.description}
-        </Collapse.Content>
+        </CollapseTextContent>
       </Collapse>
     </div>
   )

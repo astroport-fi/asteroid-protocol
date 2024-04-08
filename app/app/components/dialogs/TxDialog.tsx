@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useEffect, useState } from 'react'
 import type { To } from 'react-router'
 import useForwardRef from '~/hooks/useForwardRef'
-import useSubmitTx from '~/hooks/useSubmitTx'
+import useSubmitTx, { TxState } from '~/hooks/useSubmitTx'
 import scanAnimationData from '~/lottie/scan.json'
 import Lottie from '../Lottie'
 import Actions from '../SubmitTx/Actions'
@@ -15,6 +15,7 @@ interface Props {
   resultCTA: string
   resultLink?: To | ((txHash: string) => To)
   feeOperationTitle?: string
+  onSuccess?: (txHash: string) => void
 }
 
 const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
@@ -23,6 +24,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
     resultCTA,
     resultLink,
     feeOperationTitle,
+    onSuccess,
   },
   ref,
 ) {
@@ -50,6 +52,12 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       setTxInscription(txInscriptionProp)
     }
   }, [txInscriptionProp, txInscription, setTxInscription, resetState])
+
+  useEffect(() => {
+    if (txState === TxState.SuccessInscribed && txHash) {
+      onSuccess?.(txHash)
+    }
+  }, [txState, txHash])
 
   return (
     <Modal

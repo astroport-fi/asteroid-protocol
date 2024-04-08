@@ -13,6 +13,10 @@ export default function App() {
     !location.pathname.includes('/app/market') &&
     !location.pathname.includes('/app/collection/')
 
+  const center =
+    location.pathname === '/app/inscriptions' ||
+    location.pathname === '/app/collections'
+
   return (
     <div className="flex flex-col bg-main-gradient">
       <Navbar />
@@ -26,6 +30,7 @@ export default function App() {
         className={clsx('flex flex-col h-[calc(100vh-6rem)]', {
           'mt-16': !isLoading,
           'px-16 py-8 overflow-y-scroll': padding,
+          'items-center': center,
         })}
       >
         <Outlet />

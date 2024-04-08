@@ -171,6 +171,14 @@ function InscriptionDetailComponent({
           <h2 className="font-medium text-2xl">{inscription.name}</h2>
           <InscriptionActions inscription={inscription} />
         </div>
+        {inscription.collection && (
+          <Link
+            to={`/app/collection/${inscription.collection.symbol}`}
+            className="mt-1 link link-primary link-hover text-lg"
+          >
+            {inscription.collection.name}
+          </Link>
+        )}
         <p className="whitespace-pre-wrap mt-4">{inscription.description}</p>
         <Divider />
         <div className="flex flex-row w-full">
@@ -205,6 +213,17 @@ function InscriptionDetailComponent({
             </Link>
           </div>
         )}
+
+        {inscription.rarity && (
+          <div className="flex flex-col mt-6">
+            <strong>Rarity</strong>
+            <span>
+              {inscription.rarity.rarity_rank} /{' '}
+              {inscription.collection?.stats?.supply}
+            </span>
+          </div>
+        )}
+
         {hasAttributes && (
           <div className="flex flex-col mt-6">
             <strong>Traits</strong>
@@ -303,7 +322,7 @@ export default function InscriptionPage() {
             : `/app/inscriptions`
         }
       >
-        Inscription #{data.inscription.id - 1}
+        Inscription #{data.inscription.inscription_number! - 1}
       </BackHeader>
       <InscriptionDetailComponent inscription={data.inscription} />
       <Divider className="mt-8" />

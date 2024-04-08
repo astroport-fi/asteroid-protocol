@@ -5,9 +5,11 @@ import { useRootContext } from '~/context/root'
 export default function AtomValue({
   value,
   horizontal,
+  className,
 }: {
   value: number
   horizontal?: boolean
+  className?: string
 }) {
   const {
     status: { baseTokenUsd, baseToken },
@@ -18,7 +20,7 @@ export default function AtomValue({
 
   return (
     <span
-      className={clsx('flex font-mono', {
+      className={clsx('flex font-mono', className, {
         'flex-row items-baseline': horizontal,
         'flex-col': !horizontal,
       })}

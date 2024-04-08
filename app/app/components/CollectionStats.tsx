@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { PropsWithChildren } from 'react'
-import { CollectionStats } from '~/api/common'
+import { ClubStats } from '~/api/clubs'
+import { CollectionStats } from '~/api/collection'
 import { getSupplyTitle } from '~/utils/number'
 import DecimalText from './DecimalText'
 import PercentageText from './PercentageText'
@@ -19,7 +20,7 @@ export default function CollectionStatsComponent({
   royaltyPercentage,
   className,
 }: {
-  stats: CollectionStats
+  stats: CollectionStats | ClubStats
   royaltyPercentage?: number
   className?: string
 }) {

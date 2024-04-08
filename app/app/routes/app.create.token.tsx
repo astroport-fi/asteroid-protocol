@@ -38,6 +38,7 @@ export default function CreateToken() {
     register,
     handleSubmit,
     control,
+    reset,
     watch,
     formState: { errors },
   } = useForm<FormData>({
@@ -50,6 +51,7 @@ export default function CreateToken() {
   const name = watch('name')
   const ticker = watch('ticker')
   const launch = watch('launch')
+  const [createdTicker, setCreatedTicker] = useState<string | null>(null)
 
   // preview
   const [preview, setPreview] = useState<string | null>(null)
@@ -356,8 +358,13 @@ export default function CreateToken() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={`/app/token/${ticker?.toUpperCase()}`}
+        resultLink={`/app/token/${createdTicker?.toUpperCase()}`}
         resultCTA="View Token"
+        onSuccess={() => {
+          setCreatedTicker(ticker)
+          reset()
+          setFileName(null)
+        }}
       />
     </div>
   )

@@ -4,18 +4,32 @@ import { clientOnly$ } from 'vite-env-only'
 import { Status } from '~/api/status'
 import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
+import useChain from '~/hooks/useChain'
 import Telegram from './icons/telegram'
 import Twitter from './icons/twitter'
 
 export default function Footer() {
-  const { chainId, status: initialStatus } = useRootContext()
+  const { chainId, chainName, status: initialStatus } = useRootContext()
   const [status, setStatus] = useState<Status>({
     base_token: initialStatus.baseToken,
     base_token_usd: initialStatus.baseTokenUsd,
     last_processed_height: initialStatus.lastProcessedHeight,
     last_known_height: initialStatus.lastKnownHeight,
   })
-  const lag = status.last_known_height! - status.last_processed_height
+  const [height, setHeight] = useState<number>(0)
+
+  const lag =
+    Math.max(status.last_known_height!, height) - status.last_processed_height
+
+  const { getStargateClient } = useChain(chainName)
+  useEffect(() => {
+    if (!getStargateClient) {
+      return
+    }
+    getStargateClient().then((client) => {
+      client.getHeight().then(setHeight)
+    })
+  }, [getStargateClient])
 
   const asteroidClient = useAsteroidClient(clientOnly$(true))
   const wsSubscription = clientOnly$(

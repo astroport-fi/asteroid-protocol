@@ -38,7 +38,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
           <strong className="text-nowrap overflow-hidden text-ellipsis">
             {inscription.name}
           </strong>
-          <span>#{inscription.id - 1}</span>
+          <span>#{inscription.inscription_number! - 1}</span>
         </div>
         <Divider className="my-1" />
         <div className="flex flex-col items-center">

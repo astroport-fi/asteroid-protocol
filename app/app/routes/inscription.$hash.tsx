@@ -122,7 +122,8 @@ export default function InscriptionPage() {
             <img src={logo} alt="Asteroid protocol" />
           </Link>
           <h1 className="text-2xl font-bold flex items-center ml-8">
-            Inscription #{data.inscription.id - 1}: {data.inscription.name}
+            Inscription #{data.inscription.inscription_number! - 1}:{' '}
+            {data.inscription.name}
             <span className="text-sm font-extralight ml-2">
               {data.inscription.mime}
             </span>

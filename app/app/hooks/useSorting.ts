@@ -20,24 +20,39 @@ function getDefaultSort(
   return [{ id: currentSort, desc: currentDesc }]
 }
 
-export default function useSorting(defaultSorting: ColumnSort, prefix = '') {
+export default function useSorting(
+  defaultSortingParam: ColumnSort,
+  prefix = '',
+) {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [sorting, setSorting] = useState<SortingState>(
-    getDefaultSort(searchParams, defaultSorting, prefix),
+    getDefaultSort(searchParams, defaultSortingParam, prefix),
   )
+
+  const [defaultSort, setDefaultSort] = useState(defaultSortingParam)
 
   useEffect(() => {
     if (!sorting || sorting.length === 0) {
       return
     }
 
+    if (
+      defaultSort.id !== defaultSortingParam.id ||
+      defaultSort.desc !== defaultSortingParam.desc
+    ) {
+      setDefaultSort(defaultSortingParam)
+      setSorting([defaultSortingParam])
+      return
+    }
+
     const name = prefix != '' ? `${prefix}_sort` : 'sort'
     const directionName = prefix != '' ? `${prefix}_direction` : 'direction'
 
-    const currentSort = searchParams.get(name) ?? defaultSorting.id
+    const currentSort = searchParams.get(name) ?? defaultSortingParam.id
     const currentDirection =
-      searchParams.get(directionName) ?? (defaultSorting.desc ? 'desc' : 'asc')
+      searchParams.get(directionName) ??
+      (defaultSortingParam.desc ? 'desc' : 'asc')
 
     const newSort = sorting[0].id
     const newDirection = sorting[0].desc ? 'desc' : 'asc'
@@ -49,7 +64,14 @@ export default function useSorting(defaultSorting: ColumnSort, prefix = '') {
         return prev
       })
     }
-  }, [prefix, sorting, defaultSorting, searchParams, setSearchParams])
+  }, [
+    prefix,
+    sorting,
+    defaultSortingParam,
+    defaultSort,
+    searchParams,
+    setSearchParams,
+  ])
 
   return [sorting, setSorting] as const
 }

@@ -1,0 +1,22 @@
+table:
+  name: inscription_rarity
+  schema: public
+object_relationships:
+  - name: inscription
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: inscription
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - id
+        - rarity_rank
+        - rarity_score
+      filter: {}
+    comment: ""

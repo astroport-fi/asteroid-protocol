@@ -18,6 +18,7 @@ export default function useChain(chainName: string) {
       wallet: undefined,
       getRpcEndpoint: () => '',
       getRestEndpoint: () => '',
+      getStargateClient: undefined,
       setDefaultSignOptions: (options: SignerOptions) => {},
       getOfflineSignerDirect: undefined,
       isWalletConnected: false,

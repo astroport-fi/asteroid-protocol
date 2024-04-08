@@ -1,0 +1,30 @@
+table:
+  name: collection_stats
+  schema: public
+object_relationships:
+  - name: collection
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: collection
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - floor_price
+        - floor_price_1d_change
+        - floor_price_1w_change
+        - id
+        - listed
+        - owners
+        - supply
+        - volume
+        - volume_24h
+        - volume_7d
+      filter: {}
+      allow_aggregations: true
+    comment: ""

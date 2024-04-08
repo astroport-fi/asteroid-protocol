@@ -3,7 +3,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import { Link } from '@remix-run/react'
 import { format } from 'date-fns'
 import { forwardRef, useEffect, useState } from 'react'
-import { Button, Divider, Modal } from 'react-daisyui'
+import { Button, Collapse, Divider, Modal } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import type { Royalty } from '~/api/client'
 import { InscriptionWithMarket } from '~/api/inscription'
@@ -15,6 +15,7 @@ import { DATETIME_FORMAT } from '~/utils/date'
 import { getDecimalValue } from '~/utils/number'
 import AddressChip from '../AddressChip'
 import CancelListing from '../CancelListing'
+import { CollapseTextContent, CollapseTextTrigger } from '../CollapseText'
 import InscriptionImage from '../InscriptionImage'
 import BuyDialog from './BuyDialog'
 import SellInscriptionDialog from './SellInscriptionDialog'
@@ -46,6 +47,8 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
       asteroidClient.getRoyalty(inscription.id).then(setRoyalty)
     }, [asteroidClient, inscription])
 
+    const [open, setOpen] = useState(false)
+
     return (
       <Modal ref={ref} backdrop>
         {inscription && (
@@ -58,7 +61,9 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               >
                 <ArrowLeftIcon className="size-5" />
               </Button>
-              <span className="ml-2">Inscription #{inscription.id - 1}</span>
+              <span className="ml-2">
+                Inscription #{inscription.inscription_number! - 1}
+              </span>
             </Modal.Header>
             <Modal.Body className="flex flex-col items-center">
               <InscriptionImage
@@ -70,9 +75,19 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               />
 
               <h2 className="font-medium text-xl mt-4">{inscription.name}</h2>
-              <p className="whitespace-pre-wrap mt-3">
-                {inscription.description}
-              </p>
+              {inscription.description && (
+                <Collapse open={open} className="mt-3">
+                  <CollapseTextTrigger
+                    onToggle={() => setOpen(!open)}
+                    title={inscription.description}
+                  />
+
+                  <CollapseTextContent>
+                    {inscription.description}
+                  </CollapseTextContent>
+                </Collapse>
+              )}
+
               <div className="mt-3">
                 {format(inscription.date_created, DATETIME_FORMAT)}
               </div>

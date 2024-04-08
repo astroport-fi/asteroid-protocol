@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/donovansolms/cosmos-inscriptions/indexer/src/worker"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/datatypes"
@@ -32,11 +33,12 @@ type InscriptionConfig struct {
 }
 
 type Inscription struct {
-	chainID    string
-	db         *gorm.DB
-	s3Endpoint string
-	s3Region   string
-	s3Bucket   string
+	chainID      string
+	db           *gorm.DB
+	workerClient *worker.WorkerClient
+	s3Endpoint   string
+	s3Region     string
+	s3Bucket     string
 	// s3ID is the S3 credentials ID
 	s3ID string
 	// s3Secret is the S3 credentials secret
@@ -47,7 +49,7 @@ type Inscription struct {
 	reservationsByTicker map[string]CollectionReservation
 }
 
-func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
+func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Inscription {
 
 	// Parse config environment variables for self
 	var config InscriptionConfig
@@ -70,6 +72,7 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB) *Inscription {
 		s3Token:              config.S3Token,
 		reservationsByName:   reservationsByName,
 		reservationsByTicker: reservationsByTicker,
+		workerClient:         workerClient,
 	}
 }
 
@@ -208,7 +211,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	// verify that the sender is the inscription owner
 	attributeNames := migrationData.Header[1:]
 
-	return protocol.db.Transaction(func(tx *gorm.DB) error {
+	err = protocol.db.Transaction(func(tx *gorm.DB) error {
 		for _, row := range migrationData.Rows {
 			// get the inscription
 			inscriptionHash := row[0]
@@ -230,7 +233,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 			}
 
 			// check if the inscription is already migrated
-			if inscription.Version != "v1" {
+			if inscription.CollectionID.Valid || (inscription.Version != "v1" && collection == nil) {
 				return fmt.Errorf("inscription already migrated")
 			}
 
@@ -265,6 +268,18 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 		}
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
+
+	// update collection stats and traits
+	if collection != nil {
+		protocol.workerClient.UpdateCollectionStats(collection.ID)
+		protocol.workerClient.UpdateCollectionTraits(collection.ID)
+	}
+
+	return nil
 }
 
 func (protocol *Inscription) RequiresV2(version string) error {
@@ -399,19 +414,28 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			return nil
 		}
 
+		// Get the max inscription number
+		var maxInscriptionNumber uint64
+		err = protocol.db.Model(&models.Inscription{}).Select("MAX(inscription_number)").Scan(&maxInscriptionNumber).Error
+		if err != nil {
+			return err
+		}
+		inscriptionNumber := maxInscriptionNumber + 1
+
 		inscriptionModel := models.Inscription{
-			ChainID:          parsedURN.ChainID,
-			Height:           transactionModel.Height,
-			Version:          parsedURN.Version,
-			TransactionID:    transactionModel.ID,
-			ContentHash:      contentHash,
-			Creator:          sender,
-			CurrentOwner:     sender,
-			Type:             "content",
-			Metadata:         datatypes.JSON(jsonBytes),
-			ContentPath:      contentPath,
-			ContentSizeBytes: uint64(len(content)),
-			DateCreated:      transactionModel.DateCreated,
+			InscriptionNumber: inscriptionNumber,
+			ChainID:           parsedURN.ChainID,
+			Height:            transactionModel.Height,
+			Version:           parsedURN.Version,
+			TransactionID:     transactionModel.ID,
+			ContentHash:       contentHash,
+			Creator:           sender,
+			CurrentOwner:      sender,
+			Type:              "content",
+			Metadata:          datatypes.JSON(jsonBytes),
+			ContentPath:       contentPath,
+			ContentSizeBytes:  uint64(len(content)),
+			DateCreated:       transactionModel.DateCreated,
 		}
 
 		// Check if inscription is part of a Collection
@@ -447,6 +471,11 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 		// If we fail to save history, that's fine
 		protocol.db.Save(&inscriptionHistory)
+
+		if inscriptionModel.CollectionID.Valid {
+			protocol.workerClient.UpdateCollectionStats(uint64(inscriptionModel.CollectionID.Int64))
+			protocol.workerClient.UpdateCollectionTraits(uint64(inscriptionModel.CollectionID.Int64))
+		}
 
 	case "transfer":
 		if parsedURN.KeyValuePairs["h"] == "" {

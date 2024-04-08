@@ -79,6 +79,47 @@ CREATE INDEX "idx_collection_symbol" ON "public"."collection" USING btree ("symb
 CREATE INDEX "idx_collection_transaction_id" ON "public"."collection" USING btree ("transaction_id");
 CREATE INDEX idx_trgm_collection_name ON "public"."collection" USING gin (("name") gin_trgm_ops);
 
+-- public.collection_stats definition
+
+-- Drop table
+
+-- DROP TABLE public.collection_stats;
+
+CREATE TABLE "public"."collection_stats" (
+    id int4 NOT NULL,
+    "listed" bigint NOT NULL,
+    "supply" bigint NOT NULL,
+    "owners" bigint NOT NULL,
+    "volume" numeric NOT NULL,
+    "volume_24h" numeric NOT NULL,
+    "volume_7d" numeric NOT NULL,
+    "floor_price" bigint NOT NULL,
+    "floor_price_1d_change" decimal(5,4),
+    "floor_price_1w_change" decimal(5,4),
+    CONSTRAINT collection_stats_id UNIQUE ("id"),
+    CONSTRAINT collection_stats_id_fk FOREIGN KEY ("id") REFERENCES public."collection"(id)
+);
+
+CREATE INDEX "idx_collection_stats_id" ON "public"."collection_stats" USING btree ("id");
+
+-- public.collection_traits definition
+
+-- Drop table
+
+-- DROP TABLE public.collection_traits;
+
+CREATE TABLE "public"."collection_traits" (
+    "collection_id" int4 NOT NULL,
+    "trait_type" jsonb NOT NULL,
+    "trait_value" jsonb NOT NULL,
+    "count" bigint NOT NULL,
+    "rarity_score" numeric NOT NULL,
+    CONSTRAINT collection_traits_id_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT "collection_traits_type_value" UNIQUE ("collection_id", "trait_type", "trait_value")
+);
+
+CREATE INDEX "idx_collection_traits_collection_id" ON "public"."collection_traits" USING btree ("collection_id");
+
 -- public.inscription definition
 
 -- Drop table
@@ -87,6 +128,7 @@ CREATE INDEX idx_trgm_collection_name ON "public"."collection" USING gin (("name
 
 CREATE TABLE public.inscription (
     id serial4 NOT NULL,
+    inscription_number int4 NULL,
     chain_id varchar(32) NOT NULL,
     height int4 NOT NULL,
     "version" varchar(32) NOT NULL,
@@ -104,6 +146,7 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_content_hash_key UNIQUE (content_hash),
     CONSTRAINT inscription_pkey PRIMARY KEY (id),
     CONSTRAINT inscription_tx_id UNIQUE (transaction_id),
+    CONSTRAINT inscription_number UNIQUE (inscription_number),
     CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
     CONSTRAINT inscription_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
 );
@@ -112,6 +155,23 @@ CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btr
 CREATE INDEX idx_trgm_inscription_metadata_name ON inscription USING gin ((metadata -> 'metadata' ->>'name') gin_trgm_ops);
 CREATE INDEX "idx_inscription_collection_id" ON "public"."inscription" USING btree ("collection_id");
 CREATE INDEX "idx_inscription_creator" ON "public"."inscription" USING btree ("creator");
+CREATE INDEX "idx_inscription_number" ON "public"."inscription" USING btree ("inscription_number");
+
+-- public.inscription_rarity definition
+
+-- Drop table
+
+-- DROP TABLE public.inscription_rarity;
+
+CREATE TABLE "public"."inscription_rarity" (
+    "id" int4 NOT NULL,
+    "rarity_score" numeric NOT NULL,
+    "rarity_rank" int4 NOT NULL,
+    CONSTRAINT inscription_rarity_id UNIQUE ("id"),
+    CONSTRAINT inscription_rarity_id_fk FOREIGN KEY ("id") REFERENCES public."inscription"(id)
+);
+
+CREATE INDEX "idx_inscription_rarity_id" ON "public"."inscription_rarity" USING btree ("id");
 
 -- public.inscription_history definition
 
@@ -458,3 +518,99 @@ CREATE OR REPLACE VIEW public.trade_history AS
         amount_base
     FROM
         token_trade_history;
+
+-- public.collection_traits_view view definition
+
+CREATE OR REPLACE VIEW public.collection_traits_view AS 
+SELECT r.collection_id,
+    (obj.value -> 'trait_type'::text) AS trait_type,
+    (obj.value -> 'value'::text) AS trait_value,
+    count(*) AS count,
+    (1::decimal / count(*)::decimal / (SELECT count(id) FROM inscription WHERE collection_id = r.collection_id)::decimal) as rarity_score
+FROM inscription r,
+    LATERAL jsonb_array_elements(((r.metadata -> 'metadata'::text) -> 'attributes'::text)) obj(value)
+    WHERE (r.collection_id IS NOT NULL)
+    GROUP BY 
+        r.collection_id,
+        (obj.value -> 'trait_type'::text),
+        (obj.value -> 'value'::text);
+
+-- public.inscription_traits view definition
+
+CREATE OR REPLACE VIEW "public"."inscription_traits" AS
+SELECT
+    r.id,
+    r.collection_id,
+    (obj.value -> 'trait_type' :: text) AS trait_type,
+    (obj.value -> 'value' :: text) AS trait_value 
+FROM 
+    inscription r,
+    LATERAL jsonb_array_elements(((r.metadata -> 'metadata'::text) -> 'attributes'::text)) obj(value);
+
+-- public.collection_floor_weekly view definition
+
+CREATE OR REPLACE VIEW "public"."collection_floor_weekly" AS
+WITH collection_floor_price AS (
+    SELECT 
+        date_trunc('WEEK', mid.date_created)::date - (date_part('dow', NOW())::int) as date, 
+        i.collection_id,
+        COALESCE(MIN(ml.total), 0) AS floor_price,
+        LEAD(COALESCE(MIN(ml.total), 0)) OVER () AS prev_floor_price
+    FROM marketplace_inscription_detail mid
+    INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+    INNER JOIN inscription i ON i.id = mid.inscription_id
+    WHERE i.collection_id is not null
+    GROUP BY i.collection_id, 1
+    ORDER BY i.collection_id, 1 desc
+)
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
+
+-- public.collection_floor_daily view definition
+
+CREATE OR REPLACE VIEW "public"."collection_floor_daily" AS
+WITH collection_floor_price AS (
+    SELECT 
+        date_trunc('day', mid.date_created) as date,
+        i.collection_id,
+        COALESCE(MIN(ml.total), 0) AS floor_price,
+        LEAD(COALESCE(MIN(ml.total), 0)) OVER () AS prev_floor_price
+    FROM marketplace_inscription_detail mid
+    INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+    INNER JOIN inscription i ON i.id = mid.inscription_id
+    WHERE i.collection_id is not null
+    GROUP BY i.collection_id, 1
+    ORDER BY i.collection_id, 1 desc
+)
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
+
+-- public.inscription_rarity_view view definition
+
+CREATE OR REPLACE VIEW "public"."inscription_rarity_view" AS
+SELECT 
+    it.id,
+    SUM(ct.rarity_score) AS rarity_score,
+    row_number() over (partition by it.collection_id ORDER BY SUM(ct.rarity_score) DESC, it.id) as rarity_rank
+FROM inscription_traits it
+INNER JOIN collection_traits ct ON it.collection_id = ct.collection_id AND it.trait_type = ct.trait_type AND it.trait_value = ct.trait_value
+GROUP BY it.id, it.collection_id;
+
+-- inscription number initial value
+
+UPDATE inscription
+SET inscription_number = s.row_number
+FROM (select i.id, row_number() over () from inscription i order by i.id asc) AS s
+WHERE inscription.id = s.id;
+
+-- fill collection traits table
+
+INSERT INTO collection_traits (collection_id, trait_type, trait_value, count, rarity_score)
+SELECT collection_id, trait_type, trait_value, count, rarity_score FROM collection_traits_view ctv
+ON CONFLICT (collection_id, trait_type, trait_value) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, count = EXCLUDED.count;
+
+
+-- fill inscription rarity table
+
+INSERT INTO inscription_rarity (id, rarity_score, rarity_rank)
+SELECT id, rarity_score, rarity_rank
+FROM inscription_rarity_view
+ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, rarity_rank = EXCLUDED.rarity_rank;

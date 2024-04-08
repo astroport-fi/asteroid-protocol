@@ -9,6 +9,7 @@ import { MarketplaceListing, marketplaceListingSelector } from './marketplace'
 
 export const inscriptionSelector = Selector('inscription')({
   id: true,
+  inscription_number: true,
   transaction: {
     hash: true,
   },
@@ -63,6 +64,12 @@ export const inscriptionDetailSelector = Selector('inscription')({
   collection: {
     symbol: true,
     name: true,
+    stats: {
+      supply: true,
+    },
+  },
+  rarity: {
+    rarity_rank: true,
   },
   migration_permission_grants: [{}, { grantee: true }],
   __alias: {
