@@ -15,6 +15,7 @@ import {
 import { useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
 import TxDialog from '~/components/dialogs/TxDialog'
+import CosmosAddressInput from '~/components/form/CosmosAddressInput'
 import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
 import Discord from '~/components/icons/discord'
@@ -37,6 +38,7 @@ type FormData = {
   telegram: string
   discord: string
   royaltyPercentage: number
+  paymentAddress: string
 }
 
 const NAME_MIN_LENGTH = 1
@@ -59,6 +61,8 @@ export default function CreateCollection() {
   } = useForm<FormData>()
   const name = watch('name')
   const ticker = watch('ticker')
+  const paymentAddress = watch('paymentAddress')
+  const [createdTicker, setCreatedTicker] = useState<string | null>(null)
 
   // preview
   const [preview, setPreview] = useState<string | null>(null)
@@ -102,6 +106,10 @@ export default function CreateCollection() {
     }
     if (data.royaltyPercentage) {
       metadata.royalty_percentage = data.royaltyPercentage / 100
+    }
+
+    if (data.paymentAddress) {
+      metadata.payment_address = data.paymentAddress
     }
 
     const txInscription = operations.inscribeCollection(byteArray, metadata)
@@ -320,6 +328,15 @@ export default function CreateCollection() {
             className="mt-4"
           />
 
+          <CosmosAddressInput
+            register={register}
+            name="paymentAddress"
+            error={errors.paymentAddress}
+            title="Royalty payment address (optional)"
+            tooltip="The address where royalties will be sent. Must be a Cosmos Hub address. If left blank, royalties will be sent to the collection owner's address."
+            value={paymentAddress ?? ''}
+          />
+
           <div className="form-control w-full mt-4">
             <Label
               title="Website"
@@ -440,9 +457,10 @@ export default function CreateCollection() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={`/app/collection/${ticker?.toUpperCase()}`}
+        resultLink={`/app/collection/${createdTicker?.toUpperCase()}`}
         resultCTA="View Collection"
         onSuccess={() => {
+          setCreatedTicker(ticker)
           reset()
           setFileName(null)
         }}

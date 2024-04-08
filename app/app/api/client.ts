@@ -186,6 +186,7 @@ export class AsteroidClient extends AsteroidService {
         {
           collection: {
             royalty_percentage: true,
+            payment_address: true,
             creator: true,
           },
         },
@@ -197,9 +198,18 @@ export class AsteroidClient extends AsteroidService {
       result.inscription[0].collection &&
       result.inscription[0].collection.royalty_percentage
     ) {
+      const { collection } = result.inscription[0]
+
+      if (collection.payment_address) {
+        return {
+          recipient: collection.payment_address,
+          percentage: collection.royalty_percentage!,
+        }
+      }
+
       return {
-        recipient: result.inscription[0].collection.creator,
-        percentage: result.inscription[0].collection.royalty_percentage,
+        recipient: collection.creator,
+        percentage: collection.royalty_percentage!,
       }
     }
     return null
