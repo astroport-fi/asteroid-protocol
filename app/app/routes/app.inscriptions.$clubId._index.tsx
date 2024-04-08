@@ -75,7 +75,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
       orderBy = {
         inscription: {
           rarity: {
-            rarity_score: order_by.asc,
+            rarity_rank: order_by.desc,
           },
         },
       }
@@ -84,7 +84,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
       orderBy = {
         inscription: {
           rarity: {
-            rarity_score: order_by.desc,
+            rarity_rank: order_by.asc,
           },
         },
       }
