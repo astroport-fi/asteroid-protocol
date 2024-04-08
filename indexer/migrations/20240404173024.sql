@@ -1,5 +1,5 @@
 -- DROP collection traits view
-DROP VIEW collection_traits;
+DROP VIEW IF EXISTS collection_traits;
 
 -- Create "collection_stats" table
 CREATE TABLE "public"."collection_stats" (
@@ -77,6 +77,42 @@ SELECT
 FROM 
     inscription r,
     LATERAL jsonb_array_elements(((r.metadata -> 'metadata'::text) -> 'attributes'::text)) obj(value);
+
+-- public.collection_floor_weekly view definition
+
+CREATE OR REPLACE VIEW "public"."collection_floor_weekly" AS
+WITH collection_floor_price AS (
+    SELECT 
+        date_trunc('WEEK', mid.date_created)::date - (date_part('dow', NOW())::int) as date, 
+        i.collection_id,
+        COALESCE(MIN(ml.total), 0) AS floor_price,
+        LEAD(COALESCE(MIN(ml.total), 0)) OVER () AS prev_floor_price
+    FROM marketplace_inscription_detail mid
+    INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+    INNER JOIN inscription i ON i.id = mid.inscription_id
+    WHERE i.collection_id is not null
+    GROUP BY i.collection_id, 1
+    ORDER BY i.collection_id, 1 desc
+)
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
+
+-- public.collection_floor_daily view definition
+
+CREATE OR REPLACE VIEW "public"."collection_floor_daily" AS
+WITH collection_floor_price AS (
+    SELECT 
+        date_trunc('day', mid.date_created) as date,
+        i.collection_id,
+        COALESCE(MIN(ml.total), 0) AS floor_price,
+        LEAD(COALESCE(MIN(ml.total), 0)) OVER () AS prev_floor_price
+    FROM marketplace_inscription_detail mid
+    INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+    INNER JOIN inscription i ON i.id = mid.inscription_id
+    WHERE i.collection_id is not null
+    GROUP BY i.collection_id, 1
+    ORDER BY i.collection_id, 1 desc
+)
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
 
 -- public.inscription_rarity_view view definition
 

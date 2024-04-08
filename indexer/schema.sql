@@ -563,7 +563,7 @@ WITH collection_floor_price AS (
     GROUP BY i.collection_id, 1
     ORDER BY i.collection_id, 1 desc
 )
-SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
 
 -- public.collection_floor_daily view definition
 
@@ -581,7 +581,7 @@ WITH collection_floor_price AS (
     GROUP BY i.collection_id, 1
     ORDER BY i.collection_id, 1 desc
 )
-SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price
+SELECT *, ((floor_price - prev_floor_price)::decimal / prev_floor_price::decimal)::decimal(5,4) as change from collection_floor_price;
 
 -- public.inscription_rarity_view view definition
 
