@@ -11,7 +11,8 @@
     "start": "wrangler pages dev ./build/client",
     "typecheck": "tsc",
     "prettify": "prettier . --write",
-    "typegen": "wrangler types"
+    "typegen": "wrangler types",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@asteroid-protocol/sdk": "^0.6.9-collections.8",
@@ -33,6 +34,7 @@
     "lottie-react": "^2.4.0",
     "mime": "^4.0.1",
     "miniflare": "^3.20231030.4",
+    "patch-package": "^8.0.0",
     "react": "18.3.0-canary-01ab35a9a-20240228",
     "react-cookie": "^7.0.2",
     "react-daisyui": "^5.0.0",

@@ -1,0 +1,18 @@
+diff --git a/node_modules/@cosmos-kit/cosmos-extension-metamask/esm/extension/client.js b/node_modules/@cosmos-kit/cosmos-extension-metamask/esm/extension/client.js
+index a7ce577..80dc6b6 100644
+--- a/node_modules/@cosmos-kit/cosmos-extension-metamask/esm/extension/client.js
++++ b/node_modules/@cosmos-kit/cosmos-extension-metamask/esm/extension/client.js
+@@ -50,12 +50,7 @@ export class CosmosExtensionClient {
+         return new CosmJSOfflineSigner(chainId);
+     }
+     getOfflineSignerDirect(chainId) {
+-        return {
+-            getAccounts: async () => {
+-                return [await this.getAccount(chainId)];
+-            },
+-            signDirect: (signerAddress, signDoc) => this.signDirect(chainId, signerAddress, signDoc),
+-        };
++        return new CosmJSOfflineSigner(chainId);
+     }
+     async signAmino(chainId, signer, signDoc, signOptions) {
+         return await this.cosmos.signAmino(chainId, signer, signDoc);

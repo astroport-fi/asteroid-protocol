@@ -35,7 +35,10 @@ export function getChains() {
     },
   ]
 
-  return [...chains, ...additionalChains]
+  return [
+    ...chains.filter((asset) => asset.chain_name.includes('cosmoshub')),
+    ...additionalChains,
+  ]
 }
 
 export function getAssets() {
