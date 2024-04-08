@@ -171,6 +171,14 @@ function InscriptionDetailComponent({
           <h2 className="font-medium text-2xl">{inscription.name}</h2>
           <InscriptionActions inscription={inscription} />
         </div>
+        {inscription.collection && (
+          <Link
+            to={`/app/collection/${inscription.collection.symbol}`}
+            className="mt-1 link link-primary link-hover text-lg"
+          >
+            {inscription.collection.name}
+          </Link>
+        )}
         <p className="whitespace-pre-wrap mt-4">{inscription.description}</p>
         <Divider />
         <div className="flex flex-row w-full">
