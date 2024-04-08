@@ -1,12 +1,11 @@
+import { buildInscriptionData, buildOperation } from './build.js'
 import {
   BaseProtocol,
   InscriptionData,
   MetaProtocol,
   MetaProtocolParams,
   ProtocolFee,
-  buildInscriptionData,
-  buildOperation,
-} from './index.js'
+} from './types.js'
 
 const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',

@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
+import type { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
 import { forwardRef } from 'react'
 import { Modal as DaisyUIModal } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'

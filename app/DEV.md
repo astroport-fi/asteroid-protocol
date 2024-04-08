@@ -27,6 +27,10 @@ npm run build
 npm run start
 ```
 
+### Environment variables
+
+Create `.dev.vars` and copy variables from [vars] section in [wrangler.toml](./wrangler.toml)
+
 ## Deployment
 
 > [!WARNING]  

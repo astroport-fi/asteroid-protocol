@@ -2,32 +2,20 @@ import { Link } from '@remix-run/react'
 import { Token } from '~/api/token'
 import { getDateAgo } from '~/utils/date'
 import { getDecimalValue, getSupplyTitle } from '~/utils/number'
+import Grid from './Grid'
+import InscriptionImage from './InscriptionImage'
 import logo from '../images/logo/a-white-on-transparent-250.png'
-
-function TokenLogo({
-  isExplicit,
-  src,
-}: {
-  // @todo handle explicit
-  isExplicit?: boolean
-  src?: string
-}) {
-  return (
-    <img
-      src={src ?? logo}
-      alt=""
-      className="w-full h-full rounded-t-xl object-cover"
-    />
-  )
-}
 
 function TokenComponent({ token }: { token: Token }) {
   return (
     <Link
-      className="flex flex-col justify-between bg-base-200 rounded-xl"
+      className="flex flex-col justify-between bg-base-200 rounded-xl group"
       to={`/app/token/${token.ticker}`}
     >
-      <TokenLogo src={token.content_path} isExplicit={false} />
+      <InscriptionImage
+        containerClassName="rounded-t-xl h-full w-full"
+        src={token.content_path ?? logo}
+      />
       <div className="flex flex-col bg-base-300 rounded-b-xl p-4">
         <strong>{token.name}</strong>
         <span>
@@ -42,10 +30,10 @@ function TokenComponent({ token }: { token: Token }) {
 
 export function Tokens({ tokens }: { tokens: Token[] }) {
   return (
-    <div className="grid grid-cols-fill-56 gap-4">
+    <Grid>
       {tokens.map((token) => (
         <TokenComponent key={token.id} token={token} />
       ))}
-    </div>
+    </Grid>
   )
 }

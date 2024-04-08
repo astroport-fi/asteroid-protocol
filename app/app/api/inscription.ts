@@ -4,6 +4,7 @@ import {
   ScalarDefinition,
   Selector,
 } from '@asteroid-protocol/sdk/client'
+import { TraitItem } from './client'
 import { MarketplaceListing, marketplaceListingSelector } from './marketplace'
 
 export const inscriptionSelector = Selector('inscription')({
@@ -43,23 +44,54 @@ export const inscriptionSelector = Selector('inscription')({
         true,
       ],
     },
-    // @todo collections
-    // attributes: {
-    //   metadata: [
-    //     {
-    //       path: '$.metadata.attributes',
-    //     },
-    //     true,
-    //   ],
-    // },
   },
 })
 
-export type Inscription = InputType<
-  GraphQLTypes['inscription'],
-  typeof inscriptionSelector,
-  ScalarDefinition
->
+export type Inscription = Omit<
+  InputType<
+    GraphQLTypes['inscription'],
+    typeof inscriptionSelector,
+    ScalarDefinition
+  >,
+  'name' | 'description' | 'mime'
+> & { name: string; description: string; mime: string }
+
+// Inscription detail
+export const inscriptionDetailSelector = Selector('inscription')({
+  ...inscriptionSelector,
+  version: true,
+  collection: {
+    symbol: true,
+    name: true,
+  },
+  migration_permission_grants: [{}, { grantee: true }],
+  __alias: {
+    ...inscriptionSelector.__alias,
+    attributes: {
+      metadata: [
+        {
+          path: '$.metadata.attributes',
+        },
+        true,
+      ],
+    },
+  },
+})
+
+export type InscriptionDetail = Omit<
+  InputType<
+    GraphQLTypes['inscription'],
+    typeof inscriptionDetailSelector,
+    ScalarDefinition
+  >,
+  'name' | 'description' | 'mime' | 'attributes'
+> & {
+  name: string
+  description: string
+  mime: string
+  attributes?: TraitItem[]
+  migration_permission_grants?: { grantee: string }[]
+}
 
 // Inscription image
 export const inscriptionImageSelector = Selector('inscription')({
@@ -77,14 +109,30 @@ export const inscriptionImageSelector = Selector('inscription')({
         true,
       ],
     },
+    // @todo
+    name: {
+      metadata: [
+        {
+          path: '$.metadata.name',
+        },
+        true,
+      ],
+    },
   },
 })
 
-export type InscriptionImage = InputType<
-  GraphQLTypes['inscription'],
-  typeof inscriptionImageSelector,
-  ScalarDefinition
->
+export type InscriptionType<T> = T extends true
+  ? InscriptionDetail
+  : Inscription
+
+export type InscriptionImage = Omit<
+  InputType<
+    GraphQLTypes['inscription'],
+    typeof inscriptionImageSelector,
+    ScalarDefinition
+  >,
+  'mime'
+> & { mime: string; name: string }
 
 // Inscription listing
 export const inscriptionListingSelector = Selector(
@@ -99,7 +147,7 @@ export type InscriptionMarketplaceListing = InputType<
   ScalarDefinition
 >
 
-export type InscriptionWithMarket = Inscription & {
+export type InscriptionWithMarket<T extends Inscription = Inscription> = T & {
   marketplace_listing?: MarketplaceListing | undefined
 }
 
@@ -116,11 +164,14 @@ export const inscriptionTradeHistorySelector = Selector(
   inscription: inscriptionImageSelector,
 })
 
-export type InscriptionTradeHistory = InputType<
-  GraphQLTypes['inscription_trade_history'],
-  typeof inscriptionTradeHistorySelector,
-  ScalarDefinition
->
+export type InscriptionTradeHistory = Omit<
+  InputType<
+    GraphQLTypes['inscription_trade_history'],
+    typeof inscriptionTradeHistorySelector,
+    ScalarDefinition
+  >,
+  'inscription'
+> & { inscription: InscriptionImage }
 
 export const inscriptionHistorySelector = Selector('inscription_history')({
   id: true,

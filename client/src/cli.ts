@@ -2,24 +2,45 @@
 import { Command, program } from 'commander'
 import fs from 'fs/promises'
 import mime from 'mime'
+import path from 'path'
+import { inferSchema, initParser } from 'udsv'
 import { Context, Options, createContext } from './context.js'
+import {
+  CollectionMetadata,
+  MigrationData,
+  NFTMetadata,
+  Trait,
+} from './metaprotocol/inscription.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
-import { MetaOperations } from './operations/meta.js'
+import { readCSV } from './utils/csv.js'
+import { checkTx } from './utils/tx.js'
+
+async function broadcastAndCheckTx(context: Context, txData: TxData) {
+  const res = await broadcastTx(
+    context.client,
+    context.account.address,
+    txData,
+    context.config.feeMultiplier,
+  )
+  await checkTx(context.api, res)
+  console.log('Transaction was successfully indexed')
+  console.log(`${context.network.explorer}${res.transactionHash}`)
+}
 
 export function setupCommand(command?: Command) {
   if (!command) {
     command = new Command()
   }
   command.option(
-    '-n, --network <NETWORK_NAME>',
+    '-n, --network [NETWORK_NAME]',
     'Name of the network to use',
     'local',
   )
   command.option(
-    '-a, --account <ACCOUNT_NAME>',
+    '-a, --account [ACCOUNT_NAME]',
     'Name of the account to use as transaction signer',
   )
   return command
@@ -38,28 +59,10 @@ async function action(
   const context = await createContext(options)
   const txData = await fn(context)
   if (txData) {
-    const res = await broadcastTx(
-      context.client,
-      context.account.address,
-      txData,
-    )
-    console.log(`${context.network.explorer}${res.transactionHash}`)
+    await broadcastAndCheckTx(context, txData)
   } else {
     console.warn('No tx data')
   }
-}
-
-async function metaAction(
-  options: Options,
-  fn: (context: Context, operations: MetaOperations) => Promise<TxData | void>,
-) {
-  return action(options, (context) => {
-    const operations = new MetaOperations(
-      context.network.chainId,
-      context.account.address,
-    )
-    return fn(context, operations)
-  })
 }
 
 async function inscriptionAction(
@@ -73,6 +76,7 @@ async function inscriptionAction(
     const operations = new InscriptionOperations(
       context.network.chainId,
       context.account.address,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -86,6 +90,7 @@ async function cft20Action(
     const operations = new CFT20Operations(
       context.network.chainId,
       context.account.address,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -103,6 +108,7 @@ async function marketplaceAction(
       context.network.chainId,
       context.account.address,
       context.api,
+      { useExtensionData: context.config.useExtensionData, multi: false },
     )
     return fn(context, operations)
   })
@@ -112,6 +118,7 @@ interface InscriptionOptions extends Options {
   dataPath: string
   name: string
   description: string
+  collection?: string
 }
 
 setupCommand(inscriptionCommand.command('inscribe'))
@@ -119,6 +126,7 @@ setupCommand(inscriptionCommand.command('inscribe'))
   .requiredOption('-p, --data-path <DATA_PATH>', 'Inscription data path')
   .requiredOption('-i, --name <NAME>', 'Inscription name')
   .requiredOption('-d, --description <DESCRIPTION>', 'Inscription description')
+  .option('-c, --collection [COLLECTION]', 'The collection transaction hash')
   .action(async (options: InscriptionOptions) => {
     inscriptionAction(options, async (context, operations) => {
       const mimeType = mime.getType(options.dataPath)
@@ -131,7 +139,100 @@ setupCommand(inscriptionCommand.command('inscribe'))
         name: options.name,
         mime: mimeType,
       }
+      if (options.collection) {
+        return operations.inscribeCollectionInscription(
+          options.collection,
+          data,
+          metadata,
+        )
+      }
+
       return operations.inscribe(data, metadata)
+    })
+  })
+
+interface CollectionOptions extends Omit<InscriptionOptions, 'collection'> {
+  symbol: string
+}
+
+setupCommand(inscriptionCommand.command('collection'))
+  .description('Create a new collection')
+  .requiredOption('-s, --symbol <SYMBOL>', 'Collection symbol')
+  .requiredOption('-p, --data-path <DATA_PATH>', 'Inscription data path')
+  .requiredOption('-i, --name <NAME>', 'Inscription name')
+  .requiredOption('-d, --description <DESCRIPTION>', 'Inscription description')
+  .action(async (options: CollectionOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const mimeType = mime.getType(options.dataPath)
+      if (!mimeType) {
+        throw new Error('Unknown mime type')
+      }
+      const data = await fs.readFile(options.dataPath)
+      const metadata: CollectionMetadata = {
+        description: options.description,
+        name: options.name,
+        mime: mimeType,
+        symbol: options.symbol.toUpperCase(),
+      }
+      return operations.inscribe(data, metadata)
+    })
+  })
+
+interface InscribeCSVOptions extends Options {
+  csvPath: string
+  collection: string
+}
+
+setupCommand(inscriptionCommand.command('inscribe-csv'))
+  .description('Create inscriptions from Metadata CSV and images')
+  .requiredOption('-p, --csv-path <CSV_PATH>', 'Metadata CSV path')
+  .option('-c, --collection [COLLECTION]', 'The collection transaction hash')
+  .action(async (options: InscribeCSVOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const rows = await readCSV(options.csvPath)
+      const dir = path.dirname(options.csvPath)
+
+      for (const row of rows) {
+        const attributes: Trait[] = []
+        let name = ''
+        let imagePath = ''
+
+        for (const [key, value] of Object.entries(row)) {
+          if (key == 'name') {
+            name = value
+          } else if (key == 'file') {
+            imagePath = path.join(dir, value)
+          } else {
+            attributes.push({ trait_type: key, value })
+          }
+        }
+
+        console.log(imagePath)
+        const mimeType = mime.getType(imagePath)
+        if (!mimeType) {
+          throw new Error('Unknown mime type')
+        }
+        const data = await fs.readFile(imagePath)
+        const metadata: NFTMetadata = {
+          description: '',
+          name,
+          mime: mimeType,
+          attributes,
+        }
+
+        let txData: TxData
+        if (options.collection) {
+          txData = operations.inscribeCollectionInscription(
+            options.collection,
+            data,
+            metadata,
+          )
+        } else {
+          txData = operations.inscribe(data, metadata)
+        }
+
+        await broadcastAndCheckTx(context, txData)
+      }
     })
   })
 
@@ -156,6 +257,59 @@ setupCommand(inscriptionCommand.command('transfer'))
     })
   })
 
+interface GrantMigrationPermissionOptions extends Options {
+  hashes: string[]
+  grantee: string
+}
+
+setupCommand(inscriptionCommand.command('grant-migration-permission'))
+  .description('Grant Migration Permission')
+  .requiredOption(
+    '-h, --hashes <HASH...>',
+    'The transaction hashes containing the inscription(s)',
+  )
+  .requiredOption('-g, --grantee <grantee>', 'The grantee address')
+  .action(async (options: GrantMigrationPermissionOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      for (const hash of options.hashes) {
+        const txData = operations.grantMigrationPermission(
+          hash,
+          options.grantee,
+        )
+
+        await broadcastAndCheckTx(context, txData)
+      }
+    })
+  })
+
+interface MigrateInscriptionsOptions extends Options {
+  csvPath: string
+  collection: string
+}
+
+setupCommand(inscriptionCommand.command('migrate'))
+  .description('Migrate inscriptions')
+  .requiredOption('-p, --csv-path <CSV_PATH>', 'Metadata CSV path')
+  .option('-c, --collection [COLLECTION]', 'The collection transaction hash')
+  .action(async (options: MigrateInscriptionsOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const csvStr = await fs.readFile(options.csvPath, 'utf8')
+
+      const schema = inferSchema(csvStr, { trim: true, col: ',' })
+      const parser = initParser(schema)
+
+      const metadata: MigrationData = {
+        header: schema.cols.map((col) => col.name),
+        rows: parser.stringArrs(csvStr).filter((row: string[]) => !!row[0]),
+      }
+      if (options.collection) {
+        metadata.collection = options.collection
+      }
+
+      return operations.migrate(metadata)
+    })
+  })
+
 interface CFT20DeployOptions extends Options {
   ticker: string
   name: string
@@ -171,9 +325,9 @@ setupCommand(cft20Command.command('deploy'))
   .requiredOption('-i, --name <NAME>', 'The The name of the token')
   .requiredOption('-s, --supply <SUPPLY>', 'The max supply of the token')
   .requiredOption('-l, --logo-path <LOGO_PATH>', 'Inscription data path')
-  .option('-d, --decimals <DECIMALS>', 'The decimals for the token', '6')
+  .option('-d, --decimals [DECIMALS]', 'The decimals for the token', '6')
   .option(
-    '-m, --mint-limit <MINT_LIMIT>',
+    '-m, --mint-limit [MINT_LIMIT]',
     'The maximum tokens that can be minted per transaction',
     '1000',
   )
@@ -185,7 +339,7 @@ setupCommand(cft20Command.command('deploy'))
       }
       const data = await fs.readFile(options.logoPath)
       return operations.deploy(data, mimeType, {
-        ticker: options.ticker,
+        ticker: options.ticker.toUpperCase(),
         name: options.name,
         decimals: parseInt(options.decimals),
         maxSupply: parseInt(options.supply),
@@ -251,12 +405,12 @@ setupCommand(marketplaceListCommand.command('cft20'))
   .requiredOption('-m, --amount <AMOUNT>', 'The amount being sold')
   .requiredOption('-p, --price <PRICE>', 'The price per token in atom')
   .option(
-    '-d, --min-deposit <MIN_DEPOSIT>',
+    '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
     '0.1',
   )
   .option(
-    '-b, --timeout-blocks <DECIMALS>',
+    '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
     '50',
   )
@@ -287,12 +441,12 @@ setupCommand(marketplaceListCommand.command('inscription'))
   )
   .requiredOption('-p, --price <PRICE>', 'The price in atom')
   .option(
-    '-d, --min-deposit <MIN_DEPOSIT>',
+    '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
     '0.1',
   )
   .option(
-    '-b, --timeout-blocks <DECIMALS>',
+    '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
     '50',
   )

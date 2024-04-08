@@ -7,6 +7,7 @@ import { isTokenLaunched } from '~/api/token'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintToken from '~/components/MintToken'
 import Tokenomics from '~/components/Tokenomics'
+import { mintTokenMeta } from '~/utils/meta'
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   if (!params.ticker) {
@@ -34,52 +35,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return []
   }
 
-  const { name, ticker, content_path, id } = data.token
-  const title = `${ticker} | ${name} | on Asteroid Protocol`
-
-  return [
-    { title },
-    {
-      property: 'og:url',
-      content: `https://asteroidprotocol.io/mint/${ticker}`,
-    },
-    {
-      property: 'og:title',
-      content: title,
-    },
-    {
-      property: 'og:image',
-      content: content_path,
-    },
-    {
-      property: 'og:description',
-      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      name: 'description',
-      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:url',
-      content: `https://asteroidprotocol.io/mint/${ticker}`,
-    },
-    {
-      property: 'twitter:title',
-      content: title,
-    },
-    {
-      property: 'twitter:image',
-      content: content_path,
-    },
-    {
-      property: 'twitter:description',
-      content: `Mint ${ticker} | CFT-20 Token #${id} on Asteroid Protocol`,
-    },
-    {
-      property: 'twitter:card',
-      content: 'summary',
-    },
-  ]
+  return mintTokenMeta(data.token)
 }
 
 export default function MintTokenPage() {
@@ -93,7 +49,8 @@ export default function MintTokenPage() {
               mime="image/png"
               src={data.token.content_path!}
               // isExplicit={token.is_explicit} @todo
-              className="rounded-xl max-w-40 bg-base-200 relative top-[-5rem]"
+              imageClassName="rounded-xl"
+              className="max-w-40 bg-base-200 relative top-[-5rem]"
             />
             <span className="mt-[-4rem]">${data.token.ticker}</span>
             <h1 className="font-medium text-2xl mt-2">{data.token.name}</h1>

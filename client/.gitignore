@@ -11,3 +11,4 @@ cjs
 esm
 
 src/zeus/index.ts.orig
+/asteroid.json

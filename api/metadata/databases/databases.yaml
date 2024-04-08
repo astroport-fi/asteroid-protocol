@@ -8,6 +8,38 @@
       use_prepared_statements: false
   logical_models:
     - fields:
+        - name: listed
+          type:
+            nullable: false
+            scalar: bigint
+        - name: supply
+          type:
+            nullable: false
+            scalar: bigint
+        - name: owners
+          type:
+            nullable: false
+            scalar: bigint
+        - name: volume
+          type:
+            nullable: false
+            scalar: numeric
+        - name: floor_price
+          type:
+            nullable: false
+            scalar: bigint
+      name: collection_stats
+      select_permissions:
+        - permission:
+            columns:
+              - listed
+              - supply
+              - owners
+              - volume
+              - floor_price
+            filter: {}
+          role: anonymous
+    - fields:
         - name: id
           type:
             nullable: true
@@ -64,7 +96,70 @@
               - mime
             filter: {}
           role: anonymous
+    - fields:
+        - name: id
+          type:
+            nullable: false
+            scalar: integer
+        - name: symbol
+          type:
+            nullable: false
+            scalar: varchar
+        - name: name
+          type:
+            nullable: false
+            scalar: varchar
+        - name: content_path
+          type:
+            nullable: false
+            scalar: varchar
+        - name: volume
+          type:
+            nullable: false
+            scalar: numeric
+      name: top_collection
+      select_permissions:
+        - permission:
+            columns:
+              - id
+              - symbol
+              - name
+              - content_path
+              - volume
+            filter: {}
+          role: anonymous
   native_queries:
+    - arguments:
+        max_id:
+          description: ""
+          nullable: false
+          type: integer
+      code: |-
+        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
+          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE id <= {{max_id}}),
+          (SELECT count(id) as supply FROM inscription WHERE id <= {{max_id}}),
+          (SELECT SUM(amount_quote) as volume FROM inscription_trade_history WHERE inscription_id <= {{max_id}})
+        	FROM marketplace_inscription_detail mid
+            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+            WHERE ml.is_filled is false and ml.is_cancelled is false and mid.inscription_id <= {{max_id}}
+      returns: collection_stats
+      root_field_name: club_stats
+    - arguments:
+        collection_id:
+          description: ""
+          nullable: false
+          type: integer
+      code: |-
+        SELECT COUNT(mid.id) as listed, MIN(ml.total) as floor_price,
+          (SELECT COUNT(DISTINCT current_owner) as owners FROM inscription WHERE collection_id = {{collection_id}}),
+          (SELECT count(id) as supply FROM inscription WHERE collection_id = {{collection_id}}),
+          (SELECT COALESCE(SUM(amount_quote), 0) as volume FROM inscription_trade_history ith INNER JOIN inscription i ON i.id = ith.inscription_id WHERE collection_id = {{collection_id}})
+        	FROM marketplace_inscription_detail mid
+            INNER JOIN marketplace_listing ml ON ml.id = mid.listing_id
+            INNER JOIN inscription i ON i.id = mid.inscription_id
+            WHERE ml.is_filled is false and ml.is_cancelled is false and i.collection_id = {{collection_id}}
+      returns: collection_stats
+      root_field_name: collection_stats
     - arguments:
         query_name:
           description: ""
@@ -73,4 +168,8 @@
       code: "SELECT \n  id,\n  (select hash from \"transaction\" t where id = inscription.transaction_id) as transaction_hash,\n  current_owner,\n  content_path,\n  content_size_bytes,\n  date_created,\n  is_explicit,\n  metadata->'metadata'->>'name' as name,\n  metadata->'metadata'->>'description' as description,\n  metadata->'metadata'->>'mime' as mime\nFROM inscription\nWHERE metadata->'metadata'->>'name' ILIKE {{query_name}};"
       returns: search_result
       root_field_name: find_inscription_by_name
+    - arguments: {}
+      code: "SELECT cl.id, cl.symbol, cl.name, cl.content_path, COALESCE(SUM(amount_quote), 0) as volume \nFROM collection cl \nINNER JOIN inscription i ON i.collection_id = cl.id\nINNER JOIN inscription_trade_history ith ON ith.inscription_id = i.id\nWHERE i.collection_id IS NOT NULL\nGROUP BY cl.id\nORDER BY volume DESC\nLIMIT 6"
+      returns: top_collection
+      root_field_name: top_collections
   tables: "!include Meteors/tables/tables.yaml"

@@ -1051,7 +1051,7 @@ export const $ = <Type extends GraphQLVariableType, Name extends string>(
 type ZEUS_INTERFACES = never
 export type ScalarCoders = {
   bigint?: ScalarResolver
-  json?: ScalarResolver
+  jsonb?: ScalarResolver
   numeric?: ScalarResolver
   smallint?: ScalarResolver
   timestamp?: ScalarResolver
@@ -1144,6 +1144,755 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number | Variable<any, string>
+  }
+  /** columns and relationships of "collection" */
+  ['collection']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    is_explicit?: boolean | `@${string}`
+    metadata?: [
+      {
+        /** JSON select path */
+        path?: string | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_traits_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_traits_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_traits'],
+    ]
+    /** An object relationship */
+    transaction?: ValueTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "collection" */
+  ['collection_aggregate']: AliasType<{
+    aggregate?: ValueTypes['collection_aggregate_fields']
+    nodes?: ValueTypes['collection']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "collection" */
+  ['collection_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['collection_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['collection_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['collection_max_fields']
+    min?: ValueTypes['collection_min_fields']
+    stddev?: ValueTypes['collection_stddev_fields']
+    stddev_pop?: ValueTypes['collection_stddev_pop_fields']
+    stddev_samp?: ValueTypes['collection_stddev_samp_fields']
+    sum?: ValueTypes['collection_sum_fields']
+    var_pop?: ValueTypes['collection_var_pop_fields']
+    var_samp?: ValueTypes['collection_var_samp_fields']
+    variance?: ValueTypes['collection_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['collection_avg_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
+  ['collection_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['collection_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['collection_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['collection_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    chain_id?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_hash?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_size_bytes?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    creator?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    is_explicit?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    metadata?:
+      | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    minter?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    name?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    payment_address?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    symbol?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    traits?:
+      | ValueTypes['collection_traits_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** aggregate max on columns */
+  ['collection_max_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['collection_min_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "collection". */
+  ['collection_order_by']: {
+    chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    content_hash?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_size_bytes?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    creator?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    is_explicit?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    minter?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    name?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    payment_address?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    symbol?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    traits_aggregate?:
+      | ValueTypes['collection_traits_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "collection" */
+  ['collection_select_column']: collection_select_column
+  ['collection_stats']: AliasType<{
+    floor_price?: boolean | `@${string}`
+    listed?: boolean | `@${string}`
+    owners?: boolean | `@${string}`
+    supply?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number | Variable<any, string>
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['collection_stats_bool_exp_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    floor_price?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    listed?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    owners?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    supply?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    volume?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    listed?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    owners?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    supply?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    volume?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** aggregate stddev on columns */
+  ['collection_stddev_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['collection_stddev_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['collection_stddev_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "collection" */
+  ['collection_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['collection_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null | Variable<any, string>
+    content_hash?: string | undefined | null | Variable<any, string>
+    content_path?: string | undefined | null | Variable<any, string>
+    content_size_bytes?: number | undefined | null | Variable<any, string>
+    creator?: string | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: number | undefined | null | Variable<any, string>
+    id?: number | undefined | null | Variable<any, string>
+    is_explicit?: boolean | undefined | null | Variable<any, string>
+    metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    minter?: string | undefined | null | Variable<any, string>
+    name?: string | undefined | null | Variable<any, string>
+    payment_address?: string | undefined | null | Variable<any, string>
+    royalty_percentage?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    symbol?: string | undefined | null | Variable<any, string>
+    transaction_id?: number | undefined | null | Variable<any, string>
+    version?: string | undefined | null | Variable<any, string>
+  }
+  /** aggregate sum on columns */
+  ['collection_sum_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** columns and relationships of "collection_traits" */
+  ['collection_traits']: AliasType<{
+    /** An object relationship */
+    collection?: ValueTypes['collection']
+    collection_id?: boolean | `@${string}`
+    count?: boolean | `@${string}`
+    trait_type?: [
+      {
+        /** JSON select path */
+        path?: string | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    trait_value?: [
+      {
+        /** JSON select path */
+        path?: string | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "collection_traits" */
+  ['collection_traits_aggregate_order_by']: {
+    avg?:
+      | ValueTypes['collection_traits_avg_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    max?:
+      | ValueTypes['collection_traits_max_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    min?:
+      | ValueTypes['collection_traits_min_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev?:
+      | ValueTypes['collection_traits_stddev_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev_pop?:
+      | ValueTypes['collection_traits_stddev_pop_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev_samp?:
+      | ValueTypes['collection_traits_stddev_samp_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    sum?:
+      | ValueTypes['collection_traits_sum_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    var_pop?:
+      | ValueTypes['collection_traits_var_pop_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    var_samp?:
+      | ValueTypes['collection_traits_var_samp_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    variance?:
+      | ValueTypes['collection_traits_variance_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** order by avg() on columns of table "collection_traits" */
+  ['collection_traits_avg_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** Boolean expression to filter rows from the table "collection_traits". All fields are combined with a logical 'AND'. */
+  ['collection_traits_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['collection_traits_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['collection_traits_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['collection_traits_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?:
+      | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    trait_type?:
+      | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    trait_value?:
+      | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** order by max() on columns of table "collection_traits" */
+  ['collection_traits_max_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by min() on columns of table "collection_traits" */
+  ['collection_traits_min_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "collection_traits". */
+  ['collection_traits_order_by']: {
+    collection?:
+      | ValueTypes['collection_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    trait_type?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    trait_value?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** select columns of table "collection_traits" */
+  ['collection_traits_select_column']: collection_traits_select_column
+  /** order by stddev() on columns of table "collection_traits" */
+  ['collection_traits_stddev_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by stddev_pop() on columns of table "collection_traits" */
+  ['collection_traits_stddev_pop_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by stddev_samp() on columns of table "collection_traits" */
+  ['collection_traits_stddev_samp_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** Streaming cursor of the table "collection_traits" */
+  ['collection_traits_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['collection_traits_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_traits_stream_cursor_value_input']: {
+    collection_id?: number | undefined | null | Variable<any, string>
+    count?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
+    trait_type?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    trait_value?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+  }
+  /** order by sum() on columns of table "collection_traits" */
+  ['collection_traits_sum_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by var_pop() on columns of table "collection_traits" */
+  ['collection_traits_var_pop_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by var_samp() on columns of table "collection_traits" */
+  ['collection_traits_var_samp_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by variance() on columns of table "collection_traits" */
+  ['collection_traits_variance_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** aggregate var_pop on columns */
+  ['collection_var_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['collection_var_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['collection_variance_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
   /** find_inscription_by_nameNative Query Arguments */
@@ -1153,6 +1902,9 @@ export type ValueTypes = {
   /** columns and relationships of "inscription" */
   ['inscription']: AliasType<{
     chain_id?: boolean | `@${string}`
+    /** An object relationship */
+    collection?: ValueTypes['collection']
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -1339,6 +2091,40 @@ export type ValueTypes = {
       },
       boolean | `@${string}`,
     ]
+    migration_permission_grants?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
     /** An object relationship */
     transaction?: ValueTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -1488,6 +2274,7 @@ export type ValueTypes = {
   }
   /** aggregate avg on columns */
   ['inscription_avg_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -1496,6 +2283,11 @@ export type ValueTypes = {
   }>
   /** order by avg() on columns of table "inscription" */
   ['inscription_avg_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -1528,6 +2320,16 @@ export type ValueTypes = {
       | Variable<any, string>
     chain_id?:
       | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['Int_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -1602,7 +2404,12 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     metadata?:
-      | ValueTypes['json_comparison_exp']
+      | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    migration_permission_grants?:
+      | ValueTypes['migration_permission_grant_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -2197,6 +3004,7 @@ export type ValueTypes = {
   /** aggregate max on columns */
   ['inscription_max_fields']: AliasType<{
     chain_id?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -2213,6 +3021,11 @@ export type ValueTypes = {
   /** order by max() on columns of table "inscription" */
   ['inscription_max_order_by']: {
     chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_hash?:
       | ValueTypes['order_by']
       | undefined
@@ -2252,6 +3065,7 @@ export type ValueTypes = {
   /** aggregate min on columns */
   ['inscription_min_fields']: AliasType<{
     chain_id?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -2268,6 +3082,11 @@ export type ValueTypes = {
   /** order by min() on columns of table "inscription" */
   ['inscription_min_order_by']: {
     chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_hash?:
       | ValueTypes['order_by']
       | undefined
@@ -2307,6 +3126,16 @@ export type ValueTypes = {
   /** Ordering options when selecting data from "inscription". */
   ['inscription_order_by']: {
     chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_hash?:
       | ValueTypes['order_by']
       | undefined
@@ -2356,6 +3185,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    migration_permission_grants_aggregate?:
+      | ValueTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     transaction?:
       | ValueTypes['transaction_order_by']
       | undefined
@@ -2377,6 +3211,7 @@ export type ValueTypes = {
   ['inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns']: inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns
   /** aggregate stddev on columns */
   ['inscription_stddev_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -2385,6 +3220,11 @@ export type ValueTypes = {
   }>
   /** order by stddev() on columns of table "inscription" */
   ['inscription_stddev_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -2400,6 +3240,7 @@ export type ValueTypes = {
   }
   /** aggregate stddev_pop on columns */
   ['inscription_stddev_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -2408,6 +3249,11 @@ export type ValueTypes = {
   }>
   /** order by stddev_pop() on columns of table "inscription" */
   ['inscription_stddev_pop_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -2423,6 +3269,7 @@ export type ValueTypes = {
   }
   /** aggregate stddev_samp on columns */
   ['inscription_stddev_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -2431,6 +3278,11 @@ export type ValueTypes = {
   }>
   /** order by stddev_samp() on columns of table "inscription" */
   ['inscription_stddev_samp_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -2460,6 +3312,7 @@ export type ValueTypes = {
   /** Initial value of the column from where the streaming should start */
   ['inscription_stream_cursor_value_input']: {
     chain_id?: string | undefined | null | Variable<any, string>
+    collection_id?: number | undefined | null | Variable<any, string>
     content_hash?: string | undefined | null | Variable<any, string>
     content_path?: string | undefined | null | Variable<any, string>
     content_size_bytes?: number | undefined | null | Variable<any, string>
@@ -2473,13 +3326,14 @@ export type ValueTypes = {
     height?: number | undefined | null | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
     is_explicit?: boolean | undefined | null | Variable<any, string>
-    metadata?: ValueTypes['json'] | undefined | null | Variable<any, string>
+    metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     type?: string | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
   }
   /** aggregate sum on columns */
   ['inscription_sum_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -2488,6 +3342,11 @@ export type ValueTypes = {
   }>
   /** order by sum() on columns of table "inscription" */
   ['inscription_sum_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -3154,6 +4013,7 @@ export type ValueTypes = {
   }
   /** aggregate var_pop on columns */
   ['inscription_var_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -3162,6 +4022,11 @@ export type ValueTypes = {
   }>
   /** order by var_pop() on columns of table "inscription" */
   ['inscription_var_pop_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -3177,6 +4042,7 @@ export type ValueTypes = {
   }
   /** aggregate var_samp on columns */
   ['inscription_var_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -3185,6 +4051,11 @@ export type ValueTypes = {
   }>
   /** order by var_samp() on columns of table "inscription" */
   ['inscription_var_samp_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -3200,6 +4071,7 @@ export type ValueTypes = {
   }
   /** aggregate variance on columns */
   ['inscription_variance_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -3208,6 +4080,11 @@ export type ValueTypes = {
   }>
   /** order by variance() on columns of table "inscription" */
   ['inscription_variance_order_by']: {
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     content_size_bytes?:
       | ValueTypes['order_by']
       | undefined
@@ -3221,18 +4098,44 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
-  ['json']: unknown
-  /** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-  ['json_comparison_exp']: {
-    _eq?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _gt?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _gte?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _in?: Array<ValueTypes['json']> | undefined | null | Variable<any, string>
+  ['jsonb']: unknown
+  ['jsonb_cast_exp']: {
+    String?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+  ['jsonb_comparison_exp']: {
+    _cast?:
+      | ValueTypes['jsonb_cast_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    /** is the column contained in the given json value */
+    _contained_in?:
+      | ValueTypes['jsonb']
+      | undefined
+      | null
+      | Variable<any, string>
+    /** does the column contain the given json value at the top level */
+    _contains?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _eq?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _gt?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _gte?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    /** does the string exist as a top-level key in the column */
+    _has_key?: string | undefined | null | Variable<any, string>
+    /** do all of these strings exist as top-level keys in the column */
+    _has_keys_all?: Array<string> | undefined | null | Variable<any, string>
+    /** do any of these strings exist as top-level keys in the column */
+    _has_keys_any?: Array<string> | undefined | null | Variable<any, string>
+    _in?: Array<ValueTypes['jsonb']> | undefined | null | Variable<any, string>
     _is_null?: boolean | undefined | null | Variable<any, string>
-    _lt?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _lte?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _neq?: ValueTypes['json'] | undefined | null | Variable<any, string>
-    _nin?: Array<ValueTypes['json']> | undefined | null | Variable<any, string>
+    _lt?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _lte?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _neq?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    _nin?: Array<ValueTypes['jsonb']> | undefined | null | Variable<any, string>
   }
   /** columns and relationships of "marketplace_cft20_detail" */
   ['marketplace_cft20_detail']: AliasType<{
@@ -5911,6 +6814,79 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: AliasType<{
+    grantee?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    max?:
+      | ValueTypes['migration_permission_grant_max_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    min?:
+      | ValueTypes['migration_permission_grant_min_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    grantee?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['migration_permission_grant_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined | null | Variable<any, string>
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -5935,6 +6911,186 @@ export type ValueTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args:
+          | ValueTypes['club_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
+    collection?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection'],
+    ]
+    collection_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_aggregate'],
+    ]
+    collection_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['collection'],
+    ]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args:
+          | ValueTypes['collection_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
+    collection_traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_traits_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_traits_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_traits'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -6480,6 +7636,40 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['marketplace_listing_history'],
     ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
     status?: [
       {
         /** distinct select on columns */
@@ -6772,6 +7962,40 @@ export type ValueTypes = {
     token_trade_history_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['top_collection_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['top_collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -7149,6 +8373,232 @@ export type ValueTypes = {
     last_processed_height?: number | undefined | null | Variable<any, string>
   }
   ['subscription_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args:
+          | ValueTypes['club_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
+    collection?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection'],
+    ]
+    collection_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_aggregate'],
+    ]
+    collection_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['collection'],
+    ]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args:
+          | ValueTypes['collection_stats_arguments']
+          | Variable<any, string> /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_stats_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_stats_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_stats'],
+    ]
+    collection_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              ValueTypes['collection_stream_cursor_input'] | undefined | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection'],
+    ]
+    collection_traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['collection_traits_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['collection_traits_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_traits'],
+    ]
+    collection_traits_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['collection_traits_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['collection_traits'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -7908,6 +9358,64 @@ export type ValueTypes = {
       },
       ValueTypes['marketplace_listing'],
     ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['migration_permission_grant_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
+    migration_permission_grant_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['migration_permission_grant_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['migration_permission_grant'],
+    ]
     status?: [
       {
         /** distinct select on columns */
@@ -8334,6 +9842,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['top_collection_enum_name']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['top_collection_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -11607,6 +13149,70 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  ['top_collection']: AliasType<{
+    content_path?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['top_collection_bool_exp_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    name?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    symbol?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    volume?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    name?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    symbol?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    volume?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
   /** columns and relationships of "trade_history" */
   ['trade_history']: AliasType<{
     amount_base?: boolean | `@${string}`
@@ -12617,6 +14223,500 @@ export type ResolverInputTypes = {
     _neq?: ResolverInputTypes['bigint'] | undefined | null
     _nin?: Array<ResolverInputTypes['bigint']> | undefined | null
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
+  /** columns and relationships of "collection" */
+  ['collection']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    is_explicit?: boolean | `@${string}`
+    metadata?: [
+      {
+        /** JSON select path */ path?: string | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_traits_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_traits_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_traits'],
+    ]
+    /** An object relationship */
+    transaction?: ResolverInputTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "collection" */
+  ['collection_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['collection_aggregate_fields']
+    nodes?: ResolverInputTypes['collection']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "collection" */
+  ['collection_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['collection_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ResolverInputTypes['collection_select_column']>
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['collection_max_fields']
+    min?: ResolverInputTypes['collection_min_fields']
+    stddev?: ResolverInputTypes['collection_stddev_fields']
+    stddev_pop?: ResolverInputTypes['collection_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['collection_stddev_samp_fields']
+    sum?: ResolverInputTypes['collection_sum_fields']
+    var_pop?: ResolverInputTypes['collection_var_pop_fields']
+    var_samp?: ResolverInputTypes['collection_var_samp_fields']
+    variance?: ResolverInputTypes['collection_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['collection_avg_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
+  ['collection_bool_exp']: {
+    _and?: Array<ResolverInputTypes['collection_bool_exp']> | undefined | null
+    _not?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+    _or?: Array<ResolverInputTypes['collection_bool_exp']> | undefined | null
+    chain_id?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    content_hash?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    content_path?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    content_size_bytes?:
+      | ResolverInputTypes['Int_comparison_exp']
+      | undefined
+      | null
+    creator?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    height?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    is_explicit?:
+      | ResolverInputTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+    metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+    minter?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    name?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    payment_address?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    royalty_percentage?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
+    symbol?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    traits?: ResolverInputTypes['collection_traits_bool_exp'] | undefined | null
+    transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
+    transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    version?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** aggregate max on columns */
+  ['collection_max_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['collection_min_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    minter?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    payment_address?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "collection". */
+  ['collection_order_by']: {
+    chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    content_hash?: ResolverInputTypes['order_by'] | undefined | null
+    content_path?: ResolverInputTypes['order_by'] | undefined | null
+    content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
+    creator?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
+    height?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    is_explicit?: ResolverInputTypes['order_by'] | undefined | null
+    metadata?: ResolverInputTypes['order_by'] | undefined | null
+    minter?: ResolverInputTypes['order_by'] | undefined | null
+    name?: ResolverInputTypes['order_by'] | undefined | null
+    payment_address?: ResolverInputTypes['order_by'] | undefined | null
+    royalty_percentage?: ResolverInputTypes['order_by'] | undefined | null
+    symbol?: ResolverInputTypes['order_by'] | undefined | null
+    traits_aggregate?:
+      | ResolverInputTypes['collection_traits_aggregate_order_by']
+      | undefined
+      | null
+    transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
+    transaction_id?: ResolverInputTypes['order_by'] | undefined | null
+    version?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "collection" */
+  ['collection_select_column']: collection_select_column
+  ['collection_stats']: AliasType<{
+    floor_price?: boolean | `@${string}`
+    listed?: boolean | `@${string}`
+    owners?: boolean | `@${string}`
+    supply?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['collection_stats_bool_exp_bool_exp']>
+      | undefined
+      | null
+    floor_price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    listed?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    owners?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    supply?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    volume?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: ResolverInputTypes['order_by'] | undefined | null
+    listed?: ResolverInputTypes['order_by'] | undefined | null
+    owners?: ResolverInputTypes['order_by'] | undefined | null
+    supply?: ResolverInputTypes['order_by'] | undefined | null
+    volume?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** aggregate stddev on columns */
+  ['collection_stddev_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['collection_stddev_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['collection_stddev_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "collection" */
+  ['collection_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['collection_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null
+    content_hash?: string | undefined | null
+    content_path?: string | undefined | null
+    content_size_bytes?: number | undefined | null
+    creator?: string | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
+    height?: number | undefined | null
+    id?: number | undefined | null
+    is_explicit?: boolean | undefined | null
+    metadata?: ResolverInputTypes['jsonb'] | undefined | null
+    minter?: string | undefined | null
+    name?: string | undefined | null
+    payment_address?: string | undefined | null
+    royalty_percentage?: ResolverInputTypes['numeric'] | undefined | null
+    symbol?: string | undefined | null
+    transaction_id?: number | undefined | null
+    version?: string | undefined | null
+  }
+  /** aggregate sum on columns */
+  ['collection_sum_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** columns and relationships of "collection_traits" */
+  ['collection_traits']: AliasType<{
+    /** An object relationship */
+    collection?: ResolverInputTypes['collection']
+    collection_id?: boolean | `@${string}`
+    count?: boolean | `@${string}`
+    trait_type?: [
+      {
+        /** JSON select path */ path?: string | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    trait_value?: [
+      {
+        /** JSON select path */ path?: string | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "collection_traits" */
+  ['collection_traits_aggregate_order_by']: {
+    avg?:
+      | ResolverInputTypes['collection_traits_avg_order_by']
+      | undefined
+      | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+    max?:
+      | ResolverInputTypes['collection_traits_max_order_by']
+      | undefined
+      | null
+    min?:
+      | ResolverInputTypes['collection_traits_min_order_by']
+      | undefined
+      | null
+    stddev?:
+      | ResolverInputTypes['collection_traits_stddev_order_by']
+      | undefined
+      | null
+    stddev_pop?:
+      | ResolverInputTypes['collection_traits_stddev_pop_order_by']
+      | undefined
+      | null
+    stddev_samp?:
+      | ResolverInputTypes['collection_traits_stddev_samp_order_by']
+      | undefined
+      | null
+    sum?:
+      | ResolverInputTypes['collection_traits_sum_order_by']
+      | undefined
+      | null
+    var_pop?:
+      | ResolverInputTypes['collection_traits_var_pop_order_by']
+      | undefined
+      | null
+    var_samp?:
+      | ResolverInputTypes['collection_traits_var_samp_order_by']
+      | undefined
+      | null
+    variance?:
+      | ResolverInputTypes['collection_traits_variance_order_by']
+      | undefined
+      | null
+  }
+  /** order by avg() on columns of table "collection_traits" */
+  ['collection_traits_avg_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** Boolean expression to filter rows from the table "collection_traits". All fields are combined with a logical 'AND'. */
+  ['collection_traits_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['collection_traits_bool_exp']>
+      | undefined
+      | null
+    _not?: ResolverInputTypes['collection_traits_bool_exp'] | undefined | null
+    _or?:
+      | Array<ResolverInputTypes['collection_traits_bool_exp']>
+      | undefined
+      | null
+    collection?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+    collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    count?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    trait_type?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+    trait_value?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+  }
+  /** order by max() on columns of table "collection_traits" */
+  ['collection_traits_max_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by min() on columns of table "collection_traits" */
+  ['collection_traits_min_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** Ordering options when selecting data from "collection_traits". */
+  ['collection_traits_order_by']: {
+    collection?: ResolverInputTypes['collection_order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+    trait_type?: ResolverInputTypes['order_by'] | undefined | null
+    trait_value?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "collection_traits" */
+  ['collection_traits_select_column']: collection_traits_select_column
+  /** order by stddev() on columns of table "collection_traits" */
+  ['collection_traits_stddev_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by stddev_pop() on columns of table "collection_traits" */
+  ['collection_traits_stddev_pop_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by stddev_samp() on columns of table "collection_traits" */
+  ['collection_traits_stddev_samp_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** Streaming cursor of the table "collection_traits" */
+  ['collection_traits_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['collection_traits_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_traits_stream_cursor_value_input']: {
+    collection_id?: number | undefined | null
+    count?: ResolverInputTypes['bigint'] | undefined | null
+    trait_type?: ResolverInputTypes['jsonb'] | undefined | null
+    trait_value?: ResolverInputTypes['jsonb'] | undefined | null
+  }
+  /** order by sum() on columns of table "collection_traits" */
+  ['collection_traits_sum_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by var_pop() on columns of table "collection_traits" */
+  ['collection_traits_var_pop_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by var_samp() on columns of table "collection_traits" */
+  ['collection_traits_var_samp_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by variance() on columns of table "collection_traits" */
+  ['collection_traits_variance_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** aggregate var_pop on columns */
+  ['collection_var_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['collection_var_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['collection_variance_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    royalty_percentage?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
   /** find_inscription_by_nameNative Query Arguments */
@@ -12626,6 +14726,9 @@ export type ResolverInputTypes = {
   /** columns and relationships of "inscription" */
   ['inscription']: AliasType<{
     chain_id?: boolean | `@${string}`
+    /** An object relationship */
+    collection?: ResolverInputTypes['collection']
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -12775,6 +14878,34 @@ export type ResolverInputTypes = {
       },
       boolean | `@${string}`,
     ]
+    migration_permission_grants?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -12881,6 +15012,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate avg on columns */
   ['inscription_avg_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -12889,6 +15021,7 @@ export type ResolverInputTypes = {
   }>
   /** order by avg() on columns of table "inscription" */
   ['inscription_avg_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -12900,6 +15033,8 @@ export type ResolverInputTypes = {
     _not?: ResolverInputTypes['inscription_bool_exp'] | undefined | null
     _or?: Array<ResolverInputTypes['inscription_bool_exp']> | undefined | null
     chain_id?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    collection?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+    collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     content_hash?:
       | ResolverInputTypes['String_comparison_exp']
       | undefined
@@ -12947,7 +15082,11 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
       | null
-    metadata?: ResolverInputTypes['json_comparison_exp'] | undefined | null
+    metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
+    migration_permission_grants?:
+      | ResolverInputTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     type?: ResolverInputTypes['String_comparison_exp'] | undefined | null
@@ -13311,6 +15450,7 @@ export type ResolverInputTypes = {
   /** aggregate max on columns */
   ['inscription_max_fields']: AliasType<{
     chain_id?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -13327,6 +15467,7 @@ export type ResolverInputTypes = {
   /** order by max() on columns of table "inscription" */
   ['inscription_max_order_by']: {
     chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_hash?: ResolverInputTypes['order_by'] | undefined | null
     content_path?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
@@ -13342,6 +15483,7 @@ export type ResolverInputTypes = {
   /** aggregate min on columns */
   ['inscription_min_fields']: AliasType<{
     chain_id?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
     content_hash?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
@@ -13358,6 +15500,7 @@ export type ResolverInputTypes = {
   /** order by min() on columns of table "inscription" */
   ['inscription_min_order_by']: {
     chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_hash?: ResolverInputTypes['order_by'] | undefined | null
     content_path?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
@@ -13373,6 +15516,8 @@ export type ResolverInputTypes = {
   /** Ordering options when selecting data from "inscription". */
   ['inscription_order_by']: {
     chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    collection?: ResolverInputTypes['collection_order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_hash?: ResolverInputTypes['order_by'] | undefined | null
     content_path?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
@@ -13395,6 +15540,10 @@ export type ResolverInputTypes = {
       | undefined
       | null
     metadata?: ResolverInputTypes['order_by'] | undefined | null
+    migration_permission_grants_aggregate?:
+      | ResolverInputTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
+      | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     type?: ResolverInputTypes['order_by'] | undefined | null
@@ -13408,6 +15557,7 @@ export type ResolverInputTypes = {
   ['inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns']: inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns
   /** aggregate stddev on columns */
   ['inscription_stddev_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13416,6 +15566,7 @@ export type ResolverInputTypes = {
   }>
   /** order by stddev() on columns of table "inscription" */
   ['inscription_stddev_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13423,6 +15574,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate stddev_pop on columns */
   ['inscription_stddev_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13431,6 +15583,7 @@ export type ResolverInputTypes = {
   }>
   /** order by stddev_pop() on columns of table "inscription" */
   ['inscription_stddev_pop_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13438,6 +15591,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate stddev_samp on columns */
   ['inscription_stddev_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13446,6 +15600,7 @@ export type ResolverInputTypes = {
   }>
   /** order by stddev_samp() on columns of table "inscription" */
   ['inscription_stddev_samp_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13461,6 +15616,7 @@ export type ResolverInputTypes = {
   /** Initial value of the column from where the streaming should start */
   ['inscription_stream_cursor_value_input']: {
     chain_id?: string | undefined | null
+    collection_id?: number | undefined | null
     content_hash?: string | undefined | null
     content_path?: string | undefined | null
     content_size_bytes?: number | undefined | null
@@ -13470,13 +15626,14 @@ export type ResolverInputTypes = {
     height?: number | undefined | null
     id?: number | undefined | null
     is_explicit?: boolean | undefined | null
-    metadata?: ResolverInputTypes['json'] | undefined | null
+    metadata?: ResolverInputTypes['jsonb'] | undefined | null
     transaction_id?: number | undefined | null
     type?: string | undefined | null
     version?: string | undefined | null
   }
   /** aggregate sum on columns */
   ['inscription_sum_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13485,6 +15642,7 @@ export type ResolverInputTypes = {
   }>
   /** order by sum() on columns of table "inscription" */
   ['inscription_sum_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13860,6 +16018,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate var_pop on columns */
   ['inscription_var_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13868,6 +16027,7 @@ export type ResolverInputTypes = {
   }>
   /** order by var_pop() on columns of table "inscription" */
   ['inscription_var_pop_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13875,6 +16035,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate var_samp on columns */
   ['inscription_var_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13883,6 +16044,7 @@ export type ResolverInputTypes = {
   }>
   /** order by var_samp() on columns of table "inscription" */
   ['inscription_var_samp_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
@@ -13890,6 +16052,7 @@ export type ResolverInputTypes = {
   }
   /** aggregate variance on columns */
   ['inscription_variance_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
@@ -13898,23 +16061,38 @@ export type ResolverInputTypes = {
   }>
   /** order by variance() on columns of table "inscription" */
   ['inscription_variance_order_by']: {
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
     content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
-  ['json']: unknown
-  /** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-  ['json_comparison_exp']: {
-    _eq?: ResolverInputTypes['json'] | undefined | null
-    _gt?: ResolverInputTypes['json'] | undefined | null
-    _gte?: ResolverInputTypes['json'] | undefined | null
-    _in?: Array<ResolverInputTypes['json']> | undefined | null
+  ['jsonb']: unknown
+  ['jsonb_cast_exp']: {
+    String?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+  ['jsonb_comparison_exp']: {
+    _cast?: ResolverInputTypes['jsonb_cast_exp'] | undefined | null
+    /** is the column contained in the given json value */
+    _contained_in?: ResolverInputTypes['jsonb'] | undefined | null
+    /** does the column contain the given json value at the top level */
+    _contains?: ResolverInputTypes['jsonb'] | undefined | null
+    _eq?: ResolverInputTypes['jsonb'] | undefined | null
+    _gt?: ResolverInputTypes['jsonb'] | undefined | null
+    _gte?: ResolverInputTypes['jsonb'] | undefined | null
+    /** does the string exist as a top-level key in the column */
+    _has_key?: string | undefined | null
+    /** do all of these strings exist as top-level keys in the column */
+    _has_keys_all?: Array<string> | undefined | null
+    /** do any of these strings exist as top-level keys in the column */
+    _has_keys_any?: Array<string> | undefined | null
+    _in?: Array<ResolverInputTypes['jsonb']> | undefined | null
     _is_null?: boolean | undefined | null
-    _lt?: ResolverInputTypes['json'] | undefined | null
-    _lte?: ResolverInputTypes['json'] | undefined | null
-    _neq?: ResolverInputTypes['json'] | undefined | null
-    _nin?: Array<ResolverInputTypes['json']> | undefined | null
+    _lt?: ResolverInputTypes['jsonb'] | undefined | null
+    _lte?: ResolverInputTypes['jsonb'] | undefined | null
+    _neq?: ResolverInputTypes['jsonb'] | undefined | null
+    _nin?: Array<ResolverInputTypes['jsonb']> | undefined | null
   }
   /** columns and relationships of "marketplace_cft20_detail" */
   ['marketplace_cft20_detail']: AliasType<{
@@ -15478,6 +17656,64 @@ export type ResolverInputTypes = {
     total?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: AliasType<{
+    grantee?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ResolverInputTypes['order_by'] | undefined | null
+    max?:
+      | ResolverInputTypes['migration_permission_grant_max_order_by']
+      | undefined
+      | null
+    min?:
+      | ResolverInputTypes['migration_permission_grant_min_order_by']
+      | undefined
+      | null
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['migration_permission_grant_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['migration_permission_grant_bool_exp']>
+      | undefined
+      | null
+    grantee?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined | null
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -15494,6 +17730,133 @@ export type ResolverInputTypes = {
   /** column ordering options */
   ['order_by']: order_by
   ['query_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args: ResolverInputTypes['club_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
+    collection?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['collection'],
+    ]
+    collection_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['collection_aggregate'],
+    ]
+    collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args: ResolverInputTypes['collection_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
+    collection_traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_traits_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_traits_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_traits'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -15918,6 +18281,34 @@ export type ResolverInputTypes = {
       { id: number },
       ResolverInputTypes['marketplace_listing_history'],
     ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
     status?: [
       {
         /** distinct select on columns */
@@ -16125,6 +18516,32 @@ export type ResolverInputTypes = {
     token_trade_history_by_pk?: [
       { id: number },
       ResolverInputTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['top_collection_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['top_collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -16347,6 +18764,162 @@ export type ResolverInputTypes = {
     last_processed_height?: number | undefined | null
   }
   ['subscription_root']: AliasType<{
+    club_stats?: [
+      {
+        /** club_statsNative Query Arguments */
+        args: ResolverInputTypes['club_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
+    collection?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['collection'],
+    ]
+    collection_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['collection_aggregate'],
+    ]
+    collection_by_pk?: [{ id: number }, ResolverInputTypes['collection']]
+    collection_stats?: [
+      {
+        /** collection_statsNative Query Arguments */
+        args: ResolverInputTypes['collection_stats_arguments'] /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_stats_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_stats_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_stats_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_stats'],
+    ]
+    collection_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['collection_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['collection'],
+    ]
+    collection_traits?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['collection_traits_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['collection_traits_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_traits'],
+    ]
+    collection_traits_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['collection_traits_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['collection_traits_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['collection_traits'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -16912,6 +19485,50 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['marketplace_listing'],
     ]
+    migration_permission_grant?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['migration_permission_grant_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['migration_permission_grant_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
+    migration_permission_grant_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['migration_permission_grant_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['migration_permission_grant_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['migration_permission_grant'],
+    ]
     status?: [
       {
         /** distinct select on columns */
@@ -17202,6 +19819,32 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['token_trade_history'],
+    ]
+    top_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['top_collection_enum_name']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['top_collection_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['top_collection'],
     ]
     trade_history?: [
       {
@@ -19093,6 +21736,46 @@ export type ResolverInputTypes = {
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
+  ['top_collection']: AliasType<{
+    content_path?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    name?: boolean | `@${string}`
+    symbol?: boolean | `@${string}`
+    volume?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['top_collection_bool_exp_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['top_collection_bool_exp_bool_exp']>
+      | undefined
+      | null
+    content_path?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    name?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    symbol?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    volume?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    name?: ResolverInputTypes['order_by'] | undefined | null
+    symbol?: ResolverInputTypes['order_by'] | undefined | null
+    volume?: ResolverInputTypes['order_by'] | undefined | null
+  }
   /** columns and relationships of "trade_history" */
   ['trade_history']: AliasType<{
     amount_base?: boolean | `@${string}`
@@ -19822,6 +22505,370 @@ export type ModelTypes = {
     _neq?: ModelTypes['bigint'] | undefined
     _nin?: Array<ModelTypes['bigint']> | undefined
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
+  /** columns and relationships of "collection" */
+  ['collection']: {
+    chain_id: string
+    content_hash: string
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator: string
+    date_created: ModelTypes['timestamp']
+    height: number
+    id: number
+    is_explicit?: boolean | undefined
+    metadata: ModelTypes['jsonb']
+    minter?: string | undefined
+    name: string
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
+    symbol: string
+    /** An array relationship */
+    traits: Array<ModelTypes['collection_traits']>
+    /** An object relationship */
+    transaction: ModelTypes['transaction']
+    transaction_id: number
+    version: string
+  }
+  /** aggregated selection of "collection" */
+  ['collection_aggregate']: {
+    aggregate?: ModelTypes['collection_aggregate_fields'] | undefined
+    nodes: Array<ModelTypes['collection']>
+  }
+  /** aggregate fields of "collection" */
+  ['collection_aggregate_fields']: {
+    avg?: ModelTypes['collection_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['collection_max_fields'] | undefined
+    min?: ModelTypes['collection_min_fields'] | undefined
+    stddev?: ModelTypes['collection_stddev_fields'] | undefined
+    stddev_pop?: ModelTypes['collection_stddev_pop_fields'] | undefined
+    stddev_samp?: ModelTypes['collection_stddev_samp_fields'] | undefined
+    sum?: ModelTypes['collection_sum_fields'] | undefined
+    var_pop?: ModelTypes['collection_var_pop_fields'] | undefined
+    var_samp?: ModelTypes['collection_var_samp_fields'] | undefined
+    variance?: ModelTypes['collection_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['collection_avg_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
+  ['collection_bool_exp']: {
+    _and?: Array<ModelTypes['collection_bool_exp']> | undefined
+    _not?: ModelTypes['collection_bool_exp'] | undefined
+    _or?: Array<ModelTypes['collection_bool_exp']> | undefined
+    chain_id?: ModelTypes['String_comparison_exp'] | undefined
+    content_hash?: ModelTypes['String_comparison_exp'] | undefined
+    content_path?: ModelTypes['String_comparison_exp'] | undefined
+    content_size_bytes?: ModelTypes['Int_comparison_exp'] | undefined
+    creator?: ModelTypes['String_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
+    height?: ModelTypes['Int_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    is_explicit?: ModelTypes['Boolean_comparison_exp'] | undefined
+    metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
+    minter?: ModelTypes['String_comparison_exp'] | undefined
+    name?: ModelTypes['String_comparison_exp'] | undefined
+    payment_address?: ModelTypes['String_comparison_exp'] | undefined
+    royalty_percentage?: ModelTypes['numeric_comparison_exp'] | undefined
+    symbol?: ModelTypes['String_comparison_exp'] | undefined
+    traits?: ModelTypes['collection_traits_bool_exp'] | undefined
+    transaction?: ModelTypes['transaction_bool_exp'] | undefined
+    transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
+    version?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['collection_max_fields']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate min on columns */
+  ['collection_min_fields']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Ordering options when selecting data from "collection". */
+  ['collection_order_by']: {
+    chain_id?: ModelTypes['order_by'] | undefined
+    content_hash?: ModelTypes['order_by'] | undefined
+    content_path?: ModelTypes['order_by'] | undefined
+    content_size_bytes?: ModelTypes['order_by'] | undefined
+    creator?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
+    height?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    is_explicit?: ModelTypes['order_by'] | undefined
+    metadata?: ModelTypes['order_by'] | undefined
+    minter?: ModelTypes['order_by'] | undefined
+    name?: ModelTypes['order_by'] | undefined
+    payment_address?: ModelTypes['order_by'] | undefined
+    royalty_percentage?: ModelTypes['order_by'] | undefined
+    symbol?: ModelTypes['order_by'] | undefined
+    traits_aggregate?:
+      | ModelTypes['collection_traits_aggregate_order_by']
+      | undefined
+    transaction?: ModelTypes['transaction_order_by'] | undefined
+    transaction_id?: ModelTypes['order_by'] | undefined
+    version?: ModelTypes['order_by'] | undefined
+  }
+  ['collection_select_column']: collection_select_column
+  ['collection_stats']: {
+    floor_price: ModelTypes['bigint']
+    listed: ModelTypes['bigint']
+    owners: ModelTypes['bigint']
+    supply: ModelTypes['bigint']
+    volume: ModelTypes['numeric']
+  }
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?: Array<ModelTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    _not?: ModelTypes['collection_stats_bool_exp_bool_exp'] | undefined
+    _or?: Array<ModelTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    floor_price?: ModelTypes['bigint_comparison_exp'] | undefined
+    listed?: ModelTypes['bigint_comparison_exp'] | undefined
+    owners?: ModelTypes['bigint_comparison_exp'] | undefined
+    supply?: ModelTypes['bigint_comparison_exp'] | undefined
+    volume?: ModelTypes['numeric_comparison_exp'] | undefined
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: ModelTypes['order_by'] | undefined
+    listed?: ModelTypes['order_by'] | undefined
+    owners?: ModelTypes['order_by'] | undefined
+    supply?: ModelTypes['order_by'] | undefined
+    volume?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate stddev on columns */
+  ['collection_stddev_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['collection_stddev_pop_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['collection_stddev_samp_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Streaming cursor of the table "collection" */
+  ['collection_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['collection_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    is_explicit?: boolean | undefined
+    metadata?: ModelTypes['jsonb'] | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate sum on columns */
+  ['collection_sum_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: ModelTypes['numeric'] | undefined
+    transaction_id?: number | undefined
+  }
+  /** columns and relationships of "collection_traits" */
+  ['collection_traits']: {
+    /** An object relationship */
+    collection?: ModelTypes['collection'] | undefined
+    collection_id: number
+    count: ModelTypes['bigint']
+    trait_type: ModelTypes['jsonb']
+    trait_value: ModelTypes['jsonb']
+  }
+  /** order by aggregate values of table "collection_traits" */
+  ['collection_traits_aggregate_order_by']: {
+    avg?: ModelTypes['collection_traits_avg_order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+    max?: ModelTypes['collection_traits_max_order_by'] | undefined
+    min?: ModelTypes['collection_traits_min_order_by'] | undefined
+    stddev?: ModelTypes['collection_traits_stddev_order_by'] | undefined
+    stddev_pop?: ModelTypes['collection_traits_stddev_pop_order_by'] | undefined
+    stddev_samp?:
+      | ModelTypes['collection_traits_stddev_samp_order_by']
+      | undefined
+    sum?: ModelTypes['collection_traits_sum_order_by'] | undefined
+    var_pop?: ModelTypes['collection_traits_var_pop_order_by'] | undefined
+    var_samp?: ModelTypes['collection_traits_var_samp_order_by'] | undefined
+    variance?: ModelTypes['collection_traits_variance_order_by'] | undefined
+  }
+  /** order by avg() on columns of table "collection_traits" */
+  ['collection_traits_avg_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "collection_traits". All fields are combined with a logical 'AND'. */
+  ['collection_traits_bool_exp']: {
+    _and?: Array<ModelTypes['collection_traits_bool_exp']> | undefined
+    _not?: ModelTypes['collection_traits_bool_exp'] | undefined
+    _or?: Array<ModelTypes['collection_traits_bool_exp']> | undefined
+    collection?: ModelTypes['collection_bool_exp'] | undefined
+    collection_id?: ModelTypes['Int_comparison_exp'] | undefined
+    count?: ModelTypes['bigint_comparison_exp'] | undefined
+    trait_type?: ModelTypes['jsonb_comparison_exp'] | undefined
+    trait_value?: ModelTypes['jsonb_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "collection_traits" */
+  ['collection_traits_max_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "collection_traits" */
+  ['collection_traits_min_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "collection_traits". */
+  ['collection_traits_order_by']: {
+    collection?: ModelTypes['collection_order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+    trait_type?: ModelTypes['order_by'] | undefined
+    trait_value?: ModelTypes['order_by'] | undefined
+  }
+  ['collection_traits_select_column']: collection_traits_select_column
+  /** order by stddev() on columns of table "collection_traits" */
+  ['collection_traits_stddev_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by stddev_pop() on columns of table "collection_traits" */
+  ['collection_traits_stddev_pop_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by stddev_samp() on columns of table "collection_traits" */
+  ['collection_traits_stddev_samp_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** Streaming cursor of the table "collection_traits" */
+  ['collection_traits_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['collection_traits_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_traits_stream_cursor_value_input']: {
+    collection_id?: number | undefined
+    count?: ModelTypes['bigint'] | undefined
+    trait_type?: ModelTypes['jsonb'] | undefined
+    trait_value?: ModelTypes['jsonb'] | undefined
+  }
+  /** order by sum() on columns of table "collection_traits" */
+  ['collection_traits_sum_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by var_pop() on columns of table "collection_traits" */
+  ['collection_traits_var_pop_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by var_samp() on columns of table "collection_traits" */
+  ['collection_traits_var_samp_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** order by variance() on columns of table "collection_traits" */
+  ['collection_traits_variance_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['collection_var_pop_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['collection_var_samp_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['collection_variance_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
   ['cursor_ordering']: cursor_ordering
   /** find_inscription_by_nameNative Query Arguments */
   ['find_inscription_by_name_arguments']: {
@@ -19830,6 +22877,9 @@ export type ModelTypes = {
   /** columns and relationships of "inscription" */
   ['inscription']: {
     chain_id: string
+    /** An object relationship */
+    collection?: ModelTypes['collection'] | undefined
+    collection_id?: number | undefined
     content_hash: string
     content_path: string
     content_size_bytes: number
@@ -19851,7 +22901,9 @@ export type ModelTypes = {
     >
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: ModelTypes['marketplace_inscription_detail_aggregate']
-    metadata: ModelTypes['json']
+    metadata: ModelTypes['jsonb']
+    /** An array relationship */
+    migration_permission_grants: Array<ModelTypes['migration_permission_grant']>
     /** An object relationship */
     transaction: ModelTypes['transaction']
     transaction_id: number
@@ -19916,6 +22968,7 @@ export type ModelTypes = {
   }
   /** aggregate avg on columns */
   ['inscription_avg_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -19923,6 +22976,7 @@ export type ModelTypes = {
   }
   /** order by avg() on columns of table "inscription" */
   ['inscription_avg_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -19934,6 +22988,8 @@ export type ModelTypes = {
     _not?: ModelTypes['inscription_bool_exp'] | undefined
     _or?: Array<ModelTypes['inscription_bool_exp']> | undefined
     chain_id?: ModelTypes['String_comparison_exp'] | undefined
+    collection?: ModelTypes['collection_bool_exp'] | undefined
+    collection_id?: ModelTypes['Int_comparison_exp'] | undefined
     content_hash?: ModelTypes['String_comparison_exp'] | undefined
     content_path?: ModelTypes['String_comparison_exp'] | undefined
     content_size_bytes?: ModelTypes['Int_comparison_exp'] | undefined
@@ -19958,7 +23014,10 @@ export type ModelTypes = {
     marketplace_inscription_details_aggregate?:
       | ModelTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
-    metadata?: ModelTypes['json_comparison_exp'] | undefined
+    metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
+    migration_permission_grants?:
+      | ModelTypes['migration_permission_grant_bool_exp']
+      | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
     type?: ModelTypes['String_comparison_exp'] | undefined
@@ -20252,6 +23311,7 @@ export type ModelTypes = {
   /** aggregate max on columns */
   ['inscription_max_fields']: {
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -20267,6 +23327,7 @@ export type ModelTypes = {
   /** order by max() on columns of table "inscription" */
   ['inscription_max_order_by']: {
     chain_id?: ModelTypes['order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
     content_hash?: ModelTypes['order_by'] | undefined
     content_path?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
@@ -20282,6 +23343,7 @@ export type ModelTypes = {
   /** aggregate min on columns */
   ['inscription_min_fields']: {
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -20297,6 +23359,7 @@ export type ModelTypes = {
   /** order by min() on columns of table "inscription" */
   ['inscription_min_order_by']: {
     chain_id?: ModelTypes['order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
     content_hash?: ModelTypes['order_by'] | undefined
     content_path?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
@@ -20312,6 +23375,8 @@ export type ModelTypes = {
   /** Ordering options when selecting data from "inscription". */
   ['inscription_order_by']: {
     chain_id?: ModelTypes['order_by'] | undefined
+    collection?: ModelTypes['collection_order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
     content_hash?: ModelTypes['order_by'] | undefined
     content_path?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
@@ -20331,6 +23396,9 @@ export type ModelTypes = {
       | ModelTypes['marketplace_inscription_detail_aggregate_order_by']
       | undefined
     metadata?: ModelTypes['order_by'] | undefined
+    migration_permission_grants_aggregate?:
+      | ModelTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     type?: ModelTypes['order_by'] | undefined
@@ -20341,6 +23409,7 @@ export type ModelTypes = {
   ['inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns']: inscription_select_column_inscription_aggregate_bool_exp_bool_or_arguments_columns
   /** aggregate stddev on columns */
   ['inscription_stddev_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20348,6 +23417,7 @@ export type ModelTypes = {
   }
   /** order by stddev() on columns of table "inscription" */
   ['inscription_stddev_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20355,6 +23425,7 @@ export type ModelTypes = {
   }
   /** aggregate stddev_pop on columns */
   ['inscription_stddev_pop_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20362,6 +23433,7 @@ export type ModelTypes = {
   }
   /** order by stddev_pop() on columns of table "inscription" */
   ['inscription_stddev_pop_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20369,6 +23441,7 @@ export type ModelTypes = {
   }
   /** aggregate stddev_samp on columns */
   ['inscription_stddev_samp_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20376,6 +23449,7 @@ export type ModelTypes = {
   }
   /** order by stddev_samp() on columns of table "inscription" */
   ['inscription_stddev_samp_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20391,6 +23465,7 @@ export type ModelTypes = {
   /** Initial value of the column from where the streaming should start */
   ['inscription_stream_cursor_value_input']: {
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -20400,13 +23475,14 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     is_explicit?: boolean | undefined
-    metadata?: ModelTypes['json'] | undefined
+    metadata?: ModelTypes['jsonb'] | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
   }
   /** aggregate sum on columns */
   ['inscription_sum_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20414,6 +23490,7 @@ export type ModelTypes = {
   }
   /** order by sum() on columns of table "inscription" */
   ['inscription_sum_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20730,6 +23807,7 @@ export type ModelTypes = {
   }
   /** aggregate var_pop on columns */
   ['inscription_var_pop_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20737,6 +23815,7 @@ export type ModelTypes = {
   }
   /** order by var_pop() on columns of table "inscription" */
   ['inscription_var_pop_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20744,6 +23823,7 @@ export type ModelTypes = {
   }
   /** aggregate var_samp on columns */
   ['inscription_var_samp_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20751,6 +23831,7 @@ export type ModelTypes = {
   }
   /** order by var_samp() on columns of table "inscription" */
   ['inscription_var_samp_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
@@ -20758,6 +23839,7 @@ export type ModelTypes = {
   }
   /** aggregate variance on columns */
   ['inscription_variance_fields']: {
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -20765,23 +23847,38 @@ export type ModelTypes = {
   }
   /** order by variance() on columns of table "inscription" */
   ['inscription_variance_order_by']: {
+    collection_id?: ModelTypes['order_by'] | undefined
     content_size_bytes?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
-  ['json']: any
-  /** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-  ['json_comparison_exp']: {
-    _eq?: ModelTypes['json'] | undefined
-    _gt?: ModelTypes['json'] | undefined
-    _gte?: ModelTypes['json'] | undefined
-    _in?: Array<ModelTypes['json']> | undefined
+  ['jsonb']: any
+  ['jsonb_cast_exp']: {
+    String?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+  ['jsonb_comparison_exp']: {
+    _cast?: ModelTypes['jsonb_cast_exp'] | undefined
+    /** is the column contained in the given json value */
+    _contained_in?: ModelTypes['jsonb'] | undefined
+    /** does the column contain the given json value at the top level */
+    _contains?: ModelTypes['jsonb'] | undefined
+    _eq?: ModelTypes['jsonb'] | undefined
+    _gt?: ModelTypes['jsonb'] | undefined
+    _gte?: ModelTypes['jsonb'] | undefined
+    /** does the string exist as a top-level key in the column */
+    _has_key?: string | undefined
+    /** do all of these strings exist as top-level keys in the column */
+    _has_keys_all?: Array<string> | undefined
+    /** do any of these strings exist as top-level keys in the column */
+    _has_keys_any?: Array<string> | undefined
+    _in?: Array<ModelTypes['jsonb']> | undefined
     _is_null?: boolean | undefined
-    _lt?: ModelTypes['json'] | undefined
-    _lte?: ModelTypes['json'] | undefined
-    _neq?: ModelTypes['json'] | undefined
-    _nin?: Array<ModelTypes['json']> | undefined
+    _lt?: ModelTypes['jsonb'] | undefined
+    _lte?: ModelTypes['jsonb'] | undefined
+    _neq?: ModelTypes['jsonb'] | undefined
+    _nin?: Array<ModelTypes['jsonb']> | undefined
   }
   /** columns and relationships of "marketplace_cft20_detail" */
   ['marketplace_cft20_detail']: {
@@ -21936,6 +25033,47 @@ export type ModelTypes = {
     total?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: {
+    grantee: string
+  }
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: ModelTypes['order_by'] | undefined
+    max?: ModelTypes['migration_permission_grant_max_order_by'] | undefined
+    min?: ModelTypes['migration_permission_grant_min_order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?: Array<ModelTypes['migration_permission_grant_bool_exp']> | undefined
+    _not?: ModelTypes['migration_permission_grant_bool_exp'] | undefined
+    _or?: Array<ModelTypes['migration_permission_grant_bool_exp']> | undefined
+    grantee?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: ModelTypes['order_by'] | undefined
+  }
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined
+  }
   ['numeric']: any
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -21951,6 +25089,16 @@ export type ModelTypes = {
   }
   ['order_by']: order_by
   ['query_root']: {
+    club_stats: Array<ModelTypes['collection_stats']>
+    /** fetch data from the table: "collection" */
+    collection: Array<ModelTypes['collection']>
+    /** fetch aggregated fields from the table: "collection" */
+    collection_aggregate: ModelTypes['collection_aggregate']
+    /** fetch data from the table: "collection" using primary key columns */
+    collection_by_pk?: ModelTypes['collection'] | undefined
+    collection_stats: Array<ModelTypes['collection_stats']>
+    /** fetch data from the table: "collection_traits" */
+    collection_traits: Array<ModelTypes['collection_traits']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<ModelTypes['inscription']>
@@ -22012,6 +25160,8 @@ export type ModelTypes = {
     marketplace_listing_history_by_pk?:
       | ModelTypes['marketplace_listing_history']
       | undefined
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<ModelTypes['migration_permission_grant']>
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -22042,6 +25192,7 @@ export type ModelTypes = {
     token_trade_history: Array<ModelTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
+    top_collections: Array<ModelTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<ModelTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -22158,6 +25309,20 @@ export type ModelTypes = {
     last_processed_height?: number | undefined
   }
   ['subscription_root']: {
+    club_stats: Array<ModelTypes['collection_stats']>
+    /** fetch data from the table: "collection" */
+    collection: Array<ModelTypes['collection']>
+    /** fetch aggregated fields from the table: "collection" */
+    collection_aggregate: ModelTypes['collection_aggregate']
+    /** fetch data from the table: "collection" using primary key columns */
+    collection_by_pk?: ModelTypes['collection'] | undefined
+    collection_stats: Array<ModelTypes['collection_stats']>
+    /** fetch data from the table in a streaming manner: "collection" */
+    collection_stream: Array<ModelTypes['collection']>
+    /** fetch data from the table: "collection_traits" */
+    collection_traits: Array<ModelTypes['collection_traits']>
+    /** fetch data from the table in a streaming manner: "collection_traits" */
+    collection_traits_stream: Array<ModelTypes['collection_traits']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<ModelTypes['inscription']>
@@ -22247,6 +25412,12 @@ export type ModelTypes = {
     >
     /** fetch data from the table in a streaming manner: "marketplace_listing" */
     marketplace_listing_stream: Array<ModelTypes['marketplace_listing']>
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<ModelTypes['migration_permission_grant']>
+    /** fetch data from the table in a streaming manner: "migration_permission_grant" */
+    migration_permission_grant_stream: Array<
+      ModelTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -22289,6 +25460,7 @@ export type ModelTypes = {
     token_trade_history_by_pk?: ModelTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<ModelTypes['token_trade_history']>
+    top_collections: Array<ModelTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<ModelTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -23646,6 +26818,33 @@ export type ModelTypes = {
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
+  ['top_collection']: {
+    content_path: string
+    id: number
+    name: string
+    symbol: string
+    volume: ModelTypes['numeric']
+  }
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?: Array<ModelTypes['top_collection_bool_exp_bool_exp']> | undefined
+    _not?: ModelTypes['top_collection_bool_exp_bool_exp'] | undefined
+    _or?: Array<ModelTypes['top_collection_bool_exp_bool_exp']> | undefined
+    content_path?: ModelTypes['String_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    name?: ModelTypes['String_comparison_exp'] | undefined
+    symbol?: ModelTypes['String_comparison_exp'] | undefined
+    volume?: ModelTypes['numeric_comparison_exp'] | undefined
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    name?: ModelTypes['order_by'] | undefined
+    symbol?: ModelTypes['order_by'] | undefined
+    volume?: ModelTypes['order_by'] | undefined
+  }
   /** columns and relationships of "trade_history" */
   ['trade_history']: {
     amount_base?: ModelTypes['bigint'] | undefined
@@ -24049,6 +27248,389 @@ export type GraphQLTypes = {
     _neq?: GraphQLTypes['bigint'] | undefined
     _nin?: Array<GraphQLTypes['bigint']> | undefined
   }
+  /** club_statsNative Query Arguments */
+  ['club_stats_arguments']: {
+    max_id: number
+  }
+  /** columns and relationships of "collection" */
+  ['collection']: {
+    __typename: 'collection'
+    chain_id: string
+    content_hash: string
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator: string
+    date_created: GraphQLTypes['timestamp']
+    height: number
+    id: number
+    is_explicit?: boolean | undefined
+    metadata: GraphQLTypes['jsonb']
+    minter?: string | undefined
+    name: string
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
+    symbol: string
+    /** An array relationship */
+    traits: Array<GraphQLTypes['collection_traits']>
+    /** An object relationship */
+    transaction: GraphQLTypes['transaction']
+    transaction_id: number
+    version: string
+  }
+  /** aggregated selection of "collection" */
+  ['collection_aggregate']: {
+    __typename: 'collection_aggregate'
+    aggregate?: GraphQLTypes['collection_aggregate_fields'] | undefined
+    nodes: Array<GraphQLTypes['collection']>
+  }
+  /** aggregate fields of "collection" */
+  ['collection_aggregate_fields']: {
+    __typename: 'collection_aggregate_fields'
+    avg?: GraphQLTypes['collection_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['collection_max_fields'] | undefined
+    min?: GraphQLTypes['collection_min_fields'] | undefined
+    stddev?: GraphQLTypes['collection_stddev_fields'] | undefined
+    stddev_pop?: GraphQLTypes['collection_stddev_pop_fields'] | undefined
+    stddev_samp?: GraphQLTypes['collection_stddev_samp_fields'] | undefined
+    sum?: GraphQLTypes['collection_sum_fields'] | undefined
+    var_pop?: GraphQLTypes['collection_var_pop_fields'] | undefined
+    var_samp?: GraphQLTypes['collection_var_samp_fields'] | undefined
+    variance?: GraphQLTypes['collection_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['collection_avg_fields']: {
+    __typename: 'collection_avg_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "collection". All fields are combined with a logical 'AND'. */
+  ['collection_bool_exp']: {
+    _and?: Array<GraphQLTypes['collection_bool_exp']> | undefined
+    _not?: GraphQLTypes['collection_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['collection_bool_exp']> | undefined
+    chain_id?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_hash?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_path?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_size_bytes?: GraphQLTypes['Int_comparison_exp'] | undefined
+    creator?: GraphQLTypes['String_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    height?: GraphQLTypes['Int_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    is_explicit?: GraphQLTypes['Boolean_comparison_exp'] | undefined
+    metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+    minter?: GraphQLTypes['String_comparison_exp'] | undefined
+    name?: GraphQLTypes['String_comparison_exp'] | undefined
+    payment_address?: GraphQLTypes['String_comparison_exp'] | undefined
+    royalty_percentage?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    symbol?: GraphQLTypes['String_comparison_exp'] | undefined
+    traits?: GraphQLTypes['collection_traits_bool_exp'] | undefined
+    transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
+    transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    version?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['collection_max_fields']: {
+    __typename: 'collection_max_fields'
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate min on columns */
+  ['collection_min_fields']: {
+    __typename: 'collection_min_fields'
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Ordering options when selecting data from "collection". */
+  ['collection_order_by']: {
+    chain_id?: GraphQLTypes['order_by'] | undefined
+    content_hash?: GraphQLTypes['order_by'] | undefined
+    content_path?: GraphQLTypes['order_by'] | undefined
+    content_size_bytes?: GraphQLTypes['order_by'] | undefined
+    creator?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
+    height?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    is_explicit?: GraphQLTypes['order_by'] | undefined
+    metadata?: GraphQLTypes['order_by'] | undefined
+    minter?: GraphQLTypes['order_by'] | undefined
+    name?: GraphQLTypes['order_by'] | undefined
+    payment_address?: GraphQLTypes['order_by'] | undefined
+    royalty_percentage?: GraphQLTypes['order_by'] | undefined
+    symbol?: GraphQLTypes['order_by'] | undefined
+    traits_aggregate?:
+      | GraphQLTypes['collection_traits_aggregate_order_by']
+      | undefined
+    transaction?: GraphQLTypes['transaction_order_by'] | undefined
+    transaction_id?: GraphQLTypes['order_by'] | undefined
+    version?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "collection" */
+  ['collection_select_column']: collection_select_column
+  ['collection_stats']: {
+    __typename: 'collection_stats'
+    floor_price: GraphQLTypes['bigint']
+    listed: GraphQLTypes['bigint']
+    owners: GraphQLTypes['bigint']
+    supply: GraphQLTypes['bigint']
+    volume: GraphQLTypes['numeric']
+  }
+  /** collection_statsNative Query Arguments */
+  ['collection_stats_arguments']: {
+    collection_id: number
+  }
+  /** Boolean expression to filter rows from the logical model for "collection_stats". All fields are combined with a logical 'AND'. */
+  ['collection_stats_bool_exp_bool_exp']: {
+    _and?: Array<GraphQLTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    _not?: GraphQLTypes['collection_stats_bool_exp_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['collection_stats_bool_exp_bool_exp']> | undefined
+    floor_price?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    listed?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    owners?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    supply?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    volume?: GraphQLTypes['numeric_comparison_exp'] | undefined
+  }
+  ['collection_stats_enum_name']: collection_stats_enum_name
+  /** Ordering options when selecting data from "collection_stats". */
+  ['collection_stats_order_by']: {
+    floor_price?: GraphQLTypes['order_by'] | undefined
+    listed?: GraphQLTypes['order_by'] | undefined
+    owners?: GraphQLTypes['order_by'] | undefined
+    supply?: GraphQLTypes['order_by'] | undefined
+    volume?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate stddev on columns */
+  ['collection_stddev_fields']: {
+    __typename: 'collection_stddev_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['collection_stddev_pop_fields']: {
+    __typename: 'collection_stddev_pop_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['collection_stddev_samp_fields']: {
+    __typename: 'collection_stddev_samp_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Streaming cursor of the table "collection" */
+  ['collection_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['collection_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    is_explicit?: boolean | undefined
+    metadata?: GraphQLTypes['jsonb'] | undefined
+    minter?: string | undefined
+    name?: string | undefined
+    payment_address?: string | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
+    symbol?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate sum on columns */
+  ['collection_sum_fields']: {
+    __typename: 'collection_sum_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: GraphQLTypes['numeric'] | undefined
+    transaction_id?: number | undefined
+  }
+  /** columns and relationships of "collection_traits" */
+  ['collection_traits']: {
+    __typename: 'collection_traits'
+    /** An object relationship */
+    collection?: GraphQLTypes['collection'] | undefined
+    collection_id: number
+    count: GraphQLTypes['bigint']
+    trait_type: GraphQLTypes['jsonb']
+    trait_value: GraphQLTypes['jsonb']
+  }
+  /** order by aggregate values of table "collection_traits" */
+  ['collection_traits_aggregate_order_by']: {
+    avg?: GraphQLTypes['collection_traits_avg_order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+    max?: GraphQLTypes['collection_traits_max_order_by'] | undefined
+    min?: GraphQLTypes['collection_traits_min_order_by'] | undefined
+    stddev?: GraphQLTypes['collection_traits_stddev_order_by'] | undefined
+    stddev_pop?:
+      | GraphQLTypes['collection_traits_stddev_pop_order_by']
+      | undefined
+    stddev_samp?:
+      | GraphQLTypes['collection_traits_stddev_samp_order_by']
+      | undefined
+    sum?: GraphQLTypes['collection_traits_sum_order_by'] | undefined
+    var_pop?: GraphQLTypes['collection_traits_var_pop_order_by'] | undefined
+    var_samp?: GraphQLTypes['collection_traits_var_samp_order_by'] | undefined
+    variance?: GraphQLTypes['collection_traits_variance_order_by'] | undefined
+  }
+  /** order by avg() on columns of table "collection_traits" */
+  ['collection_traits_avg_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "collection_traits". All fields are combined with a logical 'AND'. */
+  ['collection_traits_bool_exp']: {
+    _and?: Array<GraphQLTypes['collection_traits_bool_exp']> | undefined
+    _not?: GraphQLTypes['collection_traits_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['collection_traits_bool_exp']> | undefined
+    collection?: GraphQLTypes['collection_bool_exp'] | undefined
+    collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    count?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    trait_type?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+    trait_value?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "collection_traits" */
+  ['collection_traits_max_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "collection_traits" */
+  ['collection_traits_min_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "collection_traits". */
+  ['collection_traits_order_by']: {
+    collection?: GraphQLTypes['collection_order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+    trait_type?: GraphQLTypes['order_by'] | undefined
+    trait_value?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "collection_traits" */
+  ['collection_traits_select_column']: collection_traits_select_column
+  /** order by stddev() on columns of table "collection_traits" */
+  ['collection_traits_stddev_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by stddev_pop() on columns of table "collection_traits" */
+  ['collection_traits_stddev_pop_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by stddev_samp() on columns of table "collection_traits" */
+  ['collection_traits_stddev_samp_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** Streaming cursor of the table "collection_traits" */
+  ['collection_traits_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['collection_traits_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['collection_traits_stream_cursor_value_input']: {
+    collection_id?: number | undefined
+    count?: GraphQLTypes['bigint'] | undefined
+    trait_type?: GraphQLTypes['jsonb'] | undefined
+    trait_value?: GraphQLTypes['jsonb'] | undefined
+  }
+  /** order by sum() on columns of table "collection_traits" */
+  ['collection_traits_sum_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by var_pop() on columns of table "collection_traits" */
+  ['collection_traits_var_pop_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by var_samp() on columns of table "collection_traits" */
+  ['collection_traits_var_samp_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by variance() on columns of table "collection_traits" */
+  ['collection_traits_variance_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['collection_var_pop_fields']: {
+    __typename: 'collection_var_pop_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['collection_var_samp_fields']: {
+    __typename: 'collection_var_samp_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['collection_variance_fields']: {
+    __typename: 'collection_variance_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    royalty_percentage?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
   /** find_inscription_by_nameNative Query Arguments */
@@ -24059,6 +27641,9 @@ export type GraphQLTypes = {
   ['inscription']: {
     __typename: 'inscription'
     chain_id: string
+    /** An object relationship */
+    collection?: GraphQLTypes['collection'] | undefined
+    collection_id?: number | undefined
     content_hash: string
     content_path: string
     content_size_bytes: number
@@ -24082,7 +27667,11 @@ export type GraphQLTypes = {
     >
     /** An aggregate relationship */
     marketplace_inscription_details_aggregate: GraphQLTypes['marketplace_inscription_detail_aggregate']
-    metadata: GraphQLTypes['json']
+    metadata: GraphQLTypes['jsonb']
+    /** An array relationship */
+    migration_permission_grants: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
     transaction_id: number
@@ -24152,6 +27741,7 @@ export type GraphQLTypes = {
   /** aggregate avg on columns */
   ['inscription_avg_fields']: {
     __typename: 'inscription_avg_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -24159,6 +27749,7 @@ export type GraphQLTypes = {
   }
   /** order by avg() on columns of table "inscription" */
   ['inscription_avg_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -24170,6 +27761,8 @@ export type GraphQLTypes = {
     _not?: GraphQLTypes['inscription_bool_exp'] | undefined
     _or?: Array<GraphQLTypes['inscription_bool_exp']> | undefined
     chain_id?: GraphQLTypes['String_comparison_exp'] | undefined
+    collection?: GraphQLTypes['collection_bool_exp'] | undefined
+    collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     content_hash?: GraphQLTypes['String_comparison_exp'] | undefined
     content_path?: GraphQLTypes['String_comparison_exp'] | undefined
     content_size_bytes?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -24194,7 +27787,10 @@ export type GraphQLTypes = {
     marketplace_inscription_details_aggregate?:
       | GraphQLTypes['marketplace_inscription_detail_aggregate_bool_exp']
       | undefined
-    metadata?: GraphQLTypes['json_comparison_exp'] | undefined
+    metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
+    migration_permission_grants?:
+      | GraphQLTypes['migration_permission_grant_bool_exp']
+      | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     type?: GraphQLTypes['String_comparison_exp'] | undefined
@@ -24511,6 +28107,7 @@ export type GraphQLTypes = {
   ['inscription_max_fields']: {
     __typename: 'inscription_max_fields'
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -24526,6 +28123,7 @@ export type GraphQLTypes = {
   /** order by max() on columns of table "inscription" */
   ['inscription_max_order_by']: {
     chain_id?: GraphQLTypes['order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_hash?: GraphQLTypes['order_by'] | undefined
     content_path?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
@@ -24542,6 +28140,7 @@ export type GraphQLTypes = {
   ['inscription_min_fields']: {
     __typename: 'inscription_min_fields'
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -24557,6 +28156,7 @@ export type GraphQLTypes = {
   /** order by min() on columns of table "inscription" */
   ['inscription_min_order_by']: {
     chain_id?: GraphQLTypes['order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_hash?: GraphQLTypes['order_by'] | undefined
     content_path?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
@@ -24572,6 +28172,8 @@ export type GraphQLTypes = {
   /** Ordering options when selecting data from "inscription". */
   ['inscription_order_by']: {
     chain_id?: GraphQLTypes['order_by'] | undefined
+    collection?: GraphQLTypes['collection_order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_hash?: GraphQLTypes['order_by'] | undefined
     content_path?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
@@ -24591,6 +28193,9 @@ export type GraphQLTypes = {
       | GraphQLTypes['marketplace_inscription_detail_aggregate_order_by']
       | undefined
     metadata?: GraphQLTypes['order_by'] | undefined
+    migration_permission_grants_aggregate?:
+      | GraphQLTypes['migration_permission_grant_aggregate_order_by']
+      | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     type?: GraphQLTypes['order_by'] | undefined
@@ -24605,6 +28210,7 @@ export type GraphQLTypes = {
   /** aggregate stddev on columns */
   ['inscription_stddev_fields']: {
     __typename: 'inscription_stddev_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -24612,6 +28218,7 @@ export type GraphQLTypes = {
   }
   /** order by stddev() on columns of table "inscription" */
   ['inscription_stddev_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -24620,6 +28227,7 @@ export type GraphQLTypes = {
   /** aggregate stddev_pop on columns */
   ['inscription_stddev_pop_fields']: {
     __typename: 'inscription_stddev_pop_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -24627,6 +28235,7 @@ export type GraphQLTypes = {
   }
   /** order by stddev_pop() on columns of table "inscription" */
   ['inscription_stddev_pop_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -24635,6 +28244,7 @@ export type GraphQLTypes = {
   /** aggregate stddev_samp on columns */
   ['inscription_stddev_samp_fields']: {
     __typename: 'inscription_stddev_samp_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -24642,6 +28252,7 @@ export type GraphQLTypes = {
   }
   /** order by stddev_samp() on columns of table "inscription" */
   ['inscription_stddev_samp_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -24657,6 +28268,7 @@ export type GraphQLTypes = {
   /** Initial value of the column from where the streaming should start */
   ['inscription_stream_cursor_value_input']: {
     chain_id?: string | undefined
+    collection_id?: number | undefined
     content_hash?: string | undefined
     content_path?: string | undefined
     content_size_bytes?: number | undefined
@@ -24666,7 +28278,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     is_explicit?: boolean | undefined
-    metadata?: GraphQLTypes['json'] | undefined
+    metadata?: GraphQLTypes['jsonb'] | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -24674,6 +28286,7 @@ export type GraphQLTypes = {
   /** aggregate sum on columns */
   ['inscription_sum_fields']: {
     __typename: 'inscription_sum_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -24681,6 +28294,7 @@ export type GraphQLTypes = {
   }
   /** order by sum() on columns of table "inscription" */
   ['inscription_sum_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -25016,6 +28630,7 @@ export type GraphQLTypes = {
   /** aggregate var_pop on columns */
   ['inscription_var_pop_fields']: {
     __typename: 'inscription_var_pop_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -25023,6 +28638,7 @@ export type GraphQLTypes = {
   }
   /** order by var_pop() on columns of table "inscription" */
   ['inscription_var_pop_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -25031,6 +28647,7 @@ export type GraphQLTypes = {
   /** aggregate var_samp on columns */
   ['inscription_var_samp_fields']: {
     __typename: 'inscription_var_samp_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -25038,6 +28655,7 @@ export type GraphQLTypes = {
   }
   /** order by var_samp() on columns of table "inscription" */
   ['inscription_var_samp_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
@@ -25046,6 +28664,7 @@ export type GraphQLTypes = {
   /** aggregate variance on columns */
   ['inscription_variance_fields']: {
     __typename: 'inscription_variance_fields'
+    collection_id?: number | undefined
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
@@ -25053,23 +28672,38 @@ export type GraphQLTypes = {
   }
   /** order by variance() on columns of table "inscription" */
   ['inscription_variance_order_by']: {
+    collection_id?: GraphQLTypes['order_by'] | undefined
     content_size_bytes?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
-  ['json']: 'scalar' & { name: 'json' }
-  /** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-  ['json_comparison_exp']: {
-    _eq?: GraphQLTypes['json'] | undefined
-    _gt?: GraphQLTypes['json'] | undefined
-    _gte?: GraphQLTypes['json'] | undefined
-    _in?: Array<GraphQLTypes['json']> | undefined
+  ['jsonb']: 'scalar' & { name: 'jsonb' }
+  ['jsonb_cast_exp']: {
+    String?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+  ['jsonb_comparison_exp']: {
+    _cast?: GraphQLTypes['jsonb_cast_exp'] | undefined
+    /** is the column contained in the given json value */
+    _contained_in?: GraphQLTypes['jsonb'] | undefined
+    /** does the column contain the given json value at the top level */
+    _contains?: GraphQLTypes['jsonb'] | undefined
+    _eq?: GraphQLTypes['jsonb'] | undefined
+    _gt?: GraphQLTypes['jsonb'] | undefined
+    _gte?: GraphQLTypes['jsonb'] | undefined
+    /** does the string exist as a top-level key in the column */
+    _has_key?: string | undefined
+    /** do all of these strings exist as top-level keys in the column */
+    _has_keys_all?: Array<string> | undefined
+    /** do any of these strings exist as top-level keys in the column */
+    _has_keys_any?: Array<string> | undefined
+    _in?: Array<GraphQLTypes['jsonb']> | undefined
     _is_null?: boolean | undefined
-    _lt?: GraphQLTypes['json'] | undefined
-    _lte?: GraphQLTypes['json'] | undefined
-    _neq?: GraphQLTypes['json'] | undefined
-    _nin?: Array<GraphQLTypes['json']> | undefined
+    _lt?: GraphQLTypes['jsonb'] | undefined
+    _lte?: GraphQLTypes['jsonb'] | undefined
+    _neq?: GraphQLTypes['jsonb'] | undefined
+    _nin?: Array<GraphQLTypes['jsonb']> | undefined
   }
   /** columns and relationships of "marketplace_cft20_detail" */
   ['marketplace_cft20_detail']: {
@@ -26298,6 +29932,51 @@ export type GraphQLTypes = {
     total?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** columns and relationships of "migration_permission_grant" */
+  ['migration_permission_grant']: {
+    __typename: 'migration_permission_grant'
+    grantee: string
+  }
+  /** order by aggregate values of table "migration_permission_grant" */
+  ['migration_permission_grant_aggregate_order_by']: {
+    count?: GraphQLTypes['order_by'] | undefined
+    max?: GraphQLTypes['migration_permission_grant_max_order_by'] | undefined
+    min?: GraphQLTypes['migration_permission_grant_min_order_by'] | undefined
+  }
+  /** Boolean expression to filter rows from the table "migration_permission_grant". All fields are combined with a logical 'AND'. */
+  ['migration_permission_grant_bool_exp']: {
+    _and?:
+      | Array<GraphQLTypes['migration_permission_grant_bool_exp']>
+      | undefined
+    _not?: GraphQLTypes['migration_permission_grant_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['migration_permission_grant_bool_exp']> | undefined
+    grantee?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** order by max() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_max_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "migration_permission_grant" */
+  ['migration_permission_grant_min_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** Ordering options when selecting data from "migration_permission_grant". */
+  ['migration_permission_grant_order_by']: {
+    grantee?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "migration_permission_grant" */
+  ['migration_permission_grant_select_column']: migration_permission_grant_select_column
+  /** Streaming cursor of the table "migration_permission_grant" */
+  ['migration_permission_grant_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['migration_permission_grant_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['migration_permission_grant_stream_cursor_value_input']: {
+    grantee?: string | undefined
+  }
   ['numeric']: 'scalar' & { name: 'numeric' }
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -26315,6 +29994,16 @@ export type GraphQLTypes = {
   ['order_by']: order_by
   ['query_root']: {
     __typename: 'query_root'
+    club_stats: Array<GraphQLTypes['collection_stats']>
+    /** fetch data from the table: "collection" */
+    collection: Array<GraphQLTypes['collection']>
+    /** fetch aggregated fields from the table: "collection" */
+    collection_aggregate: GraphQLTypes['collection_aggregate']
+    /** fetch data from the table: "collection" using primary key columns */
+    collection_by_pk?: GraphQLTypes['collection'] | undefined
+    collection_stats: Array<GraphQLTypes['collection_stats']>
+    /** fetch data from the table: "collection_traits" */
+    collection_traits: Array<GraphQLTypes['collection_traits']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<GraphQLTypes['inscription']>
@@ -26376,6 +30065,10 @@ export type GraphQLTypes = {
     marketplace_listing_history_by_pk?:
       | GraphQLTypes['marketplace_listing_history']
       | undefined
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -26406,6 +30099,7 @@ export type GraphQLTypes = {
     token_trade_history: Array<GraphQLTypes['token_trade_history']>
     /** fetch data from the table: "token_trade_history" using primary key columns */
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
+    top_collections: Array<GraphQLTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<GraphQLTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -26526,6 +30220,20 @@ export type GraphQLTypes = {
   }
   ['subscription_root']: {
     __typename: 'subscription_root'
+    club_stats: Array<GraphQLTypes['collection_stats']>
+    /** fetch data from the table: "collection" */
+    collection: Array<GraphQLTypes['collection']>
+    /** fetch aggregated fields from the table: "collection" */
+    collection_aggregate: GraphQLTypes['collection_aggregate']
+    /** fetch data from the table: "collection" using primary key columns */
+    collection_by_pk?: GraphQLTypes['collection'] | undefined
+    collection_stats: Array<GraphQLTypes['collection_stats']>
+    /** fetch data from the table in a streaming manner: "collection" */
+    collection_stream: Array<GraphQLTypes['collection']>
+    /** fetch data from the table: "collection_traits" */
+    collection_traits: Array<GraphQLTypes['collection_traits']>
+    /** fetch data from the table in a streaming manner: "collection_traits" */
+    collection_traits_stream: Array<GraphQLTypes['collection_traits']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<GraphQLTypes['inscription']>
@@ -26615,6 +30323,14 @@ export type GraphQLTypes = {
     >
     /** fetch data from the table in a streaming manner: "marketplace_listing" */
     marketplace_listing_stream: Array<GraphQLTypes['marketplace_listing']>
+    /** fetch data from the table: "migration_permission_grant" */
+    migration_permission_grant: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
+    /** fetch data from the table in a streaming manner: "migration_permission_grant" */
+    migration_permission_grant_stream: Array<
+      GraphQLTypes['migration_permission_grant']
+    >
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -26657,6 +30373,7 @@ export type GraphQLTypes = {
     token_trade_history_by_pk?: GraphQLTypes['token_trade_history'] | undefined
     /** fetch data from the table in a streaming manner: "token_trade_history" */
     token_trade_history_stream: Array<GraphQLTypes['token_trade_history']>
+    top_collections: Array<GraphQLTypes['top_collection']>
     /** fetch data from the table: "trade_history" */
     trade_history: Array<GraphQLTypes['trade_history']>
     /** fetch aggregated fields from the table: "trade_history" */
@@ -28052,6 +31769,34 @@ export type GraphQLTypes = {
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
+  ['top_collection']: {
+    __typename: 'top_collection'
+    content_path: string
+    id: number
+    name: string
+    symbol: string
+    volume: GraphQLTypes['numeric']
+  }
+  /** Boolean expression to filter rows from the logical model for "top_collection". All fields are combined with a logical 'AND'. */
+  ['top_collection_bool_exp_bool_exp']: {
+    _and?: Array<GraphQLTypes['top_collection_bool_exp_bool_exp']> | undefined
+    _not?: GraphQLTypes['top_collection_bool_exp_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['top_collection_bool_exp_bool_exp']> | undefined
+    content_path?: GraphQLTypes['String_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    name?: GraphQLTypes['String_comparison_exp'] | undefined
+    symbol?: GraphQLTypes['String_comparison_exp'] | undefined
+    volume?: GraphQLTypes['numeric_comparison_exp'] | undefined
+  }
+  ['top_collection_enum_name']: top_collection_enum_name
+  /** Ordering options when selecting data from "top_collection". */
+  ['top_collection_order_by']: {
+    content_path?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    name?: GraphQLTypes['order_by'] | undefined
+    symbol?: GraphQLTypes['order_by'] | undefined
+    volume?: GraphQLTypes['order_by'] | undefined
+  }
   /** columns and relationships of "trade_history" */
   ['trade_history']: {
     __typename: 'trade_history'
@@ -28388,6 +32133,40 @@ export type GraphQLTypes = {
     status_message?: string | undefined
   }
 }
+/** select columns of table "collection" */
+export const enum collection_select_column {
+  chain_id = 'chain_id',
+  content_hash = 'content_hash',
+  content_path = 'content_path',
+  content_size_bytes = 'content_size_bytes',
+  creator = 'creator',
+  date_created = 'date_created',
+  height = 'height',
+  id = 'id',
+  is_explicit = 'is_explicit',
+  metadata = 'metadata',
+  minter = 'minter',
+  name = 'name',
+  payment_address = 'payment_address',
+  royalty_percentage = 'royalty_percentage',
+  symbol = 'symbol',
+  transaction_id = 'transaction_id',
+  version = 'version',
+}
+export const enum collection_stats_enum_name {
+  floor_price = 'floor_price',
+  listed = 'listed',
+  owners = 'owners',
+  supply = 'supply',
+  volume = 'volume',
+}
+/** select columns of table "collection_traits" */
+export const enum collection_traits_select_column {
+  collection_id = 'collection_id',
+  count = 'count',
+  trait_type = 'trait_type',
+  trait_value = 'trait_value',
+}
 /** ordering argument of a cursor */
 export const enum cursor_ordering {
   ASC = 'ASC',
@@ -28413,6 +32192,7 @@ export const enum inscription_market_select_column {
 /** select columns of table "inscription" */
 export const enum inscription_select_column {
   chain_id = 'chain_id',
+  collection_id = 'collection_id',
   content_hash = 'content_hash',
   content_path = 'content_path',
   content_size_bytes = 'content_size_bytes',
@@ -28502,6 +32282,10 @@ export const enum marketplace_listing_select_column {
   seller_address = 'seller_address',
   total = 'total',
   transaction_id = 'transaction_id',
+}
+/** select columns of table "migration_permission_grant" */
+export const enum migration_permission_grant_select_column {
+  grantee = 'grantee',
 }
 /** column ordering options */
 export const enum order_by {
@@ -28609,6 +32393,13 @@ export const enum token_trade_history_select_column {
   total_usd = 'total_usd',
   transaction_id = 'transaction_id',
 }
+export const enum top_collection_enum_name {
+  content_path = 'content_path',
+  id = 'id',
+  name = 'name',
+  symbol = 'symbol',
+  volume = 'volume',
+}
 /** select columns of table "trade_history" */
 export const enum trade_history_select_column {
   amount_base = 'amount_base',
@@ -28641,6 +32432,32 @@ type ZEUS_VARIABLES = {
   ['String_comparison_exp']: ValueTypes['String_comparison_exp']
   ['bigint']: ValueTypes['bigint']
   ['bigint_comparison_exp']: ValueTypes['bigint_comparison_exp']
+  ['club_stats_arguments']: ValueTypes['club_stats_arguments']
+  ['collection_bool_exp']: ValueTypes['collection_bool_exp']
+  ['collection_order_by']: ValueTypes['collection_order_by']
+  ['collection_select_column']: ValueTypes['collection_select_column']
+  ['collection_stats_arguments']: ValueTypes['collection_stats_arguments']
+  ['collection_stats_bool_exp_bool_exp']: ValueTypes['collection_stats_bool_exp_bool_exp']
+  ['collection_stats_enum_name']: ValueTypes['collection_stats_enum_name']
+  ['collection_stats_order_by']: ValueTypes['collection_stats_order_by']
+  ['collection_stream_cursor_input']: ValueTypes['collection_stream_cursor_input']
+  ['collection_stream_cursor_value_input']: ValueTypes['collection_stream_cursor_value_input']
+  ['collection_traits_aggregate_order_by']: ValueTypes['collection_traits_aggregate_order_by']
+  ['collection_traits_avg_order_by']: ValueTypes['collection_traits_avg_order_by']
+  ['collection_traits_bool_exp']: ValueTypes['collection_traits_bool_exp']
+  ['collection_traits_max_order_by']: ValueTypes['collection_traits_max_order_by']
+  ['collection_traits_min_order_by']: ValueTypes['collection_traits_min_order_by']
+  ['collection_traits_order_by']: ValueTypes['collection_traits_order_by']
+  ['collection_traits_select_column']: ValueTypes['collection_traits_select_column']
+  ['collection_traits_stddev_order_by']: ValueTypes['collection_traits_stddev_order_by']
+  ['collection_traits_stddev_pop_order_by']: ValueTypes['collection_traits_stddev_pop_order_by']
+  ['collection_traits_stddev_samp_order_by']: ValueTypes['collection_traits_stddev_samp_order_by']
+  ['collection_traits_stream_cursor_input']: ValueTypes['collection_traits_stream_cursor_input']
+  ['collection_traits_stream_cursor_value_input']: ValueTypes['collection_traits_stream_cursor_value_input']
+  ['collection_traits_sum_order_by']: ValueTypes['collection_traits_sum_order_by']
+  ['collection_traits_var_pop_order_by']: ValueTypes['collection_traits_var_pop_order_by']
+  ['collection_traits_var_samp_order_by']: ValueTypes['collection_traits_var_samp_order_by']
+  ['collection_traits_variance_order_by']: ValueTypes['collection_traits_variance_order_by']
   ['cursor_ordering']: ValueTypes['cursor_ordering']
   ['find_inscription_by_name_arguments']: ValueTypes['find_inscription_by_name_arguments']
   ['inscription_aggregate_bool_exp']: ValueTypes['inscription_aggregate_bool_exp']
@@ -28704,8 +32521,9 @@ type ZEUS_VARIABLES = {
   ['inscription_var_pop_order_by']: ValueTypes['inscription_var_pop_order_by']
   ['inscription_var_samp_order_by']: ValueTypes['inscription_var_samp_order_by']
   ['inscription_variance_order_by']: ValueTypes['inscription_variance_order_by']
-  ['json']: ValueTypes['json']
-  ['json_comparison_exp']: ValueTypes['json_comparison_exp']
+  ['jsonb']: ValueTypes['jsonb']
+  ['jsonb_cast_exp']: ValueTypes['jsonb_cast_exp']
+  ['jsonb_comparison_exp']: ValueTypes['jsonb_comparison_exp']
   ['marketplace_cft20_detail_aggregate_bool_exp']: ValueTypes['marketplace_cft20_detail_aggregate_bool_exp']
   ['marketplace_cft20_detail_aggregate_bool_exp_count']: ValueTypes['marketplace_cft20_detail_aggregate_bool_exp_count']
   ['marketplace_cft20_detail_aggregate_order_by']: ValueTypes['marketplace_cft20_detail_aggregate_order_by']
@@ -28790,6 +32608,14 @@ type ZEUS_VARIABLES = {
   ['marketplace_listing_var_pop_order_by']: ValueTypes['marketplace_listing_var_pop_order_by']
   ['marketplace_listing_var_samp_order_by']: ValueTypes['marketplace_listing_var_samp_order_by']
   ['marketplace_listing_variance_order_by']: ValueTypes['marketplace_listing_variance_order_by']
+  ['migration_permission_grant_aggregate_order_by']: ValueTypes['migration_permission_grant_aggregate_order_by']
+  ['migration_permission_grant_bool_exp']: ValueTypes['migration_permission_grant_bool_exp']
+  ['migration_permission_grant_max_order_by']: ValueTypes['migration_permission_grant_max_order_by']
+  ['migration_permission_grant_min_order_by']: ValueTypes['migration_permission_grant_min_order_by']
+  ['migration_permission_grant_order_by']: ValueTypes['migration_permission_grant_order_by']
+  ['migration_permission_grant_select_column']: ValueTypes['migration_permission_grant_select_column']
+  ['migration_permission_grant_stream_cursor_input']: ValueTypes['migration_permission_grant_stream_cursor_input']
+  ['migration_permission_grant_stream_cursor_value_input']: ValueTypes['migration_permission_grant_stream_cursor_value_input']
   ['numeric']: ValueTypes['numeric']
   ['numeric_comparison_exp']: ValueTypes['numeric_comparison_exp']
   ['order_by']: ValueTypes['order_by']
@@ -28889,6 +32715,9 @@ type ZEUS_VARIABLES = {
   ['token_var_pop_order_by']: ValueTypes['token_var_pop_order_by']
   ['token_var_samp_order_by']: ValueTypes['token_var_samp_order_by']
   ['token_variance_order_by']: ValueTypes['token_variance_order_by']
+  ['top_collection_bool_exp_bool_exp']: ValueTypes['top_collection_bool_exp_bool_exp']
+  ['top_collection_enum_name']: ValueTypes['top_collection_enum_name']
+  ['top_collection_order_by']: ValueTypes['top_collection_order_by']
   ['trade_history_bool_exp']: ValueTypes['trade_history_bool_exp']
   ['trade_history_order_by']: ValueTypes['trade_history_order_by']
   ['trade_history_select_column']: ValueTypes['trade_history_select_column']

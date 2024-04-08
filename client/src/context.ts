@@ -9,7 +9,7 @@ import { SigningStargateClient } from './client.js'
 import { Config, DEFAULT_CONFIG, Network } from './config.js'
 import { CONFIG_PATH } from './config.js'
 import { AsteroidService } from './service/asteroid.js'
-import { fileExists } from './utils.js'
+import { fileExists } from './utils/file.js'
 
 export class Context {
   network: Network
@@ -47,7 +47,7 @@ export default async function loadConfig(): Promise<Config> {
   if (exists) {
     const configStr = await fs.readFile(CONFIG_PATH, 'utf8')
     try {
-      return Config.parse(JSON.parse(configStr))
+      return Config.parse({ ...DEFAULT_CONFIG, ...JSON.parse(configStr) })
     } catch (err) {
       console.error('Config parsing error')
       throw err

@@ -105,7 +105,8 @@ function InscriptionContent({ inscription }: { inscription: Inscription }) {
       src={inscription.content_path}
       isExplicit={inscription.is_explicit}
       mime={inscription.mime}
-      className="w-fit object-none rounded"
+      imageClassName="object-none rounded"
+      className="w-fit"
     />
   )
 }

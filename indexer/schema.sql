@@ -41,6 +41,43 @@ CREATE TABLE public."transaction" (
 );
 CREATE INDEX idx_tx_hash ON public.transaction USING btree (hash);
 
+-- public."collection" definition
+
+-- Drop table
+
+-- DROP TABLE public."collection";
+
+CREATE TABLE public."collection" (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    content_hash varchar(128) NOT NULL,
+    creator varchar(128) NOT NULL,
+    minter varchar(128) NULL,
+    "name" varchar(32) NOT NULL,
+    symbol varchar(10) NOT NULL,
+    royalty_percentage decimal(5, 4) NULL,
+    payment_address varchar(128) NULL,
+    metadata jsonb NOT NULL,
+    content_path varchar(255) NULL DEFAULT NULL::character varying,
+    content_size_bytes int4 NULL,
+    is_explicit bool NULL DEFAULT false,
+    date_created timestamp NOT NULL,
+    CONSTRAINT collection_pkey PRIMARY KEY (id),
+    CONSTRAINT collection_content_hash_key UNIQUE (content_hash),
+    CONSTRAINT collection_symbol_key UNIQUE (symbol),
+    CONSTRAINT collection_name_key UNIQUE ("name"),
+    CONSTRAINT collection_tx_id UNIQUE (transaction_id),
+    CONSTRAINT collection_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+);
+
+CREATE INDEX "idx_collection_creator" ON "public"."collection" USING btree ("creator");
+CREATE INDEX "idx_collection_name" ON "public"."collection" USING btree ("name");
+CREATE INDEX "idx_collection_symbol" ON "public"."collection" USING btree ("symbol");
+CREATE INDEX "idx_collection_transaction_id" ON "public"."collection" USING btree ("transaction_id");
+CREATE INDEX idx_trgm_collection_name ON "public"."collection" USING gin (("name") gin_trgm_ops);
 
 -- public.inscription definition
 
@@ -54,11 +91,12 @@ CREATE TABLE public.inscription (
     height int4 NOT NULL,
     "version" varchar(32) NOT NULL,
     transaction_id int4 NOT NULL,
+    collection_id int4 NULL,
     content_hash varchar(128) NOT NULL,
     creator varchar(255) NOT NULL,
     current_owner varchar(128) NOT NULL,
     "type" varchar(128) NOT NULL,
-    metadata json NOT NULL,
+    metadata jsonb NOT NULL,
     content_path varchar(255) NOT NULL,
     content_size_bytes int4 NOT NULL,
     date_created timestamp NOT NULL,
@@ -66,11 +104,14 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_content_hash_key UNIQUE (content_hash),
     CONSTRAINT inscription_pkey PRIMARY KEY (id),
     CONSTRAINT inscription_tx_id UNIQUE (transaction_id),
-    CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+    CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
+    CONSTRAINT inscription_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
 );
 CREATE INDEX idx_inscriptions_owner_date ON public.inscription USING btree (date_created);
 CREATE INDEX "idx_inscription_current_owner" ON "public"."inscription" USING btree ("current_owner");
 CREATE INDEX idx_trgm_inscription_metadata_name ON inscription USING gin ((metadata -> 'metadata' ->>'name') gin_trgm_ops);
+CREATE INDEX "idx_inscription_collection_id" ON "public"."inscription" USING btree ("collection_id");
+CREATE INDEX "idx_inscription_creator" ON "public"."inscription" USING btree ("creator");
 
 -- public.inscription_history definition
 
@@ -367,6 +408,18 @@ CREATE TABLE public.marketplace_cft20_trade_history (
     CONSTRAINT marketplace_cft20_history_tk_fk FOREIGN KEY (token_id) REFERENCES public."token"(id),
     CONSTRAINT marketplace_cft20_history_tx_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
+
+CREATE TABLE public.migration_permission_grant (
+    id serial NOT NULL,
+    inscription_id int4 NOT NULL,
+    granter varchar(128) NOT NULL,
+    grantee varchar(128) NOT NULL,
+    date_created timestamp NOT NULL,
+    CONSTRAINT migration_permission_grant_pkey PRIMARY KEY (id),
+    CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id)
+);
+
+CREATE INDEX "idx_migration_permission_grant_inscription_id" ON "public"."migration_permission_grant" USING btree ("inscription_id");
 
 -- public.inscription_market view definition
 

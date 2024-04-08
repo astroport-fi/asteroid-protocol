@@ -1,6 +1,6 @@
 {
   "name": "@asteroid-protocol/sdk",
-  "version": "0.6.8",
+  "version": "0.7.2",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "scripts": {
@@ -47,6 +47,7 @@
     "fetch-retry": "^5.0.6",
     "graphql-ws": "^5.14.3",
     "mime": "^4.0.1",
+    "udsv": "^0.5.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {

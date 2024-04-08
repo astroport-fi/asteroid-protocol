@@ -8,7 +8,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { useState } from 'react'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
@@ -30,7 +29,7 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
-import useDialog from '~/hooks/useDialog'
+import { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import useSorting from '~/hooks/useSorting'
 import { getAddress } from '~/utils/cookies'
@@ -99,6 +98,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   return json({ token, history, listings: listingsResult.listings })
 }
+
 function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
   const amount = token.token_holders?.[0]?.amount
 
@@ -109,7 +109,8 @@ function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
           mime="image/png"
           src={token.content_path!}
           // isExplicit={token.is_explicit} @todo
-          className="rounded-xl max-w-60"
+          imageClassName="rounded-xl"
+          className="max-w-60"
         />
       </div>
       <div className="flex flex-col flex-1">
@@ -142,8 +143,11 @@ function ListingsTable({
   const {
     status: { lastKnownHeight },
   } = useRootContext()
-  const { dialogRef: txDialogRef, handleShow: showTxDialog } = useDialog()
-  const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
+  const {
+    dialogRef: txDialogRef,
+    value,
+    showDialog: showTxDialog,
+  } = useDialogWithValue<TxInscription>()
   const operations = useMarketplaceOperations()
   const address = useAddress()
 
@@ -154,10 +158,7 @@ function ListingsTable({
     }
 
     const txInscription = operations.delist(listingHash)
-
-    setTxInscription(txInscription)
-
-    showTxDialog()
+    showTxDialog(txInscription)
   }
 
   const columns = [
@@ -241,7 +242,7 @@ function ListingsTable({
       <Table table={table} className={className} showPagination={false} />
       <TxDialog
         ref={txDialogRef}
-        txInscription={txInscription}
+        txInscription={value}
         resultCTA="Back to token detail"
         resultLink={`/app/wallet/token/${token.ticker}`}
       />

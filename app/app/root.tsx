@@ -71,7 +71,7 @@ function WalletProviderWrapper() {
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: styles, as: 'style' },
+    { rel: 'stylesheet', href: styles },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
@@ -139,7 +139,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <RootContext.Provider
           value={{
             chainId: data.ENV.CHAIN_ID,
@@ -236,8 +236,22 @@ function ResponseError({ error }: { error: ErrorResponse }) {
   )
 }
 
-export function ErrorBoundary() {
+function HandleError() {
   const error = useRouteError()
+  if (isRouteErrorResponse(error)) {
+    return <ResponseError error={error} />
+  }
+
+  if (error instanceof Error) {
+    throw error
+  }
+
+  console.error('Unknown error', error)
+
+  return 'Unknown Error'
+}
+
+export function ErrorBoundary() {
   return (
     <html lang="en">
       <head>
@@ -246,15 +260,7 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body>
-        <h1>
-          {isRouteErrorResponse(error) ? (
-            <ResponseError error={error} />
-          ) : error instanceof Error ? (
-            error.message
-          ) : (
-            'Unknown Error'
-          )}
-        </h1>
+        <HandleError />
         <Scripts />
       </body>
     </html>

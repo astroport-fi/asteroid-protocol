@@ -1,8 +1,8 @@
-import { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
+import type { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
 import { wallets as cosmosMetamask } from '@cosmos-kit/cosmos-extension-metamask'
-import { wallets as keplr } from '@cosmos-kit/keplr'
-import { wallets as leap } from '@cosmos-kit/leap'
-import { ChainProvider } from '@cosmos-kit/react'
+import { wallets as keplr } from '@cosmos-kit/keplr-extension'
+import { wallets as leap } from '@cosmos-kit/leap-extension'
+import { ChainProvider } from '@cosmos-kit/react-lite'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { WalletIcon } from '@heroicons/react/24/solid'
 import { Outlet } from '@remix-run/react'
@@ -26,17 +26,17 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   const status = walletRepo.current?.walletStatus ?? WalletStatus.Disconnected
   const address = useAddress()
   const clipboard = useClipboard({ copiedTimeout: 800 })
-  const errorMessage = walletRepo.current?.message
+  const message = walletRepo.current?.message
+  if (message) {
+    console.log('wallet message', message)
+  }
 
   useEffect(() => {
     if (status === WalletStatus.Error || status === WalletStatus.Rejected) {
+      console.log('wallet disconnect')
       walletRepo.current?.disconnect()
     }
   }, [status, walletRepo])
-
-  if (errorMessage) {
-    console.log(errorMessage)
-  }
 
   if (status === WalletStatus.Disconnected) {
     return (
@@ -149,8 +149,9 @@ export default function WalletProvider() {
     <ChainProvider
       chains={getChains()}
       assetLists={getAssets()}
-      wallets={[keplr[0], leap[0], cosmosMetamask[0]]}
+      wallets={[...keplr, ...leap, cosmosMetamask[0]]}
       walletModal={MyModal}
+      sessionOptions={{ duration: Math.pow(2, 31) - 1 }}
       // walletConnectOptions={{
       //   signClient: {
       //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
