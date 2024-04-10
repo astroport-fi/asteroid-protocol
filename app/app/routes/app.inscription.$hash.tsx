@@ -75,6 +75,36 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return inscriptionMeta(data.inscription)
 }
 
+function AddToCollection({
+  inscription,
+}: {
+  inscription: InscriptionWithMarket<InscriptionDetail>
+}) {
+  const address = useAddress()
+
+  if (
+    inscription.version == 'v1' ||
+    inscription.collection != null ||
+    address != inscription.creator
+  ) {
+    return
+  }
+
+  return (
+    <div className="flex flex-col mt-6">
+      <strong>Collection</strong>
+      <div className="mt-2">
+        <Link
+          className="btn btn-primary btn-sm"
+          to={`/app/migrate/inscription/${inscription.transaction.hash}`}
+        >
+          Add to collection
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 function Migration({
   inscription,
 }: {
@@ -213,6 +243,7 @@ function InscriptionDetailComponent({
             </Link>
           </div>
         )}
+        <AddToCollection inscription={inscription} />
 
         {inscription.rarity && (
           <div className="flex flex-col mt-6">
