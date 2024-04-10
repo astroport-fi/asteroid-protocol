@@ -1,6 +1,6 @@
 import { Pubkey } from '@cosmjs/amino'
 import { toBase64 } from '@cosmjs/encoding'
-import { EncodeObject, encodePubkey } from '@cosmjs/proto-signing'
+import { EncodeObject, Registry, encodePubkey } from '@cosmjs/proto-signing'
 import { SimulateResponse } from 'cosmjs-types/cosmos/tx/v1beta1/service.js'
 import { ExtensionData } from './proto-types/extensions.js'
 
@@ -48,8 +48,65 @@ function serializeNonCriticalOptions(msg: EncodeObject) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function serializeMessage(registry: Registry, message: any): unknown {
+  if (ArrayBuffer.isView(message)) {
+    return toBase64(message as Uint8Array)
+  }
+
+  if (Array.isArray(message)) {
+    return message.map((item) => serializeMessage(registry, item))
+  }
+
+  if (
+    typeof message === 'object' &&
+    message !== null &&
+    !Array.isArray(message)
+  ) {
+    if ('typeUrl' in message) {
+      let serializedValue
+      if (ArrayBuffer.isView(message.value)) {
+        serializedValue = registry.decode(message)
+      } else {
+        serializedValue = message.value
+      }
+
+      if (typeof serializedValue === 'string') {
+        return {
+          '@type': message.typeUrl,
+          value: serializedValue,
+        }
+      }
+
+      return {
+        ...(serializeMessage(registry, serializedValue) as Record<
+          string,
+          unknown
+        >),
+        '@type': message.typeUrl,
+      }
+    }
+
+    const result: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(message)) {
+      result[key] = serializeMessage(registry, value)
+    }
+    return result
+  }
+
+  return message
+}
+
+function serializeMessages(
+  registry: Registry,
+  messages: readonly EncodeObject[],
+) {
+  return messages.map((message) => serializeMessage(registry, message))
+}
+
 export default async function simulateTxRest(
   endpoint: string,
+  registry: Registry,
   messages: readonly EncodeObject[],
   memo: string | undefined,
   signer: Pubkey,
@@ -59,10 +116,7 @@ export default async function simulateTxRest(
   const pubkey = encodePubkey(signer)
   const signDoc = {
     body: {
-      messages: messages.map((message) => ({
-        ...message.value,
-        '@type': message.typeUrl,
-      })),
+      messages: serializeMessages(registry, messages),
       memo,
       timeout_height: '0',
       extension_options: [],

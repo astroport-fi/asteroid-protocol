@@ -16,6 +16,7 @@ import InscriptionProtocol, {
 import MarketplaceProtocol from './metaprotocol/marketplace.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { ProtocolFee } from './metaprotocol/types.js'
+import { getMsgExecGrant, getMsgGrant } from './operations/auth.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { Options as OperationsOptions } from './operations/index.js'
 import { InscriptionOperations } from './operations/inscription.js'
@@ -60,12 +61,13 @@ const marketplaceCommand = program.command('marketplace')
 async function action(
   options: Options,
   fn: (context: Context) => Promise<TxData | void>,
+  warn = true,
 ) {
   const context = await createContext(options)
   const txData = await fn(context)
   if (txData) {
     await broadcastAndCheckTx(context, txData)
-  } else {
+  } else if (warn) {
     console.warn('No tx data')
   }
 }
@@ -704,5 +706,77 @@ setupCommand(marketplaceCommand.command('delist'))
       return operations.delist(options.hash)
     })
   })
+
+const grantCommand = program.command('grant')
+
+setupCommand(grantCommand.command('approve')).action(
+  async (options: Options) => {
+    action(
+      options,
+      async (context) => {
+        console.log('Granting permission!')
+
+        // bot address
+        const grantee = 'cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw'
+
+        // grant permission to send 5 uatom
+        // it will allow bot to create 5 inscription inscribe transactions
+        const grant = getMsgGrant(context.account.address, grantee, {
+          allowList: [context.account.address],
+          spendLimit: [{ denom: 'uatom', amount: '5' }],
+        })
+        const res = await context.client.signAndBroadcast(
+          context.account.address,
+          [grant],
+          1.7,
+        )
+        console.log(`${context.network.explorer}${res.transactionHash}`)
+        return
+      },
+      false,
+    )
+  },
+)
+
+setupCommand(grantCommand.command('execute')).action(
+  async (options: Options) => {
+    inscriptionAction(options, async (context, operations) => {
+      console.log('Executing granted send message!')
+
+      // create inscription
+      const data = new TextEncoder().encode('SOME DATA 1')
+      const txData = operations.inscribe(data, {
+        mime: 'text/plain',
+        name: 'some text',
+        description: 'some text description',
+      })
+
+      // bot address
+      const grantee = 'cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw'
+
+      // user address
+      const granter = 'cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud'
+
+      const grant = getMsgExecGrant(grantee, {
+        amount: [{ denom: 'uatom', amount: '1' }],
+        fromAddress: granter,
+        toAddress: granter,
+      })
+      const res = await context.client.signAndBroadcast(
+        context.account.address,
+        [grant],
+        1.7,
+        txData.memo,
+        undefined,
+        txData.nonCriticalExtensionOptions,
+      )
+
+      console.log(`${context.network.explorer}${res.transactionHash}`)
+      await checkTx(context.api, res)
+      console.log('Transaction was successfully indexed')
+      return
+    })
+  },
+)
 
 program.parseAsync()
