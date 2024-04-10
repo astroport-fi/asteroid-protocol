@@ -96,7 +96,7 @@ export default function CollectionDetailComponent({
           />
         )}
       </div>
-      <Collapse open={open}>
+      <Collapse open={open} className="rounded-none">
         <CollapseTextContent>
           {collection.metadata.description}
         </CollapseTextContent>

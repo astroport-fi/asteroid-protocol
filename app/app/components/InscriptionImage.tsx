@@ -30,7 +30,7 @@ export default function InscriptionImage({
   const generalClass = 'group-hover:scale-125 transition duration-500'
   const noImageClass = clsx(
     twMerge(
-      'flex flex-col items-center justify-center w-full h-full uppercase',
+      'flex flex-col items-center justify-center w-full h-full max-h-96 uppercase',
       imageClassName,
     ),
     { 'bg-base-200 px-8 py-16': !min },
