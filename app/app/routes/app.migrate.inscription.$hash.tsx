@@ -173,7 +173,7 @@ export default function CreateInscription() {
     return <div>Not found</div>
   }
 
-  if (inscription.version === 'v2') {
+  if (inscription.version === 'v2' && inscription.collection != null) {
     return (
       <Alert icon={<InformationCircleIcon className="size-6 text-warning" />}>
         <div>
