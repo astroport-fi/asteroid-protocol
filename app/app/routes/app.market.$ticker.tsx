@@ -4,12 +4,14 @@ import { ClockIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import {
+  RowSelectionState,
   TableOptions,
   createColumnHelper,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useState } from 'react'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
@@ -24,6 +26,7 @@ import Stat from '~/components/Stat'
 import BuyDialog from '~/components/dialogs/BuyDialog'
 import SellTokenDialog from '~/components/dialogs/SellTokenDialog'
 import TxDialog from '~/components/dialogs/TxDialog'
+import IndeterminateCheckbox from '~/components/form/IndeterminateCheckbox'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
@@ -153,6 +156,7 @@ function ListingsTable({
   serverSorting,
   className,
   onListClick,
+  reserved,
 }: {
   token: Token
   listings: MarketplaceTokenListing[]
@@ -161,10 +165,12 @@ function ListingsTable({
   serverSorting: boolean
   onListClick: () => void
   className?: string
+  reserved?: boolean
 }) {
   const columnHelper = createColumnHelper<MarketplaceTokenListing>()
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const address = useAddress()
   const {
     status: { lastKnownHeight },
@@ -178,7 +184,7 @@ function ListingsTable({
     dialogRef: buyDialogRef,
     value: listingHash,
     showDialog: showBuyDialog,
-  } = useDialogWithValue<string>()
+  } = useDialogWithValue<string | string[]>()
   const operations = useMarketplaceOperations()
 
   function cancelListing(listingHash: string) {
@@ -192,7 +198,7 @@ function ListingsTable({
     showTxDialog({ inscription: txInscription })
   }
 
-  function buyListing(listingHash: string) {
+  function buyListing(listingHash: string | string[]) {
     if (!operations) {
       console.warn('No address')
       return
@@ -206,11 +212,36 @@ function ListingsTable({
     })
   }
 
-  function reserveListing(listingHash: string) {
+  function reserveListing(listingHash: string | string[]) {
     showBuyDialog(listingHash)
   }
 
   const columns = [
+    columnHelper.accessor((row) => row.id, {
+      enableSorting: false,
+      id: 'select',
+      header: ({ table }) => (
+        <IndeterminateCheckbox
+          {...{
+            checked: table.getIsAllRowsSelected(),
+            indeterminate: table.getIsSomeRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler(),
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="px-1">
+          <IndeterminateCheckbox
+            {...{
+              checked: row.getIsSelected(),
+              disabled: !row.getCanSelect(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler(),
+            }}
+          />
+        </div>
+      ),
+    }),
     columnHelper.accessor('id', {
       header: 'Listing #',
       cell: (info) => info.getValue(),
@@ -251,9 +282,38 @@ function ListingsTable({
     }),
     columnHelper.accessor('marketplace_listing.transaction.hash', {
       enableSorting: false,
-      header: '',
+      header: () => {
+        const selected = Object.keys(rowSelection)
+        const selectedLen = selected.length
+        if (selectedLen < 1) {
+          return
+        }
+
+        if (reserved) {
+          return (
+            <Button
+              color="accent"
+              size="sm"
+              onClick={() => buyListing(selected)}
+            >
+              Complete {selectedLen} listings
+            </Button>
+          )
+        }
+
+        return (
+          <Button
+            color="accent"
+            size="sm"
+            onClick={() => reserveListing(selected)}
+          >
+            Buy {selectedLen} listings
+          </Button>
+        )
+      },
       meta: {
         className: 'text-center',
+        headerClassName: 'text-center',
       },
       id: 'state',
       cell: (info) => {
@@ -307,8 +367,22 @@ function ListingsTable({
 
   const tableOptions: TableOptions<MarketplaceTokenListing> = {
     columns,
+    enableRowSelection: (row) => {
+      const listingState = getListingState(
+        row.original.marketplace_listing,
+        address,
+        lastKnownHeight,
+      )
+      return reserved
+        ? listingState === ListingState.Buy
+        : listingState === ListingState.Reserve
+    },
     data: listings,
-    state: {},
+    state: {
+      rowSelection,
+    },
+    onRowSelectionChange: setRowSelection,
+    getRowId: (row) => row.marketplace_listing.transaction.hash,
     getCoreRowModel: getCoreRowModel(),
   }
 
@@ -544,6 +618,7 @@ export default function MarketPage() {
               token={token}
               onListClick={() => showDialog()}
               serverSorting={false}
+              reserved
             />
             <h3 className="mt-16 text-lg">All listings</h3>
           </div>

@@ -18,7 +18,7 @@ import Modal from './Modal'
 export type BuyType = 'cft20' | 'inscription'
 
 interface Props {
-  listingHash: string | null
+  listingHash: string | string[] | null
   buyType: BuyType
   royalty?: Royalty
   resultLink?: To | ((txHash: string) => To)
@@ -44,7 +44,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const navigate = useNavigate()
   const [url, setUrl] = useState<To | undefined>()
 
-  const [listingHash, setListingHash] = useState<string | null>(null)
+  const [listingHash, setListingHash] = useState<string | string[] | null>(null)
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
 
   const [step, setStep] = useState(Step.Initial)
@@ -71,19 +71,26 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   useEffect(() => {
     if (listingHashProp && listingHashProp != listingHash) {
       resetState()
-      asteroidClient.fetchListing(listingHashProp).then((listing) => {
-        if (listing) {
-          const listingState = getListingState(
-            listing,
-            address,
-            lastKnownHeight,
-          )
-          if (listingState === ListingState.Buy) {
-            setStep(Step.InitialBuy)
+      // @todo
+      asteroidClient
+        .fetchListing(
+          typeof listingHashProp === 'string'
+            ? listingHashProp
+            : listingHashProp[0],
+        )
+        .then((listing) => {
+          if (listing) {
+            const listingState = getListingState(
+              listing,
+              address,
+              lastKnownHeight,
+            )
+            if (listingState === ListingState.Buy) {
+              setStep(Step.InitialBuy)
+            }
+            setListingHash(listingHashProp)
           }
-          setListingHash(listingHashProp)
-        }
-      })
+        })
     }
   }, [
     listingHashProp,
