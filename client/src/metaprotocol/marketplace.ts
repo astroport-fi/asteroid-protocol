@@ -67,8 +67,12 @@ export default class MarketplaceProtocol extends BaseProtocol {
     )
   }
 
-  deposit(listingHash: string) {
-    const params: MetaProtocolParams = [['h', listingHash]]
+  deposit(listingHash: string | undefined) {
+    const params: MetaProtocolParams = []
+    if (listingHash) {
+      params.push(['h', listingHash])
+    }
+
     return buildOperation(this, this.fee, this.chainId, 'deposit', params)
   }
 
@@ -77,8 +81,12 @@ export default class MarketplaceProtocol extends BaseProtocol {
     return buildOperation(this, this.fee, this.chainId, 'delist', params)
   }
 
-  buy(listingHash: string, buyType: BuyType) {
-    const params: MetaProtocolParams = [['h', listingHash]]
+  buy(listingHash: string | undefined, buyType: BuyType) {
+    const params: MetaProtocolParams = []
+    if (listingHash) {
+      params.push(['h', listingHash])
+    }
+
     return buildOperation(
       this,
       this.fee,

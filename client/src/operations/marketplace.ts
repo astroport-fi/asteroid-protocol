@@ -2,8 +2,25 @@ import { MsgSendEncodeObject } from '@cosmjs/stargate'
 import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
 import MarketplaceProtocol, { BuyType } from '../metaprotocol/marketplace.js'
-import { AsteroidService } from '../service/asteroid.js'
+import { InscriptionData } from '../metaprotocol/types.js'
+import { AsteroidService, Status } from '../service/asteroid.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
+
+interface MsgResult {
+  error?: string
+  msg?: MsgSendEncodeObject
+}
+
+interface BuyResult {
+  error?: string
+  msgs?: MsgSendEncodeObject[]
+  total?: bigint
+}
+
+export interface Royalty {
+  recipient: string
+  percentage: number
+}
 
 export class MarketplaceOperations<
   T extends boolean = false,
@@ -96,76 +113,118 @@ export class MarketplaceOperations<
     return this.prepareOperation(this.protocol.delist(listingHash))
   }
 
-  async deposit(listingHash: string) {
+  private async depositListing(
+    status: Status,
+    listingHash: string,
+  ): Promise<MsgResult> {
     // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
-      throw new Error('Listing not found')
+      return { error: 'Listing not found' }
     }
 
     // check if listing is already cancelled or filled
     if (listing.is_cancelled || listing.is_filled) {
-      throw new Error('This listing has already been cancelled or filled')
+      return { error: 'This listing has already been cancelled or filled' }
     }
-
-    const status = await this.asteroidService.getStatus(this.protocol.chainId)
 
     // check if someone else has already deposited
     if (listing.is_deposited && this.address != listing.depositor_address) {
       if (listing.depositor_timedout_block! > status.last_known_height!) {
-        throw new Error(
-          'This listing already has a deposit, wait for the deposit to expire or choose a different listing',
-        )
+        return {
+          error:
+            'This listing already has a deposit, wait for the deposit to expire or choose a different listing',
+        }
       }
     } else if (this.address == listing.depositor_address) {
       // we are the depositor, let's check if timeout didn't expire yet
       if (listing.depositor_timedout_block! > status.last_known_height!) {
-        throw new Error(
-          'You already have a deposit on this listing, you need to buy it now',
-        )
+        return {
+          error:
+            'You already have a deposit on this listing, you need to buy it now',
+        }
       }
     }
 
     const deposit = BigInt(listing.deposit_total)
 
-    const purchaseMessage = createSendMessage(
+    const depositMsg = createSendMessage(
       this.address,
       listing.seller_address,
       'uatom',
       deposit.toString(),
     )
+    return { msg: depositMsg }
+  }
+
+  async deposit(listingHash: string | string[]) {
+    if (!Array.isArray(listingHash)) {
+      listingHash = [listingHash]
+    }
+
+    const status = await this.asteroidService.getStatus(this.protocol.chainId)
+
+    const messages: MsgSendEncodeObject[] = []
+    let error: string | undefined
+
+    for (const hash of listingHash) {
+      const result = await this.depositListing(status, hash)
+      if (result.error) {
+        error = result.error
+      } else {
+        messages.push(result.msg!)
+      }
+    }
+
+    if (messages.length === 0) {
+      throw new Error(error ?? 'No valid listings to deposit')
+    }
+
+    // prepare operation
+    let listingHashParam: string | undefined
+    let inscriptionData: InscriptionData | undefined
+    if (listingHash.length === 1) {
+      listingHashParam = listingHash[0]
+    } else {
+      inscriptionData = {
+        metadata: listingHash,
+      }
+    }
 
     return this.prepareOperation(
-      this.protocol.deposit(listingHash),
+      this.protocol.deposit(listingHashParam),
+      inscriptionData,
       undefined,
-      undefined,
-      [purchaseMessage],
+      messages,
     )
   }
 
-  async buy(
+  private async buyListing(
+    status: Status,
     listingHash: string,
-    buyType: BuyType,
-    royalty?: { recipient: string; percentage: number },
-  ) {
+    royalty?: Royalty,
+  ): Promise<BuyResult> {
     // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
-      throw new Error('Listing not found')
+      return { error: 'Listing not found' }
     }
 
     // check if listing is already cancelled or filled
     if (listing.is_cancelled || listing.is_filled) {
-      throw new Error('This listing has already been cancelled or filled')
+      return {
+        error: 'This listing has already been cancelled or filled',
+      }
     }
 
     if (!listing.is_deposited || listing.depositor_address != this.address) {
-      throw new Error('You need to deposit first and you must be the depositor')
+      return {
+        error: 'You need to deposit first and you must be the depositor',
+      }
     }
     // check timeout didn't expire
-    const status = await this.asteroidService.getStatus(this.protocol.chainId)
     if (status.last_known_height! > listing.depositor_timedout_block!) {
-      throw new Error('Deposit timeout expired')
+      return { error: 'Deposit timeout expired' }
     }
 
     let totaluatom = BigInt(listing.total)
@@ -211,8 +270,56 @@ export class MarketplaceOperations<
     )
     messages.push(purchaseMessage)
 
+    return { msgs: messages, total: totaluatom }
+  }
+
+  async buy(
+    listingHash: string | string[],
+    buyType: BuyType,
+    royalty?: Royalty | Royalty[],
+  ) {
+    if (!Array.isArray(listingHash)) {
+      listingHash = [listingHash]
+    }
+    if (royalty && !Array.isArray(royalty)) {
+      royalty = [royalty]
+    }
+
+    // check timeout didn't expire
+    const status = await this.asteroidService.getStatus(this.protocol.chainId)
+
+    const messages: MsgSendEncodeObject[] = []
+    let totaluatom = BigInt(0)
+    let error: string | undefined
+
+    for (let i = 0; i < listingHash.length; i++) {
+      const result = await this.buyListing(status, listingHash[i], royalty?.[i])
+      if (result.error) {
+        error = result.error
+      } else {
+        messages.push(...result.msgs!)
+        totaluatom += result.total!
+      }
+    }
+
+    if (messages.length === 0) {
+      throw new Error(error ?? 'No valid listings to buy')
+    }
+
+    // prepare operation
+    let listingHashParam: string | undefined
+    let inscriptionData: InscriptionData | undefined
+    if (listingHash.length === 1) {
+      listingHashParam = listingHash[0]
+    } else {
+      inscriptionData = {
+        metadata: listingHash,
+      }
+    }
+
+    const operation = this.protocol.buy(listingHashParam, buyType)
+
     // Calculate the trading fee
-    const operation = this.protocol.buy(listingHash, buyType)
     const decimalTotal =
       parseFloat(totaluatom.toString()) / 10 ** TOKEN_DECIMALS
 
@@ -227,6 +334,6 @@ export class MarketplaceOperations<
       buyFee = fee.toFixed(0)
     }
 
-    return this.prepareOperation(operation, undefined, buyFee, messages)
+    return this.prepareOperation(operation, inscriptionData, buyFee, messages)
   }
 }
