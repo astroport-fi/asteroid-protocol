@@ -271,6 +271,10 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 		break
 	}
 
+	if msg == nil {
+		return fmt.Errorf("no extension options found")
+	}
+
 	var migrationData types.InscriptionMigrationData
 	jsonBytes, err := msg.GetMetadataBytes()
 	if err != nil {

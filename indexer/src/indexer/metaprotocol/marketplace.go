@@ -1,6 +1,7 @@
 package metaprotocol
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"math"
@@ -72,6 +73,324 @@ func NewMarketplaceProcessor(chainID string, db *gorm.DB, workerClient *worker.W
 
 func (protocol *Marketplace) Name() string {
 	return "marketplace"
+}
+
+func (protocol *Marketplace) GetListingHashesFromExt(rawTransaction types.RawTransaction) ([]string, error) {
+	// get listing hashes from non_critical_extension_options
+	var msg types.ExtensionMsg
+	var err error
+	for _, extension := range rawTransaction.Body.NonCriticalExtensionOptions {
+		msg, err = extension.UnmarshalData()
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal extension data '%s'", err)
+		}
+
+		// We only process the first extension option
+		break
+	}
+
+	if msg == nil {
+		return nil, fmt.Errorf("no extension options found")
+	}
+
+	var listingHashes []string
+	jsonBytes, err := msg.GetMetadataBytes()
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(jsonBytes, &listingHashes)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	return listingHashes, nil
+}
+
+func (protocol *Marketplace) Deposit(chainID string, sender string, rawTransaction types.RawTransaction, currentTransaction models.Transaction, hash string) error {
+	action := "deposit"
+	currentHeight := currentTransaction.Height
+
+	// Deposits are based on the listing transaction hash, find the transaction
+	// and matching listing
+	var transactionModel models.Transaction
+	result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
+	if result.Error != nil {
+		return fmt.Errorf("no listing transaction with hash '%s'", hash)
+	}
+
+	// Fetch listing based on hash
+	var listingModel models.MarketplaceListing
+	result = protocol.db.Where("chain_id = ? AND transaction_id = ?", chainID, transactionModel.ID).First(&listingModel)
+	if result.Error != nil {
+		return fmt.Errorf("no listing with hash '%s'", hash)
+	}
+
+	if listingModel.IsDeposited {
+		if listingModel.DepositorTimeoutBlock > currentHeight {
+			return fmt.Errorf("listing already has a deposit")
+		}
+		// Has deposit, but expired, so we continue
+		action = "deposit after expiry"
+	}
+
+	// Check if sender has enough ATOM to buy the listing
+	balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom")
+
+	if listingModel.Total >= listingModel.DepositTotal {
+		if balance < listingModel.Total-listingModel.DepositTotal {
+			return fmt.Errorf("sender does not have enough ATOM to complete the purchase after deposit")
+		}
+	}
+
+	// Check that the correct amount was sent with the deposit
+	amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
+	if err != nil {
+		return fmt.Errorf("invalid tokens sent '%s'", err)
+	}
+
+	if amountSent < listingModel.DepositTotal {
+		return fmt.Errorf("sender did not send enough tokens to cover the deposit")
+	}
+
+	// Everything checks out, add this as the depositor
+	listingModel.IsDeposited = true
+	listingModel.DepositorAddress = sender
+	listingModel.DateUpdated = currentTransaction.DateCreated
+	// Timed-out block is the first block after the expiry period when the
+	// listing is deemed expired
+	listingModel.DepositorTimeoutBlock = currentHeight + listingModel.DepositTimeout + 1
+	result = protocol.db.Save(&listingModel)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Record the listing history
+	listingHistory := models.MarketplaceListingHistory{
+		ListingID:     listingModel.ID,
+		TransactionID: currentTransaction.ID,
+		SenderAddress: sender,
+		Action:        action,
+		DateCreated:   currentTransaction.DateCreated,
+	}
+	result = protocol.db.Save(&listingHistory)
+	// no error, If we can't store the history, that is fine, we shouldn't fail
+
+	return nil
+}
+
+func (protocol *Marketplace) BuyCFT20(chainID string, sender string, rawTransaction types.RawTransaction, currentTransaction models.Transaction, hash string) error {
+	action := "buy"
+
+	// Buys are based on the listing transaction hash, find the transaction
+	// and matching listing
+	var transactionModel models.Transaction
+	result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
+	if result.Error != nil {
+		return fmt.Errorf("no listing transaction with hash '%s'", hash)
+	}
+
+	// Fetch listing based on hash
+	var listingModel models.MarketplaceListing
+	result = protocol.db.Where("chain_id = ? AND transaction_id = ?", chainID, transactionModel.ID).First(&listingModel)
+	if result.Error != nil {
+		return fmt.Errorf("no listing with hash '%s'", hash)
+	}
+
+	// Fetch CFT-20 listing detail
+	var listingDetailModel models.MarketplaceCFT20Detail
+	result = protocol.db.Where("listing_id = ?", listingModel.ID).First(&listingDetailModel)
+	if result.Error != nil {
+		return fmt.Errorf("no CFT-20 listing with hash '%s'", hash)
+	}
+
+	if listingModel.IsDeposited {
+		if listingModel.DepositorAddress != sender {
+			return fmt.Errorf("sender is not the depositor of the listing, buyer must deposit first")
+		}
+	} else {
+		return fmt.Errorf("listing has not been deposited, buyer must deposit first")
+	}
+
+	// Check the amount still owed after deposit
+	amountOwed := listingModel.Total - listingModel.DepositTotal
+
+	// Check that the correct amount was sent with the buy
+	amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
+	if err != nil {
+		return fmt.Errorf("invalid tokens sent '%s'", err)
+	}
+
+	if amountSent < amountOwed {
+		return fmt.Errorf("sender did not send enough tokens to complete the buy")
+	}
+
+	// Verify that the sender sent enough to cover the feee
+	// Get amount owed with decimals
+	amountOwedWithDecimals := float64(amountOwed) / math.Pow10(6)
+	requiredFee := amountOwedWithDecimals * protocol.tradeFee
+	requiredFeeAbsolute := requiredFee * math.Pow10(6)
+	if requiredFeeAbsolute < 1 {
+		requiredFeeAbsolute = 1
+	}
+
+	// Verify that the sender has sent enough tokens to cover the fee
+	amountSent, err = GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
+	if err != nil {
+		return fmt.Errorf("invalid tokens sent '%s'", err)
+	}
+	if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
+		return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
+	}
+
+	// Everything checks out, complete the buy and transfer the tokens to the buyer
+	listingModel.IsFilled = true
+	listingModel.DateUpdated = currentTransaction.DateCreated
+	result = protocol.db.Save(&listingModel)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Check if the receiver has any tokens already, if not, add
+	var holderModel models.TokenHolder
+	result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", chainID, listingDetailModel.TokenID, sender).First(&holderModel)
+	if result.Error != nil {
+		// Just means this buyer doesn't have the tokens in their wallet yet
+		_ = result
+	}
+
+	holderModel.ChainID = chainID
+	holderModel.TokenID = listingDetailModel.TokenID
+	holderModel.Address = sender
+	holderModel.Amount = holderModel.Amount + listingDetailModel.Amount
+	holderModel.DateUpdated = currentTransaction.DateCreated
+	result = protocol.db.Save(&holderModel)
+	if result.Error != nil {
+		return fmt.Errorf("unable to update buyer's balance '%s'", err)
+	}
+
+	// Record the listing history
+	listingHistory := models.MarketplaceListingHistory{
+		ListingID:     listingModel.ID,
+		TransactionID: currentTransaction.ID,
+		SenderAddress: sender,
+		Action:        action,
+		DateCreated:   currentTransaction.DateCreated,
+	}
+	result = protocol.db.Save(&listingHistory)
+	if result.Error != nil {
+		// If we can't store the history, that is fine, we shouldn't fail
+		return nil
+	}
+
+	// Record the transfer from marketplace to buyer
+	historyModel := models.TokenAddressHistory{
+		ChainID:       chainID,
+		Height:        currentTransaction.Height,
+		TransactionID: currentTransaction.ID,
+		TokenID:       listingDetailModel.TokenID,
+		Sender:        protocol.virtualAddress,
+		Receiver:      sender,
+		Action:        "buy",
+		Amount:        listingDetailModel.Amount,
+		DateCreated:   currentTransaction.DateCreated,
+	}
+	result = protocol.db.Save(&historyModel)
+	if result.Error != nil {
+		// If we can't store the history, that fine, we shouldn't fail
+		_ = result
+	}
+
+	// Record the sale of the tokens for the seller
+	historyModel = models.TokenAddressHistory{
+		ChainID:       chainID,
+		Height:        currentTransaction.Height,
+		TransactionID: currentTransaction.ID,
+		TokenID:       listingDetailModel.TokenID,
+		Sender:        listingModel.SellerAddress,
+		Receiver:      sender,
+		Action:        "sell",
+		Amount:        listingDetailModel.Amount,
+		DateCreated:   currentTransaction.DateCreated,
+	}
+	result = protocol.db.Save(&historyModel)
+	if result.Error != nil {
+		// If we can't store the history, that fine, we shouldn't fail
+		_ = result
+	}
+
+	// Get current USD price of the base
+	var statusModel models.Status
+	result = protocol.db.Where("chain_id = ?", chainID).First(&statusModel)
+	if result.Error != nil {
+		// If this fails we just don't update the history
+		return nil
+	}
+
+	// Capture the trade in the history for future charts
+	totalWithDecimals := float64(listingModel.Total) / math.Pow10(6)
+	tradeHistory := models.TokenTradeHistory{
+		ChainID:       chainID,
+		TransactionID: currentTransaction.ID,
+		TokenID:       listingDetailModel.TokenID,
+		SellerAddress: listingModel.SellerAddress,
+		BuyerAddress:  sender,
+		AmountQuote:   listingModel.Total,        // ATOM
+		AmountBase:    listingDetailModel.Amount, // CFT-20
+		Rate:          listingDetailModel.PPT,
+		TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
+		DateCreated:   currentTransaction.DateCreated,
+	}
+	result = protocol.db.Save(&tradeHistory)
+	if result.Error != nil {
+		// Continue, this is not critical
+		_ = result
+	}
+
+	// Check if the ticker exists
+	var tokenModel models.Token
+	result = protocol.db.Where("id = ?", listingDetailModel.TokenID).First(&tokenModel)
+	if result.Error != nil {
+		// This can fail silently as to not alarm the user
+		return nil
+	}
+
+	var avgPrice uint64
+	dberr := protocol.db.Raw(`
+	SELECT round(AVG(rate)) AS average_price 
+	FROM (
+		SELECT rate 
+		FROM token_trade_history tth 
+		WHERE token_id = ? 
+		AND amount_quote > 1000000 
+		ORDER BY id 
+		DESC LIMIT 30
+	) AS last_records`, tokenModel.ID).Scan(&avgPrice)
+	if dberr.Error != nil {
+		// No need to alert the buyer
+		return nil
+	}
+
+	// Recalculate volume from filled trades for this token in past 24 hours
+	// SELECT sum(total_usd) from token_trade_history where date_Created >= now - 24 hours and token_id = this token id
+	var sum uint64
+	err = protocol.db.Model(&models.TokenTradeHistory{}).
+		Select("SUM(amount_quote)").
+		Where("date_created >= ?", time.Now().Add(-24*time.Hour)).
+		Where("token_id = ?", tokenModel.ID).
+		Find(&sum).Error
+
+	if err != nil {
+		// This can fail silently as to not alarm the user
+		return nil
+	}
+
+	tokenModel.LastPriceBase = avgPrice
+	tokenModel.Volume24Base = sum
+	result = protocol.db.Save(&tokenModel)
+	// no error, this can fail silently as to not alarm the user
+
+	return nil
 }
 
 func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
@@ -425,76 +744,32 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 	case "deposit":
-		action := "deposit"
-		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
-
-		// Deposits are based on the listing transaction hash, find the transaction
-		// and matching listing
-		var transactionModel models.Transaction
-		result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
-		if result.Error != nil {
-			return fmt.Errorf("no listing transaction with hash '%s'", hash)
-		}
-
-		// Fetch listing based on hash
-		var listingModel models.MarketplaceListing
-		result = protocol.db.Where("chain_id = ? AND transaction_id = ?", parsedURN.ChainID, transactionModel.ID).First(&listingModel)
-		if result.Error != nil {
-			return fmt.Errorf("no listing with hash '%s'", hash)
-		}
-
-		if listingModel.IsDeposited {
-			if listingModel.DepositorTimeoutBlock > currentHeight {
-				return fmt.Errorf("listing already has a deposit")
+		var hashes []string
+		if parsedURN.KeyValuePairs == nil {
+			hashes, err = protocol.GetListingHashesFromExt(rawTransaction)
+			if err != nil {
+				return err
 			}
-			// Has deposit, but expired, so we continue
-			action = "deposit after expiry"
+		} else {
+			hashes = strings.Split(strings.TrimSpace(parsedURN.KeyValuePairs["h"]), ",")
 		}
 
-		// Check if sender has enough ATOM to buy the listing
-		balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom")
+		var err error
+		success := false
 
-		if listingModel.Total >= listingModel.DepositTotal {
-			if balance < listingModel.Total-listingModel.DepositTotal {
-				return fmt.Errorf("sender does not have enough ATOM to complete the purchase after deposit")
+		for _, hash := range hashes {
+			// Process deposit for each hash
+			err = protocol.Deposit(parsedURN.ChainID, sender, rawTransaction, currentTransaction, hash)
+			if err == nil {
+				success = true
 			}
 		}
 
-		// Check that the correct amount was sent with the deposit
-		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
-		if err != nil {
-			return fmt.Errorf("invalid tokens sent '%s'", err)
+		if !success {
+			return err
 		}
 
-		if amountSent < listingModel.DepositTotal {
-			return fmt.Errorf("sender did not send enough tokens to cover the deposit")
-		}
-
-		// Everything checks out, add this as the depositor
-		listingModel.IsDeposited = true
-		listingModel.DepositorAddress = sender
-		listingModel.DateUpdated = currentTransaction.DateCreated
-		// Timed-out block is the first block after the expiry period when the
-		// listing is deemed expired
-		listingModel.DepositorTimeoutBlock = currentHeight + listingModel.DepositTimeout + 1
-		result = protocol.db.Save(&listingModel)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		// Record the listing history
-		listingHistory := models.MarketplaceListingHistory{
-			ListingID:     listingModel.ID,
-			TransactionID: currentTransaction.ID,
-			SenderAddress: sender,
-			Action:        action,
-			DateCreated:   currentTransaction.DateCreated,
-		}
-		result = protocol.db.Save(&listingHistory)
-		if result.Error != nil {
-			// If we can't store the history, that is fine, we shouldn't fail
-			return nil
-		}
+		return nil
 
 	case "delist":
 		action := "delist"
@@ -653,219 +928,32 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 		}
 
 	case "buy.cft20":
-		action := "buy"
-		hash := strings.TrimSpace(parsedURN.KeyValuePairs["h"])
-
-		// Buys are based on the listing transaction hash, find the transaction
-		// and matching listing
-		var transactionModel models.Transaction
-		result := protocol.db.Where("hash = ?", hash).First(&transactionModel)
-		if result.Error != nil {
-			return fmt.Errorf("no listing transaction with hash '%s'", hash)
-		}
-
-		// Fetch listing based on hash
-		var listingModel models.MarketplaceListing
-		result = protocol.db.Where("chain_id = ? AND transaction_id = ?", parsedURN.ChainID, transactionModel.ID).First(&listingModel)
-		if result.Error != nil {
-			return fmt.Errorf("no listing with hash '%s'", hash)
-		}
-
-		// Fetch CFT-20 listing detail
-		var listingDetailModel models.MarketplaceCFT20Detail
-		result = protocol.db.Where("listing_id = ?", listingModel.ID).First(&listingDetailModel)
-		if result.Error != nil {
-			return fmt.Errorf("no CFT-20 listing with hash '%s'", hash)
-		}
-
-		if listingModel.IsDeposited {
-			if listingModel.DepositorAddress != sender {
-				return fmt.Errorf("sender is not the depositor of the listing, buyer must deposit first")
+		var hashes []string
+		if parsedURN.KeyValuePairs == nil {
+			hashes, err = protocol.GetListingHashesFromExt(rawTransaction)
+			if err != nil {
+				return err
 			}
 		} else {
-			return fmt.Errorf("listing has not been deposited, buyer must deposit first")
+			hashes = strings.Split(strings.TrimSpace(parsedURN.KeyValuePairs["h"]), ",")
 		}
 
-		// Check the amount still owed after deposit
-		amountOwed := listingModel.Total - listingModel.DepositTotal
+		var err error
+		success := false
 
-		// Check that the correct amount was sent with the buy
-		amountSent, err := GetBaseTokensSent(rawTransaction, listingModel.SellerAddress, Send, protocol.ibcEnabled)
-		if err != nil {
-			return fmt.Errorf("invalid tokens sent '%s'", err)
-		}
-
-		if amountSent < amountOwed {
-			return fmt.Errorf("sender did not send enough tokens to complete the buy")
+		for _, hash := range hashes {
+			// Process deposit for each hash
+			err = protocol.BuyCFT20(parsedURN.ChainID, sender, rawTransaction, currentTransaction, hash)
+			if err == nil {
+				success = true
+			}
 		}
 
-		// Verify that the sender sent enough to cover the feee
-		// Get amount owed with decimals
-		amountOwedWithDecimals := float64(amountOwed) / math.Pow10(6)
-		requiredFee := amountOwedWithDecimals * protocol.tradeFee
-		requiredFeeAbsolute := requiredFee * math.Pow10(6)
-		if requiredFeeAbsolute < 1 {
-			requiredFeeAbsolute = 1
+		if !success {
+			return err
 		}
 
-		// Verify that the sender has sent enough tokens to cover the fee
-		amountSent, err = GetBaseTokensSent(rawTransaction, protocol.ibcReceiver, IbcTransfer, protocol.ibcEnabled)
-		if err != nil {
-			return fmt.Errorf("invalid tokens sent '%s'", err)
-		}
-		if amountSent < uint64(math.Floor(requiredFeeAbsolute)) {
-			return fmt.Errorf("sender did not send enough tokens to cover the purchase fee")
-		}
-
-		// Everything checks out, complete the buy and transfer the tokens to the buyer
-		listingModel.IsFilled = true
-		listingModel.DateUpdated = currentTransaction.DateCreated
-		result = protocol.db.Save(&listingModel)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		// Check if the receiver has any tokens already, if not, add
-		var holderModel models.TokenHolder
-		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, listingDetailModel.TokenID, sender).First(&holderModel)
-		if result.Error != nil {
-			// Just means this buyer doesn't have the tokens in their wallet yet
-			_ = result
-		}
-
-		holderModel.ChainID = parsedURN.ChainID
-		holderModel.TokenID = listingDetailModel.TokenID
-		holderModel.Address = sender
-		holderModel.Amount = holderModel.Amount + listingDetailModel.Amount
-		holderModel.DateUpdated = currentTransaction.DateCreated
-		result = protocol.db.Save(&holderModel)
-		if result.Error != nil {
-			return fmt.Errorf("unable to update buyer's balance '%s'", err)
-		}
-
-		// Record the listing history
-		listingHistory := models.MarketplaceListingHistory{
-			ListingID:     listingModel.ID,
-			TransactionID: currentTransaction.ID,
-			SenderAddress: sender,
-			Action:        action,
-			DateCreated:   currentTransaction.DateCreated,
-		}
-		result = protocol.db.Save(&listingHistory)
-		if result.Error != nil {
-			// If we can't store the history, that is fine, we shouldn't fail
-			return nil
-		}
-
-		// Record the transfer from marketplace to buyer
-		historyModel := models.TokenAddressHistory{
-			ChainID:       parsedURN.ChainID,
-			Height:        currentTransaction.Height,
-			TransactionID: currentTransaction.ID,
-			TokenID:       listingDetailModel.TokenID,
-			Sender:        protocol.virtualAddress,
-			Receiver:      sender,
-			Action:        "buy",
-			Amount:        listingDetailModel.Amount,
-			DateCreated:   currentTransaction.DateCreated,
-		}
-		result = protocol.db.Save(&historyModel)
-		if result.Error != nil {
-			// If we can't store the history, that fine, we shouldn't fail
-			_ = result
-		}
-
-		// Record the sale of the tokens for the seller
-		historyModel = models.TokenAddressHistory{
-			ChainID:       parsedURN.ChainID,
-			Height:        currentTransaction.Height,
-			TransactionID: currentTransaction.ID,
-			TokenID:       listingDetailModel.TokenID,
-			Sender:        listingModel.SellerAddress,
-			Receiver:      sender,
-			Action:        "sell",
-			Amount:        listingDetailModel.Amount,
-			DateCreated:   currentTransaction.DateCreated,
-		}
-		result = protocol.db.Save(&historyModel)
-		if result.Error != nil {
-			// If we can't store the history, that fine, we shouldn't fail
-			_ = result
-		}
-
-		// Get current USD price of the base
-		var statusModel models.Status
-		result = protocol.db.Where("chain_id = ?", parsedURN.ChainID).First(&statusModel)
-		if result.Error != nil {
-			// If this fails we just don't update the history
-			return nil
-		}
-
-		// Capture the trade in the history for future charts
-		totalWithDecimals := float64(listingModel.Total) / math.Pow10(6)
-		tradeHistory := models.TokenTradeHistory{
-			ChainID:       parsedURN.ChainID,
-			TransactionID: currentTransaction.ID,
-			TokenID:       listingDetailModel.TokenID,
-			SellerAddress: listingModel.SellerAddress,
-			BuyerAddress:  sender,
-			AmountQuote:   listingModel.Total,        // ATOM
-			AmountBase:    listingDetailModel.Amount, // CFT-20
-			Rate:          listingDetailModel.PPT,
-			TotalUSD:      totalWithDecimals * statusModel.BaseTokenUSD,
-			DateCreated:   currentTransaction.DateCreated,
-		}
-		result = protocol.db.Save(&tradeHistory)
-		if result.Error != nil {
-			// Continue, this is not critical
-			_ = result
-		}
-
-		// Check if the ticker exists
-		var tokenModel models.Token
-		result = protocol.db.Where("id = ?", listingDetailModel.TokenID).First(&tokenModel)
-		if result.Error != nil {
-			// This can fail silently as to not alarm the user
-			return nil
-		}
-
-		var avgPrice uint64
-		dberr := protocol.db.Raw(`
-		SELECT round(AVG(rate)) AS average_price 
-		FROM (
-			SELECT rate 
-			FROM token_trade_history tth 
-			WHERE token_id = ? 
-			AND amount_quote > 1000000 
-			ORDER BY id 
-			DESC LIMIT 30
-		) AS last_records`, tokenModel.ID).Scan(&avgPrice)
-		if dberr.Error != nil {
-			// No need to alert the buyer
-			return nil
-		}
-
-		// Recalculate volume from filled trades for this token in past 24 hours
-		// SELECT sum(total_usd) from token_trade_history where date_Created >= now - 24 hours and token_id = this token id
-		var sum uint64
-		err = protocol.db.Model(&models.TokenTradeHistory{}).
-			Select("SUM(amount_quote)").
-			Where("date_created >= ?", time.Now().Add(-24*time.Hour)).
-			Where("token_id = ?", tokenModel.ID).
-			Find(&sum).Error
-
-		if err != nil {
-			// This can fail silently as to not alarm the user
-			return nil
-		}
-
-		tokenModel.LastPriceBase = avgPrice
-		tokenModel.Volume24Base = sum
-		result = protocol.db.Save(&tokenModel)
-		if result.Error != nil {
-			// This can fail silently as to not alarm the user
-			return nil
-		}
+		return nil
 
 	case "buy.inscription":
 		action := "buy"
