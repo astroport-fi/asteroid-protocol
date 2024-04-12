@@ -203,4 +203,24 @@ export class AsteroidService {
     })
     return res.marketplace_listing[0]
   }
+
+  async getCollectionHash(symbol: string): Promise<string | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            symbol: {
+              _eq: symbol.toUpperCase(),
+            },
+          },
+        },
+        {
+          transaction: {
+            hash: true,
+          },
+        },
+      ],
+    })
+    return result.collection[0]?.transaction?.hash
+  }
 }

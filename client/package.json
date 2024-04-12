@@ -14,6 +14,7 @@
     "build:cjs": "npx tsc --module commonjs --outDir cjs/ && echo '{\"type\": \"commonjs\"}' > cjs/package.json",
     "build:esm": "npx tsc --module es2022 --outDir esm/ && echo '{\"type\": \"module\"}' > esm/package.json",
     "clean": "tsc --build --clean",
+    "watch": "tsc --watch --module es2022 --outDir esm/",
     "gql:prettier": "npx prettier --write src/zeus/*.ts",
     "gql:patch": "patch -p1 src/zeus/index.ts -i src/zeus/index.patch",
     "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./src --ts --subscriptions graphql-ws && npm run gql:prettier && npm run gql:patch"

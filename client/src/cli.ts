@@ -25,9 +25,9 @@ async function broadcastAndCheckTx(context: Context, txData: TxData) {
     txData,
     context.config.feeMultiplier,
   )
+  console.log(`${context.network.explorer}${res.transactionHash}`)
   await checkTx(context.api, res)
   console.log('Transaction was successfully indexed')
-  console.log(`${context.network.explorer}${res.transactionHash}`)
 }
 
 export function setupCommand(command?: Command) {
@@ -183,47 +183,93 @@ interface InscribeCSVOptions extends Options {
   collection: string
 }
 
+const ALLOWED_CHARACTERS_INFO = `
+  Trait name allowed characters
+  - a lowercase letter (a-z),
+  - an uppercase letter (A-Z),
+  - a digit (0-9),
+  - a hyphen (-)
+  - a space ( )
+
+  Trait value allowed characters
+  - a lowercase letter (a-z),
+  - an uppercase letter (A-Z),
+  - a digit (0-9),
+  - a hyphen (-)
+  - a period (.)
+  - a space ( )
+  `
+
 setupCommand(inscriptionCommand.command('inscribe-csv'))
-  .description('Create inscriptions from Metadata CSV and images')
+  .description('Create inscriptions from Metadata CSV and images/files')
   .requiredOption('-p, --csv-path <CSV_PATH>', 'Metadata CSV path')
-  .option('-c, --collection [COLLECTION]', 'The collection transaction hash')
+  .option('-c, --collection [COLLECTION_SYMBOL]', 'The collection symbol')
   .action(async (options: InscribeCSVOptions) => {
     inscriptionAction(options, async (context, operations) => {
       const rows = await readCSV(options.csvPath)
       const dir = path.dirname(options.csvPath)
+      const traitNameRegex = /^[a-zA-Z0-9- ]+$/
+      const traitValueRegex = /^[a-zA-Z0-9-. ]+$/
 
       for (const row of rows) {
         const attributes: Trait[] = []
         let name = ''
-        let imagePath = ''
+        let description = ''
+        let filePath = ''
 
         for (const [key, value] of Object.entries(row)) {
           if (key == 'name') {
             name = value
+          } else if (key == 'description') {
+            description = value
           } else if (key == 'file') {
-            imagePath = path.join(dir, value)
+            filePath = path.join(dir, value)
           } else {
+            if (!traitNameRegex.test(key)) {
+              console.log(ALLOWED_CHARACTERS_INFO)
+              throw new Error('Invalid trait name')
+            }
+            if (!traitValueRegex.test(value)) {
+              console.log(ALLOWED_CHARACTERS_INFO)
+              throw new Error('Invalid trait value')
+            }
             attributes.push({ trait_type: key, value })
           }
         }
 
-        console.log(imagePath)
-        const mimeType = mime.getType(imagePath)
+        console.log('File:', filePath)
+        const mimeType = mime.getType(filePath)
         if (!mimeType) {
           throw new Error('Unknown mime type')
         }
-        const data = await fs.readFile(imagePath)
+        const data = await fs.readFile(filePath)
         const metadata: NFTMetadata = {
-          description: '',
+          description: description,
           name,
           mime: mimeType,
           attributes,
         }
 
+        console.log('Metadata', metadata)
+
         let txData: TxData
         if (options.collection) {
-          txData = operations.inscribeCollectionInscription(
+          const collectionHash = await context.api.getCollectionHash(
             options.collection,
+          )
+          if (!collectionHash) {
+            throw new Error('Unknown collection')
+          }
+
+          console.log(
+            'Collection hash:',
+            collectionHash,
+            '\nCollection Symbol:',
+            options.collection,
+          )
+
+          txData = operations.inscribeCollectionInscription(
+            collectionHash,
             data,
             metadata,
           )
@@ -232,6 +278,7 @@ setupCommand(inscriptionCommand.command('inscribe-csv'))
         }
 
         await broadcastAndCheckTx(context, txData)
+        console.log('')
       }
     })
   })

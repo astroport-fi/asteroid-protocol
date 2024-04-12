@@ -1,5 +1,5 @@
-name,file,Body,Background
-Rock #1,1.jpeg,White,Desert
-Rock #2,2.jpeg,Black,Desert
-Rock #3,3.jpeg,Grey,Desert
-Rock #4,4.jpeg,Red,Desert
+name,description,file,Body,Background
+Rock #1,White rock in the desert,1.jpeg,White,Desert
+Rock #2,Black rock in the desert,2.jpeg,Black,Desert
+Rock #3,Grey rock in the desert,3.jpeg,Grey,Desert
+Rock #4,Red rock in the desert,4.jpeg,Red,Desert
