@@ -151,6 +151,20 @@ Commands:
   help [command]  display help for command
 ```
 
+### Setup account
+
+Create `asteroid.json` file and update `account1` mnemonic to your account
+
+```json
+{
+    "accounts": {
+        "account1": {
+            "mnemonic": ""
+        }
+    }
+}
+```
+
 ### Config file
 
 To customize configuration create `asteroid.json`, see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/main/client/example/asteroid.json)
@@ -211,17 +225,29 @@ Options:
 
 Create multiple standalone inscriptions or add multiple inscriptions to a collection, see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/main/client/example/inscribe-csv)
 
+CSV File format:
+
+| Column Name | Column Description | Example |
+|-------------|--------------------|---------|
+| name        | The name of the inscription | Rock #1 |
+| description | The description of the inscription | White rock in the desert |
+| file        | The file name of the image associated with the inscription | 1.jpeg, 1.png, 1.txt, 1.mp4 |
+| Name of a trait (body, hair, necklace) | Additional traits or attributes of the inscription |  |
+
+see example [here](https://github.com/astroport-fi/asteroid-protocol/blob/main/client/example/inscribe-csv/metadata.csv)
+
+
 ```bash
 Usage: asteroid inscription inscribe-csv [options]
 
-Create inscriptions from Metadata CSV and images
+Create inscriptions from Metadata CSV and images/files
 
 Options:
-  -n, --network [NETWORK_NAME]   Name of the network to use (default: "local")
-  -a, --account [ACCOUNT_NAME]   Name of the account to use as transaction signer
-  -p, --csv-path <CSV_PATH>      Metadata CSV path
-  -c, --collection [COLLECTION]  The collection transaction hash
-  -h, --help                     display help for command
+  -n, --network [NETWORK_NAME]          Name of the network to use (default: "local")
+  -a, --account [ACCOUNT_NAME]          Name of the account to use as transaction signer
+  -p, --csv-path <CSV_PATH>             Metadata CSV path
+  -c, --collection [COLLECTION_SYMBOL]  The collection symbol
+  -h, --help                            display help for command
 ```
 
 #### Transfer
