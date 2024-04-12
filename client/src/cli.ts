@@ -465,6 +465,9 @@ setupCommand(cft20Command.command('transfer'))
     })
   })
 
+const MIN_DEPOSIT_PERCENT = 0.01
+const TIMEOUT_BLOCKS = 100
+
 interface MarketplaceListCFT20Options extends Options {
   ticker: string
   amount: string
@@ -483,12 +486,12 @@ setupCommand(marketplaceListCommand.command('cft20'))
   .option(
     '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
-    '0.1',
+    MIN_DEPOSIT_PERCENT.toString(),
   )
   .option(
     '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
-    '50',
+    TIMEOUT_BLOCKS.toString(),
   )
   .action(async (options: MarketplaceListCFT20Options) => {
     marketplaceAction(options, async (context, operations) => {
@@ -499,6 +502,59 @@ setupCommand(marketplaceListCommand.command('cft20'))
         parseFloat(options.minDeposit),
         parseInt(options.timeoutBlocks),
       )
+    })
+  })
+
+interface MarketplaceListCollectionOptions extends Options {
+  collection: string
+  price: string
+  minDeposit: string
+  timeoutBlocks: string
+}
+
+setupCommand(marketplaceListCommand.command('collection'))
+  .description('Creating a new listing for all collection inscriptions')
+  .requiredOption(
+    '-c, --collection [COLLECTION_SYMBOL]',
+    'The collection symbol',
+  )
+  .requiredOption('-p, --price <PRICE>', 'The price in atom')
+  .option(
+    '-d, --min-deposit [MIN_DEPOSIT]',
+    'The minimum deposit expressed as a percentage of total',
+    MIN_DEPOSIT_PERCENT.toString(),
+  )
+  .option(
+    '-b, --timeout-blocks [DECIMALS]',
+    'The block this reservation expires',
+    TIMEOUT_BLOCKS.toString(),
+  )
+  .action(async (options: MarketplaceListCollectionOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      const collectionId = await context.api.getCollectionId(options.collection)
+      if (!collectionId) {
+        throw new Error('Unknown collection')
+      }
+
+      const inscriptions = await context.api.getCollectionInscriptions(
+        collectionId,
+        context.account.address,
+      )
+      for (const hash of inscriptions) {
+        try {
+          const txData = await operations.listInscription(
+            hash,
+            parseInt(options.price, 10),
+            parseFloat(options.minDeposit),
+            parseInt(options.timeoutBlocks),
+          )
+          await broadcastAndCheckTx(context, txData)
+        } catch (err) {
+          console.log('Error listing inscription', hash, err)
+        }
+
+        console.log('')
+      }
     })
   })
 
@@ -519,12 +575,12 @@ setupCommand(marketplaceListCommand.command('inscription'))
   .option(
     '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
-    '0.1',
+    MIN_DEPOSIT_PERCENT.toString(),
   )
   .option(
     '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
-    '50',
+    TIMEOUT_BLOCKS.toString(),
   )
   .action(async (options: MarketplaceListInscriptionOptions) => {
     marketplaceAction(options, async (context, operations) => {
