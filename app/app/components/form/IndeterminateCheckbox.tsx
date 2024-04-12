@@ -1,8 +1,9 @@
+import clsx from 'clsx'
 import { HTMLProps, useEffect, useRef } from 'react'
 
 export default function IndeterminateCheckbox({
   indeterminate,
-  className = '',
+  className,
   ...rest
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
   const ref = useRef<HTMLInputElement>(null!)
@@ -17,7 +18,7 @@ export default function IndeterminateCheckbox({
     <input
       type="checkbox"
       ref={ref}
-      className={className + ' cursor-pointer'}
+      className={clsx('checkbox cursor-pointer', className)}
       {...rest}
     />
   )

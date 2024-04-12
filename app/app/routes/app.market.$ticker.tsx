@@ -220,6 +220,7 @@ function ListingsTable({
     columnHelper.accessor((row) => row.id, {
       enableSorting: false,
       id: 'select',
+      size: 40,
       header: ({ table }) => (
         <IndeterminateCheckbox
           {...{
@@ -230,19 +231,18 @@ function ListingsTable({
         />
       ),
       cell: ({ row }) => (
-        <div className="px-1">
-          <IndeterminateCheckbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
-        </div>
+        <IndeterminateCheckbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler(),
+          }}
+        />
       ),
     }),
     columnHelper.accessor('id', {
+      size: 40,
       header: 'Listing #',
       cell: (info) => info.getValue(),
     }),
