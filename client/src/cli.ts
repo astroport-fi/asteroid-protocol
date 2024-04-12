@@ -4,15 +4,20 @@ import fs from 'fs/promises'
 import mime from 'mime'
 import path from 'path'
 import { inferSchema, initParser } from 'udsv'
+import { Config } from './config.js'
 import { Context, Options, createContext } from './context.js'
-import {
+import CFT20Protocol from './metaprotocol/cft20.js'
+import InscriptionProtocol, {
   CollectionMetadata,
   MigrationData,
   NFTMetadata,
   Trait,
 } from './metaprotocol/inscription.js'
+import MarketplaceProtocol from './metaprotocol/marketplace.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
+import { ProtocolFee } from './metaprotocol/types.js'
 import { CFT20Operations } from './operations/cft20.js'
+import { Options as OperationsOptions } from './operations/index.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
 import { readCSV } from './utils/csv.js'
@@ -65,6 +70,30 @@ async function action(
   }
 }
 
+function getFee(
+  fee: ProtocolFee,
+  useIbc: boolean,
+  receiver: string,
+): ProtocolFee | undefined {
+  if (useIbc) {
+    return
+  }
+
+  return { ...fee, receiver }
+}
+
+function getOperationsOptions(
+  config: Config,
+  fee: ProtocolFee,
+): OperationsOptions<false> {
+  return {
+    useExtensionData: config.useExtensionData,
+    multi: false,
+    useIbc: config.useIbc,
+    fee: getFee(fee, config.useIbc, config.feeReceiver),
+  }
+}
+
 async function inscriptionAction(
   options: Options,
   fn: (
@@ -76,7 +105,7 @@ async function inscriptionAction(
     const operations = new InscriptionOperations(
       context.network.chainId,
       context.account.address,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, InscriptionProtocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
@@ -90,7 +119,7 @@ async function cft20Action(
     const operations = new CFT20Operations(
       context.network.chainId,
       context.account.address,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, CFT20Protocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
@@ -108,7 +137,7 @@ async function marketplaceAction(
       context.network.chainId,
       context.account.address,
       context.api,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, MarketplaceProtocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
