@@ -413,6 +413,23 @@ Options:
   -h, --help                       display help for command
 ```
 
+#### List All Collection Inscriptions
+
+```bash
+Usage: asteroid marketplace list collection [options]
+
+Creating a new listing for all collection inscriptions
+
+Options:
+  -n, --network [NETWORK_NAME]          Name of the network to use (default: "local")
+  -a, --account [ACCOUNT_NAME]          Name of the account to use as transaction signer
+  -c, --collection [COLLECTION_SYMBOL]  The collection symbol
+  -p, --price <PRICE>                   The price in atom
+  -d, --min-deposit [MIN_DEPOSIT]       The minimum deposit expressed as a percentage of total (default: "0.01")
+  -b, --timeout-blocks [DECIMALS]       The block this reservation expires (default: "100")
+  -h, --help                            display help for command
+```
+
 #### Deposit
 
 ```bash

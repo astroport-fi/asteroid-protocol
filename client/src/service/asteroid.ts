@@ -223,4 +223,48 @@ export class AsteroidService {
     })
     return result.collection[0]?.transaction?.hash
   }
+
+  async getCollectionId(symbol: string): Promise<number | undefined> {
+    const result = await this.query({
+      collection: [
+        {
+          where: {
+            symbol: {
+              _eq: symbol.toUpperCase(),
+            },
+          },
+        },
+        {
+          id: true,
+        },
+      ],
+    })
+    return result.collection[0]?.id
+  }
+
+  async getCollectionInscriptions(
+    collectionId: number,
+    user: string,
+  ): Promise<string[]> {
+    const result = await this.query({
+      inscription: [
+        {
+          where: {
+            collection_id: {
+              _eq: collectionId,
+            },
+            current_owner: {
+              _eq: user,
+            },
+          },
+        },
+        {
+          transaction: {
+            hash: true,
+          },
+        },
+      ],
+    })
+    return result.inscription.map((i) => i.transaction.hash)
+  }
 }

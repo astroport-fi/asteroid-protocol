@@ -4,15 +4,20 @@ import fs from 'fs/promises'
 import mime from 'mime'
 import path from 'path'
 import { inferSchema, initParser } from 'udsv'
+import { Config } from './config.js'
 import { Context, Options, createContext } from './context.js'
-import {
+import CFT20Protocol from './metaprotocol/cft20.js'
+import InscriptionProtocol, {
   CollectionMetadata,
   MigrationData,
   NFTMetadata,
   Trait,
 } from './metaprotocol/inscription.js'
+import MarketplaceProtocol from './metaprotocol/marketplace.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
+import { ProtocolFee } from './metaprotocol/types.js'
 import { CFT20Operations } from './operations/cft20.js'
+import { Options as OperationsOptions } from './operations/index.js'
 import { InscriptionOperations } from './operations/inscription.js'
 import { MarketplaceOperations } from './operations/marketplace.js'
 import { readCSV } from './utils/csv.js'
@@ -65,6 +70,30 @@ async function action(
   }
 }
 
+function getFee(
+  fee: ProtocolFee,
+  useIbc: boolean,
+  receiver: string,
+): ProtocolFee | undefined {
+  if (useIbc) {
+    return
+  }
+
+  return { ...fee, receiver }
+}
+
+function getOperationsOptions(
+  config: Config,
+  fee: ProtocolFee,
+): OperationsOptions<false> {
+  return {
+    useExtensionData: config.useExtensionData,
+    multi: false,
+    useIbc: config.useIbc,
+    fee: getFee(fee, config.useIbc, config.feeReceiver),
+  }
+}
+
 async function inscriptionAction(
   options: Options,
   fn: (
@@ -76,7 +105,7 @@ async function inscriptionAction(
     const operations = new InscriptionOperations(
       context.network.chainId,
       context.account.address,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, InscriptionProtocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
@@ -90,7 +119,7 @@ async function cft20Action(
     const operations = new CFT20Operations(
       context.network.chainId,
       context.account.address,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, CFT20Protocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
@@ -108,7 +137,7 @@ async function marketplaceAction(
       context.network.chainId,
       context.account.address,
       context.api,
-      { useExtensionData: context.config.useExtensionData, multi: false },
+      getOperationsOptions(context.config, MarketplaceProtocol.DEFAULT_FEE),
     )
     return fn(context, operations)
   })
@@ -436,6 +465,9 @@ setupCommand(cft20Command.command('transfer'))
     })
   })
 
+const MIN_DEPOSIT_PERCENT = 0.01
+const TIMEOUT_BLOCKS = 100
+
 interface MarketplaceListCFT20Options extends Options {
   ticker: string
   amount: string
@@ -454,12 +486,12 @@ setupCommand(marketplaceListCommand.command('cft20'))
   .option(
     '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
-    '0.1',
+    MIN_DEPOSIT_PERCENT.toString(),
   )
   .option(
     '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
-    '50',
+    TIMEOUT_BLOCKS.toString(),
   )
   .action(async (options: MarketplaceListCFT20Options) => {
     marketplaceAction(options, async (context, operations) => {
@@ -470,6 +502,59 @@ setupCommand(marketplaceListCommand.command('cft20'))
         parseFloat(options.minDeposit),
         parseInt(options.timeoutBlocks),
       )
+    })
+  })
+
+interface MarketplaceListCollectionOptions extends Options {
+  collection: string
+  price: string
+  minDeposit: string
+  timeoutBlocks: string
+}
+
+setupCommand(marketplaceListCommand.command('collection'))
+  .description('Creating a new listing for all collection inscriptions')
+  .requiredOption(
+    '-c, --collection [COLLECTION_SYMBOL]',
+    'The collection symbol',
+  )
+  .requiredOption('-p, --price <PRICE>', 'The price in atom')
+  .option(
+    '-d, --min-deposit [MIN_DEPOSIT]',
+    'The minimum deposit expressed as a percentage of total',
+    MIN_DEPOSIT_PERCENT.toString(),
+  )
+  .option(
+    '-b, --timeout-blocks [DECIMALS]',
+    'The block this reservation expires',
+    TIMEOUT_BLOCKS.toString(),
+  )
+  .action(async (options: MarketplaceListCollectionOptions) => {
+    marketplaceAction(options, async (context, operations) => {
+      const collectionId = await context.api.getCollectionId(options.collection)
+      if (!collectionId) {
+        throw new Error('Unknown collection')
+      }
+
+      const inscriptions = await context.api.getCollectionInscriptions(
+        collectionId,
+        context.account.address,
+      )
+      for (const hash of inscriptions) {
+        try {
+          const txData = await operations.listInscription(
+            hash,
+            parseInt(options.price, 10),
+            parseFloat(options.minDeposit),
+            parseInt(options.timeoutBlocks),
+          )
+          await broadcastAndCheckTx(context, txData)
+        } catch (err) {
+          console.log('Error listing inscription', hash, err)
+        }
+
+        console.log('')
+      }
     })
   })
 
@@ -490,12 +575,12 @@ setupCommand(marketplaceListCommand.command('inscription'))
   .option(
     '-d, --min-deposit [MIN_DEPOSIT]',
     'The minimum deposit expressed as a percentage of total',
-    '0.1',
+    MIN_DEPOSIT_PERCENT.toString(),
   )
   .option(
     '-b, --timeout-blocks [DECIMALS]',
     'The block this reservation expires',
-    '50',
+    TIMEOUT_BLOCKS.toString(),
   )
   .action(async (options: MarketplaceListInscriptionOptions) => {
     marketplaceAction(options, async (context, operations) => {
