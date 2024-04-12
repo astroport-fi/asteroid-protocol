@@ -534,7 +534,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
 			if err != nil {
-				return err
+				return fmt.Errorf("error getting collection with identifier '%s': %w", inscriptionMetadata.Parent.Identifier, err)
 			}
 
 			// set collection id to the inscription
