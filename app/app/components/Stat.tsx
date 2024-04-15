@@ -9,7 +9,7 @@ export default function Stat({
   return (
     <div
       className={twMerge(
-        'flex flex-row justify-center w-full bg-base-200 p-2 rounded-xl',
+        'flex flex-col items-center md:flex-row justify-center w-full bg-base-200 p-2 rounded-xl',
         className,
       )}
     >

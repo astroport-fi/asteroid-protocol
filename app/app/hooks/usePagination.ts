@@ -3,7 +3,7 @@ import { PaginationState } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from '~/utils/pagination'
 
-export default function usePagination() {
+export default function usePagination(defaultLimit = DEFAULT_LIMIT) {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
@@ -12,7 +12,7 @@ export default function usePagination() {
       : 0,
     pageSize: searchParams.has('limit')
       ? parseInt(searchParams.get('limit') as string)
-      : DEFAULT_LIMIT,
+      : defaultLimit,
   })
 
   const pagination = useMemo(
@@ -35,7 +35,7 @@ export default function usePagination() {
   }, [pageIndex, searchParams, setSearchParams])
 
   useEffect(() => {
-    const currentLimit = searchParams.get('limit') ?? `${DEFAULT_LIMIT}`
+    const currentLimit = searchParams.get('limit') ?? `${defaultLimit}`
     const newLimit = `${pageSize}`
     if (currentLimit !== newLimit) {
       setSearchParams((prev) => {
@@ -43,7 +43,7 @@ export default function usePagination() {
         return prev
       })
     }
-  }, [pageSize, searchParams, setSearchParams])
+  }, [pageSize, defaultLimit, searchParams, setSearchParams])
 
   return [pagination, setPagination] as const
 }
