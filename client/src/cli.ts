@@ -544,7 +544,7 @@ setupCommand(marketplaceListCommand.command('collection'))
         try {
           const txData = await operations.listInscription(
             hash,
-            parseInt(options.price, 10),
+            parseFloat(options.price),
             parseFloat(options.minDeposit),
             parseInt(options.timeoutBlocks),
           )
@@ -586,7 +586,7 @@ setupCommand(marketplaceListCommand.command('inscription'))
     marketplaceAction(options, async (context, operations) => {
       return operations.listInscription(
         options.hash,
-        parseInt(options.price, 10),
+        parseFloat(options.price),
         parseFloat(options.minDeposit),
         parseInt(options.timeoutBlocks),
       )
