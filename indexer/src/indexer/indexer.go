@@ -376,6 +376,11 @@ func (i *Indexer) fetchCurrentHeight() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	if block.Code != 0 {
+		return 0, fmt.Errorf("error fetching current height: %s", block.Message)
+	}
+
 	i.logger.WithFields(logrus.Fields{
 		"height":   block.Block.Header.Height,
 		"endpoint": endpoint,
@@ -409,6 +414,11 @@ func (i *Indexer) fetchTransactions(height uint64) (types.LCDBlock, []types.RawT
 	if err != nil {
 		return lcdBlock, transactions, err
 	}
+
+	if lcdBlock.Code != 0 {
+		return lcdBlock, transactions, fmt.Errorf("error fetching block: %s", lcdBlock.Message)
+	}
+
 	i.logger.WithFields(logrus.Fields{
 		"height":   height,
 		"txs":      len(lcdBlock.Block.Data.Txs),

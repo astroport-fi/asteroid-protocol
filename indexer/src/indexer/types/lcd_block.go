@@ -3,6 +3,8 @@ package types
 import "time"
 
 type LCDBlock struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 	BlockID struct {
 		Hash          string `json:"hash"`
 		PartSetHeader struct {
