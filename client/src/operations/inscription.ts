@@ -52,20 +52,21 @@ export class InscriptionOperations<
     return this.inscribe(content, metadata)
   }
 
+  updateCollection(
+    hash: string,
+    collectionMetadata: Partial<CollectionMetadata>,
+  ) {
+    const operation = this.protocol.updateCollection(hash)
+    return this.prepareOperation(operation, { metadata: collectionMetadata })
+  }
+
   transfer(hash: string, destination: string) {
     return this.prepareOperation(this.protocol.transfer(hash, destination))
   }
 
-  migrate(data: MigrationData) {
-    const parent = accountIdentifier(this.address)
-
-    const inscriptionData = this.protocol.createInscriptionData(
-      Uint8Array.from([]),
-      data,
-      parent,
-    )
+  migrate(migrationData: MigrationData) {
     const operation = this.protocol.migrate()
-    return this.prepareOperation(operation, inscriptionData)
+    return this.prepareOperation(operation, { metadata: migrationData })
   }
 
   grantMigrationPermission(hash: string, grantee: string) {

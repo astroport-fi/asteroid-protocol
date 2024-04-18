@@ -80,7 +80,7 @@ export default class InscriptionProtocol extends BaseProtocol {
     content: Uint8Array,
     metadata: T,
     parent: Parent,
-  ): InscriptionData {
+  ): Required<InscriptionData> {
     return buildInscriptionData(
       parent.type,
       parent.identifier,
@@ -92,6 +92,17 @@ export default class InscriptionProtocol extends BaseProtocol {
   inscribe(hash: string) {
     const params: MetaProtocolParams = [['h', hash]]
     return buildOperation(this, this.fee, this.chainId, 'inscribe', params)
+  }
+
+  updateCollection(hash: string) {
+    const params: MetaProtocolParams = [['h', hash]]
+    return buildOperation(
+      this,
+      this.fee,
+      this.chainId,
+      'update-collection',
+      params,
+    )
   }
 
   transfer(hash: string, destination: string) {

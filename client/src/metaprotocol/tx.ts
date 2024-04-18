@@ -53,7 +53,7 @@ function getMsgRevoke(inscription: TxInscription): MsgRevoke {
 
   return {
     granter: metadata,
-    grantee: toBase64(data.content),
+    grantee: toBase64(data.content ?? Uint8Array.from([])),
     msgTypeUrl: inscription.urn,
   }
 }
@@ -61,10 +61,10 @@ function getMsgRevoke(inscription: TxInscription): MsgRevoke {
 function getExtensionData(txInscription: TxInscription): ExtensionData {
   const data = txInscription.data!
   const inscription: Inscription = {
-    content: data.content,
+    content: data.content ?? Uint8Array.from([]),
     metadata: toUtf8(JSON.stringify(data.metadata)),
-    parentType: data.parentType,
-    parentIdentifier: data.parentIdentifier,
+    parentType: data.parentType ?? '',
+    parentIdentifier: data.parentIdentifier ?? '',
   }
 
   return {
