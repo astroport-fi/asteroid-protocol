@@ -40,7 +40,7 @@ export default function BuySettings({
 
   return (
     <div className="flex flex-col px-4 pt-8 shrink-0 border-r border-r-neutral">
-      <strong>Listings to buy</strong>
+      <div className="text-lg">Listings to buy</div>
       <div className="flex flex-row items-center mt-4">
         <Range
           type="range"
@@ -61,15 +61,18 @@ export default function BuySettings({
           onChange={(e) => changeValue(parseInt(e.target.value))}
         />
       </div>
-      <div className="flex flex-col mt-4 items-center">
+      <div className="flex flex-col mt-6 items-center">
         <span>
-          <DecimalText value={totalTokens} /> {token.ticker}
+          <DecimalText
+            prefix="Buy "
+            value={totalTokens}
+            suffix={` ${token.ticker}`}
+          />
         </span>
-        <span className="my-2">for</span>
-        <AtomValue value={totalAtom} horizontal />
+        <AtomValue value={totalAtom} className="items-center" prefix="for " />
       </div>
       <Button
-        className="mt-4"
+        className="mt-6"
         color="accent"
         size="sm"
         onClick={() => {
