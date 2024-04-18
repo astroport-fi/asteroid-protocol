@@ -386,6 +386,77 @@ setupCommand(inscriptionCommand.command('migrate'))
     })
   })
 
+interface UpdateCollectionOptions extends Options {
+  collection: string
+  royaltyPercentage: string
+  paymentAddress: string
+  description: string
+  twitter?: string
+  telegram?: string
+  discord?: string
+  website?: string
+}
+
+setupCommand(inscriptionCommand.command('update-collection'))
+  .description('Update collection metadata')
+  .requiredOption(
+    '-c, --collection <COLLECTION_SYMBOL>',
+    'The collection symbol',
+  )
+  .option('-r, --royalty-percentage [PERCENTAGE]', 'Royalty percentage')
+  .option('-p, --payment-address [PAYMENT_ADDRESS]', 'Payment address')
+  .option('-d, --description [DESCRIPTION]', 'Description')
+  .option('-t, --twitter [TWITTER]', 'Twitter')
+  .option('-g, --telegram [TELEGRAM]', 'Telegram')
+  .option('-s, --discord [DISCORD]', 'Discord')
+  .option('-w, --website [WEBSITE]', 'Website')
+  .action(async (options: UpdateCollectionOptions) => {
+    inscriptionAction(options, async (context, operations) => {
+      const collectionHash = await context.api.getCollectionHash(
+        options.collection,
+      )
+      if (!collectionHash) {
+        throw new Error('Unknown collection')
+      }
+
+      const metadata: Partial<CollectionMetadata> = {}
+      if (options.royaltyPercentage) {
+        metadata.royalty_percentage =
+          parseFloat(options.royaltyPercentage) / 100
+      }
+
+      if (options.paymentAddress) {
+        metadata.payment_address = options.paymentAddress
+      }
+
+      if (options.description) {
+        metadata.description = options.description
+      }
+
+      if (options.twitter) {
+        metadata.twitter = options.twitter
+      }
+
+      if (options.telegram) {
+        metadata.telegram = options.telegram
+      }
+
+      if (options.discord) {
+        metadata.discord = options.discord
+      }
+
+      if (options.website) {
+        metadata.website = options.website
+      }
+
+      if (Object.keys(metadata).length === 0) {
+        throw new Error('No metadata to update')
+      }
+
+      return operations.updateCollection(collectionHash, metadata)
+    })
+  })
+
 interface CFT20DeployOptions extends Options {
   ticker: string
   name: string

@@ -53,7 +53,7 @@ export function buildInscriptionData<T = unknown>(
   parentIdentifier: string,
   content: Uint8Array,
   metadata: T,
-): InscriptionData {
+): Required<InscriptionData> {
   const hash = toHex(sha256(content))
 
   return {

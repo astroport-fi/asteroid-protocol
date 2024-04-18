@@ -23,9 +23,13 @@ type CollectionMetadata struct {
 	Description       string  `json:"description"`
 	Mime              string  `json:"mime"`
 	Symbol            string  `json:"symbol"`
-	Minter            string  `json:"minter"`
-	RoyaltyPercentage float32 `json:"royalty_percentage"`
-	PaymentAddress    string  `json:"payment_address"`
+	Minter            string  `json:"minter,omitempty"`
+	RoyaltyPercentage float32 `json:"royalty_percentage,omitempty"`
+	PaymentAddress    string  `json:"payment_address,omitempty"`
+	Twitter           string  `json:"twitter,omitempty"`
+	Telegram          string  `json:"telegram,omitempty"`
+	Discord           string  `json:"discord,omitempty"`
+	Website           string  `json:"website,omitempty"`
 }
 
 type InscriptionNftMetadata struct {

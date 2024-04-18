@@ -154,30 +154,47 @@ type RPCBlock struct {
 	} `json:"result"`
 }
 
+type RawTransactionBody struct {
+	Messages []struct {
+		Type        string `json:"@type"`
+		FromAddress string `json:"from_address"`
+		ToAddress   string `json:"to_address"`
+		Amount      []struct {
+			Denom  string `json:"denom"`
+			Amount string `json:"amount"`
+		} `json:"amount"`
+		Receiver      string `json:"receiver"`
+		Sender        string `json:"sender"`
+		SourceChannel string `json:"source_channel"`
+		Token         struct {
+			Amount string `json:"amount"`
+			Denom  string `json:"denom"`
+		} `json:"token"`
+	} `json:"messages"`
+	Memo                        string         `json:"memo"`
+	TimeoutHeight               string         `json:"timeout_height"`
+	ExtensionOptions            []any          `json:"extension_options"`
+	NonCriticalExtensionOptions []RawExtension `json:"non_critical_extension_options"`
+}
+
+// get extension message
+func (body RawTransactionBody) GetExtensionMessage() (ExtensionMsg, error) {
+	for _, extension := range body.NonCriticalExtensionOptions {
+		msg, err := extension.UnmarshalData()
+		if err != nil {
+			return nil, fmt.Errorf("unable to unmarshal extension data '%s'", err)
+		}
+
+		// We only process the first extension option
+		return msg, nil
+	}
+
+	return nil, errors.New("no extension message found")
+}
+
 type RawTransaction struct {
-	Hash string `json:"hash"`
-	Body struct {
-		Messages []struct {
-			Type        string `json:"@type"`
-			FromAddress string `json:"from_address"`
-			ToAddress   string `json:"to_address"`
-			Amount      []struct {
-				Denom  string `json:"denom"`
-				Amount string `json:"amount"`
-			} `json:"amount"`
-			Receiver      string `json:"receiver"`
-			Sender        string `json:"sender"`
-			SourceChannel string `json:"source_channel"`
-			Token         struct {
-				Amount string `json:"amount"`
-				Denom  string `json:"denom"`
-			} `json:"token"`
-		} `json:"messages"`
-		Memo                        string         `json:"memo"`
-		TimeoutHeight               string         `json:"timeout_height"`
-		ExtensionOptions            []any          `json:"extension_options"`
-		NonCriticalExtensionOptions []RawExtension `json:"non_critical_extension_options"`
-	} `json:"body"`
+	Hash     string             `json:"hash"`
+	Body     RawTransactionBody `json:"body"`
 	AuthInfo struct {
 		SignerInfos []struct {
 			PublicKey struct {

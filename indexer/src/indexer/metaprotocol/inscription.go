@@ -173,6 +173,90 @@ func (protocol *Inscription) GrantMigrationPermission(transactionModel models.Tr
 	return nil
 }
 
+func (protocol *Inscription) UpdateCollection(parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	// validate collection hash
+	if parsedURN.KeyValuePairs["h"] == "" {
+		return fmt.Errorf("missing collection hash")
+	}
+
+	collectionHash := parsedURN.KeyValuePairs["h"]
+
+	// get collection
+	collection, err := protocol.GetCollection(collectionHash, sender)
+	if err != nil {
+		return err
+	}
+
+	// get collection metadata from non_critical_extension_options
+	msg, err := rawTransaction.Body.GetExtensionMessage()
+	if err != nil {
+		return err
+	}
+
+	var updateMetadata types.CollectionMetadata
+	jsonBytes, err := msg.GetMetadataBytes()
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(jsonBytes, &updateMetadata)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	// update collection metadata
+	var currentMetadata types.InscriptionMetadata[types.CollectionMetadata]
+	err = json.Unmarshal(collection.Metadata, &currentMetadata)
+
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	if updateMetadata.RoyaltyPercentage != 0 {
+		currentMetadata.Metadata.RoyaltyPercentage = updateMetadata.RoyaltyPercentage
+		collection.RoyaltyPercentage = sql.NullFloat64{Float64: float64(updateMetadata.RoyaltyPercentage), Valid: true}
+	}
+
+	if updateMetadata.PaymentAddress != "" {
+		if err := ValidateCosmosAddress(updateMetadata.PaymentAddress); err != nil {
+			return err
+		}
+
+		currentMetadata.Metadata.PaymentAddress = updateMetadata.PaymentAddress
+		collection.PaymentAddress = sql.NullString{String: updateMetadata.PaymentAddress, Valid: true}
+	}
+
+	if updateMetadata.Description != "" {
+		currentMetadata.Metadata.Description = updateMetadata.Description
+	}
+
+	if updateMetadata.Twitter != "" {
+		currentMetadata.Metadata.Twitter = updateMetadata.Twitter
+	}
+
+	if updateMetadata.Telegram != "" {
+		currentMetadata.Metadata.Telegram = updateMetadata.Telegram
+	}
+
+	if updateMetadata.Discord != "" {
+		currentMetadata.Metadata.Discord = updateMetadata.Discord
+	}
+
+	if updateMetadata.Website != "" {
+		currentMetadata.Metadata.Website = updateMetadata.Website
+	}
+
+	metadataBytes, err := json.Marshal(currentMetadata)
+	if err != nil {
+		return fmt.Errorf("unable to marshal collection metadata '%s'", err)
+	}
+
+	collection.Metadata = datatypes.JSON(metadataBytes)
+	protocol.db.Save(&collection)
+
+	return nil
+}
+
 func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender string) error {
 	// get migration data from non_critical_extension_options
 	var msg types.ExtensionMsg
@@ -532,6 +616,12 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		return protocol.Migrate(rawTransaction, sender)
+	case "update-collection":
+		if err := protocol.RequiresV2(parsedURN.Version); err != nil {
+			return err
+		}
+
+		return protocol.UpdateCollection(parsedURN, rawTransaction, sender)
 	case "grant-migration-permission":
 		if err := protocol.RequiresV2(parsedURN.Version); err != nil {
 			return err

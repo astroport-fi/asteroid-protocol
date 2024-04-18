@@ -6,11 +6,11 @@ export interface MetaProtocol {
 export type MetaProtocolParams = Array<[string, string | number]>
 
 export interface InscriptionData {
-  content: Uint8Array
+  content?: Uint8Array
   metadata: unknown
-  parentType: string
-  parentIdentifier: string
-  hash: string
+  parentType?: string
+  parentIdentifier?: string
+  hash?: string
 }
 
 export interface OperationFee {
