@@ -21,6 +21,7 @@
     "@cosmos-kit/leap-extension": "^2.7.10",
     "@cosmos-kit/react-lite": "^2.6.9",
     "@heroicons/react": "^2.1.1",
+    "@mdxeditor/editor": "^2.20.4",
     "@remix-run/cloudflare": "^2.8.1",
     "@remix-run/cloudflare-pages": "^2.8.1",
     "@remix-run/react": "^2.8.1",

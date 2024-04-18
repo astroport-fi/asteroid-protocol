@@ -6,10 +6,12 @@ export default function AtomValue({
   value,
   horizontal,
   className,
+  prefix,
 }: {
   value: number
   horizontal?: boolean
   className?: string
+  prefix?: string
 }) {
   const {
     status: { baseTokenUsd, baseToken },
@@ -26,6 +28,7 @@ export default function AtomValue({
       })}
     >
       <NumericFormat
+        prefix={prefix}
         displayType="text"
         value={atomAmount}
         suffix={` ${baseToken}`}
