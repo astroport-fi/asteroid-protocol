@@ -3,7 +3,7 @@ import { MsgExec, MsgGrant } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
 import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx.js'
 
-export function getMsgGrant(
+export function getGrantSendMsg(
   granter: string,
   grantee: string,
   authorization: SendAuthorization,
@@ -25,7 +25,10 @@ export function getMsgGrant(
   }
 }
 
-export function getMsgExecGrant(grantee: string, msg: MsgSend): EncodeObject {
+export function getExecSendGrantMsg(
+  grantee: string,
+  msg: MsgSend,
+): EncodeObject {
   const exec: MsgExec = {
     grantee,
     msgs: [
