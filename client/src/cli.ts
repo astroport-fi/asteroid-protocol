@@ -16,7 +16,7 @@ import InscriptionProtocol, {
 import MarketplaceProtocol from './metaprotocol/marketplace.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { ProtocolFee } from './metaprotocol/types.js'
-import { getExecSendGrantMsg, getGrantSendMsg } from './operations/auth.js'
+import { getExecSendGrantMsg, getGrantSendMsg } from './msg/auth.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { Options as OperationsOptions } from './operations/index.js'
 import { InscriptionOperations } from './operations/inscription.js'

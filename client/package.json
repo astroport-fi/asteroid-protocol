@@ -32,6 +32,10 @@
     "./metaprotocol": {
       "require": "./cjs/metaprotocol/index.js",
       "import": "./esm/metaprotocol/index.js"
+    },
+    "./msg": {
+      "require": "./cjs/msg/index.js",
+      "import": "./esm/msg/index.js"
     }
   },
   "bin": {
