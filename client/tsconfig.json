@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmitOnError": true,
     "rootDir": "src",
-    "outDir": "lib",
+    "outDir": "esm",
     "declaration": true,
     "sourceMap": false,
     "typeRoots": ["./node_modules/@types", "./src/@types"]

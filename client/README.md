@@ -148,6 +148,7 @@ Commands:
   inscription
   cft20
   marketplace
+  grant
   help [command]  display help for command
 ```
 
@@ -197,6 +198,7 @@ Create a new inscription
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -p, --data-path <DATA_PATH>      Inscription data path
   -i, --name <NAME>                Inscription name
   -d, --description <DESCRIPTION>  Inscription description
@@ -214,6 +216,7 @@ Create a new collection
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -s, --symbol <SYMBOL>            Collection symbol
   -p, --data-path <DATA_PATH>      Inscription data path
   -i, --name <NAME>                Inscription name
@@ -245,6 +248,7 @@ Create inscriptions from Metadata CSV and images/files
 Options:
   -n, --network [NETWORK_NAME]          Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]          Name of the account to use as transaction signer
+  --granter [GRANTER]                   Address of the granter account
   -p, --csv-path <CSV_PATH>             Metadata CSV path
   -c, --collection [COLLECTION_SYMBOL]  The collection symbol
   -h, --help                            display help for command
@@ -260,6 +264,7 @@ Transfer an inscription
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -h, --hash <HASH>                The transaction hash containing the inscription
   -d, --destination <DESTINATION>  The address to transfer to
   --help                           display help for command
@@ -277,6 +282,7 @@ Migrate inscriptions
 Options:
   -n, --network [NETWORK_NAME]   Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]   Name of the account to use as transaction signer
+  --granter [GRANTER]            Address of the granter account
   -p, --csv-path <CSV_PATH>      Metadata CSV path
   -c, --collection <COLLECTION>  The collection transaction hash
   -h, --help                     display help for command
@@ -292,6 +298,7 @@ Grant Migration Permission
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -h, --hashes <HASH...>        The transaction hashes containing the inscription(s)
   -g, --grantee <grantee>       The grantee address
   --help                        display help for command
@@ -322,6 +329,7 @@ Create a new token
 Options:
   -n, --network [NETWORK_NAME]   Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]   Name of the account to use as transaction signer
+  --granter [GRANTER]            Address of the granter account
   -t, --ticker <TICKER>          The address to transfer to
   -i, --name <NAME>              The The name of the token
   -s, --supply <SUPPLY>          The max supply of the token
@@ -341,6 +349,7 @@ Mint a token
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -t, --ticker <TICKER>         The address to transfer to
   -m, --amount <AMOUNT>         The amount to transfer
   -h, --help                    display help for command
@@ -356,6 +365,7 @@ Transfer a token
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -t, --ticker <TICKER>            The token ticker
   -m, --amount <AMOUNT>            The amount to transfer
   -d, --destination <DESTINATION>  The address to transfer to
@@ -388,6 +398,7 @@ Creating a new listing for CFT-20 tokens
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -t, --ticker <TICKER>            The token ticker
   -m, --amount <AMOUNT>            The amount being sold
   -p, --price <PRICE>              The price per token in atom
@@ -406,6 +417,7 @@ Creating a new listing for an inscription
 Options:
   -n, --network [NETWORK_NAME]     Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]     Name of the account to use as transaction signer
+  --granter [GRANTER]              Address of the granter account
   -t, --hash <HASH>                The transaction hash containing the inscription
   -p, --price <PRICE>              The price in atom
   -d, --min-deposit [MIN_DEPOSIT]  The minimum deposit expressed as a percentage of total (default: "0.1")
@@ -423,6 +435,7 @@ Creating a new listing for all collection inscriptions
 Options:
   -n, --network [NETWORK_NAME]          Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]          Name of the account to use as transaction signer
+  --granter [GRANTER]                   Address of the granter account
   -c, --collection [COLLECTION_SYMBOL]  The collection symbol
   -p, --price <PRICE>                   The price in atom
   -d, --min-deposit [MIN_DEPOSIT]       The minimum deposit expressed as a percentage of total (default: "0.01")
@@ -440,6 +453,7 @@ Reserve a listing for purchase
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -h, --hash <HASH>             The listing transaction hash
   --help                        display help for command
 ```
@@ -454,6 +468,7 @@ Buy a listing, the listing must be reserved first
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -h, --hash <HASH>             The listing transaction hash
   --help                        display help for command
 ```
@@ -468,6 +483,7 @@ Buy a listing, the listing must be reserved first
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -h, --hash <HASH>             The listing transaction hash
   --help                        display help for command
 ```
@@ -482,10 +498,39 @@ Removing a listing
 Options:
   -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
   -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
   -h, --hash <HASH>             The listing transaction hash
   --help                        display help for command
 ```
 
+### Grant
+
+```bash
+Usage: asteroid grant [options] [command]
+
+Options:
+  -h, --help      display help for command
+
+Commands:
+  approve
+  help [command]  display help for command
+```
+
+#### Grant send message permission
+
+```bash
+Usage: asteroid grant approve send [options]
+
+Grant permission to grantee (for example bot) to perform send message on behalf of granter (user)
+
+Options:
+  -n, --network [NETWORK_NAME]  Name of the network to use (default: "local")
+  -a, --account [ACCOUNT_NAME]  Name of the account to use as transaction signer
+  --granter [GRANTER]           Address of the granter account
+  -g, --grantee <GRANTEE>       The grantee address
+  -m, --amount <AMOUNT>         The granted amount in uatom
+  -h, --help                    display help for command
+```
 
 ### Examples
 
@@ -507,6 +552,20 @@ npx asteroid inscription inscribe-csv -c DEAC410DF14EE4F7B0D74D5CA34B1DC3FD210F9
 npx asteroid inscription grant-migration-permission -g $granteeAddress -h $inscription1Hash -h $inscription2Hash -h $inscriptionXHash
 npx asteroid inscription migrate -p ./migration.csv -c $collectionHash
 
+```
+
+#### Inscribe on behalf of user by a bot or backend
+
+1. Grant permission to send 5 uatom - it will allow bot to create 5 inscription inscribe transactions
+
+```bash
+npx asteroid grant approve send --grantee cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw --amount 5
+```
+
+2. Inscribe inscriptions on behalf of user by a bot
+
+```bash
+npx asteroid inscription inscribe --granter cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud -p ~/Downloads/test.png --account bot --name "test inscription" -d "test description"
 ```
 
 ## Development

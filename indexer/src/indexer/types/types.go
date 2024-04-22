@@ -154,6 +154,16 @@ type RPCBlock struct {
 	} `json:"result"`
 }
 
+type SendMessage struct {
+	Type        string `json:"@type"`
+	FromAddress string `json:"from_address"`
+	ToAddress   string `json:"to_address"`
+	Amount      []struct {
+		Denom  string `json:"denom"`
+		Amount string `json:"amount"`
+	} `json:"amount"`
+}
+
 type RawTransactionBody struct {
 	Messages []struct {
 		Type        string `json:"@type"`
@@ -170,6 +180,7 @@ type RawTransactionBody struct {
 			Amount string `json:"amount"`
 			Denom  string `json:"denom"`
 		} `json:"token"`
+		Msgs []SendMessage `json:"msgs"`
 	} `json:"messages"`
 	Memo                        string         `json:"memo"`
 	TimeoutHeight               string         `json:"timeout_height"`
@@ -375,6 +386,10 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 		}
 		if message.Sender != "" {
 			return message.Sender, nil
+		}
+		if message.Type == "/cosmos.authz.v1beta1.MsgExec" && len(message.Msgs) > 0 && message.Msgs[0].FromAddress != "" {
+			return message.Msgs[0].FromAddress, nil
+
 		}
 	}
 	return "", errors.New("no sender address found")

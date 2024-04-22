@@ -39,6 +39,7 @@ export class Context {
 export interface Options {
   network: string
   account?: string
+  granter?: string
 }
 
 export default async function loadConfig(): Promise<Config> {

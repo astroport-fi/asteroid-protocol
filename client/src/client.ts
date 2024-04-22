@@ -36,6 +36,7 @@ import {
 } from '@cosmjs/stargate'
 import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { assert, assertDefined } from '@cosmjs/utils'
+import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
 import { GasInfo } from 'cosmjs-types/cosmos/base/abci/v1beta1/abci.js'
 import { SignMode } from 'cosmjs-types/cosmos/tx/signing/v1beta1/signing.js'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx.js'
@@ -119,6 +120,7 @@ export class SigningStargateClient extends StargateClient {
       aminoTypes = new AminoTypes(createDefaultAminoConverters()),
     } = options
     registry.register('/gaia.metaprotocols.ExtensionData', ExtensionData)
+    registry.register(SendAuthorization.typeUrl, SendAuthorization)
     this.registry = registry
     this.aminoTypes = aminoTypes
     this.signer = signer
@@ -170,6 +172,7 @@ export class SigningStargateClient extends StargateClient {
     if (this.simulateEndpoint) {
       ;({ gasInfo } = await simulateTxRest(
         this.simulateEndpoint,
+        this.registry,
         messages,
         memo,
         pubkey,

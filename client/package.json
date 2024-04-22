@@ -1,6 +1,6 @@
 {
   "name": "@asteroid-protocol/sdk",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "scripts": {
@@ -32,6 +32,10 @@
     "./metaprotocol": {
       "require": "./cjs/metaprotocol/index.js",
       "import": "./esm/metaprotocol/index.js"
+    },
+    "./msg": {
+      "require": "./cjs/msg/index.js",
+      "import": "./esm/msg/index.js"
     }
   },
   "bin": {

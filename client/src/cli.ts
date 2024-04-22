@@ -16,6 +16,7 @@ import InscriptionProtocol, {
 import MarketplaceProtocol from './metaprotocol/marketplace.js'
 import { TxData, broadcastTx } from './metaprotocol/tx.js'
 import { ProtocolFee } from './metaprotocol/types.js'
+import { getExecSendGrantMsg, getGrantSendMsg } from './msg/auth.js'
 import { CFT20Operations } from './operations/cft20.js'
 import { Options as OperationsOptions } from './operations/index.js'
 import { InscriptionOperations } from './operations/inscription.js'
@@ -23,7 +24,19 @@ import { MarketplaceOperations } from './operations/marketplace.js'
 import { readCSV } from './utils/csv.js'
 import { checkTx } from './utils/tx.js'
 
-async function broadcastAndCheckTx(context: Context, txData: TxData) {
+async function broadcastAndCheckTx(
+  context: Context,
+  options: Options,
+  txData: TxData,
+) {
+  if (options.granter) {
+    console.log('Performing grant transaction!')
+    const msgs = txData.messages.map((msg) =>
+      getExecSendGrantMsg(context.account.address, msg.value),
+    )
+    txData.messages = msgs
+  }
+
   const res = await broadcastTx(
     context.client,
     context.account.address,
@@ -48,6 +61,8 @@ export function setupCommand(command?: Command) {
     '-a, --account [ACCOUNT_NAME]',
     'Name of the account to use as transaction signer',
   )
+  command.option('--granter [GRANTER]', 'Address of the granter account')
+
   return command
 }
 
@@ -60,12 +75,13 @@ const marketplaceCommand = program.command('marketplace')
 async function action(
   options: Options,
   fn: (context: Context) => Promise<TxData | void>,
+  warn = true,
 ) {
   const context = await createContext(options)
   const txData = await fn(context)
   if (txData) {
-    await broadcastAndCheckTx(context, txData)
-  } else {
+    await broadcastAndCheckTx(context, options, txData)
+  } else if (warn) {
     console.warn('No tx data')
   }
 }
@@ -80,6 +96,10 @@ function getFee(
   }
 
   return { ...fee, receiver }
+}
+
+function getUserAddress(context: Context, options: Options): string {
+  return options.granter || context.account.address
 }
 
 function getOperationsOptions(
@@ -104,7 +124,7 @@ async function inscriptionAction(
   return action(options, (context) => {
     const operations = new InscriptionOperations(
       context.network.chainId,
-      context.account.address,
+      getUserAddress(context, options),
       getOperationsOptions(context.config, InscriptionProtocol.DEFAULT_FEE),
     )
     return fn(context, operations)
@@ -118,7 +138,7 @@ async function cft20Action(
   return action(options, (context) => {
     const operations = new CFT20Operations(
       context.network.chainId,
-      context.account.address,
+      getUserAddress(context, options),
       getOperationsOptions(context.config, CFT20Protocol.DEFAULT_FEE),
     )
     return fn(context, operations)
@@ -135,7 +155,7 @@ async function marketplaceAction(
   return action(options, (context) => {
     const operations = new MarketplaceOperations(
       context.network.chainId,
-      context.account.address,
+      getUserAddress(context, options),
       context.api,
       getOperationsOptions(context.config, MarketplaceProtocol.DEFAULT_FEE),
     )
@@ -306,7 +326,7 @@ setupCommand(inscriptionCommand.command('inscribe-csv'))
           txData = operations.inscribe(data, metadata)
         }
 
-        await broadcastAndCheckTx(context, txData)
+        await broadcastAndCheckTx(context, options, txData)
         console.log('')
       }
     })
@@ -353,7 +373,7 @@ setupCommand(inscriptionCommand.command('grant-migration-permission'))
           options.grantee,
         )
 
-        await broadcastAndCheckTx(context, txData)
+        await broadcastAndCheckTx(context, options, txData)
       }
     })
   })
@@ -609,7 +629,7 @@ setupCommand(marketplaceListCommand.command('collection'))
 
       const inscriptions = await context.api.getCollectionInscriptions(
         collectionId,
-        context.account.address,
+        getUserAddress(context, options),
       )
       for (const hash of inscriptions) {
         try {
@@ -619,7 +639,7 @@ setupCommand(marketplaceListCommand.command('collection'))
             parseFloat(options.minDeposit),
             parseInt(options.timeoutBlocks),
           )
-          await broadcastAndCheckTx(context, txData)
+          await broadcastAndCheckTx(context, options, txData)
         } catch (err) {
           console.log('Error listing inscription', hash, err)
         }
@@ -703,6 +723,48 @@ setupCommand(marketplaceCommand.command('delist'))
     marketplaceAction(options, async (context, operations) => {
       return operations.delist(options.hash)
     })
+  })
+
+const grantCommand = program.command('grant')
+
+interface GrantSendMsgOptions extends Options {
+  grantee: string
+  amount: string
+}
+
+setupCommand(grantCommand.command('approve').command('send'))
+  .description(
+    'Grant permission to grantee (for example bot) to perform send message on behalf of granter (user)',
+  )
+  .requiredOption('-g, --grantee <GRANTEE>', 'The grantee address')
+  .requiredOption('-m, --amount <AMOUNT>', 'The granted amount in uatom')
+  .action(async (options: GrantSendMsgOptions) => {
+    action(
+      options,
+      async (context) => {
+        console.log('Granting permission!')
+
+        const grant = getGrantSendMsg(
+          context.account.address,
+          options.grantee,
+          {
+            allowList: [context.account.address],
+            spendLimit: [{ denom: 'uatom', amount: options.amount }],
+          },
+        )
+        const res = await context.client.signAndBroadcast(
+          context.account.address,
+          [grant],
+          1.7,
+        )
+        if (res.code) {
+          throw new Error(`Transaction failed with error code ${res.code}`)
+        }
+        console.log(`${context.network.explorer}${res.transactionHash}`)
+        return
+      },
+      false,
+    )
   })
 
 program.parseAsync()
