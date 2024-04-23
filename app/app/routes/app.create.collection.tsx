@@ -1,6 +1,5 @@
 import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
-import { GlobeAltIcon } from '@heroicons/react/24/outline'
 import { Link } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -10,36 +9,26 @@ import {
   FileInput,
   Form,
   Input,
-  Textarea,
 } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
+import {
+  CreateFormData,
+  Description,
+  Discord,
+  PaymentAddress,
+  RoyaltyPercentage,
+  Telegram,
+  Twitter,
+  Website,
+} from '~/components/collection-form/Inputs'
 import TxDialog from '~/components/dialogs/TxDialog'
-import CosmosAddressInput from '~/components/form/CosmosAddressInput'
 import Label from '~/components/form/Label'
-import NumericInput from '~/components/form/NumericInput'
-import Discord from '~/components/icons/discord'
-import Telegram from '~/components/icons/telegram'
-import Twitter from '~/components/icons/twitter'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import { loadImage } from '~/utils/file'
-import 'react-datepicker/dist/react-datepicker.css'
-
-type FormData = {
-  name: string
-  ticker: string
-  description: string
-  content: File[]
-  website: string
-  twitter: string
-  telegram: string
-  discord: string
-  royaltyPercentage: number
-  paymentAddress: string
-}
 
 const NAME_MIN_LENGTH = 1
 const NAME_MAX_LENGTH = 32
@@ -58,7 +47,7 @@ export default function CreateCollection() {
     control,
     reset,
     formState: { errors },
-  } = useForm<FormData>()
+  } = useForm<CreateFormData>()
   const name = watch('name')
   const ticker = watch('ticker')
   const paymentAddress = watch('paymentAddress')
@@ -308,137 +297,23 @@ export default function CreateCollection() {
             </label>
           </div>
 
-          <NumericInput
-            control={control}
-            error={errors.royaltyPercentage}
-            isFloat
-            suffix="%"
-            decimalScale={2}
-            allowNegative={false}
-            isAllowed={(values) => {
-              const { floatValue } = values
-              if (floatValue === undefined) {
-                return true
-              }
-              return floatValue! <= 100
-            }}
-            name="royaltyPercentage"
-            title="Royalty %"
-            tooltip="Can range from 0% to x%. New artists typically choose 5% or less while established artists can command royalties of 5%-15%"
-            className="mt-4"
-          />
+          <RoyaltyPercentage control={control} errors={errors} />
 
-          <CosmosAddressInput
+          <PaymentAddress
             register={register}
-            name="paymentAddress"
-            error={errors.paymentAddress}
-            title="Royalty payment address (optional)"
-            tooltip="The address where royalties will be sent. Must be a Cosmos Hub address. If left blank, royalties will be sent to the collection owner's address."
-            value={paymentAddress ?? ''}
+            errors={errors}
+            value={paymentAddress}
           />
 
-          <div className="form-control w-full mt-4">
-            <Label
-              title="Website"
-              htmlFor="website"
-              tooltip="A website or URL dedicated to your collection"
-              icon={<GlobeAltIcon className="size-5" />}
-            />
-            <Input
-              id="website"
-              color={errors.website ? 'error' : undefined}
-              placeholder="Website URL"
-              {...register('website', { pattern: /^https?:\/\/.+/ })}
-            />
-            {errors.website && (
-              <label className="label" htmlFor="website">
-                <span className="label-text-alt text-error">
-                  Website URL is invalid
-                </span>
-              </label>
-            )}
-          </div>
+          <Website register={register} errors={errors} />
 
-          <div className="form-control w-full mt-4">
-            <Label
-              title="Twitter"
-              htmlFor="twitter"
-              icon={<Twitter className="size-4" />}
-            />
-            <Input
-              id="twitter"
-              color={errors.twitter ? 'error' : undefined}
-              placeholder="https://twitter.com/handle"
-              {...register('twitter', {
-                pattern: /^https:\/\/twitter.com\/.+/,
-              })}
-            />
-            {errors.twitter && (
-              <label className="label" htmlFor="twitter">
-                <span className="label-text-alt text-error">
-                  Twitter URL is invalid
-                </span>
-              </label>
-            )}
-          </div>
+          <Twitter register={register} errors={errors} />
 
-          <div className="form-control w-full mt-4">
-            <Label
-              title="Telegram"
-              htmlFor="telegram"
-              icon={<Telegram className="size-4" />}
-            />
-            <Input
-              id="telegram"
-              color={errors.telegram ? 'error' : undefined}
-              placeholder="https://t.me/channel_name"
-              {...register('telegram', { pattern: /^https:\/\/t.me\/.+/ })}
-            />
-            {errors.telegram && (
-              <label className="label" htmlFor="telegram">
-                <span className="label-text-alt text-error">
-                  Telegram URL is invalid
-                </span>
-              </label>
-            )}
-          </div>
+          <Telegram register={register} errors={errors} />
 
-          <div className="form-control w-full mt-4">
-            <Label
-              title="Discord"
-              htmlFor="discord"
-              icon={<Discord className="size-5" />}
-            />
-            <Input
-              id="discord"
-              color={errors.discord ? 'error' : undefined}
-              placeholder="https://discord.com/invite/channel_name"
-              {...register('discord', {
-                pattern: /^https:\/\/discord.com\/.+/,
-              })}
-            />
-            {errors.discord && (
-              <label className="label" htmlFor="discord">
-                <span className="label-text-alt text-error">
-                  Discord URL is invalid
-                </span>
-              </label>
-            )}
-          </div>
+          <Discord register={register} errors={errors} />
 
-          <div className="form-control w-full mt-4">
-            <Label
-              title="Description"
-              htmlFor="description"
-              tooltip="Will appear at the top of your collection's landing page, and can also be used by third-party apps"
-            />
-            <Textarea
-              id="description"
-              placeholder="Describe your collection"
-              rows={10}
-              {...register('description')}
-            />
-          </div>
+          <Description register={register} />
 
           {operations ? (
             <Button

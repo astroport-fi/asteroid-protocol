@@ -15,7 +15,7 @@ USE_IBC = false
 USE_EXTENSION_DATA = true
 MAINTENANCE_MODE = false
 
-[env.vars.localroids]
+[env.localroids.vars]
 ENVIRONMENT = "development"
 ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"

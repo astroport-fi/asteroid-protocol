@@ -21,6 +21,7 @@ export default function CosmosAddressInput<
   error,
   className,
   tooltip,
+  required = true,
 }: {
   register: UseFormRegister<TFieldValues>
   name: TName
@@ -29,6 +30,7 @@ export default function CosmosAddressInput<
   error: FieldError | undefined
   className?: string
   tooltip?: string
+  required?: boolean
 }) {
   return (
     <div className={twMerge('form-control w-full', className)}>
@@ -42,7 +44,7 @@ export default function CosmosAddressInput<
         maxLength={ADDRESS_LENGTH}
         color={error ? 'error' : undefined}
         {...register(name, {
-          required: true,
+          required,
           pattern: /^cosmos1[a-zA-Z0-9]{38}$/,
           minLength: ADDRESS_LENGTH,
           maxLength: ADDRESS_LENGTH,
