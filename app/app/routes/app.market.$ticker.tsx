@@ -2,9 +2,10 @@ import type { TxInscription } from '@asteroid-protocol/sdk'
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
+import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing } from '~/api/token'
 import { BackHeader } from '~/components/Back'
 import GhostEmptyState from '~/components/GhostEmptyState'
@@ -17,6 +18,8 @@ import BuySettings from '~/components/market/BuySettings'
 import LatestTransactions from '~/components/market/LatestTransactions'
 import ReservedListingsTable from '~/components/market/ReservedListingsTable'
 import Stats from '~/components/market/Stats'
+import { useRootContext } from '~/context/root'
+import useAddress from '~/hooks/useAddress'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
@@ -195,18 +198,32 @@ export default function MarketPage() {
   const [selectedListings, setSelectedListings] = useState<
     MarketplaceTokenListing[]
   >([])
+  const address = useAddress()
+  const {
+    status: { lastKnownHeight },
+  } = useRootContext()
   const { actions, operation, listingHash, txDialogRef, buyDialogRef } =
     useListingActions()
+  const availableListings = useMemo(() => {
+    return data.listings.filter((listing) => {
+      const listingState = getListingState(
+        listing.marketplace_listing,
+        address,
+        lastKnownHeight,
+      )
+      return listingState === ListingState.Reserve
+    })
+  }, [data.listings, address, lastKnownHeight])
 
   return (
     <div className="flex flex-col md:flex-row h-full">
       <BuySettings
         token={token}
         onChange={(listings) => {
-          setSelectedListings(data.listings.slice(0, listings))
+          setSelectedListings(availableListings.slice(0, listings))
         }}
         selectedListings={selectedListings}
-        max={Math.min(data.limit, data.total)}
+        max={Math.min(data.limit, availableListings.length)}
       />
       <div className="flex flex-col w-full md:h-full h-[calc(100%-14rem)]">
         <div className="flex flex-col mb-2 mt-8 px-8">
