@@ -17,8 +17,8 @@ import IndeterminateCheckbox from '../form/IndeterminateCheckbox'
 import Table from '../table'
 
 export interface ListingsTableActions {
-  reserveListing: (hash: string) => void
-  buyListing: (hash: string) => void
+  reserveListing: (hash: string | string[]) => void
+  buyListing: (hash: string | string[]) => void
   cancelListing: (hash: string) => void
 }
 
@@ -30,6 +30,7 @@ export default function ListingsTable({
   className,
   pages,
   total,
+  headerAction,
 }: {
   token: Token
   listings: MarketplaceTokenListing[]
@@ -37,6 +38,7 @@ export default function ListingsTable({
   actions: ListingsTableActions
   pages?: number
   total?: number
+  headerAction?: boolean
   className?: string
 }) {
   const columnHelper = createColumnHelper<MarketplaceTokenListing>()
@@ -108,13 +110,40 @@ export default function ListingsTable({
     }),
     columnHelper.accessor('marketplace_listing.transaction.hash', {
       enableSorting: false,
-      header: '',
       meta: {
         className: 'text-center',
         headerClassName: 'text-center',
       },
       id: 'state',
+      header: ({ table }) => {
+        if (!headerAction) {
+          return
+        }
+
+        const selected = Object.keys(table.getState().rowSelection ?? {})
+        const selectedLen = selected.length
+        if (selectedLen < 1) {
+          return
+        }
+
+        return (
+          <Button
+            color="accent"
+            size="sm"
+            onClick={() => actions.buyListing(selected)}
+          >
+            Complete {selectedLen} listings
+          </Button>
+        )
+      },
       cell: (info) => {
+        const selectionLength = Object.keys(
+          info.table.getState().rowSelection,
+        ).length
+        if (selectionLength > 0) {
+          return ''
+        }
+
         const listing = info.row.original.marketplace_listing
         const listingHash = listing.transaction.hash
 
