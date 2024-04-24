@@ -47,12 +47,20 @@ func ParseProtocolString(protocolURN *urn.URN) (ProtocolURN, error) {
 	// Parse key=value,key=value
 	keyValuePairs := make(map[string]string)
 	keyValuePairsString := strings.Split(opContent[1], ",")
+	prevKey := ""
+
 	for _, keyValuePair := range keyValuePairsString {
 		keyValue := strings.Split(keyValuePair, "=")
 		if len(keyValue) != 2 {
+			if len(keyValue) == 1 && prevKey != "" {
+				keyValuePairs[prevKey] = strings.Join([]string{keyValuePairs[prevKey], keyValue[0]}, ",")
+				continue
+			}
+
 			return parsedProtocolURN, fmt.Errorf("invalid key/value pair: %s", protocolURN.SS)
 		}
 		keyValuePairs[keyValue[0]] = keyValue[1]
+		prevKey = keyValue[0]
 	}
 	parsedProtocolURN.KeyValuePairs = keyValuePairs
 

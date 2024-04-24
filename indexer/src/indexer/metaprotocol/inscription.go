@@ -271,6 +271,10 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 		break
 	}
 
+	if msg == nil {
+		return fmt.Errorf("no extension options found")
+	}
+
 	var migrationData types.InscriptionMigrationData
 	jsonBytes, err := msg.GetMetadataBytes()
 	if err != nil {
@@ -530,7 +534,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
 			if err != nil {
-				return err
+				return fmt.Errorf("error getting collection with identifier '%s': %w", inscriptionMetadata.Parent.Identifier, err)
 			}
 
 			// set collection id to the inscription

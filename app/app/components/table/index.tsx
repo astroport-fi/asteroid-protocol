@@ -52,6 +52,7 @@ function Pagination<T>({
       <Button
         shape="circle"
         color="ghost"
+        className="btn-sm md:btn-md"
         onClick={() => table.setPageIndex(0)}
         disabled={!table.getCanPreviousPage()}
       >
@@ -60,6 +61,7 @@ function Pagination<T>({
       <Button
         shape="circle"
         color="ghost"
+        className="btn-sm md:btn-md"
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
@@ -68,6 +70,7 @@ function Pagination<T>({
       <Button
         shape="circle"
         color="ghost"
+        className="btn-sm md:btn-md"
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
@@ -76,13 +79,14 @@ function Pagination<T>({
       <Button
         shape="circle"
         color="ghost"
+        className="btn-sm md:btn-md"
         onClick={() => table.setPageIndex(table.getPageCount() - 1)}
         disabled={!table.getCanNextPage()}
       >
         <ChevronDoubleRightIcon className="size-5" />
       </Button>
-      <span className="flex items-center gap-1">
-        <div>Page</div>
+      <span className="flex items-center gap-1 shrink-0">
+        <span>Page</span>
         <strong>
           {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
         </strong>
@@ -90,6 +94,7 @@ function Pagination<T>({
 
       <Select
         size="sm"
+        className="hidden md:flex"
         value={table.getState().pagination.pageSize}
         onChange={(e) => {
           table.setPageSize(Number(e.target.value))

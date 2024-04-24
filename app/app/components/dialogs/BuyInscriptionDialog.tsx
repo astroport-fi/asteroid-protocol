@@ -56,7 +56,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
               </span>
             </Modal.Header>
             <Modal.Body className="flex flex-col items-center">
-              <div className="flex flex-col items-center px-8 overflow-y-scroll max-h-[calc(100vh-290px)] mb-20">
+              <div className="flex flex-col items-center px-8 overflow-y-scroll max-h-[calc(100vh-290px)] mb-20 w-full">
                 <InscriptionImage
                   mime={inscription.mime}
                   src={inscription.content_path}

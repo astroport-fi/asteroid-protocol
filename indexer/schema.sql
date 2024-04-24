@@ -190,7 +190,6 @@ CREATE TABLE public.inscription_history (
     "action" varchar(32) NOT NULL,
     date_created timestamp NOT NULL,
     CONSTRAINT inscription_history_pkey PRIMARY KEY (id),
-    CONSTRAINT inscription_history_un UNIQUE (transaction_id),
     CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public.inscription(id),
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
@@ -375,7 +374,6 @@ CREATE TABLE public.token_trade_history (
     total_usd float4 NOT NULL DEFAULT 0,
     date_created timestamp NOT NULL,
     CONSTRAINT tth_key PRIMARY KEY (id),
-    CONSTRAINT tth_tx_id UNIQUE (transaction_id),
     CONSTRAINT token_id_fk FOREIGN KEY (token_id) REFERENCES public."token"(id),
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
@@ -416,7 +414,6 @@ CREATE TABLE public.inscription_trade_history (
     total_usd float4 NOT NULL DEFAULT 0,
     date_created timestamp NOT NULL,
     CONSTRAINT ith_key PRIMARY KEY (id),
-    CONSTRAINT ith_tx_id UNIQUE (transaction_id),
     CONSTRAINT inscription_id_fk FOREIGN KEY (inscription_id) REFERENCES public."inscription"(id),
     CONSTRAINT transaction_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
 );
