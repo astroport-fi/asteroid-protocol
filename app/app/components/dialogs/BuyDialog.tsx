@@ -282,7 +282,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
               ? `${stepTitle} ${listingInfo.operationListings} listings`
               : stepTitle
           }
-          disabled={royalty?.isLoading}
+          disabled={royalty?.isLoading || royalty?.error != null}
           onSubmit={sendTx}
           onClose={() => {
             fRef.current?.close()

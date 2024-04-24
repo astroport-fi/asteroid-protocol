@@ -22,6 +22,7 @@ export default function ReservedListingsTable({
       listings={listings}
       className={className}
       actions={actions}
+      headerAction
       tableOptions={{
         enableRowSelection: true,
         state: {
