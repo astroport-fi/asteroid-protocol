@@ -93,6 +93,7 @@ export default function BuySettings({
         listingHash={listingHashes}
         ref={dialogRef}
         resultLink={`/app/market/${token.ticker}`}
+        onSuccess={() => onChange(0)}
       />
     </div>
   )

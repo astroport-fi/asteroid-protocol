@@ -22,6 +22,7 @@ interface Props {
   buyType: BuyType
   royalty?: Royalty
   resultLink?: To | ((txHash: string) => To)
+  onSuccess?: (txHash: string) => void
 }
 
 enum Step {
@@ -38,7 +39,6 @@ interface ListingsInfo {
 
 function getListingsInfo(
   buyType: BuyType,
-  step: Step,
   selectedListings: string | string[],
   operationListings: string[] | undefined,
 ): ListingsInfo {
@@ -49,15 +49,15 @@ function getListingsInfo(
     }
   }
 
+  if (typeof selectedListings === 'string') {
+    selectedListings = [selectedListings]
+  }
+
   if (!operationListings) {
     return {
       operationListings: 1,
       selectedListings: selectedListings.length,
     }
-  }
-
-  if (!Array.isArray(selectedListings)) {
-    selectedListings = [selectedListings]
   }
 
   return {
@@ -67,7 +67,7 @@ function getListingsInfo(
 }
 
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
-  { buyType, royalty, listingHash: listingHashProp, resultLink },
+  { buyType, royalty, listingHash: listingHashProp, resultLink, onSuccess },
   ref,
 ) {
   const operations = useMarketplaceOperations()
@@ -97,6 +97,16 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   } = useSubmitTx(txInscription)
   const asteroidClient = useAsteroidClient()
 
+  useEffect(() => {
+    if (
+      txState === TxState.SuccessInscribed &&
+      step === Step.Purchase &&
+      txHash
+    ) {
+      onSuccess?.(txHash)
+    }
+  }, [txState, txHash, step])
+
   const listingInfo = useMemo(() => {
     if (!listingHash) {
       return {
@@ -107,11 +117,10 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
 
     return getListingsInfo(
       buyType,
-      step,
       listingHash,
       txInscription?.data?.metadata as string[] | undefined,
     )
-  }, [listingHash, buyType, step, txInscription?.data?.metadata])
+  }, [listingHash, buyType, txInscription?.data?.metadata])
 
   const resetState = useCallback(() => {
     setListingHash(null)
