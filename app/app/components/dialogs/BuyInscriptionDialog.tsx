@@ -166,7 +166,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
 
                 <BuyDialog
                   buyType="inscription"
-                  royalty={royalty ?? undefined}
+                  royalty={royalty}
                   listingHash={listing?.transaction.hash ?? null}
                   ref={dialogRef}
                 />

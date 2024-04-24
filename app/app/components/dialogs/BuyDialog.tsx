@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from '@remix-run/react'
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
 import { Alert, Steps } from 'react-daisyui'
 import type { To } from 'react-router'
+import { SWRResponse } from 'swr'
 import { Royalty } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { useRootContext } from '~/context/root'
@@ -20,7 +21,7 @@ export type BuyType = 'cft20' | 'inscription'
 interface Props {
   listingHash: string | string[] | null
   buyType: BuyType
-  royalty?: Royalty
+  royalty?: SWRResponse<Royalty | null>
   resultLink?: To | ((txHash: string) => To)
   onSuccess?: (txHash: string) => void
 }
@@ -177,7 +178,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.InitialBuy && txState === TxState.Initial) {
       operations
-        .buy(listingHash, buyType, royalty)
+        .buy(listingHash, buyType, royalty?.data ?? undefined)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -187,7 +188,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
         )
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
       operations
-        .buy(listingHash, buyType, royalty)
+        .buy(listingHash, buyType, royalty?.data ?? undefined)
         .then((buyTxData) => {
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
@@ -281,6 +282,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
               ? `${stepTitle} ${listingInfo.operationListings} listings`
               : stepTitle
           }
+          disabled={royalty?.isLoading}
           onSubmit={sendTx}
           onClose={() => {
             fRef.current?.close()
