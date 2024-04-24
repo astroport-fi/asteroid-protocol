@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Input, Range } from 'react-daisyui'
 import { MarketplaceTokenListing, Token } from '~/api/token'
 import DecimalText from '~/components/DecimalText'
@@ -38,6 +38,10 @@ export default function BuySettings({
     0,
   )
 
+  useEffect(() => {
+    setValue(selectedListings.length)
+  }, [selectedListings.length])
+
   return (
     <div className="flex flex-col px-4 pt-8 shrink-0 border-r border-r-neutral">
       <div className="text-lg">Listings to buy</div>
@@ -48,7 +52,8 @@ export default function BuySettings({
           max={max}
           value={value}
           size="sm"
-          onChange={(e) => changeValue(parseInt(e.target.value))}
+          onChange={(e) => setValue(parseInt(e.target.value))}
+          onMouseUp={() => changeValue(value)}
         />
         <Input
           type="number"
