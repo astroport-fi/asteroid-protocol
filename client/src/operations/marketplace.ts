@@ -172,6 +172,7 @@ export class MarketplaceOperations<
       const result = await this.depositListing(status, hash)
       if (result.error) {
         error = result.error
+        console.warn(`Error buying listing ${hash}: ${error}`)
       } else {
         messages.push(result.msg!)
         availableListings.push(hash)
@@ -300,6 +301,7 @@ export class MarketplaceOperations<
       const result = await this.buyListing(status, listing, royalty?.[i])
       if (result.error) {
         error = result.error
+        console.warn(`Error buying listing ${listing}: ${error}`)
       } else {
         messages.push(...result.msgs!)
         totaluatom += result.total!
