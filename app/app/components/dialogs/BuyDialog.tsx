@@ -1,7 +1,7 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { useLocation, useNavigate } from '@remix-run/react'
-import { forwardRef, useCallback, useEffect, useState } from 'react'
-import { Steps } from 'react-daisyui'
+import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react'
+import { Alert, Steps } from 'react-daisyui'
 import type { To } from 'react-router'
 import { Royalty } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
@@ -31,6 +31,41 @@ enum Step {
   Purchase,
 }
 
+interface ListingsInfo {
+  selectedListings: number
+  operationListings: number
+}
+
+function getListingsInfo(
+  buyType: BuyType,
+  step: Step,
+  selectedListings: string | string[],
+  operationListings: string[] | undefined,
+): ListingsInfo {
+  if (buyType === 'inscription') {
+    return {
+      operationListings: 1,
+      selectedListings: 1,
+    }
+  }
+
+  if (!operationListings) {
+    return {
+      operationListings: 1,
+      selectedListings: selectedListings.length,
+    }
+  }
+
+  if (!Array.isArray(selectedListings)) {
+    selectedListings = [selectedListings]
+  }
+
+  return {
+    selectedListings: selectedListings.length,
+    operationListings: operationListings.length,
+  }
+}
+
 const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   { buyType, royalty, listingHash: listingHashProp, resultLink },
   ref,
@@ -48,6 +83,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const [txInscription, setTxInscription] = useState<TxInscription | null>(null)
 
   const [step, setStep] = useState(Step.Initial)
+  const stepTitle = step === Step.Purchase ? 'Purchase' : 'Reserve'
   const {
     chainFee,
     metaprotocolFee,
@@ -61,6 +97,22 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   } = useSubmitTx(txInscription)
   const asteroidClient = useAsteroidClient()
 
+  const listingInfo = useMemo(() => {
+    if (!listingHash) {
+      return {
+        selectedListings: 0,
+        operationListings: 0,
+      }
+    }
+
+    return getListingsInfo(
+      buyType,
+      step,
+      listingHash,
+      txInscription?.data?.metadata as string[] | undefined,
+    )
+  }, [listingHash, buyType, step, txInscription?.data?.metadata])
+
   const resetState = useCallback(() => {
     setListingHash(null)
     setTxInscription(null)
@@ -71,7 +123,6 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   useEffect(() => {
     if (listingHashProp && listingHashProp != listingHash) {
       resetState()
-      // @todo
       asteroidClient
         .fetchListing(
           typeof listingHashProp === 'string'
@@ -199,6 +250,16 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
             tokens for purchase. Deposits are final and can&apos;t be refunded.
             If you don&apos;t complete the purchase, the deposit will be lost.
           </p>
+          {step === Step.Purchase &&
+            listingInfo.selectedListings !== listingInfo.operationListings && (
+              <Alert className="border border-warning mt-4">
+                <span>
+                  You&apos;ve successfully reserved{' '}
+                  {listingInfo.operationListings} out of{' '}
+                  {listingInfo.selectedListings} listings
+                </span>
+              </Alert>
+            )}
         </Body>
       </Modal.Body>
       <Modal.Actions className="flex justify-center">
@@ -206,6 +267,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           txState={txState}
           txHash={txHash}
           error={error}
+          confirmText={
+            listingInfo.operationListings > 1
+              ? `${stepTitle} ${listingInfo.operationListings} listings`
+              : stepTitle
+          }
           onSubmit={sendTx}
           onClose={() => {
             fRef.current?.close()

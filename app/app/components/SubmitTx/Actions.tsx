@@ -7,6 +7,7 @@ interface ActionsProps {
   txState: TxState
   txHash: string | null
   error: SubmitTxError | null
+  confirmText?: string
   onRetry: () => void
   onClose: () => void
   onSubmit: () => void
@@ -16,6 +17,7 @@ export default function Actions({
   txHash,
   txState,
   error,
+  confirmText = 'Continue',
   onSubmit,
   onClose,
   onRetry,
@@ -46,7 +48,7 @@ export default function Actions({
           loading={txState != TxState.Initial}
           onClick={() => onSubmit()}
         >
-          Continue
+          {confirmText}
         </Button>
       )
     }
