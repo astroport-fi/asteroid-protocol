@@ -14,7 +14,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.7.8-multibuy.0",
+    "@asteroid-protocol/sdk": "^0.7.8-multibuy.1",
     "@chain-registry/types": "^0.18.0",
     "@cosmjs/stargate": "^0.32.2",
     "@cosmos-kit/keplr-extension": "^2.7.9",
