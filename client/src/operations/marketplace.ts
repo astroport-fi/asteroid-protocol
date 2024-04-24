@@ -165,6 +165,7 @@ export class MarketplaceOperations<
     const status = await this.asteroidService.getStatus(this.protocol.chainId)
 
     const messages: MsgSendEncodeObject[] = []
+    const availableListings: string[] = []
     let error: string | undefined
 
     for (const hash of listingHash) {
@@ -173,6 +174,7 @@ export class MarketplaceOperations<
         error = result.error
       } else {
         messages.push(result.msg!)
+        availableListings.push(hash)
       }
     }
 
@@ -183,11 +185,11 @@ export class MarketplaceOperations<
     // prepare operation
     let listingHashParam: string | undefined
     let inscriptionData: InscriptionData | undefined
-    if (listingHash.length === 1) {
-      listingHashParam = listingHash[0]
+    if (availableListings.length === 1) {
+      listingHashParam = availableListings[0]
     } else {
       inscriptionData = {
-        metadata: listingHash,
+        metadata: availableListings,
       }
     }
 
@@ -291,14 +293,17 @@ export class MarketplaceOperations<
     const messages: MsgSendEncodeObject[] = []
     let totaluatom = BigInt(0)
     let error: string | undefined
+    const availableListings: string[] = []
 
     for (let i = 0; i < listingHash.length; i++) {
-      const result = await this.buyListing(status, listingHash[i], royalty?.[i])
+      const listing = listingHash[i]
+      const result = await this.buyListing(status, listing, royalty?.[i])
       if (result.error) {
         error = result.error
       } else {
         messages.push(...result.msgs!)
         totaluatom += result.total!
+        availableListings.push(listing)
       }
     }
 
@@ -309,11 +314,11 @@ export class MarketplaceOperations<
     // prepare operation
     let listingHashParam: string | undefined
     let inscriptionData: InscriptionData | undefined
-    if (listingHash.length === 1) {
-      listingHashParam = listingHash[0]
+    if (availableListings.length === 1) {
+      listingHashParam = availableListings[0]
     } else {
       inscriptionData = {
-        metadata: listingHash,
+        metadata: availableListings,
       }
     }
 
