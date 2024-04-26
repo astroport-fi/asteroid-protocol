@@ -8,10 +8,11 @@ export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement> &
     title?: string
     icon?: React.ReactNode
     tooltip?: string
+    tooltipClassName?: string
   }
 
 const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Label(
-  { children, title, icon, tooltip, className, ...props },
+  { children, title, icon, tooltip, className, tooltipClassName, ...props },
   ref,
 ): JSX.Element {
   const classes = twMerge('label', className)
@@ -30,7 +31,12 @@ const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Label(
         ) : (
           title
         )}
-        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+        {tooltip && (
+          <InfoTooltip
+            message={tooltip}
+            className={twMerge('ml-2', tooltipClassName)}
+          />
+        )}
       </span>
       {children}
     </label>

@@ -9,7 +9,7 @@ export default function AddressChip({ address }: { address: string }) {
   return (
     <Link
       to={`/app/wallet/${address}`}
-      className="flex flex-row items-center btn btn-neutral btn-circle btn-sm w-fit pl-1 pr-3"
+      className="flex flex-row flex-nowrap items-center btn btn-neutral btn-circle btn-sm w-fit pl-1 pr-3"
     >
       <UserCircleIcon className="size-6" />
       {currentAddress === address ? 'You' : <Address address={address} />}

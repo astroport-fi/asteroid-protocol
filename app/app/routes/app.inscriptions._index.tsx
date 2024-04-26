@@ -88,7 +88,7 @@ function TopCollectionComponent({ collection }: { collection: TopCollection }) {
         src={collection.content_path!}
         isExplicit={false}
         className="w-full h-full"
-        containerClassName="size-96"
+        containerClassName="size-72 lg:size-96"
       />
       <div className="absolute inset-0 transition-all duration-500 bg-gradient-to-t from-black/70 via-transparent to-transparent max-md:via-black/40 group-hover:bg-black/40"></div>
       <div className="absolute flex flex-col z-10 h-full justify-end p-4 text-white-1 w-full max-md:p-2">

@@ -4,7 +4,7 @@ import AtomValue from '../AtomValue'
 
 export default function Stats({ token }: { token: Token }) {
   return (
-    <div className="flex flex-row gap-8 mt-4">
+    <div className="hidden lg:flex flex-row gap-8 mt-4">
       <Stat title="Price">
         <AtomValue value={token.last_price_base} horizontal />
       </Stat>

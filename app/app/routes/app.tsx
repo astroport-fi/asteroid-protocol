@@ -27,9 +27,9 @@ export default function App() {
         />
       ) : null}
       <div
-        className={clsx('flex flex-col h-[calc(100vh-6rem)]', {
+        className={clsx('flex flex-col h-[calc(100svh-6.5rem)]', {
           'mt-16': !isLoading,
-          'px-16 py-8 overflow-y-scroll': padding,
+          'px-8 lg:px-16 py-4 lg:py-8 overflow-y-scroll': padding,
           'items-center': center,
         })}
       >

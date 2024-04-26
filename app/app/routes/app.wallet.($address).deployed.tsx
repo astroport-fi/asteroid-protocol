@@ -48,7 +48,7 @@ export default function WalletDeployed() {
     )
   }
   return (
-    <div>
+    <div className="flex pt-8 flex-col w-full overflow-y-scroll">
       <Tokens tokens={data.tokens} />
       <Pagination
         pageCount={data.pages}

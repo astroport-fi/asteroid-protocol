@@ -7,8 +7,9 @@ import {
   useNavigation,
 } from '@remix-run/react'
 import clsx from 'clsx'
-import { useCallback, useState } from 'react'
-import { Button, Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
+import { MouseEvent, useCallback, useState } from 'react'
+import { Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
+import { Details } from './form/Select'
 import { Wallet } from './wallet/Wallet'
 import logo from '../images/logo/white.svg'
 
@@ -36,12 +37,27 @@ function NavLink(props: LinkProps) {
 export default function Navbar() {
   const [detailOpen, setDetailOpen] = useState(false)
   const close = useCallback(() => setDetailOpen(false), [])
+  const preventDefault = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),
+    [],
+  )
 
   return (
     <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral uppercase">
       <DaisyNavbar.Start className="py-2">
-        <Dropdown>
-          <Button tag="label" color="ghost" tabIndex={0} className="lg:hidden">
+        <Details
+          open={detailOpen}
+          tabIndex={-1}
+          onToggle={(e) => {
+            setDetailOpen(e.currentTarget.open)
+          }}
+          onBlur={() => setDetailOpen(false)}
+        >
+          <Dropdown.Details.Toggle
+            color="ghost"
+            tabIndex={0}
+            className="lg:hidden"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="size-5"
@@ -56,16 +72,34 @@ export default function Navbar() {
                 d="M4 6h16M4 12h8m-8 6h16"
               />
             </svg>
-          </Button>
-          <Dropdown.Menu tabIndex={0} className="w-52 menu-sm mt-3 z-10">
+          </Dropdown.Details.Toggle>
+          <Dropdown.Menu className="w-52 menu-sm mt-3 z-50 lg:hidden">
             <Dropdown.Item anchor={false}>
-              <NavLink to="/app/inscriptions">Inscriptions</NavLink>
+              <NavLink
+                to="/app/inscriptions"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Inscriptions
+              </NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
-              <NavLink to="/app/tokens">Tokens</NavLink>
+              <NavLink
+                to="/app/tokens"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Tokens
+              </NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
-              <NavLink to="/app/wallet">Portfolio</NavLink>
+              <NavLink
+                to="/app/wallet"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Portfolio
+              </NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
               <span>Create</span>
@@ -73,18 +107,36 @@ export default function Navbar() {
             <li>
               <ul className="p-2 z-10">
                 <li>
-                  <NavLink to="/app/create/inscription">Inscription</NavLink>
+                  <NavLink
+                    to="/app/create/inscription"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Inscription
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/app/create/collection">Collection</NavLink>
+                  <NavLink
+                    to="/app/create/collection"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Collection
+                  </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/app/create/token">Token</NavLink>
+                  <NavLink
+                    to="/app/create/token"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Token
+                  </NavLink>
                 </li>
               </ul>
             </li>
           </Dropdown.Menu>
-        </Dropdown>
+        </Details>
         <Link
           className="btn btn-ghost normal-case text-xl px-8"
           to="/app/inscriptions"
@@ -113,15 +165,10 @@ export default function Navbar() {
               }}
               onBlur={() => setDetailOpen(false)}
             >
-              {/* <Menu.Item onClick={close}>
-                <NavLink to="/app/create/collection" onClick={close}>
-                  Collection
-                </NavLink>
-              </Menu.Item> */}
               <Menu.Item>
                 <NavLink
                   to="/app/create/inscription"
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={preventDefault}
                   onClick={close}
                 >
                   Inscription
@@ -130,7 +177,7 @@ export default function Navbar() {
               <Menu.Item>
                 <NavLink
                   to="/app/create/collection"
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={preventDefault}
                   onClick={close}
                 >
                   Collection
@@ -139,7 +186,7 @@ export default function Navbar() {
               <Menu.Item>
                 <NavLink
                   to="/app/create/token"
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={preventDefault}
                   onClick={close}
                 >
                   Token

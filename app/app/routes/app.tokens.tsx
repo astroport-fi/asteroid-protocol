@@ -106,9 +106,9 @@ export default function MarketsPage() {
 
         const token = info.row.original
         return (
-          <>
+          <div className="flex flex-col items-start lg:flex-row">
             <Link
-              className="btn btn-primary btn-outline btn-sm mr-4"
+              className="btn btn-primary btn-outline btn-sm lg:mr-4"
               to={`/app/market/${token.ticker}`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -116,14 +116,14 @@ export default function MarketsPage() {
             </Link>
             {minted < 1 && isTokenLaunched(token) && (
               <Link
-                className="btn btn-neutral btn-outline btn-sm mr-4"
+                className="btn btn-neutral btn-outline btn-sm mt-2 lg:mt-0 lg:mr-4"
                 to={`/app/token/${token.ticker}`}
                 onClick={(e) => e.stopPropagation()}
               >
                 Mint
               </Link>
             )}
-          </>
+          </div>
         )
       },
     }),
@@ -147,7 +147,7 @@ export default function MarketsPage() {
   return (
     <>
       <div className="flex flex-row items-center justify-between">
-        <Stat title="ATOM / USD" className="max-w-80">
+        <Stat title="ATOM / USD" className="hidden lg:flex max-w-80">
           <NumericFormat
             className="font-mono"
             prefix="$"

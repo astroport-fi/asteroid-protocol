@@ -37,6 +37,7 @@ export default function InscriptionsList({
     }
   }, [fetcher.data, fetcher.state])
 
+  // @todo
   useEffect(() => {
     if (ref.current) {
       ref.current.scrollTop = 0
@@ -66,26 +67,20 @@ export default function InscriptionsList({
   }
 
   return (
-    <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
-      <InfiniteScroll
-        dataLength={items.length}
-        next={getMoreData}
-        hasMore={count > items.length}
-        loader={
-          <div className="flex justify-center mb-12">
-            {!isLoading && <Loading variant="dots" size="lg" />}
-          </div>
-        }
-        scrollableTarget="scrollableDiv"
-      >
-        {!isLoading && (
-          <Inscriptions
-            className="p-8"
-            inscriptions={items}
-            onClick={onClick}
-          />
-        )}
-      </InfiniteScroll>
-    </div>
+    <InfiniteScroll
+      dataLength={items.length}
+      next={getMoreData}
+      hasMore={count > items.length}
+      loader={
+        <div className="flex justify-center mb-12">
+          {!isLoading && <Loading variant="dots" size="lg" />}
+        </div>
+      }
+      scrollableTarget="scrollableDiv"
+    >
+      {!isLoading && (
+        <Inscriptions className="p-8" inscriptions={items} onClick={onClick} />
+      )}
+    </InfiniteScroll>
   )
 }

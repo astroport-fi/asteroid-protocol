@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import type { IComponentBaseProps } from 'node_modules/react-daisyui/dist/types'
 import { DetailsHTMLAttributes, forwardRef, useState } from 'react'
 import { Dropdown } from 'react-daisyui'
+import { twMerge } from 'tailwind-merge'
 
 export interface DropdownItem<T extends string = string> {
   label: string
@@ -18,49 +19,53 @@ export type DetailsProps = DetailsHTMLAttributes<HTMLDetailsElement> &
     open?: boolean
   }
 
-const Details = forwardRef<HTMLDetailsElement, DetailsProps>(function Details(
-  {
-    children,
-    className,
-    hover,
-    horizontal,
-    vertical,
-    end,
-    dataTheme,
-    open,
-    ...props
+export const Details = forwardRef<HTMLDetailsElement, DetailsProps>(
+  function Details(
+    {
+      children,
+      className,
+      hover,
+      horizontal,
+      vertical,
+      end,
+      dataTheme,
+      open,
+      ...props
+    },
+    ref,
+  ): JSX.Element {
+    return (
+      <details
+        {...props}
+        ref={ref}
+        data-theme={dataTheme}
+        className={clsx('dropdown', className, {
+          'dropdown-left': horizontal === 'left',
+          'dropdown-right': horizontal === 'right',
+          'dropdown-top': vertical === 'top',
+          'dropdown-bottom': vertical === 'bottom',
+          'dropdown-end': end,
+          'dropdown-hover': hover,
+          'dropdown-open': open,
+        })}
+        open={open}
+      >
+        {children}
+      </details>
+    )
   },
-  ref,
-): JSX.Element {
-  return (
-    <details
-      {...props}
-      ref={ref}
-      data-theme={dataTheme}
-      className={clsx('dropdown', className, {
-        'dropdown-left': horizontal === 'left',
-        'dropdown-right': horizontal === 'right',
-        'dropdown-top': vertical === 'top',
-        'dropdown-bottom': vertical === 'bottom',
-        'dropdown-end': end,
-        'dropdown-hover': hover,
-        'dropdown-open': open,
-      })}
-      open={open}
-    >
-      {children}
-    </details>
-  )
-})
+)
 
 export default function Select<T extends string = string>({
   items,
   selected,
   onSelect,
+  className,
 }: {
   items: DropdownItem<T>[]
   selected: T
   onSelect: (item: T) => void
+  className?: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -106,7 +111,9 @@ export default function Select<T extends string = string>({
           <ChevronDownIcon className="size-5" />
         )}
       </Dropdown.Details.Toggle>
-      <Dropdown.Menu className="w-52 z-10">{dropdownItems}</Dropdown.Menu>
+      <Dropdown.Menu className={twMerge('w-52 z-10', className)}>
+        {dropdownItems}
+      </Dropdown.Menu>
     </Details>
   )
 }

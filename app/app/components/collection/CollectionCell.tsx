@@ -11,7 +11,7 @@ export function CollectionCell({
       <InscriptionImage
         mime="image/png"
         src={collection.content_path!}
-        className="size-12"
+        className="size-12 shrink-0"
         imageClassName="rounded-full"
       />
       <span className="text-base ml-3">{collection.name}</span>

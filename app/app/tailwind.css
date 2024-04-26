@@ -33,6 +33,17 @@ strong {
   font-variation-settings: 'wght' 700;
 }
 
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: #c2c9d2;
+  }
+}
+
 @layer utilities {
   .font-thin {
     font-variation-settings: 'wght' 100;
@@ -82,15 +93,6 @@ strong {
   }
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 10px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  background: #c2c9d2;
-}
-
 @layer components {
   .tab.tab-active:not(.tab-disabled):not([disabled]) {
     @apply border-primary;
@@ -112,6 +114,11 @@ strong {
 
   .collapse > input[type='checkbox'] {
     @apply cursor-pointer;
+  }
+
+  .tooltip:before {
+    @apply whitespace-pre-wrap;
+    @apply text-center;
   }
 }
 

@@ -23,7 +23,7 @@ export default function AtomValue({
   return (
     <span
       className={clsx('flex font-mono', className, {
-        'flex-row items-baseline': horizontal,
+        'flex-col lg:flex-row items-baseline': horizontal,
         'flex-col': !horizontal,
       })}
     >
@@ -36,7 +36,7 @@ export default function AtomValue({
       />
       <NumericFormat
         className={clsx('text-sm text-header-content font-light', {
-          'ml-2': horizontal,
+          'lg:ml-2': horizontal,
           'mt-0.5': !horizontal,
         })}
         displayType="text"

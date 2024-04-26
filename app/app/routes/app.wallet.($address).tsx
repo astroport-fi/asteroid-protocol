@@ -88,18 +88,21 @@ export default function WalletPage() {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center overflow-y-scroll">
       <div className="flex flex-col items-center">
-        <img src={logo} alt="Asteroid protocol" className="w-40" />
+        <img src={logo} alt="Asteroid protocol" className="w-20 lg:w-40" />
         {stargazeName && (
           <span className="mt-8 text-md font-light">{stargazeName}</span>
         )}
-        <DaisyLink className="text-primary border border-primary flex items-center mt-8 rounded-full btn-md">
+        <DaisyLink className="text-primary border border-primary flex items-center mt-6 lg:mt-8 rounded-full btn-md break-all">
           <WalletIcon className="w-5 mr-2" />
           {address}
         </DaisyLink>
       </div>
-      <Tabs variant="bordered" className="w-full mt-16">
+      <Tabs
+        variant="bordered"
+        className="w-full mt-8 lg:mt-12 overflow-x-auto shrink-0 no-scrollbar"
+      >
         <Tab to="" active={active === WalletTab.Tokens}>
           Tokens
         </Tab>
@@ -113,12 +116,10 @@ export default function WalletPage() {
           Deployed
         </Tab>
         <Tab to="sales" active={active === WalletTab.Sales}>
-          Marketplace Sales
+          <span className="hidden lg:inline lg:mr-1">Marketplace</span>Sales
         </Tab>
       </Tabs>
-      <div className="py-8 w-full">
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   )
 }

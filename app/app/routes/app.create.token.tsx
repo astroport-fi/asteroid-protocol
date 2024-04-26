@@ -89,7 +89,7 @@ export default function CreateToken() {
 
   return (
     <div>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
+      <Form onSubmit={onSubmit} className="flex flex-col lg:flex-row mt-4">
         <div className="flex flex-1 flex-col items-center">
           {preview && (
             <img
@@ -101,7 +101,7 @@ export default function CreateToken() {
 
           <div
             className={clsx('flex flex-col', {
-              ['bg-base-200 border border-neutral border-dashed rounded-3xl p-8']:
+              ['bg-base-200 w-full max-w-md border border-neutral border-dashed rounded-3xl p-8']:
                 fileName == null,
             })}
           >
@@ -125,7 +125,7 @@ export default function CreateToken() {
             <FileInput
               key="content"
               id="content"
-              className="opacity-0"
+              className="opacity-0 w-10"
               {...register('content', {
                 required: true,
                 validate: async (files) => {
@@ -179,7 +179,7 @@ export default function CreateToken() {
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col ml-8">
+        <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
           <strong>Token information</strong>
           <p className="mt-2">
             The CFT-20 Tokens metaprotocol allows you to create, transfer, mint,
