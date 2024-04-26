@@ -1,4 +1,8 @@
-import { GlobeAltIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
+import {
+  GlobeAltIcon,
+  InformationCircleIcon,
+  PencilSquareIcon,
+} from '@heroicons/react/24/outline'
 import { Link } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
@@ -32,7 +36,7 @@ export default function CollectionDetailComponent({
 
   return (
     <div className="flex flex-col p-5 pb-6 border-b border-b-neutral">
-      <div className="flex items-center">
+      <div className="flex items-center flex-col xl:flex-row">
         <InscriptionImage
           src={collection.content_path!}
           isExplicit={collection.is_explicit}
@@ -40,19 +44,35 @@ export default function CollectionDetailComponent({
           imageClassName="rounded-full"
         />
         <div
-          className={clsx('flex flex-col ml-4 mt-1 h-full', {
-            'justify-center': !hasSocials,
-          })}
+          className={clsx(
+            'flex flex-col xl:ml-4 mt-2 xl:mt-1 h-full items-center xl:items-start',
+            {
+              'justify-center': !hasSocials,
+            },
+          )}
         >
-          <h2 className="text-xl">{collection.name}</h2>
+          <h2 className="text-xl flex items-center">
+            {collection.name}
+            {collection.metadata.description && (
+              <DaisyLink
+                onClick={() => setOpen(!open)}
+                color="ghost"
+                className="lg:hidden ml-2"
+              >
+                <InformationCircleIcon className="size-5" />
+              </DaisyLink>
+            )}
+          </h2>
           {collection.metadata.description && (
-            <CollapseTextTrigger
-              onToggle={() => setOpen(!open)}
-              title={collection.metadata.description}
-            />
+            <div className="hidden lg:flex">
+              <CollapseTextTrigger
+                onToggle={() => setOpen(!open)}
+                title={collection.metadata.description}
+              />
+            </div>
           )}
 
-          <div className="flex items-start mt-3 gap-2">
+          <div className="flex items-start justify-center xl:justify-start mt-3 gap-2">
             {metadata.website && (
               <DaisyLink
                 href={metadata.website}

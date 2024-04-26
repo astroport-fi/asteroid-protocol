@@ -10,7 +10,7 @@ export default function ClubDetail({
   stats: ClubStats | undefined
 }) {
   return (
-    <div className="flex p-5 pb-6  border-b border-b-neutral items-center">
+    <div className="flex p-5 pb-6  border-b border-b-neutral items-center flex-col xl:flex-row">
       <span className="flex flex-shrink-0 items-center justify-center p-2 size-20 bg-no-repeat bg-cover bg-center rounded-full bg-[url('/app/images/clubs/clouds.png')]">
         <span className="bg-black bg-opacity-60 w-full text-center text-xl font-medium">
           {club.range ? '< ' : ''}
@@ -19,7 +19,7 @@ export default function ClubDetail({
       </span>
       <div
         className={clsx(
-          'flex flex-col ml-4 mt-1 h-full flex-shrink-0 justify-center',
+          'flex flex-col xl:ml-4 mt-2 xl:mt-1 h-full xl:flex-shrink-0 justify-center',
         )}
       >
         <h2 className="text-xl">{club.title}</h2>

@@ -214,20 +214,24 @@ export default function MarketPage() {
       return listingState === ListingState.Reserve
     })
   }, [data.listings, address, lastKnownHeight])
+  const hasListings = data.listings.length > 0
+  console.log(minted < 1)
 
   return (
     <div className="flex flex-col md:flex-row h-full">
-      <BuySettings
-        token={token}
-        onChange={(listings) => {
-          setSelectedListings(availableListings.slice(0, listings))
-        }}
-        selectedListings={selectedListings}
-        max={Math.min(data.limit, availableListings.length)}
-      />
-      <div className="flex flex-col w-full md:h-full h-[calc(100%-14rem)]">
-        <div className="flex flex-col mb-2 mt-8 px-8">
-          <div className="flex flex-row justify-between">
+      {hasListings && (
+        <BuySettings
+          token={token}
+          onChange={(listings) => {
+            setSelectedListings(availableListings.slice(0, listings))
+          }}
+          selectedListings={selectedListings}
+          max={Math.min(data.limit, availableListings.length)}
+        />
+      )}
+      <div className="flex flex-col w-full md:h-full h-[calc(100%-13rem)]">
+        <div className="flex flex-col mb-2 mt-4 lg:mt-8 pl-0 pr-4 lg:px-8">
+          <div className="flex flex-row justify-between items-center">
             <BackHeader to="/app/tokens">
               <InscriptionImage
                 mime="image/png"
@@ -236,9 +240,9 @@ export default function MarketPage() {
                 className="size-6"
                 imageClassName="rounded-xl"
               />
-              <span className="ml-2 flex items-baseline">
+              <span className="ml-2 text-lg flex items-baseline">
                 Trade {token.name}
-                <span className="text-sm font-light text-header-content ml-1">
+                <span className="text-sm font-light text-header-content ml-1 hidden lg:inline">
                   {token.ticker}
                 </span>
               </span>
@@ -257,11 +261,12 @@ export default function MarketPage() {
                 size="sm"
                 onClick={() => showSellDialog()}
               >
-                Sell {token.ticker} tokens
-              </Button>{' '}
+                Sell
+                <span className="hidden lg:inline">{token.ticker} tokens</span>
+              </Button>
             </div>
           </div>
-          <Stats token={token} />
+          {hasListings && <Stats token={token} />}
         </div>
         {data.reservedListings?.length > 0 && (
           <div className="ml-8">
@@ -276,7 +281,18 @@ export default function MarketPage() {
           </div>
         )}
 
-        {data.listings.length < 1 ? (
+        {hasListings ? (
+          <BuyListingsTable
+            className="mt-2 mb-4 lg:mb-6 no-scrollbar"
+            listings={data.listings}
+            selectedListings={selectedListings}
+            onSelectedChange={(listings) => setSelectedListings(listings)}
+            pages={data.pages}
+            total={data.total}
+            token={token}
+            actions={actions}
+          />
+        ) : (
           <GhostEmptyState text="Be the first to create a listing for this token.">
             <Button
               color="primary"
@@ -286,17 +302,6 @@ export default function MarketPage() {
               Sell {token.ticker} tokens
             </Button>
           </GhostEmptyState>
-        ) : (
-          <BuyListingsTable
-            className="mt-2 mb-6 px-8 overflow-y-scroll"
-            listings={data.listings}
-            selectedListings={selectedListings}
-            onSelectedChange={(listings) => setSelectedListings(listings)}
-            pages={data.pages}
-            total={data.total}
-            token={token}
-            actions={actions}
-          />
         )}
         <SellTokenDialog
           ref={sellDialogRef}

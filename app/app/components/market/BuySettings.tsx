@@ -43,7 +43,7 @@ export default function BuySettings({
   }, [selectedListings.length])
 
   return (
-    <div className="flex flex-col px-4 pt-8 shrink-0 border-r border-r-neutral">
+    <div className="flex flex-col px-4 pt-4 lg:pt-8 shrink-0 border-r border-r-neutral">
       <div className="text-lg">Listings to buy</div>
       <div className="flex flex-row items-center mt-4">
         <Range
@@ -54,6 +54,7 @@ export default function BuySettings({
           size="sm"
           onChange={(e) => setValue(parseInt(e.target.value))}
           onMouseUp={() => changeValue(value)}
+          onTouchEnd={() => changeValue(value)}
         />
         <Input
           type="number"
@@ -66,7 +67,7 @@ export default function BuySettings({
           onChange={(e) => changeValue(parseInt(e.target.value))}
         />
       </div>
-      <div className="flex flex-col mt-6 items-center">
+      <div className="flex flex-col mt-2 lg:mt-6 items-center">
         <span>
           <DecimalText
             prefix="Buy "
@@ -77,7 +78,7 @@ export default function BuySettings({
         <AtomValue value={totalAtom} className="items-center" prefix="for " />
       </div>
       <Button
-        className="mt-6"
+        className="mt-2 lg:mt-6"
         color="accent"
         size="sm"
         onClick={() => {

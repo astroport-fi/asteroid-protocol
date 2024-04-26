@@ -19,6 +19,7 @@ export default function NumericInput<
   name,
   title,
   tooltip,
+  tooltipClassName,
   error,
   isFloat,
   className,
@@ -31,11 +32,17 @@ export default function NumericInput<
   isFloat?: boolean
   className?: string
   tooltip?: string
+  tooltipClassName?: string
 } & NumericFormatProps<InputProps>) {
   return (
     <div className={twMerge('form-control w-full', className)}>
       <Form.Label title={title} htmlFor={name} className="justify-start">
-        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+        {tooltip && (
+          <InfoTooltip
+            message={tooltip}
+            className={twMerge('ml-2', tooltipClassName)}
+          />
+        )}
       </Form.Label>
       <Controller
         rules={{ required: props.required, pattern: /^[0-9]+$/ }}

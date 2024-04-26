@@ -253,8 +253,8 @@ export function Filter({
   }, [searchParams, priceRange, setSearchParams])
 
   return (
-    <div className="flex flex-col shrink-0 items-center w-52 border-r border-r-neutral">
-      <div className="flex flex-col items-start absolute py-8 overflow-y-scroll h-[calc(100vh-8rem)]">
+    <div className="flex flex-col shrink-0 items-center w-52 lg:pr-0 h-full border-r border-r-neutral bg-base-100 lg:bg-transparent">
+      <div className="flex flex-col items-start absolute py-8 overflow-y-scroll h-full lg:h-[calc(100vh-6.5rem)]">
         <div className="flex flex-col items-start w-full px-6">
           <FilterTitle>Status</FilterTitle>
           <StatusFilter
@@ -267,12 +267,14 @@ export function Filter({
           <SearchInput placeholder="Name" className="input-sm mt-2 max-w-40" />
           <FilterTitle className="mt-6">Sort</FilterTitle>
           <Select
+            className="w-44"
             items={showRaritySort ? sortItemsWithRariry : sortItems}
             onSelect={setSort}
             selected={sort}
           />
           <FilterTitle className="mt-6">Price</FilterTitle>
           <Select
+            className="w-44"
             items={priceRangeItems}
             onSelect={setPriceRange}
             selected={priceRange}

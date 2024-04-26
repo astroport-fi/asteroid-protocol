@@ -181,7 +181,7 @@ function InscriptionDetailComponent({
     inscription.attributes != null && inscription.attributes.length > 0
   return (
     <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4">
-      <div className="flex flex-1 flex-col px-8 items-center">
+      <div className="flex flex-1 flex-col px-4 lg:px-8 items-center">
         <InscriptionImage
           mime={inscription.mime}
           src={inscription.content_path}
@@ -211,12 +211,12 @@ function InscriptionDetailComponent({
         )}
         <p className="whitespace-pre-wrap mt-4">{inscription.description}</p>
         <Divider />
-        <div className="flex flex-row w-full">
+        <div className="flex flex-col lg:flex-row w-full">
           <div className="flex flex-col flex-1">
             <strong className="mb-1">Created by</strong>
             <AddressChip address={inscription.creator} />
           </div>
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 mt-6 lg:mt-0">
             <strong className="mb-1">Owned by</strong>
             <AddressChip address={inscription.current_owner} />
           </div>

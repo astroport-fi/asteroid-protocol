@@ -39,7 +39,7 @@ export default function CollectionsPage() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <div className="flex flex-col w-full max-w-[1920px]">
+    <div className="flex flex-col w-full max-w-[1920px] overflow-y-scroll">
       <div className="flex justify-end">
         <SearchInput placeholder="Search by collection name" />
       </div>

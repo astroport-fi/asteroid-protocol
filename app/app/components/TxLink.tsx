@@ -1,4 +1,5 @@
 import { Link } from 'react-daisyui'
+import { twMerge } from 'tailwind-merge'
 import { useRootContext } from '~/context/root'
 
 export default function TxLink({
@@ -16,7 +17,7 @@ export default function TxLink({
       href={`${txExplorer}${txHash}`}
       target="_blank"
       color="primary"
-      className={className}
+      className={twMerge('overflow-hidden text-ellipsis', className)}
     >
       {title ?? txHash}
     </Link>

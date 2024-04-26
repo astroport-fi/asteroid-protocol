@@ -30,7 +30,7 @@ function TokenComponent({ token }: { token: Token }) {
 
 export function Tokens({ tokens }: { tokens: Token[] }) {
   return (
-    <Grid>
+    <Grid className="overflow-x-auto">
       {tokens.map((token) => (
         <TokenComponent key={token.id} token={token} />
       ))}

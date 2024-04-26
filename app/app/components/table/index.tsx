@@ -43,10 +43,14 @@ function Pagination<T>({
   const toItem = Math.min(fromItem + pageSize - 1, total ?? 0)
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 sticky left-0">
       {total && (
-        <span className="text-sm">
-          Showing {fromItem} to {toItem} of {total}
+        <span className="text-sm flex flex-col md:flex-row md:gap-0.5">
+          Showing
+          <span>
+            {fromItem} to {toItem}
+          </span>
+          <span>of {total}</span>
         </span>
       )}
       <Button
@@ -85,11 +89,11 @@ function Pagination<T>({
       >
         <ChevronDoubleRightIcon className="size-5" />
       </Button>
-      <span className="flex items-center gap-1 shrink-0">
+      <span className="flex flex-col md:flex-row items-center gap-1 shrink-0 text-sm">
         <span>Page</span>
-        <strong>
+        <span>
           {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-        </strong>
+        </span>
       </span>
 
       <Select
@@ -130,73 +134,97 @@ export default function Table<T = unknown>({
   showPagination = showPagination !== false && rows.length > 0
 
   return (
-    <div className={twMerge('flex flex-col w-full', className)}>
-      <DaisyTable>
-        <thead>
-          <tr className={twMerge('border-neutral', headerClassName)}>
-            {headerGroup.headers.map((header) => (
-              <th
-                key={header.id}
-                className={clsx(header.column.columnDef.meta?.headerClassName, {
-                  ['cursor-pointer select-none']: header.column.getCanSort(),
-                })}
-                style={{ width: `${header.getSize()}px` }}
-                onClick={header.column.getToggleSortingHandler()}
-                colSpan={header.colSpan}
-              >
-                {header.column.getCanSort() ? (
-                  <Button
-                    className="px-0 hover:bg-transparent"
-                    color="ghost"
-                    endIcon={
+    <div
+      className={twMerge('flex flex-col w-full overflow-y-scroll', className)}
+    >
+      <div className="flex flex-col w-full overflow-x-auto">
+        <DaisyTable pinCols>
+          <thead>
+            <tr className={twMerge('border-neutral', headerClassName)}>
+              {headerGroup.headers.map((header, index) => {
+                const Cell =
+                  index === 0 ? 'th' : ('td' as keyof JSX.IntrinsicElements)
+                return (
+                  <Cell
+                    key={header.id}
+                    className={clsx(
+                      'lg:bg-transparent',
+                      header.column.columnDef.meta?.headerClassName,
                       {
-                        asc: <BarsArrowUpIcon className="size-5" />,
-                        desc: <BarsArrowDownIcon className="size-5" />,
-                      }[header.column.getIsSorted() as string] ?? (
-                        <ArrowsUpDownIcon className="size-5" />
-                      )
-                    }
+                        ['cursor-pointer select-none']:
+                          header.column.getCanSort(),
+                      },
+                    )}
+                    style={{ width: `${header.getSize()}px` }}
+                    onClick={header.column.getToggleSortingHandler()}
+                    colSpan={header.colSpan}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </Button>
-                ) : header.isPlaceholder ? null : (
-                  flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.id}
-              className={rowClassName}
-              onClick={() => onClick?.(row.original)}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  style={{ width: `${cell.column.getSize()}px` }}
-                  key={cell.id}
-                  className={cell.column.columnDef.meta?.className}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+                    {header.column.getCanSort() ? (
+                      <Button
+                        className="px-0 hover:bg-transparent"
+                        color="ghost"
+                        endIcon={
+                          {
+                            asc: <BarsArrowUpIcon className="size-5" />,
+                            desc: <BarsArrowDownIcon className="size-5" />,
+                          }[header.column.getIsSorted() as string] ?? (
+                            <ArrowsUpDownIcon className="size-5" />
+                          )
+                        }
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </Button>
+                    ) : header.isPlaceholder ? null : (
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )
+                    )}
+                  </Cell>
+                )
+              })}
             </tr>
-          ))}
-        </tbody>
-      </DaisyTable>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr
+                key={row.id}
+                className={rowClassName}
+                onClick={() => onClick?.(row.original)}
+              >
+                {row.getVisibleCells().map((cell, index) => {
+                  const Cell =
+                    index === 0 ? 'th' : ('td' as keyof JSX.IntrinsicElements)
+
+                  return (
+                    <Cell
+                      style={{ width: `${cell.column.getSize()}px` }}
+                      key={cell.id}
+                      className={twMerge(
+                        'lg:bg-transparent',
+                        cell.column.columnDef.meta?.className,
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </Cell>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </DaisyTable>
+      </div>
       {showPagination !== false && (
         <>
-          <Divider />
+          <Divider className="!mt-0" />
           <Pagination table={table} total={total} />
         </>
       )}

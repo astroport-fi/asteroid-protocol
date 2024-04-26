@@ -168,6 +168,7 @@ function WalletTransactionsTable({
     <Table
       table={table}
       total={total}
+      className="no-scrollbar"
       onClick={(selection) => {
         if (selection.inscription) {
           navigate(`/app/inscription/${selection.inscription.transaction.hash}`)

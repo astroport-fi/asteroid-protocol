@@ -85,18 +85,18 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                   {format(inscription.date_created, DATETIME_FORMAT)}
                 </div>
 
-                <div className="flex flex-row w-full mt-6">
+                <div className="flex flex-col lg:flex-row w-full mt-6">
                   <div className="flex flex-col w-full items-center">
                     <strong className="mb-1">Created by</strong>
                     <AddressChip address={inscription.creator} />
                   </div>
                   {listing ? (
-                    <div className="flex flex-col w-full items-center">
+                    <div className="flex flex-col w-full items-center mt-6 lg:mt-0">
                       <strong className="mb-1">Seller</strong>
                       <AddressChip address={listing.seller_address} />
                     </div>
                   ) : (
-                    <div className="flex flex-col w-full items-center">
+                    <div className="flex flex-col w-full items-center mt-6 lg:mt-0">
                       <strong className="mb-1">Owned by</strong>
                       <AddressChip address={inscription.current_owner} />
                     </div>

@@ -45,8 +45,11 @@ export default function WalletCollections() {
     )
   }
   return (
-    <div>
-      <Collections collections={data.collections} />
+    <div className="flex pt-8 flex-col w-full overflow-y-scroll">
+      <Collections
+        collections={data.collections}
+        className="overflow-y-scroll overflow-x-auto"
+      />
       <Pagination
         pageCount={data.pages}
         pagination={pagination}

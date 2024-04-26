@@ -1,3 +1,4 @@
+import { ArrowsRightLeftIcon, FunnelIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { Outlet, json, useLoaderData, useParams } from '@remix-run/react'
 import { useMemo } from 'react'
@@ -92,38 +93,87 @@ export default function InscriptionsParentPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-row h-full">
-        <Filter
-          traits={collection?.traits as CollectionTrait[]}
-          sort={sort}
-          status={status}
-          showRaritySort={collection != null}
-        />
-        <div className="flex flex-col w-full h-full">
-          {collection && (
-            <CollectionDetailComponent collection={collection} stats={stats} />
-          )}
-          {club && <ClubDetail club={club} stats={stats} />}
-          {reservedListings && reservedListings.length > 0 && (
-            <div className="flex flex-col px-8 mt-8">
-              <h3 className="text-lg">Reserved by you</h3>
-              <Inscriptions
-                className="mt-4"
-                inscriptions={reservedListings}
-                onClick={(inscription) => {
-                  showDialog(inscription)
-                }}
-              />
-              <h3 className="text-lg mt-16">All listings</h3>
-            </div>
-          )}
-          <Outlet context={{ showDialog }} />
-          <BuyInscriptionDialog inscription={value} ref={dialogRef} />
+      <div className="drawer lg:drawer-open flex flex-row h-full">
+        <input id="filter-drawer" type="checkbox" className="drawer-toggle" />
+
+        <div className="drawer-side z-50 shrink-0 h-full">
+          <label
+            htmlFor="filter-drawer"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <Filter
+            traits={collection?.traits as CollectionTrait[]}
+            sort={sort}
+            status={status}
+            showRaritySort={collection != null}
+          />
         </div>
-        <LatestInscriptionTxs
-          transactions={transactions}
-          collectionName={collection?.name}
-        />
+        <div className="drawer-content flex flex-row w-full">
+          <div className="flex flex-col w-full h-full">
+            {reservedListings && reservedListings.length > 0 && (
+              <div className="flex flex-col px-8 mt-8">
+                <h3 className="text-lg">Reserved by you</h3>
+                <Inscriptions
+                  className="mt-4"
+                  inscriptions={reservedListings}
+                  onClick={(inscription) => {
+                    showDialog(inscription)
+                  }}
+                />
+                <h3 className="text-lg mt-16">All listings</h3>
+              </div>
+            )}
+
+            <div id="scrollableDiv" className="overflow-y-scroll h-full">
+              {collection && (
+                <CollectionDetailComponent
+                  collection={collection}
+                  stats={stats}
+                />
+              )}
+              {club && <ClubDetail club={club} stats={stats} />}
+
+              <div className="flex justify-between sticky top-0 bg-base-300 z-40">
+                <label
+                  htmlFor="filter-drawer"
+                  className="drawer-button flex items-center lg:hidden mx-8 my-2"
+                >
+                  <FunnelIcon className="size-5" />
+                  <span className="ml-2">Filter</span>
+                </label>
+                <label
+                  htmlFor="transactions-drawer"
+                  className="drawer-button flex items-center lg:hidden mx-8 my-2"
+                >
+                  <ArrowsRightLeftIcon className="size-5" />
+                  <span className="ml-2">Latest transactions</span>
+                </label>
+              </div>
+              <Outlet context={{ showDialog }} />
+            </div>
+            <BuyInscriptionDialog inscription={value} ref={dialogRef} />
+          </div>
+          <div className="drawer drawer-end lg:drawer-open w-min h-full">
+            <input
+              id="transactions-drawer"
+              type="checkbox"
+              className="drawer-toggle"
+            />
+            <div className="drawer-content">{/* Page content here */}</div>
+            <div className="drawer-side z-50 shrink-0 h-full">
+              <label
+                htmlFor="transactions-drawer"
+                aria-label="close sidebar"
+                className="drawer-overlay"
+              ></label>
+              <LatestInscriptionTxs
+                transactions={transactions}
+                collectionName={collection?.name}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

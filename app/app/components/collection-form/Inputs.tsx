@@ -54,7 +54,10 @@ export function RoyaltyPercentage<TFieldValues extends UpdateFormData>({
       }}
       name={'royaltyPercentage' as FieldPath<TFieldValues>}
       title="Royalty %"
-      tooltip="Can range from 0% to x%. New artists typically choose 5% or less while established artists can command royalties of 5%-15%"
+      tooltip={
+        'Can range from 0% to x%.\nNew artists typically choose5%\nor less while established artists can command royalties of 5%-15%'
+      }
+      tooltipClassName="before:ml-20"
       className="mt-4"
     />
   )
@@ -76,7 +79,10 @@ export function PaymentAddress<TFieldValues extends UpdateFormData>({
       name={'paymentAddress' as FieldPath<TFieldValues>}
       error={errors.paymentAddress}
       title="Royalty payment address (optional)"
-      tooltip="The address where royalties will be sent. Must be a Cosmos Hub address. If left blank, royalties will be sent to the collection owner's address."
+      tooltip={
+        "The address where royalties will be sent.\nMust be a Cosmos Hub address.\nIf left blank, royalties will be sent to the collection owner's address."
+      }
+      tooltipClassName="before:ml-[-7rem]"
       value={value ?? ''}
     />
   )
@@ -226,6 +232,7 @@ export function Description<TFieldValues extends UpdateFormData>({
         title="Description"
         htmlFor="description"
         tooltip="Will appear at the top of your collection's landing page, and can also be used by third-party apps"
+        tooltipClassName="before:ml-14"
       />
       <Textarea
         id="description"

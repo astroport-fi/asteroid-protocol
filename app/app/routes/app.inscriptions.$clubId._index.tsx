@@ -165,16 +165,14 @@ export default function InscriptionsPage() {
       >
         <Await resolve={data.data}>
           {(inscriptionsData) => (
-            <>
-              <InscriptionsList
-                page={data.page}
-                inscriptions={inscriptionsData.inscriptions}
-                count={inscriptionsData.count}
-                onClick={(inscription) => {
-                  showDialog(inscription)
-                }}
-              />
-            </>
+            <InscriptionsList
+              page={data.page}
+              inscriptions={inscriptionsData.inscriptions}
+              count={inscriptionsData.count}
+              onClick={(inscription) => {
+                showDialog(inscription)
+              }}
+            />
           )}
         </Await>
       </Suspense>
