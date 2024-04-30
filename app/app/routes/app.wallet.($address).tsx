@@ -90,7 +90,11 @@ export default function WalletPage() {
   return (
     <div className="flex flex-col items-center overflow-y-scroll">
       <div className="flex flex-col items-center">
-        <img src={logo} alt="Asteroid protocol" className="w-20 lg:w-40" />
+        <img
+          src={logo}
+          alt="Asteroid protocol"
+          className="hidden lg:inline lg:w-40"
+        />
         {stargazeName && (
           <span className="mt-8 text-md font-light">{stargazeName}</span>
         )}

@@ -60,7 +60,7 @@ export function TransactionBox({
 
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4 max-w-60">
         <div className="flex flex-col px-4">
-          <strong className="text-nowrap overflow-hidden text-ellipsis">
+          <strong className="text-nowrap whitespace-nowrap overflow-hidden text-ellipsis">
             {transaction.inscription.name}
           </strong>
         </div>
