@@ -1,5 +1,5 @@
 import { useFetcher, useNavigation, useSearchParams } from '@remix-run/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Loading } from 'react-daisyui'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { InscriptionsResult } from '~/api/client'
@@ -20,7 +20,6 @@ export default function InscriptionsList({
 }) {
   const [searchParams] = useSearchParams()
 
-  const ref = useRef<HTMLDivElement>(null)
   const navigation = useNavigation()
   const fetcher = useFetcher<{ data: InscriptionsResult; page: number }>()
   const [items, setItems] = useState<InscriptionWithMarket[]>([])
@@ -36,14 +35,6 @@ export default function InscriptionsList({
       setItems((prevItems) => [...prevItems, ...newItems])
     }
   }, [fetcher.data, fetcher.state])
-
-  // @todo
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = 0
-    }
-    setItems(inscriptions)
-  }, [inscriptions, setItems])
 
   useEffect(() => {
     setIsLoading(navigation.state === 'loading')
