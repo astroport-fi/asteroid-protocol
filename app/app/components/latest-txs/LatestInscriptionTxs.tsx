@@ -1,4 +1,4 @@
-import { ClockIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, useNavigate, useSearchParams } from '@remix-run/react'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
@@ -21,8 +21,15 @@ export default function LatestInscriptionTxs({
   const collectionOnlyTxs = txs === 'collection'
 
   return (
-    <div className="flex-col shrink-0 items-center w-96 border-l border-l-neutral hidden lg:flex text-center">
-      <div className="fixed py-8 flex flex-col w-available">
+    <div className="flex flex-col shrink-0 items-center h-full w-96 border-l border-l-neutral text-center bg-base-100 lg:bg-transparent">
+      <div className="fixed pt-4 lg:pt-8  flex flex-col w-available">
+        <label
+          htmlFor="transactions-drawer"
+          aria-label="close sidebar"
+          className="flex lg:hidden justify-end px-4"
+        >
+          <XMarkIcon className="size-5" />
+        </label>
         <div className="text-lg">Latest transactions</div>
         {collectionName && (
           <div className="flex justify-center items-center text-sm">
@@ -65,7 +72,7 @@ export default function LatestInscriptionTxs({
           <span className="p-2 w-2/12">Buyer</span>
         </div>
         <Divider className="my-1" />
-        <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-250px)]">
+        <div className="overflow-y-scroll no-scrollbar h-[calc(100vh-195px)] lg:h-[calc(100vh-264px)]">
           {transactions.length < 1 && (
             <span>No transactions for {collectionName}</span>
           )}

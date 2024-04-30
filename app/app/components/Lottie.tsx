@@ -17,7 +17,7 @@ export default function Lottie({
 
   const lottie = clientOnly$(useLottie(options))
   return (
-    <div className={className ?? 'size-64'}>
+    <div className={className ?? 'size-48 lg:size-64'}>
       {lottie ? lottie.View : <div />}
     </div>
   )

@@ -53,7 +53,7 @@ export default function WalletInscriptions() {
     )
   }
   return (
-    <div>
+    <div className="flex pt-8 flex-col w-full overflow-y-scroll">
       {data.listed.length > 0 && (
         <>
           <Divider>Listed</Divider>

@@ -1,5 +1,5 @@
 import { useFetcher, useNavigation, useSearchParams } from '@remix-run/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Loading } from 'react-daisyui'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { InscriptionsResult } from '~/api/client'
@@ -20,7 +20,6 @@ export default function InscriptionsList({
 }) {
   const [searchParams] = useSearchParams()
 
-  const ref = useRef<HTMLDivElement>(null)
   const navigation = useNavigation()
   const fetcher = useFetcher<{ data: InscriptionsResult; page: number }>()
   const [items, setItems] = useState<InscriptionWithMarket[]>([])
@@ -36,13 +35,6 @@ export default function InscriptionsList({
       setItems((prevItems) => [...prevItems, ...newItems])
     }
   }, [fetcher.data, fetcher.state])
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = 0
-    }
-    setItems(inscriptions)
-  }, [inscriptions, setItems])
 
   useEffect(() => {
     setIsLoading(navigation.state === 'loading')
@@ -66,26 +58,20 @@ export default function InscriptionsList({
   }
 
   return (
-    <div id="scrollableDiv" ref={ref} className="overflow-y-scroll h-full">
-      <InfiniteScroll
-        dataLength={items.length}
-        next={getMoreData}
-        hasMore={count > items.length}
-        loader={
-          <div className="flex justify-center mb-12">
-            {!isLoading && <Loading variant="dots" size="lg" />}
-          </div>
-        }
-        scrollableTarget="scrollableDiv"
-      >
-        {!isLoading && (
-          <Inscriptions
-            className="p-8"
-            inscriptions={items}
-            onClick={onClick}
-          />
-        )}
-      </InfiniteScroll>
-    </div>
+    <InfiniteScroll
+      dataLength={items.length}
+      next={getMoreData}
+      hasMore={count > items.length}
+      loader={
+        <div className="flex justify-center mb-12">
+          {!isLoading && <Loading variant="dots" size="lg" />}
+        </div>
+      }
+      scrollableTarget="scrollableDiv"
+    >
+      {!isLoading && (
+        <Inscriptions className="p-8" inscriptions={items} onClick={onClick} />
+      )}
+    </InfiniteScroll>
   )
 }

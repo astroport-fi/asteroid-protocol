@@ -102,9 +102,14 @@ function TokenDetailComponent({
         />
       </div>
       <div className="flex flex-col flex-1">
-        <div className="flex flex-row justify-between">
-          <h2 className="font-medium text-2xl">{token.name}</h2>
-          <div className="flex items-center">
+        <div className="flex flex-col lg:flex-row lg:justify-between">
+          <h2 className="font-medium text-3xl flex items-baseline">
+            {token.name}
+            <span className="text-sm font-light text-header-content ml-1">
+              {token.ticker}
+            </span>
+          </h2>
+          <div className="flex items-center justify-between mt-4 lg:mt-0">
             {token.circulating_supply < token.max_supply && (
               <>
                 {isTokenLaunched(token) && <MintToken token={token} />}
@@ -114,21 +119,20 @@ function TokenDetailComponent({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Open mint page{' '}
+                  Open mint page
                   <ArrowTopRightOnSquareIcon className="size-5 ml-1" />
                 </Link>
               </>
             )}
           </div>
         </div>
-        <span className="mt-2">{token.ticker}</span>
         <Divider />
-        <div className="flex flex-row w-full">
+        <div className="flex flex-col lg:flex-row w-full">
           <div className="flex flex-col flex-1">
             <strong className="mb-1">Created by</strong>
             <AddressChip address={token.creator} />
           </div>
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 mt-6 lg:mt-0">
             <strong className="mb-1">Owned by</strong>
             <AddressChip address={token.current_owner} />
           </div>

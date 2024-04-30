@@ -31,7 +31,7 @@ export function FeeBreakdown({
   return (
     <div className="flex flex-col w-full mt-8">
       <span className="text-md">Estimated fee breakdown</span>
-      <div className="flex flex-col px-16 mt-4">
+      <div className="flex flex-col px-6 lg:px-16 mt-4">
         <Row title="Cosmos Hub">
           {chainFeeAmount > 0 ? (
             <NumericFormat

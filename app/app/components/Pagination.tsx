@@ -82,13 +82,20 @@ export default function Pagination({
 
   return (
     <div
-      className={twMerge('flex items-center justify-center gap-2', className)}
+      className={twMerge(
+        'flex items-center justify-center gap-2 sticky left-0',
+        className,
+      )}
     >
-      <span className="text-sm">
-        Showing {fromItem} to {toItem} of {total}
+      <span className="text-sm flex flex-col md:flex-row md:gap-0.5">
+        Showing
+        <span>
+          {fromItem} to {toItem}
+        </span>
+        <span>of {total}</span>
       </span>
       <Button
-        className="ml-4"
+        className="ml-4 btn-sm md:btn-md"
         shape="circle"
         color="ghost"
         onClick={() => setPageIndex(0)}
@@ -97,6 +104,7 @@ export default function Pagination({
         <ChevronDoubleLeftIcon className="size-5" />
       </Button>
       <Button
+        className="btn-sm md:btn-md"
         shape="circle"
         color="ghost"
         onClick={() => previousPage()}
@@ -105,6 +113,7 @@ export default function Pagination({
         <ChevronLeftIcon className="size-5" />
       </Button>
       <Button
+        className="btn-sm md:btn-md"
         shape="circle"
         color="ghost"
         onClick={() => nextPage()}
@@ -113,6 +122,7 @@ export default function Pagination({
         <ChevronRightIcon className="size-5" />
       </Button>
       <Button
+        className="btn-sm md:btn-md"
         shape="circle"
         color="ghost"
         onClick={() => setPageIndex(pageCount - 1)}
@@ -120,14 +130,15 @@ export default function Pagination({
       >
         <ChevronDoubleRightIcon className="size-5" />
       </Button>
-      <span className="flex items-center gap-1">
-        <div>Page</div>
-        <strong>
+      <span className="flex flex-col md:flex-row items-center gap-1 shrink-0 text-sm">
+        <span>Page</span>
+        <span>
           {pageIndex + 1} of {pageCount}
-        </strong>
+        </span>
       </span>
       <Select
         size="sm"
+        className="hidden md:flex"
         value={pageSize}
         onChange={(e) => {
           setPageSize(Number(e.target.value))

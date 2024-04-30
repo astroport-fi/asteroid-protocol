@@ -108,7 +108,7 @@ export default function CreateCollection() {
 
   return (
     <div>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
+      <Form onSubmit={onSubmit} className="flex flex-col lg:flex-row mt-4">
         <div className="flex flex-1 flex-col items-center">
           {preview && (
             <img
@@ -120,7 +120,7 @@ export default function CreateCollection() {
 
           <div
             className={clsx('flex flex-col', {
-              ['bg-base-200 border border-neutral border-dashed rounded-3xl p-8']:
+              ['bg-base-200 w-full max-w-md border border-neutral border-dashed rounded-3xl p-8']:
                 fileName == null,
             })}
           >
@@ -131,8 +131,10 @@ export default function CreateCollection() {
                 <span className="flex items-center justify-center text-lg">
                   Collection Logo
                   <InfoTooltip
-                    message="Can be a custom image or one of your favorite inscriptions from your collection"
-                    className="ml-2"
+                    message={
+                      'Can be a custom image\nor one of your favorite inscriptions\nfrom your collection'
+                    }
+                    className="ml-2 before:ml-[-5rem]"
                   />
                 </span>
                 <span className="mt-4">Minimum dimensions</span>
@@ -150,7 +152,7 @@ export default function CreateCollection() {
             <FileInput
               key="content"
               id="content"
-              className="opacity-0"
+              className="opacity-0 w-10"
               {...register('content', {
                 required: true,
                 validate: async (files) => {
@@ -204,7 +206,7 @@ export default function CreateCollection() {
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col ml-8">
+        <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
           <strong>Create a collection</strong>
           <p className="mt-2">
             Creating a collection is a two-step process. First, create a
@@ -229,7 +231,7 @@ export default function CreateCollection() {
             <Label
               title="Name"
               htmlFor="name"
-              tooltip="Your collection must have a unique name"
+              tooltip={`Your collection must\nhave a unique name`}
             />
             <Input
               id="name"
@@ -259,16 +261,13 @@ export default function CreateCollection() {
           </div>
 
           <div className="form-control w-full mt-4">
-            <Form.Label
+            <Label
               title="Ticker"
               htmlFor="ticker"
-              className="justify-start"
-            >
-              <InfoTooltip
-                className="ml-2"
-                message="Your collection must have a unique ticker, which will be used in your collection's URL"
-              />
-            </Form.Label>
+              tooltip="Your collection must have a unique ticker, which will be used in collection's URL"
+              tooltipClassName="before:ml-20"
+            />
+
             <Input
               placeholder="NFT"
               id="ticker"

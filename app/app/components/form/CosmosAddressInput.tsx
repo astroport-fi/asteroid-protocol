@@ -21,6 +21,7 @@ export default function CosmosAddressInput<
   error,
   className,
   tooltip,
+  tooltipClassName,
   required = true,
 }: {
   register: UseFormRegister<TFieldValues>
@@ -30,12 +31,18 @@ export default function CosmosAddressInput<
   error: FieldError | undefined
   className?: string
   tooltip?: string
+  tooltipClassName?: string
   required?: boolean
 }) {
   return (
     <div className={twMerge('form-control w-full', className)}>
       <Form.Label title={title} htmlFor={name} className="justify-start">
-        {tooltip && <InfoTooltip message={tooltip} className="ml-2" />}
+        {tooltip && (
+          <InfoTooltip
+            message={tooltip}
+            className={twMerge('ml-2', tooltipClassName)}
+          />
+        )}
       </Form.Label>
       <Input
         id={name}

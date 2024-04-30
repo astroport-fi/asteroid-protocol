@@ -10,7 +10,7 @@ export function CollapseTextTrigger({
 }) {
   return (
     <Collapse.Title
-      className="p-0 hover:cursor-pointer min-h-[initial]"
+      className="p-0 whitespace-pre-wrap hover:cursor-pointer min-h-[initial]"
       onClick={() => onToggle()}
     >
       <p className="text-ellipsis line-clamp-2">{title}</p>
