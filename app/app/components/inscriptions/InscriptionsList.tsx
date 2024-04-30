@@ -37,6 +37,10 @@ export default function InscriptionsList({
   }, [fetcher.data, fetcher.state])
 
   useEffect(() => {
+    setItems(inscriptions)
+  }, [inscriptions, setItems])
+
+  useEffect(() => {
     setIsLoading(navigation.state === 'loading')
   }, [navigation.state])
 
