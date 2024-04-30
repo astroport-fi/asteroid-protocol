@@ -73,7 +73,7 @@ export default function Navbar() {
               />
             </svg>
           </Dropdown.Details.Toggle>
-          <Dropdown.Menu className="w-52 menu-sm mt-3 z-10">
+          <Dropdown.Menu className="w-52 menu-sm mt-3 z-50">
             <Dropdown.Item anchor={false}>
               <NavLink
                 to="/app/inscriptions"
