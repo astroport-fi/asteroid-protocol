@@ -1,6 +1,8 @@
 import type { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
 import { wallets as keplr } from '@cosmos-kit/keplr-extension'
+import { wallets as keplrMobile } from '@cosmos-kit/keplr-mobile'
 import { wallets as leap } from '@cosmos-kit/leap-extension'
+import { wallets as leapMobile } from '@cosmos-kit/leap-mobile'
 import { ChainProvider } from '@cosmos-kit/react-lite'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { WalletIcon } from '@heroicons/react/24/solid'
@@ -94,7 +96,7 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   }
 }
 
-const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
+const WalletModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const status = walletRepo?.current?.walletStatus ?? WalletStatus.Disconnected
   const prevStatus = useRef(status)
@@ -140,23 +142,21 @@ export default function WalletProvider() {
       chains={getChains()}
       subscribeConnectEvents={true}
       assetLists={getAssets()}
-      wallets={[...keplr, ...leap]}
-      walletModal={MyModal}
+      wallets={[...keplr, ...leap, ...keplrMobile, ...leapMobile]}
+      walletModal={WalletModal}
       sessionOptions={{ duration: Math.pow(2, 31) - 1 }}
-      // walletConnectOptions={{
-      //   signClient: {
-      //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
-      //     relayUrl: 'wss://relay.walletconnect.org',
-      //     metadata: {
-      //       name: 'Asteroid',
-      //       description: 'Asteroid Protocol',
-      //       url: 'https://asteroidprotocol.io/app/',
-      //       icons: [
-      //         'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
-      //       ],
-      //     },
-      //   },
-      // }}
+      walletConnectOptions={{
+        signClient: {
+          projectId: '3018abf8adaea881049a7c03bcf2d3aa',
+          metadata: {
+            name: 'Asteroid Protocol',
+            description:
+              'Asteroid Protocol allows you to inscribe anything on the Hub',
+            url: 'https://asteroidprotocol.io/app/',
+            icons: ['https://asteroidprotocol.io/apple-touch-icon.png'],
+          },
+        },
+      }}
     >
       <Outlet />
     </ChainProvider>
