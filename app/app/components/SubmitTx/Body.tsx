@@ -7,21 +7,24 @@ import {
   TxState,
 } from '~/hooks/useSubmitTx'
 import { SignError, TxError } from './Errors'
-import { FeeBreakdown } from './FeeBreakdown'
-import TxStatus from './TxStatus'
+import { InscriptionFeeBreakdown, TxFeeBreakdown } from './FeeBreakdown'
+import { InscriptionTxStatus, TxStatus } from './TxStatus'
 
-interface BodyProps {
+interface TxBodyProps {
   chainFee: StdFee | null
-  metaprotocolFee: MetaprotocolFee
   error: SubmitTxError | null
   txHash: string | null
   txState: TxState
-  resultCTA: string
+}
+
+interface InscriptionBodyProps extends TxBodyProps {
+  metaprotocolFee: MetaprotocolFee
+  resultCTA?: string
   feeOperationTitle?: string
   onCTAClick?: () => void
 }
 
-export default function Body({
+export function InscriptionBody({
   error,
   chainFee,
   metaprotocolFee,
@@ -31,10 +34,10 @@ export default function Body({
   feeOperationTitle,
   children,
   onCTAClick,
-}: PropsWithChildren<BodyProps>) {
+}: PropsWithChildren<InscriptionBodyProps>) {
   if (txHash) {
     return (
-      <TxStatus
+      <InscriptionTxStatus
         txHash={txHash}
         txState={txState}
         txError={error}
@@ -58,11 +61,41 @@ export default function Body({
   return (
     <div className="flex flex-col items-center">
       {children}
-      <FeeBreakdown
+      <InscriptionFeeBreakdown
         chainFee={chainFee}
         metaprotocolFee={metaprotocolFee}
         operationTitle={feeOperationTitle}
       />
+    </div>
+  )
+}
+
+export function TxBody({
+  error,
+  chainFee,
+  txHash,
+  txState,
+  children,
+}: PropsWithChildren<TxBodyProps>) {
+  if (txHash) {
+    return <TxStatus txHash={txHash} txState={txState} txError={error} />
+  }
+
+  if (error) {
+    if (
+      chainFee &&
+      error.kind === ErrorKind.Transaction &&
+      error.message.includes('Request rejected')
+    ) {
+      return <SignError />
+    }
+    return <TxError error={error} />
+  }
+
+  return (
+    <div className="flex flex-col items-center">
+      {children}
+      <TxFeeBreakdown chainFee={chainFee} />
     </div>
   )
 }

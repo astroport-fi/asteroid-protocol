@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge'
 import { Token, isTokenLaunched } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
 import { getDecimalValue } from '~/utils/number'
+import EnableTokenBridgeDialog from './dialogs/EnableBridgeTokenDialog'
 import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
 
@@ -18,6 +19,8 @@ export function TokenActions({ amount, token, className }: Props) {
   const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
+  const { dialogRef: bridgeDialogRef, showDialog: showBridgeDialog } =
+    useDialog()
 
   const isLaunched = isTokenLaunched(token)
 
@@ -46,6 +49,14 @@ export function TokenActions({ amount, token, className }: Props) {
       >
         Trade
       </Link>
+      <Button
+        className="ml-2"
+        color="primary"
+        disabled={!amount}
+        onClick={() => showBridgeDialog()}
+      >
+        Enable for Bridging
+      </Button>
       <TransferTokenDialog token={token} ref={transferDialogRef} />
       <SellTokenDialog
         ticker={token.ticker}
@@ -53,6 +64,7 @@ export function TokenActions({ amount, token, className }: Props) {
         ref={sellDialogRef}
         lastPrice={getDecimalValue(token.last_price_base, token.decimals)}
       />
+      <EnableTokenBridgeDialog token={token} ref={bridgeDialogRef} />
     </div>
   )
 }

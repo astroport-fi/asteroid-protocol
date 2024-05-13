@@ -14,6 +14,10 @@ GAS_PRICE = "0.005uatom"
 USE_IBC = false
 USE_EXTENSION_DATA = true
 MAINTENANCE_MODE = false
+NEUTRON_CHAIN_ID = "test-1"
+NEUTRON_CHAIN_NAME = "localneutron"
+NEUTRON_BRIDGE_CONTRACT = "neutron1vlqvaptpe7hztjj52whxk5mm6k2ey9hu4rv5ueu89shagk72mewq6jnxez"
+BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql,http://localhost:8080/v1/graphql"
 
 [env.localroids.vars]
 ENVIRONMENT = "development"

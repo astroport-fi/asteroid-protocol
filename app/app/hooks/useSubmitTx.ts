@@ -1,5 +1,6 @@
 import { TxInscription, prepareTx } from '@asteroid-protocol/sdk'
-import { StdFee } from '@cosmjs/stargate'
+import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
+import { Coin, StdFee } from '@cosmjs/stargate'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { clientOnly$ } from 'vite-env-only'
@@ -8,14 +9,15 @@ import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
 import useAddress from './useAddress'
+import useAsteroidBridgeClient from './useAsteroidBridgeClient'
 
 export enum TxState {
   Initial,
   Submit,
   Sign,
-  SuccessOnchain,
-  SuccessIndexer,
-  SuccessInscribed,
+  SuccessOnchain, // intermediate state used for inscription transactions only
+  SuccessIndexer, // intermediate state used for inscription transactions only
+  Success,
   Failed,
 }
 
@@ -49,7 +51,7 @@ async function checkTransaction(
       // Indexer has it, keep checking until statusMessage changes
       // to something else than pending
       if (transactionStatus.toLowerCase() == 'success') {
-        return { status: TxState.SuccessInscribed }
+        return { status: TxState.Success }
       } else if (transactionStatus.toLowerCase().includes('error')) {
         // We hit an error
         return { status: TxState.Failed, error: transactionStatus }
@@ -204,7 +206,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     if (
       !client ||
       !txHash ||
-      txState == TxState.SuccessInscribed ||
+      txState == TxState.Success ||
       txState == TxState.Failed
     ) {
       return
@@ -256,5 +258,80 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     setError,
     resetState,
     retry,
+  }
+}
+
+export type SubmitTxState = ReturnType<typeof useSubmitTx>
+
+export function useExecuteBridgeMsg(
+  msg: ExecuteMsg,
+  memo: string | undefined = '',
+  fee: StdFee | 'auto' | number = 'auto',
+  funds?: Coin[],
+) {
+  // deps
+  const bridgeClient = clientOnly$(useAsteroidBridgeClient())
+
+  // state
+  const [txState, setTxState] = useState<TxState>(TxState.Initial)
+  const [txHash, setTxHash] = useState('')
+  const [error, setError] = useState<SubmitTxError | null>(null)
+  const [chainFee, setChainFee] = useState<StdFee | null>(null)
+
+  // Estimate chain fee
+  useEffect(() => {
+    if (!msg) {
+      return
+    }
+
+    if (!bridgeClient) {
+      setError({
+        kind: ErrorKind.Estimation,
+        message: 'There is no client to estimate chain fee',
+      })
+      return
+    }
+
+    bridgeClient
+      .estimate(msg, memo, fee, funds)
+      .then((res) => {
+        setChainFee(res)
+        setError(null)
+      })
+      .catch((err) => {
+        setError({
+          kind: ErrorKind.Estimation,
+          message: (err as Error).message,
+        })
+      })
+  }, [msg, funds, fee, memo, bridgeClient])
+
+  async function sendTx() {
+    if (!bridgeClient) {
+      setError({ message: 'invalid client', kind: ErrorKind.Generic })
+      return
+    }
+
+    setError(null)
+    setTxState(TxState.Sign)
+
+    try {
+      const res = await bridgeClient.execute(msg, memo, fee, funds)
+      setTxState(TxState.Submit)
+      setTxHash(res.transactionHash)
+    } catch (err) {
+      setError({ message: (err as Error).message, kind: ErrorKind.Transaction })
+      setTxState(TxState.Failed)
+      console.dir(err)
+    }
+  }
+
+  return {
+    txState,
+    txHash,
+    error,
+    chainFee,
+    sendTx,
+    setError,
   }
 }

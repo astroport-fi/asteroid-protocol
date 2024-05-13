@@ -8,6 +8,10 @@ export const RootContext = createContext({
   asteroidApi: '', // @todo add default asteroid api
   asteroidWs: '', // @todo add default asteroid ws
   chainId: '', // @todo add default chain id
+  neutronChainId: '', // @todo add default neutron chain id
+  neutronChainName: '', // @todo add default neutron chain name
+  neutronBridgeContract: '', // @todo add default neutron bridge contract
+  bridgeEndpoints: [] as string[], // @todo add default bridge endpoints
   useIbc: true,
   useExtensionData: true,
   chainName: '', // @todo add default chain name

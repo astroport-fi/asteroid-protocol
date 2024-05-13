@@ -7,7 +7,7 @@ import useSubmitTx, { TxState } from '~/hooks/useSubmitTx'
 import scanAnimationData from '~/lottie/scan.json'
 import Lottie from '../Lottie'
 import Actions from '../SubmitTx/Actions'
-import Body from '../SubmitTx/Body'
+import { InscriptionBody } from '../SubmitTx/Body'
 import Modal from './Modal'
 
 interface Props {
@@ -54,7 +54,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
   }, [txInscriptionProp, txInscription, setTxInscription, resetState])
 
   useEffect(() => {
-    if (txState === TxState.SuccessInscribed && txHash) {
+    if (txState === TxState.Success && txHash) {
       onSuccess?.(txHash)
     }
   }, [txState, txHash])
@@ -68,7 +68,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
       }}
     >
       <Modal.Body className="text-center">
-        <Body
+        <InscriptionBody
           chainFee={chainFee}
           metaprotocolFee={metaprotocolFee}
           error={error}
@@ -94,7 +94,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
             This can <strong>not</strong>
             {` `}be undone.
           </span>
-        </Body>
+        </InscriptionBody>
       </Modal.Body>
       <Modal.Actions className="flex justify-center">
         <Actions

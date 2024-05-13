@@ -9,15 +9,14 @@ import { useEffect, useRef } from 'react'
 import { Button, Loading, Modal } from 'react-daisyui'
 import { useClipboard } from 'use-clipboard-copy'
 import { WalletStatus } from '~/components/wallet/Wallet'
-import useAddress from '~/hooks/useAddress'
 import { getAssets, getChains } from '~/utils/chain'
 import { getEllipsisTxt } from '~/utils/string'
 
 function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   const status = walletRepo.current?.walletStatus ?? WalletStatus.Disconnected
-  const address = useAddress()
   const clipboard = useClipboard({ copiedTimeout: 800 })
   const message = walletRepo.current?.message
+  const address = walletRepo.current?.address
   if (message) {
     console.log('wallet message', message)
   }
