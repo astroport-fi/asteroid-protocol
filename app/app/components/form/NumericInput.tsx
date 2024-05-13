@@ -27,7 +27,7 @@ export default function NumericInput<
 }: {
   control: Control<TFieldValues>
   name: TName
-  title: string
+  title?: string
   error: FieldError | undefined
   isFloat?: boolean
   className?: string
@@ -36,14 +36,16 @@ export default function NumericInput<
 } & NumericFormatProps<InputProps>) {
   return (
     <div className={twMerge('form-control w-full', className)}>
-      <Form.Label title={title} htmlFor={name} className="justify-start">
-        {tooltip && (
-          <InfoTooltip
-            message={tooltip}
-            className={twMerge('ml-2', tooltipClassName)}
-          />
-        )}
-      </Form.Label>
+      {title && (
+        <Form.Label title={title} htmlFor={name} className="justify-start">
+          {tooltip && (
+            <InfoTooltip
+              message={tooltip}
+              className={twMerge('ml-2', tooltipClassName)}
+            />
+          )}
+        </Form.Label>
+      )}
       <Controller
         rules={{ required: props.required, pattern: /^[0-9]+$/ }}
         control={control}
@@ -82,15 +84,11 @@ export default function NumericInput<
         )}
       />
 
-      <label className="label" htmlFor={name}>
-        <span
-          className={clsx('label-text-alt', {
-            ['text-error']: error != null,
-          })}
-        >
-          {error && 'Required'}
-        </span>
-      </label>
+      {error && (
+        <label className="label" htmlFor={name}>
+          <span className="label-text-alt text-error">Required</span>
+        </label>
+      )}
     </div>
   )
 }

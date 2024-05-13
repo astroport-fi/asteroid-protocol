@@ -13,7 +13,7 @@ import useForwardRef from '~/hooks/useForwardRef'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import useSubmitTx, { ErrorKind, TxState } from '~/hooks/useSubmitTx'
 import Actions from '../SubmitTx/Actions'
-import Body from '../SubmitTx/Body'
+import { InscriptionBody } from '../SubmitTx/Body'
 import Modal from './Modal'
 
 export type BuyType = 'cft20' | 'inscription'
@@ -99,11 +99,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
   const asteroidClient = useAsteroidClient()
 
   useEffect(() => {
-    if (
-      txState === TxState.SuccessInscribed &&
-      step === Step.Purchase &&
-      txHash
-    ) {
+    if (txState === TxState.Success && step === Step.Purchase && txHash) {
       onSuccess?.(txHash)
     }
   }, [txState, txHash, step])
@@ -189,7 +185,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           setStep(Step.Purchase)
           setError({ kind: ErrorKind.Validation, message: err.message })
         })
-    } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
+    } else if (step === Step.Reserve && txState === TxState.Success) {
       operations
         .buy(listingHash, buyType, royalty?.data ?? undefined)
         .then((buyTxData) => {
@@ -251,7 +247,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
       onClose={() => navigate(url ?? `${location.pathname}${location.search}`)}
     >
       <Modal.Body className="text-center">
-        <Body
+        <InscriptionBody
           chainFee={chainFee}
           metaprotocolFee={metaprotocolFee}
           error={error}
@@ -303,7 +299,7 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
                 </span>
               </Alert>
             )}
-        </Body>
+        </InscriptionBody>
       </Modal.Body>
       <Modal.Actions className="flex justify-center">
         <Actions

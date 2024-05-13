@@ -42,6 +42,7 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import { bridgeHistorySelector, bridgeTokenSignatureSelector } from './bridge'
 import { clubStatsSelector } from './clubs'
 import {
   Collection,
@@ -1251,6 +1252,63 @@ export class AsteroidClient extends AsteroidService {
     }
 
     return transaction.status_message
+  }
+
+  async getBridgeHistorySignature(txHash: string) {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: txHash,
+              },
+            },
+          },
+        },
+        bridgeHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getBridgeTokenSignature(ticker: string) {
+    const result = await this.query({
+      bridge_token: [
+        {
+          where: {
+            token: {
+              ticker: {
+                _eq: ticker,
+              },
+            },
+          },
+        },
+        bridgeTokenSignatureSelector,
+      ],
+    })
+
+    return result.bridge_token[0]
+  }
+
+  async getBridgeTokens(): Promise<Token[]> {
+    const result = await this.query({
+      bridge_token: [
+        {
+          where: {
+            enabled: {
+              _eq: true,
+            },
+          },
+        },
+        {
+          token: tokenSelector,
+        },
+      ],
+    })
+
+    return result.bridge_token.map((t) => t.token)
   }
 
   async getInscriptionTradeHistory(

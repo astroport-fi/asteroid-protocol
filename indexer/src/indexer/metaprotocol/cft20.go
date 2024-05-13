@@ -753,3 +753,109 @@ func (protocol *CFT20) storeContent(mimeType string, txHash string, content []by
 
 	return aws.StringValue(&uploadResult.Location), nil
 }
+
+func (protocol *CFT20) ParseTokenData(ticker string, amountString string) (models.Token, uint64, error) {
+
+	// Check if the ticker exists
+	var tokenModel models.Token
+	result := protocol.db.Where("chain_id = ? AND ticker = ?", protocol.chainID, ticker).First(&tokenModel)
+	if result.Error != nil {
+		return tokenModel, 0, fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+	}
+
+	// Convert amount to have the correct number of decimals
+	amountFloat, err := strconv.ParseFloat(amountString, 64)
+	if err != nil {
+		return tokenModel, 0, fmt.Errorf("unable to parse amount '%s'", err)
+	}
+	if amountFloat <= 0 {
+		return tokenModel, 0, fmt.Errorf("amount must be greater than 0")
+	}
+
+	// Convert amount from decimal to unsigned int using the token's decimals value
+	amount := uint64(math.Round(amountFloat * math.Pow10(int(tokenModel.Decimals))))
+
+	// In case the input is less than 1 / 10 ** Decimals
+	if amount == 0 {
+		return tokenModel, 0, fmt.Errorf("amount must be greater than 0")
+	}
+
+	return tokenModel, amount, nil
+}
+
+type CFT20TransferOptions struct {
+	FromVirtual bool
+	ToVirtual   bool
+}
+
+func (protocol *CFT20) Transfer(transactionModel models.Transaction, from string, to string, tokenModel models.Token, amount uint64, action string, options ...CFT20TransferOptions) error {
+
+	var opts CFT20TransferOptions
+	if len(options) > 0 {
+		opts = options[0]
+	} else {
+		opts = CFT20TransferOptions{}
+	}
+
+	if !opts.FromVirtual {
+		// Check that the user has enough tokens to send
+		var holderModel models.TokenHolder
+		result := protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", protocol.chainID, tokenModel.ID, from).First(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("sender does not have any tokens to send")
+		}
+
+		if holderModel.Amount < amount {
+			return fmt.Errorf("sender does not have enough tokens to send")
+		}
+
+		// At this point we know that the sender has enough tokens to send
+		// so update the sender's balance
+		holderModel.Amount = holderModel.Amount - amount
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update seller's balance '%s'", result.Error)
+		}
+	}
+
+	if !opts.ToVirtual {
+		// Check if the destination address has any tokens
+		var destinationHolderModel models.TokenHolder
+		result := protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", protocol.chainID, tokenModel.ID, to).First(&destinationHolderModel)
+		if result.Error != nil {
+			if result.Error != gorm.ErrRecordNotFound {
+				return fmt.Errorf("unable to check destination balance '%s'", result.Error)
+			}
+		}
+
+		// If the destination address has no tokens, we need to create a record
+		destinationHolderModel.ChainID = protocol.chainID
+		destinationHolderModel.TokenID = tokenModel.ID
+		destinationHolderModel.Address = to
+		destinationHolderModel.Amount = destinationHolderModel.Amount + amount
+		destinationHolderModel.DateUpdated = transactionModel.DateCreated
+
+		result = protocol.db.Save(&destinationHolderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update receiver balance '%s'", result.Error)
+		}
+	}
+
+	// Record the transfer
+	historyModel := models.TokenAddressHistory{
+		ChainID:       protocol.chainID,
+		Height:        transactionModel.Height,
+		TransactionID: transactionModel.ID,
+		TokenID:       tokenModel.ID,
+		Sender:        from,
+		Receiver:      to,
+		Action:        action,
+		Amount:        amount,
+		DateCreated:   transactionModel.DateCreated,
+	}
+	result := protocol.db.Save(&historyModel)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
