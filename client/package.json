@@ -36,12 +36,17 @@
     "./msg": {
       "require": "./cjs/msg/index.js",
       "import": "./esm/msg/index.js"
+    },
+    "./contracts": {
+      "require": "./cjs/contracts/index.js",
+      "import": "./esm/contracts/index.js"
     }
   },
   "bin": {
     "asteroid": "./esm/cli.js"
   },
   "dependencies": {
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/crypto": "^0.32.2",
     "@cosmjs/encoding": "^0.32.2",
     "@cosmjs/proto-signing": "^0.32.2",
@@ -52,6 +57,7 @@
     "fetch-retry": "^5.0.6",
     "graphql-ws": "^5.14.3",
     "mime": "^4.0.1",
+    "read-pkg": "^9.0.1",
     "udsv": "^0.5.3",
     "zod": "^3.22.4"
   },

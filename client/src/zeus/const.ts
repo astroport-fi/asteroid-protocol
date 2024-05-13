@@ -16,6 +16,56 @@ export const AllTypesProps: Record<string, any> = {
     _neq: 'bigint',
     _nin: 'bigint',
   },
+  bridge_history_bool_exp: {
+    _and: 'bridge_history_bool_exp',
+    _not: 'bridge_history_bool_exp',
+    _or: 'bridge_history_bool_exp',
+    amount: 'bigint_comparison_exp',
+    receiver: 'String_comparison_exp',
+    signature: 'String_comparison_exp',
+    token_id: 'Int_comparison_exp',
+    transaction: 'transaction_bool_exp',
+    transaction_id: 'Int_comparison_exp',
+  },
+  bridge_history_order_by: {
+    amount: 'order_by',
+    receiver: 'order_by',
+    signature: 'order_by',
+    token_id: 'order_by',
+    transaction: 'transaction_order_by',
+    transaction_id: 'order_by',
+  },
+  bridge_history_select_column: 'enum' as const,
+  bridge_history_stream_cursor_input: {
+    initial_value: 'bridge_history_stream_cursor_value_input',
+    ordering: 'cursor_ordering',
+  },
+  bridge_history_stream_cursor_value_input: {
+    amount: 'bigint',
+  },
+  bridge_token_bool_exp: {
+    _and: 'bridge_token_bool_exp',
+    _not: 'bridge_token_bool_exp',
+    _or: 'bridge_token_bool_exp',
+    enabled: 'Boolean_comparison_exp',
+    id: 'Int_comparison_exp',
+    signature: 'String_comparison_exp',
+    token: 'token_bool_exp',
+    token_id: 'Int_comparison_exp',
+  },
+  bridge_token_order_by: {
+    enabled: 'order_by',
+    id: 'order_by',
+    signature: 'order_by',
+    token: 'token_order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_select_column: 'enum' as const,
+  bridge_token_stream_cursor_input: {
+    initial_value: 'bridge_token_stream_cursor_value_input',
+    ordering: 'cursor_ordering',
+  },
+  bridge_token_stream_cursor_value_input: {},
   club_stats_arguments: {},
   club_stats_bool_exp_bool_exp: {
     _and: 'club_stats_bool_exp_bool_exp',
@@ -1552,6 +1602,17 @@ export const AllTypesProps: Record<string, any> = {
   },
   order_by: 'enum' as const,
   query_root: {
+    bridge_history: {
+      distinct_on: 'bridge_history_select_column',
+      order_by: 'bridge_history_order_by',
+      where: 'bridge_history_bool_exp',
+    },
+    bridge_token: {
+      distinct_on: 'bridge_token_select_column',
+      order_by: 'bridge_token_order_by',
+      where: 'bridge_token_bool_exp',
+    },
+    bridge_token_by_pk: {},
     club_stats: {
       args: 'club_stats_arguments',
       distinct_on: 'club_stats_enum_name',
@@ -1815,6 +1876,25 @@ export const AllTypesProps: Record<string, any> = {
     date_updated: 'timestamp',
   },
   subscription_root: {
+    bridge_history: {
+      distinct_on: 'bridge_history_select_column',
+      order_by: 'bridge_history_order_by',
+      where: 'bridge_history_bool_exp',
+    },
+    bridge_history_stream: {
+      cursor: 'bridge_history_stream_cursor_input',
+      where: 'bridge_history_bool_exp',
+    },
+    bridge_token: {
+      distinct_on: 'bridge_token_select_column',
+      order_by: 'bridge_token_order_by',
+      where: 'bridge_token_bool_exp',
+    },
+    bridge_token_by_pk: {},
+    bridge_token_stream: {
+      cursor: 'bridge_token_stream_cursor_input',
+      where: 'bridge_token_bool_exp',
+    },
     club_stats: {
       args: 'club_stats_arguments',
       distinct_on: 'club_stats_enum_name',
@@ -3142,6 +3222,21 @@ export const ReturnTypes: Record<string, any> = {
     refresh: 'Boolean',
   },
   bigint: `scalar.bigint` as const,
+  bridge_history: {
+    amount: 'bigint',
+    receiver: 'String',
+    signature: 'String',
+    token_id: 'Int',
+    transaction: 'transaction',
+    transaction_id: 'Int',
+  },
+  bridge_token: {
+    enabled: 'Boolean',
+    id: 'Int',
+    signature: 'String',
+    token: 'token',
+    token_id: 'Int',
+  },
   club_stats: {
     floor_price: 'bigint',
     listed: 'bigint',
@@ -4000,6 +4095,9 @@ export const ReturnTypes: Record<string, any> = {
   },
   numeric: `scalar.numeric` as const,
   query_root: {
+    bridge_history: 'bridge_history',
+    bridge_token: 'bridge_token',
+    bridge_token_by_pk: 'bridge_token',
     club_stats: 'club_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
@@ -4076,6 +4174,11 @@ export const ReturnTypes: Record<string, any> = {
     last_processed_height: 'Int',
   },
   subscription_root: {
+    bridge_history: 'bridge_history',
+    bridge_history_stream: 'bridge_history',
+    bridge_token: 'bridge_token',
+    bridge_token_by_pk: 'bridge_token',
+    bridge_token_stream: 'bridge_token',
     club_stats: 'club_stats',
     collection: 'collection',
     collection_aggregate: 'collection_aggregate',
