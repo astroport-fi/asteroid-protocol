@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Steps } from 'react-daisyui'
+import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import { useBridgeHistorySignatures } from '~/hooks/useBridgeSignatures'
 import { useBridgeOperations } from '~/hooks/useOperations'
@@ -7,6 +8,7 @@ import useSubmitTx, {
   SubmitTxState,
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
+import { toDecimalValue } from '~/utils/number'
 import Actions from '../SubmitTx/Actions'
 import { InscriptionBody, TxBody } from '../SubmitTx/Body'
 import { SWRStatus } from '../SubmitTx/TxStatus'
@@ -18,7 +20,7 @@ enum Step {
 }
 
 interface Props {
-  ticker: string
+  token: Token
   amount: number
   destination: string
 }
@@ -58,7 +60,7 @@ function CosmosTx({ submitTxState }: { submitTxState: SubmitTxState }) {
 }
 
 function NeutronTx({
-  ticker,
+  token,
   amount,
   destination,
   transactionHash,
@@ -69,17 +71,18 @@ function NeutronTx({
   const msg = useMemo(() => {
     return {
       receive: {
-        ticker,
-        amount: `${amount}`,
+        ticker: token.ticker,
+        amount: `${toDecimalValue(amount, token.decimals)}`,
         destination_addr: destination,
         source_chain_id: chainId,
         transaction_hash: transactionHash,
         signatures,
       },
     }
-  }, [amount, chainId, destination, signatures, ticker, transactionHash])
+  }, [amount, chainId, destination, signatures, token, transactionHash])
 
   const { chainFee, error, txHash, txState, sendTx } = useExecuteBridgeMsg(msg)
+  console.log(txHash, txState)
 
   return (
     <>
@@ -110,7 +113,7 @@ function NeutronTx({
   )
 }
 
-function ToNeutronBridgeDialog({ ticker, amount, destination }: Props) {
+function ToNeutronBridgeDialog({ token, amount, destination }: Props) {
   const operations = useBridgeOperations()
   const { neutronBridgeContract, neutronChainId } = useRootContext()
   const txInscription = useMemo(() => {
@@ -119,7 +122,7 @@ function ToNeutronBridgeDialog({ ticker, amount, destination }: Props) {
     }
 
     return operations.send(
-      ticker,
+      token.ticker,
       amount,
       neutronChainId,
       neutronBridgeContract,
@@ -127,7 +130,7 @@ function ToNeutronBridgeDialog({ ticker, amount, destination }: Props) {
     )
   }, [
     operations,
-    ticker,
+    token,
     amount,
     destination,
     neutronChainId,
@@ -157,7 +160,7 @@ function ToNeutronBridgeDialog({ ticker, amount, destination }: Props) {
         {submitTxState.txHash !== '' ? (
           signatures.data ? (
             <NeutronTx
-              ticker={ticker}
+              token={token}
               amount={amount}
               destination={destination}
               transactionHash={submitTxState.txHash}

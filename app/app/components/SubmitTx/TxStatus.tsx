@@ -44,7 +44,7 @@ export function GenericStatus({
   animationLoop = true,
 }: {
   title: string
-  description: string
+  description?: string
   status: GenericStatusState
   animationLoop?: boolean
   details?: string
@@ -71,7 +71,7 @@ export function GenericStatus({
         loop={animationLoop}
       />
       <h2 className={`text-xl font-semibold ${headerColor}`}>{title}</h2>
-      <p className="mt-4">{description}</p>
+      {description && <p className="mt-4">{description}</p>}
       {details && <p className={headerColor}>{details}</p>}
     </div>
   )
@@ -192,13 +192,10 @@ export function TxStatus({ txState, txError }: TxStatusProps) {
   let state: GenericStatusState
 
   if (txState == TxState.Failed) {
-    title = 'Inscription failed'
-    description =
-      'Your inscription was created on-chain, but failed to be added to Asteroid.'
+    title = 'Transaction failed'
     state = GenericStatusState.Error
   } else if (txState == TxState.Success) {
     title = 'Transaction complete'
-    description = 'Your inscription is now on-chain and viewable on Asteroid'
     state = GenericStatusState.Success
     animationLoop = false
   } else {
