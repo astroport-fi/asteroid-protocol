@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { useMemo } from 'react'
 import { Badge, Button, Divider } from 'react-daisyui'
 import { AsteroidClient, TraitItem } from '~/api/client'
 import {
@@ -21,11 +22,13 @@ import { BackHeader } from '~/components/Back'
 import { InscriptionActions } from '~/components/InscriptionActions'
 import InscriptionImage from '~/components/InscriptionImage'
 import TxLink from '~/components/TxLink'
+import { NotAffiliatedWarning } from '~/components/alerts/NotAffiliatedAlert'
 import GrantMigrationPermissionDialog from '~/components/dialogs/GrantMigrationPermissionDialog'
 import Table from '~/components/table'
 import useAddress from '~/hooks/useAddress'
 import useDialog from '~/hooks/useDialog'
 import useSorting from '~/hooks/useSorting'
+import { usesAsteroidSocialLinks } from '~/utils/collection'
 import { DATETIME_FORMAT } from '~/utils/date'
 import { inscriptionMeta } from '~/utils/meta'
 import { parseSorting } from '~/utils/pagination'
@@ -179,6 +182,13 @@ function InscriptionDetailComponent({
 }) {
   const hasAttributes =
     inscription.attributes != null && inscription.attributes.length > 0
+  const notAffiliatedWarning = useMemo(() => {
+    if (!inscription.collection) {
+      return false
+    }
+    return usesAsteroidSocialLinks(inscription.collection.metadata)
+  }, [inscription.collection])
+
   return (
     <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4">
       <div className="flex flex-1 flex-col px-4 lg:px-8 items-center">
@@ -210,6 +220,7 @@ function InscriptionDetailComponent({
           </Link>
         )}
         <p className="whitespace-pre-wrap mt-4">{inscription.description}</p>
+        {notAffiliatedWarning && <NotAffiliatedWarning className="mt-4" />}
         <Divider />
         <div className="flex flex-col lg:flex-row w-full">
           <div className="flex flex-col flex-1">

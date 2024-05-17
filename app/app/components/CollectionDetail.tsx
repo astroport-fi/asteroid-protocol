@@ -5,14 +5,16 @@ import {
 } from '@heroicons/react/24/outline'
 import { Link } from '@remix-run/react'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Collapse, Link as DaisyLink } from 'react-daisyui'
 import { ClubStats } from '~/api/clubs'
 import { CollectionDetail, CollectionStats } from '~/api/collection'
 import useAddress from '~/hooks/useAddress'
+import { usesAsteroidSocialLinks } from '~/utils/collection'
 import { CollapseTextContent, CollapseTextTrigger } from './CollapseText'
 import CollectionStatsComponent from './CollectionStats'
 import InscriptionImage from './InscriptionImage'
+import { NotAffiliatedWarning } from './alerts/NotAffiliatedAlert'
 import Discord from './icons/discord'
 import Telegram from './icons/telegram'
 import Twitter from './icons/twitter'
@@ -31,6 +33,9 @@ export default function CollectionDetailComponent({
     metadata.telegram ||
     metadata.discord ||
     metadata.website
+  const notAffiliatedWarning = useMemo(() => {
+    return usesAsteroidSocialLinks(metadata)
+  }, [metadata])
 
   const [open, setOpen] = useState(false)
 
@@ -127,6 +132,8 @@ export default function CollectionDetailComponent({
           />
         )}
       </div>
+      {notAffiliatedWarning && <NotAffiliatedWarning className="mt-4" />}
+
       <Collapse open={open} className="rounded-none">
         <CollapseTextContent>
           {collection.metadata.description}
