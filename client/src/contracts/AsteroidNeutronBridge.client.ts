@@ -16,6 +16,7 @@ import {
   InstantiateMsg,
   QueryMsg,
   QuerySignersResponse,
+  QueryTokenResponse,
   QueryTokensResponse,
   TokenMetadata,
   Uint128,
@@ -32,6 +33,7 @@ export interface AsteroidNeutronBridgeReadOnlyInterface {
     limit?: number
     startAfter?: string
   }) => Promise<QueryTokensResponse>
+  token: ({ ticker }: { ticker: string }) => Promise<QueryTokenResponse>
   disabledTokens: ({
     limit,
     startAfter,
@@ -51,6 +53,7 @@ export class AsteroidNeutronBridgeQueryClient
     this.config = this.config.bind(this)
     this.signers = this.signers.bind(this)
     this.tokens = this.tokens.bind(this)
+    this.token = this.token.bind(this)
     this.disabledTokens = this.disabledTokens.bind(this)
   }
   config = async (): Promise<Config> => {
@@ -74,6 +77,17 @@ export class AsteroidNeutronBridgeQueryClient
       tokens: {
         limit,
         start_after: startAfter,
+      },
+    })
+  }
+  token = async ({
+    ticker,
+  }: {
+    ticker: string
+  }): Promise<QueryTokenResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      token: {
+        ticker,
       },
     })
   }
