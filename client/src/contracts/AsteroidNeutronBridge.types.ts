@@ -101,6 +101,11 @@ export type QueryMsg =
       }
     }
   | {
+      token: {
+        ticker: string
+      }
+    }
+  | {
       disabled_tokens: {
         limit?: number | null
         start_after?: string | null
@@ -119,4 +124,7 @@ export interface QueryTokensResponse {
 }
 export interface QuerySignersResponse {
   signers: [string, string][]
+}
+export interface QueryTokenResponse {
+  denom?: string | null
 }
