@@ -15,7 +15,7 @@ export default function Index() {
           ON THE HUB
         </h1>
         <p className="mt-4 text-xl">
-          From images and video to text and tokens, Asteroid protocol allow you
+          From images and video to text and tokens, Asteroid protocol allows you
           to inscribe anything. Our metaprotocol framework opens the door to a
           vast new world of possibilities on the Hub
         </p>

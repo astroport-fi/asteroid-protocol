@@ -1,3 +1,4 @@
+import { CollectionMetadata } from '@asteroid-protocol/sdk'
 import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { parseSorting } from './pagination'
 
@@ -28,4 +29,42 @@ export function getCollectionsStatsOrder(
         [sort]: direction,
       }
   }
+}
+
+export function usesAsteroidSocialLinks(metadata: CollectionMetadata) {
+  if (
+    metadata.telegram &&
+    metadata.telegram.toLowerCase().includes('https://t.me/asteroidxyz')
+  ) {
+    return true
+  }
+
+  if (
+    metadata.twitter &&
+    metadata.twitter.toLowerCase().includes('https://twitter.com/asteroidxyz')
+  ) {
+    return true
+  }
+
+  if (metadata.website) {
+    try {
+      let urlString = metadata.website
+      if (!/^(ht)tps?:\/\//i.test(metadata.website)) {
+        urlString = `https://${urlString}`
+      }
+
+      const url = new URL(urlString)
+      if (
+        (url.hostname.includes('asteroidprotocol.io') &&
+          url.pathname === '/') ||
+        url.pathname === '/app/inscriptions'
+      ) {
+        return true
+      }
+    } catch (err) {
+      return false
+    }
+  }
+
+  return false
 }

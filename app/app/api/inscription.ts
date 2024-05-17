@@ -1,3 +1,4 @@
+import { CollectionMetadata } from '@asteroid-protocol/sdk'
 import {
   GraphQLTypes,
   InputType,
@@ -57,17 +58,29 @@ export type Inscription = Omit<
   'name' | 'description' | 'mime'
 > & { name: string; description: string; mime: string }
 
+const inscriptionDetailCollectionSelector = Selector('collection')({
+  symbol: true,
+  name: true,
+  stats: {
+    supply: true,
+  },
+  metadata: [{ path: '$.metadata' }, true],
+})
+
+export type InscriptionDetailCollection = Omit<
+  InputType<
+    GraphQLTypes['collection'],
+    typeof inscriptionDetailCollectionSelector,
+    ScalarDefinition
+  >,
+  'metadata'
+> & { metadata: CollectionMetadata }
+
 // Inscription detail
 export const inscriptionDetailSelector = Selector('inscription')({
   ...inscriptionSelector,
   version: true,
-  collection: {
-    symbol: true,
-    name: true,
-    stats: {
-      supply: true,
-    },
-  },
+  collection: inscriptionDetailCollectionSelector,
   rarity: {
     rarity_rank: true,
   },
@@ -91,13 +104,14 @@ export type InscriptionDetail = Omit<
     typeof inscriptionDetailSelector,
     ScalarDefinition
   >,
-  'name' | 'description' | 'mime' | 'attributes'
+  'name' | 'description' | 'mime' | 'attributes' | 'collection'
 > & {
   name: string
   description: string
   mime: string
   attributes?: TraitItem[]
   migration_permission_grants?: { grantee: string }[]
+  collection?: InscriptionDetailCollection
 }
 
 // Inscription image
