@@ -18,6 +18,7 @@ import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useChain from '~/hooks/useChain'
 import { useDialogWithValue } from '~/hooks/useDialog'
+import { useTokenFactoryBalance } from '~/hooks/useTokenFactoryBalance'
 import { getAddress } from '~/utils/cookies'
 
 const DEFAULT_TICKER = 'ROIDS'
@@ -72,28 +73,37 @@ function Neutron() {
 
 export default function Bridge() {
   const data = useLoaderData<typeof loader>()
-  const balance = data.token_holders?.[0]?.amount ?? 0
+
+  const cft20Balance = data.token_holders?.[0]?.amount ?? 0
   const { neutronChainName } = useRootContext()
   const {
     connect: connectToNeutron,
     address: neutronAddress,
     openView: openNeutronView,
   } = useChain(neutronChainName)
+  const tokenFactoryBalance = useTokenFactoryBalance(
+    data.ticker,
+    neutronAddress,
+  )
+
   const cosmosHubAddress = useAddress()
   const [directionFrom, setDirectionFrom] = useState(true)
 
-  let addressPrefix
-  let chainName
-  let address
+  let addressPrefix: string
+  let chainName: string
+  let address: string | undefined
+  let balance: number
 
   if (directionFrom) {
     addressPrefix = 'neutron'
     chainName = 'Neutron'
     address = neutronAddress
+    balance = cft20Balance
   } else {
     addressPrefix = 'cosmos'
     chainName = 'Cosmos Hub'
     address = cosmosHubAddress
+    balance = parseInt(tokenFactoryBalance?.amount ?? '0')
   }
 
   // dialog
@@ -230,13 +240,14 @@ export default function Bridge() {
           <Modal ref={dialogRef} backdrop>
             {directionFrom ? (
               <ToNeutronBridgeDialog
-                ticker={data.ticker}
+                token={data}
                 amount={value?.amount ?? 0}
                 destination={value?.destination ?? ''}
               />
             ) : (
               <FromNeutronBridgeDialog
-                ticker={data.ticker}
+                token={data}
+                denom={tokenFactoryBalance?.denom ?? ''}
                 amount={value?.amount ?? 0}
                 destination={value?.destination ?? ''}
               />

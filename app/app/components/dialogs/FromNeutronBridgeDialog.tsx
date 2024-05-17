@@ -1,17 +1,20 @@
 import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
 import { useMemo } from 'react'
+import { Token } from '~/api/token'
 import { useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
+import { toDecimalValue } from '~/utils/number'
 import Actions from '../SubmitTx/Actions'
 import { TxBody } from '../SubmitTx/Body'
 import Modal from './Modal'
 
 interface Props {
-  ticker: string
+  denom: string
   amount: number
   destination: string
+  token: Token
 }
 
-function NeutronTx({ ticker, amount, destination }: Props) {
+function NeutronTx({ token, denom, amount, destination }: Props) {
   const msg: ExecuteMsg = useMemo(() => {
     return {
       send: {
@@ -22,10 +25,10 @@ function NeutronTx({ ticker, amount, destination }: Props) {
 
   const funds = useMemo(() => {
     return [
-      { denom: ticker, amount: amount.toString() },
-      { denom: 'untrn', amount: '1' },
+      { denom, amount: `${toDecimalValue(amount, token.decimals)}` },
+      { denom: 'untrn', amount: '2001' }, // @todo where to get this value?
     ]
-  }, [ticker, amount])
+  }, [denom, amount, token.decimals])
 
   const { chainFee, error, txHash, txState, sendTx } = useExecuteBridgeMsg(
     msg,
@@ -45,9 +48,6 @@ function NeutronTx({ ticker, amount, destination }: Props) {
         <h2 className="text-xl font-semibold">
           Sign and submit bridge transaction to Neutron
         </h2>
-        {/* <p className="mt-4">
-          You are about to create a bridge inscription on the Cosmos Hub.
-        </p> */}
       </TxBody>
       <Modal.Actions className="flex justify-center">
         <Actions
@@ -63,11 +63,16 @@ function NeutronTx({ ticker, amount, destination }: Props) {
   )
 }
 
-function FromNeutronBridgeDialog({ ticker, amount, destination }: Props) {
+function FromNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
   return (
     <Modal.Body className="text-center">
       <div className="mt-8">
-        <NeutronTx ticker={ticker} amount={amount} destination={destination} />
+        <NeutronTx
+          denom={denom}
+          token={token}
+          amount={amount}
+          destination={destination}
+        />
       </div>
     </Modal.Body>
   )

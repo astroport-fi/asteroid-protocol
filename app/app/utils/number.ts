@@ -15,3 +15,7 @@ export function getSupplyTitle(value: number) {
 export function getDecimalValue(value: number, decimals: number) {
   return value / Math.pow(10, decimals)
 }
+
+export function toDecimalValue(value: number, decimals: number) {
+  return value * Math.pow(10, decimals)
+}

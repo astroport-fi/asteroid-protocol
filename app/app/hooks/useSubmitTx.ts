@@ -317,7 +317,7 @@ export function useExecuteBridgeMsg(
 
     try {
       const res = await bridgeClient.execute(msg, memo, fee, funds)
-      setTxState(TxState.Submit)
+      setTxState(TxState.Success)
       setTxHash(res.transactionHash)
     } catch (err) {
       setError({ message: (err as Error).message, kind: ErrorKind.Transaction })
