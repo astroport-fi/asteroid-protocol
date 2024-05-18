@@ -6,6 +6,13 @@ object_relationships:
     using:
       foreign_key_constraint_on: transaction_id
 array_relationships:
+  - name: bridge_tokens
+    using:
+      foreign_key_constraint_on:
+        column: token_id
+        table:
+          name: bridge_token
+          schema: public
   - name: marketplace_cft20_details
     using:
       foreign_key_constraint_on:
