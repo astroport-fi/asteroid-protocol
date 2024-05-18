@@ -53,6 +53,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
       NEUTRON_CHAIN_ID: context.cloudflare.env.NEUTRON_CHAIN_ID,
       NEUTRON_CHAIN_NAME: context.cloudflare.env.NEUTRON_CHAIN_NAME,
       BRIDGE_ENDPOINTS: context.cloudflare.env.BRIDGE_ENDPOINTS.split(','),
+      ASTROPORT_FACTORY_CONTRACT:
+        context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
     },
   })
 }
@@ -169,6 +171,7 @@ export default function App() {
             neutronChainId: data.ENV.NEUTRON_CHAIN_ID,
             neutronChainName: data.ENV.NEUTRON_CHAIN_NAME,
             bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
+            astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
           }}
         >
           <WalletProviderWrapper

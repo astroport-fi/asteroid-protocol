@@ -3,8 +3,10 @@ import type { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
 import { Coin, StdFee } from '@cosmjs/stargate'
 import { useMemo } from 'react'
 import { useRootContext } from '~/context/root'
-import useChain from './useChain'
-import useCosmWasmClient, { SigningCosmWasmClient } from './useCosmWasmClient'
+import useChain from '~/hooks/useChain'
+import useCosmWasmClient, {
+  SigningCosmWasmClient,
+} from '~/hooks/useCosmWasmClient'
 
 export class AsteroidNeutronBridgeClient extends AsteroidNeutronBridgeClientOriginal {
   declare client: SigningCosmWasmClient

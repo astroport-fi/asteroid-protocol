@@ -2,7 +2,7 @@ import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
 import CollectionStatsTable from '~/components/collection/CollectionStatsTable'
-import SearchInput from '~/components/form/SearchInput'
+import SearchInputForm from '~/components/form/SearchInput'
 import { getCollectionsStatsOrder } from '~/utils/collection'
 import { parsePagination } from '~/utils/pagination'
 
@@ -41,7 +41,7 @@ export default function CollectionsPage() {
   return (
     <div className="flex flex-col w-full max-w-[1920px] overflow-y-scroll">
       <div className="flex justify-end">
-        <SearchInput placeholder="Search by collection name" />
+        <SearchInputForm placeholder="Search by collection name" />
       </div>
       {data.collectionsStats.length < 1 && (
         <span className="p-4">{'No collections found'}</span>

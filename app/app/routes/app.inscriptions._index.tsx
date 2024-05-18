@@ -13,7 +13,7 @@ import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
 import InscriptionImage from '~/components/InscriptionImage'
 import CollectionStatsTable from '~/components/collection/CollectionStatsTable'
-import SearchInput from '~/components/form/SearchInput'
+import SearchInputForm from '~/components/form/SearchInput'
 import { getCollectionsStatsOrder } from '~/utils/collection'
 import { parsePagination } from '~/utils/pagination'
 
@@ -128,7 +128,7 @@ export default function CollectionsPage() {
     return (
       <div className="flex flex-col">
         <div className="flex justify-end">
-          <SearchInput placeholder="Search by collection name" />
+          <SearchInputForm placeholder="Search by collection name" />
         </div>
         {data.collections.length < 1 && (
           <span className="p-4">{'No collections found'}</span>
@@ -141,7 +141,7 @@ export default function CollectionsPage() {
   return (
     <div className="flex flex-col w-full max-w-[1920px] ">
       <div className="flex justify-end">
-        <SearchInput placeholder="Search by collection name" />
+        <SearchInputForm placeholder="Search by collection name" />
       </div>
 
       <div className="carousel gap-5 mt-4 overflow-y-hidden overflow-x-scroll">

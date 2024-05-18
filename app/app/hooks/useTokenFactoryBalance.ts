@@ -1,6 +1,29 @@
 import { Coin } from '@cosmjs/stargate'
 import { useEffect, useState } from 'react'
-import useAsteroidBridgeClient from '~/hooks/useAsteroidBridgeClient'
+import useAsteroidBridgeClient from '~/hooks/bridge/useAsteroidBridgeClient'
+
+export function useTokenFactoryDenom(ticker: string) {
+  const bridgeClient = useAsteroidBridgeClient()
+  const [state, setState] = useState<{
+    isLoading: boolean
+    denom: string | null
+  }>({ isLoading: true, denom: null })
+
+  useEffect(() => {
+    if (!bridgeClient) {
+      return
+    }
+
+    bridgeClient.token({ ticker }).then((token) => {
+      if (token.denom) {
+        setState({ denom: token.denom, isLoading: false })
+      } else {
+        setState({ denom: null, isLoading: false })
+      }
+    })
+  }, [bridgeClient, ticker])
+  return state
+}
 
 export function useTokenFactoryBalance(
   ticker: string,

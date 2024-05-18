@@ -13,7 +13,7 @@ import AtomValue from '~/components/AtomValue'
 import PercentageText from '~/components/PercentageText'
 import Stat from '~/components/Stat'
 import { TokenCell } from '~/components/TokenCell'
-import SearchInput from '~/components/form/SearchInput'
+import SearchInputForm from '~/components/form/SearchInput'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import usePagination from '~/hooks/usePagination'
@@ -155,7 +155,7 @@ export default function MarketsPage() {
             value={baseTokenUsd}
           />
         </Stat>
-        <SearchInput placeholder="Search by name or ticker" />
+        <SearchInputForm placeholder="Search by name or ticker" />
       </div>
       <Table
         className="mt-4"

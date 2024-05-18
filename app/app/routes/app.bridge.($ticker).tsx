@@ -11,13 +11,14 @@ import Address from '~/components/Address'
 import DecimalText from '~/components/DecimalText'
 import FromNeutronBridgeDialog from '~/components/dialogs/FromNeutronBridgeDialog'
 import Modal from '~/components/dialogs/Modal'
+import SelectBridgeTokenDialog from '~/components/dialogs/SelectBridgeTokenDialog'
 import ToNeutronBridgeDialog from '~/components/dialogs/ToNeutronBridgeDialog'
 import AddressInput from '~/components/form/AddressInput'
 import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useChain from '~/hooks/useChain'
-import { useDialogWithValue } from '~/hooks/useDialog'
+import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useTokenFactoryBalance } from '~/hooks/useTokenFactoryBalance'
 import { getAddress } from '~/utils/cookies'
 
@@ -37,7 +38,9 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     })
   }
 
-  return json(token)
+  const tokens = await asteroidClient.getBridgeTokens()
+
+  return json({ token, tokens })
 }
 
 type FormData = {
@@ -72,9 +75,8 @@ function Neutron() {
 }
 
 export default function Bridge() {
-  const data = useLoaderData<typeof loader>()
-
-  const cft20Balance = data.token_holders?.[0]?.amount ?? 0
+  const { token, tokens } = useLoaderData<typeof loader>()
+  const cft20Balance = token.token_holders?.[0]?.amount ?? 0
   const { neutronChainName } = useRootContext()
   const {
     connect: connectToNeutron,
@@ -82,9 +84,11 @@ export default function Bridge() {
     openView: openNeutronView,
   } = useChain(neutronChainName)
   const tokenFactoryBalance = useTokenFactoryBalance(
-    data.ticker,
+    token.ticker,
     neutronAddress,
   )
+  const { dialogRef: selectDialogRef, showDialog: showSelectDialog } =
+    useDialog()
 
   const cosmosHubAddress = useAddress()
   const [directionFrom, setDirectionFrom] = useState(true)
@@ -207,17 +211,22 @@ export default function Bridge() {
             </div>
 
             <div className="flex flex-row items-start w-full mt-6">
-              <div className="flex flex-row justify-between items-center bg-base-300 p-5 w-full rounded-full hover:cursor-pointer">
+              <button
+                type="button"
+                onClick={() => showSelectDialog()}
+                color="ghost"
+                className="flex flex-row justify-between items-center bg-base-300 p-5 w-full rounded-full hover:cursor-pointer"
+              >
                 <div className="flex">
                   <img
-                    alt={data.name}
-                    src={data.content_path}
+                    alt={token.name}
+                    src={token.content_path}
                     className="size-6 rounded-full mr-1"
                   />
-                  <span>{data.name}</span>
+                  <span>{token.name}</span>
                 </div>
                 <ChevronDownIcon className="size-6" />
-              </div>
+              </button>
               <div className="flex flex-col w-full ml-4">
                 <NumericInput
                   control={control}
@@ -228,7 +237,7 @@ export default function Bridge() {
                 />
                 <span className="text-sm text-header-content font-light mt-2">
                   Your balance:{' '}
-                  <DecimalText value={balance} suffix={` ${data.ticker}`} />
+                  <DecimalText value={balance} suffix={` ${token.ticker}`} />
                 </span>
               </div>
             </div>
@@ -240,19 +249,20 @@ export default function Bridge() {
           <Modal ref={dialogRef} backdrop>
             {directionFrom ? (
               <ToNeutronBridgeDialog
-                token={data}
+                token={token}
                 amount={value?.amount ?? 0}
                 destination={value?.destination ?? ''}
               />
             ) : (
               <FromNeutronBridgeDialog
-                token={data}
+                token={token}
                 denom={tokenFactoryBalance?.denom ?? ''}
                 amount={value?.amount ?? 0}
                 destination={value?.destination ?? ''}
               />
             )}
           </Modal>
+          <SelectBridgeTokenDialog tokens={tokens} ref={selectDialogRef} />
         </div>
       </div>
     </div>

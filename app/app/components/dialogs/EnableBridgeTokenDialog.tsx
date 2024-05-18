@@ -3,7 +3,7 @@ import { forwardRef, useMemo } from 'react'
 import { Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
-import { useBridgeTokenSignatures } from '~/hooks/useBridgeSignatures'
+import { useBridgeTokenSignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
@@ -138,7 +138,10 @@ const EnableTokenBridgeDialog = forwardRef<HTMLDialogElement, Props>(
     }, [operations, token.ticker, neutronChainId, neutronBridgeContract])
 
     const submitTxState = useSubmitTx(txInscription)
-    const signatures = useBridgeTokenSignatures(token.ticker)
+    const signatures = useBridgeTokenSignatures(
+      submitTxState.txHash,
+      token.ticker,
+    )
 
     const step = useMemo(() => {
       if (submitTxState.txHash !== '' && signatures.data) {
@@ -150,6 +153,7 @@ const EnableTokenBridgeDialog = forwardRef<HTMLDialogElement, Props>(
 
     return (
       <Modal ref={ref} backdrop>
+        <Modal.Header className="text-center">Enable Bridging</Modal.Header>
         <Modal.Body className="text-center">
           <Steps className="w-full">
             <Steps.Step color="primary">Cosmos Hub</Steps.Step>

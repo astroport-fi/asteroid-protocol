@@ -43,12 +43,14 @@ export function useBridgeHistorySignatures(txHash: string) {
   )
 }
 
-export function useBridgeTokenSignatures(ticker: string) {
+export function useBridgeTokenSignatures(txHash: string, ticker: string) {
   const { bridgeEndpoints } = useRootContext()
 
-  return useSWR(ticker ? ['bridge-token-signatures', ticker] : null, () =>
-    fetchSignatures(bridgeEndpoints, (client) =>
-      client.getBridgeTokenSignature(ticker),
-    ),
+  return useSWR(
+    txHash ? ['bridge-token-signatures', txHash, ticker] : null,
+    () =>
+      fetchSignatures(bridgeEndpoints, (client) =>
+        client.getBridgeTokenSignature(ticker),
+      ),
   )
 }

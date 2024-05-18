@@ -3,7 +3,7 @@ import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useMemo, useState } from 'react'
-import { Button } from 'react-daisyui'
+import { Button, Link as DaisyLink } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing } from '~/api/token'
@@ -18,10 +18,12 @@ import BuySettings from '~/components/market/BuySettings'
 import LatestTransactions from '~/components/market/LatestTransactions'
 import ReservedListingsTable from '~/components/market/ReservedListingsTable'
 import Stats from '~/components/market/Stats'
+import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
+import { useTokenFactoryDenom } from '~/hooks/useTokenFactoryBalance'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
@@ -216,6 +218,10 @@ export default function MarketPage() {
   }, [data.listings, address, lastKnownHeight])
   const hasListings = data.listings.length > 0
 
+  const { isLoading: isDenomLoading, denom } = useTokenFactoryDenom(
+    token.ticker,
+  )
+
   return (
     <div className="flex flex-col md:flex-row h-full">
       {hasListings && (
@@ -263,6 +269,26 @@ export default function MarketPage() {
                 Sell
                 <span className="hidden lg:inline">{token.ticker} tokens</span>
               </Button>
+              {!isDenomLoading && (
+                <>
+                  {denom ? (
+                    <DaisyLink
+                      className="btn btn-sm btn-primary ml-2"
+                      target="_blank"
+                      href={`https://app.astroport.fi/swap?to=${ASTROPORT_ATOM_DENOM}&from=${denom}`}
+                    >
+                      Swap on Astroport
+                    </DaisyLink>
+                  ) : (
+                    <Link
+                      className="btn btn-sm btn-primary ml-2"
+                      to={`/app/token/${token.ticker}?enableBridging`}
+                    >
+                      Enable bridging
+                    </Link>
+                  )}
+                </>
+              )}
             </div>
           </div>
           {hasListings && <Stats token={token} />}
