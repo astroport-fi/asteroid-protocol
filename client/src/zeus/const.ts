@@ -43,6 +43,23 @@ export const AllTypesProps: Record<string, any> = {
   bridge_history_stream_cursor_value_input: {
     amount: 'bigint',
   },
+  bridge_token_aggregate_order_by: {
+    avg: 'bridge_token_avg_order_by',
+    count: 'order_by',
+    max: 'bridge_token_max_order_by',
+    min: 'bridge_token_min_order_by',
+    stddev: 'bridge_token_stddev_order_by',
+    stddev_pop: 'bridge_token_stddev_pop_order_by',
+    stddev_samp: 'bridge_token_stddev_samp_order_by',
+    sum: 'bridge_token_sum_order_by',
+    var_pop: 'bridge_token_var_pop_order_by',
+    var_samp: 'bridge_token_var_samp_order_by',
+    variance: 'bridge_token_variance_order_by',
+  },
+  bridge_token_avg_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
   bridge_token_bool_exp: {
     _and: 'bridge_token_bool_exp',
     _not: 'bridge_token_bool_exp',
@@ -53,6 +70,16 @@ export const AllTypesProps: Record<string, any> = {
     token: 'token_bool_exp',
     token_id: 'Int_comparison_exp',
   },
+  bridge_token_max_order_by: {
+    id: 'order_by',
+    signature: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_min_order_by: {
+    id: 'order_by',
+    signature: 'order_by',
+    token_id: 'order_by',
+  },
   bridge_token_order_by: {
     enabled: 'order_by',
     id: 'order_by',
@@ -61,11 +88,39 @@ export const AllTypesProps: Record<string, any> = {
     token_id: 'order_by',
   },
   bridge_token_select_column: 'enum' as const,
+  bridge_token_stddev_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_stddev_pop_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_stddev_samp_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
   bridge_token_stream_cursor_input: {
     initial_value: 'bridge_token_stream_cursor_value_input',
     ordering: 'cursor_ordering',
   },
   bridge_token_stream_cursor_value_input: {},
+  bridge_token_sum_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_var_pop_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_var_samp_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
+  bridge_token_variance_order_by: {
+    id: 'order_by',
+    token_id: 'order_by',
+  },
   club_stats_arguments: {},
   club_stats_bool_exp_bool_exp: {
     _and: 'club_stats_bool_exp_bool_exp',
@@ -2189,6 +2244,11 @@ export const AllTypesProps: Record<string, any> = {
     _nin: 'timestamp',
   },
   token: {
+    bridge_tokens: {
+      distinct_on: 'bridge_token_select_column',
+      order_by: 'bridge_token_order_by',
+      where: 'bridge_token_bool_exp',
+    },
     marketplace_cft20_details: {
       distinct_on: 'marketplace_cft20_detail_select_column',
       order_by: 'marketplace_cft20_detail_order_by',
@@ -2406,6 +2466,7 @@ export const AllTypesProps: Record<string, any> = {
     _and: 'token_bool_exp',
     _not: 'token_bool_exp',
     _or: 'token_bool_exp',
+    bridge_tokens: 'bridge_token_bool_exp',
     chain_id: 'String_comparison_exp',
     circulating_supply: 'bigint_comparison_exp',
     content_path: 'String_comparison_exp',
@@ -2746,6 +2807,7 @@ export const AllTypesProps: Record<string, any> = {
     transaction_id: 'order_by',
   },
   token_order_by: {
+    bridge_tokens_aggregate: 'bridge_token_aggregate_order_by',
     chain_id: 'order_by',
     circulating_supply: 'order_by',
     content_path: 'order_by',
@@ -4256,6 +4318,7 @@ export const ReturnTypes: Record<string, any> = {
   },
   timestamp: `scalar.timestamp` as const,
   token: {
+    bridge_tokens: 'bridge_token',
     chain_id: 'String',
     circulating_supply: 'bigint',
     content_path: 'String',

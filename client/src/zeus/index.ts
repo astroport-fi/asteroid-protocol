@@ -1257,6 +1257,65 @@ export type ValueTypes = {
     token_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** order by aggregate values of table "bridge_token" */
+  ['bridge_token_aggregate_order_by']: {
+    avg?:
+      | ValueTypes['bridge_token_avg_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    max?:
+      | ValueTypes['bridge_token_max_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    min?:
+      | ValueTypes['bridge_token_min_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev?:
+      | ValueTypes['bridge_token_stddev_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev_pop?:
+      | ValueTypes['bridge_token_stddev_pop_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stddev_samp?:
+      | ValueTypes['bridge_token_stddev_samp_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    sum?:
+      | ValueTypes['bridge_token_sum_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    var_pop?:
+      | ValueTypes['bridge_token_var_pop_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    var_samp?:
+      | ValueTypes['bridge_token_var_samp_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    variance?:
+      | ValueTypes['bridge_token_variance_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** order by avg() on columns of table "bridge_token" */
+  ['bridge_token_avg_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
   /** Boolean expression to filter rows from the table "bridge_token". All fields are combined with a logical 'AND'. */
   ['bridge_token_bool_exp']: {
     _and?:
@@ -1300,6 +1359,26 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** order by max() on columns of table "bridge_token" */
+  ['bridge_token_max_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    signature?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by min() on columns of table "bridge_token" */
+  ['bridge_token_min_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    signature?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
   /** Ordering options when selecting data from "bridge_token". */
   ['bridge_token_order_by']: {
     enabled?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -1318,6 +1397,21 @@ export type ValueTypes = {
   }
   /** select columns of table "bridge_token" */
   ['bridge_token_select_column']: bridge_token_select_column
+  /** order by stddev() on columns of table "bridge_token" */
+  ['bridge_token_stddev_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by stddev_pop() on columns of table "bridge_token" */
+  ['bridge_token_stddev_pop_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by stddev_samp() on columns of table "bridge_token" */
+  ['bridge_token_stddev_samp_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
   /** Streaming cursor of the table "bridge_token" */
   ['bridge_token_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -1337,6 +1431,26 @@ export type ValueTypes = {
     id?: number | undefined | null | Variable<any, string>
     signature?: string | undefined | null | Variable<any, string>
     token_id?: number | undefined | null | Variable<any, string>
+  }
+  /** order by sum() on columns of table "bridge_token" */
+  ['bridge_token_sum_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by var_pop() on columns of table "bridge_token" */
+  ['bridge_token_var_pop_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by var_samp() on columns of table "bridge_token" */
+  ['bridge_token_var_samp_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** order by variance() on columns of table "bridge_token" */
+  ['bridge_token_variance_order_by']: {
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
   ['club_stats']: AliasType<{
     floor_price?: boolean | `@${string}`
@@ -11139,6 +11253,40 @@ export type ValueTypes = {
   }
   /** columns and relationships of "token" */
   ['token']: AliasType<{
+    bridge_tokens?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['bridge_token_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['bridge_token_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['bridge_token_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['bridge_token'],
+    ]
     chain_id?: boolean | `@${string}`
     circulating_supply?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
@@ -11968,6 +12116,11 @@ export type ValueTypes = {
       | Variable<any, string>
     _or?:
       | Array<ValueTypes['token_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    bridge_tokens?:
+      | ValueTypes['bridge_token_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -13096,6 +13249,11 @@ export type ValueTypes = {
   }
   /** Ordering options when selecting data from "token". */
   ['token_order_by']: {
+    bridge_tokens_aggregate?:
+      | ValueTypes['bridge_token_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     circulating_supply?:
       | ValueTypes['order_by']
@@ -15375,6 +15533,43 @@ export type ResolverInputTypes = {
     token_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** order by aggregate values of table "bridge_token" */
+  ['bridge_token_aggregate_order_by']: {
+    avg?: ResolverInputTypes['bridge_token_avg_order_by'] | undefined | null
+    count?: ResolverInputTypes['order_by'] | undefined | null
+    max?: ResolverInputTypes['bridge_token_max_order_by'] | undefined | null
+    min?: ResolverInputTypes['bridge_token_min_order_by'] | undefined | null
+    stddev?:
+      | ResolverInputTypes['bridge_token_stddev_order_by']
+      | undefined
+      | null
+    stddev_pop?:
+      | ResolverInputTypes['bridge_token_stddev_pop_order_by']
+      | undefined
+      | null
+    stddev_samp?:
+      | ResolverInputTypes['bridge_token_stddev_samp_order_by']
+      | undefined
+      | null
+    sum?: ResolverInputTypes['bridge_token_sum_order_by'] | undefined | null
+    var_pop?:
+      | ResolverInputTypes['bridge_token_var_pop_order_by']
+      | undefined
+      | null
+    var_samp?:
+      | ResolverInputTypes['bridge_token_var_samp_order_by']
+      | undefined
+      | null
+    variance?:
+      | ResolverInputTypes['bridge_token_variance_order_by']
+      | undefined
+      | null
+  }
+  /** order by avg() on columns of table "bridge_token" */
+  ['bridge_token_avg_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
   /** Boolean expression to filter rows from the table "bridge_token". All fields are combined with a logical 'AND'. */
   ['bridge_token_bool_exp']: {
     _and?: Array<ResolverInputTypes['bridge_token_bool_exp']> | undefined | null
@@ -15386,6 +15581,18 @@ export type ResolverInputTypes = {
     token?: ResolverInputTypes['token_bool_exp'] | undefined | null
     token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
   }
+  /** order by max() on columns of table "bridge_token" */
+  ['bridge_token_max_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    signature?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by min() on columns of table "bridge_token" */
+  ['bridge_token_min_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    signature?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
   /** Ordering options when selecting data from "bridge_token". */
   ['bridge_token_order_by']: {
     enabled?: ResolverInputTypes['order_by'] | undefined | null
@@ -15396,6 +15603,21 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "bridge_token" */
   ['bridge_token_select_column']: bridge_token_select_column
+  /** order by stddev() on columns of table "bridge_token" */
+  ['bridge_token_stddev_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by stddev_pop() on columns of table "bridge_token" */
+  ['bridge_token_stddev_pop_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by stddev_samp() on columns of table "bridge_token" */
+  ['bridge_token_stddev_samp_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
   /** Streaming cursor of the table "bridge_token" */
   ['bridge_token_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -15409,6 +15631,26 @@ export type ResolverInputTypes = {
     id?: number | undefined | null
     signature?: string | undefined | null
     token_id?: number | undefined | null
+  }
+  /** order by sum() on columns of table "bridge_token" */
+  ['bridge_token_sum_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by var_pop() on columns of table "bridge_token" */
+  ['bridge_token_var_pop_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by var_samp() on columns of table "bridge_token" */
+  ['bridge_token_var_samp_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** order by variance() on columns of table "bridge_token" */
+  ['bridge_token_variance_order_by']: {
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   ['club_stats']: AliasType<{
     floor_price?: boolean | `@${string}`
@@ -21735,6 +21977,29 @@ export type ResolverInputTypes = {
   }
   /** columns and relationships of "token" */
   ['token']: AliasType<{
+    bridge_tokens?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['bridge_token_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['bridge_token_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['bridge_token_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['bridge_token'],
+    ]
     chain_id?: boolean | `@${string}`
     circulating_supply?: boolean | `@${string}`
     content_path?: boolean | `@${string}`
@@ -22284,6 +22549,10 @@ export type ResolverInputTypes = {
     _and?: Array<ResolverInputTypes['token_bool_exp']> | undefined | null
     _not?: ResolverInputTypes['token_bool_exp'] | undefined | null
     _or?: Array<ResolverInputTypes['token_bool_exp']> | undefined | null
+    bridge_tokens?:
+      | ResolverInputTypes['bridge_token_bool_exp']
+      | undefined
+      | null
     chain_id?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     circulating_supply?:
       | ResolverInputTypes['bigint_comparison_exp']
@@ -22982,6 +23251,10 @@ export type ResolverInputTypes = {
   }
   /** Ordering options when selecting data from "token". */
   ['token_order_by']: {
+    bridge_tokens_aggregate?:
+      | ResolverInputTypes['bridge_token_aggregate_order_by']
+      | undefined
+      | null
     chain_id?: ResolverInputTypes['order_by'] | undefined | null
     circulating_supply?: ResolverInputTypes['order_by'] | undefined | null
     content_path?: ResolverInputTypes['order_by'] | undefined | null
@@ -24337,6 +24610,25 @@ export type ModelTypes = {
     token: ModelTypes['token']
     token_id: number
   }
+  /** order by aggregate values of table "bridge_token" */
+  ['bridge_token_aggregate_order_by']: {
+    avg?: ModelTypes['bridge_token_avg_order_by'] | undefined
+    count?: ModelTypes['order_by'] | undefined
+    max?: ModelTypes['bridge_token_max_order_by'] | undefined
+    min?: ModelTypes['bridge_token_min_order_by'] | undefined
+    stddev?: ModelTypes['bridge_token_stddev_order_by'] | undefined
+    stddev_pop?: ModelTypes['bridge_token_stddev_pop_order_by'] | undefined
+    stddev_samp?: ModelTypes['bridge_token_stddev_samp_order_by'] | undefined
+    sum?: ModelTypes['bridge_token_sum_order_by'] | undefined
+    var_pop?: ModelTypes['bridge_token_var_pop_order_by'] | undefined
+    var_samp?: ModelTypes['bridge_token_var_samp_order_by'] | undefined
+    variance?: ModelTypes['bridge_token_variance_order_by'] | undefined
+  }
+  /** order by avg() on columns of table "bridge_token" */
+  ['bridge_token_avg_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
   /** Boolean expression to filter rows from the table "bridge_token". All fields are combined with a logical 'AND'. */
   ['bridge_token_bool_exp']: {
     _and?: Array<ModelTypes['bridge_token_bool_exp']> | undefined
@@ -24348,6 +24640,18 @@ export type ModelTypes = {
     token?: ModelTypes['token_bool_exp'] | undefined
     token_id?: ModelTypes['Int_comparison_exp'] | undefined
   }
+  /** order by max() on columns of table "bridge_token" */
+  ['bridge_token_max_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    signature?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "bridge_token" */
+  ['bridge_token_min_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    signature?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
   /** Ordering options when selecting data from "bridge_token". */
   ['bridge_token_order_by']: {
     enabled?: ModelTypes['order_by'] | undefined
@@ -24357,6 +24661,21 @@ export type ModelTypes = {
     token_id?: ModelTypes['order_by'] | undefined
   }
   ['bridge_token_select_column']: bridge_token_select_column
+  /** order by stddev() on columns of table "bridge_token" */
+  ['bridge_token_stddev_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by stddev_pop() on columns of table "bridge_token" */
+  ['bridge_token_stddev_pop_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by stddev_samp() on columns of table "bridge_token" */
+  ['bridge_token_stddev_samp_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
   /** Streaming cursor of the table "bridge_token" */
   ['bridge_token_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -24370,6 +24689,26 @@ export type ModelTypes = {
     id?: number | undefined
     signature?: string | undefined
     token_id?: number | undefined
+  }
+  /** order by sum() on columns of table "bridge_token" */
+  ['bridge_token_sum_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by var_pop() on columns of table "bridge_token" */
+  ['bridge_token_var_pop_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by var_samp() on columns of table "bridge_token" */
+  ['bridge_token_var_samp_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** order by variance() on columns of table "bridge_token" */
+  ['bridge_token_variance_order_by']: {
+    id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
   }
   ['club_stats']: {
     floor_price: ModelTypes['bigint']
@@ -27668,6 +28007,8 @@ export type ModelTypes = {
   }
   /** columns and relationships of "token" */
   ['token']: {
+    /** An array relationship */
+    bridge_tokens: Array<ModelTypes['bridge_token']>
     chain_id: string
     circulating_supply: ModelTypes['bigint']
     content_path?: string | undefined
@@ -27964,6 +28305,7 @@ export type ModelTypes = {
     _and?: Array<ModelTypes['token_bool_exp']> | undefined
     _not?: ModelTypes['token_bool_exp'] | undefined
     _or?: Array<ModelTypes['token_bool_exp']> | undefined
+    bridge_tokens?: ModelTypes['bridge_token_bool_exp'] | undefined
     chain_id?: ModelTypes['String_comparison_exp'] | undefined
     circulating_supply?: ModelTypes['bigint_comparison_exp'] | undefined
     content_path?: ModelTypes['String_comparison_exp'] | undefined
@@ -28527,6 +28869,9 @@ export type ModelTypes = {
   }
   /** Ordering options when selecting data from "token". */
   ['token_order_by']: {
+    bridge_tokens_aggregate?:
+      | ModelTypes['bridge_token_aggregate_order_by']
+      | undefined
     chain_id?: ModelTypes['order_by'] | undefined
     circulating_supply?: ModelTypes['order_by'] | undefined
     content_path?: ModelTypes['order_by'] | undefined
@@ -29486,6 +29831,25 @@ export type GraphQLTypes = {
     token: GraphQLTypes['token']
     token_id: number
   }
+  /** order by aggregate values of table "bridge_token" */
+  ['bridge_token_aggregate_order_by']: {
+    avg?: GraphQLTypes['bridge_token_avg_order_by'] | undefined
+    count?: GraphQLTypes['order_by'] | undefined
+    max?: GraphQLTypes['bridge_token_max_order_by'] | undefined
+    min?: GraphQLTypes['bridge_token_min_order_by'] | undefined
+    stddev?: GraphQLTypes['bridge_token_stddev_order_by'] | undefined
+    stddev_pop?: GraphQLTypes['bridge_token_stddev_pop_order_by'] | undefined
+    stddev_samp?: GraphQLTypes['bridge_token_stddev_samp_order_by'] | undefined
+    sum?: GraphQLTypes['bridge_token_sum_order_by'] | undefined
+    var_pop?: GraphQLTypes['bridge_token_var_pop_order_by'] | undefined
+    var_samp?: GraphQLTypes['bridge_token_var_samp_order_by'] | undefined
+    variance?: GraphQLTypes['bridge_token_variance_order_by'] | undefined
+  }
+  /** order by avg() on columns of table "bridge_token" */
+  ['bridge_token_avg_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
   /** Boolean expression to filter rows from the table "bridge_token". All fields are combined with a logical 'AND'. */
   ['bridge_token_bool_exp']: {
     _and?: Array<GraphQLTypes['bridge_token_bool_exp']> | undefined
@@ -29497,6 +29861,18 @@ export type GraphQLTypes = {
     token?: GraphQLTypes['token_bool_exp'] | undefined
     token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
   }
+  /** order by max() on columns of table "bridge_token" */
+  ['bridge_token_max_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    signature?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by min() on columns of table "bridge_token" */
+  ['bridge_token_min_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    signature?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
   /** Ordering options when selecting data from "bridge_token". */
   ['bridge_token_order_by']: {
     enabled?: GraphQLTypes['order_by'] | undefined
@@ -29507,6 +29883,21 @@ export type GraphQLTypes = {
   }
   /** select columns of table "bridge_token" */
   ['bridge_token_select_column']: bridge_token_select_column
+  /** order by stddev() on columns of table "bridge_token" */
+  ['bridge_token_stddev_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by stddev_pop() on columns of table "bridge_token" */
+  ['bridge_token_stddev_pop_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by stddev_samp() on columns of table "bridge_token" */
+  ['bridge_token_stddev_samp_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
   /** Streaming cursor of the table "bridge_token" */
   ['bridge_token_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -29520,6 +29911,26 @@ export type GraphQLTypes = {
     id?: number | undefined
     signature?: string | undefined
     token_id?: number | undefined
+  }
+  /** order by sum() on columns of table "bridge_token" */
+  ['bridge_token_sum_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by var_pop() on columns of table "bridge_token" */
+  ['bridge_token_var_pop_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by var_samp() on columns of table "bridge_token" */
+  ['bridge_token_var_samp_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** order by variance() on columns of table "bridge_token" */
+  ['bridge_token_variance_order_by']: {
+    id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
   }
   ['club_stats']: {
     __typename: 'club_stats'
@@ -33007,6 +33418,8 @@ export type GraphQLTypes = {
   /** columns and relationships of "token" */
   ['token']: {
     __typename: 'token'
+    /** An array relationship */
+    bridge_tokens: Array<GraphQLTypes['bridge_token']>
     chain_id: string
     circulating_supply: GraphQLTypes['bigint']
     content_path?: string | undefined
@@ -33312,6 +33725,7 @@ export type GraphQLTypes = {
     _and?: Array<GraphQLTypes['token_bool_exp']> | undefined
     _not?: GraphQLTypes['token_bool_exp'] | undefined
     _or?: Array<GraphQLTypes['token_bool_exp']> | undefined
+    bridge_tokens?: GraphQLTypes['bridge_token_bool_exp'] | undefined
     chain_id?: GraphQLTypes['String_comparison_exp'] | undefined
     circulating_supply?: GraphQLTypes['bigint_comparison_exp'] | undefined
     content_path?: GraphQLTypes['String_comparison_exp'] | undefined
@@ -33893,6 +34307,9 @@ export type GraphQLTypes = {
   }
   /** Ordering options when selecting data from "token". */
   ['token_order_by']: {
+    bridge_tokens_aggregate?:
+      | GraphQLTypes['bridge_token_aggregate_order_by']
+      | undefined
     chain_id?: GraphQLTypes['order_by'] | undefined
     circulating_supply?: GraphQLTypes['order_by'] | undefined
     content_path?: GraphQLTypes['order_by'] | undefined
@@ -35076,11 +35493,22 @@ type ZEUS_VARIABLES = {
   ['bridge_history_select_column']: ValueTypes['bridge_history_select_column']
   ['bridge_history_stream_cursor_input']: ValueTypes['bridge_history_stream_cursor_input']
   ['bridge_history_stream_cursor_value_input']: ValueTypes['bridge_history_stream_cursor_value_input']
+  ['bridge_token_aggregate_order_by']: ValueTypes['bridge_token_aggregate_order_by']
+  ['bridge_token_avg_order_by']: ValueTypes['bridge_token_avg_order_by']
   ['bridge_token_bool_exp']: ValueTypes['bridge_token_bool_exp']
+  ['bridge_token_max_order_by']: ValueTypes['bridge_token_max_order_by']
+  ['bridge_token_min_order_by']: ValueTypes['bridge_token_min_order_by']
   ['bridge_token_order_by']: ValueTypes['bridge_token_order_by']
   ['bridge_token_select_column']: ValueTypes['bridge_token_select_column']
+  ['bridge_token_stddev_order_by']: ValueTypes['bridge_token_stddev_order_by']
+  ['bridge_token_stddev_pop_order_by']: ValueTypes['bridge_token_stddev_pop_order_by']
+  ['bridge_token_stddev_samp_order_by']: ValueTypes['bridge_token_stddev_samp_order_by']
   ['bridge_token_stream_cursor_input']: ValueTypes['bridge_token_stream_cursor_input']
   ['bridge_token_stream_cursor_value_input']: ValueTypes['bridge_token_stream_cursor_value_input']
+  ['bridge_token_sum_order_by']: ValueTypes['bridge_token_sum_order_by']
+  ['bridge_token_var_pop_order_by']: ValueTypes['bridge_token_var_pop_order_by']
+  ['bridge_token_var_samp_order_by']: ValueTypes['bridge_token_var_samp_order_by']
+  ['bridge_token_variance_order_by']: ValueTypes['bridge_token_variance_order_by']
   ['club_stats_arguments']: ValueTypes['club_stats_arguments']
   ['club_stats_bool_exp_bool_exp']: ValueTypes['club_stats_bool_exp_bool_exp']
   ['club_stats_enum_name']: ValueTypes['club_stats_enum_name']
