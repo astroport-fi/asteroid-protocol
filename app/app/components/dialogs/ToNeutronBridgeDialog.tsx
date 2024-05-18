@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
-import { useBridgeHistorySignatures } from '~/hooks/useBridgeSignatures'
+import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,

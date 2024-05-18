@@ -6,10 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
 import { useRootContext } from '~/context/root'
+import useAsteroidBridgeClient from '~/hooks/bridge/useAsteroidBridgeClient'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import useClient, { SigningClient } from '~/hooks/useClient'
 import useAddress from './useAddress'
-import useAsteroidBridgeClient from './useAsteroidBridgeClient'
 
 export enum TxState {
   Initial,

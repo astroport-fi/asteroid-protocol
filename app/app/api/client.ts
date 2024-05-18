@@ -42,7 +42,12 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
-import { bridgeHistorySelector, bridgeTokenSignatureSelector } from './bridge'
+import {
+  TokenWithBridge,
+  bridgeHistorySelector,
+  bridgeTokenSignatureSelector,
+  tokenWithBridgeSelector,
+} from './bridge'
 import { clubStatsSelector } from './clubs'
 import {
   Collection,
@@ -1309,6 +1314,23 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return result.bridge_token.map((t) => t.token)
+  }
+
+  async findBridgeTokens(search: string): Promise<TokenWithBridge[]> {
+    const result = await this.query({
+      token: [
+        {
+          where: {
+            _or: [
+              { name: { _ilike: `%${search}%` } },
+              { ticker: { _ilike: `%${search}%` } },
+            ],
+          },
+        },
+        tokenWithBridgeSelector,
+      ],
+    })
+    return result.token
   }
 
   async getInscriptionTradeHistory(

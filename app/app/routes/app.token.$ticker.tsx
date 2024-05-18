@@ -147,7 +147,12 @@ function TokenDetailComponent({
           <TxLink txHash={token.transaction.hash} />
         </div>
         <TokenBalance token={token} amount={amount} className="mt-6" />
-        <TokenActions token={token} amount={amount} className="mt-4" />
+        <TokenActions
+          token={token}
+          amount={amount}
+          bridgingEnabled={token.bridge_tokens[0] != null}
+          className="mt-4"
+        />
       </div>
     </div>
   )

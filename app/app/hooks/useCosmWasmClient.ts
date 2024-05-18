@@ -1,4 +1,5 @@
 import {
+  CosmWasmClient,
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClientOptions,
   SigningCosmWasmClient as SigningCosmWasmClientOriginal,
@@ -57,6 +58,18 @@ export class SigningCosmWasmClient extends SigningCosmWasmClientOriginal {
     // @ts-expect-error gasPrice is private
     return calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice)
   }
+}
+
+export function useQueryingCosmWasmClient(rpcEndpoint: string) {
+  const [client, setClient] = useState<CosmWasmClient>()
+
+  useEffect(() => {
+    CosmWasmClient.connect(rpcEndpoint).then((client) => {
+      setClient(client)
+    })
+  }, [rpcEndpoint])
+
+  return client
 }
 
 export default function useCosmWasmClient(chainName: string, gasPrice: string) {

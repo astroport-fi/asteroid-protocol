@@ -12,7 +12,7 @@ import { CollectionTrait } from '~/api/collection'
 import Select, { DropdownItem } from '~/components/form/Select'
 import { TraitValue, getTraitsMap } from '~/utils/traits'
 import { DEFAULT_PRICE_RANGE, PriceRange, Sort, Status } from '.'
-import SearchInput from '../form/SearchInput'
+import SearchInputForm from '../form/SearchInput'
 
 function FilterTitle({
   children,
@@ -264,7 +264,10 @@ export function Filter({
             }}
           />
           <FilterTitle className="mt-6">Search</FilterTitle>
-          <SearchInput placeholder="Name" className="input-sm mt-2 max-w-40" />
+          <SearchInputForm
+            placeholder="Name"
+            className="input-sm mt-2 max-w-40"
+          />
           <FilterTitle className="mt-6">Sort</FilterTitle>
           <Select
             className="w-44"

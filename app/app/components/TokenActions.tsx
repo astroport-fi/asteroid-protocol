@@ -1,8 +1,9 @@
-import { Link } from '@remix-run/react'
+import { Link, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
+import { useEffect } from 'react'
 import { Button } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
-import { Token, isTokenLaunched } from '~/api/token'
+import { TokenDetail, TokenTypeWithHolder, isTokenLaunched } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
 import { getDecimalValue } from '~/utils/number'
 import EnableTokenBridgeDialog from './dialogs/EnableBridgeTokenDialog'
@@ -10,17 +11,31 @@ import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
 
 interface Props {
-  token: Token
+  token: TokenTypeWithHolder<TokenDetail>
   amount?: number
   className?: string
+  bridgingEnabled?: boolean
 }
 
-export function TokenActions({ amount, token, className }: Props) {
+export function TokenActions({
+  amount,
+  token,
+  className,
+  bridgingEnabled = true,
+}: Props) {
   const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
   const { dialogRef: bridgeDialogRef, showDialog: showBridgeDialog } =
     useDialog()
+
+  const [searchParams] = useSearchParams()
+  const enableBridging = searchParams.get('enableBridging') != null
+  useEffect(() => {
+    if (enableBridging) {
+      showBridgeDialog()
+    }
+  }, [enableBridging, showBridgeDialog])
 
   const isLaunched = isTokenLaunched(token)
 
@@ -49,14 +64,15 @@ export function TokenActions({ amount, token, className }: Props) {
       >
         Trade
       </Link>
-      <Button
-        className="ml-2"
-        color="primary"
-        disabled={!amount}
-        onClick={() => showBridgeDialog()}
-      >
-        Enable for Bridging
-      </Button>
+      {!bridgingEnabled && (
+        <Button
+          className="ml-2"
+          color="primary"
+          onClick={() => showBridgeDialog()}
+        >
+          Enable bridging
+        </Button>
+      )}
       <TransferTokenDialog token={token} ref={transferDialogRef} />
       <SellTokenDialog
         ticker={token.ticker}

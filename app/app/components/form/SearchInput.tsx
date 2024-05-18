@@ -5,7 +5,31 @@ import { ExistingSearchParams } from 'remix-utils/existing-search-params'
 import { useDebounceSubmit } from 'remix-utils/use-debounce-submit'
 import { twMerge } from 'tailwind-merge'
 
-export default function SearchInput({
+interface SearchInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+export function SearchInput(props: SearchInputProps) {
+  return (
+    <DaisyForm.Label
+      className={twMerge(
+        'input input-bordered flex items-center gap-2',
+        props.className,
+      )}
+      htmlFor="search"
+    >
+      <input
+        {...props}
+        type="text"
+        id="search"
+        name="search"
+        className="grow w-full"
+      />
+      <MagnifyingGlassIcon className="size-5" />
+    </DaisyForm.Label>
+  )
+}
+
+export default function SearchInputForm({
   placeholder,
   className,
 }: {
@@ -17,35 +41,30 @@ export default function SearchInput({
   const submit = useDebounceSubmit()
 
   return (
-    <Form method="get">
+    <Form
+      method="get"
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+    >
       <ExistingSearchParams exclude={['search']} />
-      <DaisyForm.Label
-        className={twMerge(
-          'input input-bordered flex items-center gap-2',
-          className,
-        )}
-        htmlFor="search"
-      >
-        <input
-          type="text"
-          id="search"
-          name="search"
-          className="grow w-full"
-          placeholder={placeholder}
-          defaultValue={defaultSearch}
-          onChange={(event) => {
-            submit(event.target.form, {
-              debounceTimeout: 500,
-            })
-          }}
-          onBlur={(event) => {
-            submit(event.target.form, {
-              debounceTimeout: 0,
-            })
-          }}
-        />
-        <MagnifyingGlassIcon className="size-5" />
-      </DaisyForm.Label>
+
+      <SearchInput
+        className={className}
+        placeholder={placeholder}
+        defaultValue={defaultSearch}
+        onChange={(event) => {
+          submit(event.target.form, {
+            debounceTimeout: 500,
+          })
+        }}
+        onBlur={(event) => {
+          submit(event.target.form, {
+            debounceTimeout: 0,
+          })
+        }}
+      />
     </Form>
   )
 }
