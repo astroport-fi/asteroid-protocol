@@ -84,7 +84,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   const { useIbc } = useRootContext()
 
   // deps
-  const client = clientOnly$(useClient(retryCounter))
+  const clientState = clientOnly$(useClient(retryCounter))
   const asteroidClient = useAsteroidClient()
   const address = useAddress()
 
@@ -133,19 +133,20 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
 
   // Estimate chain fee
   useEffect(() => {
-    if (!txData) {
+    if (!txData || !clientState || clientState.isLoading) {
       return
     }
 
-    if (!client) {
+    if (clientState.error || !clientState.client) {
+      const errMsg = clientState.error?.message
       setError({
         kind: ErrorKind.Estimation,
-        message: 'There is no client to estimate chain fee',
+        message: `There is no client to estimate chain fee${errMsg ? `: ${errMsg}` : ''}`,
       })
       return
     }
 
-    client
+    clientState.client
       .estimate(txData)
       .then((res) => {
         setChainFee(res)
@@ -157,7 +158,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
           message: (err as Error).message,
         })
       })
-  }, [txData, client, retryCounter])
+  }, [txData, clientState, retryCounter])
 
   // Send transaction
   const sendTx = useCallback(async () => {
@@ -169,7 +170,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       return
     }
 
-    if (!client) {
+    if (!clientState || !clientState.client) {
       setError({ message: 'invalid client', kind: ErrorKind.Generic })
       return
     }
@@ -191,7 +192,10 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
         return
       }
 
-      const res = await client.signAndBroadcastSync(txData, chainFee)
+      const res = await clientState.client.signAndBroadcastSync(
+        txData,
+        chainFee,
+      )
       setTxState(TxState.Submit)
       setTxHash(res)
     } catch (err) {
@@ -199,12 +203,13 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       setTxState(TxState.Failed)
       console.error(err)
     }
-  }, [address, client, chainFee, txData, setTxState])
+  }, [address, clientState, chainFee, txData, setTxState])
 
   // Check transaction status
   useEffect(() => {
     if (
-      !client ||
+      !clientState ||
+      !clientState.client ||
       !txHash ||
       txState == TxState.Success ||
       txState == TxState.Failed
@@ -215,7 +220,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     // @todo repeat maximum 180 times
     const intervalId = setInterval(async () => {
       const res = await checkTransaction(
-        client,
+        clientState.client!,
         asteroidClient,
         txState,
         txHash,
@@ -229,7 +234,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     }, 1000)
 
     return () => clearInterval(intervalId)
-  }, [txHash, txState, client, asteroidClient])
+  }, [txHash, txState, clientState, asteroidClient])
 
   // Reset state
   const resetState = useCallback(() => {
@@ -270,7 +275,7 @@ export function useExecuteBridgeMsg(
   funds?: Coin[],
 ) {
   // deps
-  const bridgeClient = clientOnly$(useAsteroidBridgeClient())
+  const bridgeClientState = clientOnly$(useAsteroidBridgeClient())
 
   // state
   const [txState, setTxState] = useState<TxState>(TxState.Initial)
@@ -280,19 +285,20 @@ export function useExecuteBridgeMsg(
 
   // Estimate chain fee
   useEffect(() => {
-    if (!msg) {
+    if (!msg || !bridgeClientState || bridgeClientState.isLoading) {
       return
     }
 
-    if (!bridgeClient) {
+    if (bridgeClientState.error || !bridgeClientState.client) {
+      const errMsg = bridgeClientState.error?.message
       setError({
         kind: ErrorKind.Estimation,
-        message: 'There is no client to estimate chain fee',
+        message: `There is no client to estimate chain fee${errMsg ? `: ${errMsg}` : ''}`,
       })
       return
     }
 
-    bridgeClient
+    bridgeClientState.client
       .estimate(msg, memo, fee, funds)
       .then((res) => {
         setChainFee(res)
@@ -304,10 +310,10 @@ export function useExecuteBridgeMsg(
           message: (err as Error).message,
         })
       })
-  }, [msg, funds, fee, memo, bridgeClient])
+  }, [msg, funds, fee, memo, bridgeClientState])
 
   async function sendTx() {
-    if (!bridgeClient) {
+    if (!bridgeClientState || !bridgeClientState.client) {
       setError({ message: 'invalid client', kind: ErrorKind.Generic })
       return
     }
@@ -316,7 +322,7 @@ export function useExecuteBridgeMsg(
     setTxState(TxState.Sign)
 
     try {
-      const res = await bridgeClient.execute(msg, memo, fee, funds)
+      const res = await bridgeClientState.client.execute(msg, memo, fee, funds)
       setTxState(TxState.Success)
       setTxHash(res.transactionHash)
     } catch (err) {

@@ -44,20 +44,35 @@ export class AsteroidNeutronBridgeClient extends AsteroidNeutronBridgeClientOrig
   }
 }
 
-export default function useAsteroidBridgeClient() {
+interface ClientState {
+  client: AsteroidNeutronBridgeClient | null
+  error: Error | null
+  isLoading: boolean
+}
+
+export default function useAsteroidBridgeClient(): ClientState {
   const { neutronBridgeContract, neutronChainName } = useRootContext()
   const { address } = useChain(neutronChainName)
-  const neutronClient = useCosmWasmClient(neutronChainName, '0.01untrn')
+  const neutronClientState = useCosmWasmClient(neutronChainName, '0.01untrn')
 
   return useMemo(() => {
-    if (!neutronClient || !address) {
-      return
+    if (!address || neutronClientState.isLoading) {
+      return { client: null, error: null, isLoading: true }
     }
 
-    return new AsteroidNeutronBridgeClient(
-      neutronClient,
+    if (!neutronClientState.client || neutronClientState.error) {
+      return {
+        client: null,
+        error: neutronClientState.error ?? new Error('invalid neutron client'),
+        isLoading: false,
+      }
+    }
+
+    const client = new AsteroidNeutronBridgeClient(
+      neutronClientState.client,
       address,
       neutronBridgeContract,
     )
-  }, [neutronClient, address, neutronBridgeContract])
+    return { client, error: null, isLoading: false }
+  }, [neutronClientState, address, neutronBridgeContract])
 }
