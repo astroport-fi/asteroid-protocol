@@ -3,25 +3,25 @@ import { useEffect, useState } from 'react'
 import useAsteroidBridgeClient from '~/hooks/bridge/useAsteroidBridgeClient'
 
 export function useTokenFactoryDenom(ticker: string) {
-  const bridgeClient = useAsteroidBridgeClient()
+  const bridgeClientState = useAsteroidBridgeClient()
   const [state, setState] = useState<{
     isLoading: boolean
     denom: string | null
   }>({ isLoading: true, denom: null })
 
   useEffect(() => {
-    if (!bridgeClient) {
+    if (!bridgeClientState || !bridgeClientState.client) {
       return
     }
 
-    bridgeClient.token({ ticker }).then((token) => {
+    bridgeClientState.client.token({ ticker }).then((token) => {
       if (token.denom) {
         setState({ denom: token.denom, isLoading: false })
       } else {
         setState({ denom: null, isLoading: false })
       }
     })
-  }, [bridgeClient, ticker])
+  }, [bridgeClientState, ticker])
   return state
 }
 
@@ -29,30 +29,30 @@ export function useTokenFactoryBalance(
   ticker: string,
   address: string | undefined,
 ) {
-  const bridgeClient = useAsteroidBridgeClient()
+  const bridgeClientState = useAsteroidBridgeClient()
   const [denom, setDenom] = useState<string | null>(null)
   const [balance, setBalance] = useState<Coin | null>(null)
   useEffect(() => {
-    if (!bridgeClient) {
+    if (!bridgeClientState || !bridgeClientState.client) {
       return
     }
 
-    bridgeClient.token({ ticker }).then((token) => {
+    bridgeClientState.client.token({ ticker }).then((token) => {
       if (token.denom) {
         setDenom(token.denom)
       }
     })
-  }, [bridgeClient, ticker])
+  }, [bridgeClientState, ticker])
 
   useEffect(() => {
-    if (!bridgeClient?.client || !denom || !address) {
+    if (!bridgeClientState?.client || !denom || !address) {
       return
     }
 
-    bridgeClient.client
+    bridgeClientState.client.client
       .getBalance(address, denom)
       .then((balance) => setBalance(balance))
-  }, [bridgeClient?.client, address, denom])
+  }, [bridgeClientState?.client, address, denom])
 
   return balance
 }

@@ -78,6 +78,12 @@ export class SigningClient {
   }
 }
 
+interface ClientState {
+  client: SigningClient | null
+  error: Error | null
+  isLoading: boolean
+}
+
 export default function useClient(retry = 0) {
   const { chainName, gasPrice, restEndpoint, rpcEndpoint } = useRootContext()
   const {
@@ -87,7 +93,11 @@ export default function useClient(retry = 0) {
     address,
   } = useChain(chainName)
 
-  const [client, setClient] = useState<SigningClient>()
+  const [state, setState] = useState<ClientState>({
+    client: null,
+    error: null,
+    isLoading: true,
+  })
   useEffect(() => {
     if (!isWalletConnected || !address || !getOfflineSignerDirect) {
       return
@@ -95,15 +105,23 @@ export default function useClient(retry = 0) {
     async function createSigningClient(address: string) {
       const signer = getOfflineSignerDirect!()
       setDefaultSignOptions({ preferNoSetFee: true, preferNoSetMemo: true })
-      const signingClient = await SigningStargateClient.connectWithSigner(
-        rpcEndpoint,
-        signer,
-        {
-          gasPrice: GasPrice.fromString(gasPrice),
-          simulateEndpoint: restEndpoint as string,
-        },
-      )
-      setClient(new SigningClient(signingClient, address))
+      try {
+        const signingClient = await SigningStargateClient.connectWithSigner(
+          rpcEndpoint,
+          signer,
+          {
+            gasPrice: GasPrice.fromString(gasPrice),
+            simulateEndpoint: restEndpoint as string,
+          },
+        )
+        setState({
+          client: new SigningClient(signingClient, address),
+          error: null,
+          isLoading: false,
+        })
+      } catch (err) {
+        setState({ client: null, error: err as Error, isLoading: false })
+      }
     }
     createSigningClient(address)
   }, [
@@ -117,5 +135,5 @@ export default function useClient(retry = 0) {
     retry,
   ])
 
-  return client
+  return state
 }

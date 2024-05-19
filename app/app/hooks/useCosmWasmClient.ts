@@ -72,28 +72,46 @@ export function useQueryingCosmWasmClient(rpcEndpoint: string) {
   return client
 }
 
+interface ClientState {
+  client: SigningCosmWasmClient | null
+  error: Error | null
+  isLoading: boolean
+}
+
 export default function useCosmWasmClient(chainName: string, gasPrice: string) {
   const { getRpcEndpoint, getOfflineSignerDirect } = useChain(chainName)
 
-  const [client, setClient] = useState<SigningCosmWasmClient>()
+  const [state, setState] = useState<ClientState>({
+    client: null,
+    error: null,
+    isLoading: true,
+  })
 
   useEffect(() => {
     if (!getRpcEndpoint) {
       return
     }
 
-    getRpcEndpoint().then(async (rpcEndpoint) => {
-      const signer = getOfflineSignerDirect!()
-      const client = await SigningCosmWasmClient.connectWithSigner(
-        rpcEndpoint,
-        signer,
-        {
-          gasPrice: GasPrice.fromString(gasPrice),
-        },
-      )
-      setClient(client)
-    })
+    getRpcEndpoint()
+      .then(async (rpcEndpoint) => {
+        const signer = getOfflineSignerDirect!()
+        try {
+          const client = await SigningCosmWasmClient.connectWithSigner(
+            rpcEndpoint,
+            signer,
+            {
+              gasPrice: GasPrice.fromString(gasPrice),
+            },
+          )
+          setState({ client, error: null, isLoading: false })
+        } catch (err) {
+          setState({ client: null, error: err as Error, isLoading: false })
+        }
+      })
+      .catch((err) => {
+        setState({ client: null, error: err as Error, isLoading: false })
+      })
   }, [gasPrice, getRpcEndpoint, getOfflineSignerDirect])
 
-  return client
+  return state
 }
