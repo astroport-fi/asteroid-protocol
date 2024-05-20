@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
-import { Steps } from 'react-daisyui'
+import { Link, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
+import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
+import { usePair } from '~/hooks/useAstroportClient'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
+  TxState,
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
 import { toDecimalValue } from '~/utils/number'
@@ -21,6 +24,7 @@ enum Step {
 
 interface Props {
   token: Token
+  denom: string
   amount: number
   destination: string
 }
@@ -59,8 +63,47 @@ function CosmosTx({ submitTxState }: { submitTxState: SubmitTxState }) {
   )
 }
 
+function Success({ denom }: { denom: string }) {
+  const { data, isLoading } = usePair(denom, ASTROPORT_ATOM_DENOM)
+
+  if (isLoading) {
+    return
+  }
+
+  return (
+    <div className="flex flex-col items-center mt-4">
+      {data == null ? (
+        <>
+          <span className="text-lg">
+            Create a pool for the token in Astroport
+          </span>
+          <Link
+            className="btn btn-accent mt-4"
+            target="_blank"
+            href="https://app.astroport.fi/pools/create"
+          >
+            Create a pool
+          </Link>
+        </>
+      ) : (
+        <>
+          <span className="text-lg">Provide liquidity</span>
+          <Link
+            className="btn btn-accent mt-4"
+            target="_blank"
+            href={`https://app.astroport.fi/pools/${data.contract_addr}/provide`}
+          >
+            Provide liquidity
+          </Link>
+        </>
+      )}
+    </div>
+  )
+}
+
 function NeutronTx({
   token,
+  denom,
   amount,
   destination,
   transactionHash,
@@ -82,7 +125,6 @@ function NeutronTx({
   }, [amount, chainId, destination, signatures, token, transactionHash])
 
   const { chainFee, error, txHash, txState, sendTx } = useExecuteBridgeMsg(msg)
-  console.log(txHash, txState)
 
   return (
     <>
@@ -95,10 +137,9 @@ function NeutronTx({
         <h2 className="text-xl font-semibold">
           Sign and submit bridge transaction to Neutron
         </h2>
-        {/* <p className="mt-4">
-          You are about to create a bridge inscription on the Cosmos Hub.
-        </p> */}
       </TxBody>
+      <Success denom={denom} />
+      {txState === TxState.Success && <Success denom={denom} />}
       <Modal.Actions className="flex justify-center">
         <Actions
           txState={txState}
@@ -113,7 +154,7 @@ function NeutronTx({
   )
 }
 
-function ToNeutronBridgeDialog({ token, amount, destination }: Props) {
+function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
   const operations = useBridgeOperations()
   const { neutronBridgeContract, neutronChainId } = useRootContext()
   const txInscription = useMemo(() => {
@@ -161,6 +202,7 @@ function ToNeutronBridgeDialog({ token, amount, destination }: Props) {
           signatures.data ? (
             <NeutronTx
               token={token}
+              denom={denom}
               amount={amount}
               destination={destination}
               transactionHash={submitTxState.txHash}

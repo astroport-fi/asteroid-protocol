@@ -52,7 +52,7 @@ export default function useAstroportClient() {
 export function usePair(from: string, to: string) {
   const astroportClient = useAstroportClient()
 
-  return useSWR(astroportClient ? ['pair', from, to] : null, () =>
+  return useSWR(astroportClient && from && to ? ['pair', from, to] : null, () =>
     astroportClient?.pair(from, to),
   )
 }
