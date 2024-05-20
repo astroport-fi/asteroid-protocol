@@ -1,5 +1,5 @@
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { useRootContext } from '~/context/root'
 import { useQueryingCosmWasmClient } from './useCosmWasmClient'
@@ -38,7 +38,7 @@ export class AstroportQueryClient {
 export default function useAstroportClient() {
   const { astroportFactoryContract } = useRootContext()
   const neutronClient = useQueryingCosmWasmClient(
-    'https://rpc.cosmos.directory/neutron',
+    'https://neutron-rpc.publicnode.com',
   )
   return useMemo(() => {
     if (!neutronClient) {
@@ -51,8 +51,16 @@ export default function useAstroportClient() {
 
 export function usePair(from: string, to: string) {
   const astroportClient = useAstroportClient()
-
-  return useSWR(astroportClient && from && to ? ['pair', from, to] : null, () =>
-    astroportClient?.pair(from, to),
+  return useSWR(
+    astroportClient && from && to ? ['pair', from, to] : null,
+    async () => {
+      try {
+        return await astroportClient?.pair(from, to)
+      } catch (err) {
+        console.warn(err)
+        return null
+      }
+    },
+    { revalidateOnFocus: false },
   )
 }

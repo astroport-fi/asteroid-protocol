@@ -312,7 +312,7 @@ export function useExecuteBridgeMsg(
       })
   }, [msg, funds, fee, memo, bridgeClientState])
 
-  async function sendTx() {
+  const sendTx = useCallback(async () => {
     if (!bridgeClientState || !bridgeClientState.client) {
       setError({ message: 'invalid client', kind: ErrorKind.Generic })
       return
@@ -330,7 +330,7 @@ export function useExecuteBridgeMsg(
       setTxState(TxState.Failed)
       console.dir(err)
     }
-  }
+  }, [bridgeClientState, msg, fee, funds, memo, setTxState])
 
   return {
     txState,

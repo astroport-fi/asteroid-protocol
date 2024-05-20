@@ -1,17 +1,20 @@
 import { useMemo } from 'react'
-import { Link, Steps } from 'react-daisyui'
+import { Divider, Link, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { usePair } from '~/hooks/useAstroportClient'
+import useChain from '~/hooks/useChain'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
   TxState,
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
+import { useTokenFactoryBalance } from '~/hooks/useTokenFactoryBalance'
 import { toDecimalValue } from '~/utils/number'
+import DecimalText from '../DecimalText'
 import Actions from '../SubmitTx/Actions'
 import { InscriptionBody, TxBody } from '../SubmitTx/Body'
 import { SWRStatus } from '../SubmitTx/TxStatus'
@@ -63,17 +66,26 @@ function CosmosTx({ submitTxState }: { submitTxState: SubmitTxState }) {
   )
 }
 
-function Success({ denom }: { denom: string }) {
-  const { data, isLoading } = usePair(denom, ASTROPORT_ATOM_DENOM)
-
-  if (isLoading) {
-    return
-  }
+function Success({ ticker, denom }: { ticker: string; denom: string }) {
+  const { data } = usePair(denom, ASTROPORT_ATOM_DENOM)
+  const { neutronChainName } = useRootContext()
+  const { address: neutronAddress } = useChain(neutronChainName)
+  const tokenFactoryBalance = useTokenFactoryBalance(ticker, neutronAddress)
 
   return (
     <div className="flex flex-col items-center mt-4">
+      {tokenFactoryBalance != null && (
+        <span className="mb-4 text-lg">
+          New token balance in Neutron:{' '}
+          <DecimalText
+            value={parseInt(tokenFactoryBalance.amount)}
+            suffix={` ${ticker}`}
+          />
+        </span>
+      )}
       {data == null ? (
         <>
+          <Divider />
           <span className="text-lg">
             Create a pool for the token in Astroport
           </span>
@@ -87,6 +99,7 @@ function Success({ denom }: { denom: string }) {
         </>
       ) : (
         <>
+          <Divider />
           <span className="text-lg">Provide liquidity</span>
           <Link
             className="btn btn-accent mt-4"
@@ -138,8 +151,9 @@ function NeutronTx({
           Sign and submit bridge transaction to Neutron
         </h2>
       </TxBody>
-      <Success denom={denom} />
-      {txState === TxState.Success && <Success denom={denom} />}
+      {txState === TxState.Success && (
+        <Success denom={denom} ticker={token.ticker} />
+      )}
       <Modal.Actions className="flex justify-center">
         <Actions
           txState={txState}
