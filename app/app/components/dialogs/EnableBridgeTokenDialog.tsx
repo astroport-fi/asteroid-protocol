@@ -1,12 +1,13 @@
 import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
 import { forwardRef, useMemo } from 'react'
-import { Steps } from 'react-daisyui'
+import { Link, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import { useBridgeTokenSignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
+  TxState,
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
 import Actions from '../SubmitTx/Actions'
@@ -63,6 +64,21 @@ function CosmosTx({
   )
 }
 
+function Success() {
+  return (
+    <div className="flex flex-col items-center mt-4">
+      <span className="text-lg">Create a pool for the token in Astroport</span>
+      <Link
+        className="btn btn-accent mt-4"
+        target="_blank"
+        href="https://app.astroport.fi/pools/create"
+      >
+        Create a pool
+      </Link>
+    </div>
+  )
+}
+
 function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
   const { chainId } = useRootContext()
 
@@ -107,6 +123,7 @@ function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
           You are about to enable {token.ticker} token for bridging.
         </p>
       </TxBody>
+      {txState === TxState.Success && <Success />}
       <Modal.Actions className="flex justify-center">
         <Actions
           txState={txState}

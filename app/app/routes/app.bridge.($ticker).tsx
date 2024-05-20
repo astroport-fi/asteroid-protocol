@@ -250,6 +250,7 @@ export default function Bridge() {
             {directionFrom ? (
               <ToNeutronBridgeDialog
                 token={token}
+                denom={tokenFactoryBalance?.denom ?? ''}
                 amount={value?.amount ?? 0}
                 destination={value?.destination ?? ''}
               />
