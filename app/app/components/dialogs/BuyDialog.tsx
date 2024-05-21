@@ -173,9 +173,10 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
       operations
         .deposit(listingHash)
         .then(setTxInscription)
-        .catch((err: Error) =>
-          setError({ kind: ErrorKind.Validation, message: err.message }),
-        )
+        .catch((err: Error) => {
+          console.error(err)
+          setError({ kind: ErrorKind.Validation, message: err.message })
+        })
     } else if (step === Step.InitialBuy && txState === TxState.Initial) {
       operations
         .buy(listingHash, buyType, royalty?.data ?? undefined)
@@ -183,9 +184,11 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           setTxInscription(buyTxData)
           setStep(Step.Purchase)
         })
-        .catch((err: Error) =>
-          setError({ kind: ErrorKind.Validation, message: err.message }),
-        )
+        .catch((err: Error) => {
+          console.error(err)
+          setStep(Step.Purchase)
+          setError({ kind: ErrorKind.Validation, message: err.message })
+        })
     } else if (step === Step.Reserve && txState === TxState.SuccessInscribed) {
       operations
         .buy(listingHash, buyType, royalty?.data ?? undefined)
@@ -194,9 +197,12 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
           setStep(Step.Purchase)
           resetTxState()
         })
-        .catch((err: Error) =>
-          setError({ kind: ErrorKind.Validation, message: err.message }),
-        )
+        .catch((err: Error) => {
+          console.error(err)
+          setStep(Step.Purchase)
+          resetTxState()
+          setError({ kind: ErrorKind.Validation, message: err.message })
+        })
     }
   }, [
     listingHash,
