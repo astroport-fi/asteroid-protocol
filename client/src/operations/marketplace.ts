@@ -250,7 +250,7 @@ export class MarketplaceOperations<
     ) {
       const royaltyFloatAmount = listing.total * royalty.percentage
       if (royaltyFloatAmount > 1) {
-        const royaltyAmount = BigInt(royaltyFloatAmount)
+        const royaltyAmount = BigInt(royaltyFloatAmount.toFixed())
 
         const royaltyMessage = createSendMessage(
           this.address,
