@@ -1,6 +1,6 @@
 {
   "name": "@asteroid-protocol/sdk",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "scripts": {
