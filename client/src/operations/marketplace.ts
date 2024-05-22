@@ -3,7 +3,7 @@ import { TOKEN_DECIMALS } from '../constants.js'
 import { createSendMessage } from '../helpers/msg.js'
 import MarketplaceProtocol, { BuyType } from '../metaprotocol/marketplace.js'
 import { InscriptionData } from '../metaprotocol/types.js'
-import { AsteroidService, Status } from '../service/asteroid.js'
+import { AsteroidService, Listing, Status } from '../service/asteroid.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
 interface MsgResult {
@@ -202,11 +202,10 @@ export class MarketplaceOperations<
     )
   }
 
-  private async buyListing(
-    status: Status,
+  async getListing(
+    lastKnownHeight: number,
     listingHash: string,
-    royalty?: Royalty,
-  ): Promise<BuyResult> {
+  ): Promise<{ error: string } | { listing: Listing }> {
     // check if listing exists
     const listing = await this.asteroidService.fetchListing(listingHash)
     if (!listing) {
@@ -226,9 +225,24 @@ export class MarketplaceOperations<
       }
     }
     // check timeout didn't expire
-    if (status.last_known_height! > listing.depositor_timedout_block!) {
+    if (lastKnownHeight > listing.depositor_timedout_block!) {
       return { error: 'Deposit timeout expired' }
     }
+
+    return { listing }
+  }
+
+  private async buyListing(
+    lastKnownHeight: number,
+    listingHash: string,
+    royalty?: Royalty,
+  ): Promise<BuyResult> {
+    const res = await this.getListing(lastKnownHeight, listingHash)
+    if ('error' in res) {
+      return { error: res.error }
+    }
+
+    const listing = res.listing
 
     let totaluatom = BigInt(listing.total)
     const deposit = BigInt(listing.deposit_total)
@@ -290,6 +304,7 @@ export class MarketplaceOperations<
 
     // check timeout didn't expire
     const status = await this.asteroidService.getStatus(this.protocol.chainId)
+    const lastKnownHeight = status.last_known_height as number
 
     const messages: MsgSendEncodeObject[] = []
     let totaluatom = BigInt(0)
@@ -298,7 +313,11 @@ export class MarketplaceOperations<
 
     for (let i = 0; i < listingHash.length; i++) {
       const listing = listingHash[i]
-      const result = await this.buyListing(status, listing, royalty?.[i])
+      const result = await this.buyListing(
+        lastKnownHeight,
+        listing,
+        royalty?.[i],
+      )
       if (result.error) {
         error = result.error
         console.warn(`Error buying listing ${listing}: ${error}`)

@@ -2,15 +2,15 @@ import { ErrorKind, SubmitTxError } from '~/hooks/useSubmitTx'
 
 export function SignError() {
   return (
-    <div className="text-warning">
+    <div className="flex flex-col text-warning">
       <h2 className="text-xl font-semibold">Unable to sign transaction</h2>
-      <p className="mt-4">
-        This may be a new account. Please send some tokens to this account
-        first.
-      </p>
       <span className="mt-4">
         You must sign and submit the transaction in order to inscribe content
       </span>
+      <p className="mt-2 text-base-content">
+        This may be a new account. Please send some tokens to this account
+        first.
+      </p>
     </div>
   )
 }

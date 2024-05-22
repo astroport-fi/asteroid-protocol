@@ -1,6 +1,11 @@
 import { StdFee } from '@cosmjs/stargate'
 import { PropsWithChildren } from 'react'
-import { MetaprotocolFee, SubmitTxError, TxState } from '~/hooks/useSubmitTx'
+import {
+  ErrorKind,
+  MetaprotocolFee,
+  SubmitTxError,
+  TxState,
+} from '~/hooks/useSubmitTx'
 import { EstimateError, SignError } from './Errors'
 import { FeeBreakdown } from './FeeBreakdown'
 import TxStatus from './TxStatus'
@@ -40,7 +45,7 @@ export default function Body({
   }
 
   if (error) {
-    if (chainFee) {
+    if (chainFee && error.kind === ErrorKind.Transaction) {
       return <SignError />
     }
     return <EstimateError error={error} />
