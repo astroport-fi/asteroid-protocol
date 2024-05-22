@@ -974,6 +974,14 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("no listing with hash '%s'", hash)
 		}
 
+		// Check if listing is filled or cancelled
+		if listingModel.IsFilled {
+			return fmt.Errorf("listing has already been filled")
+		}
+		if listingModel.IsCancelled {
+			return fmt.Errorf("listing has already been cancelled")
+		}
+
 		// Fetch inscription listing detail
 		var listingDetailModel models.MarketplaceInscriptionDetail
 		result = protocol.db.Where("listing_id = ?", listingModel.ID).First(&listingDetailModel)
