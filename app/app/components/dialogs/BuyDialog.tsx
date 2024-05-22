@@ -215,6 +215,33 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
     setError,
   ])
 
+  async function validate(callback: () => void) {
+    let hashes = listingHash as string | string[]
+    if (!Array.isArray(hashes)) {
+      hashes = [hashes]
+    }
+
+    let error: string | undefined
+    let availableListings = 0
+
+    for (const hash of hashes) {
+      const res = await operations!.getListing(lastKnownHeight, hash)
+      if ('error' in res) {
+        error = res.error
+      } else {
+        availableListings += 1
+      }
+    }
+    if (availableListings) {
+      callback()
+    } else {
+      setError({
+        kind: ErrorKind.Validation,
+        message: error ?? 'No valid listings to buy',
+      })
+    }
+  }
+
   const fRef = useForwardRef(ref)
 
   return (
@@ -289,11 +316,29 @@ const BuyDialog = forwardRef<HTMLDialogElement, Props>(function BuyDialog(
               : stepTitle
           }
           disabled={royalty?.isLoading || royalty?.error != null}
-          onSubmit={sendTx}
+          onSubmit={async () => {
+            if (step !== Step.Purchase) {
+              sendTx()
+              return
+            }
+
+            await validate(() => {
+              sendTx()
+            })
+          }}
           onClose={() => {
             fRef.current?.close()
           }}
-          onRetry={retry}
+          onRetry={async () => {
+            if (step !== Step.Purchase) {
+              retry()
+              return
+            }
+
+            await validate(() => {
+              retry()
+            })
+          }}
         />
       </Modal.Actions>
     </Modal>
