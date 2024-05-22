@@ -45,7 +45,7 @@ function getErrorDetails(kind: ErrorKind, message: string) {
   return message
 }
 
-export function EstimateError({ error }: { error: SubmitTxError }) {
+export function TxError({ error }: { error: SubmitTxError }) {
   return (
     <div className="text-error">
       <h2 className="text-xl font-semibold">

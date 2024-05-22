@@ -6,7 +6,7 @@ import {
   SubmitTxError,
   TxState,
 } from '~/hooks/useSubmitTx'
-import { EstimateError, SignError } from './Errors'
+import { SignError, TxError } from './Errors'
 import { FeeBreakdown } from './FeeBreakdown'
 import TxStatus from './TxStatus'
 
@@ -45,10 +45,14 @@ export default function Body({
   }
 
   if (error) {
-    if (chainFee && error.kind === ErrorKind.Transaction) {
+    if (
+      chainFee &&
+      error.kind === ErrorKind.Transaction &&
+      error.message.includes('Request rejected')
+    ) {
       return <SignError />
     }
-    return <EstimateError error={error} />
+    return <TxError error={error} />
   }
 
   return (
