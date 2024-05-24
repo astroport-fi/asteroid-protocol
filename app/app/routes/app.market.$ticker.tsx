@@ -23,7 +23,10 @@ import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
-import { useTokenFactoryDenom } from '~/hooks/useTokenFactoryBalance'
+import {
+  useTokenFactoryDenom,
+  useTokenFactoryMetadata,
+} from '~/hooks/useTokenFactory'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
@@ -218,7 +221,8 @@ export default function MarketPage() {
   }, [data.listings, address, lastKnownHeight])
   const hasListings = data.listings.length > 0
 
-  const { isLoading: isDenomLoading, denom } = useTokenFactoryDenom(
+  const denom = useTokenFactoryDenom(token.ticker)
+  const { isLoading: isLoadingMetadata, metadata } = useTokenFactoryMetadata(
     token.ticker,
   )
 
@@ -252,7 +256,7 @@ export default function MarketPage() {
                 </span>
               </span>
             </BackHeader>
-            <div>
+            <div className="flex flex-row items-center">
               {minted < 1 && (
                 <Link
                   className="btn btn-primary btn-sm mr-2 hidden md:inline-flex"
@@ -269,25 +273,28 @@ export default function MarketPage() {
                 Sell
                 <span className="hidden lg:inline">{token.ticker} tokens</span>
               </Button>
-              {!isDenomLoading && (
-                <>
-                  {denom ? (
-                    <DaisyLink
-                      className="btn btn-sm btn-primary ml-2"
-                      target="_blank"
-                      href={`https://app.astroport.fi/swap?to=${ASTROPORT_ATOM_DENOM}&from=${denom}`}
-                    >
-                      Swap on Astroport
-                    </DaisyLink>
-                  ) : (
-                    <Link
-                      className="btn btn-sm btn-primary ml-2"
-                      to={`/app/token/${token.ticker}?enableBridging`}
-                    >
-                      Enable bridging
-                    </Link>
-                  )}
-                </>
+              {metadata ? (
+                <DaisyLink
+                  className="btn btn-sm btn-primary ml-2"
+                  target="_blank"
+                  href={`https://app.astroport.fi/swap?to=${ASTROPORT_ATOM_DENOM}&from=${denom}`}
+                >
+                  Swap on Astroport
+                </DaisyLink>
+              ) : isLoadingMetadata ? (
+                <Button
+                  color="primary"
+                  size="sm"
+                  loading
+                  className="ml-2"
+                ></Button>
+              ) : (
+                <Link
+                  className="btn btn-sm btn-primary ml-2"
+                  to={`/app/token/${token.ticker}?enableBridging`}
+                >
+                  Enable bridging
+                </Link>
               )}
             </div>
           </div>

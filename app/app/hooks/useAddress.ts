@@ -7,3 +7,10 @@ export default function useAddress() {
   if (!chain) return
   return chain.address
 }
+
+export function useNeutronAddress() {
+  const { neutronChainName } = useRootContext()
+  const chain = useChain(neutronChainName)
+  if (!chain) return
+  return chain.address
+}

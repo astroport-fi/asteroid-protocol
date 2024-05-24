@@ -80,7 +80,7 @@ function Success() {
 }
 
 function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
-  const { chainId } = useRootContext()
+  const { chainId, neutronChainName } = useRootContext()
 
   const msg: ExecuteMsg = useMemo(() => {
     return {
@@ -126,6 +126,7 @@ function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
       {txState === TxState.Success && <Success />}
       <Modal.Actions className="flex justify-center">
         <Actions
+          chainName={neutronChainName}
           txState={txState}
           txHash={txHash}
           error={error}

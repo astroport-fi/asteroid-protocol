@@ -4,7 +4,7 @@ import { Coin, StdFee } from '@cosmjs/stargate'
 import { useMemo } from 'react'
 import { useRootContext } from '~/context/root'
 import useChain from '~/hooks/useChain'
-import useCosmWasmClient, {
+import useSigningCosmWasmClient, {
   SigningCosmWasmClient,
 } from '~/hooks/useCosmWasmClient'
 
@@ -53,7 +53,10 @@ interface ClientState {
 export default function useAsteroidBridgeClient(): ClientState {
   const { neutronBridgeContract, neutronChainName } = useRootContext()
   const { address } = useChain(neutronChainName)
-  const neutronClientState = useCosmWasmClient(neutronChainName, '0.01untrn')
+  const neutronClientState = useSigningCosmWasmClient(
+    neutronChainName,
+    '0.01untrn',
+  )
 
   return useMemo(() => {
     if (!address || neutronClientState.isLoading) {
