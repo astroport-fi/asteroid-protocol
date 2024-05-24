@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import { Link } from '@remix-run/react'
 import { forwardRef, useState } from 'react'
-import { Loading, Progress } from 'react-daisyui'
+import { Loading } from 'react-daisyui'
 import { Token } from '~/api/token'
 import useFindBridgeTokens from '~/hooks/api/useFindBridgeTokens'
 import useForwardRef from '~/hooks/useForwardRef'

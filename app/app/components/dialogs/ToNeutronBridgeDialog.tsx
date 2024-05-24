@@ -4,15 +4,15 @@ import { Token } from '~/api/token'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
+import { useNeutronAddress } from '~/hooks/useAddress'
 import { usePair } from '~/hooks/useAstroportClient'
-import useChain from '~/hooks/useChain'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
   TxState,
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
-import { useTokenFactoryBalance } from '~/hooks/useTokenFactoryBalance'
+import { useTokenFactoryBalance } from '~/hooks/useTokenFactory'
 import { toDecimalValue } from '~/utils/number'
 import DecimalText from '../DecimalText'
 import Actions from '../SubmitTx/Actions'
@@ -68,8 +68,7 @@ function CosmosTx({ submitTxState }: { submitTxState: SubmitTxState }) {
 
 function Success({ ticker, denom }: { ticker: string; denom: string }) {
   const { data } = usePair(denom, ASTROPORT_ATOM_DENOM)
-  const { neutronChainName } = useRootContext()
-  const { address: neutronAddress } = useChain(neutronChainName)
+  const neutronAddress = useNeutronAddress()
   const tokenFactoryBalance = useTokenFactoryBalance(ticker, neutronAddress)
 
   return (
@@ -122,7 +121,7 @@ function NeutronTx({
   transactionHash,
   signatures,
 }: Props & { transactionHash: string; signatures: string[] }) {
-  const { chainId } = useRootContext()
+  const { neutronChainName, chainId } = useRootContext()
 
   const msg = useMemo(() => {
     return {
@@ -156,6 +155,7 @@ function NeutronTx({
       )}
       <Modal.Actions className="flex justify-center">
         <Actions
+          chainName={neutronChainName}
           txState={txState}
           txHash={txHash}
           error={error}

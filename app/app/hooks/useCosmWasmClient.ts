@@ -1,5 +1,5 @@
 import {
-  CosmWasmClient,
+  CosmWasmClient as CosmWasmClientOriginal,
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClientOptions,
   SigningCosmWasmClient as SigningCosmWasmClientOriginal,
@@ -17,6 +17,25 @@ import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { useEffect, useState } from 'react'
 import useChain from './useChain'
+
+export class CosmWasmClient extends CosmWasmClientOriginal {
+  public static async connect(
+    endpoint: string | HttpEndpoint,
+  ): Promise<CosmWasmClient> {
+    const cometClient = await connectComet(endpoint)
+    return CosmWasmClient.create(cometClient)
+  }
+
+  public static async create(
+    cometClient: CometClient,
+  ): Promise<CosmWasmClient> {
+    return new CosmWasmClient(cometClient)
+  }
+
+  getDenomMetadata(denom: string) {
+    return this.forceGetQueryClient().bank.denomMetadata(denom)
+  }
+}
 
 export class SigningCosmWasmClient extends SigningCosmWasmClientOriginal {
   public static async connectWithSigner(
@@ -78,7 +97,10 @@ interface ClientState {
   isLoading: boolean
 }
 
-export default function useCosmWasmClient(chainName: string, gasPrice: string) {
+export default function useSigningCosmWasmClient(
+  chainName: string,
+  gasPrice: string,
+) {
   const { getRpcEndpoint, getOfflineSignerDirect } = useChain(chainName)
 
   const [state, setState] = useState<ClientState>({

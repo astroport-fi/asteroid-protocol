@@ -19,7 +19,7 @@ import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
 import useChain from '~/hooks/useChain'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
-import { useTokenFactoryBalance } from '~/hooks/useTokenFactoryBalance'
+import { useTokenFactoryBalance } from '~/hooks/useTokenFactory'
 import { getAddress } from '~/utils/cookies'
 
 const DEFAULT_TICKER = 'ROIDS'

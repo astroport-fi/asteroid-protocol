@@ -1,6 +1,7 @@
 import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
 import { useMemo } from 'react'
 import { Token } from '~/api/token'
+import { useRootContext } from '~/context/root'
 import { useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
 import { toDecimalValue } from '~/utils/number'
 import Actions from '../SubmitTx/Actions'
@@ -15,6 +16,7 @@ interface Props {
 }
 
 function NeutronTx({ token, denom, amount, destination }: Props) {
+  const { neutronChainName } = useRootContext()
   const msg: ExecuteMsg = useMemo(() => {
     return {
       send: {
@@ -51,6 +53,7 @@ function NeutronTx({ token, denom, amount, destination }: Props) {
       </TxBody>
       <Modal.Actions className="flex justify-center">
         <Actions
+          chainName={neutronChainName}
           txState={txState}
           txHash={txHash}
           error={error}

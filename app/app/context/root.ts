@@ -10,6 +10,7 @@ export const RootContext = createContext({
   chainId: '',
   neutronChainId: '',
   neutronChainName: '',
+  neutronRpcEndpoint: '',
   neutronBridgeContract: '',
   astroportFactoryContract: '',
   bridgeEndpoints: [] as string[],

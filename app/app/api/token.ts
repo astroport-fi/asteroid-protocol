@@ -47,7 +47,6 @@ export const tokenDetailSelector = Selector('token')({
   content_size_bytes: true,
   circulating_supply: true,
   date_created: true,
-  bridge_tokens: [{}, { id: true }],
 })
 
 export type TokenDetail = InputType<

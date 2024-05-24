@@ -1,8 +1,8 @@
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import useSWR from 'swr'
 import { useRootContext } from '~/context/root'
-import { useQueryingCosmWasmClient } from './useCosmWasmClient'
+import useNeutronClient from './useNeutronClient'
 
 interface PairResponse {
   contract_addr: string
@@ -37,9 +37,7 @@ export class AstroportQueryClient {
 
 export default function useAstroportClient() {
   const { astroportFactoryContract } = useRootContext()
-  const neutronClient = useQueryingCosmWasmClient(
-    'https://neutron-rpc.publicnode.com',
-  )
+  const neutronClient = useNeutronClient()
   return useMemo(() => {
     if (!neutronClient) {
       return

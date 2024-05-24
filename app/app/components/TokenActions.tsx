@@ -3,31 +3,27 @@ import clsx from 'clsx'
 import { useEffect } from 'react'
 import { Button } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
-import { TokenDetail, TokenTypeWithHolder, isTokenLaunched } from '~/api/token'
+import { Token, TokenTypeWithHolder, isTokenLaunched } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
+import { useTokenFactoryMetadata } from '~/hooks/useTokenFactory'
 import { getDecimalValue } from '~/utils/number'
 import EnableTokenBridgeDialog from './dialogs/EnableBridgeTokenDialog'
 import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
 
 interface Props {
-  token: TokenTypeWithHolder<TokenDetail>
+  token: TokenTypeWithHolder<Token>
   amount?: number
   className?: string
-  bridgingEnabled?: boolean
 }
 
-export function TokenActions({
-  amount,
-  token,
-  className,
-  bridgingEnabled = true,
-}: Props) {
+export function TokenActions({ amount, token, className }: Props) {
   const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
   const { dialogRef: bridgeDialogRef, showDialog: showBridgeDialog } =
     useDialog()
+  const { metadata } = useTokenFactoryMetadata(token.ticker)
 
   const [searchParams] = useSearchParams()
   const enableBridging = searchParams.get('enableBridging') != null
@@ -64,7 +60,7 @@ export function TokenActions({
       >
         Trade
       </Link>
-      {!bridgingEnabled && (
+      {!metadata && (
         <Button
           className="ml-2"
           color="primary"
