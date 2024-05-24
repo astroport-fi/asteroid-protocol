@@ -478,6 +478,76 @@ CREATE TABLE public.migration_permission_grant (
 
 CREATE INDEX "idx_migration_permission_grant_inscription_id" ON "public"."migration_permission_grant" USING btree ("inscription_id");
 
+-- public.bridge_history definition
+
+-- Drop table
+
+-- DROP TABLE public.bridge_history;
+
+CREATE TABLE public.bridge_history (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    transaction_id int4 NOT NULL,
+    token_id int4 NOT NULL,
+    sender varchar(128) NOT NULL,
+    "action" varchar(32) NOT NULL,
+    amount int8 NOT NULL,
+    remote_chain_id varchar(32) NOT NULL,
+    remote_contract varchar(128) NOT NULL,
+    receiver varchar(128) NOT NULL,
+    "signature" varchar(256) NOT NULL,
+    date_created timestamp NOT NULL,
+    CONSTRAINT bridge_history_pkey PRIMARY KEY (id),
+    CONSTRAINT bridge_history_tk_id_fk FOREIGN KEY (token_id) REFERENCES public."token"(id),
+    CONSTRAINT bridge_history_tx_id_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+);
+
+CREATE INDEX "idx_bridge_history_transaction_id" ON "public"."bridge_history" USING btree ("transaction_id");
+CREATE INDEX "idx_bridge_history_token_id" ON "public"."bridge_history" USING btree ("token_id");
+
+
+-- public.bridge_remote_chain definition
+
+-- Drop Table
+
+-- Drop Table public.bridge_remote_chain;
+
+CREATE TABLE public.bridge_remote_chain (
+    id serial4 NOT NULL, 
+    chain_id varchar(32) NOT NULL, 
+    remote_chain_id varchar(32) NOT NULL, 
+    remote_contract varchar(128) NOT NULL, 
+    ibc_channel varchar(32) NOT NULL, 
+    date_created timestamp NOT NULL, 
+    date_modified timestamp NOT NULL, 
+    CONSTRAINT bridge_remote_chain_id PRIMARY KEY (id)
+);
+
+
+-- public.bridge_token definition
+
+-- Drop Table
+
+-- DROP TABLE public.bridge_token;
+
+CREATE TABLE public.bridge_token (
+    id serial4 NOT NULL,
+    remote_chain_id int4 NOT NULL,
+    token_id int4 NOT NULL,
+    "enabled" boolean NOT NULL,
+    "signature" varchar(256) NOT NULL,
+    date_created timestamp NOT NULL,
+    date_modified timestamp NOT NULL, 
+    CONSTRAINT bridge_token_id PRIMARY KEY ("id"),
+    CONSTRAINT bridge_token_remote_chain_id_fkey FOREIGN KEY (remote_chain_id) REFERENCES public.bridge_remote_chain (id),
+    CONSTRAINT bridge_token_token_id_fkey FOREIGN KEY (token_id) REFERENCES public.token (id),
+    CONSTRAINT "bridge_token_remote_chain_id_token_id" UNIQUE ("remote_chain_id", "token_id")
+);
+
+CREATE INDEX "idx_bridge_token_token_id" ON "public"."bridge_token" USING btree ("token_id");
+
+
 -- public.inscription_market view definition
 
 CREATE OR REPLACE VIEW public.inscription_market AS 
@@ -611,3 +681,109 @@ INSERT INTO inscription_rarity (id, rarity_score, rarity_rank)
 SELECT id, rarity_score, rarity_rank
 FROM inscription_rarity_view
 ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, rarity_rank = EXCLUDED.rarity_rank;
+
+
+------------------ RIVER ---------------------
+
+-- River migration 002 [up]
+CREATE TYPE river_job_state AS ENUM(
+  'available',
+  'cancelled',
+  'completed',
+  'discarded',
+  'retryable',
+  'running',
+  'scheduled'
+);
+
+CREATE TABLE river_job(
+  -- 8 bytes
+  id bigserial PRIMARY KEY,
+
+  -- 8 bytes (4 bytes + 2 bytes + 2 bytes)
+  --
+  -- `state` is kept near the top of the table for operator convenience -- when
+  -- looking at jobs with `SELECT *` it'll appear first after ID. The other two
+  -- fields aren't as important but are kept adjacent to `state` for alignment
+  -- to get an 8-byte block.
+  state river_job_state NOT NULL DEFAULT 'available' ::river_job_state,
+  attempt smallint NOT NULL DEFAULT 0,
+  max_attempts smallint NOT NULL,
+
+  -- 8 bytes each (no alignment needed)
+  attempted_at timestamptz,
+  created_at timestamptz NOT NULL DEFAULT NOW(),
+  finalized_at timestamptz,
+  scheduled_at timestamptz NOT NULL DEFAULT NOW(),
+
+  -- 2 bytes (some wasted padding probably)
+  priority smallint NOT NULL DEFAULT 1,
+
+  -- types stored out-of-band
+  args jsonb,
+  attempted_by text[],
+  errors jsonb[],
+  kind text NOT NULL,
+  metadata jsonb NOT NULL DEFAULT '{}' ::jsonb,
+  queue text NOT NULL DEFAULT 'default' ::text,
+  tags varchar(255)[],
+
+  CONSTRAINT finalized_or_finalized_at_null CHECK ((state IN ('cancelled', 'completed', 'discarded') AND finalized_at IS NOT NULL) OR finalized_at IS NULL),
+  CONSTRAINT max_attempts_is_positive CHECK (max_attempts > 0),
+  CONSTRAINT priority_in_range CHECK (priority >= 1 AND priority <= 4),
+  CONSTRAINT queue_length CHECK (char_length(queue) > 0 AND char_length(queue) < 128),
+  CONSTRAINT kind_length CHECK (char_length(kind) > 0 AND char_length(kind) < 128)
+);
+
+-- We may want to consider adding another property here after `kind` if it seems
+-- like it'd be useful for something.
+CREATE INDEX river_job_kind ON river_job USING btree(kind);
+
+CREATE INDEX river_job_state_and_finalized_at_index ON river_job USING btree(state, finalized_at) WHERE finalized_at IS NOT NULL;
+
+CREATE INDEX river_job_prioritized_fetching_index ON river_job USING btree(state, queue, priority, scheduled_at, id);
+
+CREATE INDEX river_job_args_index ON river_job USING GIN(args);
+
+CREATE INDEX river_job_metadata_index ON river_job USING GIN(metadata);
+
+CREATE OR REPLACE FUNCTION river_job_notify()
+  RETURNS TRIGGER
+  AS $$
+DECLARE
+  payload json;
+BEGIN
+  IF NEW.state = 'available' THEN
+    -- Notify will coalesce duplicate notificiations within a transaction, so
+    -- keep these payloads generalized:
+    payload = json_build_object('queue', NEW.queue);
+    PERFORM
+      pg_notify('river_insert', payload::text);
+  END IF;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER river_notify
+  AFTER INSERT ON river_job
+  FOR EACH ROW
+  EXECUTE PROCEDURE river_job_notify();
+
+CREATE UNLOGGED TABLE river_leader(
+  -- 8 bytes each (no alignment needed)
+  elected_at timestamptz NOT NULL,
+  expires_at timestamptz NOT NULL,
+
+  -- types stored out-of-band
+  leader_id text NOT NULL,
+  name text PRIMARY KEY,
+
+  CONSTRAINT name_length CHECK (char_length(name) > 0 AND char_length(name) < 128),
+  CONSTRAINT leader_id_length CHECK (char_length(leader_id) > 0 AND char_length(leader_id) < 128)
+);
+
+-- River migration 003 [up]
+ALTER TABLE river_job ALTER COLUMN tags SET DEFAULT '{}';
+UPDATE river_job SET tags = '{}' WHERE tags IS NULL;
+ALTER TABLE river_job ALTER COLUMN tags SET NOT NULL;
