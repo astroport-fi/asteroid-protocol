@@ -134,7 +134,17 @@ const MyModal = ({ isOpen, setOpen, walletRepo }: WalletModalProps) => {
   )
 }
 
-export default function WalletProvider() {
+export interface WalletProviderProps {
+  chainName: string
+  rpcEndpoint: string
+  restEndpoint: string
+}
+
+export default function WalletProvider({
+  chainName,
+  rpcEndpoint,
+  restEndpoint,
+}: WalletProviderProps) {
   return (
     <ChainProvider
       chains={getChains()}
@@ -143,6 +153,15 @@ export default function WalletProvider() {
       wallets={[...keplr, ...leap]}
       walletModal={MyModal}
       sessionOptions={{ duration: Math.pow(2, 31) - 1 }}
+      endpointOptions={{
+        isLazy: true,
+        endpoints: {
+          [chainName]: {
+            rpc: [rpcEndpoint],
+            rest: [restEndpoint],
+          },
+        },
+      }}
       // walletConnectOptions={{
       //   signClient: {
       //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
