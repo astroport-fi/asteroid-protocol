@@ -20,7 +20,7 @@ import { clientOnly$, serverOnly$ } from 'vite-env-only'
 import styles from '~/tailwind.css?url'
 import { AsteroidClient } from './api/client'
 import { RootContext } from './context/root'
-import WalletProvider from './context/wallet'
+import WalletProvider, { WalletProviderProps } from './context/wallet'
 import error404Image from '~/images/background/404.png'
 import error503Image from '~/images/background/503.png'
 
@@ -53,16 +53,18 @@ export async function loader({ context }: LoaderFunctionArgs) {
   })
 }
 
-function WalletProviderWrapper() {
+function WalletProviderWrapper(props: WalletProviderProps) {
   let Provider: JSX.Element | undefined
 
-  Provider = import.meta.env.DEV ? serverOnly$(<WalletProvider />) : undefined
+  Provider = import.meta.env.DEV
+    ? serverOnly$(<WalletProvider {...props} />)
+    : undefined
 
   if (Provider) {
     return Provider
   }
 
-  Provider = clientOnly$(<WalletProvider />)
+  Provider = clientOnly$(<WalletProvider {...props} />)
   if (Provider) {
     return Provider
   }
@@ -161,7 +163,11 @@ export default function App() {
             },
           }}
         >
-          <WalletProviderWrapper />
+          <WalletProviderWrapper
+            chainName={data.ENV.CHAIN_NAME}
+            rpcEndpoint={data.ENV.RPC}
+            restEndpoint={data.ENV.REST}
+          />
         </RootContext.Provider>
         <ScrollRestoration />
         <Scripts />
