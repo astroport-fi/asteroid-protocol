@@ -37,8 +37,8 @@ USE_EXTENSION_DATA = true
 
 [env.testnet.vars]
 ENVIRONMENT = "development"
-ASTEROID_API = "https://testnet-api.asteroidprotocol.io/v1/graphql"
-ASTEROID_API_WSS = "wss://testnet-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://testnet-new-api.asteroidprotocol.io/v1/graphql"
 TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
 RPC = "https://rpc.sentry-01.theta-testnet.polypore.xyz"
 REST = "https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz"
@@ -48,6 +48,12 @@ MAX_FILE_SIZE = 550000
 GAS_PRICE = "0.005uatom"
 USE_IBC = false
 USE_EXTENSION_DATA = true
+NEUTRON_CHAIN_ID = "pion-1"
+NEUTRON_CHAIN_NAME = "neutrontestnet"
+NEUTRON_BRIDGE_CONTRACT = "neutron15rmdejy4ugkkk3a4qznyje3qveu3n8qs45j4rhw0v20e024jprpsxa56w7"
+NEUTRON_RPC = "https://rpc-falcron.pion-1.ntrn.tech:443"
+BRIDGE_ENDPOINTS = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
+ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 
 [env.mainnet.vars]
 ENVIRONMENT = "production"
