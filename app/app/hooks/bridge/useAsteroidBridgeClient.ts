@@ -55,7 +55,7 @@ export default function useAsteroidBridgeClient(): ClientState {
   const { address } = useChain(neutronChainName)
   const neutronClientState = useSigningCosmWasmClient(
     neutronChainName,
-    '0.01untrn',
+    '0.025untrn',
   )
 
   return useMemo(() => {
