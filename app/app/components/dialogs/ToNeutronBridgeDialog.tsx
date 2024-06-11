@@ -178,7 +178,7 @@ function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
 
     return operations.send(
       token.ticker,
-      amount,
+      toDecimalValue(amount, token.decimals),
       neutronChainId,
       neutronBridgeContract,
       destination,
