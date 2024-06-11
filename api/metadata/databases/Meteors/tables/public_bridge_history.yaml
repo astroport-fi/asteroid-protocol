@@ -9,8 +9,11 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
+        - action
         - amount
+        - height
         - receiver
+        - sender
         - signature
         - token_id
         - transaction_id
