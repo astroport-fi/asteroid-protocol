@@ -378,7 +378,7 @@ func (protocol *Inscription) RequiresV2(version string) error {
 
 }
 
-func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Inscription) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction, sourceChannel string) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err

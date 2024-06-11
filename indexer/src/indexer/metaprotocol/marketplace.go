@@ -393,7 +393,7 @@ func (protocol *Marketplace) BuyCFT20(chainID string, sender string, rawTransact
 	return nil
 }
 
-func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Marketplace) Process(currentTransaction models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction, sourceChannel string) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
