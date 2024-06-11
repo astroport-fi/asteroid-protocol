@@ -68,7 +68,7 @@ func (protocol *Bridge) Name() string {
 	return "bridge"
 }
 
-func (protocol *Bridge) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *Bridge) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction, sourceChannel string) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
@@ -163,8 +163,16 @@ func (protocol *Bridge) Process(transactionModel models.Transaction, protocolURN
 			return fmt.Errorf("remote chain '%s' doesn't exist", remoteChainId)
 		}
 
-		// TODO: Check that the originating address matches remoteChainModel.RemoteContract
-		// TODO: Check that the tx came through remoteChainModel.IBCChannel
+		// Check that the originating address matches remoteChainModel.RemoteContract
+		if sender != remoteChainModel.RemoteContract {
+			return fmt.Errorf("sender address doesn't match remote contract address")
+		}
+
+		// Check that the tx came through remoteChainModel.IBCChannel
+		if sourceChannel != remoteChainModel.IBCChannel {
+			return fmt.Errorf("source channel doesn't match remote chain IBC channel")
+		}
+
 		// TODO: Check if receiverAddress is valid
 		// TODO: Check if remoteSenderAddress is valid
 

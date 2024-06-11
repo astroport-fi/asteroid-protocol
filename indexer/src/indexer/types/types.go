@@ -164,6 +164,36 @@ type SendMessage struct {
 	} `json:"amount"`
 }
 
+type IBCPacketData struct {
+	Receiver string `json:"receiver"`
+	Sender   string `json:"sender"`
+	Denom    string `json:"denom"`
+	Amount   string `json:"amount"`
+	Memo     string `json:"memo"`
+}
+
+type IBCPacket struct {
+	Data          string `json:"data"`
+	SourceChannel string `json:"source_channel"`
+}
+
+func (packet IBCPacket) GetPacketData() (*IBCPacketData, error) {
+	// parse the base64 in packet.data into bytes
+	// then parse the bytes into json
+	decodedPacketData, err := base64.StdEncoding.DecodeString(packet.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	var ibcPacketData IBCPacketData
+	err = json.Unmarshal(decodedPacketData, &ibcPacketData)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ibcPacketData, nil
+}
+
 type RawTransactionBody struct {
 	Messages []struct {
 		Type        string `json:"@type"`
@@ -180,7 +210,8 @@ type RawTransactionBody struct {
 			Amount string `json:"amount"`
 			Denom  string `json:"denom"`
 		} `json:"token"`
-		Msgs []SendMessage `json:"msgs"`
+		Msgs   []SendMessage `json:"msgs"`
+		Packet IBCPacket     `json:"packet"`
 	} `json:"messages"`
 	Memo                        string         `json:"memo"`
 	TimeoutHeight               string         `json:"timeout_height"`
@@ -389,7 +420,12 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 		}
 		if message.Type == "/cosmos.authz.v1beta1.MsgExec" && len(message.Msgs) > 0 && message.Msgs[0].FromAddress != "" {
 			return message.Msgs[0].FromAddress, nil
-
+		}
+		if message.Type == "/ibc.core.channel.v1.MsgRecvPacket" {
+			packetData, _ := message.Packet.GetPacketData()
+			if packetData != nil {
+				return packetData.Sender, nil
+			}
 		}
 	}
 	return "", errors.New("no sender address found")

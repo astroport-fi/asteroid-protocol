@@ -84,7 +84,7 @@ func (protocol *CFT20) Name() string {
 	return "cft20"
 }
 
-func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction) error {
+func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction, sourceChannel string) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
 		return err
