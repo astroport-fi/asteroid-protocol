@@ -198,6 +198,14 @@ export function TxStatus({ txState, txError }: TxStatusProps) {
     title = 'Transaction complete'
     state = GenericStatusState.Success
     animationLoop = false
+  } else if (
+    txState == TxState.SuccessOnchain ||
+    txState == TxState.SuccessIndexer
+  ) {
+    title = 'Indexing'
+    description =
+      'Your transaction has been created on-chain, waiting for indexer'
+    state = GenericStatusState.Loading
   } else {
     title = 'Waiting for transaction'
     description =

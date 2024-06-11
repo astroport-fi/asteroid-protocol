@@ -1278,6 +1278,39 @@ export class AsteroidClient extends AsteroidService {
     return result.bridge_history[0]
   }
 
+  async getReceivedBridgeHistory(
+    height: number,
+    receiver: string,
+    tokenId: number,
+    amount: number,
+  ) {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            height: {
+              _gt: height,
+            },
+            receiver: {
+              _eq: receiver,
+            },
+            token_id: {
+              _eq: tokenId,
+            },
+            amount: {
+              _eq: amount,
+            },
+          },
+        },
+        {
+          amount: true,
+        },
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
   async getBridgeTokenSignature(ticker: string) {
     const result = await this.query({
       bridge_token: [

@@ -1,8 +1,9 @@
 import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
-import { useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
+import useAsteroidClient from '~/hooks/useAsteroidClient'
+import { TxState, useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
 import { toDecimalValue } from '~/utils/number'
 import Actions from '../SubmitTx/Actions'
 import { TxBody } from '../SubmitTx/Body'
@@ -32,12 +33,42 @@ function NeutronTx({ token, denom, amount, destination }: Props) {
     ]
   }, [denom, amount, token.decimals])
 
-  const { chainFee, error, txHash, txState, sendTx } = useExecuteBridgeMsg(
-    msg,
-    '',
-    'auto',
-    funds,
-  )
+  const { chainFee, error, txHash, txState, sendTx, setTxState } =
+    useExecuteBridgeMsg(msg, '', 'auto', funds, TxState.SuccessOnchain)
+  const {
+    status: { lastKnownHeight },
+  } = useRootContext()
+
+  // check if the transaction was received by the bridge
+  const asteroidClient = useAsteroidClient()
+  useEffect(() => {
+    if (txState != TxState.SuccessOnchain) {
+      return
+    }
+
+    const intervalId = setInterval(async () => {
+      const res = await asteroidClient.getReceivedBridgeHistory(
+        lastKnownHeight,
+        destination,
+        token.id,
+        toDecimalValue(amount, token.decimals),
+      )
+
+      if (res && res.amount) {
+        setTxState(TxState.Success)
+      }
+    }, 1000)
+
+    return () => clearInterval(intervalId)
+  }, [
+    txState,
+    asteroidClient,
+    amount,
+    token,
+    destination,
+    lastKnownHeight,
+    setTxState,
+  ])
 
   return (
     <>
