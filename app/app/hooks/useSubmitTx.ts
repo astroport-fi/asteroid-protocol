@@ -273,6 +273,7 @@ export function useExecuteBridgeMsg(
   memo: string | undefined = '',
   fee: StdFee | 'auto' | number = 'auto',
   funds?: Coin[],
+  successState: TxState = TxState.Success,
 ) {
   // deps
   const bridgeClientState = clientOnly$(useAsteroidBridgeClient())
@@ -323,14 +324,14 @@ export function useExecuteBridgeMsg(
 
     try {
       const res = await bridgeClientState.client.execute(msg, memo, fee, funds)
-      setTxState(TxState.Success)
+      setTxState(successState)
       setTxHash(res.transactionHash)
     } catch (err) {
       setError({ message: (err as Error).message, kind: ErrorKind.Transaction })
       setTxState(TxState.Failed)
       console.dir(err)
     }
-  }, [bridgeClientState, msg, fee, funds, memo, setTxState])
+  }, [bridgeClientState, msg, fee, funds, memo, successState, setTxState])
 
   return {
     txState,
@@ -339,5 +340,6 @@ export function useExecuteBridgeMsg(
     chainFee,
     sendTx,
     setError,
+    setTxState,
   }
 }
