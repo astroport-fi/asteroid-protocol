@@ -4,6 +4,7 @@ import { Link, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import { useBridgeTokenSignatures } from '~/hooks/bridge/useBridgeSignatures'
+import { useCreateAstroportPoolUrl } from '~/hooks/useAstroportUrl'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
@@ -64,15 +65,13 @@ function CosmosTx({
   )
 }
 
-function Success() {
+function Success({ ticker }: { ticker: string }) {
+  const url = useCreateAstroportPoolUrl(ticker)
+
   return (
     <div className="flex flex-col items-center mt-4">
       <span className="text-lg">Create a pool for the token in Astroport</span>
-      <Link
-        className="btn btn-accent mt-4"
-        target="_blank"
-        href="https://app.astroport.fi/pools/create"
-      >
+      <Link className="btn btn-accent mt-4" target="_blank" href={url}>
         Create a pool
       </Link>
     </div>
@@ -123,7 +122,7 @@ function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
           You are about to enable {token.ticker} token for bridging.
         </p>
       </TxBody>
-      {txState === TxState.Success && <Success />}
+      {txState === TxState.Success && <Success ticker={token.ticker} />}
       <Modal.Actions className="flex justify-center">
         <Actions
           chainName={neutronChainName}

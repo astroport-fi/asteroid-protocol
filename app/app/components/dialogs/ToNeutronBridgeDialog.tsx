@@ -6,6 +6,10 @@ import { useRootContext } from '~/context/root'
 import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { useNeutronAddress } from '~/hooks/useAddress'
 import { usePair } from '~/hooks/useAstroportClient'
+import {
+  useCreateAstroportPoolUrl,
+  useProvideAstroportLiquidityUrl,
+} from '~/hooks/useAstroportUrl'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
@@ -70,6 +74,10 @@ function Success({ ticker, denom }: { ticker: string; denom: string }) {
   const { data } = usePair(denom, ASTROPORT_ATOM_DENOM)
   const neutronAddress = useNeutronAddress()
   const tokenFactoryBalance = useTokenFactoryBalance(ticker, neutronAddress)
+  const createPoolUrl = useCreateAstroportPoolUrl(ticker)
+  const provideLiquidityUrl = useProvideAstroportLiquidityUrl(
+    data?.contract_addr ?? '',
+  )
 
   return (
     <div className="flex flex-col items-center mt-4">
@@ -91,7 +99,7 @@ function Success({ ticker, denom }: { ticker: string; denom: string }) {
           <Link
             className="btn btn-accent mt-4"
             target="_blank"
-            href="https://app.astroport.fi/pools/create"
+            href={createPoolUrl}
           >
             Create a pool
           </Link>
@@ -103,7 +111,7 @@ function Success({ ticker, denom }: { ticker: string; denom: string }) {
           <Link
             className="btn btn-accent mt-4"
             target="_blank"
-            href={`https://app.astroport.fi/pools/${data.contract_addr}/provide`}
+            href={provideLiquidityUrl}
           >
             Provide liquidity
           </Link>

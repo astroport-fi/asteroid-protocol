@@ -20,6 +20,7 @@ NEUTRON_BRIDGE_CONTRACT = "neutron1vlqvaptpe7hztjj52whxk5mm6k2ey9hu4rv5ueu89shag
 NEUTRON_RPC = "http://localhost:26657"
 BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql,http://localhost:8080/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
+ASTROPORT_URL = "https://app.astroport.fi"
 
 [env.localroids.vars]
 ENVIRONMENT = "development"
@@ -53,7 +54,8 @@ NEUTRON_CHAIN_NAME = "neutrontestnet"
 NEUTRON_BRIDGE_CONTRACT = "neutron15rmdejy4ugkkk3a4qznyje3qveu3n8qs45j4rhw0v20e024jprpsxa56w7"
 NEUTRON_RPC = "https://rpc-falcron.pion-1.ntrn.tech:443"
 BRIDGE_ENDPOINTS = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
-ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
+ASTROPORT_FACTORY_CONTRACT = "neutron1jj0scx400pswhpjes589aujlqagxgcztw04srynmhf0f6zplzn2qqmhwj7"
+ASTROPORT_URL = "https://testnet.astroport.fi"
 
 [env.mainnet.vars]
 ENVIRONMENT = "production"
