@@ -13,6 +13,7 @@ export const RootContext = createContext({
   neutronRpcEndpoint: '',
   neutronBridgeContract: '',
   astroportFactoryContract: '',
+  astroportUrl: '',
   bridgeEndpoints: [] as string[],
   useIbc: true,
   useExtensionData: true,

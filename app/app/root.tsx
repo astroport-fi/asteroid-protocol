@@ -56,6 +56,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
       BRIDGE_ENDPOINTS: context.cloudflare.env.BRIDGE_ENDPOINTS.split(','),
       ASTROPORT_FACTORY_CONTRACT:
         context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
+      ASTROPORT_URL: context.cloudflare.env.ASTROPORT_URL,
     },
   })
 }
@@ -174,6 +175,7 @@ export default function App() {
             neutronRpcEndpoint: data.ENV.NEUTRON_RPC,
             bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
             astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
+            astroportUrl: data.ENV.ASTROPORT_URL,
           }}
         >
           <WalletProviderWrapper

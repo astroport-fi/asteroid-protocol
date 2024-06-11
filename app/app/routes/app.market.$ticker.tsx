@@ -21,6 +21,7 @@ import Stats from '~/components/market/Stats'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
+import { useSwapAstroportUrl } from '~/hooks/useAstroportUrl'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import {
@@ -225,6 +226,7 @@ export default function MarketPage() {
   const { isLoading: isLoadingMetadata, metadata } = useTokenFactoryMetadata(
     token.ticker,
   )
+  const swapUrl = useSwapAstroportUrl(denom, ASTROPORT_ATOM_DENOM)
 
   return (
     <div className="flex flex-col md:flex-row h-full">
@@ -277,7 +279,7 @@ export default function MarketPage() {
                 <DaisyLink
                   className="btn btn-sm btn-primary ml-2"
                   target="_blank"
-                  href={`https://app.astroport.fi/swap?to=${ASTROPORT_ATOM_DENOM}&from=${denom}`}
+                  href={swapUrl}
                 >
                   Swap on Astroport
                 </DaisyLink>
