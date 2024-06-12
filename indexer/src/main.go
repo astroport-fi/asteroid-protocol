@@ -63,7 +63,7 @@ func main() {
 		logger,
 	)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Fatalf("Unable to create service: %v", err)
 	}
 
 	// Handle stop signals
@@ -78,7 +78,7 @@ func main() {
 	// Run forever
 	err = service.Run()
 	if err != nil {
-		logger.Fatal(err)
+		logger.Fatalf("Unable to run service: %v", err)
 	}
 
 	logger.Info("Shutdown")

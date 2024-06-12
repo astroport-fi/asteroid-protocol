@@ -133,11 +133,7 @@ func (i *Indexer) indexBlocks() {
 			// and use that as the starting point for indexing
 			currentHeight, err = i.fetchCurrentHeight()
 			if err != nil {
-				i.logger.Fatal(err)
-			}
-		} else {
-			if err != nil {
-				i.logger.Fatal(result.Error)
+				i.logger.Fatalf("Unable to fetch current height: %v", err)
 			}
 		}
 	} else {
@@ -162,7 +158,7 @@ func (i *Indexer) indexBlocks() {
 
 			maxHeight, err := i.fetchCurrentHeight()
 			if err != nil {
-				i.logger.Fatal(err)
+				i.logger.Fatalf("Unable to fetch current height: %v", err)
 			}
 
 			if currentHeight >= maxHeight {
@@ -180,24 +176,24 @@ func (i *Indexer) indexBlocks() {
 			// All metaprotocols require a MsgSend transaction
 			block, transactions, err := i.fetchTransactions(currentHeight)
 			if err != nil {
-				i.logger.Fatal(err)
+				i.logger.Fatalf("Unable to fetch transactions: %v", err)
 			}
 
 			// Extract some commonly used values
 			height, err := strconv.ParseUint(block.Block.Header.Height, 10, 64)
 			if err != nil {
-				i.logger.Fatal(err)
+				i.logger.Fatalf("Unable to parse height: %v", err)
 			}
 
 			for _, tx := range transactions {
 				gasUsed, err := strconv.ParseUint(tx.AuthInfo.Fee.GasLimit, 10, 64)
 				if err != nil {
-					i.logger.Fatal(err)
+					i.logger.Fatalf("Unable to parse gas used: %v", err)
 				}
 
 				fees, err := json.Marshal(tx.AuthInfo.Fee.Amount)
 				if err != nil {
-					i.logger.Fatal(err)
+					i.logger.Fatalf("Unable to parse fees: %v", err)
 				}
 
 				contentLength := len(tx.ToJSON())
