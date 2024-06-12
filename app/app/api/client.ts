@@ -304,7 +304,7 @@ export class AsteroidClient extends AsteroidService {
   async getTokenHolding(
     tokenId: number,
     address: string,
-  ): Promise<TokenHolding | undefined> {
+  ): Promise<number | undefined> {
     const result = await this.query({
       token_holder: [
         {
@@ -317,10 +317,12 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        tokenHoldingSelector,
+        {
+          amount: true,
+        },
       ],
     })
-    return result.token_holder[0]
+    return result.token_holder[0]?.amount
   }
 
   async getTokenHoldings(

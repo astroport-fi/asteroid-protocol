@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Divider, Link, Steps } from 'react-daisyui'
+import { Divider, Link, Loading, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
@@ -81,15 +81,17 @@ function Success({ ticker, denom }: { ticker: string; denom: string }) {
 
   return (
     <div className="flex flex-col items-center mt-4">
-      {tokenFactoryBalance != null && (
-        <span className="mb-4 text-lg">
-          New token balance in Neutron:{' '}
+      <div className="mb-4 text-lg flex flex-col items-center">
+        <span>New token balance in Neutron:</span>
+        {tokenFactoryBalance == null ? (
+          <Loading variant="spinner" size="md" />
+        ) : (
           <DecimalText
             value={parseInt(tokenFactoryBalance.amount)}
             suffix={` ${ticker}`}
           />
-        </span>
-      )}
+        )}
+      </div>
       {data == null ? (
         <>
           <Divider />

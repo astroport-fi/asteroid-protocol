@@ -1,10 +1,15 @@
 import { ExecuteMsg } from '@asteroid-protocol/sdk/contracts'
 import { useEffect, useMemo } from 'react'
+import { Loading } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
+import useTokenHolding from '~/hooks/api/useTokenHolding'
+import { useNeutronAddress } from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import { TxState, useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
+import { useTokenFactoryBalance } from '~/hooks/useTokenFactory'
 import { toDecimalValue } from '~/utils/number'
+import DecimalText from '../DecimalText'
 import Actions from '../SubmitTx/Actions'
 import { TxBody } from '../SubmitTx/Body'
 import Modal from './Modal'
@@ -16,17 +21,61 @@ interface Props {
   token: Token
 }
 
+function Success({
+  ticker,
+  tokenId,
+  destination,
+}: {
+  ticker: string
+  tokenId: number
+  destination: string
+}) {
+  const neutronAddress = useNeutronAddress()
+  const tokenFactoryBalance = useTokenFactoryBalance(ticker, neutronAddress)
+  const { data, isLoading } = useTokenHolding(tokenId, destination)
+
+  return (
+    <div className="flex flex-col items-center mt-4">
+      <div className="mb-4 text-lg flex flex-col items-center">
+        <span>New token balance in Neutron:</span>
+        {tokenFactoryBalance == null ? (
+          <Loading variant="spinner" size="md" />
+        ) : (
+          <DecimalText
+            value={parseInt(tokenFactoryBalance.amount)}
+            suffix={` ${ticker}`}
+          />
+        )}
+      </div>
+      <div className="mb-4 text-lg flex flex-col items-center">
+        <span>New token balance in Cosmos Hub:</span>
+        {isLoading ? (
+          <Loading variant="spinner" size="md" />
+        ) : (
+          <DecimalText value={data!} suffix={` ${ticker}`} />
+        )}
+      </div>
+    </div>
+  )
+}
+
 function NeutronTx({ token, denom, amount, destination }: Props) {
   const { neutronChainName } = useRootContext()
-  const msg: ExecuteMsg = useMemo(() => {
+  const msg = useMemo(() => {
+    if (!amount) {
+      return
+    }
     return {
       send: {
         destination_addr: destination,
       },
-    }
-  }, [destination])
+    } as ExecuteMsg
+  }, [destination, amount])
 
   const funds = useMemo(() => {
+    if (!amount) {
+      return
+    }
     return [
       { denom, amount: `${toDecimalValue(amount, token.decimals)}` },
       { denom: 'untrn', amount: '2001' }, // @todo where to get this value?
@@ -82,6 +131,13 @@ function NeutronTx({ token, denom, amount, destination }: Props) {
           Sign and submit bridge transaction to Neutron
         </h2>
       </TxBody>
+      {txState === TxState.Success && (
+        <Success
+          ticker={token.ticker}
+          tokenId={token.id}
+          destination={destination}
+        />
+      )}
       <Modal.Actions className="flex justify-center">
         <Actions
           chainName={neutronChainName}
