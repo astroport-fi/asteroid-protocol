@@ -269,7 +269,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
 export type SubmitTxState = ReturnType<typeof useSubmitTx>
 
 export function useExecuteBridgeMsg(
-  msg: ExecuteMsg,
+  msg: ExecuteMsg | undefined,
   memo: string | undefined = '',
   fee: StdFee | 'auto' | number = 'auto',
   funds?: Coin[],
@@ -314,6 +314,11 @@ export function useExecuteBridgeMsg(
   }, [msg, funds, fee, memo, bridgeClientState])
 
   const sendTx = useCallback(async () => {
+    if (!msg) {
+      setError({ message: 'no message', kind: ErrorKind.Generic })
+      return
+    }
+
     if (!bridgeClientState || !bridgeClientState.client) {
       setError({ message: 'invalid client', kind: ErrorKind.Generic })
       return
