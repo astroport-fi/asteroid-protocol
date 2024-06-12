@@ -52,9 +52,7 @@ function CosmosTx({ submitTxState }: { submitTxState: SubmitTxState }) {
         <h2 className="text-xl font-semibold">
           Sign and submit bridge transaction
         </h2>
-        <p className="mt-4">
-          You are about to create a bridge inscription on the Cosmos Hub.
-        </p>
+        <p className="mt-4">Create a bridging inscription on Cosmos Hub.</p>
       </InscriptionBody>
       <Modal.Actions className="flex justify-center">
         <Actions
@@ -157,7 +155,7 @@ function NeutronTx({
         txState={txState}
       >
         <h2 className="text-xl font-semibold">
-          Sign and submit bridge transaction to Neutron
+          Finalize your bridging transaction on Neutron
         </h2>
       </TxBody>
       {txState === TxState.Success && (
@@ -233,7 +231,10 @@ function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
               signatures={signatures.data}
             />
           ) : (
-            <SWRStatus title="Bridge signatures" response={signatures} />
+            <SWRStatus
+              title="Creating your bridging inscription"
+              response={signatures}
+            />
           )
         ) : (
           <CosmosTx submitTxState={submitTxState} />

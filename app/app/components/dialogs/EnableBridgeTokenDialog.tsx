@@ -116,7 +116,7 @@ function NeutronTx({ token, signatures }: Props & { signatures: string[] }) {
         txState={txState}
       >
         <h2 className="text-xl font-semibold">
-          Sign and submit transaction to Neutron
+          Sign and submit transaction on Neutron
         </h2>
         <p className="mt-4">
           You are about to enable {token.ticker} token for bridging.
@@ -183,7 +183,10 @@ const EnableTokenBridgeDialog = forwardRef<HTMLDialogElement, Props>(
               signatures.data ? (
                 <NeutronTx token={token} signatures={signatures.data} />
               ) : (
-                <SWRStatus title="Bridge signatures" response={signatures} />
+                <SWRStatus
+                  title="Enabling bridging on Cosmos Hub"
+                  response={signatures}
+                />
               )
             ) : (
               <CosmosTx submitTxState={submitTxState} ticker={token.ticker} />

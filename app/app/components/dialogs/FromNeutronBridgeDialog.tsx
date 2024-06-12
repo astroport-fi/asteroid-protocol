@@ -128,7 +128,7 @@ function NeutronTx({ token, denom, amount, destination }: Props) {
         txState={txState}
       >
         <h2 className="text-xl font-semibold">
-          Sign and submit bridge transaction to Neutron
+          Sign and submit bridge transaction on Neutron
         </h2>
       </TxBody>
       {txState === TxState.Success && (
