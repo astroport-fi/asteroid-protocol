@@ -106,6 +106,11 @@ export type QueryMsg =
         start_after?: string | null
       }
     }
+  | {
+      is_transaction_processed: {
+        transaction_hash: string
+      }
+    }
 export type Addr = string
 export interface Config {
   bridge_chain_id: string
@@ -117,6 +122,7 @@ export interface Config {
 export interface QueryTokensResponse {
   tokens: string[]
 }
+export type Boolean = boolean
 export interface QuerySignersResponse {
   signers: [string, string][]
 }

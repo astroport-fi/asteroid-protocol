@@ -11,6 +11,7 @@ import {
 } from '@cosmjs/cosmwasm-stargate'
 import {
   Addr,
+  Boolean,
   Config,
   ExecuteMsg,
   InstantiateMsg,
@@ -39,6 +40,11 @@ export interface AsteroidNeutronBridgeReadOnlyInterface {
     limit?: number
     startAfter?: string
   }) => Promise<QueryTokensResponse>
+  isTransactionProcessed: ({
+    transactionHash,
+  }: {
+    transactionHash: string
+  }) => Promise<Boolean>
 }
 export class AsteroidNeutronBridgeQueryClient
   implements AsteroidNeutronBridgeReadOnlyInterface
@@ -52,6 +58,7 @@ export class AsteroidNeutronBridgeQueryClient
     this.signers = this.signers.bind(this)
     this.tokens = this.tokens.bind(this)
     this.disabledTokens = this.disabledTokens.bind(this)
+    this.isTransactionProcessed = this.isTransactionProcessed.bind(this)
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -88,6 +95,17 @@ export class AsteroidNeutronBridgeQueryClient
       disabled_tokens: {
         limit,
         start_after: startAfter,
+      },
+    })
+  }
+  isTransactionProcessed = async ({
+    transactionHash,
+  }: {
+    transactionHash: string
+  }): Promise<Boolean> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      is_transaction_processed: {
+        transaction_hash: transactionHash,
       },
     })
   }
