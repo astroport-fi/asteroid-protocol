@@ -3,19 +3,27 @@ import {
   MsgExecuteContractEncodeObject,
   SigningCosmWasmClientOptions,
   SigningCosmWasmClient as SigningCosmWasmClientOriginal,
+  WasmExtension,
+  setupWasmExtension,
 } from '@cosmjs/cosmwasm-stargate'
 import { toUtf8 } from '@cosmjs/encoding'
 import { OfflineSigner } from '@cosmjs/proto-signing'
 import {
+  AuthExtension,
+  BankExtension,
   Coin,
   GasPrice,
   HttpEndpoint,
+  QueryClient,
   StdFee,
   calculateFee,
+  setupAuthExtension,
+  setupBankExtension,
 } from '@cosmjs/stargate'
 import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { useEffect, useState } from 'react'
+import { TxExtension, setupTxExtension } from './tx-extension'
 import useChain from './useChain'
 
 export class CosmWasmClient extends CosmWasmClientOriginal {
@@ -38,6 +46,31 @@ export class CosmWasmClient extends CosmWasmClientOriginal {
 }
 
 export class SigningCosmWasmClient extends SigningCosmWasmClientOriginal {
+  private readonly customQueryClient:
+    | (QueryClient &
+        AuthExtension &
+        BankExtension &
+        TxExtension &
+        WasmExtension)
+    | undefined
+
+  protected constructor(
+    cometClient: CometClient | undefined,
+    signer: OfflineSigner,
+    options: SigningCosmWasmClientOptions,
+  ) {
+    super(cometClient, signer, options)
+    if (cometClient) {
+      this.customQueryClient = QueryClient.withExtensions(
+        cometClient,
+        setupAuthExtension,
+        setupBankExtension,
+        setupWasmExtension,
+        setupTxExtension,
+      )
+    }
+  }
+
   public static async connectWithSigner(
     endpoint: string | HttpEndpoint,
     signer: OfflineSigner,
@@ -53,6 +86,19 @@ export class SigningCosmWasmClient extends SigningCosmWasmClientOriginal {
     options: SigningCosmWasmClientOptions = {},
   ): Promise<SigningCosmWasmClient> {
     return new SigningCosmWasmClient(cometClient, signer, options)
+  }
+
+  protected forceGetQueryClient(): QueryClient &
+    AuthExtension &
+    BankExtension &
+    TxExtension &
+    WasmExtension {
+    if (!this.customQueryClient) {
+      throw new Error(
+        'Query client not available. You cannot use online functionality in offline mode.',
+      )
+    }
+    return this.customQueryClient
   }
 
   async estimateExecuteMsg(
