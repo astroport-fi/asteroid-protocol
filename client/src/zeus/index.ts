@@ -1148,10 +1148,13 @@ export type ValueTypes = {
   ['bridge_history']: AliasType<{
     action?: boolean | `@${string}`
     amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     receiver?: boolean | `@${string}`
     sender?: boolean | `@${string}`
     signature?: boolean | `@${string}`
+    /** An object relationship */
+    token?: ValueTypes['token']
     token_id?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ValueTypes['transaction']
@@ -1185,6 +1188,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     height?:
       | ValueTypes['Int_comparison_exp']
       | undefined
@@ -1202,6 +1210,11 @@ export type ValueTypes = {
       | Variable<any, string>
     signature?:
       | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    token?:
+      | ValueTypes['token_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -1225,11 +1238,21 @@ export type ValueTypes = {
   ['bridge_history_order_by']: {
     action?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     amount?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     height?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     receiver?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     sender?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     signature?:
       | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    token?:
+      | ValueTypes['token_order_by']
       | undefined
       | null
       | Variable<any, string>
@@ -1264,6 +1287,11 @@ export type ValueTypes = {
   ['bridge_history_stream_cursor_value_input']: {
     action?: string | undefined | null | Variable<any, string>
     amount?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
     height?: number | undefined | null | Variable<any, string>
     receiver?: string | undefined | null | Variable<any, string>
     sender?: string | undefined | null | Variable<any, string>
@@ -15496,10 +15524,13 @@ export type ResolverInputTypes = {
   ['bridge_history']: AliasType<{
     action?: boolean | `@${string}`
     amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     receiver?: boolean | `@${string}`
     sender?: boolean | `@${string}`
     signature?: boolean | `@${string}`
+    /** An object relationship */
+    token?: ResolverInputTypes['token']
     token_id?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
@@ -15519,10 +15550,15 @@ export type ResolverInputTypes = {
       | null
     action?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     amount?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
     height?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     receiver?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     sender?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     signature?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    token?: ResolverInputTypes['token_bool_exp'] | undefined | null
     token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
@@ -15531,10 +15567,12 @@ export type ResolverInputTypes = {
   ['bridge_history_order_by']: {
     action?: ResolverInputTypes['order_by'] | undefined | null
     amount?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
     height?: ResolverInputTypes['order_by'] | undefined | null
     receiver?: ResolverInputTypes['order_by'] | undefined | null
     sender?: ResolverInputTypes['order_by'] | undefined | null
     signature?: ResolverInputTypes['order_by'] | undefined | null
+    token?: ResolverInputTypes['token_order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -15552,6 +15590,7 @@ export type ResolverInputTypes = {
   ['bridge_history_stream_cursor_value_input']: {
     action?: string | undefined | null
     amount?: ResolverInputTypes['bigint'] | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
     height?: number | undefined | null
     receiver?: string | undefined | null
     sender?: string | undefined | null
@@ -24594,10 +24633,13 @@ export type ModelTypes = {
   ['bridge_history']: {
     action: string
     amount: ModelTypes['bigint']
+    date_created: ModelTypes['timestamp']
     height: number
     receiver: string
     sender: string
     signature: string
+    /** An object relationship */
+    token: ModelTypes['token']
     token_id: number
     /** An object relationship */
     transaction: ModelTypes['transaction']
@@ -24610,10 +24652,12 @@ export type ModelTypes = {
     _or?: Array<ModelTypes['bridge_history_bool_exp']> | undefined
     action?: ModelTypes['String_comparison_exp'] | undefined
     amount?: ModelTypes['bigint_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
     height?: ModelTypes['Int_comparison_exp'] | undefined
     receiver?: ModelTypes['String_comparison_exp'] | undefined
     sender?: ModelTypes['String_comparison_exp'] | undefined
     signature?: ModelTypes['String_comparison_exp'] | undefined
+    token?: ModelTypes['token_bool_exp'] | undefined
     token_id?: ModelTypes['Int_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
@@ -24622,10 +24666,12 @@ export type ModelTypes = {
   ['bridge_history_order_by']: {
     action?: ModelTypes['order_by'] | undefined
     amount?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
     height?: ModelTypes['order_by'] | undefined
     receiver?: ModelTypes['order_by'] | undefined
     sender?: ModelTypes['order_by'] | undefined
     signature?: ModelTypes['order_by'] | undefined
+    token?: ModelTypes['token_order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
@@ -24642,6 +24688,7 @@ export type ModelTypes = {
   ['bridge_history_stream_cursor_value_input']: {
     action?: string | undefined
     amount?: ModelTypes['bigint'] | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
     height?: number | undefined
     receiver?: string | undefined
     sender?: string | undefined
@@ -29825,10 +29872,13 @@ export type GraphQLTypes = {
     __typename: 'bridge_history'
     action: string
     amount: GraphQLTypes['bigint']
+    date_created: GraphQLTypes['timestamp']
     height: number
     receiver: string
     sender: string
     signature: string
+    /** An object relationship */
+    token: GraphQLTypes['token']
     token_id: number
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
@@ -29841,10 +29891,12 @@ export type GraphQLTypes = {
     _or?: Array<GraphQLTypes['bridge_history_bool_exp']> | undefined
     action?: GraphQLTypes['String_comparison_exp'] | undefined
     amount?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     height?: GraphQLTypes['Int_comparison_exp'] | undefined
     receiver?: GraphQLTypes['String_comparison_exp'] | undefined
     sender?: GraphQLTypes['String_comparison_exp'] | undefined
     signature?: GraphQLTypes['String_comparison_exp'] | undefined
+    token?: GraphQLTypes['token_bool_exp'] | undefined
     token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -29853,10 +29905,12 @@ export type GraphQLTypes = {
   ['bridge_history_order_by']: {
     action?: GraphQLTypes['order_by'] | undefined
     amount?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
     height?: GraphQLTypes['order_by'] | undefined
     receiver?: GraphQLTypes['order_by'] | undefined
     sender?: GraphQLTypes['order_by'] | undefined
     signature?: GraphQLTypes['order_by'] | undefined
+    token?: GraphQLTypes['token_order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
@@ -29874,6 +29928,7 @@ export type GraphQLTypes = {
   ['bridge_history_stream_cursor_value_input']: {
     action?: string | undefined
     amount?: GraphQLTypes['bigint'] | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
     height?: number | undefined
     receiver?: string | undefined
     sender?: string | undefined
@@ -35218,6 +35273,7 @@ export type GraphQLTypes = {
 export const enum bridge_history_select_column {
   action = 'action',
   amount = 'amount',
+  date_created = 'date_created',
   height = 'height',
   receiver = 'receiver',
   sender = 'sender',
