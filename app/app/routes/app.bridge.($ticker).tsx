@@ -242,6 +242,7 @@ function BridgeForm() {
               name="amount"
               error={errors.amount}
               size="lg"
+              isFloat
               required
             />
             <span className="text-sm text-header-content font-light mt-2">
