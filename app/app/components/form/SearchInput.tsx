@@ -19,6 +19,7 @@ export function SearchInput(props: SearchInputProps) {
     >
       <input
         {...props}
+        autoComplete="off"
         type="text"
         id="search"
         name="search"
