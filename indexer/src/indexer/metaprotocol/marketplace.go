@@ -135,7 +135,7 @@ func (protocol *Marketplace) Deposit(chainID string, sender string, rawTransacti
 	}
 
 	// Check if sender has enough ATOM to buy the listing
-	balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom")
+	balance := QueryAddressBalance(protocol.lcdEndpoints, protocol.endpointHeaders, sender, "uatom", currentHeight)
 
 	if listingModel.Total >= listingModel.DepositTotal {
 		if balance < listingModel.Total-listingModel.DepositTotal {
