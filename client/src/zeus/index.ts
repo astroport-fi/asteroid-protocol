@@ -1161,6 +1161,45 @@ export type ValueTypes = {
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "bridge_history" */
+  ['bridge_history_aggregate']: AliasType<{
+    aggregate?: ValueTypes['bridge_history_aggregate_fields']
+    nodes?: ValueTypes['bridge_history']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "bridge_history" */
+  ['bridge_history_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['bridge_history_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['bridge_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['bridge_history_max_fields']
+    min?: ValueTypes['bridge_history_min_fields']
+    stddev?: ValueTypes['bridge_history_stddev_fields']
+    stddev_pop?: ValueTypes['bridge_history_stddev_pop_fields']
+    stddev_samp?: ValueTypes['bridge_history_stddev_samp_fields']
+    sum?: ValueTypes['bridge_history_sum_fields']
+    var_pop?: ValueTypes['bridge_history_var_pop_fields']
+    var_samp?: ValueTypes['bridge_history_var_samp_fields']
+    variance?: ValueTypes['bridge_history_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['bridge_history_avg_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Boolean expression to filter rows from the table "bridge_history". All fields are combined with a logical 'AND'. */
   ['bridge_history_bool_exp']: {
     _and?:
@@ -1234,6 +1273,32 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate max on columns */
+  ['bridge_history_max_fields']: AliasType<{
+    action?: boolean | `@${string}`
+    amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    receiver?: boolean | `@${string}`
+    sender?: boolean | `@${string}`
+    signature?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['bridge_history_min_fields']: AliasType<{
+    action?: boolean | `@${string}`
+    amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    receiver?: boolean | `@${string}`
+    sender?: boolean | `@${string}`
+    signature?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Ordering options when selecting data from "bridge_history". */
   ['bridge_history_order_by']: {
     action?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -1270,6 +1335,30 @@ export type ValueTypes = {
   }
   /** select columns of table "bridge_history" */
   ['bridge_history_select_column']: bridge_history_select_column
+  /** aggregate stddev on columns */
+  ['bridge_history_stddev_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['bridge_history_stddev_pop_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['bridge_history_stddev_samp_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Streaming cursor of the table "bridge_history" */
   ['bridge_history_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -1299,6 +1388,38 @@ export type ValueTypes = {
     token_id?: number | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
   }
+  /** aggregate sum on columns */
+  ['bridge_history_sum_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['bridge_history_var_pop_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['bridge_history_var_samp_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['bridge_history_variance_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** columns and relationships of "bridge_token" */
   ['bridge_token']: AliasType<{
     enabled?: boolean | `@${string}`
@@ -7830,6 +7951,40 @@ export type ValueTypes = {
       },
       ValueTypes['bridge_history'],
     ]
+    bridge_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['bridge_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['bridge_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['bridge_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['bridge_history_aggregate'],
+    ]
     bridge_token?: [
       {
         /** distinct select on columns */
@@ -9428,6 +9583,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['bridge_history'],
+    ]
+    bridge_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['bridge_history_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['bridge_history_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['bridge_history_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['bridge_history_aggregate'],
     ]
     bridge_history_stream?: [
       {
@@ -15537,6 +15726,44 @@ export type ResolverInputTypes = {
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "bridge_history" */
+  ['bridge_history_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['bridge_history_aggregate_fields']
+    nodes?: ResolverInputTypes['bridge_history']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "bridge_history" */
+  ['bridge_history_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['bridge_history_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ResolverInputTypes['bridge_history_select_column']>
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['bridge_history_max_fields']
+    min?: ResolverInputTypes['bridge_history_min_fields']
+    stddev?: ResolverInputTypes['bridge_history_stddev_fields']
+    stddev_pop?: ResolverInputTypes['bridge_history_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['bridge_history_stddev_samp_fields']
+    sum?: ResolverInputTypes['bridge_history_sum_fields']
+    var_pop?: ResolverInputTypes['bridge_history_var_pop_fields']
+    var_samp?: ResolverInputTypes['bridge_history_var_samp_fields']
+    variance?: ResolverInputTypes['bridge_history_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['bridge_history_avg_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Boolean expression to filter rows from the table "bridge_history". All fields are combined with a logical 'AND'. */
   ['bridge_history_bool_exp']: {
     _and?:
@@ -15563,6 +15790,32 @@ export type ResolverInputTypes = {
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
   }
+  /** aggregate max on columns */
+  ['bridge_history_max_fields']: AliasType<{
+    action?: boolean | `@${string}`
+    amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    receiver?: boolean | `@${string}`
+    sender?: boolean | `@${string}`
+    signature?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['bridge_history_min_fields']: AliasType<{
+    action?: boolean | `@${string}`
+    amount?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    receiver?: boolean | `@${string}`
+    sender?: boolean | `@${string}`
+    signature?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Ordering options when selecting data from "bridge_history". */
   ['bridge_history_order_by']: {
     action?: ResolverInputTypes['order_by'] | undefined | null
@@ -15579,6 +15832,30 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "bridge_history" */
   ['bridge_history_select_column']: bridge_history_select_column
+  /** aggregate stddev on columns */
+  ['bridge_history_stddev_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['bridge_history_stddev_pop_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['bridge_history_stddev_samp_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** Streaming cursor of the table "bridge_history" */
   ['bridge_history_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -15598,6 +15875,38 @@ export type ResolverInputTypes = {
     token_id?: number | undefined | null
     transaction_id?: number | undefined | null
   }
+  /** aggregate sum on columns */
+  ['bridge_history_sum_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['bridge_history_var_pop_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['bridge_history_var_samp_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['bridge_history_variance_fields']: AliasType<{
+    amount?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** columns and relationships of "bridge_token" */
   ['bridge_token']: AliasType<{
     enabled?: boolean | `@${string}`
@@ -19592,6 +19901,29 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['bridge_history'],
     ]
+    bridge_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['bridge_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['bridge_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['bridge_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['bridge_history_aggregate'],
+    ]
     bridge_token?: [
       {
         /** distinct select on columns */
@@ -20723,6 +21055,29 @@ export type ResolverInputTypes = {
         where?: ResolverInputTypes['bridge_history_bool_exp'] | undefined | null
       },
       ResolverInputTypes['bridge_history'],
+    ]
+    bridge_history_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['bridge_history_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['bridge_history_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['bridge_history_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['bridge_history_aggregate'],
     ]
     bridge_history_stream?: [
       {
@@ -24645,6 +25000,32 @@ export type ModelTypes = {
     transaction: ModelTypes['transaction']
     transaction_id: number
   }
+  /** aggregated selection of "bridge_history" */
+  ['bridge_history_aggregate']: {
+    aggregate?: ModelTypes['bridge_history_aggregate_fields'] | undefined
+    nodes: Array<ModelTypes['bridge_history']>
+  }
+  /** aggregate fields of "bridge_history" */
+  ['bridge_history_aggregate_fields']: {
+    avg?: ModelTypes['bridge_history_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['bridge_history_max_fields'] | undefined
+    min?: ModelTypes['bridge_history_min_fields'] | undefined
+    stddev?: ModelTypes['bridge_history_stddev_fields'] | undefined
+    stddev_pop?: ModelTypes['bridge_history_stddev_pop_fields'] | undefined
+    stddev_samp?: ModelTypes['bridge_history_stddev_samp_fields'] | undefined
+    sum?: ModelTypes['bridge_history_sum_fields'] | undefined
+    var_pop?: ModelTypes['bridge_history_var_pop_fields'] | undefined
+    var_samp?: ModelTypes['bridge_history_var_samp_fields'] | undefined
+    variance?: ModelTypes['bridge_history_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['bridge_history_avg_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Boolean expression to filter rows from the table "bridge_history". All fields are combined with a logical 'AND'. */
   ['bridge_history_bool_exp']: {
     _and?: Array<ModelTypes['bridge_history_bool_exp']> | undefined
@@ -24662,6 +25043,30 @@ export type ModelTypes = {
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
   }
+  /** aggregate max on columns */
+  ['bridge_history_max_fields']: {
+    action?: string | undefined
+    amount?: ModelTypes['bigint'] | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    receiver?: string | undefined
+    sender?: string | undefined
+    signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate min on columns */
+  ['bridge_history_min_fields']: {
+    action?: string | undefined
+    amount?: ModelTypes['bigint'] | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    receiver?: string | undefined
+    sender?: string | undefined
+    signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Ordering options when selecting data from "bridge_history". */
   ['bridge_history_order_by']: {
     action?: ModelTypes['order_by'] | undefined
@@ -24677,6 +25082,27 @@ export type ModelTypes = {
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   ['bridge_history_select_column']: bridge_history_select_column
+  /** aggregate stddev on columns */
+  ['bridge_history_stddev_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['bridge_history_stddev_pop_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['bridge_history_stddev_samp_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Streaming cursor of the table "bridge_history" */
   ['bridge_history_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -24693,6 +25119,34 @@ export type ModelTypes = {
     receiver?: string | undefined
     sender?: string | undefined
     signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate sum on columns */
+  ['bridge_history_sum_fields']: {
+    amount?: ModelTypes['bigint'] | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['bridge_history_var_pop_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['bridge_history_var_samp_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['bridge_history_variance_fields']: {
+    amount?: number | undefined
+    height?: number | undefined
     token_id?: number | undefined
     transaction_id?: number | undefined
   }
@@ -27674,6 +28128,8 @@ export type ModelTypes = {
   ['query_root']: {
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<ModelTypes['bridge_history']>
+    /** fetch aggregated fields from the table: "bridge_history" */
+    bridge_history_aggregate: ModelTypes['bridge_history_aggregate']
     /** fetch data from the table: "bridge_token" */
     bridge_token: Array<ModelTypes['bridge_token']>
     /** fetch data from the table: "bridge_token" using primary key columns */
@@ -27905,6 +28361,8 @@ export type ModelTypes = {
   ['subscription_root']: {
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<ModelTypes['bridge_history']>
+    /** fetch aggregated fields from the table: "bridge_history" */
+    bridge_history_aggregate: ModelTypes['bridge_history_aggregate']
     /** fetch data from the table in a streaming manner: "bridge_history" */
     bridge_history_stream: Array<ModelTypes['bridge_history']>
     /** fetch data from the table: "bridge_token" */
@@ -29884,6 +30342,35 @@ export type GraphQLTypes = {
     transaction: GraphQLTypes['transaction']
     transaction_id: number
   }
+  /** aggregated selection of "bridge_history" */
+  ['bridge_history_aggregate']: {
+    __typename: 'bridge_history_aggregate'
+    aggregate?: GraphQLTypes['bridge_history_aggregate_fields'] | undefined
+    nodes: Array<GraphQLTypes['bridge_history']>
+  }
+  /** aggregate fields of "bridge_history" */
+  ['bridge_history_aggregate_fields']: {
+    __typename: 'bridge_history_aggregate_fields'
+    avg?: GraphQLTypes['bridge_history_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['bridge_history_max_fields'] | undefined
+    min?: GraphQLTypes['bridge_history_min_fields'] | undefined
+    stddev?: GraphQLTypes['bridge_history_stddev_fields'] | undefined
+    stddev_pop?: GraphQLTypes['bridge_history_stddev_pop_fields'] | undefined
+    stddev_samp?: GraphQLTypes['bridge_history_stddev_samp_fields'] | undefined
+    sum?: GraphQLTypes['bridge_history_sum_fields'] | undefined
+    var_pop?: GraphQLTypes['bridge_history_var_pop_fields'] | undefined
+    var_samp?: GraphQLTypes['bridge_history_var_samp_fields'] | undefined
+    variance?: GraphQLTypes['bridge_history_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['bridge_history_avg_fields']: {
+    __typename: 'bridge_history_avg_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Boolean expression to filter rows from the table "bridge_history". All fields are combined with a logical 'AND'. */
   ['bridge_history_bool_exp']: {
     _and?: Array<GraphQLTypes['bridge_history_bool_exp']> | undefined
@@ -29901,6 +30388,32 @@ export type GraphQLTypes = {
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
   }
+  /** aggregate max on columns */
+  ['bridge_history_max_fields']: {
+    __typename: 'bridge_history_max_fields'
+    action?: string | undefined
+    amount?: GraphQLTypes['bigint'] | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    receiver?: string | undefined
+    sender?: string | undefined
+    signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate min on columns */
+  ['bridge_history_min_fields']: {
+    __typename: 'bridge_history_min_fields'
+    action?: string | undefined
+    amount?: GraphQLTypes['bigint'] | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    receiver?: string | undefined
+    sender?: string | undefined
+    signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Ordering options when selecting data from "bridge_history". */
   ['bridge_history_order_by']: {
     action?: GraphQLTypes['order_by'] | undefined
@@ -29917,6 +30430,30 @@ export type GraphQLTypes = {
   }
   /** select columns of table "bridge_history" */
   ['bridge_history_select_column']: bridge_history_select_column
+  /** aggregate stddev on columns */
+  ['bridge_history_stddev_fields']: {
+    __typename: 'bridge_history_stddev_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['bridge_history_stddev_pop_fields']: {
+    __typename: 'bridge_history_stddev_pop_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['bridge_history_stddev_samp_fields']: {
+    __typename: 'bridge_history_stddev_samp_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
   /** Streaming cursor of the table "bridge_history" */
   ['bridge_history_stream_cursor_input']: {
     /** Stream column input with initial value */
@@ -29933,6 +30470,38 @@ export type GraphQLTypes = {
     receiver?: string | undefined
     sender?: string | undefined
     signature?: string | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate sum on columns */
+  ['bridge_history_sum_fields']: {
+    __typename: 'bridge_history_sum_fields'
+    amount?: GraphQLTypes['bigint'] | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['bridge_history_var_pop_fields']: {
+    __typename: 'bridge_history_var_pop_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['bridge_history_var_samp_fields']: {
+    __typename: 'bridge_history_var_samp_fields'
+    amount?: number | undefined
+    height?: number | undefined
+    token_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['bridge_history_variance_fields']: {
+    __typename: 'bridge_history_variance_fields'
+    amount?: number | undefined
+    height?: number | undefined
     token_id?: number | undefined
     transaction_id?: number | undefined
   }
@@ -33096,6 +33665,8 @@ export type GraphQLTypes = {
     __typename: 'query_root'
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<GraphQLTypes['bridge_history']>
+    /** fetch aggregated fields from the table: "bridge_history" */
+    bridge_history_aggregate: GraphQLTypes['bridge_history_aggregate']
     /** fetch data from the table: "bridge_token" */
     bridge_token: Array<GraphQLTypes['bridge_token']>
     /** fetch data from the table: "bridge_token" using primary key columns */
@@ -33333,6 +33904,8 @@ export type GraphQLTypes = {
     __typename: 'subscription_root'
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<GraphQLTypes['bridge_history']>
+    /** fetch aggregated fields from the table: "bridge_history" */
+    bridge_history_aggregate: GraphQLTypes['bridge_history_aggregate']
     /** fetch data from the table in a streaming manner: "bridge_history" */
     bridge_history_stream: Array<GraphQLTypes['bridge_history']>
     /** fetch data from the table: "bridge_token" */
