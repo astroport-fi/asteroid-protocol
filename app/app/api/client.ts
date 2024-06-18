@@ -43,8 +43,10 @@ import {
   tokenTradeHistorySelector,
 } from '~/api/token'
 import {
+  BridgeHistory,
   TokenWithBridge,
   bridgeHistorySelector,
+  bridgeSignatureHistorySelector,
   bridgeTokenSignatureSelector,
   tokenWithBridgeSelector,
 } from './bridge'
@@ -95,6 +97,11 @@ export type TokenHolders = {
 
 export type TradeHistoryResult = {
   history: TradeHistory[]
+  count: number
+}
+
+export type BridgeHistoryResult = {
+  history: BridgeHistory[]
   count: number
 }
 
@@ -1273,6 +1280,27 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
+        bridgeSignatureHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getBridgeHistoryHash(
+    txHash: string,
+  ): Promise<BridgeHistory | undefined> {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: txHash,
+              },
+            },
+          },
+        },
         bridgeHistorySelector,
       ],
     })
@@ -1469,6 +1497,57 @@ export class AsteroidClient extends AsteroidService {
       count:
         result.trade_history_aggregate.aggregate?.count ??
         result.trade_history.length,
+    }
+  }
+
+  async getBridgeHistory(
+    address: string,
+    offset = 0,
+    limit = 100,
+    orderBy?: ValueTypes['bridge_history_order_by'],
+  ): Promise<BridgeHistoryResult> {
+    if (!orderBy) {
+      orderBy = { date_created: order_by.desc }
+    }
+
+    const where: ValueTypes['bridge_history_bool_exp'] = {
+      _or: [
+        {
+          sender: {
+            _eq: address,
+          },
+        },
+        {
+          receiver: {
+            _eq: address,
+          },
+        },
+      ],
+    }
+
+    const result = await this.query({
+      bridge_history: [
+        {
+          where,
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        bridgeHistorySelector,
+      ],
+      bridge_history_aggregate: [
+        {
+          where,
+        },
+        aggregateCountSelector,
+      ],
+    })
+
+    return {
+      history: result.bridge_history as BridgeHistory[],
+      count:
+        result.bridge_history_aggregate.aggregate?.count ??
+        result.bridge_history.length,
     }
   }
 

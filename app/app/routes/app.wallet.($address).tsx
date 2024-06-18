@@ -31,6 +31,7 @@ enum WalletTab {
   Inscriptions,
   Deployed,
   Sales,
+  Bridge,
 }
 
 export default function WalletPage() {
@@ -55,6 +56,8 @@ export default function WalletPage() {
     active = WalletTab.Sales
   } else if (lastPath === 'collections') {
     active = WalletTab.Collections
+  } else if (lastPath === 'bridge') {
+    active = WalletTab.Bridge
   }
 
   if (!address) {
@@ -121,6 +124,9 @@ export default function WalletPage() {
         </Tab>
         <Tab to="sales" active={active === WalletTab.Sales}>
           <span className="hidden lg:inline lg:mr-1">Marketplace</span>Sales
+        </Tab>
+        <Tab to="bridge" active={active === WalletTab.Bridge}>
+          Bridge History
         </Tab>
       </Tabs>
       <Outlet />

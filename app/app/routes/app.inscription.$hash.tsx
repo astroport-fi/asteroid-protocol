@@ -301,7 +301,7 @@ function InscriptionDetailComponent({
 
 const DEFAULT_SORT = { id: 'height', desc: true }
 
-function InscriptionHistoryComponent({
+function InscriptionHistoryTable({
   history,
 }: {
   history: InscriptionHistory[]
@@ -370,7 +370,7 @@ export default function InscriptionPage() {
       <Divider className="mt-8" />
       <h2 className="font-medium text-lg">Transaction History</h2>
       <Divider />
-      <InscriptionHistoryComponent history={data.history} />
+      <InscriptionHistoryTable history={data.history} />
     </div>
   )
 }

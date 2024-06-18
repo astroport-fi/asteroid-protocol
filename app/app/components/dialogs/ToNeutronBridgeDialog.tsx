@@ -176,7 +176,13 @@ function NeutronTx({
   )
 }
 
-function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
+function ToNeutronBridgeDialog({
+  token,
+  denom,
+  amount,
+  destination,
+  bridgeTxHash,
+}: Props & { bridgeTxHash?: string }) {
   const operations = useBridgeOperations()
   const { neutronBridgeContract, neutronChainId } = useRootContext()
   const txInscription = useMemo(() => {
@@ -201,15 +207,23 @@ function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
   ])
 
   const submitTxState = useSubmitTx(txInscription)
-  const signatures = useBridgeHistorySignatures(submitTxState.txHash)
+  const signatures = useBridgeHistorySignatures(
+    bridgeTxHash ?? submitTxState.txHash,
+  )
+  const hasTxHash =
+    (bridgeTxHash != null && bridgeTxHash !== '') || submitTxState.txHash !== ''
 
   const step = useMemo(() => {
+    if (bridgeTxHash && signatures.data) {
+      return Step.Two
+    }
+
     if (submitTxState.txHash !== '' && signatures.data) {
       return Step.Two
     }
 
     return Step.One
-  }, [submitTxState.txHash, signatures.data])
+  }, [submitTxState.txHash, signatures.data, bridgeTxHash])
 
   return (
     <Modal.Body className="text-center">
@@ -220,14 +234,14 @@ function ToNeutronBridgeDialog({ token, denom, amount, destination }: Props) {
         </Steps.Step>
       </Steps>
       <div className="mt-8">
-        {submitTxState.txHash !== '' ? (
+        {hasTxHash ? (
           signatures.data ? (
             <NeutronTx
               token={token}
               denom={denom}
               amount={amount}
               destination={destination}
-              transactionHash={submitTxState.txHash}
+              transactionHash={bridgeTxHash ?? submitTxState.txHash}
               signatures={signatures.data}
             />
           ) : (
