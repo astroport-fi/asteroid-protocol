@@ -24,7 +24,7 @@ export default function TokenBalance({ token, amount, className }: Props) {
         ticker={token.ticker}
       />
 
-      <strong className="mt-4">You bridged balance</strong>
+      <strong className="mt-4">Your bridged balance</strong>
       <TokenValue
         amount={parseInt(balance?.amount ?? '0')}
         decimals={token.decimals}
