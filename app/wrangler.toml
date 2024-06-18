@@ -18,7 +18,7 @@ NEUTRON_CHAIN_ID = "test-1"
 NEUTRON_CHAIN_NAME = "localneutron"
 NEUTRON_BRIDGE_CONTRACT = "neutron1vlqvaptpe7hztjj52whxk5mm6k2ey9hu4rv5ueu89shagk72mewq6jnxez"
 NEUTRON_RPC = "http://localhost:26657"
-BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql,http://localhost:8080/v1/graphql"
+BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
 

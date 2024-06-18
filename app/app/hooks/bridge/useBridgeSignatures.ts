@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import { AsteroidClient } from '~/api/client'
 import { useRootContext } from '~/context/root'
 
-const MAX_ATTEMPTS = 10
+const MAX_ATTEMPTS = 100
 
 async function fetchSignatures(
   bridgeEndpoints: string[],

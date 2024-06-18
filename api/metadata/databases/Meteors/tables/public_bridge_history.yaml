@@ -2,6 +2,9 @@ table:
   name: bridge_history
   schema: public
 object_relationships:
+  - name: token
+    using:
+      foreign_key_constraint_on: token_id
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id
@@ -11,6 +14,7 @@ select_permissions:
       columns:
         - action
         - amount
+        - date_created
         - height
         - receiver
         - sender
@@ -18,4 +22,5 @@ select_permissions:
         - token_id
         - transaction_id
       filter: {}
+      allow_aggregations: true
     comment: ""
