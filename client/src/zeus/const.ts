@@ -16,6 +16,11 @@ export const AllTypesProps: Record<string, any> = {
     _neq: 'bigint',
     _nin: 'bigint',
   },
+  bridge_history_aggregate_fields: {
+    count: {
+      columns: 'bridge_history_select_column',
+    },
+  },
   bridge_history_bool_exp: {
     _and: 'bridge_history_bool_exp',
     _not: 'bridge_history_bool_exp',
@@ -1673,6 +1678,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'bridge_history_order_by',
       where: 'bridge_history_bool_exp',
     },
+    bridge_history_aggregate: {
+      distinct_on: 'bridge_history_select_column',
+      order_by: 'bridge_history_order_by',
+      where: 'bridge_history_bool_exp',
+    },
     bridge_token: {
       distinct_on: 'bridge_token_select_column',
       order_by: 'bridge_token_order_by',
@@ -1943,6 +1953,11 @@ export const AllTypesProps: Record<string, any> = {
   },
   subscription_root: {
     bridge_history: {
+      distinct_on: 'bridge_history_select_column',
+      order_by: 'bridge_history_order_by',
+      where: 'bridge_history_bool_exp',
+    },
+    bridge_history_aggregate: {
       distinct_on: 'bridge_history_select_column',
       order_by: 'bridge_history_order_by',
       where: 'bridge_history_bool_exp',
@@ -3308,6 +3323,93 @@ export const ReturnTypes: Record<string, any> = {
     transaction: 'transaction',
     transaction_id: 'Int',
   },
+  bridge_history_aggregate: {
+    aggregate: 'bridge_history_aggregate_fields',
+    nodes: 'bridge_history',
+  },
+  bridge_history_aggregate_fields: {
+    avg: 'bridge_history_avg_fields',
+    count: 'Int',
+    max: 'bridge_history_max_fields',
+    min: 'bridge_history_min_fields',
+    stddev: 'bridge_history_stddev_fields',
+    stddev_pop: 'bridge_history_stddev_pop_fields',
+    stddev_samp: 'bridge_history_stddev_samp_fields',
+    sum: 'bridge_history_sum_fields',
+    var_pop: 'bridge_history_var_pop_fields',
+    var_samp: 'bridge_history_var_samp_fields',
+    variance: 'bridge_history_variance_fields',
+  },
+  bridge_history_avg_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_max_fields: {
+    action: 'String',
+    amount: 'bigint',
+    date_created: 'timestamp',
+    height: 'Int',
+    receiver: 'String',
+    sender: 'String',
+    signature: 'String',
+    token_id: 'Int',
+    transaction_id: 'Int',
+  },
+  bridge_history_min_fields: {
+    action: 'String',
+    amount: 'bigint',
+    date_created: 'timestamp',
+    height: 'Int',
+    receiver: 'String',
+    sender: 'String',
+    signature: 'String',
+    token_id: 'Int',
+    transaction_id: 'Int',
+  },
+  bridge_history_stddev_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_stddev_pop_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_stddev_samp_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_sum_fields: {
+    amount: 'bigint',
+    height: 'Int',
+    token_id: 'Int',
+    transaction_id: 'Int',
+  },
+  bridge_history_var_pop_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_var_samp_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
+  bridge_history_variance_fields: {
+    amount: 'Float',
+    height: 'Float',
+    token_id: 'Float',
+    transaction_id: 'Float',
+  },
   bridge_token: {
     enabled: 'Boolean',
     id: 'Int',
@@ -4174,6 +4276,7 @@ export const ReturnTypes: Record<string, any> = {
   numeric: `scalar.numeric` as const,
   query_root: {
     bridge_history: 'bridge_history',
+    bridge_history_aggregate: 'bridge_history_aggregate',
     bridge_token: 'bridge_token',
     bridge_token_by_pk: 'bridge_token',
     club_stats: 'club_stats',
@@ -4253,6 +4356,7 @@ export const ReturnTypes: Record<string, any> = {
   },
   subscription_root: {
     bridge_history: 'bridge_history',
+    bridge_history_aggregate: 'bridge_history_aggregate',
     bridge_history_stream: 'bridge_history',
     bridge_token: 'bridge_token',
     bridge_token_by_pk: 'bridge_token',
