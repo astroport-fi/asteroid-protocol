@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { Loading } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import { TokenHolding } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
@@ -111,7 +112,7 @@ export default function WalletTokens() {
       enableSorting: false,
       cell: (info) => {
         if (!neutronBalancesByTicker) {
-          return
+          return <Loading variant="spinner" size="sm" />
         }
         const ticker = info.getValue()
         const balance = neutronBalancesByTicker.get(
