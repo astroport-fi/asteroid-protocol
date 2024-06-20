@@ -25,6 +25,7 @@ import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import {
   useTokenFactoryBalance,
   useTokenFactoryDenom,
+  useTokenFactoryMetadata,
 } from '~/hooks/useTokenFactory'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
@@ -101,6 +102,7 @@ function BridgeForm() {
     address: neutronAddress,
     openView: openNeutronView,
   } = useChain(neutronChainName)
+  const tokenMetadata = useTokenFactoryMetadata(token.ticker)
   const tokenFactoryBalance = useTokenFactoryBalance(
     token.ticker,
     neutronAddress,
@@ -151,6 +153,24 @@ function BridgeForm() {
   const onSubmit = handleSubmit(async (formData) => {
     showDialog(formData)
   })
+
+  if (tokenMetadata.isLoading) {
+    return <Loading variant="dots" className="items-center" />
+  }
+
+  if (!tokenMetadata.metadata) {
+    return (
+      <Alert className="border border-warning flex justify-between">
+        <span>Token {token.ticker} is not enabled for bridging on Neutron</span>
+        <Link
+          className="btn btn-sm btn-primary ml-2"
+          to={`/app/token/${token.ticker}?enableBridging`}
+        >
+          Enable bridging
+        </Link>
+      </Alert>
+    )
+  }
 
   return (
     <div className="flex flex-col w-full max-w-3xl justify-center items-center bg-base-200 p-10 rounded-xl">
