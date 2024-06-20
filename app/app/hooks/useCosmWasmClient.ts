@@ -43,6 +43,10 @@ export class CosmWasmClient extends CosmWasmClientOriginal {
   getDenomMetadata(denom: string) {
     return this.forceGetQueryClient().bank.denomMetadata(denom)
   }
+
+  getAllBalances(address: string): Promise<readonly Coin[]> {
+    return this.forceGetQueryClient().bank.allBalances(address)
+  }
 }
 
 export class SigningCosmWasmClient extends SigningCosmWasmClientOriginal {
