@@ -4,12 +4,13 @@ import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { Alert, Button, Form, Loading } from 'react-daisyui'
+import { Alert, Button, Checkbox, Form, Loading } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { BridgeHistory } from '~/api/bridge'
 import { AsteroidClient } from '~/api/client'
 import Address from '~/components/Address'
 import DecimalText from '~/components/DecimalText'
+import InfoTooltip from '~/components/InfoTooltip'
 import FromNeutronBridgeDialog from '~/components/dialogs/FromNeutronBridgeDialog'
 import Modal from '~/components/dialogs/Modal'
 import SelectBridgeTokenDialog from '~/components/dialogs/SelectBridgeTokenDialog'
@@ -62,6 +63,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
 type FormData = {
   amount: number
   destination: string
+  agree: boolean
 }
 
 function CosmosHub() {
@@ -141,6 +143,7 @@ function BridgeForm() {
     defaultValues: {
       amount: 10,
       destination: '',
+      agree: false,
     },
   })
   const destination = watch('destination')
@@ -254,6 +257,27 @@ function BridgeForm() {
             </span>
           </div>
         </div>
+
+        <Form.Label className="mt-4">
+          <Checkbox
+            size="sm"
+            color={errors.agree ? 'error' : undefined}
+            {...register('agree', {
+              required: true,
+            })}
+          />
+          <span
+            className={clsx('flex items-center ml-1', {
+              'text-error': errors.agree,
+            })}
+          >
+            I agree to the bridging terms and conditions
+            <InfoTooltip
+              message="All bridging software has been audited, tested and open-sourced. However, it could still be subject to unforeseen smart contract and indexing risks. Any use of the bridge is at the user’s own risk as we explore the outer boundaries of what’s possible with inscriptions!"
+              className="ml-1"
+            />
+          </span>
+        </Form.Label>
 
         <Button color="primary" type="submit" className="mt-8">
           Bridge now
