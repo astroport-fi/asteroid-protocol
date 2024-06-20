@@ -1,7 +1,7 @@
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
 import { Alert, Button, Form, Loading } from 'react-daisyui'
@@ -51,6 +51,9 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   let historyItem: BridgeHistory | undefined
   if (txHash) {
     historyItem = await asteroidClient.getBridgeHistoryHash(txHash)
+  } else {
+    // check latest send item from bridge history
+    historyItem = await asteroidClient.getLatestSendBridgeHistory(address)
   }
 
   return json({ token, tokens, historyItem })
@@ -281,6 +284,8 @@ function BridgeForm() {
 export default function Bridge() {
   const { token, historyItem } = useLoaderData<typeof loader>()
   const denom = useTokenFactoryDenom(token.ticker)
+  const [searchParams] = useSearchParams()
+  const hasTxParam = searchParams.has('tx')
 
   const { data: isTransactionProcessed, isLoading } = useIsTransactionProcessed(
     historyItem?.transaction.hash ?? '',
@@ -297,7 +302,9 @@ export default function Bridge() {
     content = (
       <div>
         <Button color="primary" onClick={showDialog}>
-          Finish bridge transaction
+          {hasTxParam
+            ? 'Finish bridge transaction'
+            : 'Finish your latest bridge transaction'}
         </Button>
         <Modal ref={dialogRef} backdrop>
           <ToNeutronBridgeDialog
@@ -310,6 +317,8 @@ export default function Bridge() {
         </Modal>
       </div>
     )
+  } else if (!hasTxParam) {
+    content = <BridgeForm />
   } else {
     content = (
       <Alert className="border border-primary flex justify-between">

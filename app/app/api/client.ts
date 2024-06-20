@@ -1308,6 +1308,34 @@ export class AsteroidClient extends AsteroidService {
     return result.bridge_history[0]
   }
 
+  async getLatestSendBridgeHistory(
+    address: string,
+  ): Promise<BridgeHistory | undefined> {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            sender: {
+              _eq: address,
+            },
+            action: {
+              _eq: 'send',
+            },
+          },
+          order_by: [
+            {
+              height: order_by.desc,
+            },
+          ],
+          limit: 1,
+        },
+        bridgeHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
   async getReceivedBridgeHistory(
     height: number,
     receiver: string,
