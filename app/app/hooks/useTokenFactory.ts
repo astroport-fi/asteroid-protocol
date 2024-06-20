@@ -51,3 +51,18 @@ export function useTokenFactoryBalance(
 
   return balance
 }
+
+export function useAllBalances(address: string | undefined) {
+  const neutronClient = useNeutronClient()
+  const [balances, setBalances] = useState<readonly Coin[] | null>(null)
+
+  useEffect(() => {
+    if (!neutronClient || !address) {
+      return
+    }
+
+    neutronClient.getAllBalances(address).then((res) => setBalances(res))
+  }, [neutronClient, address])
+
+  return balances
+}
