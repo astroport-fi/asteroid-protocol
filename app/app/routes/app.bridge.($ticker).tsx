@@ -17,7 +17,7 @@ import ToNeutronBridgeDialog from '~/components/dialogs/ToNeutronBridgeDialog'
 import AddressInput from '~/components/form/AddressInput'
 import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
-import useIsTransactionProcessed from '~/hooks/bridge/useIsTransactionProcessed'
+import useIsBridgeTransactionProcessed from '~/hooks/bridge/useIsBridgeTransactionProcessed'
 import useAddress from '~/hooks/useAddress'
 import useChain from '~/hooks/useChain'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
@@ -287,9 +287,8 @@ export default function Bridge() {
   const [searchParams] = useSearchParams()
   const hasTxParam = searchParams.has('tx')
 
-  const { data: isTransactionProcessed, isLoading } = useIsTransactionProcessed(
-    historyItem?.transaction.hash ?? '',
-  )
+  const { data: isTransactionProcessed, isLoading } =
+    useIsBridgeTransactionProcessed(historyItem)
 
   const { dialogRef, showDialog } = useDialog()
 
