@@ -23,12 +23,13 @@ import (
 )
 
 type CFT20Config struct {
-	S3Endpoint string `envconfig:"S3_ENDPOINT" required:"true"`
-	S3Region   string `envconfig:"S3_REGION" required:"true"`
-	S3Bucket   string `envconfig:"S3_BUCKET"`
-	S3ID       string `envconfig:"S3_ID" required:"true"`
-	S3Secret   string `envconfig:"S3_SECRET" required:"true"`
-	S3Token    string `envconfig:"S3_TOKEN"`
+	S3Endpoint     string `envconfig:"S3_ENDPOINT"`
+	S3Region       string `envconfig:"S3_REGION"`
+	S3Bucket       string `envconfig:"S3_BUCKET"`
+	S3ID           string `envconfig:"S3_ID"`
+	S3Secret       string `envconfig:"S3_SECRET"`
+	S3Token        string `envconfig:"S3_TOKEN"`
+	S3StoreContent bool   `envconfig:"S3_STORE_CONTENT" default:"true"`
 }
 
 type CFT20 struct {
@@ -59,6 +60,10 @@ func NewCFT20Processor(chainID string, db *gorm.DB) *CFT20 {
 	err := envconfig.Process("", &config)
 	if err != nil {
 		log.Fatalf("Unable to process config: %s", err)
+	}
+
+	if config.S3StoreContent && (config.S3Endpoint == "" || config.S3Region == "" || config.S3Bucket == "" || config.S3ID == "" || config.S3Secret == "") {
+		log.Fatalf("S3 store content is enabled but the required environment variables are not set")
 	}
 
 	return &CFT20{
@@ -716,6 +721,10 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 // TODO: This is reused, move to common helpers
 // storeContent stores the content in the S3 bucket
 func (protocol *CFT20) storeContent(mimeType string, txHash string, content []byte) (string, error) {
+	if protocol.s3Endpoint == "" {
+		return "", nil
+	}
+
 	ext, err := mime.ExtensionsByType(mimeType)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin

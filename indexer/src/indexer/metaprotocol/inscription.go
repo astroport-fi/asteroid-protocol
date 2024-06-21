@@ -23,13 +23,14 @@ import (
 )
 
 type InscriptionConfig struct {
-	S3Endpoint       string `envconfig:"S3_ENDPOINT" required:"true"`
-	S3Region         string `envconfig:"S3_REGION" required:"true"`
+	S3Endpoint       string `envconfig:"S3_ENDPOINT"`
+	S3Region         string `envconfig:"S3_REGION"`
 	S3Bucket         string `envconfig:"S3_BUCKET"`
-	S3ID             string `envconfig:"S3_ID" required:"true"`
-	S3Secret         string `envconfig:"S3_SECRET" required:"true"`
+	S3ID             string `envconfig:"S3_ID"`
+	S3Secret         string `envconfig:"S3_SECRET"`
 	S3Token          string `envconfig:"S3_TOKEN"`
 	ReservationsFile string `envconfig:"RESERVATIONS_FILE" required:"true"`
+	S3StoreContent   bool   `envconfig:"S3_STORE_CONTENT" default:"true"`
 }
 
 type Inscription struct {
@@ -50,12 +51,15 @@ type Inscription struct {
 }
 
 func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Inscription {
-
 	// Parse config environment variables for self
 	var config InscriptionConfig
 	err := envconfig.Process("", &config)
 	if err != nil {
 		log.Fatalf("Unable to process config: %s", err)
+	}
+
+	if config.S3StoreContent && (config.S3Endpoint == "" || config.S3Region == "" || config.S3Bucket == "" || config.S3ID == "" || config.S3Secret == "") {
+		log.Fatalf("S3 store content is enabled but the required environment variables are not set")
 	}
 
 	// load reservations
@@ -649,6 +653,10 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 // storeContent stores the content in the S3 bucket
 func (protocol *Inscription) storeContent(mimeType string, txHash string, content []byte) (string, error) {
+	if protocol.s3Endpoint == "" {
+		return "", nil
+	}
+
 	ext, err := mime.ExtensionsByType(mimeType)
 	if err != nil {
 		// We could not find the mime type, so we default to .bin
