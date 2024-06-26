@@ -53,6 +53,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
       NEUTRON_CHAIN_ID: context.cloudflare.env.NEUTRON_CHAIN_ID,
       NEUTRON_CHAIN_NAME: context.cloudflare.env.NEUTRON_CHAIN_NAME,
       NEUTRON_RPC: context.cloudflare.env.NEUTRON_RPC,
+      NEUTRON_REST: context.cloudflare.env.NEUTRON_REST,
       BRIDGE_ENDPOINTS: context.cloudflare.env.BRIDGE_ENDPOINTS.split(','),
       ASTROPORT_FACTORY_CONTRACT:
         context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
@@ -173,6 +174,7 @@ export default function App() {
             neutronChainId: data.ENV.NEUTRON_CHAIN_ID,
             neutronChainName: data.ENV.NEUTRON_CHAIN_NAME,
             neutronRpcEndpoint: data.ENV.NEUTRON_RPC,
+            neutronRestEndpoint: data.ENV.NEUTRON_REST,
             bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
             astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
             astroportUrl: data.ENV.ASTROPORT_URL,

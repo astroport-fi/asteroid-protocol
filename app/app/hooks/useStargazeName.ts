@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from './utils'
+import { fetcher } from '~/hooks/utils'
 
 export const STARGAZE_ENDPOINT =
   'https://rest.stargaze-apis.com/cosmwasm/wasm/v1/contract/stars1fx74nkqkw2748av8j7ew7r3xt9cgjqduwn8m0ur5lhe49uhlsasszc5fhr/smart/'

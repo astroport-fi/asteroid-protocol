@@ -4,6 +4,7 @@ import { Loading } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
 import useTokenHolding from '~/hooks/api/useTokenHolding'
+import { useIbcFee } from '~/hooks/neutron/useFeeRefunder'
 import { useNeutronAddress } from '~/hooks/useAddress'
 import useAsteroidClient from '~/hooks/useAsteroidClient'
 import { TxState, useExecuteBridgeMsg } from '~/hooks/useSubmitTx'
@@ -72,15 +73,16 @@ function NeutronTx({ token, denom, amount, destination }: Props) {
     } as ExecuteMsg
   }, [destination, amount])
 
+  const fee = useIbcFee()
   const funds = useMemo(() => {
-    if (!amount) {
+    if (!amount || !fee) {
       return
     }
     return [
       { denom, amount: `${toDecimalValue(amount, token.decimals)}` },
-      { denom: 'untrn', amount: '2001' }, // @todo where to get this value?
+      { denom: 'untrn', amount: `${fee}` },
     ]
-  }, [denom, amount, token.decimals])
+  }, [denom, amount, token.decimals, fee])
 
   const { chainFee, error, txHash, txState, sendTx, setTxState } =
     useExecuteBridgeMsg(msg, '', 'auto', funds, TxState.SuccessOnchain)

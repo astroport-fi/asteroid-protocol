@@ -11,6 +11,7 @@ export const RootContext = createContext({
   neutronChainId: '',
   neutronChainName: '',
   neutronRpcEndpoint: '',
+  neutronRestEndpoint: '',
   neutronBridgeContract: '',
   astroportFactoryContract: '',
   astroportUrl: '',
