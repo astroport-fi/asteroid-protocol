@@ -53,7 +53,7 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   let historyItem: BridgeHistory | undefined
   if (txHash) {
     historyItem = await asteroidClient.getBridgeHistoryHash(txHash)
-  } else {
+  } else if (address) {
     // check latest send item from bridge history
     historyItem = await asteroidClient.getLatestSendBridgeHistory(address)
   }
