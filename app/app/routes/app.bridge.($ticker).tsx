@@ -19,7 +19,6 @@ import AddressInput from '~/components/form/AddressInput'
 import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
 import useIsBridgeTransactionProcessed from '~/hooks/bridge/useIsBridgeTransactionProcessed'
-import useAddress from '~/hooks/useAddress'
 import useChain from '~/hooks/useChain'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import {
@@ -67,28 +66,67 @@ type FormData = {
   agree: boolean
 }
 
-function CosmosHub() {
+function ChainLogo({
+  chain,
+  className,
+}: {
+  chain: 'neutron' | 'cosmoshub'
+  className: string
+}) {
+  let token: string = chain
+  if (chain === 'cosmoshub') {
+    token = 'atom'
+  }
+  return (
+    <img
+      alt={`${chain} logo`}
+      src={`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chain}/images/${token}.png`}
+      className={className}
+    />
+  )
+}
+
+function ChainHeader({
+  chain,
+  title,
+}: {
+  chain: 'neutron' | 'cosmoshub'
+  title: string
+}) {
   return (
     <div className="flex flex-col items-center w-28">
-      <img
-        alt="Cosmos Hub logo"
-        src="https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.png"
-        className="size-16 rounded-full"
-      />
-      <span className="mt-3">Cosmos Hub</span>
+      <ChainLogo className="size-16 rounded-full" chain={chain} />
+      <span className="mt-3">{title}</span>
     </div>
   )
 }
 
-function Neutron() {
+function WalletRow({
+  chain,
+  address,
+  changeWallet,
+  connectWallet,
+}: {
+  chain: 'neutron' | 'cosmoshub'
+  address: string | undefined
+  changeWallet: () => void
+  connectWallet: () => void
+}) {
   return (
-    <div className="flex flex-col items-center w-28">
-      <img
-        alt="Neutron logo"
-        src="https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/neutron.png"
-        className="size-16 rounded-full"
-      />
-      <span className="mt-3">Neutron</span>
+    <div className="flex items-center justify-between bg-base-300 w-full rounded-xl p-2 mt-6">
+      <div className="flex">
+        <ChainLogo chain={chain} className="size-6 rounded-full mr-1" />
+        {address ? <Address address={address} start={6} /> : 'Not connected'}
+      </div>
+      {address ? (
+        <Button size="sm" onClick={() => changeWallet()}>
+          Change wallet
+        </Button>
+      ) : (
+        <Button size="sm" onClick={() => connectWallet()}>
+          Connect wallet
+        </Button>
+      )}
     </div>
   )
 }
@@ -96,12 +134,17 @@ function Neutron() {
 function BridgeForm() {
   const { token, tokens } = useLoaderData<typeof loader>()
   const cft20Balance = token.token_holders?.[0]?.amount ?? 0
-  const { neutronChainName } = useRootContext()
+  const { neutronChainName, chainName: cosmosHubChainName } = useRootContext()
   const {
     connect: connectToNeutron,
     address: neutronAddress,
     openView: openNeutronView,
   } = useChain(neutronChainName)
+  const {
+    connect: connectToCosmosHub,
+    address: cosmosHubAddress,
+    openView: openCosmosHubView,
+  } = useChain(cosmosHubChainName)
   const tokenMetadata = useTokenFactoryMetadata(token.ticker)
   const tokenFactoryBalance = useTokenFactoryBalance(
     token.ticker,
@@ -110,7 +153,6 @@ function BridgeForm() {
   const { dialogRef: selectDialogRef, showDialog: showSelectDialog } =
     useDialog()
 
-  const cosmosHubAddress = useAddress()
   const [directionFrom, setDirectionFrom] = useState(true)
 
   let addressPrefix: string
@@ -179,7 +221,7 @@ function BridgeForm() {
           'flex-row-reverse': !directionFrom,
         })}
       >
-        <CosmosHub />
+        <ChainHeader chain="cosmoshub" title="Cosmos Hub" />
         <Button
           shape="circle"
           className="mx-6"
@@ -190,32 +232,24 @@ function BridgeForm() {
         >
           <ArrowsRightLeftIcon className="size-5" />
         </Button>
-        <Neutron />
+        <ChainHeader chain="neutron" title="Neutron" />
       </div>
 
-      <div className="flex items-center justify-between bg-base-300 w-full rounded-xl p-2 mt-6">
-        <div className="flex">
-          <img
-            alt="Cosmos Hub logo"
-            src="https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/neutron.png"
-            className="size-6 rounded-full mr-1"
-          />
-          {neutronAddress ? (
-            <Address address={neutronAddress} start={6} />
-          ) : (
-            'Not connected'
-          )}
-        </div>
-        {neutronAddress ? (
-          <Button size="sm" onClick={() => openNeutronView()}>
-            Change wallet
-          </Button>
-        ) : (
-          <Button size="sm" onClick={() => connectToNeutron()}>
-            Connect wallet
-          </Button>
-        )}
-      </div>
+      {directionFrom && (
+        <WalletRow
+          address={cosmosHubAddress}
+          chain="cosmoshub"
+          changeWallet={openCosmosHubView}
+          connectWallet={connectToCosmosHub}
+        />
+      )}
+
+      <WalletRow
+        address={neutronAddress}
+        chain="neutron"
+        changeWallet={openNeutronView}
+        connectWallet={connectToNeutron}
+      />
 
       <Form
         onSubmit={onSubmit}
