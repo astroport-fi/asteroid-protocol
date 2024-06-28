@@ -42,6 +42,7 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import { getTwoUniqueRandomItems } from '~/utils/random'
 import {
   BridgeHistory,
   TokenWithBridge,
@@ -610,9 +611,66 @@ export class AsteroidClient extends AsteroidService {
 
   async getTopCollections(): Promise<TopCollection[]> {
     const result = await this.query({
-      top_collections: [{}, topCollectionSelector],
+      __alias: {
+        new: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ id: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+        top: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ volume: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+        trending: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ id: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+      },
     })
-    return result.top_collections
+
+    const selectedSet = new Set<number>()
+
+    let topCollections = getTwoUniqueRandomItems(
+      selectedSet,
+      result.top.map((c) => c.collection!),
+    )
+    topCollections = topCollections.concat(
+      getTwoUniqueRandomItems(
+        selectedSet,
+        result.trending.map((c) => c.collection!),
+      ),
+    )
+    topCollections = topCollections.concat(
+      getTwoUniqueRandomItems(
+        selectedSet,
+        result.new.map((c) => c.collection!),
+      ),
+    )
+
+    return topCollections as TopCollection[]
   }
 
   async getCollections(
