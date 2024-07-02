@@ -306,9 +306,15 @@ export function useExecuteBridgeMsg(
         setError(null)
       })
       .catch((err) => {
+        let message = (err as Error).message
+        if (message.includes('insufficient funds')) {
+          message =
+            'Please add a small amount of NTRN to your Neutron wallet to complete the bridging process'
+        }
+
         setError({
           kind: ErrorKind.Estimation,
-          message: (err as Error).message,
+          message,
         })
       })
   }, [msg, funds, fee, memo, bridgeClientState])

@@ -38,6 +38,9 @@ function getErrorDetails(kind: ErrorKind, message: string) {
 
       return details
     } catch (err) {
+      if (message.includes('insufficient funds')) {
+        return 'You do not have enough funds to complete this transaction'
+      }
       return message
     }
   }
