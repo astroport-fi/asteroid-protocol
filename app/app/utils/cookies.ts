@@ -12,7 +12,7 @@ export function deserializeCookieValue(value: string) {
   return JSON.parse(Buffer.from(value, 'base64').toString())
 }
 
-export function getAddress(request: Request): Promise<string> {
+export function getAddress(request: Request): Promise<string | undefined> {
   const cookieHeader = request.headers.get('Cookie')
   return userAddressCookie.parse(cookieHeader)
 }

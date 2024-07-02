@@ -3,7 +3,7 @@ import { ValueTypes, order_by } from '@asteroid-protocol/sdk/client'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useMemo, useState } from 'react'
-import { Button } from 'react-daisyui'
+import { Button, Link as DaisyLink } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing } from '~/api/token'
@@ -18,10 +18,16 @@ import BuySettings from '~/components/market/BuySettings'
 import LatestTransactions from '~/components/market/LatestTransactions'
 import ReservedListingsTable from '~/components/market/ReservedListingsTable'
 import Stats from '~/components/market/Stats'
+import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
 import useAddress from '~/hooks/useAddress'
+import { useSwapAstroportUrl } from '~/hooks/useAstroportUrl'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
+import {
+  useTokenFactoryDenom,
+  useTokenFactoryMetadata,
+} from '~/hooks/useTokenFactory'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'
@@ -216,6 +222,12 @@ export default function MarketPage() {
   }, [data.listings, address, lastKnownHeight])
   const hasListings = data.listings.length > 0
 
+  const denom = useTokenFactoryDenom(token.ticker)
+  const { isLoading: isLoadingMetadata, metadata } = useTokenFactoryMetadata(
+    token.ticker,
+  )
+  const swapUrl = useSwapAstroportUrl(denom, ASTROPORT_ATOM_DENOM)
+
   return (
     <div className="flex flex-col md:flex-row h-full">
       {hasListings && (
@@ -246,7 +258,7 @@ export default function MarketPage() {
                 </span>
               </span>
             </BackHeader>
-            <div>
+            <div className="flex flex-row items-center">
               {minted < 1 && (
                 <Link
                   className="btn btn-primary btn-sm mr-2 hidden md:inline-flex"
@@ -263,6 +275,29 @@ export default function MarketPage() {
                 Sell
                 <span className="hidden lg:inline">{token.ticker} tokens</span>
               </Button>
+              {metadata ? (
+                <DaisyLink
+                  className="btn btn-sm btn-primary ml-2"
+                  target="_blank"
+                  href={swapUrl}
+                >
+                  Swap on Astroport
+                </DaisyLink>
+              ) : isLoadingMetadata ? (
+                <Button
+                  color="primary"
+                  size="sm"
+                  loading
+                  className="ml-2"
+                ></Button>
+              ) : (
+                <Link
+                  className="btn btn-sm btn-primary ml-2"
+                  to={`/app/token/${token.ticker}?enableBridging`}
+                >
+                  Enable bridging
+                </Link>
+              )}
             </div>
           </div>
           {hasListings && <Stats token={token} />}

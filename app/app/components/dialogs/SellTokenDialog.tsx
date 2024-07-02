@@ -102,7 +102,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
             </div>
             {operations &&
               (notEnoughTokens ? (
-                <Alert className="border border-warning">
+                <Alert className="border border-warning mt-4">
                   <span>
                     You can&apos;t list more tokens than you have available.
                     Your balance is{' '}
@@ -116,7 +116,7 @@ const SellTokenDialog = forwardRef<HTMLDialogElement, Props>(
                   </span>
                 </Alert>
               ) : (
-                <Alert className="border border-info">
+                <Alert className="border border-info mt-4">
                   <span>
                     You will be listing your tokens for a total of{' '}
                     <NumericFormat

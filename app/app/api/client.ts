@@ -42,6 +42,15 @@ import {
   tokenSupplySelector,
   tokenTradeHistorySelector,
 } from '~/api/token'
+import { getTwoUniqueRandomItems } from '~/utils/random'
+import {
+  BridgeHistory,
+  TokenWithBridge,
+  bridgeHistorySelector,
+  bridgeSignatureHistorySelector,
+  bridgeTokenSignatureSelector,
+  tokenWithBridgeSelector,
+} from './bridge'
 import { clubStatsSelector } from './clubs'
 import {
   Collection,
@@ -89,6 +98,11 @@ export type TokenHolders = {
 
 export type TradeHistoryResult = {
   history: TradeHistory[]
+  count: number
+}
+
+export type BridgeHistoryResult = {
+  history: BridgeHistory[]
   count: number
 }
 
@@ -298,7 +312,7 @@ export class AsteroidClient extends AsteroidService {
   async getTokenHolding(
     tokenId: number,
     address: string,
-  ): Promise<TokenHolding | undefined> {
+  ): Promise<number | undefined> {
     const result = await this.query({
       token_holder: [
         {
@@ -311,10 +325,12 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        tokenHoldingSelector,
+        {
+          amount: true,
+        },
       ],
     })
-    return result.token_holder[0]
+    return result.token_holder[0]?.amount
   }
 
   async getTokenHoldings(
@@ -595,9 +611,66 @@ export class AsteroidClient extends AsteroidService {
 
   async getTopCollections(): Promise<TopCollection[]> {
     const result = await this.query({
-      top_collections: [{}, topCollectionSelector],
+      __alias: {
+        new: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ id: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+        top: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ volume: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+        trending: {
+          collection_stats: [
+            {
+              limit: 8,
+              order_by: [{ id: order_by.desc }],
+              where: { supply: { _gt: 0 } },
+            },
+            {
+              collection: topCollectionSelector,
+            },
+          ],
+        },
+      },
     })
-    return result.top_collections
+
+    const selectedSet = new Set<number>()
+
+    let topCollections = getTwoUniqueRandomItems(
+      selectedSet,
+      result.top.map((c) => c.collection!),
+    )
+    topCollections = topCollections.concat(
+      getTwoUniqueRandomItems(
+        selectedSet,
+        result.trending.map((c) => c.collection!),
+      ),
+    )
+    topCollections = topCollections.concat(
+      getTwoUniqueRandomItems(
+        selectedSet,
+        result.new.map((c) => c.collection!),
+      ),
+    )
+
+    return topCollections as TopCollection[]
   }
 
   async getCollections(
@@ -1253,6 +1326,162 @@ export class AsteroidClient extends AsteroidService {
     return transaction.status_message
   }
 
+  async getBridgeHistorySignature(txHash: string) {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: txHash,
+              },
+            },
+          },
+        },
+        bridgeSignatureHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getBridgeHistoryHash(
+    txHash: string,
+  ): Promise<BridgeHistory | undefined> {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: txHash,
+              },
+            },
+          },
+        },
+        bridgeHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getLatestSendBridgeHistory(
+    address: string,
+  ): Promise<BridgeHistory | undefined> {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            sender: {
+              _eq: address,
+            },
+            action: {
+              _eq: 'send',
+            },
+          },
+          order_by: [
+            {
+              height: order_by.desc,
+            },
+          ],
+          limit: 1,
+        },
+        bridgeHistorySelector,
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getReceivedBridgeHistory(
+    height: number,
+    receiver: string,
+    tokenId: number,
+    amount: number,
+  ) {
+    const result = await this.query({
+      bridge_history: [
+        {
+          where: {
+            height: {
+              _gt: height,
+            },
+            receiver: {
+              _eq: receiver,
+            },
+            token_id: {
+              _eq: tokenId,
+            },
+            amount: {
+              _eq: amount,
+            },
+          },
+        },
+        {
+          amount: true,
+        },
+      ],
+    })
+
+    return result.bridge_history[0]
+  }
+
+  async getBridgeTokenSignature(ticker: string) {
+    const result = await this.query({
+      bridge_token: [
+        {
+          where: {
+            token: {
+              ticker: {
+                _eq: ticker,
+              },
+            },
+          },
+        },
+        bridgeTokenSignatureSelector,
+      ],
+    })
+
+    return result.bridge_token[0]
+  }
+
+  async getBridgeTokens(): Promise<Token[]> {
+    const result = await this.query({
+      bridge_token: [
+        {
+          where: {
+            enabled: {
+              _eq: true,
+            },
+          },
+        },
+        {
+          token: tokenSelector,
+        },
+      ],
+    })
+
+    return result.bridge_token.map((t) => t.token)
+  }
+
+  async findBridgeTokens(search: string): Promise<TokenWithBridge[]> {
+    const result = await this.query({
+      token: [
+        {
+          where: {
+            _or: [
+              { name: { _ilike: `%${search}%` } },
+              { ticker: { _ilike: `%${search}%` } },
+            ],
+          },
+        },
+        tokenWithBridgeSelector,
+      ],
+    })
+    return result.token
+  }
+
   async getInscriptionTradeHistory(
     offset = 0,
     limit = 200,
@@ -1354,6 +1583,57 @@ export class AsteroidClient extends AsteroidService {
       count:
         result.trade_history_aggregate.aggregate?.count ??
         result.trade_history.length,
+    }
+  }
+
+  async getBridgeHistory(
+    address: string,
+    offset = 0,
+    limit = 100,
+    orderBy?: ValueTypes['bridge_history_order_by'],
+  ): Promise<BridgeHistoryResult> {
+    if (!orderBy) {
+      orderBy = { date_created: order_by.desc }
+    }
+
+    const where: ValueTypes['bridge_history_bool_exp'] = {
+      _or: [
+        {
+          sender: {
+            _eq: address,
+          },
+        },
+        {
+          receiver: {
+            _eq: address,
+          },
+        },
+      ],
+    }
+
+    const result = await this.query({
+      bridge_history: [
+        {
+          where,
+          offset,
+          limit,
+          order_by: [orderBy],
+        },
+        bridgeHistorySelector,
+      ],
+      bridge_history_aggregate: [
+        {
+          where,
+        },
+        aggregateCountSelector,
+      ],
+    })
+
+    return {
+      history: result.bridge_history as BridgeHistory[],
+      count:
+        result.bridge_history_aggregate.aggregate?.count ??
+        result.bridge_history.length,
     }
   }
 

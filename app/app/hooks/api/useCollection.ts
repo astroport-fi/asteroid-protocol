@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import useAsteroidClient from './useAsteroidClient'
+import useAsteroidClient from '~/hooks/useAsteroidClient'
 
 export default function useCollection(collectionId: number) {
   const asteroidClient = useAsteroidClient()

@@ -1,9 +1,11 @@
 import { Button } from 'react-daisyui'
-import useAddress from '~/hooks/useAddress'
+import { useRootContext } from '~/context/root'
+import useChain from '~/hooks/useChain'
 import { SubmitTxError, TxState } from '~/hooks/useSubmitTx'
 import { Wallet } from '../wallet/Wallet'
 
 interface ActionsProps {
+  chainName?: string
   txState: TxState
   txHash: string | null
   error: SubmitTxError | null
@@ -20,11 +22,14 @@ export default function Actions({
   error,
   confirmText = 'Continue',
   disabled,
+  chainName,
   onSubmit,
   onClose,
   onRetry,
 }: ActionsProps) {
-  const address = useAddress()
+  const { chainName: cosmosHubChainName } = useRootContext()
+  const chain = useChain(chainName ?? cosmosHubChainName)
+  const address = chain.address
 
   let button: JSX.Element | undefined
   if (address) {
@@ -56,7 +61,7 @@ export default function Actions({
       )
     }
   } else {
-    button = <Wallet className="btn-md" />
+    button = <Wallet chainName={chainName} className="btn-md" />
   }
 
   return (

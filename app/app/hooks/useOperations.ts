@@ -1,4 +1,6 @@
 import {
+  BridgeOperations,
+  BridgeProtocol,
   CFT20Operations,
   CFT20Protocol,
   InscriptionOperations,
@@ -86,4 +88,26 @@ export function useMarketplaceOperations<T extends boolean = true>(
       }),
     )
   }, [chainId, address, useIbc, useExtensionData, asteroidClient, multi])
+}
+
+export function useBridgeOperations<T extends boolean = true>(
+  multi = true as T,
+) {
+  const { chainId, useIbc, useExtensionData } = useRootContext()
+  const address = useAddress()
+
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
+
+    return clientOnly$(
+      new BridgeOperations(chainId, address, {
+        multi,
+        useIbc,
+        useExtensionData,
+        fee: getFee(BridgeProtocol.DEFAULT_FEE, useIbc),
+      }),
+    )
+  }, [chainId, address, useIbc, useExtensionData, multi])
 }

@@ -27,16 +27,20 @@ export enum WalletStatus {
 export function Wallet({
   className,
   color,
+  chainName,
   onClick,
   reload = true,
 }: {
   className?: string
   color?: ButtonProps['color']
   reload?: boolean
+  chainName?: string
   onClick?: () => void
 }) {
-  const { chainName } = useRootContext()
-  const { status, connect, openView, address } = useChain(chainName)
+  const { chainName: cosmosHubChainName } = useRootContext()
+  const { status, connect, openView, address } = useChain(
+    chainName ?? cosmosHubChainName,
+  )
   const [previousStatus, setPreviousStatus] = useState<WalletStatus | null>(
     null,
   )

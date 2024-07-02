@@ -14,8 +14,9 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.7.9",
+    "@asteroid-protocol/sdk": "0.7.8-bridge.6",
     "@chain-registry/types": "^0.18.0",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/stargate": "^0.32.2",
     "@cosmos-kit/keplr-extension": "^2.7.9",
     "@cosmos-kit/leap-extension": "^2.7.10",
@@ -25,6 +26,7 @@
     "@remix-run/cloudflare-pages": "^2.8.1",
     "@remix-run/react": "^2.8.1",
     "@tanstack/react-table": "^8.12.0",
+    "@trendyol-js/react-carousel": "^3.0.2",
     "chain-registry": "^1.28.1",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",

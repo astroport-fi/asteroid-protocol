@@ -78,9 +78,12 @@ func New(
 	}
 
 	metaprotocols := make(map[string]metaprotocol.Processor)
+	cft20 := metaprotocol.NewCFT20Processor(config.ChainID, db)
+
 	metaprotocols["inscription"] = metaprotocol.NewInscriptionProcessor(config.ChainID, db, workerClient)
-	metaprotocols["cft20"] = metaprotocol.NewCFT20Processor(config.ChainID, db)
+	metaprotocols["cft20"] = cft20
 	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db, workerClient)
+	metaprotocols["bridge"] = metaprotocol.NewBridgeProcessor(config.ChainID, db, cft20)
 
 	return &Indexer{
 		chainID:                  config.ChainID,
@@ -312,13 +315,39 @@ func (i *Indexer) updateBaseToken() {
 	}
 }
 
+func (i *Indexer) parseMemoAndSource(rawTransaction types.RawTransaction) (string, string, error) {
+	urnMemo := rawTransaction.Body.Memo
+	sourceChannel := ""
+
+	// IBC transactions handled differently
+	for _, message := range rawTransaction.Body.Messages {
+		if message.Type == "/ibc.core.channel.v1.MsgRecvPacket" {
+			ibcData, err := message.Packet.GetPacketData()
+			if err != nil {
+				return "", "", err
+			}
+
+			sourceChannel = message.Packet.SourceChannel
+			urnMemo = ibcData.Memo
+			break
+		}
+	}
+
+	return urnMemo, sourceChannel, nil
+}
+
 // processMetaprotocolMemo handles the processing of different metaprotocols
 func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, rawTransaction types.RawTransaction) error {
 	i.logger.WithFields(logrus.Fields{
 		"hash": rawTransaction.Hash,
 	}).Debug("Processing memo")
 
-	metaprotocolURN, ok := urn.Parse([]byte(rawTransaction.Body.Memo))
+	memo, sourceChannel, err := i.parseMemoAndSource(rawTransaction)
+	if err != nil {
+		return err
+	}
+
+	metaprotocolURN, ok := urn.Parse([]byte(memo))
 	if !ok {
 		return errors.New("invalid metaprotocol URN")
 	}
@@ -334,7 +363,7 @@ func (i *Indexer) processMetaprotocolMemo(transactionModel models.Transaction, r
 		"hash":      rawTransaction.Hash,
 	}).Info("Processing metaprotocol")
 
-	err := processor.Process(transactionModel, metaprotocolURN, rawTransaction)
+	err = processor.Process(transactionModel, metaprotocolURN, rawTransaction, sourceChannel)
 	if err != nil {
 		i.logger.WithFields(logrus.Fields{
 			"metaprotocol": metaprotocolURN.ID,

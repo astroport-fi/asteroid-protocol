@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { Loading } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import { TokenHolding } from '~/api/token'
 import AtomValue from '~/components/AtomValue'
@@ -13,10 +14,14 @@ import GhostEmptyState from '~/components/GhostEmptyState'
 import { TokenCell } from '~/components/TokenCell'
 import TokenValue from '~/components/TokenValue'
 import Table from '~/components/table'
+import { useRootContext } from '~/context/root'
+import { useNeutronAddress } from '~/hooks/useAddress'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
+import { useAllBalances } from '~/hooks/useTokenFactory'
 import { getAddress } from '~/utils/cookies'
 import { parsePagination, parseSorting } from '~/utils/pagination'
+import { getDenom } from '~/utils/token-factory'
 
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -78,6 +83,13 @@ export default function WalletTokens() {
   const [sorting, setSorting] = useSorting(DEFAULT_SORT)
   const [pagination, setPagination] = usePagination()
   const navigate = useNavigate()
+  const neutronAddress = useNeutronAddress()
+  const neutronBalances = useAllBalances(neutronAddress)
+  const neutronBalancesByTicker = neutronBalances?.reduce(
+    (map, balance) => map.set(balance.denom, parseInt(balance.amount)),
+    new Map<string, number>(),
+  )
+  const { neutronBridgeContract } = useRootContext()
 
   const columns = [
     columnHelper.accessor('token.name', {
@@ -94,6 +106,27 @@ export default function WalletTokens() {
           ticker={info.row.original.token.ticker}
         />
       ),
+    }),
+    columnHelper.accessor('token.ticker', {
+      header: 'Bridged balance',
+      enableSorting: false,
+      cell: (info) => {
+        if (!neutronBalancesByTicker) {
+          return <Loading variant="spinner" size="sm" />
+        }
+        const ticker = info.getValue()
+        const balance = neutronBalancesByTicker.get(
+          getDenom(neutronBridgeContract, ticker),
+        )
+        return (
+          <TokenValue
+            amount={balance ?? 0}
+            decimals={info.row.original.token.decimals}
+            price={info.row.original.token.last_price_base}
+            ticker={ticker}
+          />
+        )
+      },
     }),
     columnHelper.accessor('token.last_price_base', {
       header: 'Price',
