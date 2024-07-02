@@ -305,10 +305,16 @@ function BridgeForm() {
               isFloat
               required
             />
-            <span className="text-sm text-header-content font-light mt-2">
+            <button
+              className="text-sm text-header-content font-light mt-2 text-left"
+              type="button"
+              onClick={() =>
+                setValue('amount', getDecimalValue(balance, token.decimals))
+              }
+            >
               Your balance:{' '}
               <DecimalText value={balance} suffix={` ${token.ticker}`} />
-            </span>
+            </button>
           </div>
         </div>
 
