@@ -1,6 +1,7 @@
-import { ChevronRightIcon } from '@heroicons/react/24/outline'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
+import { ScrollingCarousel } from '@trendyol-js/react-carousel'
 import clsx from 'clsx'
 import { useMemo } from 'react'
 import { Button, Divider } from 'react-daisyui'
@@ -8,6 +9,7 @@ import { AsteroidClient } from '~/api/client'
 import clubs from '~/api/clubs'
 import { TopCollection } from '~/api/collection'
 import { InscriptionTradeHistory } from '~/api/inscription'
+import Carousel from '~/components/Carousel'
 import Collections, { ClubBox } from '~/components/Collections'
 import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
@@ -47,7 +49,7 @@ export function TransactionBox({
   const { inscription } = transaction
   return (
     <Link
-      className="carousel-item flex flex-col bg-base-200 rounded-xl group"
+      className="carousel-item flex flex-col bg-base-200 rounded-xl group mr-4"
       to={`/app/inscription/${transaction.inscription.transaction.hash}`}
     >
       <InscriptionImage
@@ -81,7 +83,7 @@ export function TransactionBox({
 function TopCollectionComponent({ collection }: { collection: TopCollection }) {
   return (
     <Link
-      className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl"
+      className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl mr-5 overflow-y-hidden"
       to={`/app/collection/${collection.symbol}`}
     >
       <InscriptionImage
@@ -144,11 +146,11 @@ export default function CollectionsPage() {
         <SearchInputForm placeholder="Search by collection name" />
       </div>
 
-      <div className="carousel gap-5 mt-4 overflow-y-hidden overflow-x-scroll">
+      <Carousel className="mt-4">
         {data.topCollections.map((collection) => (
           <TopCollectionComponent key={collection.id} collection={collection} />
         ))}
-      </div>
+      </Carousel>
 
       <div className="flex mt-12 items-baseline justify-between text-md">
         <div>
@@ -205,11 +207,11 @@ export default function CollectionsPage() {
       </Grid>
 
       <h3 className="text-xl text-white mt-12">Latest Sales</h3>
-      <div className="carousel gap-4 mt-4">
+      <Carousel className="mt-4">
         {data.transactions.map((transaction) => (
           <TransactionBox key={transaction.id} transaction={transaction} />
         ))}
-      </div>
+      </Carousel>
     </div>
   )
 }

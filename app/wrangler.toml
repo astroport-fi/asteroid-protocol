@@ -86,7 +86,7 @@ NEUTRON_CHAIN_NAME = "neutron"
 NEUTRON_BRIDGE_CONTRACT = "neutron1d59rkwmkt6f46aeyra6zfk6ghehlsqc2qevw96c6x4xfmyk4qxhsjh8ajn"
 NEUTRON_RPC = "https://neutron-rpc.publicnode.com"
 NEUTRON_REST = "https://neutron-rest.publicnode.com"
-BRIDGE_ENDPOINTS = "https://new-api.asteroidprotocol.io/v1/graphql,https://asteroid-indexer.rhino-apis.com/v1/graphql"
+BRIDGE_ENDPOINTS = "https://new-api.asteroidprotocol.io/v1/graphql,https://asteroid-indexer.rhino-apis.com/v1/graphql,https://api-asteroid.stakecito.com/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
 
