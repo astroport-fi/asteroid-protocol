@@ -3,6 +3,7 @@ import { StdFee } from '@cosmjs/amino'
 import { GasPrice } from '@cosmjs/stargate'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
+import useOfflineSigner from '~/hooks/useOfflineSigner'
 import useChain from './useChain'
 
 export class SigningClient {
@@ -86,12 +87,9 @@ interface ClientState {
 
 export default function useClient(retry = 0) {
   const { chainName, gasPrice, restEndpoint, rpcEndpoint } = useRootContext()
-  const {
-    getOfflineSignerDirect,
-    setDefaultSignOptions,
-    isWalletConnected,
-    address,
-  } = useChain(chainName)
+  const { setDefaultSignOptions, isWalletConnected, address } =
+    useChain(chainName)
+  const signer = useOfflineSigner(chainName)
 
   const [state, setState] = useState<ClientState>({
     client: null,
@@ -99,16 +97,15 @@ export default function useClient(retry = 0) {
     isLoading: true,
   })
   useEffect(() => {
-    if (!isWalletConnected || !address || !getOfflineSignerDirect) {
+    if (!isWalletConnected || !address || !signer) {
       return
     }
     async function createSigningClient(address: string) {
-      const signer = getOfflineSignerDirect!()
       setDefaultSignOptions({ preferNoSetFee: true, preferNoSetMemo: true })
       try {
         const signingClient = await SigningStargateClient.connectWithSigner(
           rpcEndpoint,
-          signer,
+          signer!,
           {
             gasPrice: GasPrice.fromString(gasPrice),
             simulateEndpoint: restEndpoint as string,
@@ -127,7 +124,7 @@ export default function useClient(retry = 0) {
   }, [
     restEndpoint,
     rpcEndpoint,
-    getOfflineSignerDirect,
+    signer,
     setDefaultSignOptions,
     isWalletConnected,
     gasPrice,

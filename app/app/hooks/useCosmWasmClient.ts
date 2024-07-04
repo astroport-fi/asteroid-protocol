@@ -25,6 +25,7 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { useEffect, useState } from 'react'
 import { TxExtension, setupTxExtension } from './tx-extension'
 import useChain from './useChain'
+import useOfflineSigner from './useOfflineSigner'
 
 export class CosmWasmClient extends CosmWasmClientOriginal {
   public static async connect(
@@ -151,7 +152,8 @@ export default function useSigningCosmWasmClient(
   chainName: string,
   gasPrice: string,
 ) {
-  const { getRpcEndpoint, getOfflineSignerDirect } = useChain(chainName)
+  const { getRpcEndpoint } = useChain(chainName)
+  const offlineSigner = useOfflineSigner(chainName)
 
   const [state, setState] = useState<ClientState>({
     client: null,
@@ -160,17 +162,16 @@ export default function useSigningCosmWasmClient(
   })
 
   useEffect(() => {
-    if (!getRpcEndpoint) {
+    if (!getRpcEndpoint || !offlineSigner) {
       return
     }
 
     getRpcEndpoint()
       .then(async (rpcEndpoint) => {
-        const signer = getOfflineSignerDirect!()
         try {
           const client = await SigningCosmWasmClient.connectWithSigner(
             rpcEndpoint,
-            signer,
+            offlineSigner,
             {
               gasPrice: GasPrice.fromString(gasPrice),
             },
@@ -183,7 +184,7 @@ export default function useSigningCosmWasmClient(
       .catch((err) => {
         setState({ client: null, error: err as Error, isLoading: false })
       })
-  }, [gasPrice, getRpcEndpoint, getOfflineSignerDirect])
+  }, [gasPrice, getRpcEndpoint, offlineSigner])
 
   return state
 }
