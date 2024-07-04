@@ -1,15 +1,23 @@
 export function getSupplyTitle(value: number) {
-  if (value >= 1000000000000) {
-    return (value / 1000000000000).toFixed(4) + ' T'
-  } else if (value >= 1000000000) {
-    return (value / 1000000).toFixed(4) + ' M'
-  } else if (value >= 1000000) {
-    return (value / 1000000).toFixed(2) + ' M'
-  } else if (value >= 100000) {
-    return (value / 100000).toFixed(6) + 'k'
-  } else {
-    return value.toString()
-  }
+  const digits = 3
+  const lookup = [
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'k' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'G' },
+    { value: 1e12, symbol: 'T' },
+    { value: 1e15, symbol: 'P' },
+    { value: 1e18, symbol: 'E' },
+  ]
+  const reversedLookup = lookup.slice().reverse()
+  const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/
+  const item = reversedLookup.find((item) => value >= item.value)
+  return item
+    ? (value / item.value)
+        .toFixed(digits)
+        .replace(regexp, '')
+        .concat(item.symbol)
+    : '0'
 }
 
 export function getDecimalValue(value: number, decimals: number) {
