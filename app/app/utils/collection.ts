@@ -31,7 +31,14 @@ export function getCollectionsStatsOrder(
   }
 }
 
-export function usesAsteroidSocialLinks(metadata: CollectionMetadata) {
+export function usesAsteroidSocialLinks(
+  symbol: string,
+  metadata: CollectionMetadata,
+) {
+  if (symbol === 'BRIDGORS') {
+    return false
+  }
+
   if (
     metadata.telegram &&
     metadata.telegram.toLowerCase().includes('https://t.me/asteroidxyz')
