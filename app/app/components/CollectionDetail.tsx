@@ -34,8 +34,8 @@ export default function CollectionDetailComponent({
     metadata.discord ||
     metadata.website
   const notAffiliatedWarning = useMemo(() => {
-    return usesAsteroidSocialLinks(metadata)
-  }, [metadata])
+    return usesAsteroidSocialLinks(collection.symbol, metadata)
+  }, [collection.symbol, metadata])
 
   const [open, setOpen] = useState(false)
 

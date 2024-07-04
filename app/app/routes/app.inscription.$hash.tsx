@@ -186,7 +186,10 @@ function InscriptionDetailComponent({
     if (!inscription.collection) {
       return false
     }
-    return usesAsteroidSocialLinks(inscription.collection.metadata)
+    return usesAsteroidSocialLinks(
+      inscription.collection.symbol,
+      inscription.collection.metadata,
+    )
   }, [inscription.collection])
 
   return (
