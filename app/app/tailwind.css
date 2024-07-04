@@ -126,3 +126,7 @@ strong {
   @apply bg-neutral;
   @apply text-neutral-content;
 }
+
+div[data-testid='sliderList'] {
+  display: flex;
+}

@@ -640,7 +640,17 @@ export class AsteroidClient extends AsteroidService {
           collection_stats: [
             {
               limit: 8,
-              order_by: [{ id: order_by.desc }],
+              order_by: [
+                {
+                  volume_24h: order_by.desc,
+                },
+                {
+                  volume_7d: order_by.desc,
+                },
+                {
+                  volume: order_by.desc,
+                },
+              ],
               where: { supply: { _gt: 0 } },
             },
             {
@@ -728,7 +738,7 @@ export class AsteroidClient extends AsteroidService {
   }
 
   async getCollectionsStats(
-    orderBy: ValueTypes['collection_stats_order_by'],
+    orderBy: Array<ValueTypes['collection_stats_order_by']>,
     where: {
       search?: string | null
     } = {},
@@ -764,7 +774,7 @@ export class AsteroidClient extends AsteroidService {
           where: queryWhere,
           offset,
           limit,
-          order_by: [orderBy],
+          order_by: orderBy,
         },
         collectionStatsItemSelector,
       ],

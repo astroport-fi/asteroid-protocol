@@ -1,7 +1,6 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react'
-import { ScrollingCarousel } from '@trendyol-js/react-carousel'
 import clsx from 'clsx'
 import { useMemo } from 'react'
 import { Button, Divider } from 'react-daisyui'
@@ -83,7 +82,7 @@ export function TransactionBox({
 function TopCollectionComponent({ collection }: { collection: TopCollection }) {
   return (
     <Link
-      className="carousel-item flex flex-col justify-between group relative border-mask rounded-xl mr-5 overflow-y-hidden"
+      className="size-72 lg:size-96 carousel-item flex flex-col justify-between group relative border-mask rounded-xl mr-5 overflow-y-hidden"
       to={`/app/collection/${collection.symbol}`}
     >
       <InscriptionImage
