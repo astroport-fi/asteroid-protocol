@@ -16,12 +16,12 @@ export default function useChain(chainName: string) {
       connect: () => {},
       message: undefined,
       wallet: undefined,
+      chainWallet: undefined,
       getRpcEndpoint: undefined,
       getRestEndpoint: () => '',
       getStargateClient: undefined,
       setDefaultSignOptions: (options: SignerOptions) => {},
       getSigningCosmWasmClient: undefined,
-      getOfflineSignerDirect: undefined,
       isWalletConnected: false,
       address: undefined as string | undefined,
     }
