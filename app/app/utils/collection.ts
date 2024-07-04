@@ -5,7 +5,7 @@ import { parseSorting } from './pagination'
 export function getCollectionsStatsOrder(
   searchParams: URLSearchParams,
   defaultSort: string,
-): ValueTypes['collection_stats_order_by'] {
+): Array<ValueTypes['collection_stats_order_by']> {
   const { sort, direction } = parseSorting(
     searchParams,
     defaultSort,
@@ -13,21 +13,48 @@ export function getCollectionsStatsOrder(
   )
   switch (sort) {
     case 'collection':
-      return {
-        collection: {
-          name: direction,
+      return [
+        {
+          collection: {
+            name: direction,
+          },
         },
-      }
+      ]
     case 'collection_id':
-      return {
-        collection: {
-          id: direction,
+      return [
+        {
+          collection: {
+            id: direction,
+          },
         },
-      }
+      ]
+    case 'volume_24h':
+      return [
+        {
+          volume_24h: direction,
+        },
+        {
+          volume_7d: direction,
+        },
+        {
+          volume: direction,
+        },
+      ]
+    case 'volume_7d':
+      return [
+        {
+          volume_7d: direction,
+        },
+        {
+          volume: direction,
+        },
+      ]
     default:
-      return {
-        [sort]: direction,
-      }
+      return [
+        {
+          [sort]: direction,
+        },
+      ]
   }
 }
 
