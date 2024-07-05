@@ -24,8 +24,8 @@ import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
 import { useEffect, useState } from 'react'
 import { TxExtension, setupTxExtension } from './tx-extension'
-import useChain from './useChain'
-import useOfflineSigner from './useOfflineSigner'
+import useChain from './wallet/useChain'
+import useOfflineSigner from './wallet/useOfflineSigner'
 
 export class CosmWasmClient extends CosmWasmClientOriginal {
   public static async connect(

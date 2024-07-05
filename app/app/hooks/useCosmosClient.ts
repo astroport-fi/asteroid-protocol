@@ -3,8 +3,8 @@ import { StdFee } from '@cosmjs/amino'
 import { GasPrice } from '@cosmjs/stargate'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
-import useOfflineSigner from '~/hooks/useOfflineSigner'
-import useChain from './useChain'
+import useOfflineSigner from '~/hooks/wallet/useOfflineSigner'
+import useChain from './wallet/useChain'
 
 export class SigningClient {
   client: SigningStargateClient
@@ -85,7 +85,7 @@ interface ClientState {
   isLoading: boolean
 }
 
-export default function useClient(retry = 0) {
+export default function useCosmosClient(retry = 0) {
   const { chainName, gasPrice, restEndpoint, rpcEndpoint } = useRootContext()
   const { setDefaultSignOptions, isWalletConnected, address } =
     useChain(chainName)

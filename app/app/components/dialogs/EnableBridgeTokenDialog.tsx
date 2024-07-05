@@ -3,8 +3,8 @@ import { forwardRef, useMemo } from 'react'
 import { Link, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
+import { useCreateAstroportPoolUrl } from '~/hooks/astroport/useAstroportUrl'
 import { useBridgeTokenSignatures } from '~/hooks/bridge/useBridgeSignatures'
-import { useCreateAstroportPoolUrl } from '~/hooks/useAstroportUrl'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,

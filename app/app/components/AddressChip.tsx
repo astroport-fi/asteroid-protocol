@@ -1,6 +1,6 @@
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { Link } from '@remix-run/react'
-import useAddress from '~/hooks/useAddress'
+import useAddress from '~/hooks/wallet/useAddress'
 import Address from './Address'
 
 export default function AddressChip({ address }: { address: string }) {

@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { ListingState, getListingState } from '~/api/marketplace'
 import { MarketplaceTokenListing, Token } from '~/api/token'
 import { useRootContext } from '~/context/root'
-import useAddress from '~/hooks/useAddress'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
+import useAddress from '~/hooks/wallet/useAddress'
 import ListingsTable, { ListingsTableActions } from './ListingsTable'
 
 const DEFAULT_SORT = { id: 'ppt', desc: false }

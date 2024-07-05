@@ -2,7 +2,7 @@ import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { useMemo } from 'react'
 import useSWR from 'swr'
 import { useRootContext } from '~/context/root'
-import useNeutronClient from './useNeutronClient'
+import useNeutronClient from '~/hooks/neutron/useNeutronClient'
 
 interface PairResponse {
   contract_addr: string
