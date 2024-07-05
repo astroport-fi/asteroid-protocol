@@ -8,7 +8,6 @@ import { Wallet } from '~/components/wallet/Wallet'
 import useStargazeName from '~/hooks/useStargazeName'
 import useAddress from '~/hooks/wallet/useAddress'
 import noWalletAnimationData from '~/lottie/no-wallet.json'
-import logo from '../images/logo/white.svg'
 
 function Tab({
   active,
@@ -93,15 +92,10 @@ export default function WalletPage() {
   return (
     <div className="flex flex-col items-center overflow-y-scroll">
       <div className="flex flex-col items-center">
-        <img
-          src={logo}
-          alt="Asteroid protocol"
-          className="hidden lg:inline lg:w-40"
-        />
         {stargazeName && (
-          <span className="mt-8 text-md font-light">{stargazeName}</span>
+          <span className="mb-4 text-md font-light">{stargazeName}</span>
         )}
-        <DaisyLink className="text-primary border border-primary flex items-center mt-6 lg:mt-8 rounded-full btn-md break-all">
+        <DaisyLink className="text-primary border border-primary flex items-center rounded-full btn-md break-all">
           <WalletIcon className="w-5 mr-2" />
           {address}
         </DaisyLink>
