@@ -20,14 +20,14 @@ import ReservedListingsTable from '~/components/market/ReservedListingsTable'
 import Stats from '~/components/market/Stats'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
-import useAddress from '~/hooks/useAddress'
-import { useSwapAstroportUrl } from '~/hooks/useAstroportUrl'
+import { useSwapAstroportUrl } from '~/hooks/astroport/useAstroportUrl'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useMarketplaceOperations } from '~/hooks/useOperations'
 import {
   useTokenFactoryDenom,
   useTokenFactoryMetadata,
 } from '~/hooks/useTokenFactory'
+import useAddress from '~/hooks/wallet/useAddress'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
 import { parsePagination, parseSorting } from '~/utils/pagination'

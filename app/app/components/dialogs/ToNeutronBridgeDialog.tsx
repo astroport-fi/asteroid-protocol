@@ -3,13 +3,12 @@ import { Divider, Link, Loading, Steps } from 'react-daisyui'
 import { Token } from '~/api/token'
 import { ASTROPORT_ATOM_DENOM } from '~/constants'
 import { useRootContext } from '~/context/root'
-import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
-import { useNeutronAddress } from '~/hooks/useAddress'
-import { usePair } from '~/hooks/useAstroportClient'
+import { usePair } from '~/hooks/astroport/useAstroportClient'
 import {
   useCreateAstroportPoolUrl,
   useProvideAstroportLiquidityUrl,
-} from '~/hooks/useAstroportUrl'
+} from '~/hooks/astroport/useAstroportUrl'
+import { useBridgeHistorySignatures } from '~/hooks/bridge/useBridgeSignatures'
 import { useBridgeOperations } from '~/hooks/useOperations'
 import useSubmitTx, {
   SubmitTxState,
@@ -17,6 +16,7 @@ import useSubmitTx, {
   useExecuteBridgeMsg,
 } from '~/hooks/useSubmitTx'
 import { useTokenFactoryBalance } from '~/hooks/useTokenFactory'
+import { useNeutronAddress } from '~/hooks/wallet/useAddress'
 import { toDecimalValue } from '~/utils/number'
 import DecimalText from '../DecimalText'
 import Actions from '../SubmitTx/Actions'

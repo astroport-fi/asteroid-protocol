@@ -2,7 +2,7 @@ import { Coin } from '@cosmjs/stargate'
 import { Metadata } from 'cosmjs-types/cosmos/bank/v1beta1/bank'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
-import useNeutronClient from './useNeutronClient'
+import useNeutronClient from '~/hooks/neutron/useNeutronClient'
 
 export function useTokenFactoryDenom(ticker: string) {
   const { neutronBridgeContract } = useRootContext()

@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import { Token } from '~/api/token'
-import { useNeutronAddress } from '~/hooks/useAddress'
 import { useTokenFactoryBalance } from '~/hooks/useTokenFactory'
+import { useNeutronAddress } from '~/hooks/wallet/useAddress'
 import TokenValue from './TokenValue'
 
 interface Props {

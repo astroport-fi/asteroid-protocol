@@ -19,13 +19,13 @@ import AddressInput from '~/components/form/AddressInput'
 import NumericInput from '~/components/form/NumericInput'
 import { useRootContext } from '~/context/root'
 import useIsBridgeTransactionProcessed from '~/hooks/bridge/useIsBridgeTransactionProcessed'
-import useChain from '~/hooks/useChain'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import {
   useTokenFactoryBalance,
   useTokenFactoryDenom,
   useTokenFactoryMetadata,
 } from '~/hooks/useTokenFactory'
+import useChain from '~/hooks/wallet/useChain'
 import { getAddress } from '~/utils/cookies'
 import { getDecimalValue } from '~/utils/number'
 

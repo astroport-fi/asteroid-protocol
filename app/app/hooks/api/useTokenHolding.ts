@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import useAsteroidClient from '~/hooks/useAsteroidClient'
+import useAsteroidClient from '~/hooks/api/useAsteroidClient'
 
 export default function useTokenHolding(tokenId: number, address: string) {
   const asteroidClient = useAsteroidClient()

@@ -6,10 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
 import { useRootContext } from '~/context/root'
+import useAsteroidClient from '~/hooks/api/useAsteroidClient'
 import useAsteroidBridgeClient from '~/hooks/bridge/useAsteroidBridgeClient'
-import useAsteroidClient from '~/hooks/useAsteroidClient'
-import useClient, { SigningClient } from '~/hooks/useClient'
-import useAddress from './useAddress'
+import useCosmosClient, { SigningClient } from '~/hooks/useCosmosClient'
+import useAddress from '~/hooks/wallet/useAddress'
 
 export enum TxState {
   Initial,
@@ -84,7 +84,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   const { useIbc } = useRootContext()
 
   // deps
-  const clientState = clientOnly$(useClient(retryCounter))
+  const clientState = clientOnly$(useCosmosClient(retryCounter))
   const asteroidClient = useAsteroidClient()
   const address = useAddress()
 

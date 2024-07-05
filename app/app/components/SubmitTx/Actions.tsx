@@ -1,7 +1,7 @@
 import { Button } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
-import useChain from '~/hooks/useChain'
 import { SubmitTxError, TxState } from '~/hooks/useSubmitTx'
+import useChain from '~/hooks/wallet/useChain'
 import { Wallet } from '../wallet/Wallet'
 
 interface ActionsProps {

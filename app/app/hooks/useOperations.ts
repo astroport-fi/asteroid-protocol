@@ -12,8 +12,8 @@ import { ProtocolFee } from '@asteroid-protocol/sdk/metaprotocol'
 import { useMemo } from 'react'
 import { clientOnly$ } from 'vite-env-only'
 import { useRootContext } from '~/context/root'
-import useAddress from '~/hooks/useAddress'
-import useAsteroidClient from '~/hooks/useAsteroidClient'
+import useAsteroidClient from '~/hooks/api/useAsteroidClient'
+import useAddress from '~/hooks/wallet/useAddress'
 
 function getFee(fee: ProtocolFee, useIbc: boolean): ProtocolFee | undefined {
   if (useIbc) {
