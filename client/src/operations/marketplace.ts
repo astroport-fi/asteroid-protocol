@@ -51,17 +51,16 @@ export class MarketplaceOperations<
     timeoutBlocks: number,
   ) {
     const minDepositMultiplier = minDepositPercent / 100
-    const minDepositAbsolute = 0.000001 // @todo move to fee config
+    const minDepositAbsolute = 1
+    const totalBase = amount * pricePerToken * 10 ** TOKEN_DECIMALS
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = amount * pricePerToken * minDepositMultiplier
+    let listingFee = totalBase * minDepositMultiplier
     // Avoid very small listing fees
     if (listingFee < minDepositAbsolute) {
       listingFee = minDepositAbsolute
     }
-    // Convert to uatom decimals from config
-    listingFee = listingFee * 10 ** TOKEN_DECIMALS
     listingFee = Math.floor(listingFee)
 
     return this.prepareOperation(
@@ -84,17 +83,16 @@ export class MarketplaceOperations<
     timeoutBlocks: number,
   ) {
     const minDepositMultiplier = minDepositPercent / 100
-    const minDepositAbsolute = 0.000001 // @todo move to fee config
+    const minDepositAbsolute = 1
+    const totalBase = price * 10 ** TOKEN_DECIMALS
 
     // Calculate the amount of ATOM for the listing fee
     // The listing fee is mindep % of amount * ppt
-    let listingFee = price * minDepositMultiplier
+    let listingFee = totalBase * minDepositMultiplier
     // Avoid very small listing fees
     if (listingFee < minDepositAbsolute) {
       listingFee = minDepositAbsolute
     }
-    // Convert to uatom decimals from config
-    listingFee = listingFee * 10 ** TOKEN_DECIMALS
     listingFee = Math.floor(listingFee)
 
     return this.prepareOperation(
