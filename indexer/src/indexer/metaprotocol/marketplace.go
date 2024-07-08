@@ -666,8 +666,9 @@ func (protocol *Marketplace) Process(currentTransaction models.Transaction, prot
 			return fmt.Errorf("invalid tokens sent '%s'", err)
 		}
 
-		if amountSent < uint64(math.Floor(minDepositBase)) {
-			return fmt.Errorf("sender did not send enough tokens to cover the listing fee")
+		amountExpected := uint64(math.Floor(minDepositBase))
+		if amountSent < amountExpected {
+			return fmt.Errorf("sender did not send enough tokens to cover the listing fee, amount sent: %d, amount expected %d", amountSent, amountExpected)
 		}
 
 		// At this point we know that the sender has the inscription and everything
