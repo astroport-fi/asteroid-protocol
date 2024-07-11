@@ -137,12 +137,18 @@ export interface WalletProviderProps {
   chainName: string
   rpcEndpoint: string
   restEndpoint: string
+  neutronChainName: string
+  neutronRpcEndpoint: string
+  neutronRestEndpoint: string
 }
 
 export default function WalletProvider({
   chainName,
   rpcEndpoint,
   restEndpoint,
+  neutronChainName,
+  neutronRpcEndpoint,
+  neutronRestEndpoint,
 }: WalletProviderProps) {
   return (
     <ChainProvider
@@ -158,6 +164,10 @@ export default function WalletProvider({
           [chainName]: {
             rpc: [rpcEndpoint],
             rest: [restEndpoint],
+          },
+          [neutronChainName]: {
+            rpc: [neutronRpcEndpoint],
+            rest: [neutronRestEndpoint],
           },
         },
       }}

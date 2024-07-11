@@ -184,6 +184,9 @@ export default function App() {
             chainName={data.ENV.CHAIN_NAME}
             rpcEndpoint={data.ENV.RPC}
             restEndpoint={data.ENV.REST}
+            neutronChainName={data.ENV.NEUTRON_CHAIN_NAME}
+            neutronRpcEndpoint={data.ENV.NEUTRON_RPC}
+            neutronRestEndpoint={data.ENV.NEUTRON_REST}
           />
         </RootContext.Provider>
         <ScrollRestoration />
