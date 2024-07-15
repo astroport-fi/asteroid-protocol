@@ -10,9 +10,11 @@ import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import TxDialog from '~/components/dialogs/TxDialog'
+import ErrorLabel from '~/components/form/ErrorLabel'
 import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
 import { Wallet } from '~/components/wallet/Wallet'
+import { COSMOS_ADDRESS_REGEXP } from '~/constants'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
@@ -33,18 +35,31 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   return json({ collections: res.collections })
 }
 
-interface Stage {
+interface FormStage {
   name?: string
   description?: string
   start?: Date
   finish?: Date
   price?: number
   maxPerUser?: number
+  whitelist?: string
+}
+
+interface Stage extends Omit<FormStage, 'whitelist'> {
+  whitelist?: string[]
 }
 
 type FormData = {
   collection: string
-  stages: Stage[]
+  stages: FormStage[]
+}
+
+function parseWhitelist(whitelist: string): string[] {
+  return whitelist.split(',').map((a) => a.trim())
+}
+
+function validateWhitelist(whitelist: string): boolean {
+  return whitelist.split(',').every((a) => COSMOS_ADDRESS_REGEXP.test(a.trim()))
 }
 
 export default function CreateCollectionLaunch() {
@@ -78,7 +93,13 @@ export default function CreateCollectionLaunch() {
       return
     }
 
-    console.log('!!data', data)
+    const stages: Stage[] = data.stages.map((formStage) => {
+      if (formStage.whitelist) {
+        const whitelist = parseWhitelist(formStage.whitelist)
+        return { ...formStage, whitelist }
+      }
+      return { ...formStage } as Stage
+    })
 
     // txInscription = operations.inscribe(byteArray, metadata)
 
@@ -94,11 +115,7 @@ export default function CreateCollectionLaunch() {
           <strong>Create a collection launch</strong>
 
           <div className="form-control w-full mt-6">
-            <Label
-              title="Collection (optional)"
-              htmlFor="collection"
-              tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
-            />
+            <Label title="Collection" htmlFor="collection" />
             <div className="flex w-full gap-4 items-center">
               <Select
                 id="collection"
@@ -148,7 +165,10 @@ export default function CreateCollectionLaunch() {
 
               <div className="flex flex-col w-full justify-between gap-4 mb-2">
                 <div className="form-control w-full">
-                  <Label title="Name" htmlFor={`stages.${index}.name`} />
+                  <Label
+                    title="Name (Optional)"
+                    htmlFor={`stages.${index}.name`}
+                  />
                   <Input
                     color={
                       errors['stages']?.[index]?.name ? 'error' : undefined
@@ -160,7 +180,7 @@ export default function CreateCollectionLaunch() {
 
                 <div className="form-control w-full">
                   <Label
-                    title="Description"
+                    title="Description (optional)"
                     htmlFor={`stages.${index}.description`}
                   />
                   <Textarea
@@ -177,7 +197,7 @@ export default function CreateCollectionLaunch() {
                   control={control}
                   error={errors['stages']?.[index]?.price}
                   name={`stages.${index}.price`}
-                  title="Price (ATOM)"
+                  title="Price in ATOM (optional)"
                   placeholder="Price per inscription"
                   isFloat
                 />
@@ -186,14 +206,14 @@ export default function CreateCollectionLaunch() {
                   control={control}
                   error={errors['stages']?.[index]?.maxPerUser}
                   name={`stages.${index}.maxPerUser`}
-                  title="Maximum mints per user"
+                  title="Maximum mints per user (optional)"
                   className="mt-4"
                 />
 
                 <div className="flex flex-row my-4">
                   <div className="flex flex-col w-full">
                     <Label
-                      title="Start date & time"
+                      title="Start date & time (optional)"
                       htmlFor={`stages.${index}.start`}
                     />
                     <div className="flex">
@@ -235,7 +255,7 @@ export default function CreateCollectionLaunch() {
                   </div>
                   <div className="flex flex-col w-full items-start">
                     <Label
-                      title="Finish date & time"
+                      title="Finish date & time (optional)"
                       htmlFor={`stages.${index}.finish`}
                     />
                     <div className="flex flex-col">
@@ -281,15 +301,33 @@ export default function CreateCollectionLaunch() {
                           )}
                         />,
                       )}
-                      {errors.stages?.[index]?.finish && (
-                        <label className="label">
-                          <span className="label-text-alt text-error">
-                            {errors.stages[index].finish.message}
-                          </span>
-                        </label>
-                      )}
+                      <ErrorLabel error={errors.stages?.[index]?.finish} />
                     </div>
                   </div>
+                </div>
+
+                <div className="form-control w-full">
+                  <Label
+                    title="Whitelist (optional)"
+                    htmlFor={`stages.${index}.whitelist`}
+                  />
+                  <Textarea
+                    id="whitelist"
+                    placeholder="Comma separated list of addresses"
+                    rows={10}
+                    color={
+                      errors.stages?.[index]?.whitelist ? 'error' : undefined
+                    }
+                    {...register(`stages.${index}.whitelist`, {
+                      required: false,
+                      validate: (v) => {
+                        if (v && !validateWhitelist(v)) {
+                          return 'Invalid address'
+                        }
+                      },
+                    })}
+                  />
+                  <ErrorLabel error={errors.stages?.[index]?.whitelist} />
                 </div>
               </div>
             </React.Fragment>
