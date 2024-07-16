@@ -578,7 +578,7 @@ CREATE INDEX "idx_launchpad_collection_id" ON "public"."launchpad" USING btree (
 -- DROP TABLE public."launchpad_stage";
 
 CREATE TABLE public."launchpad_stage" (
-    id int4 NOT NULL,
+    id serial4 NOT NULL,
     collection_id int4 NOT NULL,
     launchpad_id int4 NOT NULL,
     "name" varchar(32) NULL DEFAULT NULL,
