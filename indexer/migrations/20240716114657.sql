@@ -20,7 +20,7 @@ CREATE INDEX "idx_launchpad_transaction_id" ON "public"."launchpad" ("transactio
 CREATE UNIQUE INDEX "launchpad_tx_id" ON "public"."launchpad" ("transaction_id");
 -- Create "launchpad_stage" table
 CREATE TABLE "public"."launchpad_stage" (
-  "id" integer NOT NULL,
+  "id" serial NOT NULL,
   "collection_id" integer NOT NULL,
   "launchpad_id" integer NOT NULL,
   "name" character varying(32) NULL DEFAULT NULL::character varying,

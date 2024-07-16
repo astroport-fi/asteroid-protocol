@@ -103,7 +103,6 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 	// save stages
 	for _, stage := range launchMetadata.Stages {
 		launchpadStage := models.LaunchpadStage{
-			ID:           stage.ID,
 			CollectionID: collection.ID,
 			LaunchpadID:  launchpad.ID,
 			Price:        stage.Price,
@@ -136,7 +135,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 			launchpadWhitelist := models.LaunchpadWhitelist{
 				CollectionID: collection.ID,
 				LaunchpadID:  launchpad.ID,
-				StageID:      stage.ID,
+				StageID:      launchpadStage.ID,
 				Address:      whitelist,
 			}
 
