@@ -1,0 +1,29 @@
+table:
+  name: launchpad
+  schema: public
+object_relationships:
+  - name: collection
+    using:
+      foreign_key_constraint_on: collection_id
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+array_relationships:
+  - name: stages
+    using:
+      foreign_key_constraint_on:
+        column: launchpad_id
+        table:
+          name: launchpad_stage
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - collection_id
+        - date_created
+        - id
+        - max_supply
+        - transaction_id
+      filter: {}
+    comment: ""

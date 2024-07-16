@@ -1,0 +1,24 @@
+table:
+  name: launchpad_whitelist
+  schema: public
+object_relationships:
+  - name: stage
+    using:
+      manual_configuration:
+        column_mapping:
+          stage_id: id
+        insertion_order: null
+        remote_table:
+          name: launchpad_stage
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - address
+        - collection_id
+        - id
+        - launchpad_id
+        - stage_id
+      filter: {}
+    comment: ""
