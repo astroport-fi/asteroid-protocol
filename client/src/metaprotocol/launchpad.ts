@@ -10,7 +10,6 @@ const DEFAULT_FEE: ProtocolFee = {
 }
 
 export interface MintStage {
-  id: number
   name?: string
   description?: string
   start: Date
