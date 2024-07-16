@@ -547,6 +547,76 @@ CREATE TABLE public.bridge_token (
 
 CREATE INDEX "idx_bridge_token_token_id" ON "public"."bridge_token" USING btree ("token_id");
 
+-- public."launchpad" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad";
+
+CREATE TABLE public."launchpad" (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    collection_id int4 NOT NULL,
+    max_supply numeric NOT NULL,
+    date_created timestamp NOT NULL,
+    CONSTRAINT launchpad_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_tx_id UNIQUE (transaction_id),
+    CONSTRAINT launchpad_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
+    CONSTRAINT launchpad_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
+);
+
+CREATE INDEX "idx_launchpad_transaction_id" ON "public"."launchpad" USING btree ("transaction_id");
+CREATE INDEX "idx_launchpad_collection_id" ON "public"."launchpad" USING btree ("collection_id");
+
+-- public."launchpad_stage" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_stage";
+
+CREATE TABLE public."launchpad_stage" (
+    id int4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    "name" varchar(32) NULL DEFAULT NULL,
+    description text NULL DEFAULT NULL,
+    "start_date" timestamp NULL DEFAULT NULL,
+    finish_date timestamp NULL DEFAULT NULL,
+    price int8 NOT NULL,
+    per_user_limit int8 NOT NULL,
+    CONSTRAINT launchpad_stage_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_stage_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_stage_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id)
+);
+
+CREATE INDEX "idx_launchpad_stage_collection_id" ON "public"."launchpad_stage" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_stage_launchpad_id" ON "public"."launchpad_stage" USING btree ("launchpad_id");
+
+-- public."launchpad_whitelist" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_whitelist";
+
+CREATE TABLE public."launchpad_whitelist" (
+    id serial4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    stage_id int4 NOT NULL,
+    "address" varchar(128) NOT NULL,
+    CONSTRAINT launchpad_whitelist_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_whitelist_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_whitelist_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id),
+    CONSTRAINT launchpad_whitelist_stage_fk FOREIGN KEY (stage_id) REFERENCES public."launchpad_stage"(id)
+);
+
+CREATE INDEX "idx_launchpad_whitelist_collection_id" ON "public"."launchpad_whitelist" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_whitelist_launchpad_id" ON "public"."launchpad_whitelist" USING btree ("launchpad_id");
+CREATE INDEX "idx_launchpad_whitelist_stage_id" ON "public"."launchpad_whitelist" USING btree ("stage_id");
+CREATE INDEX "idx_launchpad_whitelist_address" ON "public"."launchpad_whitelist" USING btree ("address");
 
 -- public.inscription_market view definition
 
