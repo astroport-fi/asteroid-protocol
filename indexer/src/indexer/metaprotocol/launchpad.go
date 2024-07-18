@@ -68,6 +68,19 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 		return err
 	}
 
+	// check if collection doesn't already have a launchpad or inscriptions
+	var launchpad models.Launchpad
+	result := protocol.db.Where("collection_id = ?", collection.ID).First(&launchpad)
+	if result.Error == nil {
+		return fmt.Errorf("collection already has a launchpad")
+	}
+
+	var count int64
+	protocol.db.Model(&models.Inscription{}).Where("collection_id = ?", collection.ID).Count(&count)
+	if count > 0 {
+		return fmt.Errorf("collection already has inscriptions")
+	}
+
 	// get launch metadata from non_critical_extension_options
 	msg, err := rawTransaction.Body.GetExtensionMessage()
 	if err != nil {
@@ -86,7 +99,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 	}
 
 	// save to db
-	launchpad := models.Launchpad{
+	launchpad = models.Launchpad{
 		ChainID:       parsedURN.ChainID,
 		Height:        transactionModel.Height,
 		TransactionID: transactionModel.ID,
@@ -95,7 +108,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 		DateCreated:   transactionModel.DateCreated,
 		MaxSupply:     launchMetadata.Supply,
 	}
-	result := protocol.db.Save(&launchpad)
+	result = protocol.db.Save(&launchpad)
 	if result.Error != nil {
 		return result.Error
 	}
