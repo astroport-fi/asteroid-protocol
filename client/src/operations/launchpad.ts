@@ -19,7 +19,11 @@ export class LaunchpadOperations<
     this.options = options
   }
 
-  launch(collectionHash: string, supply: number, stages: MintStage[]) {
+  launch(
+    collectionHash: string,
+    supply: number | undefined,
+    stages: MintStage[],
+  ) {
     const operation = this.protocol.launch(collectionHash)
     return this.prepareOperation(operation, { metadata: { supply, stages } })
   }
