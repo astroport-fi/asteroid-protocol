@@ -1,4 +1,5 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
+import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
@@ -16,7 +17,7 @@ import NumericInput from '~/components/form/NumericInput'
 import { Wallet } from '~/components/wallet/Wallet'
 import { COSMOS_ADDRESS_REGEXP } from '~/constants'
 import { useDialogWithValue } from '~/hooks/useDialog'
-import { useInscriptionOperations } from '~/hooks/useOperations'
+import { useLaunchpadOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { getAddress } from '~/utils/cookies'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -45,12 +46,9 @@ interface FormStage {
   whitelist?: string
 }
 
-interface Stage extends Omit<FormStage, 'whitelist'> {
-  whitelist?: string[]
-}
-
 type FormData = {
   collection: string
+  supply?: number
   stages: FormStage[]
 }
 
@@ -64,7 +62,7 @@ function validateWhitelist(whitelist: string): boolean {
 
 export default function CreateCollectionLaunch() {
   const data = useLoaderData<typeof loader>()
-  const operations = useInscriptionOperations() // @todo launch operations
+  const operations = useLaunchpadOperations()
   const isLedger = useIsLedger()
 
   // form
@@ -93,17 +91,20 @@ export default function CreateCollectionLaunch() {
       return
     }
 
-    const stages: Stage[] = data.stages.map((formStage) => {
+    const stages: launchpad.MintStage[] = data.stages.map((formStage) => {
       if (formStage.whitelist) {
         const whitelist = parseWhitelist(formStage.whitelist)
         return { ...formStage, whitelist }
       }
-      return { ...formStage } as Stage
+      return { ...formStage } as launchpad.MintStage
     })
 
-    // txInscription = operations.inscribe(byteArray, metadata)
-
-    // showDialog(txInscription)
+    const txInscription = operations.launch(
+      data.collection,
+      data.supply,
+      stages,
+    )
+    showDialog(txInscription)
   })
 
   return (
@@ -142,6 +143,16 @@ export default function CreateCollectionLaunch() {
               </Link>
             </div>
           </div>
+
+          <NumericInput
+            control={control}
+            required
+            error={errors.supply}
+            name="supply"
+            title="Collection supply"
+            placeholder="Total supply"
+            className="mt-8"
+          />
 
           {fields.map((item, index) => (
             <React.Fragment key={`stage-${index}`}>

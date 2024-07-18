@@ -5,6 +5,8 @@ import {
   CFT20Protocol,
   InscriptionOperations,
   InscriptionProtocol,
+  LaunchpadOperations,
+  LaunchpadProtocol,
   MarketplaceOperations,
   MarketplaceProtocol,
 } from '@asteroid-protocol/sdk'
@@ -107,6 +109,28 @@ export function useBridgeOperations<T extends boolean = true>(
         useIbc,
         useExtensionData,
         fee: getFee(BridgeProtocol.DEFAULT_FEE, useIbc),
+      }),
+    )
+  }, [chainId, address, useIbc, useExtensionData, multi])
+}
+
+export function useLaunchpadOperations<T extends boolean = true>(
+  multi = true as T,
+) {
+  const { chainId, useIbc, useExtensionData } = useRootContext()
+  const address = useAddress()
+
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
+
+    return clientOnly$(
+      new LaunchpadOperations(chainId, address, {
+        multi,
+        useIbc,
+        useExtensionData,
+        fee: getFee(LaunchpadProtocol.DEFAULT_FEE, useIbc),
       }),
     )
   }, [chainId, address, useIbc, useExtensionData, multi])
