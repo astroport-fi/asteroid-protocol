@@ -20,6 +20,7 @@ import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { getAddress } from '~/utils/cookies'
+import { toDecimalValue } from '~/utils/number'
 import 'react-datepicker/dist/react-datepicker.css'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
@@ -92,11 +93,16 @@ export default function CreateCollectionLaunch() {
     }
 
     const stages: launchpad.MintStage[] = data.stages.map((formStage) => {
+      let price = formStage.price
+      if (price) {
+        price = toDecimalValue(price, 6)
+      }
+
       if (formStage.whitelist) {
         const whitelist = parseWhitelist(formStage.whitelist)
-        return { ...formStage, whitelist }
+        return { ...formStage, price, whitelist }
       }
-      return { ...formStage } as launchpad.MintStage
+      return { ...formStage, price, whitelist: undefined }
     })
 
     const txInscription = operations.launch(
