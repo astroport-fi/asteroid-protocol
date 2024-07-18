@@ -20,7 +20,7 @@ export interface MintStage {
 }
 
 export interface LaunchMetadata {
-  supply: number
+  supply?: number
   stages: MintStage[]
 }
 
