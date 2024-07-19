@@ -1,59 +1,128 @@
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
+import { formatRelative } from 'date-fns'
+import { PropsWithChildren } from 'react'
+import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
-import CollectionStatsTable from '~/components/collection/CollectionStatsTable'
-import SearchInputForm from '~/components/form/SearchInput'
-import { getCollectionsStatsOrder } from '~/utils/collection'
-import { parsePagination } from '~/utils/pagination'
+import { Launchpad } from '~/api/launchpad'
+import DecimalText from '~/components/DecimalText'
+import Grid from '~/components/Grid'
+import InscriptionImage from '~/components/InscriptionImage'
+import PercentageText from '~/components/PercentageText'
+import { getSupplyTitle } from '~/utils/number'
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
-  const { searchParams } = new URL(request.url)
-  const { offset, limit } = parsePagination(searchParams)
-  const search = searchParams.get('search')
-
-  const orderBy = getCollectionsStatsOrder(searchParams, 'volume')
-
+export async function loader({ context }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const res = await asteroidClient.getCollectionsStats(
-    orderBy,
-    { search },
-    offset,
-    limit,
-    true,
-  )
+
+  const launches = await asteroidClient.getActiveLaunches()
+  const pastLaunches = await asteroidClient.getPastLaunches()
 
   return json({
-    collectionsStats: res.stats,
-    pages: Math.ceil(res.count! / limit),
-    total: res.count!,
+    launches,
+    pastLaunches,
   })
 }
 
-export enum CollectionCategory {
-  Trending,
-  Top,
-  New,
+function BoxValue({ title, children }: PropsWithChildren<{ title: string }>) {
+  return (
+    <div className="flex flex-col items-start">
+      <span className="uppercase text-sm text-header-content">{title}</span>
+      <span className="text-base">{children}</span>
+    </div>
+  )
 }
 
-export default function CollectionsPage() {
+export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
+  const { collection } = launchpad
+
+  const stage = launchpad.stages[0]
+
+  const isActive =
+    !launchpad.start_date || new Date(launchpad.start_date) < new Date()
+
+  const isMintedOut =
+    launchpad.max_supply && launchpad.max_supply === launchpad.minted_supply
+
+  const isEnded =
+    isMintedOut ||
+    (launchpad.finish_date && new Date(launchpad.finish_date!) < new Date())
+
+  return (
+    <Link
+      className="carousel-item flex flex-col bg-base-200 rounded-xl group mr-4"
+      to={`/app/launchpad/${collection.symbol}`}
+    >
+      <InscriptionImage
+        src={collection.content_path!}
+        isExplicit={collection.is_explicit}
+        className="h-60"
+        containerClassName="rounded-t-xl"
+      />
+
+      <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
+        <div className="flex flex-col px-4">
+          <strong className="text-nowrap whitespace-nowrap overflow-hidden text-ellipsis">
+            {collection.name}
+          </strong>
+        </div>
+        <Divider className="my-1" />
+        <div className="flex justify-between mx-4">
+          <BoxValue title="Price">
+            <DecimalText value={stage.price} suffix=" ATOM" />
+          </BoxValue>
+          <BoxValue title="Items">
+            {getSupplyTitle(launchpad.max_supply)}
+          </BoxValue>
+          <BoxValue title="Minted">
+            <PercentageText
+              value={launchpad.minted_supply / launchpad.max_supply}
+            />
+          </BoxValue>
+        </div>
+        <Divider className="my-1" />
+        <div className="flex flex-col items-center">
+          <span className="text-lg">
+            {isActive ? (
+              <span className="text-success">Live</span>
+            ) : isEnded ? (
+              <span className="text-info">Ended</span>
+            ) : (
+              <span>
+                Starts{' '}
+                {formatRelative(new Date(launchpad.start_date!), new Date())}
+              </span>
+            )}
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+export default function LaunchpadPage() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <div className="flex flex-col w-full max-w-[1920px] overflow-y-scroll">
-      <div className="flex justify-end">
-        <SearchInputForm placeholder="Search by collection name" />
-      </div>
-      {data.collectionsStats.length < 1 && (
-        <span className="p-4">{'No collections found'}</span>
+    <div className="flex flex-col w-full max-w-[1920px]">
+      <h3 className="text-xl text-white mt-12">Live & Upcoming launches</h3>
+
+      <Grid className="mt-4">
+        {data.launches.map((launch) => (
+          <LaunchBox key={launch.collection.id} launchpad={launch} />
+        ))}
+      </Grid>
+
+      {data.pastLaunches.length > 0 && (
+        <>
+          <h3 className="text-xl text-white mt-12">Ended launches</h3>
+
+          <Grid className="mt-4">
+            {data.pastLaunches.map((launch) => (
+              <LaunchBox key={launch.collection.id} launchpad={launch} />
+            ))}
+          </Grid>
+        </>
       )}
-      <CollectionStatsTable
-        collectionsStats={data.collectionsStats}
-        defaultSort={{ id: 'volume', desc: true }}
-        pages={data.pages}
-        total={data.total}
-        showPagination
-        showId
-      />
     </div>
   )
 }

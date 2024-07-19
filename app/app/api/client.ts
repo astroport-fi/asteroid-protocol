@@ -63,6 +63,7 @@ import {
   collectionStatsSelector,
   topCollectionSelector,
 } from './collection'
+import { Launchpad, launchpadSelector } from './launchpad'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 
@@ -1645,6 +1646,69 @@ export class AsteroidClient extends AsteroidService {
         result.bridge_history_aggregate.aggregate?.count ??
         result.bridge_history.length,
     }
+  }
+
+  // @todo take how much is minted out into consideration
+  async getActiveLaunches(): Promise<Launchpad[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            _or: [
+              {
+                finish_date: {
+                  _gt: new Date(),
+                },
+              },
+              {
+                finish_date: {
+                  _is_null: true,
+                },
+              },
+            ],
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad
+  }
+
+  async getPastLaunches(): Promise<Launchpad[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            _and: [
+              {
+                finish_date: {
+                  _lt: new Date(),
+                },
+              },
+              {
+                finish_date: {
+                  _is_null: false,
+                },
+              },
+            ],
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad
   }
 
   statusSubscription(chainId: string) {
