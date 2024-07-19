@@ -22,8 +22,11 @@ select_permissions:
       columns:
         - collection_id
         - date_created
+        - finish_date
         - id
         - max_supply
+        - minted_supply
+        - start_date
         - transaction_id
       filter: {}
     comment: ""
