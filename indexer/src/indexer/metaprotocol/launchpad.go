@@ -98,6 +98,22 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
 	}
 
+	// get start and finish launchpad dates from stages
+	var startDate, finishDate sql.NullTime
+	for _, stage := range launchMetadata.Stages {
+		if !stage.Start.IsZero() {
+			if !startDate.Valid || stage.Start.Before(startDate.Time) {
+				startDate = sql.NullTime{Time: stage.Start, Valid: true}
+			}
+		}
+
+		if !stage.Finish.IsZero() {
+			if !finishDate.Valid || stage.Finish.After(finishDate.Time) {
+				finishDate = sql.NullTime{Time: stage.Finish, Valid: true}
+			}
+		}
+	}
+
 	// save to db
 	launchpad = models.Launchpad{
 		ChainID:       parsedURN.ChainID,
@@ -107,6 +123,9 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 		CollectionID:  collection.ID,
 		DateCreated:   transactionModel.DateCreated,
 		MaxSupply:     launchMetadata.Supply,
+		MintedSupply:  0,
+		StartDate:     startDate,
+		FinishDate:    finishDate,
 	}
 	result = protocol.db.Save(&launchpad)
 	if result.Error != nil {
