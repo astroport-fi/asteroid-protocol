@@ -5149,8 +5149,10 @@ export type ValueTypes = {
     collection?: ValueTypes['collection']
     collection_id?: boolean | `@${string}`
     date_created?: boolean | `@${string}`
+    finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    minted_supply?: boolean | `@${string}`
     stages?: [
       {
         /** distinct select on columns */
@@ -5185,6 +5187,7 @@ export type ValueTypes = {
       },
       ValueTypes['launchpad_stage'],
     ]
+    start_date?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ValueTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -5222,6 +5225,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    finish_date?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     id?:
       | ValueTypes['Int_comparison_exp']
       | undefined
@@ -5232,8 +5240,18 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     stages?:
       | ValueTypes['launchpad_stage_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    start_date?:
+      | ValueTypes['timestamp_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -5265,14 +5283,29 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    finish_date?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     max_supply?:
       | ValueTypes['order_by']
       | undefined
       | null
       | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     stages_aggregate?:
       | ValueTypes['launchpad_stage_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    start_date?:
+      | ValueTypes['order_by']
       | undefined
       | null
       | Variable<any, string>
@@ -5803,9 +5836,24 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    finish_date?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
     max_supply?:
       | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    start_date?:
+      | ValueTypes['timestamp']
       | undefined
       | null
       | Variable<any, string>
@@ -19523,8 +19571,10 @@ export type ResolverInputTypes = {
     collection?: ResolverInputTypes['collection']
     collection_id?: boolean | `@${string}`
     date_created?: boolean | `@${string}`
+    finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    minted_supply?: boolean | `@${string}`
     stages?: [
       {
         /** distinct select on columns */
@@ -19551,6 +19601,7 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['launchpad_stage'],
     ]
+    start_date?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -19567,9 +19618,21 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['timestamp_comparison_exp']
       | undefined
       | null
+    finish_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     max_supply?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+    minted_supply?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
     stages?: ResolverInputTypes['launchpad_stage_bool_exp'] | undefined | null
+    start_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
   }
@@ -19578,12 +19641,15 @@ export type ResolverInputTypes = {
     collection?: ResolverInputTypes['collection_order_by'] | undefined | null
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
     date_created?: ResolverInputTypes['order_by'] | undefined | null
+    finish_date?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
+    minted_supply?: ResolverInputTypes['order_by'] | undefined | null
     stages_aggregate?:
       | ResolverInputTypes['launchpad_stage_aggregate_order_by']
       | undefined
       | null
+    start_date?: ResolverInputTypes['order_by'] | undefined | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -19834,8 +19900,11 @@ export type ResolverInputTypes = {
   ['launchpad_stream_cursor_value_input']: {
     collection_id?: number | undefined | null
     date_created?: ResolverInputTypes['timestamp'] | undefined | null
+    finish_date?: ResolverInputTypes['timestamp'] | undefined | null
     id?: number | undefined | null
     max_supply?: ResolverInputTypes['numeric'] | undefined | null
+    minted_supply?: ResolverInputTypes['numeric'] | undefined | null
+    start_date?: ResolverInputTypes['timestamp'] | undefined | null
     transaction_id?: number | undefined | null
   }
   /** columns and relationships of "launchpad_whitelist" */
@@ -28901,10 +28970,13 @@ export type ModelTypes = {
     collection: ModelTypes['collection']
     collection_id: number
     date_created: ModelTypes['timestamp']
+    finish_date?: ModelTypes['timestamp'] | undefined
     id: number
     max_supply: ModelTypes['numeric']
+    minted_supply: ModelTypes['numeric']
     /** An array relationship */
     stages: Array<ModelTypes['launchpad_stage']>
+    start_date?: ModelTypes['timestamp'] | undefined
     /** An object relationship */
     transaction: ModelTypes['transaction']
     transaction_id: number
@@ -28917,9 +28989,12 @@ export type ModelTypes = {
     collection?: ModelTypes['collection_bool_exp'] | undefined
     collection_id?: ModelTypes['Int_comparison_exp'] | undefined
     date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
+    finish_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     max_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    minted_supply?: ModelTypes['numeric_comparison_exp'] | undefined
     stages?: ModelTypes['launchpad_stage_bool_exp'] | undefined
+    start_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
   }
@@ -28928,11 +29003,14 @@ export type ModelTypes = {
     collection?: ModelTypes['collection_order_by'] | undefined
     collection_id?: ModelTypes['order_by'] | undefined
     date_created?: ModelTypes['order_by'] | undefined
+    finish_date?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
+    minted_supply?: ModelTypes['order_by'] | undefined
     stages_aggregate?:
       | ModelTypes['launchpad_stage_aggregate_order_by']
       | undefined
+    start_date?: ModelTypes['order_by'] | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
@@ -29119,8 +29197,11 @@ export type ModelTypes = {
   ['launchpad_stream_cursor_value_input']: {
     collection_id?: number | undefined
     date_created?: ModelTypes['timestamp'] | undefined
+    finish_date?: ModelTypes['timestamp'] | undefined
     id?: number | undefined
     max_supply?: ModelTypes['numeric'] | undefined
+    minted_supply?: ModelTypes['numeric'] | undefined
+    start_date?: ModelTypes['timestamp'] | undefined
     transaction_id?: number | undefined
   }
   /** columns and relationships of "launchpad_whitelist" */
@@ -34754,10 +34835,13 @@ export type GraphQLTypes = {
     collection: GraphQLTypes['collection']
     collection_id: number
     date_created: GraphQLTypes['timestamp']
+    finish_date?: GraphQLTypes['timestamp'] | undefined
     id: number
     max_supply: GraphQLTypes['numeric']
+    minted_supply: GraphQLTypes['numeric']
     /** An array relationship */
     stages: Array<GraphQLTypes['launchpad_stage']>
+    start_date?: GraphQLTypes['timestamp'] | undefined
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
     transaction_id: number
@@ -34770,9 +34854,12 @@ export type GraphQLTypes = {
     collection?: GraphQLTypes['collection_bool_exp'] | undefined
     collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    finish_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     max_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    minted_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
     stages?: GraphQLTypes['launchpad_stage_bool_exp'] | undefined
+    start_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
   }
@@ -34781,11 +34868,14 @@ export type GraphQLTypes = {
     collection?: GraphQLTypes['collection_order_by'] | undefined
     collection_id?: GraphQLTypes['order_by'] | undefined
     date_created?: GraphQLTypes['order_by'] | undefined
+    finish_date?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
+    minted_supply?: GraphQLTypes['order_by'] | undefined
     stages_aggregate?:
       | GraphQLTypes['launchpad_stage_aggregate_order_by']
       | undefined
+    start_date?: GraphQLTypes['order_by'] | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
@@ -34977,8 +35067,11 @@ export type GraphQLTypes = {
   ['launchpad_stream_cursor_value_input']: {
     collection_id?: number | undefined
     date_created?: GraphQLTypes['timestamp'] | undefined
+    finish_date?: GraphQLTypes['timestamp'] | undefined
     id?: number | undefined
     max_supply?: GraphQLTypes['numeric'] | undefined
+    minted_supply?: GraphQLTypes['numeric'] | undefined
+    start_date?: GraphQLTypes['timestamp'] | undefined
     transaction_id?: number | undefined
   }
   /** columns and relationships of "launchpad_whitelist" */
@@ -38755,8 +38848,11 @@ export const enum inscription_trade_history_select_column {
 export const enum launchpad_select_column {
   collection_id = 'collection_id',
   date_created = 'date_created',
+  finish_date = 'finish_date',
   id = 'id',
   max_supply = 'max_supply',
+  minted_supply = 'minted_supply',
+  start_date = 'start_date',
   transaction_id = 'transaction_id',
 }
 /** select columns of table "launchpad_stage" */
