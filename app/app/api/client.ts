@@ -1747,6 +1747,25 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad
   }
 
+  async getLaunch(symbol: string): Promise<Launchpad | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            collection: {
+              symbol: {
+                _eq: symbol,
+              },
+            },
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad[0]
+  }
+
   statusSubscription(chainId: string) {
     return this.ws!('subscription')({
       status: [
