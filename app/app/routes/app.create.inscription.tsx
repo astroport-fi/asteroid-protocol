@@ -1,20 +1,10 @@
 import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
-import clsx from 'clsx'
 import { useMemo, useState } from 'react'
-import {
-  Button,
-  Divider,
-  FileInput,
-  Form,
-  Input,
-  Select,
-  Textarea,
-} from 'react-daisyui'
+import { Button, Divider, Form, Select } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { CollectionTrait } from '~/api/collection'
@@ -23,6 +13,12 @@ import { InscribingNotSupportedWithLedger } from '~/components/alerts/Inscribing
 import TxDialog from '~/components/dialogs/TxDialog'
 import Autocomplete from '~/components/form/Autocomplete'
 import Label from '~/components/form/Label'
+import {
+  ContentInput,
+  Description,
+  Name,
+} from '~/components/inscription-form/Inputs'
+import Trait from '~/components/inscription-form/Trait'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useCollection from '~/hooks/api/useCollection'
@@ -54,9 +50,6 @@ type FormData = {
   traits: Record<string, string>
   newTraits: inscription.Trait[]
 }
-
-const NAME_MIN_LENGTH = 3
-const NAME_MAX_LENGTH = 32
 
 export default function CreateInscription() {
   const data = useLoaderData<typeof loader>()
@@ -198,65 +191,20 @@ export default function CreateInscription() {
               />
             )}
 
-            <div
-              className={clsx('flex flex-col', {
-                ['bg-base-200 w-full max-w-md border border-neutral border-dashed rounded-3xl p-8']:
-                  fileName == null,
-              })}
-            >
-              {fileName ? (
-                <span className="text-center">{fileName}</span>
-              ) : (
-                <>
-                  <span className="flex items-center justify-center text-lg">
-                    Inscription Content
-                    <InfoTooltip
-                      message="Inscribe any filetype that a browser can display (i.e. JPGs, PDFs, HTML and more!)"
-                      className="ml-2 before:ml-[-5rem]"
-                    />
-                  </span>
-                  <span className="mt-4">Max file size</span>
-                  <span>550kb</span>
-                </>
-              )}
+            <ContentInput
+              fileName={fileName}
+              error={errors.content}
+              register={register}
+              fileChange={(file) => {
+                setFileName(file?.name ?? null)
 
-              <label htmlFor="content" className="btn btn-accent mt-4">
-                {fileName ? 'Change file' : 'Select file'}
-              </label>
-              <FileInput
-                key="content"
-                id="content"
-                className="opacity-0 w-10"
-                {...register('content', {
-                  required: true,
-                  validate: async (files) => {
-                    const file = files[0]
-
-                    if (file.size > maxFileSize) {
-                      return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
-                    }
-                  },
-                })}
-                color={errors.content ? 'error' : undefined}
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  setFileName(file?.name ?? null)
-
-                  if (file && file.type.startsWith('image/')) {
-                    setPreview(URL.createObjectURL(file))
-                  } else {
-                    setPreview(null)
-                  }
-                }}
-              />
-              {errors.content && (
-                <span className="text-error">
-                  {errors.content.message
-                    ? errors.content.message
-                    : 'Inscription content is required'}
-                </span>
-              )}
-            </div>
+                if (file && file.type.startsWith('image/')) {
+                  setPreview(URL.createObjectURL(file))
+                } else {
+                  setPreview(null)
+                }
+              }}
+            />
           </div>
           <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
             <strong>Create an inscription</strong>
@@ -267,43 +215,9 @@ export default function CreateInscription() {
               {maxFileSize / 1000}kb.
             </p>
 
-            <div className="form-control w-full mt-6">
-              <Form.Label title="Name" htmlFor="name" />
-              <Input
-                id="name"
-                placeholder="Name your inscription"
-                color={errors.name ? 'error' : undefined}
-                maxLength={NAME_MAX_LENGTH}
-                minLength={NAME_MIN_LENGTH}
-                {...register('name', {
-                  required: true,
-                  minLength: NAME_MIN_LENGTH,
-                  maxLength: NAME_MAX_LENGTH,
-                })}
-              />
-              <label className="label" htmlFor="name">
-                <span className="label-text-alt text-error">
-                  {errors.name &&
-                    'Name is required and must be 3-32 characters long.'}
-                </span>
-                <span className="label-text-alt">{name?.length ?? 0} / 32</span>
-              </label>
-            </div>
+            <Name register={register} name={name} error={errors.name} />
 
-            <div className="form-control w-full">
-              <Label
-                title="Description"
-                htmlFor="description"
-                tooltip="This content will appear on your inscription’s detail page"
-                tooltipClassName="before:ml-10"
-              />
-              <Textarea
-                id="description"
-                placeholder="Describe your inscription"
-                rows={10}
-                {...register('description')}
-              />
-            </div>
+            <Description register={register} />
 
             <div className="form-control w-full mt-6">
               <Label
@@ -349,55 +263,15 @@ export default function CreateInscription() {
             {traitsMap && traitsComponents}
 
             {fields.map((item, index) => (
-              <div
+              <Trait
                 key={item.id}
-                className="flex  w-full justify-between gap-4 mb-2"
-              >
-                <div className="form-control w-full">
-                  <Label
-                    title="Name"
-                    htmlFor={`newTraits.${index}.trait_type`}
-                    tooltip="A category for your trait (i.e. hair color)"
-                  />
-                  <Input
-                    color={
-                      errors['newTraits']?.[index]?.trait_type
-                        ? 'error'
-                        : undefined
-                    }
-                    id={`newTraits.${index}.trait_type`}
-                    {...register(`newTraits.${index}.trait_type`, {
-                      pattern: /^[a-zA-Z0-9- ]+$/,
-                    })}
-                  />
-                </div>
-                <div className="form-control w-full">
-                  <Label
-                    title="Value"
-                    htmlFor={`newTraits.${index}.value`}
-                    tooltip={`The trait's data (i.e. the "hair color" trait could have a value of "red" or "black")`}
-                  />
-                  <Input
-                    color={
-                      errors['newTraits']?.[index]?.value ? 'error' : undefined
-                    }
-                    id={`newTraits.${index}.value`}
-                    {...register(`newTraits.${index}.value`, {
-                      pattern: /^[a-zA-Z0-9-. ]+$/,
-                    })}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  shape="circle"
-                  className="mt-12"
-                  color="error"
-                  size="xs"
-                  onClick={() => remove(index)}
-                >
-                  <XMarkIcon className="size-5" />
-                </Button>
-              </div>
+                register={register}
+                remove={() => remove(index)}
+                traitType={`newTraits.${index}.trait_type`}
+                traitValue={`newTraits.${index}.value`}
+                traitTypeError={errors['newTraits']?.[index]?.trait_type}
+                traitValueError={errors['newTraits']?.[index]?.value}
+              />
             ))}
 
             <Button

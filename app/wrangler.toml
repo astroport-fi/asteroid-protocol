@@ -22,6 +22,7 @@ NEUTRON_REST = "http://localhost:1317"
 BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
+UPLOAD_API = "http://localhost:3000"
 
 [env.localroids.vars]
 ENVIRONMENT = "development"
