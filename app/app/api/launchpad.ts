@@ -4,9 +4,14 @@ import {
   ScalarDefinition,
   Selector,
 } from '@asteroid-protocol/sdk/client'
-import { collectionSelector } from './collection'
+import {
+  CollectionDetail,
+  collectionDetailSelector,
+  collectionSelector,
+} from './collection'
 
 export const stageSelector = Selector('launchpad_stage')({
+  id: true,
   name: true,
   description: true,
   start_date: true,
@@ -35,3 +40,24 @@ export type Launchpad = InputType<
   typeof launchpadSelector,
   ScalarDefinition
 >
+
+export const launchpadDetailSelector = Selector('launchpad')({
+  max_supply: true,
+  minted_supply: true,
+  start_date: true,
+  finish_date: true,
+  transaction: {
+    hash: true,
+  },
+  stages: [{}, stageSelector],
+  collection: collectionDetailSelector,
+})
+
+export type LaunchpadDetail = Omit<
+  InputType<
+    GraphQLTypes['launchpad'],
+    typeof launchpadDetailSelector,
+    ScalarDefinition
+  >,
+  'collection'
+> & { collection: CollectionDetail }
