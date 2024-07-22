@@ -1,6 +1,8 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
+import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
 import { Button } from 'react-daisyui'
 import { LaunchpadDetail } from '~/api/launchpad'
+import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import TxDialog from './dialogs/TxDialog'
@@ -13,6 +15,7 @@ export default function MintInscription({
   launchpad: LaunchpadDetail
   className?: string
 }) {
+  const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
   const { dialogRef, value, showDialog } =
     useDialogWithValue<TxInscription | null>()
@@ -26,6 +29,13 @@ export default function MintInscription({
 
     // @todo stage id
     const txInscription = operations.reserve(launchpad.transaction.hash, 1)
+
+    // @todo add payment for minting inscription based on stage
+    const grant = getGrantSendMsg(operations.address, minterAddress, {
+      allowList: [operations.address],
+      spendLimit: [{ denom: 'uatom', amount: '1' }],
+    })
+    txInscription.messages = [grant]
 
     showDialog(txInscription)
   }
