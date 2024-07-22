@@ -58,6 +58,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
       ASTROPORT_FACTORY_CONTRACT:
         context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
       ASTROPORT_URL: context.cloudflare.env.ASTROPORT_URL,
+      UPLOAD_API: context.cloudflare.env.UPLOAD_API,
     },
   })
 }
@@ -162,6 +163,7 @@ export default function App() {
             maxFileSize: parseInt(data.ENV.MAX_FILE_SIZE),
             asteroidApi: data.ENV.ASTEROID_API,
             asteroidWs: data.ENV.ASTEROID_API_WSS,
+            uploadApi: data.ENV.UPLOAD_API,
             useIbc: data.ENV.USE_IBC != 'false',
             useExtensionData: data.ENV.USE_EXTENSION_DATA == 'true',
             status: {

@@ -7,6 +7,7 @@ export const RootContext = createContext({
   txExplorer: '',
   asteroidApi: '',
   asteroidWs: '',
+  uploadApi: '',
   chainId: '',
   neutronChainId: '',
   neutronChainName: '',
