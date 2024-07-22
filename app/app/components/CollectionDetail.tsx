@@ -1,23 +1,15 @@
-import {
-  GlobeAltIcon,
-  InformationCircleIcon,
-  PencilSquareIcon,
-} from '@heroicons/react/24/outline'
-import { Link } from '@remix-run/react'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import { useMemo, useState } from 'react'
 import { Collapse, Link as DaisyLink } from 'react-daisyui'
 import { ClubStats } from '~/api/clubs'
 import { CollectionDetail, CollectionStats } from '~/api/collection'
-import useAddress from '~/hooks/wallet/useAddress'
 import { usesAsteroidSocialLinks } from '~/utils/collection'
 import { CollapseTextContent, CollapseTextTrigger } from './CollapseText'
 import CollectionStatsComponent from './CollectionStats'
 import InscriptionImage from './InscriptionImage'
 import { NotAffiliatedWarning } from './alerts/NotAffiliatedAlert'
-import Discord from './icons/discord'
-import Telegram from './icons/telegram'
-import Twitter from './icons/twitter'
+import CollectionSocials from './collection/CollectionSocials'
 
 export default function CollectionDetailComponent({
   collection,
@@ -26,8 +18,7 @@ export default function CollectionDetailComponent({
   collection: CollectionDetail
   stats: CollectionStats | ClubStats | undefined
 }) {
-  const address = useAddress()
-  const { metadata, creator } = collection
+  const { metadata } = collection
   const hasSocials =
     metadata.twitter ||
     metadata.telegram ||
@@ -77,52 +68,7 @@ export default function CollectionDetailComponent({
             </div>
           )}
 
-          <div className="flex items-start justify-center xl:justify-start mt-3 gap-2">
-            {metadata.website && (
-              <DaisyLink
-                href={metadata.website}
-                title={`${collection.name} website`}
-                target="_blank"
-              >
-                <GlobeAltIcon className="size-5" />
-              </DaisyLink>
-            )}
-            {metadata.twitter && (
-              <DaisyLink
-                href={metadata.twitter}
-                title={`${collection.name} on X`}
-                target="_blank"
-              >
-                <Twitter className="size-5" />
-              </DaisyLink>
-            )}
-            {metadata.telegram && (
-              <DaisyLink
-                href={metadata.telegram}
-                title={`${collection.name} on Telegram`}
-                target="_blank"
-              >
-                <Telegram className="size-5" />
-              </DaisyLink>
-            )}
-            {metadata.discord && (
-              <DaisyLink
-                href={metadata.discord}
-                title={`${collection.name} on Discord`}
-                target="_blank"
-              >
-                <Discord className="size-5" />
-              </DaisyLink>
-            )}
-            {creator === address && (
-              <Link
-                to={`/app/edit/collection/${collection.symbol}`}
-                title="Edit collection"
-              >
-                <PencilSquareIcon className="size-5" />
-              </Link>
-            )}
-          </div>
+          <CollectionSocials collection={collection} />
         </div>
         {stats && (
           <CollectionStatsComponent

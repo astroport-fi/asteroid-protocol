@@ -63,7 +63,12 @@ import {
   collectionStatsSelector,
   topCollectionSelector,
 } from './collection'
-import { Launchpad, launchpadSelector } from './launchpad'
+import {
+  Launchpad,
+  LaunchpadDetail,
+  launchpadDetailSelector,
+  launchpadSelector,
+} from './launchpad'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 
@@ -1711,7 +1716,7 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad
   }
 
-  async getLaunch(symbol: string): Promise<Launchpad | undefined> {
+  async getLaunch(symbol: string): Promise<LaunchpadDetail | undefined> {
     const result = await this.query({
       launchpad: [
         {
@@ -1723,11 +1728,11 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        launchpadSelector,
+        launchpadDetailSelector,
       ],
     })
 
-    return result.launchpad[0]
+    return result.launchpad[0] as LaunchpadDetail | undefined
   }
 
   statusSubscription(chainId: string) {

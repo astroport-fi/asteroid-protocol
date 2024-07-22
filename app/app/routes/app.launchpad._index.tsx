@@ -66,7 +66,7 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
           </strong>
         </div>
         <Divider className="my-1" />
-        <div className="flex justify-between mx-4">
+        <div className="flex justify-between mx-4 gap-4 flex-shrink-0">
           <BoxValue title="Price">
             <DecimalText value={stage.price} suffix=" ATOM" />
           </BoxValue>
@@ -106,7 +106,7 @@ export default function LaunchpadPage() {
     <div className="flex flex-col w-full max-w-[1920px]">
       <h3 className="text-xl text-white mt-12">Live & Upcoming launches</h3>
 
-      <Grid className="mt-4">
+      <Grid className="mt-4 grid-cols-fill-64">
         {data.launches.map((launch) => (
           <LaunchBox key={launch.collection.id} launchpad={launch} />
         ))}
@@ -116,7 +116,7 @@ export default function LaunchpadPage() {
         <>
           <h3 className="text-xl text-white mt-12">Ended launches</h3>
 
-          <Grid className="mt-4">
+          <Grid className="mt-4 grid-cols-fill-64">
             {data.pastLaunches.map((launch) => (
               <LaunchBox key={launch.collection.id} launchpad={launch} />
             ))}

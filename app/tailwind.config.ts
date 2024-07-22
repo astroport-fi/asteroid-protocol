@@ -15,6 +15,7 @@ export default {
       '4': 'repeat(4, minmax(0, 1fr))',
       'fill-10': 'repeat(auto-fill, minmax(10rem, 1fr))',
       'fill-56': 'repeat(auto-fill, minmax(14rem, 1fr))',
+      'fill-64': 'repeat(auto-fill, minmax(16rem, 1fr))',
     },
     extend: {
       colors: {
