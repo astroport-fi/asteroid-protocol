@@ -59,6 +59,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
         context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
       ASTROPORT_URL: context.cloudflare.env.ASTROPORT_URL,
       UPLOAD_API: context.cloudflare.env.UPLOAD_API,
+      MINTER_ADDRESS: context.cloudflare.env.MINTER_ADDRESS,
     },
   })
 }
@@ -180,6 +181,7 @@ export default function App() {
             bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
             astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
             astroportUrl: data.ENV.ASTROPORT_URL,
+            minterAddress: data.ENV.MINTER_ADDRESS,
           }}
         >
           <WalletProviderWrapper
