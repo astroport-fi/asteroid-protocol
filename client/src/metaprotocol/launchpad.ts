@@ -22,6 +22,8 @@ export interface MintStage {
 export interface LaunchMetadata {
   supply?: number
   stages: MintStage[]
+  revealImmediately: boolean
+  revealDate?: Date
 }
 
 export default class LaunchpadProtocol extends BaseProtocol {
@@ -38,10 +40,11 @@ export default class LaunchpadProtocol extends BaseProtocol {
     return buildOperation(this, this.fee, this.chainId, 'launch', params)
   }
 
-  reserve(launchpadHash: string, mintStage: number) {
+  reserve(launchpadHash: string, mintStage: number, amount: number = 1) {
     const params: MetaProtocolParams = [
       ['h', launchpadHash],
       ['stg', mintStage],
+      ['amt', amount],
     ]
     return buildOperation(this, this.fee, this.chainId, 'reserve', params)
   }
