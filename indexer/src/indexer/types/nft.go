@@ -16,6 +16,8 @@ type NftMetadata struct {
 	Description string  `json:"description"`
 	Mime        string  `json:"mime"`
 	Attributes  []Trait `json:"attributes"`
+	Filename    string  `json:"filename"`
+	TokenID     uint64  `json:"token_id"`
 }
 
 type CollectionMetadata struct {

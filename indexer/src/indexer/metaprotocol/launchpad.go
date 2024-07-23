@@ -167,7 +167,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 	collectionHash := parsedURN.KeyValuePairs["h"]
 
 	// get collection
-	collection, err := protocol.inscription.GetCollection(collectionHash, sender)
+	collection, err := protocol.inscription.GetCollection(collectionHash, sender, true)
 	if err != nil {
 		return err
 	}
