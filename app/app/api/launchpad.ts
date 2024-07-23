@@ -18,6 +18,7 @@ export const stageSelector = Selector('launchpad_stage')({
   finish_date: true,
   price: true,
   per_user_limit: true,
+  has_whitelist: true,
 })
 
 export type Stage = InputType<

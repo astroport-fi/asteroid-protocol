@@ -42,10 +42,8 @@ function StageBox({ stage }: { stage: Stage }) {
     (!stage.start_date || new Date(stage.start_date) < now) && !isEnded
 
   let title = stage.name
-  // @todo add public/whitelist type to stage
-  const isWhitelisted = stage.per_user_limit === 1
   if (!title) {
-    if (isWhitelisted) {
+    if (stage.has_whitelist) {
       title = 'Whitelist'
     } else {
       title = 'Public'
