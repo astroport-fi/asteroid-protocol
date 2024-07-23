@@ -15,7 +15,7 @@ export class SigningClient {
   constructor(
     client: SigningStargateClient,
     address: string,
-    gasMultiplier = 1.6,
+    gasMultiplier = 1.7, // @todo change back to 1.7 and allow to adjust in estimate
     feeMultiplier = 1.4,
   ) {
     this.client = client

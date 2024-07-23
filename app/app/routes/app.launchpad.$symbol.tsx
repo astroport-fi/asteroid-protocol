@@ -112,7 +112,7 @@ export default function LaunchpadDetailPage() {
         <p
           className={twMerge(
             clsx(
-              'transition-all overflow-hidden ease-in-out delay-50 duration-500 text-ellipsis mt-4 cursor-pointer max-h-[100rem]',
+              'transition-all overflow-hidden ease-in-out delay-50 duration-500 whitespace-pre-wrap text-ellipsis mt-4 cursor-pointer max-h-[100rem]',
               {
                 'max-h-24 line-clamp-4': collapsed,
               },
@@ -137,7 +137,7 @@ export default function LaunchpadDetailPage() {
             <Progress
               color="primary"
               className="mt-2"
-              value={(launchpad.minted_supply / launchpad.max_supply) * 100}
+              value={launchpad.minted_supply / launchpad.max_supply}
             />
             <div className="flex justify-between mt-2 text-sm">
               <span>Minted</span>
