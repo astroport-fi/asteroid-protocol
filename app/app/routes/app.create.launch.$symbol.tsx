@@ -19,10 +19,6 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import useAddress from '~/hooks/wallet/useAddress'
 import { getAddress } from '~/utils/cookies'
 
-interface InscriptionMetadata extends NFTMetadata {
-  filename: string
-}
-
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!params.symbol) {
     throw new Response(null, {
@@ -101,11 +97,12 @@ export default function CreateInscription() {
       )
 
     // prepare metadata
-    const metadata: InscriptionMetadata = {
+    const metadata: NFTMetadata = {
       name: data.name,
       description: data.description,
       mime: file.type,
       filename: `${inscriptionNumber}.${fileExt}`,
+      token_id: inscriptionNumber,
     }
 
     if (data.newTraits.length > 0) {

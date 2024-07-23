@@ -10,11 +10,6 @@ import { GasPrice } from '@cosmjs/stargate'
 import { AsteroidClient } from '../asteroid-client.js'
 import { loadConfig } from '../config.js'
 
-interface InscriptionMetadata extends NFTMetadata {
-  filename: string
-  token_id: number
-}
-
 async function main() {
   const config = loadConfig()
 
@@ -44,7 +39,7 @@ async function main() {
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${reservation.launchpad.transaction.hash}/${reservation.token_id}_metadata.json`
   const metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
-  )) as InscriptionMetadata
+  )) as NFTMetadata
   metadata.token_id = reservation.token_id
 
   const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${reservation.launchpad.transaction.hash}/${metadata.filename}`
