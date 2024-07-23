@@ -92,13 +92,13 @@ export default function LaunchpadDetailPage() {
   const [collapsed, isCollapsed] = useState(true)
 
   return (
-    <div className="flex flex-row w-full max-w-[1920px] gap-8">
+    <div className="flex flex-col lg:flex-row w-full max-w-[1920px] gap-8">
       <InscriptionImage
         src={collection.content_path!}
         isExplicit={collection.is_explicit}
         imageClassName="rounded-xl object-contain"
         className="max-w-3xl w-full"
-        containerClassName="flex flex-1"
+        containerClassName="flex lg:flex-1 items-start"
       />
 
       <div className="rounded-b-xl flex flex-1 flex-col items-start">

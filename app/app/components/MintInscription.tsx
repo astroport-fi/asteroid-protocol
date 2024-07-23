@@ -1,12 +1,21 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
 import { Button } from 'react-daisyui'
-import { LaunchpadDetail } from '~/api/launchpad'
+import { LaunchpadDetail, Stage } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import TxDialog from './dialogs/TxDialog'
 import { Wallet } from './wallet/Wallet'
+
+function getActiveStage(stages: Stage[]) {
+  const now = new Date()
+  return stages.find(
+    (stage) =>
+      (!stage.start_date || new Date(stage.start_date) < now) &&
+      (!stage.finish_date || new Date(stage.finish_date) > now),
+  )
+}
 
 export default function MintInscription({
   launchpad,
@@ -19,21 +28,32 @@ export default function MintInscription({
   const operations = useLaunchpadOperations()
   const { dialogRef, value, showDialog } =
     useDialogWithValue<TxInscription | null>()
+  const activeStage = getActiveStage(launchpad.stages)
+  console.log('active stage', activeStage)
 
   function mint() {
+    if (!activeStage) {
+      console.warn('No active stage')
+      return
+    }
+
     if (!operations) {
       console.warn('No address')
       showDialog(null)
       return
     }
 
-    // @todo stage id
-    const txInscription = operations.reserve(launchpad.transaction.hash, 1)
+    const txInscription = operations.reserve(
+      launchpad.transaction.hash,
+      activeStage.id,
+    )
 
-    // @todo add payment for minting inscription based on stage
+    // @todo add mint fee
+    const fee = activeStage.price ?? 1
+
     const grant = getGrantSendMsg(operations.address, minterAddress, {
       allowList: [operations.address],
-      spendLimit: [{ denom: 'uatom', amount: '1' }],
+      spendLimit: [{ denom: 'uatom', amount: `${fee}` }],
     })
     txInscription.messages = [grant]
 
@@ -42,7 +62,11 @@ export default function MintInscription({
 
   return (
     <div className={className}>
-      {operations ? (
+      {!activeStage ? (
+        <Button disabled fullWidth>
+          No active stage
+        </Button>
+      ) : operations ? (
         <Button onClick={() => mint()} color="primary" fullWidth>
           Mint now
         </Button>

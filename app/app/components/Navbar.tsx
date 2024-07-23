@@ -85,6 +85,15 @@ export default function Navbar() {
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
               <NavLink
+                to="/app/launchpad"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Launchpad
+              </NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item anchor={false}>
+              <NavLink
                 to="/app/tokens"
                 onMouseDown={preventDefault}
                 onClick={close}
@@ -157,6 +166,9 @@ export default function Navbar() {
         <Menu horizontal className="px-1 flex items-center text-lg">
           <Menu.Item>
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <NavLink to="/app/launchpad">Launchpad</NavLink>
           </Menu.Item>
           <Menu.Item>
             <NavLink to="/app/tokens">Tokens</NavLink>
