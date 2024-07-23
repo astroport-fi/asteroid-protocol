@@ -220,17 +220,23 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 
 	// save to db
 	launchpad = models.Launchpad{
-		ChainID:       parsedURN.ChainID,
-		Height:        transactionModel.Height,
-		TransactionID: transactionModel.ID,
-		Version:       parsedURN.Version,
-		CollectionID:  collection.ID,
-		DateCreated:   transactionModel.DateCreated,
-		MaxSupply:     launchMetadata.Supply,
-		MintedSupply:  0,
-		StartDate:     startDate,
-		FinishDate:    finishDate,
+		ChainID:           parsedURN.ChainID,
+		Height:            transactionModel.Height,
+		TransactionID:     transactionModel.ID,
+		Version:           parsedURN.Version,
+		CollectionID:      collection.ID,
+		DateCreated:       transactionModel.DateCreated,
+		MaxSupply:         launchMetadata.Supply,
+		MintedSupply:      0,
+		StartDate:         startDate,
+		FinishDate:        finishDate,
+		RevealImmediately: launchMetadata.RevealImmediately,
 	}
+
+	if !launchMetadata.RevealDate.IsZero() {
+		launchpad.RevealDate = sql.NullTime{Time: launchMetadata.RevealDate, Valid: true}
+	}
+
 	result = protocol.db.Save(&launchpad)
 	if result.Error != nil {
 		return result.Error

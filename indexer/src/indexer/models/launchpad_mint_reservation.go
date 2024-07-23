@@ -7,6 +7,7 @@ type LaunchpadMintReservation struct {
 	StageID      uint64 `gorm:"column:stage_id"`
 	Address      string `gorm:"column:address"`
 	TokenId      uint64 `gorm:"column:token_id"`
+	IsMinted     bool   `gorm:"column:is_minted"`
 }
 
 func (LaunchpadMintReservation) TableName() string {
