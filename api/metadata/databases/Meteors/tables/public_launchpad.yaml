@@ -26,6 +26,8 @@ select_permissions:
         - id
         - max_supply
         - minted_supply
+        - reveal_date
+        - reveal_immediately
         - start_date
         - transaction_id
       filter: {}

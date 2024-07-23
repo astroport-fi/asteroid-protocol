@@ -13,6 +13,8 @@ type MintStage struct {
 }
 
 type LaunchMetadata struct {
-	Supply uint64      `json:"supply"`
-	Stages []MintStage `json:"stages"`
+	Supply            uint64      `json:"supply"`
+	Stages            []MintStage `json:"stages"`
+	RevealDate        time.Time   `json:"revealDate,omitempty"`
+	RevealImmediately bool        `json:"revealImmediately,omitempty"`
 }

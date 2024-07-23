@@ -12,6 +12,7 @@ select_permissions:
         - address
         - collection_id
         - id
+        - is_minted
         - launchpad_id
         - stage_id
         - token_id
