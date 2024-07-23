@@ -29,7 +29,6 @@ export default function MintInscription({
   const { dialogRef, value, showDialog } =
     useDialogWithValue<TxInscription | null>()
   const activeStage = getActiveStage(launchpad.stages)
-  console.log('active stage', activeStage)
 
   function mint() {
     if (!activeStage) {
@@ -52,7 +51,7 @@ export default function MintInscription({
     const fee = activeStage.price ?? 1
 
     const grant = getGrantSendMsg(operations.address, minterAddress, {
-      allowList: [operations.address],
+      allowList: [],
       spendLimit: [{ denom: 'uatom', amount: `${fee}` }],
     })
     txInscription.messages = [grant]
