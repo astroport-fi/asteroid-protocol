@@ -1,4 +1,4 @@
-import LaunchpadProtocol, { MintStage } from '../metaprotocol/launchpad.js'
+import LaunchpadProtocol, { LaunchMetadata } from '../metaprotocol/launchpad.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
 export class LaunchpadOperations<
@@ -19,13 +19,9 @@ export class LaunchpadOperations<
     this.options = options
   }
 
-  launch(
-    collectionHash: string,
-    supply: number | undefined,
-    stages: MintStage[],
-  ) {
+  launch(collectionHash: string, metadata: LaunchMetadata) {
     const operation = this.protocol.launch(collectionHash)
-    return this.prepareOperation(operation, { metadata: { supply, stages } })
+    return this.prepareOperation(operation, { metadata })
   }
 
   // @todo signature
