@@ -1,6 +1,6 @@
 {
   "name": "@asteroid-protocol/sdk",
-  "version": "0.8.2-launchpad.6",
+  "version": "0.8.2-launchpad.7",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "scripts": {
