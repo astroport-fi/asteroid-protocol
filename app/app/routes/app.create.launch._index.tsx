@@ -105,11 +105,11 @@ export default function CreateCollectionLaunch() {
       return { ...formStage, price, whitelist: undefined }
     })
 
-    const txInscription = operations.launch(
-      data.collection,
-      data.supply,
+    const txInscription = operations.launch(data.collection, {
+      supply: data.supply,
       stages,
-    )
+      revealImmediately: true,
+    })
     showDialog(txInscription)
   })
 
