@@ -72,8 +72,16 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	// @todo check signature
 
 	// get launchpad
+	// Fetch transaction from database with the given hash
+	var transaction models.Transaction
+	result := protocol.db.Where("hash = ?", launchpadHash).First(&transaction)
+	if result.Error != nil {
+		// Invalid hash
+		return result.Error
+	}
+
 	var launchpad models.Launchpad
-	result := protocol.db.Where("hash = ?", launchpadHash).First(&launchpad)
+	result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&launchpad)
 	if result.Error != nil {
 		return fmt.Errorf("launchpad not found")
 	}
