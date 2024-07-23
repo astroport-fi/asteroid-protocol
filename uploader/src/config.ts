@@ -9,6 +9,13 @@ export const Config = z.object({
   S3_ENDPOINT: z.string(),
   S3_BUCKET: z.string(),
   PORT: z.string(),
+  ASTEROID_API: z.string(),
+  COSMOS_HUB_RPC: z.string(),
+  COSMOS_HUB_REST: z.string(),
+  GAS_PRICE: z.string(),
+  MNEMONIC: z.string(),
+  CHAIN_ID: z.string(),
+  FEE_MULTIPLIER: z.string(),
 })
 
 export type Config = z.infer<typeof Config>
