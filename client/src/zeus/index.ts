@@ -5266,6 +5266,117 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** columns and relationships of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ValueTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "launchpad_mint_reservation". All fields are combined with a logical 'AND'. */
+  ['launchpad_mint_reservation_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['launchpad_mint_reservation_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['launchpad_mint_reservation_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    address?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    stage_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "launchpad_mint_reservation". */
+  ['launchpad_mint_reservation_order_by']: {
+    address?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** Streaming cursor of the table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['launchpad_mint_reservation_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['launchpad_mint_reservation_stream_cursor_value_input']: {
+    address?: string | undefined | null | Variable<any, string>
+    collection_id?: number | undefined | null | Variable<any, string>
+    id?: number | undefined | null | Variable<any, string>
+    launchpad_id?: number | undefined | null | Variable<any, string>
+    stage_id?: number | undefined | null | Variable<any, string>
+    token_id?: number | undefined | null | Variable<any, string>
+  }
   /** Ordering options when selecting data from "launchpad". */
   ['launchpad_order_by']: {
     collection?:
@@ -5327,6 +5438,7 @@ export type ValueTypes = {
     collection_id?: boolean | `@${string}`
     description?: boolean | `@${string}`
     finish_date?: boolean | `@${string}`
+    has_whitelist?: boolean | `@${string}`
     id?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ValueTypes['launchpad']
@@ -5477,6 +5589,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    has_whitelist?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     id?:
       | ValueTypes['Int_comparison_exp']
       | undefined
@@ -5607,6 +5724,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    has_whitelist?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     launchpad?:
       | ValueTypes['launchpad_order_by']
@@ -5720,6 +5842,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    has_whitelist?: boolean | undefined | null | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
     launchpad_id?: number | undefined | null | Variable<any, string>
     name?: string | undefined | null | Variable<any, string>
@@ -9618,6 +9741,44 @@ export type ValueTypes = {
       { id: number | Variable<any, string> },
       ValueTypes['launchpad'],
     ]
+    launchpad_mint_reservation?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
     launchpad_stage?: [
       {
         /** distinct select on columns */
@@ -11598,6 +11759,68 @@ export type ValueTypes = {
     launchpad_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['launchpad'],
+    ]
+    launchpad_mint_reservation?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['launchpad_mint_reservation_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation'],
     ]
     launchpad_stage?: [
       {
@@ -19636,6 +19859,68 @@ export type ResolverInputTypes = {
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
   }
+  /** columns and relationships of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ResolverInputTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "launchpad_mint_reservation". All fields are combined with a logical 'AND'. */
+  ['launchpad_mint_reservation_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['launchpad_mint_reservation_bool_exp']>
+      | undefined
+      | null
+    _not?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    _or?:
+      | Array<ResolverInputTypes['launchpad_mint_reservation_bool_exp']>
+      | undefined
+      | null
+    address?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
+    launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    stage_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+  }
+  /** Ordering options when selecting data from "launchpad_mint_reservation". */
+  ['launchpad_mint_reservation_order_by']: {
+    address?: ResolverInputTypes['order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
+    launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
+    stage_id?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** Streaming cursor of the table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['launchpad_mint_reservation_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['launchpad_mint_reservation_stream_cursor_value_input']: {
+    address?: string | undefined | null
+    collection_id?: number | undefined | null
+    id?: number | undefined | null
+    launchpad_id?: number | undefined | null
+    stage_id?: number | undefined | null
+    token_id?: number | undefined | null
+  }
   /** Ordering options when selecting data from "launchpad". */
   ['launchpad_order_by']: {
     collection?: ResolverInputTypes['collection_order_by'] | undefined | null
@@ -19660,6 +19945,7 @@ export type ResolverInputTypes = {
     collection_id?: boolean | `@${string}`
     description?: boolean | `@${string}`
     finish_date?: boolean | `@${string}`
+    has_whitelist?: boolean | `@${string}`
     id?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ResolverInputTypes['launchpad']
@@ -19753,6 +20039,10 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['timestamp_comparison_exp']
       | undefined
       | null
+    has_whitelist?:
+      | ResolverInputTypes['Boolean_comparison_exp']
+      | undefined
+      | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
     launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
@@ -19800,6 +20090,7 @@ export type ResolverInputTypes = {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
     description?: ResolverInputTypes['order_by'] | undefined | null
     finish_date?: ResolverInputTypes['order_by'] | undefined | null
+    has_whitelist?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -19850,6 +20141,7 @@ export type ResolverInputTypes = {
     collection_id?: number | undefined | null
     description?: string | undefined | null
     finish_date?: ResolverInputTypes['timestamp'] | undefined | null
+    has_whitelist?: boolean | undefined | null
     id?: number | undefined | null
     launchpad_id?: number | undefined | null
     name?: string | undefined | null
@@ -22198,6 +22490,38 @@ export type ResolverInputTypes = {
       ResolverInputTypes['launchpad'],
     ]
     launchpad_by_pk?: [{ id: number }, ResolverInputTypes['launchpad']]
+    launchpad_mint_reservation?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_by_pk?: [
+      { id: number },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
     launchpad_stage?: [
       {
         /** distinct select on columns */
@@ -23585,6 +23909,54 @@ export type ResolverInputTypes = {
       ResolverInputTypes['launchpad'],
     ]
     launchpad_by_pk?: [{ id: number }, ResolverInputTypes['launchpad']]
+    launchpad_mint_reservation?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_by_pk?: [
+      { id: number },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['launchpad_mint_reservation_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
     launchpad_stage?: [
       {
         /** distinct select on columns */
@@ -28998,6 +29370,57 @@ export type ModelTypes = {
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
   }
+  /** columns and relationships of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation']: {
+    address: string
+    collection_id: number
+    id: number
+    /** An object relationship */
+    launchpad: ModelTypes['launchpad']
+    launchpad_id: number
+    stage_id: number
+    token_id: number
+  }
+  /** Boolean expression to filter rows from the table "launchpad_mint_reservation". All fields are combined with a logical 'AND'. */
+  ['launchpad_mint_reservation_bool_exp']: {
+    _and?: Array<ModelTypes['launchpad_mint_reservation_bool_exp']> | undefined
+    _not?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    _or?: Array<ModelTypes['launchpad_mint_reservation_bool_exp']> | undefined
+    address?: ModelTypes['String_comparison_exp'] | undefined
+    collection_id?: ModelTypes['Int_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
+    stage_id?: ModelTypes['Int_comparison_exp'] | undefined
+    token_id?: ModelTypes['Int_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "launchpad_mint_reservation". */
+  ['launchpad_mint_reservation_order_by']: {
+    address?: ModelTypes['order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    launchpad?: ModelTypes['launchpad_order_by'] | undefined
+    launchpad_id?: ModelTypes['order_by'] | undefined
+    stage_id?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
+  }
+  ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** Streaming cursor of the table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['launchpad_mint_reservation_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['launchpad_mint_reservation_stream_cursor_value_input']: {
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** Ordering options when selecting data from "launchpad". */
   ['launchpad_order_by']: {
     collection?: ModelTypes['collection_order_by'] | undefined
@@ -29020,6 +29443,7 @@ export type ModelTypes = {
     collection_id: number
     description?: string | undefined
     finish_date?: ModelTypes['timestamp'] | undefined
+    has_whitelist: boolean
     id: number
     /** An object relationship */
     launchpad?: ModelTypes['launchpad'] | undefined
@@ -29061,6 +29485,7 @@ export type ModelTypes = {
     collection_id?: ModelTypes['Int_comparison_exp'] | undefined
     description?: ModelTypes['String_comparison_exp'] | undefined
     finish_date?: ModelTypes['timestamp_comparison_exp'] | undefined
+    has_whitelist?: ModelTypes['Boolean_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
@@ -29099,6 +29524,7 @@ export type ModelTypes = {
     collection_id?: ModelTypes['order_by'] | undefined
     description?: ModelTypes['order_by'] | undefined
     finish_date?: ModelTypes['order_by'] | undefined
+    has_whitelist?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     launchpad?: ModelTypes['launchpad_order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
@@ -29147,6 +29573,7 @@ export type ModelTypes = {
     collection_id?: number | undefined
     description?: string | undefined
     finish_date?: ModelTypes['timestamp'] | undefined
+    has_whitelist?: boolean | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     name?: string | undefined
@@ -30600,6 +31027,12 @@ export type ModelTypes = {
     launchpad: Array<ModelTypes['launchpad']>
     /** fetch data from the table: "launchpad" using primary key columns */
     launchpad_by_pk?: ModelTypes['launchpad'] | undefined
+    /** fetch data from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation: Array<ModelTypes['launchpad_mint_reservation']>
+    /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
+    launchpad_mint_reservation_by_pk?:
+      | ModelTypes['launchpad_mint_reservation']
+      | undefined
     /** fetch data from the table: "launchpad_stage" */
     launchpad_stage: Array<ModelTypes['launchpad_stage']>
     /** fetch data from the table: "launchpad_stage" using primary key columns */
@@ -30867,6 +31300,16 @@ export type ModelTypes = {
     launchpad: Array<ModelTypes['launchpad']>
     /** fetch data from the table: "launchpad" using primary key columns */
     launchpad_by_pk?: ModelTypes['launchpad'] | undefined
+    /** fetch data from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation: Array<ModelTypes['launchpad_mint_reservation']>
+    /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
+    launchpad_mint_reservation_by_pk?:
+      | ModelTypes['launchpad_mint_reservation']
+      | undefined
+    /** fetch data from the table in a streaming manner: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_stream: Array<
+      ModelTypes['launchpad_mint_reservation']
+    >
     /** fetch data from the table: "launchpad_stage" */
     launchpad_stage: Array<ModelTypes['launchpad_stage']>
     /** fetch data from the table: "launchpad_stage" using primary key columns */
@@ -34863,6 +35306,61 @@ export type GraphQLTypes = {
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
   }
+  /** columns and relationships of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation']: {
+    __typename: 'launchpad_mint_reservation'
+    address: string
+    collection_id: number
+    id: number
+    /** An object relationship */
+    launchpad: GraphQLTypes['launchpad']
+    launchpad_id: number
+    stage_id: number
+    token_id: number
+  }
+  /** Boolean expression to filter rows from the table "launchpad_mint_reservation". All fields are combined with a logical 'AND'. */
+  ['launchpad_mint_reservation_bool_exp']: {
+    _and?:
+      | Array<GraphQLTypes['launchpad_mint_reservation_bool_exp']>
+      | undefined
+    _not?: GraphQLTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['launchpad_mint_reservation_bool_exp']> | undefined
+    address?: GraphQLTypes['String_comparison_exp'] | undefined
+    collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    stage_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "launchpad_mint_reservation". */
+  ['launchpad_mint_reservation_order_by']: {
+    address?: GraphQLTypes['order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
+    launchpad_id?: GraphQLTypes['order_by'] | undefined
+    stage_id?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** Streaming cursor of the table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['launchpad_mint_reservation_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['launchpad_mint_reservation_stream_cursor_value_input']: {
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** Ordering options when selecting data from "launchpad". */
   ['launchpad_order_by']: {
     collection?: GraphQLTypes['collection_order_by'] | undefined
@@ -34887,6 +35385,7 @@ export type GraphQLTypes = {
     collection_id: number
     description?: string | undefined
     finish_date?: GraphQLTypes['timestamp'] | undefined
+    has_whitelist: boolean
     id: number
     /** An object relationship */
     launchpad?: GraphQLTypes['launchpad'] | undefined
@@ -34930,6 +35429,7 @@ export type GraphQLTypes = {
     collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     description?: GraphQLTypes['String_comparison_exp'] | undefined
     finish_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    has_whitelist?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -34968,6 +35468,7 @@ export type GraphQLTypes = {
     collection_id?: GraphQLTypes['order_by'] | undefined
     description?: GraphQLTypes['order_by'] | undefined
     finish_date?: GraphQLTypes['order_by'] | undefined
+    has_whitelist?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
@@ -35017,6 +35518,7 @@ export type GraphQLTypes = {
     collection_id?: number | undefined
     description?: string | undefined
     finish_date?: GraphQLTypes['timestamp'] | undefined
+    has_whitelist?: boolean | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     name?: string | undefined
@@ -36552,6 +37054,14 @@ export type GraphQLTypes = {
     launchpad: Array<GraphQLTypes['launchpad']>
     /** fetch data from the table: "launchpad" using primary key columns */
     launchpad_by_pk?: GraphQLTypes['launchpad'] | undefined
+    /** fetch data from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation: Array<
+      GraphQLTypes['launchpad_mint_reservation']
+    >
+    /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
+    launchpad_mint_reservation_by_pk?:
+      | GraphQLTypes['launchpad_mint_reservation']
+      | undefined
     /** fetch data from the table: "launchpad_stage" */
     launchpad_stage: Array<GraphQLTypes['launchpad_stage']>
     /** fetch data from the table: "launchpad_stage" using primary key columns */
@@ -36825,6 +37335,18 @@ export type GraphQLTypes = {
     launchpad: Array<GraphQLTypes['launchpad']>
     /** fetch data from the table: "launchpad" using primary key columns */
     launchpad_by_pk?: GraphQLTypes['launchpad'] | undefined
+    /** fetch data from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation: Array<
+      GraphQLTypes['launchpad_mint_reservation']
+    >
+    /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
+    launchpad_mint_reservation_by_pk?:
+      | GraphQLTypes['launchpad_mint_reservation']
+      | undefined
+    /** fetch data from the table in a streaming manner: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_stream: Array<
+      GraphQLTypes['launchpad_mint_reservation']
+    >
     /** fetch data from the table: "launchpad_stage" */
     launchpad_stage: Array<GraphQLTypes['launchpad_stage']>
     /** fetch data from the table: "launchpad_stage" using primary key columns */
@@ -38844,6 +39366,15 @@ export const enum inscription_trade_history_select_column {
   total_usd = 'total_usd',
   transaction_id = 'transaction_id',
 }
+/** select columns of table "launchpad_mint_reservation" */
+export const enum launchpad_mint_reservation_select_column {
+  address = 'address',
+  collection_id = 'collection_id',
+  id = 'id',
+  launchpad_id = 'launchpad_id',
+  stage_id = 'stage_id',
+  token_id = 'token_id',
+}
 /** select columns of table "launchpad" */
 export const enum launchpad_select_column {
   collection_id = 'collection_id',
@@ -38860,6 +39391,7 @@ export const enum launchpad_stage_select_column {
   collection_id = 'collection_id',
   description = 'description',
   finish_date = 'finish_date',
+  has_whitelist = 'has_whitelist',
   id = 'id',
   launchpad_id = 'launchpad_id',
   name = 'name',
@@ -39203,6 +39735,11 @@ type ZEUS_VARIABLES = {
   ['jsonb_cast_exp']: ValueTypes['jsonb_cast_exp']
   ['jsonb_comparison_exp']: ValueTypes['jsonb_comparison_exp']
   ['launchpad_bool_exp']: ValueTypes['launchpad_bool_exp']
+  ['launchpad_mint_reservation_bool_exp']: ValueTypes['launchpad_mint_reservation_bool_exp']
+  ['launchpad_mint_reservation_order_by']: ValueTypes['launchpad_mint_reservation_order_by']
+  ['launchpad_mint_reservation_select_column']: ValueTypes['launchpad_mint_reservation_select_column']
+  ['launchpad_mint_reservation_stream_cursor_input']: ValueTypes['launchpad_mint_reservation_stream_cursor_input']
+  ['launchpad_mint_reservation_stream_cursor_value_input']: ValueTypes['launchpad_mint_reservation_stream_cursor_value_input']
   ['launchpad_order_by']: ValueTypes['launchpad_order_by']
   ['launchpad_select_column']: ValueTypes['launchpad_select_column']
   ['launchpad_stage_aggregate_order_by']: ValueTypes['launchpad_stage_aggregate_order_by']
