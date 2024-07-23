@@ -26,6 +26,6 @@ export function createS3Client(config: Config) {
       accessKeyId: config.AWS_ACCESS_KEY_ID,
       secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
     },
-    endpoint: config.S3_ENDPOINT,
+    endpoint: `https://${config.S3_ENDPOINT}`,
   })
 }

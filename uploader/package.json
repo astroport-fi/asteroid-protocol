@@ -13,9 +13,11 @@
     "watch": "tsc --watch --module es2022 --outDir esm/",
     "dev": "node --trace-warnings --loader ts-node/esm src/main.ts",
     "create-migration": "atlas migrate diff --env local --to file://schema.sql",
-    "apply-migration": "atlas migrate apply --env local"
+    "apply-migration": "atlas migrate apply --env local",
+    "run-script": "node --trace-warnings --loader ts-node/esm"
   },
   "dependencies": {
+    "@asteroid-protocol/sdk": "^0.8.2-launchpad.7",
     "@aws-sdk/client-s3": "^3.614.0",
     "@aws-sdk/s3-request-presigner": "^3.616.0",
     "body-parser": "^1.20.2",
