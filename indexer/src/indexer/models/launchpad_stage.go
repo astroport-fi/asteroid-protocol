@@ -13,7 +13,8 @@ type LaunchpadStage struct {
 	StartDate    sql.NullTime   `gorm:"column:start_date"`
 	FinishDate   sql.NullTime   `gorm:"column:finish_date"`
 	Price        uint64         `gorm:"column:price"`
-	PerUserLimit uint64         `gorm:"column:per_user_limit"`
+	PerUserLimit int64          `gorm:"column:per_user_limit"`
+	HasWhitelist bool           `gorm:"column:has_whitelist"`
 }
 
 func (LaunchpadStage) TableName() string {
