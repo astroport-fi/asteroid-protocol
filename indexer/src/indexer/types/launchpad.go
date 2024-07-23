@@ -9,7 +9,7 @@ type MintStage struct {
 	Finish      time.Time `json:"finish,omitempty"`
 	Price       uint64    `json:"price,omitempty"`
 	Whitelist   []string  `json:"whitelist,omitempty"`
-	MaxPerUser  uint64    `json:"maxPerUser,omitempty"`
+	MaxPerUser  int64     `json:"maxPerUser,omitempty"`
 }
 
 type LaunchMetadata struct {

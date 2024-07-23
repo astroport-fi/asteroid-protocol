@@ -590,6 +590,7 @@ CREATE TABLE public."launchpad_stage" (
     finish_date timestamp NULL DEFAULT NULL,
     price int8 NOT NULL,
     per_user_limit int8 NOT NULL,
+    has_whitelist bool NOT NULL default false,
     CONSTRAINT launchpad_stage_pkey PRIMARY KEY (id),
     CONSTRAINT launchpad_stage_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
     CONSTRAINT launchpad_stage_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id)
@@ -620,6 +621,31 @@ CREATE INDEX "idx_launchpad_whitelist_collection_id" ON "public"."launchpad_whit
 CREATE INDEX "idx_launchpad_whitelist_launchpad_id" ON "public"."launchpad_whitelist" USING btree ("launchpad_id");
 CREATE INDEX "idx_launchpad_whitelist_stage_id" ON "public"."launchpad_whitelist" USING btree ("stage_id");
 CREATE INDEX "idx_launchpad_whitelist_address" ON "public"."launchpad_whitelist" USING btree ("address");
+
+-- public."launchpad_mint_reservation" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_mint_reservation";
+
+CREATE TABLE public."launchpad_mint_reservation" (
+    id serial4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    stage_id int4 NOT NULL,
+    "address" varchar(128) NOT NULL,
+    token_id int4 NOT NULL,
+    CONSTRAINT launchpad_mint_reservation_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_mint_reservation_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_mint_reservation_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id),
+    CONSTRAINT launchpad_mint_reservation_stage_fk FOREIGN KEY (stage_id) REFERENCES public."launchpad_stage"(id),
+    CONSTRAINT launchpad_mint_reservation_token_id UNIQUE ("collection_id", "token_id")
+);
+
+CREATE INDEX "idx_launchpad_mint_reservation_collection_id" ON "public"."launchpad_mint_reservation" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_mint_reservation_launchpad_id" ON "public"."launchpad_mint_reservation" USING btree ("launchpad_id");
+CREATE INDEX "idx_launchpad_mint_reservation_stage_id" ON "public"."launchpad_mint_reservation" USING btree ("stage_id");
+CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" USING btree ("token_id");
 
 -- public.inscription_market view definition
 

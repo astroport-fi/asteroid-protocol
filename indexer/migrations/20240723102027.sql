@@ -32,6 +32,7 @@ CREATE TABLE "public"."launchpad_stage" (
   "finish_date" timestamp NULL,
   "price" bigint NOT NULL,
   "per_user_limit" bigint NOT NULL,
+  "has_whitelist" boolean NOT NULL DEFAULT false,
   PRIMARY KEY ("id"),
   CONSTRAINT "launchpad_stage_collection_fk" FOREIGN KEY ("collection_id") REFERENCES "public"."collection" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT "launchpad_stage_launchpad_fk" FOREIGN KEY ("launchpad_id") REFERENCES "public"."launchpad" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -40,6 +41,29 @@ CREATE TABLE "public"."launchpad_stage" (
 CREATE INDEX "idx_launchpad_stage_collection_id" ON "public"."launchpad_stage" ("collection_id");
 -- Create index "idx_launchpad_stage_launchpad_id" to table: "launchpad_stage"
 CREATE INDEX "idx_launchpad_stage_launchpad_id" ON "public"."launchpad_stage" ("launchpad_id");
+-- Create "launchpad_mint_reservation" table
+CREATE TABLE "public"."launchpad_mint_reservation" (
+  "id" serial NOT NULL,
+  "collection_id" integer NOT NULL,
+  "launchpad_id" integer NOT NULL,
+  "stage_id" integer NOT NULL,
+  "address" character varying(128) NOT NULL,
+  "token_id" integer NOT NULL,
+  PRIMARY KEY ("id"),
+  CONSTRAINT "launchpad_mint_reservation_collection_fk" FOREIGN KEY ("collection_id") REFERENCES "public"."collection" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT "launchpad_mint_reservation_launchpad_fk" FOREIGN KEY ("launchpad_id") REFERENCES "public"."launchpad" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT "launchpad_mint_reservation_stage_fk" FOREIGN KEY ("stage_id") REFERENCES "public"."launchpad_stage" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+-- Create index "idx_launchpad_mint_reservation_collection_id" to table: "launchpad_mint_reservation"
+CREATE INDEX "idx_launchpad_mint_reservation_collection_id" ON "public"."launchpad_mint_reservation" ("collection_id");
+-- Create index "idx_launchpad_mint_reservation_launchpad_id" to table: "launchpad_mint_reservation"
+CREATE INDEX "idx_launchpad_mint_reservation_launchpad_id" ON "public"."launchpad_mint_reservation" ("launchpad_id");
+-- Create index "idx_launchpad_mint_reservation_stage_id" to table: "launchpad_mint_reservation"
+CREATE INDEX "idx_launchpad_mint_reservation_stage_id" ON "public"."launchpad_mint_reservation" ("stage_id");
+-- Create index "idx_launchpad_mint_reservation_token_id" to table: "launchpad_mint_reservation"
+CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" ("token_id");
+-- Create index "launchpad_mint_reservation_token_id" to table: "launchpad_mint_reservation"
+CREATE UNIQUE INDEX "launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" ("collection_id", "token_id");
 -- Create "launchpad_whitelist" table
 CREATE TABLE "public"."launchpad_whitelist" (
   "id" serial NOT NULL,

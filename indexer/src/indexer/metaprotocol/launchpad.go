@@ -50,7 +50,103 @@ func (protocol *Launchpad) Process(transactionModel models.Transaction, protocol
 	switch parsedURN.Operation {
 	case "launch":
 		return protocol.LaunchCollection(transactionModel, parsedURN, rawTransaction, sender)
+	case "reserve":
+		return protocol.ReserveInscription(transactionModel, parsedURN, rawTransaction, sender)
 	}
+	return nil
+}
+
+func (protocol *Launchpad) ReserveInscription(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	// validate launchpad hash
+	launchpadHash := parsedURN.KeyValuePairs["h"]
+	if launchpadHash == "" {
+		return fmt.Errorf("missing launchpad hash")
+	}
+
+	// validate stage id
+	stageID := parsedURN.KeyValuePairs["stg"]
+	if parsedURN.KeyValuePairs["stg"] == "" {
+		return fmt.Errorf("missing stage id")
+	}
+
+	// @todo check signature
+
+	// get launchpad
+	var launchpad models.Launchpad
+	result := protocol.db.Where("hash = ?", launchpadHash).First(&launchpad)
+	if result.Error != nil {
+		return fmt.Errorf("launchpad not found")
+	}
+
+	// get stage
+	var stage models.LaunchpadStage
+	result = protocol.db.Where("launchpad_id = ? AND id = ?", launchpad.ID, stageID).First(&stage)
+	if result.Error != nil {
+		return fmt.Errorf("stage not found")
+	}
+
+	// check supply
+	if launchpad.MaxSupply > 0 && launchpad.MintedSupply >= launchpad.MaxSupply {
+		return fmt.Errorf("launchpad minted out")
+	}
+
+	// check if stage is active
+	if stage.StartDate.Valid && stage.StartDate.Time.After(transactionModel.DateCreated) {
+		return fmt.Errorf("stage not active yet")
+	}
+
+	if stage.FinishDate.Valid && stage.FinishDate.Time.Before(transactionModel.DateCreated) {
+		return fmt.Errorf("stage already finished")
+	}
+
+	// check if user is whitelisted
+	if stage.HasWhitelist {
+		var count int64
+		protocol.db.Model(&models.LaunchpadWhitelist{}).Where("launchpad_id = ? AND stage_id = ? AND address = ?", launchpad.ID, stage.ID, sender).Count(&count)
+		if count == 0 {
+			return fmt.Errorf("user not whitelisted")
+		}
+	}
+
+	// check per user limit
+	if stage.PerUserLimit > 0 {
+		var count int64
+		protocol.db.Model(&models.LaunchpadMintReservation{}).Where("launchpad_id = ? AND stage_id = ? AND address = ?", launchpad.ID, stage.ID, sender).Count(&count)
+		if count >= stage.PerUserLimit {
+			return fmt.Errorf("user reached per user limit")
+		}
+	}
+
+	// get token id
+	var maxTokenId uint64
+	err := protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Scan(&maxTokenId).Error
+	if err != nil {
+		return err
+	}
+	tokenId := maxTokenId + 1
+
+	// save to db
+	reservation := models.LaunchpadMintReservation{
+		CollectionID: launchpad.CollectionID,
+		LaunchpadID:  launchpad.ID,
+		StageID:      stage.ID,
+		Address:      sender,
+		TokenId:      tokenId,
+	}
+
+	result = protocol.db.Save(&reservation)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// update minted supply
+	launchpad.MintedSupply += 1
+	result = protocol.db.Save(&launchpad)
+	if result.Error != nil {
+		return result.Error
+	}
+
 	return nil
 }
 
@@ -139,6 +235,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 			LaunchpadID:  launchpad.ID,
 			Price:        stage.Price,
 			PerUserLimit: stage.MaxPerUser,
+			HasWhitelist: len(stage.Whitelist) > 0,
 		}
 
 		if stage.Name != "" {

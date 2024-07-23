@@ -23,14 +23,15 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
-        - per_user_limit
-        - price
-        - name
         - collection_id
-        - id
-        - launchpad_id
         - description
         - finish_date
+        - has_whitelist
+        - id
+        - launchpad_id
+        - name
+        - per_user_limit
+        - price
         - start_date
       filter: {}
     comment: ""

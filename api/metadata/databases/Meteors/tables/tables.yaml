@@ -9,6 +9,7 @@
 - "!include public_inscription_rarity.yaml"
 - "!include public_inscription_trade_history.yaml"
 - "!include public_launchpad.yaml"
+- "!include public_launchpad_mint_reservation.yaml"
 - "!include public_launchpad_stage.yaml"
 - "!include public_launchpad_whitelist.yaml"
 - "!include public_marketplace_cft20_detail.yaml"
