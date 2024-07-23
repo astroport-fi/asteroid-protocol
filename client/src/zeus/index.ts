@@ -5153,6 +5153,8 @@ export type ValueTypes = {
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     minted_supply?: boolean | `@${string}`
+    reveal_date?: boolean | `@${string}`
+    reveal_immediately?: boolean | `@${string}`
     stages?: [
       {
         /** distinct select on columns */
@@ -5245,6 +5247,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     stages?:
       | ValueTypes['launchpad_stage_bool_exp']
       | undefined
@@ -5271,6 +5283,7 @@ export type ValueTypes = {
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    is_minted?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ValueTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
@@ -5310,6 +5323,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    is_minted?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     launchpad?:
       | ValueTypes['launchpad_bool_exp']
       | undefined
@@ -5340,6 +5358,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    is_minted?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     launchpad?:
       | ValueTypes['launchpad_order_by']
       | undefined
@@ -5373,6 +5396,7 @@ export type ValueTypes = {
     address?: string | undefined | null | Variable<any, string>
     collection_id?: number | undefined | null | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
+    is_minted?: boolean | undefined | null | Variable<any, string>
     launchpad_id?: number | undefined | null | Variable<any, string>
     stage_id?: number | undefined | null | Variable<any, string>
     token_id?: number | undefined | null | Variable<any, string>
@@ -5406,6 +5430,16 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     minted_supply?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?:
       | ValueTypes['order_by']
       | undefined
       | null
@@ -5975,6 +6009,12 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?: boolean | undefined | null | Variable<any, string>
     start_date?:
       | ValueTypes['timestamp']
       | undefined
@@ -19798,6 +19838,8 @@ export type ResolverInputTypes = {
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     minted_supply?: boolean | `@${string}`
+    reveal_date?: boolean | `@${string}`
+    reveal_immediately?: boolean | `@${string}`
     stages?: [
       {
         /** distinct select on columns */
@@ -19851,6 +19893,14 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['numeric_comparison_exp']
       | undefined
       | null
+    reveal_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    reveal_immediately?:
+      | ResolverInputTypes['Boolean_comparison_exp']
+      | undefined
+      | null
     stages?: ResolverInputTypes['launchpad_stage_bool_exp'] | undefined | null
     start_date?:
       | ResolverInputTypes['timestamp_comparison_exp']
@@ -19864,6 +19914,7 @@ export type ResolverInputTypes = {
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    is_minted?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ResolverInputTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
@@ -19888,6 +19939,7 @@ export type ResolverInputTypes = {
     address?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    is_minted?: ResolverInputTypes['Boolean_comparison_exp'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
     launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     stage_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
@@ -19898,6 +19950,7 @@ export type ResolverInputTypes = {
     address?: ResolverInputTypes['order_by'] | undefined | null
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
+    is_minted?: ResolverInputTypes['order_by'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -19917,6 +19970,7 @@ export type ResolverInputTypes = {
     address?: string | undefined | null
     collection_id?: number | undefined | null
     id?: number | undefined | null
+    is_minted?: boolean | undefined | null
     launchpad_id?: number | undefined | null
     stage_id?: number | undefined | null
     token_id?: number | undefined | null
@@ -19930,6 +19984,8 @@ export type ResolverInputTypes = {
     id?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     minted_supply?: ResolverInputTypes['order_by'] | undefined | null
+    reveal_date?: ResolverInputTypes['order_by'] | undefined | null
+    reveal_immediately?: ResolverInputTypes['order_by'] | undefined | null
     stages_aggregate?:
       | ResolverInputTypes['launchpad_stage_aggregate_order_by']
       | undefined
@@ -20196,6 +20252,8 @@ export type ResolverInputTypes = {
     id?: number | undefined | null
     max_supply?: ResolverInputTypes['numeric'] | undefined | null
     minted_supply?: ResolverInputTypes['numeric'] | undefined | null
+    reveal_date?: ResolverInputTypes['timestamp'] | undefined | null
+    reveal_immediately?: boolean | undefined | null
     start_date?: ResolverInputTypes['timestamp'] | undefined | null
     transaction_id?: number | undefined | null
   }
@@ -29346,6 +29404,8 @@ export type ModelTypes = {
     id: number
     max_supply: ModelTypes['numeric']
     minted_supply: ModelTypes['numeric']
+    reveal_date?: ModelTypes['timestamp'] | undefined
+    reveal_immediately: boolean
     /** An array relationship */
     stages: Array<ModelTypes['launchpad_stage']>
     start_date?: ModelTypes['timestamp'] | undefined
@@ -29365,6 +29425,8 @@ export type ModelTypes = {
     id?: ModelTypes['Int_comparison_exp'] | undefined
     max_supply?: ModelTypes['numeric_comparison_exp'] | undefined
     minted_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    reveal_date?: ModelTypes['timestamp_comparison_exp'] | undefined
+    reveal_immediately?: ModelTypes['Boolean_comparison_exp'] | undefined
     stages?: ModelTypes['launchpad_stage_bool_exp'] | undefined
     start_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
@@ -29375,6 +29437,7 @@ export type ModelTypes = {
     address: string
     collection_id: number
     id: number
+    is_minted: boolean
     /** An object relationship */
     launchpad: ModelTypes['launchpad']
     launchpad_id: number
@@ -29389,6 +29452,7 @@ export type ModelTypes = {
     address?: ModelTypes['String_comparison_exp'] | undefined
     collection_id?: ModelTypes['Int_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
+    is_minted?: ModelTypes['Boolean_comparison_exp'] | undefined
     launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
     stage_id?: ModelTypes['Int_comparison_exp'] | undefined
@@ -29399,6 +29463,7 @@ export type ModelTypes = {
     address?: ModelTypes['order_by'] | undefined
     collection_id?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
+    is_minted?: ModelTypes['order_by'] | undefined
     launchpad?: ModelTypes['launchpad_order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
@@ -29417,6 +29482,7 @@ export type ModelTypes = {
     address?: string | undefined
     collection_id?: number | undefined
     id?: number | undefined
+    is_minted?: boolean | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
     token_id?: number | undefined
@@ -29430,6 +29496,8 @@ export type ModelTypes = {
     id?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     minted_supply?: ModelTypes['order_by'] | undefined
+    reveal_date?: ModelTypes['order_by'] | undefined
+    reveal_immediately?: ModelTypes['order_by'] | undefined
     stages_aggregate?:
       | ModelTypes['launchpad_stage_aggregate_order_by']
       | undefined
@@ -29628,6 +29696,8 @@ export type ModelTypes = {
     id?: number | undefined
     max_supply?: ModelTypes['numeric'] | undefined
     minted_supply?: ModelTypes['numeric'] | undefined
+    reveal_date?: ModelTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
     start_date?: ModelTypes['timestamp'] | undefined
     transaction_id?: number | undefined
   }
@@ -35282,6 +35352,8 @@ export type GraphQLTypes = {
     id: number
     max_supply: GraphQLTypes['numeric']
     minted_supply: GraphQLTypes['numeric']
+    reveal_date?: GraphQLTypes['timestamp'] | undefined
+    reveal_immediately: boolean
     /** An array relationship */
     stages: Array<GraphQLTypes['launchpad_stage']>
     start_date?: GraphQLTypes['timestamp'] | undefined
@@ -35301,6 +35373,8 @@ export type GraphQLTypes = {
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     max_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
     minted_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    reveal_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    reveal_immediately?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     stages?: GraphQLTypes['launchpad_stage_bool_exp'] | undefined
     start_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
@@ -35312,6 +35386,7 @@ export type GraphQLTypes = {
     address: string
     collection_id: number
     id: number
+    is_minted: boolean
     /** An object relationship */
     launchpad: GraphQLTypes['launchpad']
     launchpad_id: number
@@ -35328,6 +35403,7 @@ export type GraphQLTypes = {
     address?: GraphQLTypes['String_comparison_exp'] | undefined
     collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    is_minted?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     stage_id?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -35338,6 +35414,7 @@ export type GraphQLTypes = {
     address?: GraphQLTypes['order_by'] | undefined
     collection_id?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
+    is_minted?: GraphQLTypes['order_by'] | undefined
     launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
@@ -35357,6 +35434,7 @@ export type GraphQLTypes = {
     address?: string | undefined
     collection_id?: number | undefined
     id?: number | undefined
+    is_minted?: boolean | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
     token_id?: number | undefined
@@ -35370,6 +35448,8 @@ export type GraphQLTypes = {
     id?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     minted_supply?: GraphQLTypes['order_by'] | undefined
+    reveal_date?: GraphQLTypes['order_by'] | undefined
+    reveal_immediately?: GraphQLTypes['order_by'] | undefined
     stages_aggregate?:
       | GraphQLTypes['launchpad_stage_aggregate_order_by']
       | undefined
@@ -35573,6 +35653,8 @@ export type GraphQLTypes = {
     id?: number | undefined
     max_supply?: GraphQLTypes['numeric'] | undefined
     minted_supply?: GraphQLTypes['numeric'] | undefined
+    reveal_date?: GraphQLTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
     start_date?: GraphQLTypes['timestamp'] | undefined
     transaction_id?: number | undefined
   }
@@ -39371,6 +39453,7 @@ export const enum launchpad_mint_reservation_select_column {
   address = 'address',
   collection_id = 'collection_id',
   id = 'id',
+  is_minted = 'is_minted',
   launchpad_id = 'launchpad_id',
   stage_id = 'stage_id',
   token_id = 'token_id',
@@ -39383,6 +39466,8 @@ export const enum launchpad_select_column {
   id = 'id',
   max_supply = 'max_supply',
   minted_supply = 'minted_supply',
+  reveal_date = 'reveal_date',
+  reveal_immediately = 'reveal_immediately',
   start_date = 'start_date',
   transaction_id = 'transaction_id',
 }
