@@ -84,7 +84,7 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
-func (protocol *Inscription) GetCollection(collectionHash string, sender string) (*models.Collection, error) {
+func (protocol *Inscription) GetCollection(collectionHash string, sender string, checkSenderIsOwner bool) (*models.Collection, error) {
 	// Fetch transaction from database with the given hash
 	var transaction models.Transaction
 	result := protocol.db.Where("hash = ?", collectionHash).First(&transaction)
@@ -102,7 +102,7 @@ func (protocol *Inscription) GetCollection(collectionHash string, sender string)
 	}
 
 	// Check that the sender is the collection owner
-	if collection.Creator != sender {
+	if checkSenderIsOwner && collection.Creator != sender {
 		return nil, fmt.Errorf("invalid sender, must be collection owner")
 	}
 
@@ -186,7 +186,7 @@ func (protocol *Inscription) UpdateCollection(parsedURN ProtocolURN, rawTransact
 	collectionHash := parsedURN.KeyValuePairs["h"]
 
 	// get collection
-	collection, err := protocol.GetCollection(collectionHash, sender)
+	collection, err := protocol.GetCollection(collectionHash, sender, true)
 	if err != nil {
 		return err
 	}
@@ -293,7 +293,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	// get collection
 	var collection *models.Collection
 	if migrationData.Collection != "" {
-		collection, err = protocol.GetCollection(migrationData.Collection, sender)
+		collection, err = protocol.GetCollection(migrationData.Collection, sender, true)
 		if err != nil {
 			return err
 		}
@@ -536,13 +536,24 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				return err
 			}
 
-			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
+			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender, false)
+
+			// check sender has launchpad mint reservation or is collection owner
+			if collection.Creator != sender {
+				var reservation models.LaunchpadMintReservation
+				result := protocol.db.Where("collection_id = ? and address = ? and token_id = ?", collection.ID, sender, inscriptionMetadata.Metadata.TokenID).First(&reservation)
+				if result.Error != nil {
+					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+				}
+			}
+
 			if err != nil {
 				return fmt.Errorf("error getting collection with identifier '%s': %w", inscriptionMetadata.Parent.Identifier, err)
 			}
 
 			// set collection id to the inscription
 			inscriptionModel.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
+			inscriptionModel.Creator = collection.Creator
 		}
 
 		// insert inscription to DB

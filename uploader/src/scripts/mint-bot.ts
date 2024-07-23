@@ -12,6 +12,7 @@ import { loadConfig } from '../config.js'
 
 interface InscriptionMetadata extends NFTMetadata {
   filename: string
+  token_id: number
 }
 
 async function main() {
@@ -39,13 +40,12 @@ async function main() {
   const reservations = await api.getLaunchpadMintReservations()
   const reservation = reservations[0]
 
-  console.log(JSON.stringify(reservation, null, 4))
-
   // download inscription content and metadata
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${reservation.launchpad.transaction.hash}/${reservation.token_id}_metadata.json`
   const metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
   )) as InscriptionMetadata
+  metadata.token_id = reservation.token_id
 
   const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${reservation.launchpad.transaction.hash}/${metadata.filename}`
   const inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
