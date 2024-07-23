@@ -19,6 +19,10 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import useAddress from '~/hooks/wallet/useAddress'
 import { getAddress } from '~/utils/cookies'
 
+interface InscriptionMetadata extends NFTMetadata {
+  filename: string
+}
+
 export async function loader({ context, request, params }: LoaderFunctionArgs) {
   if (!params.symbol) {
     throw new Response(null, {
@@ -86,36 +90,39 @@ export default function CreateInscription() {
       return
     }
 
-    let traits: inscription.Trait[] = []
-    if (data.newTraits) {
-      traits = traits.concat(data.newTraits)
-    }
+    // upload inscription and metadata
+    const fileExt = file.name.split('.').pop() as string
 
-    const metadata: NFTMetadata = {
+    const { inscriptionSignedUrl, metadataSignedUrl, inscriptionNumber } =
+      await uploadApi.inscriptionUrls(
+        launchpad!.transaction.hash,
+        file.type,
+        fileExt,
+      )
+
+    // prepare metadata
+    const metadata: InscriptionMetadata = {
       name: data.name,
       description: data.description,
       mime: file.type,
+      filename: `${inscriptionNumber}.${fileExt}`,
     }
 
-    if (traits.length > 0) {
-      metadata.attributes = traits.filter(
+    if (data.newTraits.length > 0) {
+      metadata.attributes = data.newTraits.filter(
         (trait) => trait.trait_type && trait.value,
       )
     }
 
-    // upload inscription and metadata
-    const { inscriptionSignedUrl, metadataSignedUrl } =
-      await uploadApi.inscriptionUrls(launchpad!.transaction.hash, file.type)
-
-    const response1 = await uploadApi.upload(inscriptionSignedUrl, file)
-    console.log('!!!response1', response1)
-
-    const response2 = await uploadApi.upload(
+    // upload assets
+    await uploadApi.upload(inscriptionSignedUrl, file)
+    await uploadApi.upload(
       metadataSignedUrl,
       new Blob([JSON.stringify(metadata)], { type: 'application/json' }),
     )
 
-    console.log('!!!response2', response2)
+    // confirm
+    await uploadApi.confirm(launchpad!.transaction.hash, inscriptionNumber)
   })
 
   return (
