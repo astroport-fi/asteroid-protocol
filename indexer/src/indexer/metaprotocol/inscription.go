@@ -31,6 +31,7 @@ type InscriptionConfig struct {
 	S3Token          string `envconfig:"S3_TOKEN"`
 	ReservationsFile string `envconfig:"RESERVATIONS_FILE" required:"true"`
 	S3StoreContent   bool   `envconfig:"S3_STORE_CONTENT" default:"true"`
+	MinterBotAddress string `envconfig:"MINTER_BOT_ADDRESS" required:"true"`
 }
 
 type Inscription struct {
@@ -48,6 +49,7 @@ type Inscription struct {
 	s3Token              string
 	reservationsByName   map[string]CollectionReservation
 	reservationsByTicker map[string]CollectionReservation
+	MinterBotAddress     string
 }
 
 func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Inscription {
@@ -77,6 +79,7 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.W
 		reservationsByName:   reservationsByName,
 		reservationsByTicker: reservationsByTicker,
 		workerClient:         workerClient,
+		MinterBotAddress:     config.MinterBotAddress,
 	}
 }
 
@@ -544,6 +547,11 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				result := protocol.db.Where("collection_id = ? and address = ? and token_id = ?", collection.ID, sender, inscriptionMetadata.Metadata.TokenID).First(&reservation)
 				if result.Error != nil {
 					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+				}
+
+				// check inscribe tx was executed by minter bot
+				if rawTransaction.Body.Messages[0].Grantee != protocol.MinterBotAddress {
+					return fmt.Errorf("invalid sender, must be minter bot")
 				}
 			}
 
