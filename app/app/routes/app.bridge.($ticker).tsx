@@ -391,7 +391,7 @@ export default function Bridge() {
         </Button>
         <Modal ref={dialogRef} backdrop>
           <ToNeutronBridgeDialog
-            token={token}
+            token={historyItem.token}
             denom={denom}
             amount={getDecimalValue(historyItem.amount, token.decimals)}
             destination={historyItem.receiver}
