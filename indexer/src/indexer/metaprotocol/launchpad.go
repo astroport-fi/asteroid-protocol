@@ -125,6 +125,8 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		}
 	}
 
+	// @todo check user send enough funds to pay for mint and fee
+
 	// get token id
 	var maxTokenId uint64
 	err := protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Scan(&maxTokenId).Error

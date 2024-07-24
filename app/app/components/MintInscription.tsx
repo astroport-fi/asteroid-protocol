@@ -47,8 +47,8 @@ export default function MintInscription({
       activeStage.id,
     )
 
-    // @todo add mint fee
-    const fee = activeStage.price ?? 1
+    const mintFee = 100000
+    const fee = mintFee + (activeStage.price ?? 0)
 
     const grant = getGrantSendMsg(operations.address, minterAddress, {
       allowList: [],
