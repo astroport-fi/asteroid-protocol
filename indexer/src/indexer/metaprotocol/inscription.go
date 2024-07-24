@@ -553,6 +553,14 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				if rawTransaction.Body.Messages[0].Grantee != protocol.MinterBotAddress {
 					return fmt.Errorf("invalid sender, must be minter bot")
 				}
+
+				// mark reservation as minted
+				reservation.IsMinted = true
+
+				result = protocol.db.Save(&reservation)
+				if result.Error != nil {
+					return result.Error
+				}
 			}
 
 			if err != nil {
