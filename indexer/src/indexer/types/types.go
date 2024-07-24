@@ -213,6 +213,7 @@ type RawTransactionBody struct {
 		Msgs    []SendMessage `json:"msgs"`
 		Packet  IBCPacket     `json:"packet"`
 		Granter string        `json:"granter"`
+		Grantee string        `json:"grantee"`
 	} `json:"messages"`
 	Memo                        string         `json:"memo"`
 	TimeoutHeight               string         `json:"timeout_height"`
