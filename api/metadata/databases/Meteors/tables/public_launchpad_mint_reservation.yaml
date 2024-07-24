@@ -5,6 +5,9 @@ object_relationships:
   - name: launchpad
     using:
       foreign_key_constraint_on: launchpad_id
+  - name: stage
+    using:
+      foreign_key_constraint_on: stage_id
 select_permissions:
   - role: anonymous
     permission:
