@@ -20,7 +20,13 @@ export const launchpadMintReservationSelector = Selector(
       transaction: {
         hash: true,
       },
+      creator: true,
     },
+    reveal_immediately: true,
+    reveal_date: true,
+  },
+  stage: {
+    price: true,
   },
 })
 

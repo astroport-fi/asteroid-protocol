@@ -15,7 +15,7 @@ export const Config = z.object({
   GAS_PRICE: z.string(),
   MNEMONIC: z.string(),
   CHAIN_ID: z.string(),
-  FEE_MULTIPLIER: z.string(),
+  GAS_MULTIPLIER: z.string(),
 })
 
 export type Config = z.infer<typeof Config>
