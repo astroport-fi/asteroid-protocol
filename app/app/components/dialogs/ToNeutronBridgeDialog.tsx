@@ -30,7 +30,7 @@ enum Step {
 }
 
 interface Props {
-  token: Token
+  token: Pick<Token, 'decimals' | 'ticker'>
   denom: string
   amount: number
   destination: string
