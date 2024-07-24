@@ -31,9 +31,11 @@ import {
   createDefaultAminoConverters,
   defaultRegistryTypes,
   setupAuthExtension,
+  setupAuthzExtension,
   setupBankExtension,
   setupStakingExtension,
 } from '@cosmjs/stargate'
+import { AuthzExtension } from '@cosmjs/stargate/build/modules/authz/queries.js'
 import { CometClient, connectComet } from '@cosmjs/tendermint-rpc'
 import { assert, assertDefined } from '@cosmjs/utils'
 import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
@@ -62,7 +64,8 @@ export class SigningStargateClient extends StargateClient {
         AuthExtension &
         BankExtension &
         StakingExtension &
-        TxExtension)
+        TxExtension &
+        AuthzExtension)
     | undefined
   private readonly simulateEndpoint: string | undefined
 
@@ -136,11 +139,12 @@ export class SigningStargateClient extends StargateClient {
         setupBankExtension,
         setupStakingExtension,
         setupTxExtension,
+        setupAuthzExtension,
       )
     }
   }
 
-  protected forceGetQueryClient(): QueryClient &
+  public forceGetQueryClient(): QueryClient &
     AuthExtension &
     BankExtension &
     StakingExtension &
