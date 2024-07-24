@@ -47,6 +47,8 @@ async function main() {
     res.arrayBuffer(),
   )
 
+  // check there is enough allowed funds to pay for the inscription and fee
+
   // create inscription operations
   const operations = new InscriptionOperations(
     config.CHAIN_ID,
