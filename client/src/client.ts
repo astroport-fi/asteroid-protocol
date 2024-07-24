@@ -51,6 +51,13 @@ interface SigningStargateClientOptions
   simulateEndpoint?: string
 }
 
+type CustomQueryClient = QueryClient &
+  AuthExtension &
+  BankExtension &
+  StakingExtension &
+  TxExtension &
+  AuthzExtension
+
 export class SigningStargateClient extends StargateClient {
   public readonly registry: Registry
   public readonly broadcastTimeoutMs: number | undefined
@@ -59,14 +66,7 @@ export class SigningStargateClient extends StargateClient {
   private readonly signer: OfflineSigner
   private readonly aminoTypes: AminoTypes
   private readonly gasPrice: GasPrice | undefined
-  private readonly customQueryClient:
-    | (QueryClient &
-        AuthExtension &
-        BankExtension &
-        StakingExtension &
-        TxExtension &
-        AuthzExtension)
-    | undefined
+  private readonly customQueryClient: CustomQueryClient | undefined
   private readonly simulateEndpoint: string | undefined
 
   /**
@@ -144,11 +144,7 @@ export class SigningStargateClient extends StargateClient {
     }
   }
 
-  public forceGetQueryClient(): QueryClient &
-    AuthExtension &
-    BankExtension &
-    StakingExtension &
-    TxExtension {
+  public forceGetQueryClient(): CustomQueryClient {
     if (!this.customQueryClient) {
       throw new Error(
         'Query client not available. You cannot use online functionality in offline mode.',
