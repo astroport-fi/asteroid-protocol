@@ -2726,6 +2726,69 @@ export type ValueTypes = {
   }>
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
+  /** columns and relationships of "empty_collections" */
+  ['empty_collections']: AliasType<{
+    /** An object relationship */
+    collection?: ValueTypes['collection']
+    id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "empty_collections". All fields are combined with a logical 'AND'. */
+  ['empty_collections_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['empty_collections_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['empty_collections_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['empty_collections_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "empty_collections". */
+  ['empty_collections_order_by']: {
+    collection?:
+      | ValueTypes['collection_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "empty_collections" */
+  ['empty_collections_select_column']: empty_collections_select_column
+  /** Streaming cursor of the table "empty_collections" */
+  ['empty_collections_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['empty_collections_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['empty_collections_stream_cursor_value_input']: {
+    id?: number | undefined | null | Variable<any, string>
+  }
   /** find_inscription_by_nameNative Query Arguments */
   ['find_inscription_by_name_arguments']: {
     query_name: string | Variable<any, string>
@@ -9434,6 +9497,40 @@ export type ValueTypes = {
       },
       ValueTypes['collection_traits'],
     ]
+    empty_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['empty_collections_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['empty_collections_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['empty_collections'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -11334,6 +11431,64 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['collection_traits'],
+    ]
+    empty_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['empty_collections_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['empty_collections_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['empty_collections'],
+    ]
+    empty_collections_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['empty_collections_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['empty_collections'],
     ]
     find_inscription_by_name?: [
       {
@@ -18378,6 +18533,45 @@ export type ResolverInputTypes = {
   }>
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
+  /** columns and relationships of "empty_collections" */
+  ['empty_collections']: AliasType<{
+    /** An object relationship */
+    collection?: ResolverInputTypes['collection']
+    id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "empty_collections". All fields are combined with a logical 'AND'. */
+  ['empty_collections_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['empty_collections_bool_exp']>
+      | undefined
+      | null
+    _not?: ResolverInputTypes['empty_collections_bool_exp'] | undefined | null
+    _or?:
+      | Array<ResolverInputTypes['empty_collections_bool_exp']>
+      | undefined
+      | null
+    collection?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+  }
+  /** Ordering options when selecting data from "empty_collections". */
+  ['empty_collections_order_by']: {
+    collection?: ResolverInputTypes['collection_order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "empty_collections" */
+  ['empty_collections_select_column']: empty_collections_select_column
+  /** Streaming cursor of the table "empty_collections" */
+  ['empty_collections_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['empty_collections_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['empty_collections_stream_cursor_value_input']: {
+    id?: number | undefined | null
+  }
   /** find_inscription_by_nameNative Query Arguments */
   ['find_inscription_by_name_arguments']: {
     query_name: string
@@ -22302,6 +22496,32 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['collection_traits'],
     ]
+    empty_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['empty_collections_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['empty_collections_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['empty_collections'],
+    ]
     find_inscription_by_name?: [
       {
         /** find_inscription_by_nameNative Query Arguments */
@@ -23643,6 +23863,48 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['collection_traits'],
+    ]
+    empty_collections?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['empty_collections_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['empty_collections_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['empty_collections'],
+    ]
+    empty_collections_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['empty_collections_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['empty_collections_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['empty_collections'],
     ]
     find_inscription_by_name?: [
       {
@@ -28333,6 +28595,37 @@ export type ModelTypes = {
     transaction_id?: number | undefined
   }
   ['cursor_ordering']: cursor_ordering
+  /** columns and relationships of "empty_collections" */
+  ['empty_collections']: {
+    /** An object relationship */
+    collection?: ModelTypes['collection'] | undefined
+    id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "empty_collections". All fields are combined with a logical 'AND'. */
+  ['empty_collections_bool_exp']: {
+    _and?: Array<ModelTypes['empty_collections_bool_exp']> | undefined
+    _not?: ModelTypes['empty_collections_bool_exp'] | undefined
+    _or?: Array<ModelTypes['empty_collections_bool_exp']> | undefined
+    collection?: ModelTypes['collection_bool_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "empty_collections". */
+  ['empty_collections_order_by']: {
+    collection?: ModelTypes['collection_order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+  }
+  ['empty_collections_select_column']: empty_collections_select_column
+  /** Streaming cursor of the table "empty_collections" */
+  ['empty_collections_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['empty_collections_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['empty_collections_stream_cursor_value_input']: {
+    id?: number | undefined
+  }
   /** find_inscription_by_nameNative Query Arguments */
   ['find_inscription_by_name_arguments']: {
     query_name: string
@@ -31088,6 +31381,8 @@ export type ModelTypes = {
     collection_stats_aggregate: ModelTypes['collection_stats_aggregate']
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<ModelTypes['collection_traits']>
+    /** fetch data from the table: "empty_collections" */
+    empty_collections: Array<ModelTypes['empty_collections']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<ModelTypes['inscription']>
@@ -31349,6 +31644,10 @@ export type ModelTypes = {
     collection_traits: Array<ModelTypes['collection_traits']>
     /** fetch data from the table in a streaming manner: "collection_traits" */
     collection_traits_stream: Array<ModelTypes['collection_traits']>
+    /** fetch data from the table: "empty_collections" */
+    empty_collections: Array<ModelTypes['empty_collections']>
+    /** fetch data from the table in a streaming manner: "empty_collections" */
+    empty_collections_stream: Array<ModelTypes['empty_collections']>
     find_inscription_by_name: Array<ModelTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<ModelTypes['inscription']>
@@ -34220,6 +34519,39 @@ export type GraphQLTypes = {
   }
   /** ordering argument of a cursor */
   ['cursor_ordering']: cursor_ordering
+  /** columns and relationships of "empty_collections" */
+  ['empty_collections']: {
+    __typename: 'empty_collections'
+    /** An object relationship */
+    collection?: GraphQLTypes['collection'] | undefined
+    id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "empty_collections". All fields are combined with a logical 'AND'. */
+  ['empty_collections_bool_exp']: {
+    _and?: Array<GraphQLTypes['empty_collections_bool_exp']> | undefined
+    _not?: GraphQLTypes['empty_collections_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['empty_collections_bool_exp']> | undefined
+    collection?: GraphQLTypes['collection_bool_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "empty_collections". */
+  ['empty_collections_order_by']: {
+    collection?: GraphQLTypes['collection_order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "empty_collections" */
+  ['empty_collections_select_column']: empty_collections_select_column
+  /** Streaming cursor of the table "empty_collections" */
+  ['empty_collections_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['empty_collections_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['empty_collections_stream_cursor_value_input']: {
+    id?: number | undefined
+  }
   /** find_inscription_by_nameNative Query Arguments */
   ['find_inscription_by_name_arguments']: {
     query_name: string
@@ -37131,6 +37463,8 @@ export type GraphQLTypes = {
     collection_stats_aggregate: GraphQLTypes['collection_stats_aggregate']
     /** fetch data from the table: "collection_traits" */
     collection_traits: Array<GraphQLTypes['collection_traits']>
+    /** fetch data from the table: "empty_collections" */
+    empty_collections: Array<GraphQLTypes['empty_collections']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<GraphQLTypes['inscription']>
@@ -37400,6 +37734,10 @@ export type GraphQLTypes = {
     collection_traits: Array<GraphQLTypes['collection_traits']>
     /** fetch data from the table in a streaming manner: "collection_traits" */
     collection_traits_stream: Array<GraphQLTypes['collection_traits']>
+    /** fetch data from the table: "empty_collections" */
+    empty_collections: Array<GraphQLTypes['empty_collections']>
+    /** fetch data from the table in a streaming manner: "empty_collections" */
+    empty_collections_stream: Array<GraphQLTypes['empty_collections']>
     find_inscription_by_name: Array<GraphQLTypes['search_result']>
     /** fetch data from the table: "inscription" */
     inscription: Array<GraphQLTypes['inscription']>
@@ -39410,6 +39748,10 @@ export const enum cursor_ordering {
   ASC = 'ASC',
   DESC = 'DESC',
 }
+/** select columns of table "empty_collections" */
+export const enum empty_collections_select_column {
+  id = 'id',
+}
 /** select columns of table "inscription_history" */
 export const enum inscription_history_select_column {
   action = 'action',
@@ -39773,6 +40115,11 @@ type ZEUS_VARIABLES = {
   ['collection_traits_var_samp_order_by']: ValueTypes['collection_traits_var_samp_order_by']
   ['collection_traits_variance_order_by']: ValueTypes['collection_traits_variance_order_by']
   ['cursor_ordering']: ValueTypes['cursor_ordering']
+  ['empty_collections_bool_exp']: ValueTypes['empty_collections_bool_exp']
+  ['empty_collections_order_by']: ValueTypes['empty_collections_order_by']
+  ['empty_collections_select_column']: ValueTypes['empty_collections_select_column']
+  ['empty_collections_stream_cursor_input']: ValueTypes['empty_collections_stream_cursor_input']
+  ['empty_collections_stream_cursor_value_input']: ValueTypes['empty_collections_stream_cursor_value_input']
   ['find_inscription_by_name_arguments']: ValueTypes['find_inscription_by_name_arguments']
   ['inscription_aggregate_bool_exp']: ValueTypes['inscription_aggregate_bool_exp']
   ['inscription_aggregate_bool_exp_bool_and']: ValueTypes['inscription_aggregate_bool_exp_bool_and']
