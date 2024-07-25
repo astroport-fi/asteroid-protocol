@@ -3,6 +3,7 @@
 - "!include public_collection.yaml"
 - "!include public_collection_stats.yaml"
 - "!include public_collection_traits.yaml"
+- "!include public_empty_collections.yaml"
 - "!include public_inscription.yaml"
 - "!include public_inscription_history.yaml"
 - "!include public_inscription_market.yaml"
