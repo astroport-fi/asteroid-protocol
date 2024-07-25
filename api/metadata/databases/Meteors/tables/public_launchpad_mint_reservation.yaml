@@ -20,4 +20,5 @@ select_permissions:
         - stage_id
         - token_id
       filter: {}
+      allow_aggregations: true
     comment: ""
