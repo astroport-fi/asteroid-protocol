@@ -87,3 +87,12 @@ CREATE INDEX "idx_launchpad_whitelist_collection_id" ON "public"."launchpad_whit
 CREATE INDEX "idx_launchpad_whitelist_launchpad_id" ON "public"."launchpad_whitelist" ("launchpad_id");
 -- Create index "idx_launchpad_whitelist_stage_id" to table: "launchpad_whitelist"
 CREATE INDEX "idx_launchpad_whitelist_stage_id" ON "public"."launchpad_whitelist" ("stage_id");
+
+-- public.empty_collections view definition
+
+CREATE OR REPLACE VIEW public.empty_collections AS 
+SELECT c.id
+FROM collection c
+LEFT JOIN collection_stats cs ON c.id = cs.id
+LEFT JOIN launchpad l ON c.id = l.collection_id
+WHERE cs.id IS NULL AND l.collection_id IS NULL
