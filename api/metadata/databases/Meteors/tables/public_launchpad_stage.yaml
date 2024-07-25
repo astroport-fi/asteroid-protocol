@@ -12,6 +12,13 @@ object_relationships:
           name: launchpad
           schema: public
 array_relationships:
+  - name: reservations
+    using:
+      foreign_key_constraint_on:
+        column: stage_id
+        table:
+          name: launchpad_mint_reservation
+          schema: public
   - name: whitelists
     using:
       foreign_key_constraint_on:
