@@ -366,7 +366,9 @@ export default function CreateCollectionLaunch() {
         ref={dialogRef}
         txInscription={value}
         resultLink={() =>
-          `/app/create/launch/${selectedCollection!.symbol}/inscriptions`
+          selectedCollection
+            ? '/app/create/launch/inscriptions'
+            : `/app/create/launch/${selectedCollection!.symbol}/inscriptions`
         }
         resultCTA="Upload inscriptions"
         onSuccess={() => {

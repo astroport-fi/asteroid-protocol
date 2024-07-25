@@ -11,6 +11,16 @@ import {
 } from './collection'
 
 export const stageSelector = Selector('launchpad_stage')({
+  price: true,
+})
+
+export type Stage = InputType<
+  GraphQLTypes['launchpad_stage'],
+  typeof stageSelector,
+  ScalarDefinition
+>
+
+export const stageDetailSelector = Selector('launchpad_stage')({
   id: true,
   name: true,
   description: true,
@@ -19,11 +29,25 @@ export const stageSelector = Selector('launchpad_stage')({
   price: true,
   per_user_limit: true,
   has_whitelist: true,
+  whitelists: [
+    {},
+    {
+      address: true,
+    },
+  ],
+  reservations_aggregate: [
+    {},
+    {
+      aggregate: {
+        count: [{}, true],
+      },
+    },
+  ],
 })
 
-export type Stage = InputType<
+export type StageDetail = InputType<
   GraphQLTypes['launchpad_stage'],
-  typeof stageSelector,
+  typeof stageDetailSelector,
   ScalarDefinition
 >
 
@@ -50,7 +74,7 @@ export const launchpadDetailSelector = Selector('launchpad')({
   transaction: {
     hash: true,
   },
-  stages: [{}, stageSelector],
+  stages: [{}, stageDetailSelector],
   collection: collectionDetailSelector,
 })
 

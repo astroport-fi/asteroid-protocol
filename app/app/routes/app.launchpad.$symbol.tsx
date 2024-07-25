@@ -1,3 +1,4 @@
+import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
@@ -6,15 +7,16 @@ import { useState } from 'react'
 import { Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
-import { Stage } from '~/api/launchpad'
+import { StageDetail } from '~/api/launchpad'
 import DecimalText from '~/components/DecimalText'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintInscription from '~/components/MintInscription'
 import PercentageText from '~/components/PercentageText'
 import CollectionSocials from '~/components/collection/CollectionSocials'
+import { getAddress } from '~/utils/cookies'
 import { getSupplyTitle } from '~/utils/number'
 
-export async function loader({ context, params }: LoaderFunctionArgs) {
+export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!params.symbol) {
     throw new Response(null, {
       status: 404,
@@ -22,8 +24,10 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
     })
   }
 
+  const address = await getAddress(request)
+
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const launch = await asteroidClient.getLaunch(params.symbol)
+  const launch = await asteroidClient.getLaunch(params.symbol, address)
 
   if (!launch) {
     throw new Response(null, {
@@ -35,16 +39,21 @@ export async function loader({ context, params }: LoaderFunctionArgs) {
   return json(launch)
 }
 
-function StageBox({ stage }: { stage: Stage }) {
+function StageBox({ stage }: { stage: StageDetail }) {
   const now = new Date()
   const isEnded = stage.finish_date && new Date(stage.finish_date) < now
   const isActive =
     (!stage.start_date || new Date(stage.start_date) < now) && !isEnded
 
-  let title = stage.name
+  let title: React.ReactNode | undefined = stage.name
   if (!title) {
     if (stage.has_whitelist) {
-      title = 'Whitelist'
+      title = (
+        <span className="flex items-center">
+          <LockClosedIcon className="size-4" />{' '}
+          <span className="ml-1">Whitelist</span>
+        </span>
+      )
     } else {
       title = 'Public'
     }
@@ -53,9 +62,9 @@ function StageBox({ stage }: { stage: Stage }) {
   return (
     <div
       className={clsx(
-        'flex justify-between items-center w-full p-4 rounded-xl',
+        'flex justify-between items-center w-full p-4 rounded-xl border border-header-content mb-2',
         {
-          'border border-primary': isActive,
+          'border-primary': isActive,
         },
       )}
     >
@@ -124,7 +133,7 @@ export default function LaunchpadDetailPage() {
           {collection.metadata.description}
         </p>
 
-        <div className="flex w-full justify-between mt-8">
+        <div className="flex flex-col w-full justify-between mt-8">
           {launchpad.stages.map((stage) => (
             <StageBox key={stage.id} stage={stage} />
           ))}
