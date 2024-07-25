@@ -10,7 +10,7 @@
     "prettify": "prettier . --write",
     "prepare": "cd .. && husky install client/.husky",
     "clean": "tsc --build --clean",
-    "build": "tsc -p tsconfig.json",
+    "build": "npx tsc -p tsconfig.json",
     "watch": "tsc --watch --module es2022 --outDir esm/",
     "dev": "node --trace-warnings --loader ts-node/esm src/main.ts",
     "create-migration": "atlas migrate diff --env local --to file://schema.sql",
