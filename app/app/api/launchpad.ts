@@ -62,3 +62,18 @@ export type LaunchpadDetail = Omit<
   >,
   'collection'
 > & { collection: CollectionDetail }
+
+export const creatorLaunchSelector = Selector('launchpad')({
+  transaction: {
+    hash: true,
+  },
+  collection: {
+    name: true,
+  },
+})
+
+export type CreatorLaunch = InputType<
+  GraphQLTypes['launchpad'],
+  typeof creatorLaunchSelector,
+  ScalarDefinition
+>

@@ -1,6 +1,6 @@
 import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
-import { Link } from '@remix-run/react'
+import { Link, useLocation } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
 import {
@@ -56,6 +56,9 @@ export default function CreateCollection() {
   const [createdTicker, setCreatedTicker] = useState<string | null>(null)
   const isLedger = useIsLedger()
 
+  const location = useLocation()
+  const insideLaunchpad = location.pathname.startsWith('/app/create/launch')
+
   // preview
   const [preview, setPreview] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
@@ -110,7 +113,7 @@ export default function CreateCollection() {
   })
 
   return (
-    <div>
+    <div className={insideLaunchpad ? 'overflow-y-scroll' : ''}>
       <Form onSubmit={onSubmit} className="flex flex-col mt-4">
         {isLedger && <InscribingNotSupportedWithLedger />}
         <div className="flex flex-col lg:flex-row">

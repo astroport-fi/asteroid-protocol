@@ -5,7 +5,7 @@ import { InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
-import { Alert, Button, Divider, Form, Input, Select } from 'react-daisyui'
+import { Alert, Button, Divider, Form, Input } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { Collection, CollectionTrait } from '~/api/collection'
@@ -13,6 +13,7 @@ import InfoTooltip from '~/components/InfoTooltip'
 import InscriptionImage from '~/components/InscriptionImage'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Autocomplete from '~/components/form/Autocomplete'
+import { CollectionSelect } from '~/components/form/CollectionSelect'
 import Label from '~/components/form/Label'
 import { Wallet } from '~/components/wallet/Wallet'
 import useCollection from '~/hooks/api/useCollection'
@@ -221,38 +222,13 @@ export default function CreateInscription() {
             form
           </p>
 
-          <div className="form-control w-full mt-6">
-            <Label
-              title="Collection (optional)"
-              htmlFor="collection"
-              tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
-            />
-            <div className="flex w-full gap-4 items-center">
-              <Select
-                id="collection"
-                className="w-full"
-                color={errors.collection ? 'error' : undefined}
-                {...register('collection')}
-              >
-                <Select.Option value={0}>Select collection</Select.Option>
-                {collections.map((collection) => (
-                  <Select.Option
-                    key={collection.transaction.hash}
-                    value={collection.transaction.hash}
-                  >
-                    {collection.name}
-                  </Select.Option>
-                ))}
-              </Select>
-              <Link
-                className="btn btn-accent btn-sm btn-circle mr-1"
-                to="/app/create/collection"
-                target="_blank"
-              >
-                <PlusIcon className="size-5" />
-              </Link>
-            </div>
-          </div>
+          <CollectionSelect
+            collections={collections}
+            error={errors.collection}
+            register={register}
+            title="Collection (optional)"
+            tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
+          />
 
           <Divider className="mt-8 flex !gap-2">
             <span>Traits</span>

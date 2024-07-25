@@ -64,8 +64,10 @@ import {
   topCollectionSelector,
 } from './collection'
 import {
+  CreatorLaunch,
   Launchpad,
   LaunchpadDetail,
+  creatorLaunchSelector,
   launchpadDetailSelector,
   launchpadSelector,
 } from './launchpad'
@@ -1722,7 +1724,6 @@ export class AsteroidClient extends AsteroidService {
     }
   }
 
-  // @todo take how much is minted out into consideration
   async getActiveLaunches(): Promise<Launchpad[]> {
     const result = await this.query({
       launchpad: [
@@ -1748,6 +1749,30 @@ export class AsteroidClient extends AsteroidService {
           },
         },
         launchpadSelector,
+      ],
+    })
+
+    return result.launchpad
+  }
+
+  async getCreatorLaunches(creator: string): Promise<CreatorLaunch[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            collection: {
+              creator: {
+                _eq: creator,
+              },
+            },
+          },
+        },
+        creatorLaunchSelector,
       ],
     })
 
@@ -1783,6 +1808,29 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return result.launchpad
+  }
+
+  async getLaunchpadHash(symbol: string): Promise<string | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            collection: {
+              symbol: {
+                _eq: symbol,
+              },
+            },
+          },
+        },
+        {
+          transaction: {
+            hash: true,
+          },
+        },
+      ],
+    })
+
+    return result.launchpad?.[0].transaction.hash
   }
 
   async getLaunch(symbol: string): Promise<LaunchpadDetail | undefined> {

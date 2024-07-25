@@ -1,21 +1,16 @@
 import type { TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
-import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { CheckIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
-import {
-  Button,
-  Link as DaisyLink,
-  FileInput,
-  Form,
-  Select,
-} from 'react-daisyui'
+import { Button, Link as DaisyLink, FileInput, Form } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { inferSchema, initParser } from 'udsv'
 import { AsteroidClient } from '~/api/client'
 import TxDialog from '~/components/dialogs/TxDialog'
+import { CollectionSelect } from '~/components/form/CollectionSelect'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
@@ -209,33 +204,12 @@ export default function CreateInscription() {
             .
           </p>
 
-          <div className="form-control w-full mt-6">
-            <Form.Label title="Collection (optional)" htmlFor="collection" />
-            <div className="flex w-full gap-4 items-center">
-              <Select
-                id="collection"
-                className="w-full"
-                color={errors.collection ? 'error' : undefined}
-                {...register('collection')}
-              >
-                <Select.Option value={0}>Select collection</Select.Option>
-                {data.collections.map((collection) => (
-                  <Select.Option
-                    key={collection.transaction.hash}
-                    value={collection.transaction.hash}
-                  >
-                    {collection.name}
-                  </Select.Option>
-                ))}
-              </Select>
-              <Link
-                className="btn btn-accent btn-sm btn-circle mr-1"
-                to="/app/create/collection"
-              >
-                <PlusIcon className="size-5" />
-              </Link>
-            </div>
-          </div>
+          <CollectionSelect
+            collections={data.collections}
+            error={errors.collection}
+            register={register}
+            title="Collection (optional)"
+          />
 
           {operations ? (
             <Button

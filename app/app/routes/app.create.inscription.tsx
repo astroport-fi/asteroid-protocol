@@ -2,9 +2,9 @@ import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import { useMemo, useState } from 'react'
-import { Button, Divider, Form, Select } from 'react-daisyui'
+import { Button, Divider, Form } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { CollectionTrait } from '~/api/collection'
@@ -12,7 +12,7 @@ import InfoTooltip from '~/components/InfoTooltip'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import TxDialog from '~/components/dialogs/TxDialog'
 import Autocomplete from '~/components/form/Autocomplete'
-import Label from '~/components/form/Label'
+import { CollectionSelect } from '~/components/form/CollectionSelect'
 import {
   ContentInput,
   Description,
@@ -219,38 +219,13 @@ export default function CreateInscription() {
 
             <Description register={register} />
 
-            <div className="form-control w-full mt-6">
-              <Label
-                title="Collection (optional)"
-                htmlFor="collection"
-                tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
-              />
-              <div className="flex w-full gap-4 items-center">
-                <Select
-                  id="collection"
-                  className="w-full"
-                  color={errors.collection ? 'error' : undefined}
-                  {...register('collection')}
-                >
-                  <Select.Option value={0}>Select collection</Select.Option>
-                  {data.collections.map((collection) => (
-                    <Select.Option
-                      key={collection.transaction.hash}
-                      value={collection.transaction.hash}
-                    >
-                      {collection.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <Link
-                  className="btn btn-accent btn-sm btn-circle mr-1"
-                  to="/app/create/collection"
-                  target="_blank"
-                >
-                  <PlusIcon className="size-5" />
-                </Link>
-              </div>
-            </div>
+            <CollectionSelect
+              collections={data.collections}
+              error={errors.collection}
+              register={register}
+              title="Collection (optional)"
+              tooltip="If you plan to inscribe more than 1 related inscription, consider grouping them into a collection for easier discoverability in the Asteroid marketplace"
+            />
 
             <Divider className="mt-8 flex !gap-2">
               <span>Traits</span>
