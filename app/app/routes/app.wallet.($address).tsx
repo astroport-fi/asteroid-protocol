@@ -1,28 +1,12 @@
 import { WalletIcon } from '@heroicons/react/20/solid'
-import { Link, Outlet, useLocation, useParams } from '@remix-run/react'
-import clsx from 'clsx'
-import { PropsWithChildren } from 'react'
+import { Outlet, useLocation, useParams } from '@remix-run/react'
 import { Link as DaisyLink, Tabs } from 'react-daisyui'
 import Lottie from '~/components/Lottie'
+import Tab from '~/components/Tab'
 import { Wallet } from '~/components/wallet/Wallet'
 import useStargazeName from '~/hooks/useStargazeName'
 import useAddress from '~/hooks/wallet/useAddress'
 import noWalletAnimationData from '~/lottie/no-wallet.json'
-
-function Tab({
-  active,
-  to,
-  children,
-}: PropsWithChildren<{ active?: boolean; to: string }>) {
-  const classes = clsx('tab', {
-    'tab-active': active,
-  })
-  return (
-    <Link role="tab" className={classes} to={to}>
-      {children}
-    </Link>
-  )
-}
 
 enum WalletTab {
   Tokens,

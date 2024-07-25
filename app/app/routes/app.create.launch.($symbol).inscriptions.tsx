@@ -1,13 +1,15 @@
 import type { NFTMetadata } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
-import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { ArrowUpIcon, CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
-import { useState } from 'react'
-import { Button, Divider, Form } from 'react-daisyui'
+import { useEffect, useState } from 'react'
+import { Button, Divider, Form, Select } from 'react-daisyui'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
+import { CreatorLaunch } from '~/api/launchpad'
 import InfoTooltip from '~/components/InfoTooltip'
+import Label from '~/components/form/Label'
 import {
   ContentInput,
   Description,
@@ -19,44 +21,56 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import useAddress from '~/hooks/wallet/useAddress'
 import { getAddress } from '~/utils/cookies'
 
-export async function loader({ context, request, params }: LoaderFunctionArgs) {
-  if (!params.symbol) {
-    throw new Response(null, {
-      status: 404,
-      statusText: 'Not Found',
-    })
-  }
-
+export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
-  if (!address) {
-    return json(null)
-  }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const launch = await asteroidClient.getLaunch(params.symbol)
-  if (!launch) {
-    throw new Response(null, {
-      status: 404,
-      statusText: 'Not Found',
-    })
+  let launchpadHash: string | undefined = undefined
+  if (params.symbol) {
+    launchpadHash = await asteroidClient.getLaunchpadHash(params.symbol)
   }
 
-  return json(launch)
+  let launches: CreatorLaunch[]
+  if (address) {
+    launches = await asteroidClient.getCreatorLaunches(address)
+  } else {
+    launches = []
+  }
+
+  return json({ launchpadHash: launchpadHash, launches })
 }
 
 type FormData = {
   name: string
   description: string
   content: File[]
-  collection: string | null
-  traits: Record<string, string>
+  launchpad: string
   newTraits: inscription.Trait[]
 }
 
+enum UploadState {
+  IDLE,
+  UPLOADING,
+  UPLOADED,
+}
+
 export default function CreateInscription() {
-  const launchpad = useLoaderData<typeof loader>()
+  const { launchpadHash, launches } = useLoaderData<typeof loader>()
   const address = useAddress()
   const uploadApi = useUploadApi()
+  const [uploadState, setUploadState] = useState<UploadState>(UploadState.IDLE)
+
+  useEffect(() => {
+    if (uploadState !== UploadState.UPLOADED) {
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      setUploadState(UploadState.IDLE)
+    }, 10000)
+
+    return () => clearTimeout(timeout)
+  }, [uploadState])
 
   // form
   const {
@@ -65,7 +79,7 @@ export default function CreateInscription() {
     watch,
     control,
     formState: { errors },
-  } = useForm<FormData>()
+  } = useForm<FormData>({ defaultValues: { launchpad: launchpadHash } })
   const name = watch('name')
 
   const { fields, append, remove } = useFieldArray({
@@ -78,6 +92,8 @@ export default function CreateInscription() {
   const [fileName, setFileName] = useState<string | null>(null)
 
   const onSubmit = handleSubmit(async (data) => {
+    setUploadState(UploadState.UPLOADING)
+
     const file = data.content[0]
     const fileBuffer = await file.arrayBuffer()
     const byteArray = new Uint8Array(fileBuffer)
@@ -90,11 +106,7 @@ export default function CreateInscription() {
     const fileExt = file.name.split('.').pop() as string
 
     const { inscriptionSignedUrl, metadataSignedUrl, inscriptionNumber } =
-      await uploadApi.inscriptionUrls(
-        launchpad!.transaction.hash,
-        file.type,
-        fileExt,
-      )
+      await uploadApi.inscriptionUrls(data.launchpad, file.type, fileExt)
 
     // prepare metadata
     const metadata: NFTMetadata = {
@@ -119,7 +131,9 @@ export default function CreateInscription() {
     )
 
     // confirm
-    await uploadApi.confirm(launchpad!.transaction.hash, inscriptionNumber)
+    await uploadApi.confirm(data.launchpad, inscriptionNumber)
+
+    setUploadState(UploadState.UPLOADED)
   })
 
   return (
@@ -151,7 +165,30 @@ export default function CreateInscription() {
             />
           </div>
           <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
-            <strong>Upload an inscription</strong>
+            <strong>Upload an inscription for launchpad</strong>
+
+            <div className="form-control w-full mt-6">
+              <Label title="Launchpad" htmlFor="launchpad" />
+              <Select
+                id="collection"
+                className="w-full"
+                color={errors.launchpad ? 'error' : undefined}
+                {...register('launchpad', {
+                  required: true,
+                  minLength: 64,
+                })}
+              >
+                <Select.Option value={0}>Select collection</Select.Option>
+                {launches.map((launch) => (
+                  <Select.Option
+                    key={launch.transaction.hash}
+                    value={launch.transaction.hash}
+                  >
+                    {launch.collection.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
 
             <Name register={register} name={name} error={errors.name} />
 
@@ -189,14 +226,28 @@ export default function CreateInscription() {
             <Divider />
 
             {address ? (
-              <Button
-                type="submit"
-                color="primary"
-                className="mt-4"
-                startIcon={<CheckIcon className="size-5" />}
-              >
-                Upload
-              </Button>
+              uploadState === UploadState.UPLOADING ? (
+                <Button loading color="primary" className="mt-4">
+                  Uploading...
+                </Button>
+              ) : uploadState === UploadState.UPLOADED ? (
+                <Button
+                  color="success"
+                  className="mt-4"
+                  startIcon={<CheckIcon className="size-5" />}
+                >
+                  Uploaded
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="mt-4"
+                  startIcon={<ArrowUpIcon className="size-5" />}
+                >
+                  Upload
+                </Button>
+              )
             ) : (
               <Wallet className="mt-4 btn-md w-full" color="primary" />
             )}

@@ -2,15 +2,16 @@ import { TxInscription } from '@asteroid-protocol/sdk'
 import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { Link, useLoaderData } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import React from 'react'
-import { Button, Divider, Form, Input, Select, Textarea } from 'react-daisyui'
+import { Button, Divider, Form, Input, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import TxDialog from '~/components/dialogs/TxDialog'
+import { CollectionSelect } from '~/components/form/CollectionSelect'
 import ErrorLabel from '~/components/form/ErrorLabel'
 import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
@@ -74,6 +75,10 @@ export default function CreateCollectionLaunch() {
     watch,
   } = useForm<FormData>({ defaultValues: { stages: [{}] } })
 
+  const collectionHash = watch('collection')
+  const selectedCollection = data.collections.find(
+    (c) => c.transaction.hash === collectionHash,
+  )
   const stages = watch('stages')
 
   const { fields, append, remove } = useFieldArray({
@@ -112,41 +117,21 @@ export default function CreateCollectionLaunch() {
   })
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full overflow-y-scroll">
       <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full">
         {isLedger && <InscribingNotSupportedWithLedger />}
 
-        <div className="flex w-full flex-col mt-4 lg:mt-0 lg:ml-8">
+        <div className="flex w-full flex-col">
           <strong>Create a collection launch</strong>
 
-          <div className="form-control w-full mt-6">
-            <Label title="Collection" htmlFor="collection" />
-            <div className="flex w-full gap-4 items-center">
-              <Select
-                id="collection"
-                className="w-full"
-                color={errors.collection ? 'error' : undefined}
-                {...register('collection', { required: true, minLength: 64 })}
-              >
-                <Select.Option value={0}>Select collection</Select.Option>
-                {data.collections.map((collection) => (
-                  <Select.Option
-                    key={collection.transaction.hash}
-                    value={collection.transaction.hash}
-                  >
-                    {collection.name}
-                  </Select.Option>
-                ))}
-              </Select>
-              <Link
-                className="btn btn-accent btn-sm btn-circle mr-1"
-                to="/app/create/collection"
-                target="_blank"
-              >
-                <PlusIcon className="size-5" />
-              </Link>
-            </div>
-          </div>
+          <CollectionSelect
+            collections={data.collections}
+            error={errors.collection}
+            register={register}
+            link={'/app/create/launch/collection'}
+            linkInNewTab={false}
+            required
+          />
 
           <NumericInput
             control={control}
@@ -380,8 +365,10 @@ export default function CreateCollectionLaunch() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={(txHash) => `/app/inscription/${txHash}`}
-        resultCTA="View inscription"
+        resultLink={() =>
+          `/app/create/launch/${selectedCollection!.symbol}/inscriptions`
+        }
+        resultCTA="Upload inscriptions"
         onSuccess={() => {
           reset()
         }}
