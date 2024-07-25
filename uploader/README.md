@@ -1,3 +1,17 @@
+## Running
+
+### Server
+
+```bash
+npm run dev
+```
+
+### Mint bot
+
+```bash
+npm run run-script ./src/scripts/mint-bot.ts
+```
+
 ## Development
 
 ### Gaiad commands to test out logic
