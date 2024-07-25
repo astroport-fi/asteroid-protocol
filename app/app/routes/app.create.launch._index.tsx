@@ -30,11 +30,9 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const res = await asteroidClient.getCollections(0, 500, {
-    creator: address,
-  })
+  const collections = await asteroidClient.getEmptyCollections(address)
 
-  return json({ collections: res.collections })
+  return json({ collections: collections })
 }
 
 interface FormStage {

@@ -725,6 +725,39 @@ export class AsteroidClient extends AsteroidService {
     return topCollections as TopCollection[]
   }
 
+  async getEmptyCollections(
+    creator: string,
+    orderBy?: ValueTypes['empty_collections_order_by'],
+  ): Promise<Collection[]> {
+    if (!orderBy) {
+      orderBy = {
+        collection: {
+          date_created: order_by.desc,
+        },
+      }
+    }
+
+    const result = await this.query({
+      empty_collections: [
+        {
+          where: {
+            collection: {
+              creator: {
+                _eq: creator,
+              },
+            },
+          },
+          order_by: [orderBy],
+        },
+        {
+          collection: collectionSelector,
+        },
+      ],
+    })
+
+    return result.empty_collections.map((item) => item.collection as Collection)
+  }
+
   async getCollections(
     offset: number,
     limit: number,
