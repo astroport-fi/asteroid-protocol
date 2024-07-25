@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex'
 
-declare module 'knex/types/tables' {
+declare module 'knex/types/tables.js' {
   export interface Launchpad {
     hash: string
     date_created: Date
