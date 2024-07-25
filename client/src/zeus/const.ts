@@ -361,6 +361,23 @@ export const AllTypesProps: Record<string, any> = {
     count: 'order_by',
   },
   cursor_ordering: 'enum' as const,
+  empty_collections_bool_exp: {
+    _and: 'empty_collections_bool_exp',
+    _not: 'empty_collections_bool_exp',
+    _or: 'empty_collections_bool_exp',
+    collection: 'collection_bool_exp',
+    id: 'Int_comparison_exp',
+  },
+  empty_collections_order_by: {
+    collection: 'collection_order_by',
+    id: 'order_by',
+  },
+  empty_collections_select_column: 'enum' as const,
+  empty_collections_stream_cursor_input: {
+    initial_value: 'empty_collections_stream_cursor_value_input',
+    ordering: 'cursor_ordering',
+  },
+  empty_collections_stream_cursor_value_input: {},
   find_inscription_by_name_arguments: {},
   inscription: {
     inscription_histories: {
@@ -2045,6 +2062,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'collection_traits_order_by',
       where: 'collection_traits_bool_exp',
     },
+    empty_collections: {
+      distinct_on: 'empty_collections_select_column',
+      order_by: 'empty_collections_order_by',
+      where: 'empty_collections_bool_exp',
+    },
     find_inscription_by_name: {
       args: 'find_inscription_by_name_arguments',
       distinct_on: 'search_result_enum_name',
@@ -2367,6 +2389,15 @@ export const AllTypesProps: Record<string, any> = {
     collection_traits_stream: {
       cursor: 'collection_traits_stream_cursor_input',
       where: 'collection_traits_bool_exp',
+    },
+    empty_collections: {
+      distinct_on: 'empty_collections_select_column',
+      order_by: 'empty_collections_order_by',
+      where: 'empty_collections_bool_exp',
+    },
+    empty_collections_stream: {
+      cursor: 'empty_collections_stream_cursor_input',
+      where: 'empty_collections_bool_exp',
     },
     find_inscription_by_name: {
       args: 'find_inscription_by_name_arguments',
@@ -4098,6 +4129,10 @@ export const ReturnTypes: Record<string, any> = {
     royalty_percentage: 'Float',
     transaction_id: 'Float',
   },
+  empty_collections: {
+    collection: 'collection',
+    id: 'Int',
+  },
   inscription: {
     chain_id: 'String',
     collection: 'collection',
@@ -4722,6 +4757,7 @@ export const ReturnTypes: Record<string, any> = {
     collection_stats: 'collection_stats',
     collection_stats_aggregate: 'collection_stats_aggregate',
     collection_traits: 'collection_traits',
+    empty_collections: 'empty_collections',
     find_inscription_by_name: 'search_result',
     inscription: 'inscription',
     inscription_aggregate: 'inscription_aggregate',
@@ -4815,6 +4851,8 @@ export const ReturnTypes: Record<string, any> = {
     collection_stream: 'collection',
     collection_traits: 'collection_traits',
     collection_traits_stream: 'collection_traits',
+    empty_collections: 'empty_collections',
+    empty_collections_stream: 'empty_collections',
     find_inscription_by_name: 'search_result',
     inscription: 'inscription',
     inscription_aggregate: 'inscription_aggregate',
