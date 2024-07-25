@@ -1,14 +1,19 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
+import {
+  CubeIcon,
+  LockClosedIcon,
+  NoSymbolIcon,
+} from '@heroicons/react/20/solid'
 import { Button } from 'react-daisyui'
-import { LaunchpadDetail, Stage } from '~/api/launchpad'
+import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import TxDialog from './dialogs/TxDialog'
 import { Wallet } from './wallet/Wallet'
 
-function getActiveStage(stages: Stage[]) {
+function getActiveStage(stages: StageDetail[]) {
   const now = new Date()
   return stages.find(
     (stage) =>
@@ -29,6 +34,16 @@ export default function MintInscription({
   const { dialogRef, value, showDialog } =
     useDialogWithValue<TxInscription | null>()
   const activeStage = getActiveStage(launchpad.stages)
+  const isEligible =
+    activeStage == null ||
+    !activeStage.has_whitelist ||
+    activeStage.whitelists[0] != null
+
+  const userReservations =
+    activeStage?.reservations_aggregate.aggregate?.count ?? 0
+  const reachedLimit =
+    activeStage?.per_user_limit &&
+    userReservations >= activeStage.per_user_limit
 
   function mint() {
     if (!activeStage) {
@@ -61,16 +76,41 @@ export default function MintInscription({
 
   return (
     <div className={className}>
-      {!activeStage ? (
-        <Button disabled fullWidth>
+      {!operations ? (
+        <Wallet className="btn-md w-full" color="primary" />
+      ) : !activeStage ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
           No active stage
         </Button>
-      ) : operations ? (
-        <Button onClick={() => mint()} color="primary" fullWidth>
-          Mint now
+      ) : !isEligible ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<LockClosedIcon className="size-4" />}
+        >
+          Not eligible
+        </Button>
+      ) : reachedLimit ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
+          Reached per user limit
         </Button>
       ) : (
-        <Wallet className="btn-md w-full" color="primary" />
+        <Button
+          onClick={() => mint()}
+          color="primary"
+          fullWidth
+          startIcon={<CubeIcon className="size-4" />}
+        >
+          Mint now
+        </Button>
       )}
       <TxDialog
         ref={dialogRef}

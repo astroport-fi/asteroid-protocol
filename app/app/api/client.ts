@@ -70,6 +70,7 @@ import {
   creatorLaunchSelector,
   launchpadDetailSelector,
   launchpadSelector,
+  stageDetailSelector,
 } from './launchpad'
 import { marketplaceListingSelector } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
@@ -1797,7 +1798,10 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad?.[0].transaction.hash
   }
 
-  async getLaunch(symbol: string): Promise<LaunchpadDetail | undefined> {
+  async getLaunch(
+    symbol: string,
+    address?: string,
+  ): Promise<LaunchpadDetail | undefined> {
     const result = await this.query({
       launchpad: [
         {
@@ -1809,7 +1813,35 @@ export class AsteroidClient extends AsteroidService {
             },
           },
         },
-        launchpadDetailSelector,
+        {
+          ...launchpadDetailSelector,
+          stages: [
+            {},
+            {
+              ...stageDetailSelector,
+              whitelists: [
+                {
+                  where: {
+                    address: address ? { _eq: address } : { _is_null: true },
+                  },
+                },
+                { address: true },
+              ],
+              reservations_aggregate: [
+                {
+                  where: {
+                    address: address ? { _eq: address } : { _is_null: true },
+                  },
+                },
+                {
+                  aggregate: {
+                    count: [{}, true],
+                  },
+                },
+              ],
+            },
+          ],
+        },
       ],
     })
 
