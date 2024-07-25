@@ -976,6 +976,33 @@ export const AllTypesProps: Record<string, any> = {
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
   },
+  launchpad_mint_reservation_aggregate_bool_exp: {
+    bool_and: 'launchpad_mint_reservation_aggregate_bool_exp_bool_and',
+    bool_or: 'launchpad_mint_reservation_aggregate_bool_exp_bool_or',
+    count: 'launchpad_mint_reservation_aggregate_bool_exp_count',
+  },
+  launchpad_mint_reservation_aggregate_bool_exp_bool_and: {
+    arguments:
+      'launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns',
+    filter: 'launchpad_mint_reservation_bool_exp',
+    predicate: 'Boolean_comparison_exp',
+  },
+  launchpad_mint_reservation_aggregate_bool_exp_bool_or: {
+    arguments:
+      'launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns',
+    filter: 'launchpad_mint_reservation_bool_exp',
+    predicate: 'Boolean_comparison_exp',
+  },
+  launchpad_mint_reservation_aggregate_bool_exp_count: {
+    arguments: 'launchpad_mint_reservation_select_column',
+    filter: 'launchpad_mint_reservation_bool_exp',
+    predicate: 'Int_comparison_exp',
+  },
+  launchpad_mint_reservation_aggregate_fields: {
+    count: {
+      columns: 'launchpad_mint_reservation_select_column',
+    },
+  },
   launchpad_mint_reservation_aggregate_order_by: {
     avg: 'launchpad_mint_reservation_avg_order_by',
     count: 'order_by',
@@ -1038,6 +1065,10 @@ export const AllTypesProps: Record<string, any> = {
     token_id: 'order_by',
   },
   launchpad_mint_reservation_select_column: 'enum' as const,
+  launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns:
+    'enum' as const,
+  launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns:
+    'enum' as const,
   launchpad_mint_reservation_stddev_order_by: {
     collection_id: 'order_by',
     id: 'order_by',
@@ -1114,6 +1145,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'launchpad_mint_reservation_order_by',
       where: 'launchpad_mint_reservation_bool_exp',
     },
+    reservations_aggregate: {
+      distinct_on: 'launchpad_mint_reservation_select_column',
+      order_by: 'launchpad_mint_reservation_order_by',
+      where: 'launchpad_mint_reservation_bool_exp',
+    },
     whitelists: {
       distinct_on: 'launchpad_whitelist_select_column',
       order_by: 'launchpad_whitelist_order_by',
@@ -1155,6 +1191,7 @@ export const AllTypesProps: Record<string, any> = {
     per_user_limit: 'bigint_comparison_exp',
     price: 'bigint_comparison_exp',
     reservations: 'launchpad_mint_reservation_bool_exp',
+    reservations_aggregate: 'launchpad_mint_reservation_aggregate_bool_exp',
     start_date: 'timestamp_comparison_exp',
     whitelists: 'launchpad_whitelist_bool_exp',
   },
@@ -2219,6 +2256,11 @@ export const AllTypesProps: Record<string, any> = {
       order_by: 'launchpad_mint_reservation_order_by',
       where: 'launchpad_mint_reservation_bool_exp',
     },
+    launchpad_mint_reservation_aggregate: {
+      distinct_on: 'launchpad_mint_reservation_select_column',
+      order_by: 'launchpad_mint_reservation_order_by',
+      where: 'launchpad_mint_reservation_bool_exp',
+    },
     launchpad_mint_reservation_by_pk: {},
     launchpad_stage: {
       distinct_on: 'launchpad_stage_select_column',
@@ -2567,6 +2609,11 @@ export const AllTypesProps: Record<string, any> = {
     },
     launchpad_by_pk: {},
     launchpad_mint_reservation: {
+      distinct_on: 'launchpad_mint_reservation_select_column',
+      order_by: 'launchpad_mint_reservation_order_by',
+      where: 'launchpad_mint_reservation_bool_exp',
+    },
+    launchpad_mint_reservation_aggregate: {
       distinct_on: 'launchpad_mint_reservation_select_column',
       order_by: 'launchpad_mint_reservation_order_by',
       where: 'launchpad_mint_reservation_bool_exp',
@@ -4585,6 +4632,95 @@ export const ReturnTypes: Record<string, any> = {
     stage_id: 'Int',
     token_id: 'Int',
   },
+  launchpad_mint_reservation_aggregate: {
+    aggregate: 'launchpad_mint_reservation_aggregate_fields',
+    nodes: 'launchpad_mint_reservation',
+  },
+  launchpad_mint_reservation_aggregate_fields: {
+    avg: 'launchpad_mint_reservation_avg_fields',
+    count: 'Int',
+    max: 'launchpad_mint_reservation_max_fields',
+    min: 'launchpad_mint_reservation_min_fields',
+    stddev: 'launchpad_mint_reservation_stddev_fields',
+    stddev_pop: 'launchpad_mint_reservation_stddev_pop_fields',
+    stddev_samp: 'launchpad_mint_reservation_stddev_samp_fields',
+    sum: 'launchpad_mint_reservation_sum_fields',
+    var_pop: 'launchpad_mint_reservation_var_pop_fields',
+    var_samp: 'launchpad_mint_reservation_var_samp_fields',
+    variance: 'launchpad_mint_reservation_variance_fields',
+  },
+  launchpad_mint_reservation_avg_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_max_fields: {
+    address: 'String',
+    collection_id: 'Int',
+    id: 'Int',
+    launchpad_id: 'Int',
+    stage_id: 'Int',
+    token_id: 'Int',
+  },
+  launchpad_mint_reservation_min_fields: {
+    address: 'String',
+    collection_id: 'Int',
+    id: 'Int',
+    launchpad_id: 'Int',
+    stage_id: 'Int',
+    token_id: 'Int',
+  },
+  launchpad_mint_reservation_stddev_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_stddev_pop_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_stddev_samp_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_sum_fields: {
+    collection_id: 'Int',
+    id: 'Int',
+    launchpad_id: 'Int',
+    stage_id: 'Int',
+    token_id: 'Int',
+  },
+  launchpad_mint_reservation_var_pop_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_var_samp_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
+  launchpad_mint_reservation_variance_fields: {
+    collection_id: 'Float',
+    id: 'Float',
+    launchpad_id: 'Float',
+    stage_id: 'Float',
+    token_id: 'Float',
+  },
   launchpad_stage: {
     collection_id: 'Int',
     description: 'String',
@@ -4597,6 +4733,7 @@ export const ReturnTypes: Record<string, any> = {
     per_user_limit: 'bigint',
     price: 'bigint',
     reservations: 'launchpad_mint_reservation',
+    reservations_aggregate: 'launchpad_mint_reservation_aggregate',
     start_date: 'timestamp',
     whitelists: 'launchpad_whitelist',
   },
@@ -4866,6 +5003,8 @@ export const ReturnTypes: Record<string, any> = {
     launchpad: 'launchpad',
     launchpad_by_pk: 'launchpad',
     launchpad_mint_reservation: 'launchpad_mint_reservation',
+    launchpad_mint_reservation_aggregate:
+      'launchpad_mint_reservation_aggregate',
     launchpad_mint_reservation_by_pk: 'launchpad_mint_reservation',
     launchpad_stage: 'launchpad_stage',
     launchpad_stage_by_pk: 'launchpad_stage',
@@ -4966,6 +5105,8 @@ export const ReturnTypes: Record<string, any> = {
     launchpad: 'launchpad',
     launchpad_by_pk: 'launchpad',
     launchpad_mint_reservation: 'launchpad_mint_reservation',
+    launchpad_mint_reservation_aggregate:
+      'launchpad_mint_reservation_aggregate',
     launchpad_mint_reservation_by_pk: 'launchpad_mint_reservation',
     launchpad_mint_reservation_stream: 'launchpad_mint_reservation',
     launchpad_stage: 'launchpad_stage',

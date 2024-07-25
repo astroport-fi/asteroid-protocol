@@ -5356,6 +5356,92 @@ export type ValueTypes = {
     token_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate']: AliasType<{
+    aggregate?: ValueTypes['launchpad_mint_reservation_aggregate_fields']
+    nodes?: ValueTypes['launchpad_mint_reservation']
+    __typename?: boolean | `@${string}`
+  }>
+  ['launchpad_mint_reservation_aggregate_bool_exp']: {
+    bool_and?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_and']
+      | undefined
+      | null
+      | Variable<any, string>
+    bool_or?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_or']
+      | undefined
+      | null
+      | Variable<any, string>
+    count?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_count']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_and']: {
+    arguments:
+      | ValueTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']
+      | Variable<any, string>
+    distinct?: boolean | undefined | null | Variable<any, string>
+    filter?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    predicate: ValueTypes['Boolean_comparison_exp'] | Variable<any, string>
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_or']: {
+    arguments:
+      | ValueTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']
+      | Variable<any, string>
+    distinct?: boolean | undefined | null | Variable<any, string>
+    filter?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    predicate: ValueTypes['Boolean_comparison_exp'] | Variable<any, string>
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+      | undefined
+      | null
+      | Variable<any, string>
+    distinct?: boolean | undefined | null | Variable<any, string>
+    filter?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    predicate: ValueTypes['Int_comparison_exp'] | Variable<any, string>
+  }
+  /** aggregate fields of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['launchpad_mint_reservation_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['launchpad_mint_reservation_max_fields']
+    min?: ValueTypes['launchpad_mint_reservation_min_fields']
+    stddev?: ValueTypes['launchpad_mint_reservation_stddev_fields']
+    stddev_pop?: ValueTypes['launchpad_mint_reservation_stddev_pop_fields']
+    stddev_samp?: ValueTypes['launchpad_mint_reservation_stddev_samp_fields']
+    sum?: ValueTypes['launchpad_mint_reservation_sum_fields']
+    var_pop?: ValueTypes['launchpad_mint_reservation_var_pop_fields']
+    var_samp?: ValueTypes['launchpad_mint_reservation_var_samp_fields']
+    variance?: ValueTypes['launchpad_mint_reservation_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
   /** order by aggregate values of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_aggregate_order_by']: {
     avg?:
@@ -5410,6 +5496,15 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate avg on columns */
+  ['launchpad_mint_reservation_avg_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by avg() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_avg_order_by']: {
     collection_id?:
@@ -5489,6 +5584,16 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
   }
+  /** aggregate max on columns */
+  ['launchpad_mint_reservation_max_fields']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by max() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -5506,6 +5611,16 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate min on columns */
+  ['launchpad_mint_reservation_min_fields']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by min() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_min_order_by']: {
     address?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
@@ -5557,6 +5672,19 @@ export type ValueTypes = {
   }
   /** select columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns
+  /** aggregate stddev on columns */
+  ['launchpad_mint_reservation_stddev_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_order_by']: {
     collection_id?:
@@ -5573,6 +5701,15 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate stddev_pop on columns */
+  ['launchpad_mint_reservation_stddev_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_pop_order_by']: {
     collection_id?:
@@ -5589,6 +5726,15 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate stddev_samp on columns */
+  ['launchpad_mint_reservation_stddev_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_samp_order_by']: {
     collection_id?:
@@ -5628,6 +5774,15 @@ export type ValueTypes = {
     stage_id?: number | undefined | null | Variable<any, string>
     token_id?: number | undefined | null | Variable<any, string>
   }
+  /** aggregate sum on columns */
+  ['launchpad_mint_reservation_sum_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by sum() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_sum_order_by']: {
     collection_id?:
@@ -5644,6 +5799,15 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate var_pop on columns */
+  ['launchpad_mint_reservation_var_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_pop_order_by']: {
     collection_id?:
@@ -5660,6 +5824,15 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate var_samp on columns */
+  ['launchpad_mint_reservation_var_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_samp_order_by']: {
     collection_id?:
@@ -5676,6 +5849,15 @@ export type ValueTypes = {
     stage_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
   }
+  /** aggregate variance on columns */
+  ['launchpad_mint_reservation_variance_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by variance() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_variance_order_by']: {
     collection_id?:
@@ -5804,6 +5986,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['launchpad_mint_reservation'],
+    ]
+    reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation_aggregate'],
     ]
     start_date?: boolean | `@${string}`
     whitelists?: [
@@ -5985,6 +6201,11 @@ export type ValueTypes = {
       | Variable<any, string>
     reservations?:
       | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reservations_aggregate?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -10184,6 +10405,40 @@ export type ValueTypes = {
       },
       ValueTypes['launchpad_mint_reservation'],
     ]
+    launchpad_mint_reservation_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation_aggregate'],
+    ]
     launchpad_mint_reservation_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['launchpad_mint_reservation'],
@@ -12260,6 +12515,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation_aggregate'],
     ]
     launchpad_mint_reservation_by_pk?: [
       { id: number | Variable<any, string> },
@@ -20390,6 +20679,82 @@ export type ResolverInputTypes = {
     token_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
+  /** aggregated selection of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['launchpad_mint_reservation_aggregate_fields']
+    nodes?: ResolverInputTypes['launchpad_mint_reservation']
+    __typename?: boolean | `@${string}`
+  }>
+  ['launchpad_mint_reservation_aggregate_bool_exp']: {
+    bool_and?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_and']
+      | undefined
+      | null
+    bool_or?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_or']
+      | undefined
+      | null
+    count?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp_count']
+      | undefined
+      | null
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_and']: {
+    arguments: ResolverInputTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']
+    distinct?: boolean | undefined | null
+    filter?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    predicate: ResolverInputTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_or']: {
+    arguments: ResolverInputTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']
+    distinct?: boolean | undefined | null
+    filter?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    predicate: ResolverInputTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<ResolverInputTypes['launchpad_mint_reservation_select_column']>
+      | undefined
+      | null
+    distinct?: boolean | undefined | null
+    filter?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    predicate: ResolverInputTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['launchpad_mint_reservation_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['launchpad_mint_reservation_max_fields']
+    min?: ResolverInputTypes['launchpad_mint_reservation_min_fields']
+    stddev?: ResolverInputTypes['launchpad_mint_reservation_stddev_fields']
+    stddev_pop?: ResolverInputTypes['launchpad_mint_reservation_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['launchpad_mint_reservation_stddev_samp_fields']
+    sum?: ResolverInputTypes['launchpad_mint_reservation_sum_fields']
+    var_pop?: ResolverInputTypes['launchpad_mint_reservation_var_pop_fields']
+    var_samp?: ResolverInputTypes['launchpad_mint_reservation_var_samp_fields']
+    variance?: ResolverInputTypes['launchpad_mint_reservation_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
   /** order by aggregate values of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_aggregate_order_by']: {
     avg?:
@@ -20434,6 +20799,15 @@ export type ResolverInputTypes = {
       | undefined
       | null
   }
+  /** aggregate avg on columns */
+  ['launchpad_mint_reservation_avg_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by avg() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_avg_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20466,6 +20840,16 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
   }
+  /** aggregate max on columns */
+  ['launchpad_mint_reservation_max_fields']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by max() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ResolverInputTypes['order_by'] | undefined | null
@@ -20475,6 +20859,16 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate min on columns */
+  ['launchpad_mint_reservation_min_fields']: AliasType<{
+    address?: boolean | `@${string}`
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by min() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_min_order_by']: {
     address?: ResolverInputTypes['order_by'] | undefined | null
@@ -20498,6 +20892,19 @@ export type ResolverInputTypes = {
   }
   /** select columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns
+  /** aggregate stddev on columns */
+  ['launchpad_mint_reservation_stddev_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20506,6 +20913,15 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate stddev_pop on columns */
+  ['launchpad_mint_reservation_stddev_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_pop_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20514,6 +20930,15 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate stddev_samp on columns */
+  ['launchpad_mint_reservation_stddev_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by stddev_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_samp_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20539,6 +20964,15 @@ export type ResolverInputTypes = {
     stage_id?: number | undefined | null
     token_id?: number | undefined | null
   }
+  /** aggregate sum on columns */
+  ['launchpad_mint_reservation_sum_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by sum() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_sum_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20547,6 +20981,15 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate var_pop on columns */
+  ['launchpad_mint_reservation_var_pop_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_pop_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20555,6 +20998,15 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate var_samp on columns */
+  ['launchpad_mint_reservation_var_samp_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by var_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_samp_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20563,6 +21015,15 @@ export type ResolverInputTypes = {
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
   }
+  /** aggregate variance on columns */
+  ['launchpad_mint_reservation_variance_fields']: AliasType<{
+    collection_id?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    stage_id?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
   /** order by variance() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_variance_order_by']: {
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20632,6 +21093,34 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation_aggregate'],
     ]
     start_date?: boolean | `@${string}`
     whitelists?: [
@@ -20734,6 +21223,10 @@ export type ResolverInputTypes = {
     price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
     reservations?:
       | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    reservations_aggregate?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp']
       | undefined
       | null
     start_date?:
@@ -23234,6 +23727,34 @@ export type ResolverInputTypes = {
       },
       ResolverInputTypes['launchpad_mint_reservation'],
     ]
+    launchpad_mint_reservation_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation_aggregate'],
+    ]
     launchpad_mint_reservation_by_pk?: [
       { id: number },
       ResolverInputTypes['launchpad_mint_reservation'],
@@ -24694,6 +25215,34 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    launchpad_mint_reservation_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation_aggregate'],
     ]
     launchpad_mint_reservation_by_pk?: [
       { id: number },
@@ -30177,6 +30726,68 @@ export type ModelTypes = {
     stage_id: number
     token_id: number
   }
+  /** aggregated selection of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate']: {
+    aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_fields']
+      | undefined
+    nodes: Array<ModelTypes['launchpad_mint_reservation']>
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp']: {
+    bool_and?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_and']
+      | undefined
+    bool_or?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_or']
+      | undefined
+    count?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp_count']
+      | undefined
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_and']: {
+    arguments: ModelTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']
+    distinct?: boolean | undefined
+    filter?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: ModelTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_or']: {
+    arguments: ModelTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']
+    distinct?: boolean | undefined
+    filter?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: ModelTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<ModelTypes['launchpad_mint_reservation_select_column']>
+      | undefined
+    distinct?: boolean | undefined
+    filter?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: ModelTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate_fields']: {
+    avg?: ModelTypes['launchpad_mint_reservation_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['launchpad_mint_reservation_max_fields'] | undefined
+    min?: ModelTypes['launchpad_mint_reservation_min_fields'] | undefined
+    stddev?: ModelTypes['launchpad_mint_reservation_stddev_fields'] | undefined
+    stddev_pop?:
+      | ModelTypes['launchpad_mint_reservation_stddev_pop_fields']
+      | undefined
+    stddev_samp?:
+      | ModelTypes['launchpad_mint_reservation_stddev_samp_fields']
+      | undefined
+    sum?: ModelTypes['launchpad_mint_reservation_sum_fields'] | undefined
+    var_pop?:
+      | ModelTypes['launchpad_mint_reservation_var_pop_fields']
+      | undefined
+    var_samp?:
+      | ModelTypes['launchpad_mint_reservation_var_samp_fields']
+      | undefined
+    variance?:
+      | ModelTypes['launchpad_mint_reservation_variance_fields']
+      | undefined
+  }
   /** order by aggregate values of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_aggregate_order_by']: {
     avg?: ModelTypes['launchpad_mint_reservation_avg_order_by'] | undefined
@@ -30203,6 +30814,14 @@ export type ModelTypes = {
       | ModelTypes['launchpad_mint_reservation_variance_order_by']
       | undefined
   }
+  /** aggregate avg on columns */
+  ['launchpad_mint_reservation_avg_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by avg() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_avg_order_by']: {
     collection_id?: ModelTypes['order_by'] | undefined
@@ -30226,6 +30845,15 @@ export type ModelTypes = {
     stage_id?: ModelTypes['Int_comparison_exp'] | undefined
     token_id?: ModelTypes['Int_comparison_exp'] | undefined
   }
+  /** aggregate max on columns */
+  ['launchpad_mint_reservation_max_fields']: {
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by max() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ModelTypes['order_by'] | undefined
@@ -30234,6 +30862,15 @@ export type ModelTypes = {
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate min on columns */
+  ['launchpad_mint_reservation_min_fields']: {
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by min() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_min_order_by']: {
@@ -30257,6 +30894,16 @@ export type ModelTypes = {
     token_id?: ModelTypes['order_by'] | undefined
   }
   ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns
+  /** aggregate stddev on columns */
+  ['launchpad_mint_reservation_stddev_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by stddev() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_order_by']: {
     collection_id?: ModelTypes['order_by'] | undefined
@@ -30265,6 +30912,14 @@ export type ModelTypes = {
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
   }
+  /** aggregate stddev_pop on columns */
+  ['launchpad_mint_reservation_stddev_pop_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by stddev_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_pop_order_by']: {
     collection_id?: ModelTypes['order_by'] | undefined
@@ -30272,6 +30927,14 @@ export type ModelTypes = {
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['launchpad_mint_reservation_stddev_samp_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_samp_order_by']: {
@@ -30298,6 +30961,14 @@ export type ModelTypes = {
     stage_id?: number | undefined
     token_id?: number | undefined
   }
+  /** aggregate sum on columns */
+  ['launchpad_mint_reservation_sum_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by sum() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_sum_order_by']: {
     collection_id?: ModelTypes['order_by'] | undefined
@@ -30305,6 +30976,14 @@ export type ModelTypes = {
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['launchpad_mint_reservation_var_pop_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by var_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_pop_order_by']: {
@@ -30314,6 +30993,14 @@ export type ModelTypes = {
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
   }
+  /** aggregate var_samp on columns */
+  ['launchpad_mint_reservation_var_samp_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by var_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_samp_order_by']: {
     collection_id?: ModelTypes['order_by'] | undefined
@@ -30321,6 +31008,14 @@ export type ModelTypes = {
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
+  }
+  /** aggregate variance on columns */
+  ['launchpad_mint_reservation_variance_fields']: {
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by variance() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_variance_order_by']: {
@@ -30364,6 +31059,8 @@ export type ModelTypes = {
     price: ModelTypes['bigint']
     /** An array relationship */
     reservations: Array<ModelTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    reservations_aggregate: ModelTypes['launchpad_mint_reservation_aggregate']
     start_date?: ModelTypes['timestamp'] | undefined
     /** An array relationship */
     whitelists: Array<ModelTypes['launchpad_whitelist']>
@@ -30406,6 +31103,9 @@ export type ModelTypes = {
     per_user_limit?: ModelTypes['bigint_comparison_exp'] | undefined
     price?: ModelTypes['bigint_comparison_exp'] | undefined
     reservations?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    reservations_aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
     start_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     whitelists?: ModelTypes['launchpad_whitelist_bool_exp'] | undefined
   }
@@ -31950,6 +32650,8 @@ export type ModelTypes = {
     launchpad_by_pk?: ModelTypes['launchpad'] | undefined
     /** fetch data from the table: "launchpad_mint_reservation" */
     launchpad_mint_reservation: Array<ModelTypes['launchpad_mint_reservation']>
+    /** fetch aggregated fields from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_aggregate: ModelTypes['launchpad_mint_reservation_aggregate']
     /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
     launchpad_mint_reservation_by_pk?:
       | ModelTypes['launchpad_mint_reservation']
@@ -32227,6 +32929,8 @@ export type ModelTypes = {
     launchpad_by_pk?: ModelTypes['launchpad'] | undefined
     /** fetch data from the table: "launchpad_mint_reservation" */
     launchpad_mint_reservation: Array<ModelTypes['launchpad_mint_reservation']>
+    /** fetch aggregated fields from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_aggregate: ModelTypes['launchpad_mint_reservation_aggregate']
     /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
     launchpad_mint_reservation_by_pk?:
       | ModelTypes['launchpad_mint_reservation']
@@ -36283,6 +36987,72 @@ export type GraphQLTypes = {
     stage_id: number
     token_id: number
   }
+  /** aggregated selection of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate']: {
+    __typename: 'launchpad_mint_reservation_aggregate'
+    aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_fields']
+      | undefined
+    nodes: Array<GraphQLTypes['launchpad_mint_reservation']>
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp']: {
+    bool_and?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_and']
+      | undefined
+    bool_or?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_or']
+      | undefined
+    count?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp_count']
+      | undefined
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_and']: {
+    arguments: GraphQLTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']
+    distinct?: boolean | undefined
+    filter?: GraphQLTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: GraphQLTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_or']: {
+    arguments: GraphQLTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']
+    distinct?: boolean | undefined
+    filter?: GraphQLTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: GraphQLTypes['Boolean_comparison_exp']
+  }
+  ['launchpad_mint_reservation_aggregate_bool_exp_count']: {
+    arguments?:
+      | Array<GraphQLTypes['launchpad_mint_reservation_select_column']>
+      | undefined
+    distinct?: boolean | undefined
+    filter?: GraphQLTypes['launchpad_mint_reservation_bool_exp'] | undefined
+    predicate: GraphQLTypes['Int_comparison_exp']
+  }
+  /** aggregate fields of "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_aggregate_fields']: {
+    __typename: 'launchpad_mint_reservation_aggregate_fields'
+    avg?: GraphQLTypes['launchpad_mint_reservation_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['launchpad_mint_reservation_max_fields'] | undefined
+    min?: GraphQLTypes['launchpad_mint_reservation_min_fields'] | undefined
+    stddev?:
+      | GraphQLTypes['launchpad_mint_reservation_stddev_fields']
+      | undefined
+    stddev_pop?:
+      | GraphQLTypes['launchpad_mint_reservation_stddev_pop_fields']
+      | undefined
+    stddev_samp?:
+      | GraphQLTypes['launchpad_mint_reservation_stddev_samp_fields']
+      | undefined
+    sum?: GraphQLTypes['launchpad_mint_reservation_sum_fields'] | undefined
+    var_pop?:
+      | GraphQLTypes['launchpad_mint_reservation_var_pop_fields']
+      | undefined
+    var_samp?:
+      | GraphQLTypes['launchpad_mint_reservation_var_samp_fields']
+      | undefined
+    variance?:
+      | GraphQLTypes['launchpad_mint_reservation_variance_fields']
+      | undefined
+  }
   /** order by aggregate values of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_aggregate_order_by']: {
     avg?: GraphQLTypes['launchpad_mint_reservation_avg_order_by'] | undefined
@@ -36309,6 +37079,15 @@ export type GraphQLTypes = {
       | GraphQLTypes['launchpad_mint_reservation_variance_order_by']
       | undefined
   }
+  /** aggregate avg on columns */
+  ['launchpad_mint_reservation_avg_fields']: {
+    __typename: 'launchpad_mint_reservation_avg_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by avg() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_avg_order_by']: {
     collection_id?: GraphQLTypes['order_by'] | undefined
@@ -36334,6 +37113,16 @@ export type GraphQLTypes = {
     stage_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
   }
+  /** aggregate max on columns */
+  ['launchpad_mint_reservation_max_fields']: {
+    __typename: 'launchpad_mint_reservation_max_fields'
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by max() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_max_order_by']: {
     address?: GraphQLTypes['order_by'] | undefined
@@ -36342,6 +37131,16 @@ export type GraphQLTypes = {
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate min on columns */
+  ['launchpad_mint_reservation_min_fields']: {
+    __typename: 'launchpad_mint_reservation_min_fields'
+    address?: string | undefined
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by min() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_min_order_by']: {
@@ -36366,6 +37165,19 @@ export type GraphQLTypes = {
   }
   /** select columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_select_column']: launchpad_mint_reservation_select_column
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns
+  /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns" columns of table "launchpad_mint_reservation" */
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']: launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns
+  /** aggregate stddev on columns */
+  ['launchpad_mint_reservation_stddev_fields']: {
+    __typename: 'launchpad_mint_reservation_stddev_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by stddev() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_order_by']: {
     collection_id?: GraphQLTypes['order_by'] | undefined
@@ -36374,6 +37186,15 @@ export type GraphQLTypes = {
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** aggregate stddev_pop on columns */
+  ['launchpad_mint_reservation_stddev_pop_fields']: {
+    __typename: 'launchpad_mint_reservation_stddev_pop_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by stddev_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_pop_order_by']: {
     collection_id?: GraphQLTypes['order_by'] | undefined
@@ -36381,6 +37202,15 @@ export type GraphQLTypes = {
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['launchpad_mint_reservation_stddev_samp_fields']: {
+    __typename: 'launchpad_mint_reservation_stddev_samp_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_stddev_samp_order_by']: {
@@ -36407,6 +37237,15 @@ export type GraphQLTypes = {
     stage_id?: number | undefined
     token_id?: number | undefined
   }
+  /** aggregate sum on columns */
+  ['launchpad_mint_reservation_sum_fields']: {
+    __typename: 'launchpad_mint_reservation_sum_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by sum() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_sum_order_by']: {
     collection_id?: GraphQLTypes['order_by'] | undefined
@@ -36414,6 +37253,15 @@ export type GraphQLTypes = {
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['launchpad_mint_reservation_var_pop_fields']: {
+    __typename: 'launchpad_mint_reservation_var_pop_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by var_pop() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_pop_order_by']: {
@@ -36423,6 +37271,15 @@ export type GraphQLTypes = {
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
   }
+  /** aggregate var_samp on columns */
+  ['launchpad_mint_reservation_var_samp_fields']: {
+    __typename: 'launchpad_mint_reservation_var_samp_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
+  }
   /** order by var_samp() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_var_samp_order_by']: {
     collection_id?: GraphQLTypes['order_by'] | undefined
@@ -36430,6 +37287,15 @@ export type GraphQLTypes = {
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
+  }
+  /** aggregate variance on columns */
+  ['launchpad_mint_reservation_variance_fields']: {
+    __typename: 'launchpad_mint_reservation_variance_fields'
+    collection_id?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    stage_id?: number | undefined
+    token_id?: number | undefined
   }
   /** order by variance() on columns of table "launchpad_mint_reservation" */
   ['launchpad_mint_reservation_variance_order_by']: {
@@ -36475,6 +37341,8 @@ export type GraphQLTypes = {
     price: GraphQLTypes['bigint']
     /** An array relationship */
     reservations: Array<GraphQLTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    reservations_aggregate: GraphQLTypes['launchpad_mint_reservation_aggregate']
     start_date?: GraphQLTypes['timestamp'] | undefined
     /** An array relationship */
     whitelists: Array<GraphQLTypes['launchpad_whitelist']>
@@ -36520,6 +37388,9 @@ export type GraphQLTypes = {
     price?: GraphQLTypes['bigint_comparison_exp'] | undefined
     reservations?:
       | GraphQLTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+    reservations_aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp']
       | undefined
     start_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     whitelists?: GraphQLTypes['launchpad_whitelist_bool_exp'] | undefined
@@ -38150,6 +39021,8 @@ export type GraphQLTypes = {
     launchpad_mint_reservation: Array<
       GraphQLTypes['launchpad_mint_reservation']
     >
+    /** fetch aggregated fields from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_aggregate: GraphQLTypes['launchpad_mint_reservation_aggregate']
     /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
     launchpad_mint_reservation_by_pk?:
       | GraphQLTypes['launchpad_mint_reservation']
@@ -38435,6 +39308,8 @@ export type GraphQLTypes = {
     launchpad_mint_reservation: Array<
       GraphQLTypes['launchpad_mint_reservation']
     >
+    /** fetch aggregated fields from the table: "launchpad_mint_reservation" */
+    launchpad_mint_reservation_aggregate: GraphQLTypes['launchpad_mint_reservation_aggregate']
     /** fetch data from the table: "launchpad_mint_reservation" using primary key columns */
     launchpad_mint_reservation_by_pk?:
       | GraphQLTypes['launchpad_mint_reservation']
@@ -40476,6 +41351,14 @@ export const enum launchpad_mint_reservation_select_column {
   stage_id = 'stage_id',
   token_id = 'token_id',
 }
+/** select "launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns" columns of table "launchpad_mint_reservation" */
+export const enum launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns {
+  is_minted = 'is_minted',
+}
+/** select "launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns" columns of table "launchpad_mint_reservation" */
+export const enum launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns {
+  is_minted = 'is_minted',
+}
 /** select columns of table "launchpad" */
 export const enum launchpad_select_column {
   collection_id = 'collection_id',
@@ -40843,6 +41726,10 @@ type ZEUS_VARIABLES = {
   ['jsonb_cast_exp']: ValueTypes['jsonb_cast_exp']
   ['jsonb_comparison_exp']: ValueTypes['jsonb_comparison_exp']
   ['launchpad_bool_exp']: ValueTypes['launchpad_bool_exp']
+  ['launchpad_mint_reservation_aggregate_bool_exp']: ValueTypes['launchpad_mint_reservation_aggregate_bool_exp']
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_and']: ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_and']
+  ['launchpad_mint_reservation_aggregate_bool_exp_bool_or']: ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_bool_or']
+  ['launchpad_mint_reservation_aggregate_bool_exp_count']: ValueTypes['launchpad_mint_reservation_aggregate_bool_exp_count']
   ['launchpad_mint_reservation_aggregate_order_by']: ValueTypes['launchpad_mint_reservation_aggregate_order_by']
   ['launchpad_mint_reservation_avg_order_by']: ValueTypes['launchpad_mint_reservation_avg_order_by']
   ['launchpad_mint_reservation_bool_exp']: ValueTypes['launchpad_mint_reservation_bool_exp']
@@ -40850,6 +41737,8 @@ type ZEUS_VARIABLES = {
   ['launchpad_mint_reservation_min_order_by']: ValueTypes['launchpad_mint_reservation_min_order_by']
   ['launchpad_mint_reservation_order_by']: ValueTypes['launchpad_mint_reservation_order_by']
   ['launchpad_mint_reservation_select_column']: ValueTypes['launchpad_mint_reservation_select_column']
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']: ValueTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns']
+  ['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']: ValueTypes['launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns']
   ['launchpad_mint_reservation_stddev_order_by']: ValueTypes['launchpad_mint_reservation_stddev_order_by']
   ['launchpad_mint_reservation_stddev_pop_order_by']: ValueTypes['launchpad_mint_reservation_stddev_pop_order_by']
   ['launchpad_mint_reservation_stddev_samp_order_by']: ValueTypes['launchpad_mint_reservation_stddev_samp_order_by']
