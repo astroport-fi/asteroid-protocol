@@ -4,7 +4,7 @@ import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import React from 'react'
-import { Button, Divider, Form, Input, Textarea } from 'react-daisyui'
+import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { clientOnly$ } from 'vite-env-only'
@@ -36,6 +36,12 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
   return json({ collections: collections })
 }
 
+enum Reveal {
+  Immediately = 'immediately',
+  MintedOut = 'mintedOut',
+  SpecificDate = 'specificDate',
+}
+
 interface FormStage {
   name?: string
   description?: string
@@ -49,6 +55,8 @@ interface FormStage {
 type FormData = {
   collection: string
   supply?: number
+  reveal: Reveal
+  revealDate?: Date
   stages: FormStage[]
 }
 
@@ -73,8 +81,11 @@ export default function CreateCollectionLaunch() {
     formState: { errors },
     reset,
     watch,
-  } = useForm<FormData>({ defaultValues: { stages: [{}] } })
+  } = useForm<FormData>({
+    defaultValues: { stages: [{}], reveal: Reveal.Immediately },
+  })
 
+  const reveal = watch('reveal')
   const collectionHash = watch('collection')
   const selectedCollection = data.collections.find(
     (c) => c.transaction.hash === collectionHash,
@@ -108,11 +119,20 @@ export default function CreateCollectionLaunch() {
       return { ...formStage, price, whitelist: undefined }
     })
 
-    const txInscription = operations.launch(data.collection, {
+    const metadata: launchpad.LaunchMetadata = {
       supply: data.supply,
       stages,
       revealImmediately: true,
-    })
+    }
+
+    if (data.reveal === Reveal.MintedOut) {
+      metadata.revealImmediately = false
+    } else if (data.reveal === Reveal.SpecificDate) {
+      metadata.revealImmediately = false
+      metadata.revealDate = data.revealDate
+    }
+
+    const txInscription = operations.launch(data.collection, metadata)
     showDialog(txInscription)
   })
 
@@ -142,6 +162,65 @@ export default function CreateCollectionLaunch() {
             placeholder="Total supply"
             className="mt-8"
           />
+
+          <div className="mt-8">
+            <strong>Inscriptions reveal</strong>
+          </div>
+
+          <Form.Label title="Reveal immediately" className="mt-1">
+            <Radio
+              value={Reveal.Immediately}
+              {...register('reveal', { required: true })}
+            />
+          </Form.Label>
+
+          <Form.Label title="Reveal after fully minted out" className="mt-1">
+            <Radio
+              value={Reveal.MintedOut}
+              {...register('reveal', { required: true })}
+            />
+          </Form.Label>
+
+          <Form.Label
+            title="Reveal at a specific date and time"
+            className="mt-1"
+          >
+            <Radio
+              value={Reveal.SpecificDate}
+              {...register('reveal', { required: true })}
+            />
+          </Form.Label>
+
+          {reveal == Reveal.SpecificDate && (
+            <div className="flex flex-row w-full">
+              <Controller
+                rules={{ required: true }}
+                control={control}
+                name="revealDate"
+                render={({
+                  field: { name, onChange, value, ref, onBlur, disabled },
+                }) => (
+                  <DatePicker
+                    name={name}
+                    ref={ref}
+                    disabled={disabled}
+                    minDate={new Date()}
+                    onBlur={onBlur}
+                    className="input input-bordered"
+                    selected={value}
+                    onChange={onChange}
+                    timeInputLabel="Time:"
+                    placeholderText="Click to select a reveal date"
+                    dateFormat="MM/dd/yyyy h:mm aa"
+                    shouldCloseOnSelect={false}
+                    showTimeInput
+                    showTimeSelect
+                    timeIntervals={5}
+                  />
+                )}
+              />
+            </div>
+          )}
 
           {fields.map((item, index) => (
             <React.Fragment key={`stage-${index}`}>
