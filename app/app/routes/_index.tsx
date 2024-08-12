@@ -25,7 +25,7 @@ export default function Index() {
           </Link>
           <DaisyLink
             className="ml-4 font-light shrink-0"
-            href="https://www.notion.so/delphilabs/Asteroid-Protocol-Docs-c3fb7993254b4c2e814c42e76a1acec3"
+            href="https://docs.asteroidprotocol.io"
             target="_blank"
           >
             Learn more
