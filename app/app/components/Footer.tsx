@@ -5,6 +5,7 @@ import { Status } from '~/api/status'
 import { useRootContext } from '~/context/root'
 import useAsteroidClient from '~/hooks/api/useAsteroidClient'
 import useChain from '~/hooks/wallet/useChain'
+import Gitbook from './icons/gitbook'
 import Telegram from './icons/telegram'
 import Twitter from './icons/twitter'
 
@@ -56,7 +57,7 @@ export default function Footer() {
   return (
     <footer className="footer fixed left-0 bottom-0 items-center bg-base-200 text-neutral-content border-t border-t-neutral">
       <nav className="grid-flow-col gap-0">
-        <div className="flex flex-row uppercase border-r border-r-neutral px-4 py-2">
+        <div className="flex flex-row h-full items-center uppercase border-r border-r-neutral px-4 py-2">
           <span className="mr-2">Indexer</span>
           {lag <= 1 && <span className="text-success">In Sync</span>}
           {lag > 1 && lag < 5 && <span className="text-success">+{lag}</span>}
@@ -79,8 +80,16 @@ export default function Footer() {
           >
             <Twitter className="w-5" />
           </Link>
+          <Link
+            href="https://docs.asteroidprotocol.io"
+            title="Astroid Protocol Docs"
+            target="_blank"
+            className="ml-4"
+          >
+            <Gitbook className="w-5" />
+          </Link>
         </div>
-        <div className="flex border-r border-r-neutral px-4 py-2">
+        <div className="flex h-full items-center border-r border-r-neutral px-4 py-2">
           ATOM ${status.base_token_usd}
         </div>
       </nav>
