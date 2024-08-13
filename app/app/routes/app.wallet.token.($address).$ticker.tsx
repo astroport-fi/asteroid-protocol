@@ -11,7 +11,11 @@ import { format } from 'date-fns'
 import { Button, Divider } from 'react-daisyui'
 import { NumericFormat } from 'react-number-format'
 import { AsteroidClient } from '~/api/client'
-import { ListingState, getListingState } from '~/api/marketplace'
+import {
+  ListingState,
+  OldMarketplaceListing,
+  getListingState,
+} from '~/api/marketplace'
 import {
   MarketplaceTokenListing,
   Token,
@@ -29,7 +33,10 @@ import TxDialog from '~/components/dialogs/TxDialog'
 import Table from '~/components/table'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
-import { useMarketplaceOperations } from '~/hooks/useOperations'
+import {
+  useCFT20Operations,
+  useMarketplaceOperations,
+} from '~/hooks/useOperations'
 import useSorting from '~/hooks/useSorting'
 import useAddress from '~/hooks/wallet/useAddress'
 import { getAddress } from '~/utils/cookies'
@@ -62,7 +69,12 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   }
 
   if (!address) {
-    return json({ token, history: [] as TokenAddressHistory[], listings: [] })
+    return json({
+      token,
+      history: [] as TokenAddressHistory[],
+      listings: [],
+      oldListings: [],
+    })
   }
 
   const { sort, direction } = parseSorting(
@@ -96,7 +108,17 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     { seller: address },
   )
 
-  return json({ token, history, listings: listingsResult.listings })
+  const oldListingsResult = await asteroidClient.getOldMarketplaceListings(
+    token.id,
+    address,
+  )
+
+  return json({
+    token,
+    history,
+    listings: listingsResult.listings,
+    oldListings: oldListingsResult,
+  })
 }
 
 function TokenDetail({ token }: { token: TokenTypeWithHolder<Token> }) {
@@ -250,6 +272,99 @@ function ListingsTable({
   )
 }
 
+function OldListingsTable({
+  token,
+  listings,
+  className,
+}: {
+  token: Token
+  listings: OldMarketplaceListing[]
+  className?: string
+}) {
+  const columnHelper = createColumnHelper<OldMarketplaceListing>()
+  const {
+    dialogRef: txDialogRef,
+    value,
+    showDialog: showTxDialog,
+  } = useDialogWithValue<TxInscription>()
+  const address = useAddress()
+  const operations = useCFT20Operations()
+
+  function cancelListing(orderId: number) {
+    if (!operations) {
+      console.warn('No address')
+      return
+    }
+
+    const txInscription = operations.delist(token.ticker, orderId)
+    showTxDialog(txInscription)
+  }
+
+  const columns = [
+    columnHelper.accessor('id', {
+      header: 'Listing #',
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor('ppt', {
+      header: 'ATOM per Token',
+      cell: (info) => <AtomValue value={info.getValue()} />,
+    }),
+    columnHelper.accessor('amount', {
+      header: `${token.ticker} Tokens`,
+      cell: (info) => (
+        <NumericFormat
+          className="font-mono"
+          displayType="text"
+          thousandSeparator
+          value={getDecimalValue(info.getValue(), token.decimals)}
+        />
+      ),
+    }),
+    columnHelper.accessor('total', {
+      header: 'Total Atom',
+      cell: (info) => <AtomValue value={info.getValue()} />,
+    }),
+    columnHelper.accessor('transaction.hash', {
+      enableSorting: false,
+      header: '',
+      id: 'state',
+      cell: (info) => {
+        if (info.row.original.seller_address !== address) {
+          return
+        }
+
+        return (
+          <Button
+            color="neutral"
+            size="sm"
+            onClick={() => cancelListing(info.row.original.id)}
+          >
+            Cancel
+          </Button>
+        )
+      },
+    }),
+  ]
+
+  const table = useReactTable<OldMarketplaceListing>({
+    columns,
+    data: listings,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
+  return (
+    <>
+      <Table table={table} className={className} showPagination={false} />
+      <TxDialog
+        ref={txDialogRef}
+        txInscription={value}
+        resultCTA="Back to token detail"
+        resultLink={`/app/wallet/token/${token.ticker}`}
+      />
+    </>
+  )
+}
+
 const HISTORY_DEFAULT_SORT = { id: 'height', desc: true }
 
 function TokenAddressHistoryComponent({
@@ -327,6 +442,20 @@ export default function WalletToken() {
     <div className="flex flex-col">
       <BackHeader to="/app/wallet">Manage Token #{data.token.id}</BackHeader>
       <TokenDetail token={data.token} />
+      {data.oldListings.length > 0 && (
+        <>
+          <Divider className="mt-8" />
+          <h2 className="font-medium text-lg">
+            Your listings from Marketplace V1
+          </h2>
+          <Divider />
+          <OldListingsTable
+            token={data.token}
+            listings={data.oldListings}
+            className="mb-16"
+          />
+        </>
+      )}
       {data.listings.length > 0 && (
         <>
           <Divider className="mt-8" />

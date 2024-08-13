@@ -55,3 +55,19 @@ export function getListingState(
 
   return ListingState.Reserve
 }
+
+export const oldMarketplaceListingSelector = Selector('token_open_position')({
+  id: true,
+  amount: true,
+  ppt: true,
+  date_created: true,
+  total: true,
+  transaction: transactionHashSelector,
+  seller_address: true,
+})
+
+export type OldMarketplaceListing = InputType<
+  GraphQLTypes['token_open_position'],
+  typeof oldMarketplaceListingSelector,
+  ScalarDefinition
+>

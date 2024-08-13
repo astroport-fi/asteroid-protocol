@@ -54,4 +54,8 @@ export class CFT20Operations<
       this.protocol.transfer(ticker, amount, destination),
     )
   }
+
+  delist(ticker: string, orderNumber: number) {
+    return this.prepareOperation(this.protocol.delist(ticker, orderNumber))
+  }
 }

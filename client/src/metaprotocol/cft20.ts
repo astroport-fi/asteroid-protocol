@@ -85,4 +85,12 @@ export default class CFT20Protocol
     ]
     return buildOperation(this, this.fee, this.chainId, 'transfer', params)
   }
+
+  delist(ticker: string, orderNumber: number) {
+    const params: MetaProtocolParams = [
+      ['tic', ticker],
+      ['ord', orderNumber],
+    ]
+    return buildOperation(this, this.fee, this.chainId, 'delist', params)
+  }
 }

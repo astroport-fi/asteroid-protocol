@@ -63,7 +63,10 @@ import {
   collectionStatsSelector,
   topCollectionSelector,
 } from './collection'
-import { marketplaceListingSelector } from './marketplace'
+import {
+  marketplaceListingSelector,
+  oldMarketplaceListingSelector,
+} from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 
 export type TokenMarketResult = {
@@ -458,6 +461,39 @@ export class AsteroidClient extends AsteroidService {
       tokens: result.token,
       count: result.token_aggregate.aggregate?.count ?? result.token.length,
     }
+  }
+
+  async getOldMarketplaceListings(
+    tokenId: number,
+    seller: string,
+    offset: number = 0,
+    limit: number = 100,
+  ) {
+    const result = await this.query({
+      token_open_position: [
+        {
+          where: {
+            token_id: {
+              _eq: tokenId,
+            },
+            is_cancelled: {
+              _eq: false,
+            },
+            is_filled: {
+              _eq: false,
+            },
+            seller_address: {
+              _eq: seller,
+            },
+          },
+          offset,
+          limit,
+          order_by: [{ id: order_by.desc }],
+        },
+        oldMarketplaceListingSelector,
+      ],
+    })
+    return result.token_open_position
   }
 
   async getTokenListings(
