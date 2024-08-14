@@ -92,7 +92,10 @@ export const creatorLaunchSelector = Selector('launchpad')({
     hash: true,
   },
   collection: {
+    symbol: true,
     name: true,
+    content_path: true,
+    is_explicit: true,
   },
 })
 

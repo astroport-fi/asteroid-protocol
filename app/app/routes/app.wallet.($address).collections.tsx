@@ -1,5 +1,6 @@
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
+import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import Collections from '~/components/Collections'
 import GhostEmptyState from '~/components/GhostEmptyState'
@@ -16,14 +17,16 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
     address = await getAddress(request)
   }
   if (!address) {
-    return json({ collections: [], pages: 0, total: 0 })
+    return json({ collections: [], launches: [], pages: 0, total: 0 })
   }
   const res = await asteroidClient.getCollections(offset, limit, {
     creator: address,
   })
+  const launches = await asteroidClient.getCreatorLaunches(address)
 
   return json({
     collections: res.collections,
+    launches: launches.map((launch) => launch.collection),
     pages: Math.ceil(res.count / limit),
     total: res.count,
   })
@@ -46,6 +49,19 @@ export default function WalletCollections() {
   }
   return (
     <div className="flex pt-8 flex-col w-full overflow-y-scroll">
+      {data.launches.length > 0 && (
+        <>
+          <Divider>Upcoming launches</Divider>
+          <Collections
+            className="w-full"
+            collections={data.launches}
+            route="/app/edit/launch"
+          />
+          {data.collections.length > 0 && (
+            <Divider className="mt-16">Launched collections</Divider>
+          )}
+        </>
+      )}
       <Collections
         collections={data.collections}
         className="overflow-y-scroll overflow-x-auto"
