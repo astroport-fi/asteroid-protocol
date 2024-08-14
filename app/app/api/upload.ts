@@ -1,7 +1,29 @@
+import { NFTMetadata } from '@asteroid-protocol/sdk'
+
 interface InscriptionUploadUrls {
   inscriptionSignedUrl: string
   metadataSignedUrl: string
-  inscriptionNumber: number
+  tokenId: number
+  filename: string
+}
+
+interface InscriptionUploadRequest {
+  tokenId: number
+  filename: string
+  contentType: string
+}
+
+interface ErrorResponse {
+  status: number
+  message: string
+}
+
+export interface LaunchpadInscription {
+  id: number
+  launchpad_hash: string
+  inscription_number: number
+  name: string
+  uploaded: boolean
 }
 
 export class UploadApi {
@@ -27,7 +49,64 @@ export class UploadApi {
         },
       },
     )
-    return uploadUrlsResponse.json<InscriptionUploadUrls>()
+    const data = await uploadUrlsResponse.json<
+      InscriptionUploadUrls | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error('Inscription upload failed', data.status, data.message)
+      throw new Error('Inscription upload failed')
+    }
+
+    return data
+  }
+
+  async bulkUpload(
+    launchHash: string,
+    inscriptions: NFTMetadata[],
+  ): Promise<InscriptionUploadUrls[]> {
+    const requests: InscriptionUploadRequest[] = inscriptions.map(
+      (inscription) => ({
+        tokenId: inscription.token_id!,
+        filename: inscription.filename!,
+        contentType: inscription.mime,
+      }),
+    )
+    const uploadResponse = await fetch(
+      `${this.apiUrl}/inscription/bulk/upload`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          launchHash,
+          inscriptions: requests,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+    const data = await uploadResponse.json<
+      { urls: InscriptionUploadUrls[] } | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error('Bulk upload failed', data.status, data.message)
+      throw new Error('Bulk upload failed')
+    }
+
+    return data.urls
+  }
+
+  bulkConfirm(launchHash: string, tokenIds: number[]) {
+    return fetch(`${this.apiUrl}/inscription/bulk/confirm`, {
+      method: 'POST',
+      body: JSON.stringify({ launchHash, tokenIds }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
   }
 
   upload(signedUrl: string, file: Blob) {
@@ -38,10 +117,10 @@ export class UploadApi {
     })
   }
 
-  confirm(launchHash: string, inscriptionNumber: number) {
+  confirm(launchHash: string, tokenId: number) {
     return fetch(`${this.apiUrl}/inscription/confirm`, {
       method: 'POST',
-      body: JSON.stringify({ launchHash, inscriptionNumber }),
+      body: JSON.stringify({ launchHash, tokenId }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

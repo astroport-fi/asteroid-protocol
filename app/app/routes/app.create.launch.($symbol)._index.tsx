@@ -2,7 +2,7 @@ import { TxInscription } from '@asteroid-protocol/sdk'
 import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useParams } from '@remix-run/react'
 import React from 'react'
 import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
@@ -72,6 +72,10 @@ export default function CreateCollectionLaunch() {
   const data = useLoaderData<typeof loader>()
   const operations = useLaunchpadOperations()
   const isLedger = useIsLedger()
+  const { symbol } = useParams()
+  const selectedHash = symbol
+    ? data.collections.find((c) => c.symbol === symbol)?.transaction.hash
+    : undefined
 
   // form
   const {
@@ -82,7 +86,11 @@ export default function CreateCollectionLaunch() {
     reset,
     watch,
   } = useForm<FormData>({
-    defaultValues: { stages: [{}], reveal: Reveal.Immediately },
+    defaultValues: {
+      stages: [{}],
+      reveal: Reveal.Immediately,
+      collection: selectedHash,
+    },
   })
 
   const reveal = watch('reveal')
@@ -138,11 +146,11 @@ export default function CreateCollectionLaunch() {
 
   return (
     <div className="flex flex-col items-center w-full overflow-y-scroll">
-      <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full">
+      <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
 
         <div className="flex w-full flex-col">
-          <strong>Create a collection launch</strong>
+          <strong>Set launch options</strong>
 
           <CollectionSelect
             collections={data.collections}
@@ -167,29 +175,44 @@ export default function CreateCollectionLaunch() {
             <strong>Inscriptions reveal</strong>
           </div>
 
-          <Form.Label title="Reveal immediately" className="mt-1">
+          <div className="flex items-center">
             <Radio
               value={Reveal.Immediately}
+              id="immediately"
               {...register('reveal', { required: true })}
             />
-          </Form.Label>
+            <Form.Label
+              htmlFor="immediately"
+              title="Reveal after each mint"
+              className="mt-1 ml-1"
+            ></Form.Label>
+          </div>
 
-          <Form.Label title="Reveal after fully minted out" className="mt-1">
+          <div className="flex items-center">
             <Radio
               value={Reveal.MintedOut}
+              id="mintedOut"
               {...register('reveal', { required: true })}
             />
-          </Form.Label>
+            <Form.Label
+              htmlFor="mintedOut"
+              title="Reveal after fully minted out or after 3 months"
+              className="mt-1 ml-1"
+            ></Form.Label>
+          </div>
 
-          <Form.Label
-            title="Reveal at a specific date and time"
-            className="mt-1"
-          >
+          <div className="flex items-center">
             <Radio
               value={Reveal.SpecificDate}
+              id="specificDate"
               {...register('reveal', { required: true })}
             />
-          </Form.Label>
+            <Form.Label
+              htmlFor="specificDate"
+              title="Reveal at a specific date and time"
+              className="mt-1 ml-1"
+            ></Form.Label>
+          </div>
 
           {reveal == Reveal.SpecificDate && (
             <div className="flex flex-row w-full">

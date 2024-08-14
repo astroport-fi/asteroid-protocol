@@ -144,15 +144,6 @@ export default function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    to="/app/create/launch"
-                    onMouseDown={preventDefault}
-                    onClick={close}
-                  >
-                    Launchpad
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
                     to="/app/create/token"
                     onMouseDown={preventDefault}
                     onClick={close}
@@ -214,15 +205,6 @@ export default function Navbar() {
                   onClick={close}
                 >
                   Collection
-                </NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink
-                  to="/app/create/launch"
-                  onMouseDown={preventDefault}
-                  onClick={close}
-                >
-                  Launchpad
                 </NavLink>
               </Menu.Item>
               <Menu.Item>

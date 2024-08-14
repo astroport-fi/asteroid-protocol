@@ -35,6 +35,7 @@ export default function Trait<
           tooltip="A category for your trait (i.e. hair color)"
         />
         <Input
+          className="w-full"
           color={traitTypeError ? 'error' : undefined}
           id={traitType}
           {...register(traitType, {
@@ -49,6 +50,7 @@ export default function Trait<
           tooltip={`The trait's data (i.e. the "hair color" trait could have a value of "red" or "black")`}
         />
         <Input
+          className="w-full"
           color={traitValueError ? 'error' : undefined}
           id={traitValue}
           {...register(traitValue, {

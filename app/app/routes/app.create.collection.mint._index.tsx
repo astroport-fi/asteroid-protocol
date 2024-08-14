@@ -37,7 +37,7 @@ const NAME_MAX_LENGTH = 32
 const TICKER_MIN_LENGTH = 1
 const TICKER_MAX_LENGTH = 10
 
-export default function CreateCollection() {
+export default function CreateCollectionMint() {
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
 
@@ -55,9 +55,6 @@ export default function CreateCollection() {
   const paymentAddress = watch('paymentAddress')
   const [createdTicker, setCreatedTicker] = useState<string | null>(null)
   const isLedger = useIsLedger()
-
-  const location = useLocation()
-  const insideLaunchpad = location.pathname.startsWith('/app/create/launch')
 
   // preview
   const [preview, setPreview] = useState<string | null>(null)
@@ -113,8 +110,8 @@ export default function CreateCollection() {
   })
 
   return (
-    <div className={insideLaunchpad ? 'overflow-y-scroll' : ''}>
-      <Form onSubmit={onSubmit} className="flex flex-col mt-4">
+    <div className="overflow-y-scroll w-full flex justify-center">
+      <Form onSubmit={onSubmit} className="flex flex-col mt-4 max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
         <div className="flex flex-col lg:flex-row">
           <div className="flex flex-1 flex-col items-center">
