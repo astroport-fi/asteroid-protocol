@@ -67,9 +67,11 @@ import {
   CreatorLaunch,
   Launchpad,
   LaunchpadDetail,
+  MintReservation,
   creatorLaunchSelector,
   launchpadDetailSelector,
   launchpadSelector,
+  mintReservationSelector,
   stageDetailSelector,
 } from './launchpad'
 import {
@@ -1723,6 +1725,31 @@ export class AsteroidClient extends AsteroidService {
         result.bridge_history_aggregate.aggregate?.count ??
         result.bridge_history.length,
     }
+  }
+
+  async getUserMintReservations(address: string): Promise<MintReservation[]> {
+    const result = await this.query({
+      launchpad_mint_reservation: [
+        {
+          where: {
+            address: {
+              _eq: address,
+            },
+            is_minted: {
+              _eq: false,
+            },
+          },
+          order_by: [
+            {
+              id: order_by.desc,
+            },
+          ],
+        },
+        mintReservationSelector,
+      ],
+    })
+
+    return result.launchpad_mint_reservation
   }
 
   async getActiveLaunches(): Promise<Launchpad[]> {
