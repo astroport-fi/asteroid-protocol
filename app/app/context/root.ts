@@ -8,6 +8,7 @@ export const RootContext = createContext({
   asteroidApi: '',
   asteroidWs: '',
   uploadApi: '',
+  assetsUrl: '',
   minterAddress: '',
   chainId: '',
   neutronChainId: '',

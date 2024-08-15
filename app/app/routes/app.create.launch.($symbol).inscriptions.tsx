@@ -10,6 +10,7 @@ import InscriptionImage from '~/components/InscriptionImage'
 import BulkUploadInscriptions from '~/components/dialogs/BulkUploadInscriptions'
 import Modal from '~/components/dialogs/Modal'
 import UploadInscription from '~/components/dialogs/UploadInscription'
+import { useRootContext } from '~/context/root'
 import useUploadedInscriptions from '~/hooks/uploader/useInscriptions'
 import useDialog from '~/hooks/useDialog'
 import { getAddress } from '~/utils/cookies'
@@ -42,10 +43,12 @@ export function UploadedInscriptionBox({
 }: {
   inscription: LaunchpadInscription
 }) {
+  const { assetsUrl } = useRootContext()
+
   return (
     <div className="flex flex-col flex-shrink-0 justify-between bg-base-200 rounded-xl group w-60">
       <InscriptionImage
-        src={`https://asteroid-local.ams3.digitaloceanspaces.com/${inscription.launchpad_hash}/${inscription.name}`}
+        src={`${assetsUrl}/${inscription.launchpad_hash}/${inscription.name}`}
         isExplicit={false}
         className="h-60"
         containerClassName="rounded-t-xl"
