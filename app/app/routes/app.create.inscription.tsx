@@ -2,7 +2,7 @@ import type { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useParams } from '@remix-run/react'
 import { useMemo, useState } from 'react'
 import { Button, Divider, Form } from 'react-daisyui'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
@@ -56,6 +56,10 @@ export default function CreateInscription() {
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
   const isLedger = useIsLedger()
+  const { symbol } = useParams()
+  const selectedHash = symbol
+    ? data.collections.find((c) => c.symbol === symbol)?.transaction.hash
+    : undefined
 
   // form
   const {
@@ -65,7 +69,7 @@ export default function CreateInscription() {
     control,
     formState: { errors },
     reset,
-  } = useForm<FormData>()
+  } = useForm<FormData>({ defaultValues: { collection: selectedHash } })
   const name = watch('name')
   const collectionHash = watch('collection')
   const selectedCollection = data.collections.find(

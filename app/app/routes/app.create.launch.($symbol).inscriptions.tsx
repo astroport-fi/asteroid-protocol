@@ -10,7 +10,6 @@ import InscriptionImage from '~/components/InscriptionImage'
 import BulkUploadInscriptions from '~/components/dialogs/BulkUploadInscriptions'
 import Modal from '~/components/dialogs/Modal'
 import UploadInscription from '~/components/dialogs/UploadInscription'
-import Label from '~/components/form/Label'
 import useUploadedInscriptions from '~/hooks/uploader/useInscriptions'
 import useDialog from '~/hooks/useDialog'
 import { getAddress } from '~/utils/cookies'
@@ -102,13 +101,12 @@ export default function UploadInscriptionsPage() {
   })
 
   return (
-    <div className="flex flex-col w-full items-center mt-4">
+    <div className="flex flex-col w-full items-center">
       <Form
         onSubmit={onSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <div className="form-control mt-6">
-          <Label title="Collection" htmlFor="launchpad" />
+        <div className="form-control mt-6 w-60">
           <Select
             id="collection"
             className="w-full"

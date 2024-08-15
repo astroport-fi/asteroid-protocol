@@ -1,15 +1,8 @@
 import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
-import { Link, useLocation } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
-import {
-  Button,
-  Link as DaisyLink,
-  FileInput,
-  Form,
-  Input,
-} from 'react-daisyui'
+import { Button, FileInput, Form, Input } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
@@ -37,7 +30,15 @@ const NAME_MAX_LENGTH = 32
 const TICKER_MIN_LENGTH = 1
 const TICKER_MAX_LENGTH = 10
 
-export default function CreateCollectionMint() {
+export default function CreateCollectionForm({
+  description,
+  resultCTA,
+  resultLink,
+}: {
+  description: JSX.Element
+  resultLink: (ticker: string) => string
+  resultCTA: string
+}) {
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
 
@@ -213,24 +214,7 @@ export default function CreateCollectionMint() {
           </div>
           <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
             <strong>Create a collection</strong>
-            <p className="mt-2">
-              Creating a collection is a two-step process. First, create a
-              collection inscription using the form below. Then, you can add
-              inscriptions to your collection on the{' '}
-              <Link
-                className="link link-hover"
-                to="/app/create/inscription"
-                target="_blank"
-              >
-                Create Inscription
-              </Link>{' '}
-              page. All information below will appear on your collection&apos;s
-              landing page on{` `}
-              <DaisyLink href="https://asteroidprotocol.io">
-                asteroidprotocol.io
-              </DaisyLink>
-              . Note that collection inscriptions are non-transferrable.
-            </p>
+            {description}
 
             <div className="form-control w-full mt-4">
               <Label
@@ -343,8 +327,10 @@ export default function CreateCollectionMint() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={`/app/collection/${createdTicker?.toUpperCase()}`}
-        resultCTA="View Collection"
+        resultLink={
+          createdTicker ? resultLink(createdTicker.toUpperCase()) : undefined
+        }
+        resultCTA={resultCTA}
         onSuccess={() => {
           setCreatedTicker(ticker)
           reset()

@@ -3,7 +3,7 @@ import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData, useParams } from '@remix-run/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
@@ -72,6 +72,7 @@ export default function CreateCollectionLaunch() {
   const data = useLoaderData<typeof loader>()
   const operations = useLaunchpadOperations()
   const isLedger = useIsLedger()
+  const [collectionTicker, setCollectionTicker] = useState<string>('')
   const { symbol } = useParams()
   const selectedHash = symbol
     ? data.collections.find((c) => c.symbol === symbol)?.transaction.hash
@@ -457,7 +458,7 @@ export default function CreateCollectionLaunch() {
               className="mt-4"
               startIcon={<CheckIcon className="size-5" />}
             >
-              Create collection launch
+              Set collection launch options
             </Button>
           ) : (
             <Wallet className="mt-4 btn-md w-full" color="primary" />
@@ -468,12 +469,15 @@ export default function CreateCollectionLaunch() {
         ref={dialogRef}
         txInscription={value}
         resultLink={() =>
-          selectedCollection
-            ? `/app/create/launch/${selectedCollection.symbol}/inscriptions`
+          collectionTicker
+            ? `/app/create/launch/${collectionTicker}/inscriptions`
             : '/app/create/launch/inscriptions'
         }
         resultCTA="Upload inscriptions"
         onSuccess={() => {
+          if (selectedCollection) {
+            setCollectionTicker(selectedCollection.symbol)
+          }
           reset()
         }}
       />

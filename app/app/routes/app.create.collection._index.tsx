@@ -11,7 +11,7 @@ export default function CreateCollection() {
         <span className="text-xl">Self-Launch Collection</span>
         <Square3Stack3DIcon className="size-20 mt-4" />
         <Link className="btn btn-primary mt-4" to="/app/create/collection/mint">
-          Launch Collection
+          Create Collection
         </Link>
       </div>
       <span>OR</span>

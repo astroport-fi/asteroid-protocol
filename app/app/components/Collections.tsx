@@ -9,12 +9,16 @@ type CollectionBoxType = Pick<
   'symbol' | 'content_path' | 'is_explicit' | 'name'
 >
 
+type EditActions = (collection: CollectionBoxType) => JSX.Element
+
 export function CollectionBox({
   collection,
   route = '/app/collection',
+  editActions,
 }: {
   collection: CollectionBoxType
   route?: string
+  editActions?: EditActions
 }) {
   return (
     <Link
@@ -33,6 +37,9 @@ export function CollectionBox({
             {collection.name}
           </strong>
         </div>
+        {typeof editActions === 'function' && (
+          <div className="flex justify-end px-4">{editActions(collection)}</div>
+        )}
       </div>
     </Link>
   )
@@ -65,10 +72,12 @@ export default function Collections({
   collections,
   className,
   route,
+  editActions,
 }: {
   collections: CollectionBoxType[]
   className?: string
   route?: string
+  editActions?: EditActions
 }) {
   return (
     <Grid className={className}>
@@ -77,6 +86,7 @@ export default function Collections({
           key={collection.symbol}
           collection={collection}
           route={route}
+          editActions={editActions}
         />
       ))}
     </Grid>

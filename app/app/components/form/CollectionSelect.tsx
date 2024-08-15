@@ -17,7 +17,7 @@ export function CollectionSelect<
   collections,
   error,
   register,
-  link = '/app/create/collection',
+  link = '/app/create/collection/mint',
   linkInNewTab = true,
   title = 'Collection',
   tooltip,

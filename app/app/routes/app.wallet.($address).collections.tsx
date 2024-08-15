@@ -1,3 +1,4 @@
+import { ArrowUpTrayIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { Divider } from 'react-daisyui'
@@ -55,7 +56,25 @@ export default function WalletCollections() {
           <Collections
             className="w-full"
             collections={data.launches}
-            route="/app/edit/launch"
+            route="/app/launchpad"
+            editActions={(collection) => (
+              <>
+                <Link
+                  className="btn btn-circle btn-sm btn-ghost"
+                  to={`/app/edit/launch/${collection.symbol}`}
+                  title="Upload inscriptions"
+                >
+                  <ArrowUpTrayIcon className="size-4" />
+                </Link>
+                <Link
+                  className="btn btn-circle btn-sm btn-ghost"
+                  to={`/app/edit/collection/${collection.symbol}`}
+                  title="Edit collection"
+                >
+                  <PencilSquareIcon className="size-4" />
+                </Link>
+              </>
+            )}
           />
           {data.collections.length > 0 && (
             <Divider className="mt-16">Launched collections</Divider>
@@ -65,6 +84,24 @@ export default function WalletCollections() {
       <Collections
         collections={data.collections}
         className="overflow-y-scroll overflow-x-auto"
+        editActions={(collection) => (
+          <>
+            <Link
+              className="btn btn-circle btn-sm btn-ghost"
+              to={`/app/create/collection/${collection.symbol}/mint/inscriptions`}
+              title="Mint inscriptions"
+            >
+              <ArrowUpTrayIcon className="size-4" />
+            </Link>
+            <Link
+              className="btn btn-circle btn-sm btn-ghost"
+              to={`/app/edit/collection/${collection.symbol}`}
+              title="Edit collection"
+            >
+              <PencilSquareIcon className="size-4" />
+            </Link>
+          </>
+        )}
       />
       <Pagination
         pageCount={data.pages}
