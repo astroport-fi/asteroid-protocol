@@ -206,14 +206,23 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 
 	// get start and finish launchpad dates from stages
 	var startDate, finishDate sql.NullTime
+	var startsNow bool = false
+	var isInfinite bool = false
+
 	for _, stage := range launchMetadata.Stages {
-		if !stage.Start.IsZero() {
+		if stage.Start.IsZero() {
+			startsNow = true
+			startDate = sql.NullTime{Valid: false}
+		} else if !startsNow {
 			if !startDate.Valid || stage.Start.Before(startDate.Time) {
 				startDate = sql.NullTime{Time: stage.Start, Valid: true}
 			}
 		}
 
-		if !stage.Finish.IsZero() {
+		if stage.Finish.IsZero() {
+			isInfinite = true
+			finishDate = sql.NullTime{Valid: false}
+		} else if !isInfinite {
 			if !finishDate.Valid || stage.Finish.After(finishDate.Time) {
 				finishDate = sql.NullTime{Time: stage.Finish, Valid: true}
 			}
