@@ -37,15 +37,16 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
 
   const stage = launchpad.stages[0]
 
-  const isActive =
-    !launchpad.start_date || new Date(launchpad.start_date) < new Date()
-
   const isMintedOut =
     launchpad.max_supply && launchpad.max_supply === launchpad.minted_supply
 
   const isEnded =
     isMintedOut ||
     (launchpad.finish_date && new Date(launchpad.finish_date!) < new Date())
+
+  const isActive =
+    !isEnded &&
+    (!launchpad.start_date || new Date(launchpad.start_date) < new Date())
 
   return (
     <Link
@@ -82,10 +83,10 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
         <Divider className="my-1" />
         <div className="flex flex-col items-center">
           <span className="text-lg">
-            {isActive ? (
-              <span className="text-success">Live</span>
-            ) : isEnded ? (
+            {isEnded ? (
               <span className="text-info">Ended</span>
+            ) : isActive ? (
+              <span className="text-success">Live</span>
             ) : (
               <span>
                 Starts{' '}
