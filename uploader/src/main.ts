@@ -45,6 +45,16 @@ interface InscriptionUrlsResponse extends InscriptionUrls {
   tokenId: number
 }
 
+function getMetadataUrl(launchHash: string, tokenId: number) {
+  return generateUploadURL(
+    s3Client,
+    config.S3_BUCKET,
+    launchHash,
+    `${tokenId}_metadata.json`,
+    'application/json',
+  )
+}
+
 async function getInscriptionSignedUrls(
   launchHash: string,
   tokenId: number,
@@ -66,13 +76,7 @@ async function getInscriptionSignedUrls(
     name,
     contentType,
   )
-  const metadataSignedUrl = await generateUploadURL(
-    s3Client,
-    config.S3_BUCKET,
-    launchHash,
-    `${tokenId}_metadata.json`,
-    'application/json',
-  )
+  const metadataSignedUrl = await getMetadataUrl(launchHash, tokenId)
 
   return {
     inscriptionSignedUrl,
@@ -187,6 +191,33 @@ app.post(
       inscriptionSignedUrl,
       metadataSignedUrl,
     } as InscriptionUrlsResponse)
+  }),
+)
+
+app.post(
+  '/inscription/edit',
+  asyncHandler(async (req, res) => {
+    const { launchHash, tokenId } = req.body
+
+    // @todo check permissions
+
+    // get inscription record
+    const inscription = await db('launchpad_inscription')
+      .select()
+      .where({
+        launchpad_hash: launchHash,
+        inscription_number: tokenId,
+      })
+      .first()
+
+    if (!inscription) {
+      res.status(404).json({ error: 'Inscription not found' })
+      return
+    }
+
+    const metadataSignedUrl = await getMetadataUrl(launchHash, tokenId)
+
+    res.json({ metadataSignedUrl })
   }),
 )
 

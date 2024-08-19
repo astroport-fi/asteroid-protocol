@@ -40,7 +40,9 @@ export function Name<TFieldValues extends FieldValues = FieldValues>({
       />
       <label className="label" htmlFor="name">
         <span className="label-text-alt text-error">
-          {error && 'Name is required and must be 3-32 characters long.'}
+          {error &&
+            (error.message ??
+              'Name is required and must be 3-32 characters long.')}
         </span>
         <span className="label-text-alt">{name?.length ?? 0} / 32</span>
       </label>

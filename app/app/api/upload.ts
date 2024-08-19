@@ -61,6 +61,30 @@ export class UploadApi {
     return data
   }
 
+  async editMetadata(launchHash: string, tokenId: number) {
+    const uploadUrlsResponse = await fetch(`${this.apiUrl}/inscription/edit`, {
+      method: 'POST',
+      body: JSON.stringify({
+        launchHash,
+        tokenId,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    const data = await uploadUrlsResponse.json<
+      { metadataSignedUrl: string } | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error('Edit metadata failed', data.status, data.message)
+      throw new Error('Edit metadata failed')
+    }
+
+    return data.metadataSignedUrl
+  }
+
   async bulkUpload(
     launchHash: string,
     inscriptions: NFTMetadata[],

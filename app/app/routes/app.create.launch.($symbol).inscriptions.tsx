@@ -1,3 +1,4 @@
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
@@ -8,11 +9,12 @@ import { CreatorLaunch } from '~/api/launchpad'
 import { LaunchpadInscription } from '~/api/upload'
 import InscriptionImage from '~/components/InscriptionImage'
 import BulkUploadInscriptions from '~/components/dialogs/BulkUploadInscriptions'
+import EditMetadata from '~/components/dialogs/EditMetadataDialog'
 import Modal from '~/components/dialogs/Modal'
 import UploadInscription from '~/components/dialogs/UploadInscription'
 import { useRootContext } from '~/context/root'
 import useUploadedInscriptions from '~/hooks/uploader/useInscriptions'
-import useDialog from '~/hooks/useDialog'
+import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { getAddress } from '~/utils/cookies'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -40,8 +42,10 @@ interface FormData {
 
 export function UploadedInscriptionBox({
   inscription,
+  onClick,
 }: {
   inscription: LaunchpadInscription
+  onClick: (inscription: LaunchpadInscription) => void
 }) {
   const { assetsUrl } = useRootContext()
 
@@ -54,17 +58,32 @@ export function UploadedInscriptionBox({
         containerClassName="rounded-t-xl"
       />
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
-        <div className="flex flex-col px-4">
+        <div className="flex flex-row justify-between items-center px-4">
           <strong className="text-nowrap overflow-hidden text-ellipsis">
             {inscription.name}
           </strong>
+          <Button
+            shape="circle"
+            color="ghost"
+            size="sm"
+            type="button"
+            onClick={() => onClick(inscription)}
+          >
+            <PencilSquareIcon className="size-4" />
+          </Button>
         </div>
       </div>
     </div>
   )
 }
 
-function UploadedInscriptions({ launchpadHash }: { launchpadHash: string }) {
+function UploadedInscriptions({
+  launchpadHash,
+  onClick,
+}: {
+  launchpadHash: string
+  onClick: (inscription: LaunchpadInscription) => void
+}) {
   const { data } = useUploadedInscriptions(launchpadHash)
 
   return (
@@ -74,6 +93,7 @@ function UploadedInscriptions({ launchpadHash }: { launchpadHash: string }) {
           <UploadedInscriptionBox
             key={inscription.id}
             inscription={inscription}
+            onClick={onClick}
           />
         ))}
     </>
@@ -86,6 +106,11 @@ export default function UploadInscriptionsPage() {
   // dialog
   const { dialogRef, showDialog } = useDialog()
   const [multiple, setMultiple] = useState(false)
+  const {
+    dialogRef: editDialogRef,
+    showDialog: showEditDialog,
+    value: editInscription,
+  } = useDialogWithValue<LaunchpadInscription>()
 
   // form
   const {
@@ -147,15 +172,28 @@ export default function UploadInscriptionsPage() {
             </Button>
           </div>
           {launchpadSelected && (
-            <UploadedInscriptions launchpadHash={selectedLaunchpadHash} />
+            <UploadedInscriptions
+              launchpadHash={selectedLaunchpadHash}
+              onClick={showEditDialog}
+            />
           )}
         </div>
       </Form>
+
       <Modal ref={dialogRef} backdrop>
         {multiple ? (
           <BulkUploadInscriptions launchpadHash={selectedLaunchpadHash} />
         ) : (
           <UploadInscription launchpadHash={selectedLaunchpadHash} />
+        )}
+      </Modal>
+
+      <Modal ref={editDialogRef} backdrop>
+        {editInscription && (
+          <EditMetadata
+            launchpadHash={selectedLaunchpadHash}
+            tokenId={editInscription.inscription_number}
+          />
         )}
       </Modal>
     </div>
