@@ -91,6 +91,7 @@ export const creatorLaunchSelector = Selector('launchpad')({
   transaction: {
     hash: true,
   },
+  max_supply: true,
   collection: {
     symbol: true,
     name: true,

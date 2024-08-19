@@ -78,24 +78,21 @@ export function UploadedInscriptionBox({
 }
 
 function UploadedInscriptions({
-  launchpadHash,
+  inscriptions,
   onClick,
 }: {
-  launchpadHash: string
+  inscriptions: LaunchpadInscription[]
   onClick: (inscription: LaunchpadInscription) => void
 }) {
-  const { data } = useUploadedInscriptions(launchpadHash)
-
   return (
     <>
-      {data &&
-        data.map((inscription) => (
-          <UploadedInscriptionBox
-            key={inscription.id}
-            inscription={inscription}
-            onClick={onClick}
-          />
-        ))}
+      {inscriptions.map((inscription) => (
+        <UploadedInscriptionBox
+          key={inscription.id}
+          inscription={inscription}
+          onClick={onClick}
+        />
+      ))}
     </>
   )
 }
@@ -121,8 +118,14 @@ export default function UploadInscriptionsPage() {
   } = useForm<FormData>({ defaultValues: { launchpad: launchpadHash } })
 
   const selectedLaunchpadHash = watch('launchpad')
-  const launchpadSelected =
-    selectedLaunchpadHash && selectedLaunchpadHash !== '0'
+
+  const { data: inscriptions } = useUploadedInscriptions(
+    selectedLaunchpadHash ?? '',
+  )
+
+  const selectedLaunchpad = launches.find(
+    (launch) => launch.transaction.hash === selectedLaunchpadHash,
+  )
 
   const onSubmit = handleSubmit(async () => {
     showDialog()
@@ -134,26 +137,34 @@ export default function UploadInscriptionsPage() {
         onSubmit={onSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <div className="form-control mt-6 w-60">
-          <Select
-            id="collection"
-            className="w-full"
-            color={errors.launchpad ? 'error' : undefined}
-            {...register('launchpad', {
-              required: true,
-              minLength: 64,
-            })}
-          >
-            <Select.Option value={0}>Select collection</Select.Option>
-            {launches.map((launch) => (
-              <Select.Option
-                key={launch.transaction.hash}
-                value={launch.transaction.hash}
-              >
-                {launch.collection.name}
-              </Select.Option>
-            ))}
-          </Select>
+        <div className="flex flex-col justify-between items-center mt-6">
+          <div className="form-control w-60">
+            <Select
+              id="collection"
+              className="w-full"
+              color={errors.launchpad ? 'error' : undefined}
+              {...register('launchpad', {
+                required: true,
+                minLength: 64,
+              })}
+            >
+              <Select.Option value={0}>Select collection</Select.Option>
+              {launches.map((launch) => (
+                <Select.Option
+                  key={launch.transaction.hash}
+                  value={launch.transaction.hash}
+                >
+                  {launch.collection.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          {selectedLaunchpad && inscriptions && (
+            <span className="mt-4">
+              {inscriptions.length} out of {selectedLaunchpad.max_supply}{' '}
+              inscriptions uploaded
+            </span>
+          )}
         </div>
 
         <div className="flex flex-row gap-4 flex-wrap justify-center w-full mt-6">
@@ -171,9 +182,9 @@ export default function UploadInscriptionsPage() {
               Bulk upload
             </Button>
           </div>
-          {launchpadSelected && (
+          {inscriptions && (
             <UploadedInscriptions
-              launchpadHash={selectedLaunchpadHash}
+              inscriptions={inscriptions}
               onClick={showEditDialog}
             />
           )}

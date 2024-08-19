@@ -8,7 +8,7 @@ export default function useUploadedInscriptions(launchHash: string) {
   const { uploadApi } = useRootContext()
 
   return useSWR<LaunchpadInscription[]>(
-    `${uploadApi}/inscriptions/${launchHash}`,
+    launchHash ? `${uploadApi}/inscriptions/${launchHash}` : null,
     fetcher,
   )
 }
