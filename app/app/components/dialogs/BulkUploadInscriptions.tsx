@@ -1,8 +1,10 @@
 import { NFTMetadata } from '@asteroid-protocol/sdk'
+import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { ArrowUpIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
 import { Button, FileInput, Form } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
+import { inferSchema, initParser } from 'udsv'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
 import useUploadApi from '~/hooks/api/useUploadApi'
@@ -17,6 +19,18 @@ enum UploadState {
   IDLE,
   UPLOADING,
   UPLOADED,
+}
+
+function validateMetadata(metadata: NFTMetadata) {
+  if (!metadata.filename) {
+    return 'Missing filename in metadata'
+  }
+  if (!metadata.name) {
+    return 'Missing name in metadata'
+  }
+  if (!metadata.token_id) {
+    return 'Missing token_id in metadata'
+  }
 }
 
 export default function BulkUploadInscriptions({
@@ -61,38 +75,65 @@ export default function BulkUploadInscriptions({
     const contentByName = new Map<string, File>()
 
     for (const file of data.content) {
+      if (file.name.endsWith('.csv')) {
+        const content = await file.text()
+        const schema = inferSchema(content, { trim: true, col: ',' })
+        const parser = initParser(schema)
+        const data = parser.typedObjs<Record<string, number | string>>(content)
+        for (const row of data) {
+          const attributes: inscription.Trait[] = Object.entries(row).reduce(
+            (acc, [key, value]) => {
+              if (key === 'token_id' || key === 'filename' || key === 'name') {
+                return acc
+              }
+              acc.push({ trait_type: key, value: `${value}` })
+              return acc
+            },
+            [] as inscription.Trait[],
+          )
+
+          const metadata: Required<NFTMetadata> = {
+            token_id: row.token_id as number,
+            name: row.name as string,
+            filename: row.filename as string,
+            attributes: attributes,
+            description: row.description as string,
+            mime: 'image/png',
+            isExplicit: false,
+          }
+
+          const error = validateMetadata(metadata)
+          if (error) {
+            setError('content', {
+              type: 'metadata',
+              message: error,
+            })
+            setUploadState(UploadState.IDLE)
+            return
+          }
+
+          inscriptions.set(metadata.token_id, metadata)
+        }
+      }
+
       if (file.name.endsWith('.json')) {
         const content = await file.text()
         try {
           const metadata = JSON.parse(content)
-          if (!metadata.filename) {
+          const error = validateMetadata(metadata)
+          if (error) {
             setError('content', {
-              type: 'json',
-              message: 'Missing filename in JSON',
+              type: 'metadata',
+              message: error,
             })
             setUploadState(UploadState.IDLE)
             return
           }
-          if (!metadata.name) {
-            setError('content', {
-              type: 'json',
-              message: 'Missing name in JSON',
-            })
-            setUploadState(UploadState.IDLE)
-            return
-          }
-          if (!metadata.token_id) {
-            setError('content', {
-              type: 'json',
-              message: 'Missing token_id in JSON',
-            })
-            setUploadState(UploadState.IDLE)
-            return
-          }
+
           inscriptions.set(metadata.token_id, metadata)
         } catch (err) {
           setError('content', {
-            type: 'json',
+            type: 'metadata',
             message: 'Invalid JSON',
           })
           setUploadState(UploadState.IDLE)
@@ -107,7 +148,7 @@ export default function BulkUploadInscriptions({
       const content = contentByName.get(metadata.filename!)
       if (!content) {
         setError('content', {
-          type: 'json',
+          type: 'content',
           message: `Missing content file for ${metadata.filename}`,
         })
         setUploadState(UploadState.IDLE)
@@ -171,8 +212,10 @@ export default function BulkUploadInscriptions({
             </strong>
             <p className="mt-4">
               You have to provide both inscription content files like{' '}
-              <code>1.png</code>, <code>2.png</code>,... and inscription
-              metadata file like <code>1.json</code>, <code>2.json</code>,...
+              <code>1.png</code>, <code>2.png</code>,... and metadata file
+              either as CSV file with metadata for all inscriptions{' '}
+              <code>metadata.csv</code> or individual inscription metadata JSON
+              files like <code>1.json</code>, <code>2.json</code>,...
             </p>
 
             <label htmlFor="content" className="btn btn-accent mt-4">
