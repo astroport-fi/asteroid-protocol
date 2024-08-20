@@ -9,6 +9,7 @@ import {
   collectionDetailSelector,
   collectionSelector,
 } from './collection'
+import { transactionHashSelector } from './transaction'
 
 export const stageSelector = Selector('launchpad_stage')({
   price: true,
@@ -52,6 +53,7 @@ export type StageDetail = InputType<
 >
 
 export const launchpadSelector = Selector('launchpad')({
+  transaction: transactionHashSelector,
   max_supply: true,
   minted_supply: true,
   start_date: true,

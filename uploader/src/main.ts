@@ -97,7 +97,13 @@ app.get('/launchpads', async (req, res) => {
     .count({ uploaded: db.raw('CASE WHEN uploaded THEN 1 END') })
     .groupBy('launchpad_hash')
 
-  res.json(launchpads)
+  res.json(
+    launchpads.map((launchpad) => ({
+      launchpad_hash: launchpad.launchpad_hash,
+      total: parseInt(launchpad.total as string),
+      uploaded: parseInt(launchpad.uploaded as string),
+    })),
+  )
 })
 
 app.get(

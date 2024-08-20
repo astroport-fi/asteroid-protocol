@@ -26,8 +26,19 @@ export interface LaunchpadInscription {
   uploaded: boolean
 }
 
+interface LaunchpadStats {
+  launchpad_hash: string
+  total: number
+  uploaded: number
+}
+
 export class UploadApi {
   constructor(private apiUrl: string) {}
+
+  async launchpads() {
+    const response = await fetch(`${this.apiUrl}/launchpads`)
+    return response.json<LaunchpadStats[]>()
+  }
 
   async inscriptionUrls(
     launchHash: string,

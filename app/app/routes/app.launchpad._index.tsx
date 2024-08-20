@@ -5,6 +5,7 @@ import { PropsWithChildren } from 'react'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
 import { Launchpad } from '~/api/launchpad'
+import { UploadApi } from '~/api/upload'
 import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
 import InscriptionImage from '~/components/InscriptionImage'
@@ -13,8 +14,20 @@ import { getSupplyTitle } from '~/utils/number'
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
+  const uploadClient = new UploadApi(context.cloudflare.env.UPLOAD_API)
 
-  const launches = await asteroidClient.getActiveLaunches()
+  let launches = await asteroidClient.getActiveLaunches()
+  const stats = await uploadClient.launchpads()
+  const statsByHash = Object.fromEntries(
+    stats.map((stat) => [stat.launchpad_hash, stat]),
+  )
+
+  launches = launches.filter((launch) => {
+    const stat = statsByHash[launch.transaction.hash]
+    if (!stat) return false
+    return stat.uploaded === launch.max_supply
+  })
+
   const pastLaunches = await asteroidClient.getPastLaunches()
 
   return json({
