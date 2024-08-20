@@ -90,6 +90,16 @@ interface Inscription {
   contentType: string
 }
 
+app.get('/launchpads', async (req, res) => {
+  const launchpads = await db('launchpad_inscription')
+    .select('launchpad_hash')
+    .count({ total: 'inscription_number' })
+    .count({ uploaded: db.raw('CASE WHEN uploaded THEN 1 END') })
+    .groupBy('launchpad_hash')
+
+  res.json(launchpads)
+})
+
 app.get(
   '/inscriptions/:launchHash',
   asyncHandler(async (req, res) => {
