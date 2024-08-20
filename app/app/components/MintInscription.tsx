@@ -5,7 +5,8 @@ import {
   LockClosedIcon,
   NoSymbolIcon,
 } from '@heroicons/react/20/solid'
-import { Button } from 'react-daisyui'
+import { useState } from 'react'
+import { Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
@@ -31,8 +32,11 @@ export default function MintInscription({
 }) {
   const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
-  const { dialogRef, value, showDialog } =
-    useDialogWithValue<TxInscription | null>()
+  const {
+    dialogRef,
+    value: inscription,
+    showDialog,
+  } = useDialogWithValue<TxInscription | null>()
   const activeStage = getActiveStage(launchpad.stages)
   const isEligible =
     activeStage == null ||
@@ -44,6 +48,18 @@ export default function MintInscription({
   const reachedLimit =
     activeStage?.per_user_limit &&
     userReservations >= activeStage.per_user_limit
+  const isMintedOut =
+    launchpad.max_supply && launchpad.max_supply === launchpad.minted_supply
+
+  const [amount, setAmount] = useState(1)
+  let max = Infinity
+
+  if (launchpad.max_supply) {
+    max = launchpad.max_supply - launchpad.minted_supply
+  }
+  if (activeStage && activeStage.per_user_limit) {
+    max = Math.min(max, activeStage.per_user_limit - userReservations)
+  }
 
   function mint() {
     if (!activeStage) {
@@ -60,6 +76,7 @@ export default function MintInscription({
     const txInscription = operations.reserve(
       launchpad.transaction.hash,
       activeStage.id,
+      amount,
     )
 
     const mintFee = 100000
@@ -67,7 +84,7 @@ export default function MintInscription({
 
     const grant = getGrantSendMsg(operations.address, minterAddress, {
       allowList: [],
-      spendLimit: [{ denom: 'uatom', amount: `${fee}` }],
+      spendLimit: [{ denom: 'uatom', amount: `${fee * amount}` }],
     })
     txInscription.messages = [grant]
 
@@ -78,6 +95,14 @@ export default function MintInscription({
     <div className={className}>
       {!operations ? (
         <Wallet className="btn-md w-full" color="primary" />
+      ) : isMintedOut ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
+          Minted out
+        </Button>
       ) : !activeStage ? (
         <Button
           disabled
@@ -103,18 +128,32 @@ export default function MintInscription({
           Reached per user limit
         </Button>
       ) : (
-        <Button
-          onClick={() => mint()}
-          color="primary"
-          fullWidth
-          startIcon={<CubeIcon className="size-4" />}
-        >
-          Mint now
-        </Button>
+        <div className="flex w-full">
+          <Input
+            type="number"
+            className="w-16 h-12 text-lg pr-0"
+            size="sm"
+            min={1}
+            max={max}
+            step={1}
+            color={amount > max || amount < 1 ? 'error' : undefined}
+            value={amount}
+            onChange={(e) => setAmount(parseInt(e.target.value))}
+          />
+          <Button
+            onClick={() => mint()}
+            color="primary"
+            fullWidth
+            className="shrink ml-2"
+            startIcon={<CubeIcon className="size-4" />}
+          >
+            Mint now
+          </Button>
+        </div>
       )}
       <TxDialog
         ref={dialogRef}
-        txInscription={value}
+        txInscription={inscription}
         resultCTA="Back to mint"
         resultLink={`/app/launchpad/${launchpad.collection.symbol}`}
       />
