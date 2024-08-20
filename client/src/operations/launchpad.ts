@@ -25,8 +25,8 @@ export class LaunchpadOperations<
   }
 
   // @todo signature
-  reserve(launchpadHash: string, mintStage: number) {
-    const operation = this.protocol.reserve(launchpadHash, mintStage)
+  reserve(launchpadHash: string, mintStage: number, amount: number = 1) {
+    const operation = this.protocol.reserve(launchpadHash, mintStage, amount)
     return this.prepareOperation(operation)
   }
 }
