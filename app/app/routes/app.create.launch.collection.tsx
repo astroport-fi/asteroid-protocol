@@ -1,22 +1,18 @@
-import { Link as DaisyLink } from 'react-daisyui'
 import CreateCollectionForm from '~/components/collection-form/Create'
 
 export default function LaunchCollection() {
   return (
     <CreateCollectionForm
       resultLink={(ticker) => `/app/create/launch/${ticker}`}
-      resultCTA="Set launch options"
+      resultCTA="Step 2: Set launch options"
+      title="Create a collection for the Asteroid launchpad"
       description={
         <p className="mt-2">
-          Launching a collection is a three-step process. First, create a
-          collection inscription using the form below. Then you set launch
-          options and finally, you can upload inscriptions to your collection.
-          All information below will appear on your collection&apos;s landing
-          page on{` `}
-          <DaisyLink href="https://asteroidprotocol.io">
-            asteroidprotocol.io
-          </DaisyLink>
-          . Note that collection inscriptions are non-transferrable.
+          Creating a public launch is a three-step process. First, name,
+          describe and upload a main image for your collection using the form on
+          this page. In step 2, configure your launch options and whitelist
+          settings if applicable. In step 3, upload the artwork for your
+          collection.
         </p>
       }
     />

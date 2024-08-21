@@ -8,21 +8,33 @@ export default function CreateCollection() {
   return (
     <div className="flex flex-row items-center gap-8 justify-center">
       <div className="flex flex-col items-center border border-dashed rounded-3xl p-8 w-80">
-        <span className="text-xl">Self-Launch Collection</span>
+        <span className="text-xl">Private Launch</span>
         <Square3Stack3DIcon className="size-20 mt-4" />
-        <Link className="btn btn-primary mt-4" to="/app/create/collection/mint">
-          Create Collection
+        <p className="text-center mt-4 text-sm">
+          With a private launch, you mint/publish your collection on-chain
+          yourself. Optionally, you can then list individual pieces in your
+          collection for sale at a pre-set price.
+        </p>
+        <Link
+          className="btn btn-primary mt-4 w-full"
+          to="/app/create/collection/mint"
+        >
+          Get started
         </Link>
       </div>
       <span>OR</span>
       <div className="flex flex-col items-center border border-dashed rounded-3xl p-8 w-80">
-        <span className="text-xl">Create Public Launchpad</span>
+        <span className="text-xl">Public Launch</span>
         <RocketLaunchIcon className="size-20 mt-4" />
+        <p className="text-center mt-4 text-sm">
+          Public launches use the Asteroid Launchpad. Upload your images and
+          metadata, then allow others to mint random pieces from your collection
+        </p>
         <Link
-          className="btn btn-primary mt-4"
+          className="btn btn-primary mt-4 w-full"
           to="/app/create/launch/collection"
         >
-          Create Launchpad
+          Get started
         </Link>
       </div>
     </div>

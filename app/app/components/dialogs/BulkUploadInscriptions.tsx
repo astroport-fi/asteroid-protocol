@@ -2,7 +2,7 @@ import { NFTMetadata } from '@asteroid-protocol/sdk'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
 import { ArrowUpIcon, CheckIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
-import { Button, FileInput, Form } from 'react-daisyui'
+import { Button, FileInput, Form, Link } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { inferSchema, initParser } from 'udsv'
 import { Wallet } from '~/components/wallet/Wallet'
@@ -161,7 +161,8 @@ export default function BulkUploadInscriptions({
     if (!inscriptions.size) {
       setError('content', {
         type: 'empty',
-        message: 'No valid inscriptions found',
+        message:
+          'No spreadsheet (a .csv file) or JSON files with metadata found',
       })
       setUploadState(UploadState.IDLE)
       return
@@ -211,11 +212,26 @@ export default function BulkUploadInscriptions({
               Upload multiple inscriptions at once
             </strong>
             <p className="mt-4">
-              You have to provide both inscription content files like{' '}
-              <code>1.png</code>, <code>2.png</code>,... and metadata file
-              either as CSV file with metadata for all inscriptions{' '}
-              <code>metadata.csv</code> or individual inscription metadata JSON
-              files like <code>1.json</code>, <code>2.json</code>,...
+              Select multiple image files and one spreadsheet (a .csv file),
+              which includes all the metadata for your images. You can download
+              a sample CSV file to accompany your images{' '}
+              <Link
+                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#example-metadata.csv"
+                target="_blank"
+                className="underline"
+              >
+                here
+              </Link>
+              . Advanced users can also use individual JSON files instead of a
+              spreadsheet. Learn more{' '}
+              <Link
+                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#example-metadata-json-file-like-1.json"
+                target="_blank"
+                className="underline"
+              >
+                here
+              </Link>
+              .
             </p>
 
             <label htmlFor="content" className="btn btn-accent mt-4">

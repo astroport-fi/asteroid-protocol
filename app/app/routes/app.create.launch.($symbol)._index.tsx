@@ -473,7 +473,7 @@ export default function CreateCollectionLaunch() {
             ? `/app/create/launch/${collectionTicker}/inscriptions`
             : '/app/create/launch/inscriptions'
         }
-        resultCTA="Upload inscriptions"
+        resultCTA="Step 3: Upload inscriptions"
         onSuccess={() => {
           if (selectedCollection) {
             setCollectionTicker(selectedCollection.symbol)

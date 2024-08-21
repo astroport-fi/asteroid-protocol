@@ -32,10 +32,12 @@ const TICKER_MAX_LENGTH = 10
 
 export default function CreateCollectionForm({
   description,
+  title = 'Create a collection',
   resultCTA,
   resultLink,
 }: {
   description: JSX.Element
+  title?: string
   resultLink: (ticker: string) => string
   resultCTA: string
 }) {
@@ -213,7 +215,7 @@ export default function CreateCollectionForm({
             </div>
           </div>
           <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
-            <strong>Create a collection</strong>
+            <strong>{title}</strong>
             {description}
 
             <div className="form-control w-full mt-4">
@@ -310,14 +312,23 @@ export default function CreateCollectionForm({
                 Inscribing is not supported when using Ledger
               </Button>
             ) : operations ? (
-              <Button
-                type="submit"
-                color="primary"
-                className="mt-4"
-                startIcon={<CheckIcon className="size-5" />}
-              >
-                Create collection
-              </Button>
+              <>
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="mt-4"
+                  startIcon={<CheckIcon className="size-5" />}
+                >
+                  Create collection
+                </Button>
+                <p className="mt-4 text-sm italic">
+                  Please note that you should only upload artwork that
+                  you&apos;ve created or material that otherwise exists in the
+                  public domain. Uploading copyrighted material, which you do
+                  not own the rights to violates the terms and conditions on
+                  asteroidprotocol.io.
+                </p>
+              </>
             ) : (
               <Wallet className="mt-4 btn-md w-full" color="primary" />
             )}
