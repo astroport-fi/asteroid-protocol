@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
@@ -69,6 +71,17 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		return fmt.Errorf("missing stage id")
 	}
 
+	// Check required fields
+	amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+	// Convert amount to have the correct number of decimals
+	amount, err := strconv.ParseUint(amountString, 10, 64)
+	if err != nil {
+		return fmt.Errorf("unable to parse amount '%s'", err)
+	}
+	if amount <= 0 {
+		amount = 1
+	}
+
 	// @todo check signature
 
 	// get launchpad
@@ -97,6 +110,8 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	if launchpad.MaxSupply > 0 && launchpad.MintedSupply >= launchpad.MaxSupply {
 		return fmt.Errorf("launchpad minted out")
 	}
+	availableSupply := launchpad.MaxSupply - launchpad.MintedSupply
+	amountToMint := min(amount, availableSupply)
 
 	// check if stage is active
 	if stage.StartDate.Valid && stage.StartDate.Time.After(transactionModel.DateCreated) {
@@ -123,38 +138,44 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		if count >= stage.PerUserLimit {
 			return fmt.Errorf("user reached per user limit")
 		}
+		amountToMint = min(amountToMint, uint64(stage.PerUserLimit)-uint64(count))
 	}
 
 	// @todo check user send enough funds to pay for mint and fee
 
 	// get token id
 	var maxTokenId uint64
-	err := protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Scan(&maxTokenId).Error
+	err = protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Where("launchpad_id = ?", launchpad.ID).Scan(&maxTokenId).Error
 	if err != nil {
 		return err
 	}
-	tokenId := maxTokenId + 1
 
-	// save to db
-	reservation := models.LaunchpadMintReservation{
-		CollectionID: launchpad.CollectionID,
-		LaunchpadID:  launchpad.ID,
-		StageID:      stage.ID,
-		Address:      sender,
-		TokenId:      tokenId,
-	}
+	for i := uint64(0); i < amountToMint; i++ {
+		tokenId := maxTokenId + i + 1
+		fmt.Printf("minting token %d\n", tokenId)
 
-	result = protocol.db.Save(&reservation)
+		// save to db
+		reservation := models.LaunchpadMintReservation{
+			CollectionID: launchpad.CollectionID,
+			LaunchpadID:  launchpad.ID,
+			StageID:      stage.ID,
+			Address:      sender,
+			TokenId:      tokenId,
+		}
 
-	if result.Error != nil {
-		return result.Error
-	}
+		result = protocol.db.Save(&reservation)
 
-	// update minted supply
-	launchpad.MintedSupply += 1
-	result = protocol.db.Save(&launchpad)
-	if result.Error != nil {
-		return result.Error
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// update minted supply
+		launchpad.MintedSupply += 1
+		result = protocol.db.Save(&launchpad)
+		if result.Error != nil {
+			return result.Error
+		}
+
 	}
 
 	return nil
