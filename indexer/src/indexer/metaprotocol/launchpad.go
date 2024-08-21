@@ -152,7 +152,6 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 
 	for i := uint64(0); i < amountToMint; i++ {
 		tokenId := maxTokenId + i + 1
-		fmt.Printf("minting token %d\n", tokenId)
 
 		// save to db
 		reservation := models.LaunchpadMintReservation{

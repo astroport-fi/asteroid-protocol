@@ -542,7 +542,17 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender, false)
 
 			// check sender has launchpad mint reservation or is collection owner
-			if collection.Creator != sender {
+			var launchpad models.Launchpad
+			result := protocol.db.Where("collection_id = ?", collection.ID).First(&launchpad)
+			if result.Error != nil {
+				if result.Error != gorm.ErrRecordNotFound {
+					return result.Error
+				}
+
+				if collection.Creator != sender {
+					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+				}
+			} else {
 				var reservation models.LaunchpadMintReservation
 				result := protocol.db.Where("collection_id = ? and address = ? and token_id = ?", collection.ID, sender, inscriptionMetadata.Metadata.TokenID).First(&reservation)
 				if result.Error != nil {
