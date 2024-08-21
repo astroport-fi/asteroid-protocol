@@ -215,8 +215,34 @@ async function main() {
       `Starting to process ${reservations.length} unprocessed reservations`,
     )
 
+    const now = new Date()
+
     for (const reservation of reservations) {
+      const { launchpad } = reservation
+
       try {
+        if (!launchpad.reveal_immediately) {
+          if (launchpad.reveal_date) {
+            const revealDate = new Date(launchpad.reveal_date)
+            if (now < revealDate) {
+              console.log(
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, reveal_date: ${revealDate}`,
+              )
+              continue
+            }
+          } else {
+            if (
+              launchpad.max_supply &&
+              launchpad.minted_supply != launchpad.max_supply
+            ) {
+              console.log(
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, max_supply: ${launchpad.max_supply}, minted_supply: ${launchpad.minted_supply}`,
+              )
+              continue
+            }
+          }
+        }
+
         await processMintReservation(
           config,
           client,
@@ -226,7 +252,7 @@ async function main() {
         )
       } catch (e) {
         console.error(
-          `Unable to process reservation, launchpad_hash: ${reservation.launchpad.transaction.hash}, token_id: ${reservation.token_id}, error: ${(e as Error).message}`,
+          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, error: ${(e as Error).message}`,
           e,
         )
       }

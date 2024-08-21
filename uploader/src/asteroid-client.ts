@@ -24,6 +24,8 @@ export const launchpadMintReservationSelector = Selector(
     },
     reveal_immediately: true,
     reveal_date: true,
+    max_supply: true,
+    minted_supply: true,
   },
   stage: {
     price: true,
