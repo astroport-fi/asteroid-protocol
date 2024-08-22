@@ -33,11 +33,51 @@ interface LaunchpadStats {
 }
 
 export class UploadApi {
-  constructor(private apiUrl: string) {}
+  constructor(
+    private apiUrl: string,
+    private sessionHash?: string,
+  ) {}
 
   async launchpads() {
     const response = await fetch(`${this.apiUrl}/launchpads`)
     return response.json<LaunchpadStats[]>()
+  }
+
+  async createSession(address: string) {
+    const response = await fetch(`${this.apiUrl}/create-session`, {
+      method: 'POST',
+      body: JSON.stringify({ address }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const data = await response.json<{ hash: string } | ErrorResponse>()
+
+    if ('status' in data) {
+      console.error('Creating session failed', data.status, data.message)
+      throw new Error('Creating session failed')
+    }
+
+    return data.hash
+  }
+
+  async verifySession(hash: string, pubkey: string, signature: string) {
+    const response = await fetch(`${this.apiUrl}/verify-session`, {
+      method: 'POST',
+      body: JSON.stringify({ hash, pubkey, signature }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    const data = await response.json<{ success: boolean } | ErrorResponse>()
+
+    if ('status' in data) {
+      console.error('Creating session failed', data.status, data.message)
+      throw new Error('Creating session failed')
+    }
   }
 
   async inscriptionUrls(
@@ -53,6 +93,7 @@ export class UploadApi {
           launchHash,
           contentType,
           extension,
+          sessionHash: this.sessionHash,
         }),
         headers: {
           Accept: 'application/json',
@@ -78,6 +119,7 @@ export class UploadApi {
       body: JSON.stringify({
         launchHash,
         tokenId,
+        sessionHash: this.sessionHash,
       }),
       headers: {
         Accept: 'application/json',
@@ -105,6 +147,7 @@ export class UploadApi {
         tokenId: inscription.token_id!,
         filename: inscription.filename!,
         contentType: inscription.mime,
+        sessionHash: this.sessionHash,
       }),
     )
     const uploadResponse = await fetch(
@@ -136,7 +179,11 @@ export class UploadApi {
   bulkConfirm(launchHash: string, tokenIds: number[]) {
     return fetch(`${this.apiUrl}/inscription/bulk/confirm`, {
       method: 'POST',
-      body: JSON.stringify({ launchHash, tokenIds }),
+      body: JSON.stringify({
+        launchHash,
+        tokenIds,
+        sessionHash: this.sessionHash,
+      }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -155,7 +202,11 @@ export class UploadApi {
   confirm(launchHash: string, tokenId: number) {
     return fetch(`${this.apiUrl}/inscription/confirm`, {
       method: 'POST',
-      body: JSON.stringify({ launchHash, tokenId }),
+      body: JSON.stringify({
+        launchHash,
+        tokenId,
+        sessionHash: this.sessionHash,
+      }),
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

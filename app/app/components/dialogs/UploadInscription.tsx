@@ -14,7 +14,9 @@ import Trait from '~/components/inscription-form/Trait'
 import { Wallet } from '~/components/wallet/Wallet'
 import useUploadApi from '~/hooks/api/useUploadApi'
 import { useInvalidateUploadedInscriptions } from '~/hooks/uploader/useInscriptions'
+import { useHasUploaderSession } from '~/hooks/useUploaderSession'
 import useAddress from '~/hooks/wallet/useAddress'
+import CreateUploaderSession from '../CreateUploaderSession'
 
 type FormData = {
   name: string
@@ -38,6 +40,7 @@ export default function UploadInscription({
   const uploadApi = useUploadApi()
   const [uploadState, setUploadState] = useState<UploadState>(UploadState.IDLE)
   const invalidate = useInvalidateUploadedInscriptions(launchpadHash)
+  const hasUploaderSession = useHasUploaderSession()
 
   useEffect(() => {
     if (uploadState !== UploadState.UPLOADED) {
@@ -193,27 +196,31 @@ export default function UploadInscription({
         <Divider />
 
         {address ? (
-          uploadState === UploadState.UPLOADING ? (
-            <Button loading color="primary" className="mt-4">
-              Uploading...
-            </Button>
-          ) : uploadState === UploadState.UPLOADED ? (
-            <Button
-              color="success"
-              className="mt-4"
-              startIcon={<CheckIcon className="size-5" />}
-            >
-              Uploaded
-            </Button>
+          hasUploaderSession ? (
+            uploadState === UploadState.UPLOADING ? (
+              <Button loading color="primary" className="mt-4">
+                Uploading...
+              </Button>
+            ) : uploadState === UploadState.UPLOADED ? (
+              <Button
+                color="success"
+                className="mt-4"
+                startIcon={<CheckIcon className="size-5" />}
+              >
+                Uploaded
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                color="primary"
+                className="mt-4"
+                startIcon={<ArrowUpIcon className="size-5" />}
+              >
+                Upload
+              </Button>
+            )
           ) : (
-            <Button
-              type="submit"
-              color="primary"
-              className="mt-4"
-              startIcon={<ArrowUpIcon className="size-5" />}
-            >
-              Upload
-            </Button>
+            <CreateUploaderSession />
           )
         ) : (
           <Wallet className="mt-4 btn-md w-full" color="primary" />

@@ -1,7 +1,15 @@
 import knex, { Knex } from 'knex'
 
 declare module 'knex/types/tables.js' {
+  export interface Session {
+    address: string
+    hash: string
+    date_created: Date
+    verified: boolean
+  }
+
   export interface Launchpad {
+    creator: string
     hash: string
     date_created: Date
   }
@@ -22,6 +30,8 @@ declare module 'knex/types/tables.js' {
   >
 
   interface Tables {
+    session: Session
+
     launchpad: Launchpad
     launchpad_inscription: LaunchpadInscription
 

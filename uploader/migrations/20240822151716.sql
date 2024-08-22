@@ -1,8 +1,12 @@
 -- Create "launchpad" table
 CREATE TABLE "public"."launchpad" (
   "hash" character(64) NOT NULL,
-  "date_created" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "creator" character(45) NOT NULL,
+  "date_created" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("hash")
 );
+-- Create index "idx_launchpad_creator" to table: "launchpad"
+CREATE INDEX "idx_launchpad_creator" ON "public"."launchpad" ("creator");
 -- Create "launchpad_inscription" table
 CREATE TABLE "public"."launchpad_inscription" (
   "id" serial NOT NULL,
@@ -16,3 +20,13 @@ CREATE TABLE "public"."launchpad_inscription" (
 CREATE INDEX "idx_launchpad_inscription_launchpad_hash" ON "public"."launchpad_inscription" ("launchpad_hash");
 -- Create index "launchpad_inscription_number" to table: "launchpad_inscription"
 CREATE UNIQUE INDEX "launchpad_inscription_number" ON "public"."launchpad_inscription" ("launchpad_hash", "inscription_number");
+-- Create "session" table
+CREATE TABLE "public"."session" (
+  "address" character(45) NOT NULL,
+  "hash" character(25) NOT NULL,
+  "date_created" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "verified" boolean NOT NULL DEFAULT false,
+  PRIMARY KEY ("address")
+);
+-- Create index "idx_session" to table: "session"
+CREATE INDEX "idx_session" ON "public"."session" ("hash");

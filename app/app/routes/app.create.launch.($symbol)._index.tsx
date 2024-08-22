@@ -3,6 +3,7 @@ import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData, useParams } from '@remix-run/react'
+import clsx from 'clsx'
 import React, { useState } from 'react'
 import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
@@ -230,10 +231,13 @@ export default function CreateCollectionLaunch() {
                     disabled={disabled}
                     minDate={new Date()}
                     onBlur={onBlur}
-                    className="input input-bordered"
+                    className={clsx('input input-bordered', {
+                      'input-error': errors.revealDate,
+                    })}
                     selected={value}
                     onChange={onChange}
                     timeInputLabel="Time:"
+                    required
                     placeholderText="Click to select a reveal date"
                     dateFormat="MM/dd/yyyy h:mm aa"
                     shouldCloseOnSelect={false}
