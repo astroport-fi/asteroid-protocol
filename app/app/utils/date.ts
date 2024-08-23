@@ -1,6 +1,10 @@
 export const DATETIME_FORMAT = 'MMM d yyyy h:mm a'
 export const DATE_FORMAT = 'MMM d yyyy'
 
+export function getDateFromUTCString(date: string) {
+  return new Date(date + 'Z')
+}
+
 export function getDateAgo(value: Date | string, short = false) {
   if (!(value instanceof Date)) value = new Date(value)
 

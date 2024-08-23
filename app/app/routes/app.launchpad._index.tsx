@@ -10,6 +10,7 @@ import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
 import InscriptionImage from '~/components/InscriptionImage'
 import PercentageText from '~/components/PercentageText'
+import { getDateFromUTCString } from '~/utils/date'
 import { getSupplyTitle } from '~/utils/number'
 
 export async function loader({ context }: LoaderFunctionArgs) {
@@ -55,11 +56,13 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
 
   const isEnded =
     isMintedOut ||
-    (launchpad.finish_date && new Date(launchpad.finish_date!) < new Date())
+    (launchpad.finish_date &&
+      getDateFromUTCString(launchpad.finish_date!) < new Date())
 
   const isActive =
     !isEnded &&
-    (!launchpad.start_date || new Date(launchpad.start_date) < new Date())
+    (!launchpad.start_date ||
+      getDateFromUTCString(launchpad.start_date) < new Date())
 
   return (
     <Link
@@ -103,7 +106,10 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
             ) : (
               <span>
                 Starts{' '}
-                {formatRelative(new Date(launchpad.start_date!), new Date())}
+                {formatRelative(
+                  getDateFromUTCString(launchpad.start_date!),
+                  new Date(),
+                )}
               </span>
             )}
           </span>

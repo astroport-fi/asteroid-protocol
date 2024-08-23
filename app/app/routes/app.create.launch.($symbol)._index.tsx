@@ -4,6 +4,7 @@ import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData, useParams } from '@remix-run/react'
 import clsx from 'clsx'
+import { format } from 'date-fns'
 import React, { useState } from 'react'
 import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
@@ -24,6 +25,16 @@ import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { getAddress } from '~/utils/cookies'
 import { toDecimalValue } from '~/utils/number'
 import 'react-datepicker/dist/react-datepicker.css'
+
+function convertLocalToUTCDate(date: Date) {
+  return new Date(date.getTime() + date.getTimezoneOffset() * 60000)
+}
+
+function getUTCString(date: Date | undefined) {
+  return date
+    ? `${format(convertLocalToUTCDate(date), 'MM/dd/yyyy h:mm aa')} UTC`
+    : ''
+}
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
@@ -96,6 +107,7 @@ export default function CreateCollectionLaunch() {
   })
 
   const reveal = watch('reveal')
+  const revealDate = watch('revealDate')
   const collectionHash = watch('collection')
   const selectedCollection = data.collections.find(
     (c) => c.transaction.hash === collectionHash,
@@ -217,7 +229,7 @@ export default function CreateCollectionLaunch() {
           </div>
 
           {reveal == Reveal.SpecificDate && (
-            <div className="flex flex-row w-full">
+            <div className="flex flex-col w-full">
               <Controller
                 rules={{ required: true }}
                 control={control}
@@ -226,16 +238,23 @@ export default function CreateCollectionLaunch() {
                   field: { name, onChange, value, ref, onBlur, disabled },
                 }) => (
                   <DatePicker
+                    selected={value}
+                    onChange={onChange}
+                    ref={(dateRef) => {
+                      if (!dateRef) {
+                        return
+                      }
+                      ref({
+                        focus: dateRef.setFocus,
+                      })
+                    }}
                     name={name}
-                    ref={ref}
                     disabled={disabled}
                     minDate={new Date()}
                     onBlur={onBlur}
                     className={clsx('input input-bordered', {
                       'input-error': errors.revealDate,
                     })}
-                    selected={value}
-                    onChange={onChange}
                     timeInputLabel="Time:"
                     required
                     placeholderText="Click to select a reveal date"
@@ -247,6 +266,9 @@ export default function CreateCollectionLaunch() {
                   />
                 )}
               />
+              <span className="mt-2 ml-1 text-sm">
+                {getUTCString(revealDate)}
+              </span>
             </div>
           )}
 
@@ -340,7 +362,14 @@ export default function CreateCollectionLaunch() {
                           }) => (
                             <DatePicker
                               name={name}
-                              ref={ref}
+                              ref={(dateRef) => {
+                                if (!dateRef) {
+                                  return
+                                }
+                                ref({
+                                  focus: dateRef.setFocus,
+                                })
+                              }}
                               disabled={disabled}
                               minDate={new Date()}
                               onBlur={onBlur}
@@ -359,6 +388,10 @@ export default function CreateCollectionLaunch() {
                         />,
                       )}
                     </div>
+                    <ErrorLabel error={errors.stages?.[index]?.start} />
+                    <span className="mt-2 ml-1 text-sm">
+                      {getUTCString(stages[index].start)}
+                    </span>
                   </div>
                   <div className="flex flex-col w-full items-start">
                     <Label
@@ -390,7 +423,14 @@ export default function CreateCollectionLaunch() {
                           }) => (
                             <DatePicker
                               name={name}
-                              ref={ref}
+                              ref={(dateRef) => {
+                                if (!dateRef) {
+                                  return
+                                }
+                                ref({
+                                  focus: dateRef.setFocus,
+                                })
+                              }}
                               disabled={disabled}
                               minDate={new Date()}
                               onBlur={onBlur}
@@ -409,6 +449,9 @@ export default function CreateCollectionLaunch() {
                         />,
                       )}
                       <ErrorLabel error={errors.stages?.[index]?.finish} />
+                      <span className="mt-2 ml-1 text-sm">
+                        {getUTCString(stages[index].finish)}
+                      </span>
                     </div>
                   </div>
                 </div>

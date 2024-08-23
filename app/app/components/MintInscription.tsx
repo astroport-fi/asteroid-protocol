@@ -11,6 +11,7 @@ import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
+import { getDateFromUTCString } from '~/utils/date'
 import TxDialog from './dialogs/TxDialog'
 import { Wallet } from './wallet/Wallet'
 
@@ -18,8 +19,8 @@ function getActiveStage(stages: StageDetail[]) {
   const now = new Date()
   return stages.find(
     (stage) =>
-      (!stage.start_date || new Date(stage.start_date) < now) &&
-      (!stage.finish_date || new Date(stage.finish_date) > now),
+      (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
+      (!stage.finish_date || getDateFromUTCString(stage.finish_date) > now),
   )
 }
 

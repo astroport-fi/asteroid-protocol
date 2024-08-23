@@ -14,6 +14,7 @@ import MintInscription from '~/components/MintInscription'
 import PercentageText from '~/components/PercentageText'
 import CollectionSocials from '~/components/collection/CollectionSocials'
 import { getAddress } from '~/utils/cookies'
+import { getDateFromUTCString } from '~/utils/date'
 import { getSupplyTitle } from '~/utils/number'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -41,9 +42,11 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
 function StageBox({ stage }: { stage: StageDetail }) {
   const now = new Date()
-  const isEnded = stage.finish_date && new Date(stage.finish_date) < now
+  const isEnded =
+    stage.finish_date && getDateFromUTCString(stage.finish_date) < now
   const isActive =
-    (!stage.start_date || new Date(stage.start_date) < now) && !isEnded
+    (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
+    !isEnded
 
   let title: React.ReactNode | undefined = stage.name
   if (!title) {
@@ -78,14 +81,22 @@ function StageBox({ stage }: { stage: StageDetail }) {
         ) : isActive ? (
           stage.finish_date ? (
             <span>
-              Ends {formatRelative(new Date(stage.finish_date!), new Date())}
+              Ends{' '}
+              {formatRelative(
+                getDateFromUTCString(stage.finish_date!),
+                new Date(),
+              )}
             </span>
           ) : (
             <span className="text-success">Indefinite</span>
           )
         ) : (
           <span>
-            Starts {formatRelative(new Date(stage.start_date!), new Date())}
+            Starts{' '}
+            {formatRelative(
+              getDateFromUTCString(stage.start_date!),
+              new Date(),
+            )}
           </span>
         )}
       </div>
