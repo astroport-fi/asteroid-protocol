@@ -17,11 +17,13 @@ import { Wallet } from './wallet/Wallet'
 
 function getActiveStage(stages: StageDetail[]) {
   const now = new Date()
-  return [...stages.reverse()].find(
-    (stage) =>
-      (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
-      (!stage.finish_date || getDateFromUTCString(stage.finish_date) > now),
-  )
+  return [...stages]
+    .reverse()
+    .find(
+      (stage) =>
+        (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
+        (!stage.finish_date || getDateFromUTCString(stage.finish_date) > now),
+    )
 }
 
 export default function MintInscription({
