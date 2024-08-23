@@ -219,7 +219,7 @@ export default function BulkUploadInscriptions({
               which includes all the metadata for your images. You can download
               a sample CSV file to accompany your images{' '}
               <Link
-                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#example-metadata.csv"
+                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#add-metadata-with-a-.csv-file"
                 target="_blank"
                 className="underline"
               >
