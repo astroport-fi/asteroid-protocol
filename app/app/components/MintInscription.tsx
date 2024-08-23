@@ -5,7 +5,7 @@ import {
   LockClosedIcon,
   NoSymbolIcon,
 } from '@heroicons/react/20/solid'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
@@ -17,7 +17,7 @@ import { Wallet } from './wallet/Wallet'
 
 function getActiveStage(stages: StageDetail[]) {
   const now = new Date()
-  return stages.find(
+  return [...stages.reverse()].find(
     (stage) =>
       (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
       (!stage.finish_date || getDateFromUTCString(stage.finish_date) > now),
@@ -38,7 +38,10 @@ export default function MintInscription({
     value: inscription,
     showDialog,
   } = useDialogWithValue<TxInscription | null>()
-  const activeStage = getActiveStage(launchpad.stages)
+  const activeStage = useMemo(
+    () => getActiveStage(launchpad.stages),
+    [launchpad.stages],
+  )
   const isEligible =
     activeStage == null ||
     !activeStage.has_whitelist ||
