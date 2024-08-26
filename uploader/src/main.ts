@@ -174,10 +174,24 @@ app.get(
   }),
 )
 
-app.get(
+app.post(
   '/inscriptions/:launchHash',
   asyncHandler(async (req, res) => {
     const { launchHash } = req.params
+    const { sessionHash } = req.body as {
+      sessionHash: string
+    }
+
+    // check session
+    const session = await db('session')
+      .select()
+      .where({ hash: sessionHash ?? null, verified: true })
+      .first()
+    if (!session || !session.verified) {
+      res.status(403).json({ status: 403, message: 'Invalid session' })
+      return
+    }
+
     const inscriptions = await db('launchpad_inscription')
       .select()
       .where({ launchpad_hash: launchHash })

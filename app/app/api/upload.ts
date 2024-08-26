@@ -38,6 +38,25 @@ export class UploadApi {
     private sessionHash?: string,
   ) {}
 
+  async getInscriptions(launchHash: string) {
+    const response = await fetch(`${this.apiUrl}/inscriptions/${launchHash}`, {
+      method: 'POST',
+      body: JSON.stringify({ sessionHash: this.sessionHash }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    const data = await response.json<LaunchpadInscription[] | ErrorResponse>()
+
+    if ('status' in data) {
+      console.error('Getting inscriptions failed', data.status, data.message)
+      return null
+    }
+
+    return data
+  }
+
   async launchpads() {
     const response = await fetch(`${this.apiUrl}/launchpads`)
     return response.json<LaunchpadStats[]>()
@@ -147,7 +166,6 @@ export class UploadApi {
         tokenId: inscription.token_id!,
         filename: inscription.filename!,
         contentType: inscription.mime,
-        sessionHash: this.sessionHash,
       }),
     )
     const uploadResponse = await fetch(
@@ -157,6 +175,7 @@ export class UploadApi {
         body: JSON.stringify({
           launchHash,
           inscriptions: requests,
+          sessionHash: this.sessionHash,
         }),
         headers: {
           Accept: 'application/json',

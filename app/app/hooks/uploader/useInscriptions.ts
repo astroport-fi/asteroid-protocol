@@ -1,15 +1,14 @@
 import { useCallback } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
-import { LaunchpadInscription } from '~/api/upload'
 import { useRootContext } from '~/context/root'
-import { fetcher } from '~/hooks/utils'
+import useUploadApi from '../api/useUploadApi'
 
 export default function useUploadedInscriptions(launchHash: string) {
-  const { uploadApi } = useRootContext()
+  const uploadApi = useUploadApi()
 
-  return useSWR<LaunchpadInscription[]>(
+  return useSWR(
     launchHash ? `${uploadApi}/inscriptions/${launchHash}` : null,
-    fetcher,
+    () => uploadApi.getInscriptions(launchHash),
   )
 }
 
