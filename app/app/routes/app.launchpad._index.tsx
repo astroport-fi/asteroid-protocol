@@ -26,7 +26,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   launches = launches.filter((launch) => {
     const stat = statsByHash[launch.transaction.hash]
     if (!stat) return false
-    return stat.uploaded === launch.max_supply
+    return stat.uploaded >= launch.max_supply
   })
 
   const pastLaunches = await asteroidClient.getPastLaunches()
