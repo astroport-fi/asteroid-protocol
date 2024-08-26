@@ -90,7 +90,6 @@ export default function WalletCollections() {
       )}
       <Collections
         collections={data.collections}
-        className="overflow-y-scroll overflow-x-auto"
         editActions={(collection) => {
           if (!isOwner) return
           return (
