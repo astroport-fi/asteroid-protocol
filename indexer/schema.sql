@@ -134,6 +134,7 @@ CREATE TABLE public.inscription (
     "version" varchar(32) NOT NULL,
     transaction_id int4 NOT NULL,
     collection_id int4 NULL,
+    token_id int4 NULL,
     content_hash varchar(128) NOT NULL,
     creator varchar(255) NOT NULL,
     current_owner varchar(128) NOT NULL,
@@ -147,6 +148,7 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_pkey PRIMARY KEY (id),
     CONSTRAINT inscription_tx_id UNIQUE (transaction_id),
     CONSTRAINT inscription_number UNIQUE (inscription_number),
+    CONSTRAINT inscription_collection_token_id UNIQUE ("collection_id", "token_id"),
     CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
     CONSTRAINT inscription_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
 );
@@ -791,7 +793,7 @@ SELECT c.id
 FROM collection c
 LEFT JOIN collection_stats cs ON c.id = cs.id
 LEFT JOIN launchpad l ON c.id = l.collection_id
-WHERE cs.id IS NULL AND l.collection_id IS NULL
+WHERE cs.id IS NULL AND l.collection_id IS NULL;
 
 ------------------ RIVER ---------------------
 

@@ -23,7 +23,7 @@ enum UploadState {
   UPLOADED,
 }
 
-function validateMetadata(metadata: NFTMetadata) {
+function validateMetadata(metadata: NFTMetadata, maxSupply: number) {
   if (!metadata.filename) {
     return 'Missing filename in metadata'
   }
@@ -33,12 +33,17 @@ function validateMetadata(metadata: NFTMetadata) {
   if (!metadata.token_id) {
     return 'Missing token_id in metadata'
   }
+  if (metadata.token_id < 1 || metadata.token_id > maxSupply) {
+    return `token_id must be between 1 and ${maxSupply}`
+  }
 }
 
 export default function BulkUploadInscriptions({
   launchpadHash,
+  maxSupply,
 }: {
   launchpadHash: string
+  maxSupply: number
 }) {
   const address = useAddress()
   const { maxFileSize } = useRootContext()
@@ -105,7 +110,7 @@ export default function BulkUploadInscriptions({
             isExplicit: false,
           }
 
-          const error = validateMetadata(metadata)
+          const error = validateMetadata(metadata, maxSupply)
           if (error) {
             setError('content', {
               type: 'metadata',
@@ -123,7 +128,7 @@ export default function BulkUploadInscriptions({
         const content = await file.text()
         try {
           const metadata = JSON.parse(content)
-          const error = validateMetadata(metadata)
+          const error = validateMetadata(metadata, maxSupply)
           if (error) {
             setError('content', {
               type: 'metadata',

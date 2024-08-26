@@ -554,7 +554,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				}
 			} else {
 				var reservation models.LaunchpadMintReservation
-				result := protocol.db.Where("collection_id = ? and address = ? and token_id = ?", collection.ID, sender, inscriptionMetadata.Metadata.TokenID).First(&reservation)
+				result := protocol.db.Where("collection_id = ? and address = ? and is_minted = ?", collection.ID, sender, false).First(&reservation)
 				if result.Error != nil {
 					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
 				}
@@ -566,6 +566,9 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 
 				// mark reservation as minted
 				reservation.IsMinted = true
+
+				// set token_id to inscription
+				inscriptionModel.TokenID = sql.NullInt64{Int64: int64(inscriptionMetadata.Metadata.TokenID), Valid: true}
 
 				result = protocol.db.Save(&reservation)
 				if result.Error != nil {

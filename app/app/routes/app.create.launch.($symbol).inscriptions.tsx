@@ -193,7 +193,10 @@ export default function UploadInscriptionsPage() {
 
       <Modal ref={dialogRef} backdrop>
         {multiple ? (
-          <BulkUploadInscriptions launchpadHash={selectedLaunchpadHash} />
+          <BulkUploadInscriptions
+            launchpadHash={selectedLaunchpadHash}
+            maxSupply={selectedLaunchpad!.max_supply}
+          />
         ) : (
           <UploadInscription launchpadHash={selectedLaunchpadHash} />
         )}

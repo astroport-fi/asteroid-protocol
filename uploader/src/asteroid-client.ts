@@ -17,6 +17,7 @@ export const launchpadMintReservationSelector = Selector(
       hash: true,
     },
     collection: {
+      id: true,
       transaction: {
         hash: true,
       },
@@ -41,6 +42,28 @@ export type LaunchpadMintReservation = InputType<
 export class AsteroidClient extends AsteroidService {
   constructor(url: string) {
     super(url)
+  }
+
+  async checkIfMinted(collectionId: number, tokenId: number): Promise<boolean> {
+    const result = await this.query({
+      inscription: [
+        {
+          where: {
+            collection_id: {
+              _eq: collectionId,
+            },
+            token_id: {
+              _eq: tokenId,
+            },
+          },
+        },
+        {
+          token_id: true,
+        },
+      ],
+    })
+
+    return result.inscription.length > 0
   }
 
   async getLaunchpadMintReservations(): Promise<LaunchpadMintReservation[]> {
