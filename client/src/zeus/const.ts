@@ -458,6 +458,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_bool_exp: {
@@ -487,6 +488,7 @@ export const AllTypesProps: Record<string, any> = {
     metadata: 'jsonb_comparison_exp',
     migration_permission_grants: 'migration_permission_grant_bool_exp',
     rarity: 'inscription_rarity_bool_exp',
+    token_id: 'Int_comparison_exp',
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
     type: 'String_comparison_exp',
@@ -652,6 +654,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
     type: 'order_by',
     version: 'order_by',
@@ -668,6 +671,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
     type: 'order_by',
     version: 'order_by',
@@ -695,6 +699,7 @@ export const AllTypesProps: Record<string, any> = {
     migration_permission_grants_aggregate:
       'migration_permission_grant_aggregate_order_by',
     rarity: 'inscription_rarity_order_by',
+    token_id: 'order_by',
     transaction: 'transaction_order_by',
     transaction_id: 'order_by',
     type: 'order_by',
@@ -734,6 +739,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_stddev_pop_order_by: {
@@ -742,6 +748,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_stddev_samp_order_by: {
@@ -750,6 +757,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_stream_cursor_input: {
@@ -766,6 +774,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_trade_history_aggregate_bool_exp: {
@@ -916,6 +925,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_var_samp_order_by: {
@@ -924,6 +934,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   inscription_variance_order_by: {
@@ -932,6 +943,7 @@ export const AllTypesProps: Record<string, any> = {
     height: 'order_by',
     id: 'order_by',
     inscription_number: 'order_by',
+    token_id: 'order_by',
     transaction_id: 'order_by',
   },
   jsonb: `scalar.jsonb` as const,
@@ -4296,6 +4308,7 @@ export const ReturnTypes: Record<string, any> = {
     metadata: 'jsonb',
     migration_permission_grants: 'migration_permission_grant',
     rarity: 'inscription_rarity',
+    token_id: 'Int',
     transaction: 'transaction',
     transaction_id: 'Int',
     type: 'String',
@@ -4324,6 +4337,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_history: {
@@ -4415,6 +4429,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Int',
     id: 'Int',
     inscription_number: 'Int',
+    token_id: 'Int',
     transaction_id: 'Int',
     type: 'String',
     version: 'String',
@@ -4431,6 +4446,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Int',
     id: 'Int',
     inscription_number: 'Int',
+    token_id: 'Int',
     transaction_id: 'Int',
     type: 'String',
     version: 'String',
@@ -4447,6 +4463,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_stddev_pop_fields: {
@@ -4455,6 +4472,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_stddev_samp_fields: {
@@ -4463,6 +4481,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_sum_fields: {
@@ -4471,6 +4490,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Int',
     id: 'Int',
     inscription_number: 'Int',
+    token_id: 'Int',
     transaction_id: 'Int',
   },
   inscription_trade_history: {
@@ -4587,6 +4607,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_var_samp_fields: {
@@ -4595,6 +4616,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   inscription_variance_fields: {
@@ -4603,6 +4625,7 @@ export const ReturnTypes: Record<string, any> = {
     height: 'Float',
     id: 'Float',
     inscription_number: 'Float',
+    token_id: 'Float',
     transaction_id: 'Float',
   },
   jsonb: `scalar.jsonb` as const,

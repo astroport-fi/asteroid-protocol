@@ -3022,6 +3022,7 @@ export type ValueTypes = {
     ]
     /** An object relationship */
     rarity?: ValueTypes['inscription_rarity']
+    token_id?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ValueTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -3176,6 +3177,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -3198,6 +3200,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -3323,6 +3326,11 @@ export type ValueTypes = {
       | Variable<any, string>
     rarity?:
       | ValueTypes['inscription_rarity_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    token_id?:
+      | ValueTypes['Int_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -3927,6 +3935,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     type?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -3973,6 +3982,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -3994,6 +4004,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     type?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -4040,6 +4051,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -4125,6 +4137,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction?:
       | ValueTypes['transaction_order_by']
       | undefined
@@ -4242,6 +4255,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -4264,6 +4278,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -4277,6 +4292,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -4299,6 +4315,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -4312,6 +4329,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -4334,6 +4352,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -4372,6 +4391,7 @@ export type ValueTypes = {
     inscription_number?: number | undefined | null | Variable<any, string>
     is_explicit?: boolean | undefined | null | Variable<any, string>
     metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
+    token_id?: number | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     type?: string | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
@@ -4383,6 +4403,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -4405,6 +4426,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -5069,6 +5091,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -5091,6 +5114,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -5104,6 +5128,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -5126,6 +5151,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -5139,6 +5165,7 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -5161,6 +5188,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    token_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -19311,6 +19339,7 @@ export type ResolverInputTypes = {
     ]
     /** An object relationship */
     rarity?: ResolverInputTypes['inscription_rarity']
+    token_id?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
     transaction_id?: boolean | `@${string}`
@@ -19422,6 +19451,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -19432,6 +19462,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** Boolean expression to filter rows from the table "inscription". All fields are combined with a logical 'AND'. */
@@ -19502,6 +19533,7 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['inscription_rarity_bool_exp']
       | undefined
       | null
+    token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     type?: ResolverInputTypes['String_comparison_exp'] | undefined | null
@@ -19875,6 +19907,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     type?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -19893,6 +19926,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     type?: ResolverInputTypes['order_by'] | undefined | null
     version?: ResolverInputTypes['order_by'] | undefined | null
@@ -19910,6 +19944,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     type?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -19928,6 +19963,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     type?: ResolverInputTypes['order_by'] | undefined | null
     version?: ResolverInputTypes['order_by'] | undefined | null
@@ -19968,6 +20004,7 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['inscription_rarity_order_by']
       | undefined
       | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     type?: ResolverInputTypes['order_by'] | undefined | null
@@ -20036,6 +20073,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20046,6 +20084,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** aggregate stddev_pop on columns */
@@ -20055,6 +20094,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20065,6 +20105,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** aggregate stddev_samp on columns */
@@ -20074,6 +20115,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20084,6 +20126,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** Streaming cursor of the table "inscription" */
@@ -20108,6 +20151,7 @@ export type ResolverInputTypes = {
     inscription_number?: number | undefined | null
     is_explicit?: boolean | undefined | null
     metadata?: ResolverInputTypes['jsonb'] | undefined | null
+    token_id?: number | undefined | null
     transaction_id?: number | undefined | null
     type?: string | undefined | null
     version?: string | undefined | null
@@ -20119,6 +20163,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20129,6 +20174,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** columns and relationships of "inscription_trade_history" */
@@ -20506,6 +20552,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20516,6 +20563,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** aggregate var_samp on columns */
@@ -20525,6 +20573,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20535,6 +20584,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** aggregate variance on columns */
@@ -20544,6 +20594,7 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     inscription_number?: boolean | `@${string}`
+    token_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -20554,6 +20605,7 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     inscription_number?: ResolverInputTypes['order_by'] | undefined | null
+    token_id?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
   }
   ['jsonb']: unknown
@@ -29634,6 +29686,7 @@ export type ModelTypes = {
     migration_permission_grants: Array<ModelTypes['migration_permission_grant']>
     /** An object relationship */
     rarity?: ModelTypes['inscription_rarity'] | undefined
+    token_id?: number | undefined
     /** An object relationship */
     transaction: ModelTypes['transaction']
     transaction_id: number
@@ -29703,6 +29756,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by avg() on columns of table "inscription" */
@@ -29712,6 +29766,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** Boolean expression to filter rows from the table "inscription". All fields are combined with a logical 'AND'. */
@@ -29752,6 +29807,7 @@ export type ModelTypes = {
       | ModelTypes['migration_permission_grant_bool_exp']
       | undefined
     rarity?: ModelTypes['inscription_rarity_bool_exp'] | undefined
+    token_id?: ModelTypes['Int_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
     type?: ModelTypes['String_comparison_exp'] | undefined
@@ -30055,6 +30111,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -30072,6 +30129,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     type?: ModelTypes['order_by'] | undefined
     version?: ModelTypes['order_by'] | undefined
@@ -30089,6 +30147,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -30106,6 +30165,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     type?: ModelTypes['order_by'] | undefined
     version?: ModelTypes['order_by'] | undefined
@@ -30139,6 +30199,7 @@ export type ModelTypes = {
       | ModelTypes['migration_permission_grant_aggregate_order_by']
       | undefined
     rarity?: ModelTypes['inscription_rarity_order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     type?: ModelTypes['order_by'] | undefined
@@ -30193,6 +30254,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev() on columns of table "inscription" */
@@ -30202,6 +30264,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -30211,6 +30274,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev_pop() on columns of table "inscription" */
@@ -30220,6 +30284,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -30229,6 +30294,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "inscription" */
@@ -30238,6 +30304,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** Streaming cursor of the table "inscription" */
@@ -30262,6 +30329,7 @@ export type ModelTypes = {
     inscription_number?: number | undefined
     is_explicit?: boolean | undefined
     metadata?: ModelTypes['jsonb'] | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -30273,6 +30341,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by sum() on columns of table "inscription" */
@@ -30282,6 +30351,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** columns and relationships of "inscription_trade_history" */
@@ -30600,6 +30670,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by var_pop() on columns of table "inscription" */
@@ -30609,6 +30680,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** aggregate var_samp on columns */
@@ -30618,6 +30690,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by var_samp() on columns of table "inscription" */
@@ -30627,6 +30700,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   /** aggregate variance on columns */
@@ -30636,6 +30710,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by variance() on columns of table "inscription" */
@@ -30645,6 +30720,7 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     inscription_number?: ModelTypes['order_by'] | undefined
+    token_id?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
   }
   ['jsonb']: any
@@ -35834,6 +35910,7 @@ export type GraphQLTypes = {
     >
     /** An object relationship */
     rarity?: GraphQLTypes['inscription_rarity'] | undefined
+    token_id?: number | undefined
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
     transaction_id: number
@@ -35908,6 +35985,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by avg() on columns of table "inscription" */
@@ -35917,6 +35995,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** Boolean expression to filter rows from the table "inscription". All fields are combined with a logical 'AND'. */
@@ -35957,6 +36036,7 @@ export type GraphQLTypes = {
       | GraphQLTypes['migration_permission_grant_bool_exp']
       | undefined
     rarity?: GraphQLTypes['inscription_rarity_bool_exp'] | undefined
+    token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     type?: GraphQLTypes['String_comparison_exp'] | undefined
@@ -36283,6 +36363,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -36300,6 +36381,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     type?: GraphQLTypes['order_by'] | undefined
     version?: GraphQLTypes['order_by'] | undefined
@@ -36318,6 +36400,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -36335,6 +36418,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     type?: GraphQLTypes['order_by'] | undefined
     version?: GraphQLTypes['order_by'] | undefined
@@ -36368,6 +36452,7 @@ export type GraphQLTypes = {
       | GraphQLTypes['migration_permission_grant_aggregate_order_by']
       | undefined
     rarity?: GraphQLTypes['inscription_rarity_order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     type?: GraphQLTypes['order_by'] | undefined
@@ -36428,6 +36513,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev() on columns of table "inscription" */
@@ -36437,6 +36523,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -36447,6 +36534,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev_pop() on columns of table "inscription" */
@@ -36456,6 +36544,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -36466,6 +36555,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by stddev_samp() on columns of table "inscription" */
@@ -36475,6 +36565,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** Streaming cursor of the table "inscription" */
@@ -36499,6 +36590,7 @@ export type GraphQLTypes = {
     inscription_number?: number | undefined
     is_explicit?: boolean | undefined
     metadata?: GraphQLTypes['jsonb'] | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
     type?: string | undefined
     version?: string | undefined
@@ -36511,6 +36603,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by sum() on columns of table "inscription" */
@@ -36520,6 +36613,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** columns and relationships of "inscription_trade_history" */
@@ -36857,6 +36951,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by var_pop() on columns of table "inscription" */
@@ -36866,6 +36961,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** aggregate var_samp on columns */
@@ -36876,6 +36972,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by var_samp() on columns of table "inscription" */
@@ -36885,6 +36982,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   /** aggregate variance on columns */
@@ -36895,6 +36993,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     inscription_number?: number | undefined
+    token_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** order by variance() on columns of table "inscription" */
@@ -36904,6 +37003,7 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     inscription_number?: GraphQLTypes['order_by'] | undefined
+    token_id?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
   }
   ['jsonb']: 'scalar' & { name: 'jsonb' }
@@ -41317,6 +41417,7 @@ export const enum inscription_select_column {
   inscription_number = 'inscription_number',
   is_explicit = 'is_explicit',
   metadata = 'metadata',
+  token_id = 'token_id',
   transaction_id = 'transaction_id',
   type = 'type',
   version = 'version',
