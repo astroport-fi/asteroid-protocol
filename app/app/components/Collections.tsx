@@ -9,7 +9,7 @@ type CollectionBoxType = Pick<
   'symbol' | 'content_path' | 'is_explicit' | 'name'
 >
 
-type EditActions = (collection: CollectionBoxType) => JSX.Element
+type EditActions = (collection: CollectionBoxType) => JSX.Element | undefined
 
 export function CollectionBox({
   collection,
