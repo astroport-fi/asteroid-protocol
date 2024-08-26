@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
+import { clientOnly$ } from 'vite-env-only'
 import useCosmosClient from './useCosmosClient'
 
 export function useInvalidateSendAuthorizationAmount(
@@ -16,9 +17,9 @@ export default function useGetSendAuthorizationAmount(
   granter: string,
   grantee: string,
 ) {
-  const client = useCosmosClient()
+  const client = clientOnly$(useCosmosClient())
   return useSWR(
-    client.client && granter && grantee ? [granter, grantee] : null,
-    () => client.client!.getSendAuthorizationAmount(granter, grantee),
+    client && client.client && granter && grantee ? [granter, grantee] : null,
+    () => client!.client!.getSendAuthorizationAmount(granter, grantee),
   )
 }
