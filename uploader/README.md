@@ -18,14 +18,30 @@ npm run run-script ./src/scripts/mint-bot.ts
 
 #### Create grant
 
+Local:
+
 ```bash
 gaiad tx authz grant cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw send --spend-limit=100860uatom --from cosmos14xcrdjwwxtf9zr7dvaa97wy056se6r5e8q68mw --node http://localhost:16657 --chain-id gaialocal-1 --from test3 --fees=500uatom
 ```
 
+Testnet:
+
+```bash
+gaiad tx authz grant cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw send --spend-limit=100000uatom --from cosmos14xcrdjwwxtf9zr7dvaa97wy056se6r5e8q68mw --chain-id theta-testnet-001 --node https://rpc-t.cosmos.nodestake.org:443 --from test --fees=500uatom
+```
+
 #### Query grant
+
+Local:
 
 ```bash
 gaiad query authz grants cosmos14xcrdjwwxtf9zr7dvaa97wy056se6r5e8q68mw cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw /cosmos.bank.v1beta1.MsgSend --node http://localhost:16657
+```
+
+Testnet:
+
+```bash
+gaiad query authz grants cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw /cosmos.bank.v1beta1.MsgSend --chain-id theta-testnet-001 --node https://rpc-t.cosmos.nodestake.org:443
 ```
 
 #### Revoke grant

@@ -10,6 +10,9 @@ import { Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
+import useGetSendAuthorizationAmount, {
+  useInvalidateSendAuthorizationAmount,
+} from '~/hooks/useGetSendAuthorizationAmount'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import { getDateFromUTCString } from '~/utils/date'
 import TxDialog from './dialogs/TxDialog'
@@ -35,6 +38,16 @@ export default function MintInscription({
 }) {
   const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
+
+  const { data: authorizedAmount } = useGetSendAuthorizationAmount(
+    operations?.address ?? '',
+    minterAddress,
+  )
+  const invalidateAuthorizedAmount = useInvalidateSendAuthorizationAmount(
+    operations?.address ?? '',
+    minterAddress,
+  )
+
   const {
     dialogRef,
     value: inscription,
@@ -90,7 +103,9 @@ export default function MintInscription({
 
     const grant = getGrantSendMsg(operations.address, minterAddress, {
       allowList: [],
-      spendLimit: [{ denom: 'uatom', amount: `${fee * amount}` }],
+      spendLimit: [
+        { denom: 'uatom', amount: `${fee * amount + (authorizedAmount ?? 0)}` },
+      ],
     })
     txInscription.messages = [grant]
 
@@ -162,6 +177,9 @@ export default function MintInscription({
         txInscription={inscription}
         resultCTA="Back to mint"
         resultLink={`/app/launchpad/${launchpad.collection.symbol}`}
+        onSuccess={() => {
+          invalidateAuthorizedAmount()
+        }}
       />
     </div>
   )
