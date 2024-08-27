@@ -153,6 +153,40 @@ export default function Navbar() {
                 </li>
               </ul>
             </li>
+            <Dropdown.Item anchor={false}>
+              <span>Asteroid Protocol</span>
+            </Dropdown.Item>
+            <li>
+              <ul className="p-2 z-10">
+                <li>
+                  <NavLink
+                    to="/app/terms-of-service"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Terms Of Service
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/privacy-policy"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Privacy Policy
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/dmca-notices"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    DMCA Notices
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
           </Dropdown.Menu>
         </Details>
         <Link

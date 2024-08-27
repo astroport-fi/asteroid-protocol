@@ -97,7 +97,7 @@ export default function Footer() {
             ATOM ${status.base_token_usd}
           </div>
         </div>
-        <div className="flex items-center border-l border-l-neutral">
+        <div className="hidden md:flex items-center border-l border-l-neutral">
           <Link
             to="/app/terms-of-service"
             className="border-r border-r-neutral px-4 py-2.5 hover:underline"
