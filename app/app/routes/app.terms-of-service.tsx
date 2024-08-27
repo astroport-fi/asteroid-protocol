@@ -1,7 +1,7 @@
 import Markdown from 'react-markdown'
 
 const md = `
-# asteroidprotocol.io TERMS OF SERVICE
+## Asteroidprotocol.io TERMS OF SERVICE
 
 PLEASE FIND BELOW THE TERMS OF SERVICE GOVERNING THE USE OF asteroidprotocol.io (the “Site”).
 

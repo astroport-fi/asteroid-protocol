@@ -1,7 +1,7 @@
 import Markdown from 'react-markdown'
 
 const md = `
-# Privacy Policy
+## Privacy Policy
 
 Delphi Labs Ltd and its affiliates (hereinafter, "Delphi", "we", "us" or "our") are committed to protecting and respecting your privacy. This privacy policy (the "Privacy Policy") together with our [Terms of Service](/app/terms-of-service) (the "Terms") governs our collection, processing and use of your personal data. By accessing the website under the main domain [https://asteroidprotocol.io](https://asteroidprotocol.io) (the "Site"), you are confirming to know the contents of the Privacy Policy and consenting to the information collection and specific purposes described in this Privacy Policy.
 

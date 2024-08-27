@@ -1,7 +1,7 @@
 import Markdown from 'react-markdown'
 
 const md = `
-# DMCA Notices on Asteroidprotocol.io
+## DMCA Notices on Asteroidprotocol.io
 
 **What is a DMCA Notice?**
 
