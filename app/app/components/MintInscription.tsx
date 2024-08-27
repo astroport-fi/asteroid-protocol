@@ -5,7 +5,7 @@ import {
   LockClosedIcon,
   NoSymbolIcon,
 } from '@heroicons/react/20/solid'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
@@ -14,27 +14,17 @@ import useGetSendAuthorizationAmount, {
   useInvalidateSendAuthorizationAmount,
 } from '~/hooks/useGetSendAuthorizationAmount'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
-import { getDateFromUTCString } from '~/utils/date'
 import TxDialog from './dialogs/TxDialog'
 import { Wallet } from './wallet/Wallet'
-
-function getActiveStage(stages: StageDetail[]) {
-  const now = new Date()
-  return [...stages]
-    .reverse()
-    .find(
-      (stage) =>
-        (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
-        (!stage.finish_date || getDateFromUTCString(stage.finish_date) > now),
-    )
-}
 
 export default function MintInscription({
   launchpad,
   className,
+  activeStage,
 }: {
   launchpad: LaunchpadDetail
   className?: string
+  activeStage: StageDetail | undefined
 }) {
   const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
@@ -53,10 +43,7 @@ export default function MintInscription({
     value: inscription,
     showDialog,
   } = useDialogWithValue<TxInscription | null>()
-  const activeStage = useMemo(
-    () => getActiveStage(launchpad.stages),
-    [launchpad.stages],
-  )
+
   const isEligible =
     activeStage == null ||
     !activeStage.has_whitelist ||

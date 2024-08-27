@@ -3,11 +3,11 @@ import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { formatRelative } from 'date-fns'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
-import { StageDetail } from '~/api/launchpad'
+import { StageDetail, getActiveStage } from '~/api/launchpad'
 import DecimalText from '~/components/DecimalText'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintInscription from '~/components/MintInscription'
@@ -40,7 +40,13 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   return json(launch)
 }
 
-function StageBox({ stage }: { stage: StageDetail }) {
+function StageBox({
+  stage,
+  selected,
+}: {
+  stage: StageDetail
+  selected: boolean
+}) {
   const now = new Date()
   const isEnded =
     stage.finish_date && getDateFromUTCString(stage.finish_date) < now
@@ -67,7 +73,7 @@ function StageBox({ stage }: { stage: StageDetail }) {
       className={clsx(
         'flex justify-between items-center w-full p-4 rounded-xl border border-header-content mb-2',
         {
-          'border-primary': isActive,
+          'border-primary': selected,
         },
       )}
     >
@@ -109,6 +115,11 @@ export default function LaunchpadDetailPage() {
   const { collection } = launchpad
   const [collapsed, isCollapsed] = useState(true)
 
+  const activeStage = useMemo(
+    () => getActiveStage(launchpad.stages),
+    [launchpad.stages],
+  )
+
   return (
     <div className="flex flex-col lg:flex-row w-full max-w-[1920px] gap-8">
       <InscriptionImage
@@ -146,11 +157,19 @@ export default function LaunchpadDetailPage() {
 
         <div className="flex flex-col w-full justify-between mt-8">
           {launchpad.stages.map((stage) => (
-            <StageBox key={stage.id} stage={stage} />
+            <StageBox
+              key={stage.id}
+              stage={stage}
+              selected={activeStage?.id == stage.id}
+            />
           ))}
         </div>
 
-        <MintInscription launchpad={launchpad} className="mt-4 w-full" />
+        <MintInscription
+          launchpad={launchpad}
+          className="mt-4 w-full"
+          activeStage={activeStage}
+        />
 
         {launchpad.max_supply && (
           <div className="flex flex-col w-full">

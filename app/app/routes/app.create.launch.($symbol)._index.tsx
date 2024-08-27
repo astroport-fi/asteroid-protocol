@@ -197,7 +197,7 @@ export default function CreateCollectionLaunch() {
             />
             <Form.Label
               htmlFor="immediately"
-              title="Reveal after each mint"
+              title="Reveal with each mint"
               className="mt-1 ml-1"
             ></Form.Label>
           </div>
