@@ -321,7 +321,7 @@ export default function CreateCollectionForm({
                 >
                   Create collection
                 </Button>
-                <p className="mt-4 text-sm italic">
+                <p className="my-4 text-sm italic">
                   Please note that you should only upload artwork that
                   you&apos;ve created or material that otherwise exists in the
                   public domain. Uploading copyrighted material, which you do

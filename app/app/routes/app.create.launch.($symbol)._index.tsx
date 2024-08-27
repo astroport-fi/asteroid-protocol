@@ -159,7 +159,7 @@ export default function CreateCollectionLaunch() {
   })
 
   return (
-    <div className="flex flex-col items-center w-full overflow-y-scroll">
+    <div className="flex flex-col items-center w-full overflow-y-scroll pb-8">
       <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
 

@@ -137,10 +137,10 @@ export default function UploadInscriptionsPage() {
   })
 
   return (
-    <div className="flex flex-col w-full items-center">
+    <div className="flex flex-col w-full items-center overflow-y-scroll">
       <Form
         onSubmit={onSubmit}
-        className="flex flex-col justify-center items-center w-full"
+        className="flex flex-col justify-center items-center w-full overflow-y-scroll"
       >
         <div className="flex flex-col justify-between items-center mt-6">
           <div className="form-control w-60">
@@ -185,7 +185,7 @@ export default function UploadInscriptionsPage() {
             ))}
         </div>
 
-        <div className="flex flex-row gap-4 flex-wrap justify-center w-full mt-6">
+        <div className="flex flex-row gap-4 flex-wrap justify-center w-full mt-6 pb-8 overflow-y-scroll">
           {!allUploaded && (
             <div className="flex flex-col items-center border border-dashed rounded-xl px-6 py-8">
               <span className="text-xl text-center">Upload inscriptions</span>

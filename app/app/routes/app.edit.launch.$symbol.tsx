@@ -5,7 +5,7 @@ import UploadInscriptionsPage, {
 
 export default function EditLaunchpadInscriptionsPage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-y-scroll">
       <BackHeader to="/app/wallet/collections">
         Edit collection launchpad inscriptions
       </BackHeader>

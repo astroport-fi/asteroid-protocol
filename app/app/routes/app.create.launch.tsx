@@ -35,7 +35,7 @@ export default function CreateLaunchpadPage() {
           <Link to="/app/create/launch/inscriptions">Upload inscriptions</Link>
         </Steps.Step>
       </Steps>
-      <div className="w-full pb-8 overflow-y-scroll flex flex-col items-center justify-center no-scrollbar">
+      <div className="w-full overflow-y-scroll flex flex-col items-center justify-center no-scrollbar">
         <Outlet />
       </div>
     </div>
