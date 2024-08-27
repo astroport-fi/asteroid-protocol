@@ -1,8 +1,8 @@
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
-import { Button, Form, Select } from 'react-daisyui'
+import { Alert, Button, Form, Select } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { CreatorLaunch } from '~/api/launchpad'
@@ -127,6 +127,11 @@ export default function UploadInscriptionsPage() {
     (launch) => launch.transaction.hash === selectedLaunchpadHash,
   )
 
+  const allUploaded =
+    inscriptions &&
+    selectedLaunchpad &&
+    inscriptions.length >= selectedLaunchpad.max_supply
+
   const onSubmit = handleSubmit(async () => {
     showDialog()
   })
@@ -159,29 +164,45 @@ export default function UploadInscriptionsPage() {
               ))}
             </Select>
           </div>
-          {selectedLaunchpad && inscriptions && (
-            <span className="mt-4">
-              {inscriptions.length} out of {selectedLaunchpad.max_supply}{' '}
-              inscriptions uploaded
-            </span>
-          )}
+          {selectedLaunchpad &&
+            inscriptions &&
+            (allUploaded ? (
+              <Alert className="border border-success mt-4 gap-1">
+                All inscriptions have been uploaded. For more details about the
+                launch, check your collection&apos;s
+                <Link
+                  className="underline"
+                  to={`/app/launchpad/${selectedLaunchpad.collection.symbol}`}
+                >
+                  launch page
+                </Link>
+              </Alert>
+            ) : (
+              <Alert className="border border-accent mt-4 gap-1">
+                {inscriptions.length} out of {selectedLaunchpad.max_supply}{' '}
+                inscriptions uploaded
+              </Alert>
+            ))}
         </div>
 
         <div className="flex flex-row gap-4 flex-wrap justify-center w-full mt-6">
-          <div className="flex flex-col items-center border border-dashed rounded-xl px-6 py-8">
-            <span className="text-xl text-center">Upload inscriptions</span>
-            <Button
-              className="mt-6"
-              color="accent"
-              onClick={() => setMultiple(false)}
-            >
-              One by one
-            </Button>
-            <span className="my-2">OR</span>
-            <Button color="accent" onClick={() => setMultiple(true)}>
-              Bulk upload
-            </Button>
-          </div>
+          {!allUploaded && (
+            <div className="flex flex-col items-center border border-dashed rounded-xl px-6 py-8">
+              <span className="text-xl text-center">Upload inscriptions</span>
+              <Button
+                className="mt-6"
+                color="accent"
+                onClick={() => setMultiple(false)}
+              >
+                One by one
+              </Button>
+              <span className="my-2">OR</span>
+              <Button color="accent" onClick={() => setMultiple(true)}>
+                Bulk upload
+              </Button>
+            </div>
+          )}
+
           {inscriptions && (
             <UploadedInscriptions
               inscriptions={inscriptions}
