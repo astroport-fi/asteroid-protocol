@@ -11,7 +11,9 @@ export default function App() {
   const padding =
     !location.pathname.includes('/app/inscriptions/') &&
     !location.pathname.includes('/app/market') &&
-    !location.pathname.includes('/app/collection/')
+    !location.pathname.includes('/app/collection/') &&
+    !location.pathname.includes('/app/create/launch') &&
+    !location.pathname.includes('/app/create/collection/')
 
   const center =
     location.pathname === '/app/inscriptions' ||

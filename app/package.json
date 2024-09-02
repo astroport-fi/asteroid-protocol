@@ -14,7 +14,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.8.2",
+    "@asteroid-protocol/sdk": "^0.8.2-launchpad.17",
     "@chain-registry/types": "^0.18.0",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/stargate": "^0.32.2",
@@ -27,6 +27,7 @@
     "@remix-run/react": "^2.8.1",
     "@tanstack/react-table": "^8.12.0",
     "@trendyol-js/react-carousel": "^3.0.2",
+    "@uidotdev/usehooks": "^2.4.1",
     "chain-registry": "^1.28.1",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",

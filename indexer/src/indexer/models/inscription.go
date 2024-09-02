@@ -15,6 +15,7 @@ type Inscription struct {
 	Version           string         `gorm:"column:version"`
 	TransactionID     uint64         `gorm:"column:transaction_id"`
 	CollectionID      sql.NullInt64  `gorm:"column:collection_id"`
+	TokenID           sql.NullInt64  `gorm:"column:token_id"`
 	ContentHash       string         `gorm:"column:content_hash"`
 	Creator           string         `gorm:"column:creator"`
 	CurrentOwner      string         `gorm:"column:current_owner"`

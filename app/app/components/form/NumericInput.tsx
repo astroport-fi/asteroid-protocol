@@ -22,6 +22,7 @@ export default function NumericInput<
   error,
   isFloat,
   className,
+  placeholder,
   ...props
 }: {
   control: Control<TFieldValues>
@@ -77,7 +78,7 @@ export default function NumericInput<
             }}
             thousandSeparator=" "
             customInput={Input}
-            placeholder={title}
+            placeholder={placeholder ?? title}
             color={error ? 'error' : undefined}
           />
         )}

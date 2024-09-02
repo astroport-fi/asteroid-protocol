@@ -64,6 +64,17 @@ import {
   topCollectionSelector,
 } from './collection'
 import {
+  CreatorLaunch,
+  Launchpad,
+  LaunchpadDetail,
+  MintReservation,
+  creatorLaunchSelector,
+  launchpadDetailSelector,
+  launchpadSelector,
+  mintReservationSelector,
+  stageDetailSelector,
+} from './launchpad'
+import {
   marketplaceListingSelector,
   oldMarketplaceListingSelector,
 } from './marketplace'
@@ -717,6 +728,39 @@ export class AsteroidClient extends AsteroidService {
     )
 
     return topCollections as TopCollection[]
+  }
+
+  async getEmptyCollections(
+    creator: string,
+    orderBy?: ValueTypes['empty_collections_order_by'],
+  ): Promise<Collection[]> {
+    if (!orderBy) {
+      orderBy = {
+        collection: {
+          date_created: order_by.desc,
+        },
+      }
+    }
+
+    const result = await this.query({
+      empty_collections: [
+        {
+          where: {
+            collection: {
+              creator: {
+                _eq: creator,
+              },
+            },
+          },
+          order_by: [orderBy],
+        },
+        {
+          collection: collectionSelector,
+        },
+      ],
+    })
+
+    return result.empty_collections.map((item) => item.collection as Collection)
   }
 
   async getCollections(
@@ -1681,6 +1725,190 @@ export class AsteroidClient extends AsteroidService {
         result.bridge_history_aggregate.aggregate?.count ??
         result.bridge_history.length,
     }
+  }
+
+  async getUserMintReservations(address: string): Promise<MintReservation[]> {
+    const result = await this.query({
+      launchpad_mint_reservation: [
+        {
+          where: {
+            address: {
+              _eq: address,
+            },
+            is_minted: {
+              _eq: false,
+            },
+          },
+          order_by: [
+            {
+              id: order_by.desc,
+            },
+          ],
+        },
+        mintReservationSelector,
+      ],
+    })
+
+    return result.launchpad_mint_reservation
+  }
+
+  async getActiveLaunches(): Promise<Launchpad[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            _or: [
+              {
+                finish_date: {
+                  _gt: new Date(),
+                },
+              },
+              {
+                finish_date: {
+                  _is_null: true,
+                },
+              },
+            ],
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad
+  }
+
+  async getCreatorLaunches(creator: string): Promise<CreatorLaunch[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            collection: {
+              creator: {
+                _eq: creator,
+              },
+            },
+          },
+        },
+        creatorLaunchSelector,
+      ],
+    })
+
+    return result.launchpad
+  }
+
+  async getPastLaunches(): Promise<Launchpad[]> {
+    const result = await this.query({
+      launchpad: [
+        {
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          where: {
+            _and: [
+              {
+                finish_date: {
+                  _lt: new Date(),
+                },
+              },
+              {
+                finish_date: {
+                  _is_null: false,
+                },
+              },
+            ],
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad
+  }
+
+  async getLaunchpadHash(symbol: string): Promise<string | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            collection: {
+              symbol: {
+                _eq: symbol,
+              },
+            },
+          },
+        },
+        {
+          transaction: {
+            hash: true,
+          },
+        },
+      ],
+    })
+
+    return result.launchpad?.[0].transaction.hash
+  }
+
+  async getLaunch(
+    symbol: string,
+    address?: string,
+  ): Promise<LaunchpadDetail | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            collection: {
+              symbol: {
+                _eq: symbol,
+              },
+            },
+          },
+        },
+        {
+          ...launchpadDetailSelector,
+          stages: [
+            {},
+            {
+              ...stageDetailSelector,
+              whitelists: [
+                {
+                  where: {
+                    address: address ? { _eq: address } : { _is_null: true },
+                  },
+                },
+                { address: true },
+              ],
+              reservations_aggregate: [
+                {
+                  where: {
+                    address: address ? { _eq: address } : { _is_null: true },
+                  },
+                },
+                {
+                  aggregate: {
+                    count: [{}, true],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+
+    return result.launchpad[0] as LaunchpadDetail | undefined
   }
 
   statusSubscription(chainId: string) {

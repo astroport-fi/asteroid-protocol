@@ -22,6 +22,10 @@ NEUTRON_REST = "http://localhost:1317"
 BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
+UPLOAD_API = "http://localhost:3000"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+LAUNCHPAD_ENABLED = false
 
 [env.localroids.vars]
 ENVIRONMENT = "development"
@@ -45,6 +49,7 @@ NEUTRON_REST = "http://localhost:1317"
 BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
+ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
 
 [env.testnet.vars]
 ENVIRONMENT = "development"
@@ -67,6 +72,9 @@ NEUTRON_REST = "https://rest-falcron.pion-1.ntrn.tech:443"
 BRIDGE_ENDPOINTS = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1jj0scx400pswhpjes589aujlqagxgcztw04srynmhf0f6zplzn2qqmhwj7"
 ASTROPORT_URL = "https://testnet.astroport.fi"
+UPLOAD_API = "https://testnet-uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-testnet.ams3.digitaloceanspaces.com"
 
 [env.mainnet.vars]
 ENVIRONMENT = "production"
@@ -89,6 +97,9 @@ NEUTRON_REST = "https://neutron-rest.publicnode.com"
 BRIDGE_ENDPOINTS = "https://new-api.asteroidprotocol.io/v1/graphql,https://asteroid-indexer.rhino-apis.com/v1/graphql,https://api-asteroid.stakecito.com/v1/graphql"
 ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
 ASTROPORT_URL = "https://app.astroport.fi"
+UPLOAD_API = "https://uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid.ams3.digitaloceanspaces.com"
 
 [dev]
 ip = "192.168.1.1"

@@ -1,0 +1,20 @@
+table:
+  name: empty_collections
+  schema: public
+object_relationships:
+  - name: collection
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: collection
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - id
+      filter: {}
+    comment: ""

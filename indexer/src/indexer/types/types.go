@@ -210,8 +210,10 @@ type RawTransactionBody struct {
 			Amount string `json:"amount"`
 			Denom  string `json:"denom"`
 		} `json:"token"`
-		Msgs   []SendMessage `json:"msgs"`
-		Packet IBCPacket     `json:"packet"`
+		Msgs    []SendMessage `json:"msgs"`
+		Packet  IBCPacket     `json:"packet"`
+		Granter string        `json:"granter"`
+		Grantee string        `json:"grantee"`
 	} `json:"messages"`
 	Memo                        string         `json:"memo"`
 	TimeoutHeight               string         `json:"timeout_height"`
@@ -426,6 +428,9 @@ func (tx RawTransaction) GetSenderAddress() (string, error) {
 			if packetData != nil {
 				return packetData.Sender, nil
 			}
+		}
+		if message.Type == "/cosmos.authz.v1beta1.MsgGrant" && message.Granter != "" {
+			return message.Granter, nil
 		}
 	}
 	return "", errors.New("no sender address found")

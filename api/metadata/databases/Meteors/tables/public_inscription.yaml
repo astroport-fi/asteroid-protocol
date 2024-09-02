@@ -63,6 +63,7 @@ select_permissions:
         - inscription_number
         - is_explicit
         - metadata
+        - token_id
         - transaction_id
         - type
         - version

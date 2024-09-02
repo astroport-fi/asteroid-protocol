@@ -31,6 +31,7 @@ type InscriptionConfig struct {
 	S3Token          string `envconfig:"S3_TOKEN"`
 	ReservationsFile string `envconfig:"RESERVATIONS_FILE" required:"true"`
 	S3StoreContent   bool   `envconfig:"S3_STORE_CONTENT" default:"true"`
+	MinterBotAddress string `envconfig:"MINTER_BOT_ADDRESS" required:"true"`
 }
 
 type Inscription struct {
@@ -48,6 +49,7 @@ type Inscription struct {
 	s3Token              string
 	reservationsByName   map[string]CollectionReservation
 	reservationsByTicker map[string]CollectionReservation
+	MinterBotAddress     string
 }
 
 func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.WorkerClient) *Inscription {
@@ -77,6 +79,7 @@ func NewInscriptionProcessor(chainID string, db *gorm.DB, workerClient *worker.W
 		reservationsByName:   reservationsByName,
 		reservationsByTicker: reservationsByTicker,
 		workerClient:         workerClient,
+		MinterBotAddress:     config.MinterBotAddress,
 	}
 }
 
@@ -84,7 +87,7 @@ func (protocol *Inscription) Name() string {
 	return "Inscription"
 }
 
-func (protocol *Inscription) GetCollection(collectionHash string, sender string) (*models.Collection, error) {
+func (protocol *Inscription) GetCollection(collectionHash string, sender string, checkSenderIsOwner bool) (*models.Collection, error) {
 	// Fetch transaction from database with the given hash
 	var transaction models.Transaction
 	result := protocol.db.Where("hash = ?", collectionHash).First(&transaction)
@@ -102,7 +105,7 @@ func (protocol *Inscription) GetCollection(collectionHash string, sender string)
 	}
 
 	// Check that the sender is the collection owner
-	if collection.Creator != sender {
+	if checkSenderIsOwner && collection.Creator != sender {
 		return nil, fmt.Errorf("invalid sender, must be collection owner")
 	}
 
@@ -186,7 +189,7 @@ func (protocol *Inscription) UpdateCollection(parsedURN ProtocolURN, rawTransact
 	collectionHash := parsedURN.KeyValuePairs["h"]
 
 	// get collection
-	collection, err := protocol.GetCollection(collectionHash, sender)
+	collection, err := protocol.GetCollection(collectionHash, sender, true)
 	if err != nil {
 		return err
 	}
@@ -293,7 +296,7 @@ func (protocol *Inscription) Migrate(rawTransaction types.RawTransaction, sender
 	// get collection
 	var collection *models.Collection
 	if migrationData.Collection != "" {
-		collection, err = protocol.GetCollection(migrationData.Collection, sender)
+		collection, err = protocol.GetCollection(migrationData.Collection, sender, true)
 		if err != nil {
 			return err
 		}
@@ -536,13 +539,50 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				return err
 			}
 
-			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender)
+			collection, err := protocol.GetCollection(inscriptionMetadata.Parent.Identifier, sender, false)
+
+			// check sender has launchpad mint reservation or is collection owner
+			var launchpad models.Launchpad
+			result := protocol.db.Where("collection_id = ?", collection.ID).First(&launchpad)
+			if result.Error != nil {
+				if result.Error != gorm.ErrRecordNotFound {
+					return result.Error
+				}
+
+				if collection.Creator != sender {
+					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+				}
+			} else {
+				var reservation models.LaunchpadMintReservation
+				result := protocol.db.Where("collection_id = ? and address = ? and is_minted = ?", collection.ID, sender, false).First(&reservation)
+				if result.Error != nil {
+					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+				}
+
+				// check inscribe tx was executed by minter bot
+				if rawTransaction.Body.Messages[0].Grantee != protocol.MinterBotAddress {
+					return fmt.Errorf("invalid sender, must be minter bot")
+				}
+
+				// mark reservation as minted
+				reservation.IsMinted = true
+
+				// set token_id to inscription
+				inscriptionModel.TokenID = sql.NullInt64{Int64: int64(inscriptionMetadata.Metadata.TokenID), Valid: true}
+
+				result = protocol.db.Save(&reservation)
+				if result.Error != nil {
+					return result.Error
+				}
+			}
+
 			if err != nil {
 				return fmt.Errorf("error getting collection with identifier '%s': %w", inscriptionMetadata.Parent.Identifier, err)
 			}
 
 			// set collection id to the inscription
 			inscriptionModel.CollectionID = sql.NullInt64{Int64: int64(collection.ID), Valid: true}
+			inscriptionModel.Creator = collection.Creator
 		}
 
 		// insert inscription to DB

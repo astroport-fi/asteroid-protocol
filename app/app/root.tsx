@@ -58,6 +58,10 @@ export async function loader({ context }: LoaderFunctionArgs) {
       ASTROPORT_FACTORY_CONTRACT:
         context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
       ASTROPORT_URL: context.cloudflare.env.ASTROPORT_URL,
+      UPLOAD_API: context.cloudflare.env.UPLOAD_API,
+      MINTER_ADDRESS: context.cloudflare.env.MINTER_ADDRESS,
+      ASSETS_URL: context.cloudflare.env.ASSETS_URL,
+      LAUNCHPAD_ENABLED: context.cloudflare.env.LAUNCHPAD_ENABLED,
     },
   })
 }
@@ -162,6 +166,7 @@ export default function App() {
             maxFileSize: parseInt(data.ENV.MAX_FILE_SIZE),
             asteroidApi: data.ENV.ASTEROID_API,
             asteroidWs: data.ENV.ASTEROID_API_WSS,
+            uploadApi: data.ENV.UPLOAD_API,
             useIbc: data.ENV.USE_IBC != 'false',
             useExtensionData: data.ENV.USE_EXTENSION_DATA == 'true',
             status: {
@@ -178,6 +183,9 @@ export default function App() {
             bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
             astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
             astroportUrl: data.ENV.ASTROPORT_URL,
+            minterAddress: data.ENV.MINTER_ADDRESS,
+            assetsUrl: data.ENV.ASSETS_URL,
+            launchpadEnabled: data.ENV.LAUNCHPAD_ENABLED != 'false',
           }}
         >
           <WalletProviderWrapper

@@ -1,6 +1,6 @@
 import { EyeSlashIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Skeleton } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { getMimeTitle } from '~/utils/string'

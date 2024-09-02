@@ -9,6 +9,7 @@ import {
 import clsx from 'clsx'
 import { MouseEvent, useCallback, useState } from 'react'
 import { Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
+import { useRootContext } from '~/context/root'
 import { Details } from './form/Select'
 import { Wallet } from './wallet/Wallet'
 import logo from '../images/logo/white.svg'
@@ -41,6 +42,10 @@ export default function Navbar() {
     (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),
     [],
   )
+  const { launchpadEnabled } = useRootContext()
+  const createCollectionLink = launchpadEnabled
+    ? '/app/create/collection'
+    : '/app/create/collection/mint'
 
   return (
     <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral uppercase">
@@ -83,6 +88,17 @@ export default function Navbar() {
                 Inscriptions
               </NavLink>
             </Dropdown.Item>
+            {launchpadEnabled && (
+              <Dropdown.Item anchor={false}>
+                <NavLink
+                  to="/app/launchpad"
+                  onMouseDown={preventDefault}
+                  onClick={close}
+                >
+                  Launchpad
+                </NavLink>
+              </Dropdown.Item>
+            )}
             <Dropdown.Item anchor={false}>
               <NavLink
                 to="/app/tokens"
@@ -126,7 +142,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    to="/app/create/collection"
+                    to={createCollectionLink}
                     onMouseDown={preventDefault}
                     onClick={close}
                   >
@@ -140,6 +156,40 @@ export default function Navbar() {
                     onClick={close}
                   >
                     Token
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+            <Dropdown.Item anchor={false}>
+              <span>Asteroid Protocol</span>
+            </Dropdown.Item>
+            <li>
+              <ul className="p-2 z-10">
+                <li>
+                  <NavLink
+                    to="/app/terms-of-service"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Terms Of Service
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/privacy-policy"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    Privacy Policy
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/app/dmca-notices"
+                    onMouseDown={preventDefault}
+                    onClick={close}
+                  >
+                    DMCA Notices
                   </NavLink>
                 </li>
               </ul>
@@ -158,6 +208,11 @@ export default function Navbar() {
           <Menu.Item>
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>
+          {launchpadEnabled && (
+            <Menu.Item>
+              <NavLink to="/app/launchpad">Launchpad</NavLink>
+            </Menu.Item>
+          )}
           <Menu.Item>
             <NavLink to="/app/tokens">Tokens</NavLink>
           </Menu.Item>
@@ -188,7 +243,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item>
                 <NavLink
-                  to="/app/create/collection"
+                  to={createCollectionLink}
                   onMouseDown={preventDefault}
                   onClick={close}
                 >

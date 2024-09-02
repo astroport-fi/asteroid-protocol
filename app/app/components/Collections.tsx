@@ -4,11 +4,26 @@ import { Collection } from '~/api/collection'
 import Grid from './Grid'
 import InscriptionImage from './InscriptionImage'
 
-export function CollectionBox({ collection }: { collection: Collection }) {
+type CollectionBoxType = Pick<
+  Collection,
+  'symbol' | 'content_path' | 'is_explicit' | 'name'
+>
+
+type EditActions = (collection: CollectionBoxType) => JSX.Element | undefined
+
+export function CollectionBox({
+  collection,
+  route = '/app/collection',
+  editActions,
+}: {
+  collection: CollectionBoxType
+  route?: string
+  editActions?: EditActions
+}) {
   return (
     <Link
       className="flex flex-col justify-between bg-base-200 rounded-xl group"
-      to={`/app/collection/${collection.symbol}`}
+      to={`${route}/${collection.symbol}`}
     >
       <InscriptionImage
         src={collection.content_path!}
@@ -22,6 +37,9 @@ export function CollectionBox({ collection }: { collection: Collection }) {
             {collection.name}
           </strong>
         </div>
+        {typeof editActions === 'function' && (
+          <div className="flex justify-end px-4">{editActions(collection)}</div>
+        )}
       </div>
     </Link>
   )
@@ -53,14 +71,23 @@ export function ClubBox({ club }: { club: Club }) {
 export default function Collections({
   collections,
   className,
+  route,
+  editActions,
 }: {
-  collections: Collection[]
+  collections: CollectionBoxType[]
   className?: string
+  route?: string
+  editActions?: EditActions
 }) {
   return (
     <Grid className={className}>
       {collections.map((collection) => (
-        <CollectionBox key={collection.id} collection={collection} />
+        <CollectionBox
+          key={collection.symbol}
+          collection={collection}
+          route={route}
+          editActions={editActions}
+        />
       ))}
     </Grid>
   )

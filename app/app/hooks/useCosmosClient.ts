@@ -1,6 +1,7 @@
 import { SigningStargateClient, TxData } from '@asteroid-protocol/sdk'
 import { StdFee } from '@cosmjs/amino'
 import { GasPrice } from '@cosmjs/stargate'
+import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
 import { useEffect, useState } from 'react'
 import { useRootContext } from '~/context/root'
 import useOfflineSigner from '~/hooks/wallet/useOfflineSigner'
@@ -15,7 +16,7 @@ export class SigningClient {
   constructor(
     client: SigningStargateClient,
     address: string,
-    gasMultiplier = 1.6,
+    gasMultiplier = 1.7, // @todo change back to 1.7 and allow to adjust in estimate
     feeMultiplier = 1.4,
   ) {
     this.client = client
@@ -76,6 +77,28 @@ export class SigningClient {
 
   getTx(hash: string) {
     return this.client.getTx(hash)
+  }
+
+  async getSendAuthorizationAmount(
+    granter: string,
+    grantee: string,
+  ): Promise<number> {
+    const grants = await this.client
+      .forceGetQueryClient()
+      .authz.grants(granter, grantee, '/cosmos.bank.v1beta1.MsgSend')
+
+    const authorizationProto = grants.grants?.[0]?.authorization
+    if (!authorizationProto) {
+      return 0
+    }
+    const sendAuthorization = SendAuthorization.decode(authorizationProto.value)
+    const authorizedCoin = sendAuthorization.spendLimit.find(
+      (coin) => coin.denom === 'uatom',
+    )
+    if (!authorizedCoin) {
+      return 0
+    }
+    return parseInt(authorizedCoin.amount, 10)
   }
 }
 

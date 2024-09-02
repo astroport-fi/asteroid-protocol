@@ -24,6 +24,7 @@ export default function useChain(chainName: string) {
       getSigningCosmWasmClient: undefined,
       isWalletConnected: false,
       address: undefined as string | undefined,
+      signArbitrary: undefined,
     }
   return chain
 }

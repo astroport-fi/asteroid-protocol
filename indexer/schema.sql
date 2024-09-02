@@ -134,6 +134,7 @@ CREATE TABLE public.inscription (
     "version" varchar(32) NOT NULL,
     transaction_id int4 NOT NULL,
     collection_id int4 NULL,
+    token_id int4 NULL,
     content_hash varchar(128) NOT NULL,
     creator varchar(255) NOT NULL,
     current_owner varchar(128) NOT NULL,
@@ -147,6 +148,7 @@ CREATE TABLE public.inscription (
     CONSTRAINT inscription_pkey PRIMARY KEY (id),
     CONSTRAINT inscription_tx_id UNIQUE (transaction_id),
     CONSTRAINT inscription_number UNIQUE (inscription_number),
+    CONSTRAINT inscription_collection_token_id UNIQUE ("collection_id", "token_id"),
     CONSTRAINT inscription_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
     CONSTRAINT inscription_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
 );
@@ -547,6 +549,108 @@ CREATE TABLE public.bridge_token (
 
 CREATE INDEX "idx_bridge_token_token_id" ON "public"."bridge_token" USING btree ("token_id");
 
+-- public."launchpad" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad";
+
+CREATE TABLE public."launchpad" (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    collection_id int4 NOT NULL,
+    max_supply numeric NOT NULL,
+    minted_supply numeric NOT NULL DEFAULT 0,
+    "start_date" timestamp NULL DEFAULT NULL,
+    finish_date timestamp NULL DEFAULT NULL,
+    reveal_date timestamp NULL DEFAULT NULL,
+    reveal_immediately bool NOT NULL DEFAULT true,
+    date_created timestamp NOT NULL,
+    CONSTRAINT launchpad_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_tx_id UNIQUE (transaction_id),
+    CONSTRAINT launchpad_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
+    CONSTRAINT launchpad_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id)
+);
+
+CREATE INDEX "idx_launchpad_transaction_id" ON "public"."launchpad" USING btree ("transaction_id");
+CREATE INDEX "idx_launchpad_collection_id" ON "public"."launchpad" USING btree ("collection_id");
+
+-- public."launchpad_stage" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_stage";
+
+CREATE TABLE public."launchpad_stage" (
+    id serial4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    "name" varchar(32) NULL DEFAULT NULL,
+    description text NULL DEFAULT NULL,
+    "start_date" timestamp NULL DEFAULT NULL,
+    finish_date timestamp NULL DEFAULT NULL,
+    price int8 NOT NULL,
+    per_user_limit int8 NOT NULL,
+    has_whitelist bool NOT NULL default false,
+    CONSTRAINT launchpad_stage_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_stage_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_stage_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id)
+);
+
+CREATE INDEX "idx_launchpad_stage_collection_id" ON "public"."launchpad_stage" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_stage_launchpad_id" ON "public"."launchpad_stage" USING btree ("launchpad_id");
+
+-- public."launchpad_whitelist" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_whitelist";
+
+CREATE TABLE public."launchpad_whitelist" (
+    id serial4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    stage_id int4 NOT NULL,
+    "address" varchar(128) NOT NULL,
+    CONSTRAINT launchpad_whitelist_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_whitelist_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_whitelist_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id),
+    CONSTRAINT launchpad_whitelist_stage_fk FOREIGN KEY (stage_id) REFERENCES public."launchpad_stage"(id)
+);
+
+CREATE INDEX "idx_launchpad_whitelist_collection_id" ON "public"."launchpad_whitelist" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_whitelist_launchpad_id" ON "public"."launchpad_whitelist" USING btree ("launchpad_id");
+CREATE INDEX "idx_launchpad_whitelist_stage_id" ON "public"."launchpad_whitelist" USING btree ("stage_id");
+CREATE INDEX "idx_launchpad_whitelist_address" ON "public"."launchpad_whitelist" USING btree ("address");
+
+-- public."launchpad_mint_reservation" definition
+
+-- Drop table
+
+-- DROP TABLE public."launchpad_mint_reservation";
+
+CREATE TABLE public."launchpad_mint_reservation" (
+    id serial4 NOT NULL,
+    collection_id int4 NOT NULL,
+    launchpad_id int4 NOT NULL,
+    stage_id int4 NOT NULL,
+    "address" varchar(128) NOT NULL,
+    token_id int4 NOT NULL,
+    is_minted bool NULL DEFAULT false,
+    CONSTRAINT launchpad_mint_reservation_pkey PRIMARY KEY (id),
+    CONSTRAINT launchpad_mint_reservation_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),
+    CONSTRAINT launchpad_mint_reservation_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id),
+    CONSTRAINT launchpad_mint_reservation_stage_fk FOREIGN KEY (stage_id) REFERENCES public."launchpad_stage"(id),
+    CONSTRAINT launchpad_mint_reservation_token_id UNIQUE ("collection_id", "token_id")
+);
+
+CREATE INDEX "idx_launchpad_mint_reservation_collection_id" ON "public"."launchpad_mint_reservation" USING btree ("collection_id");
+CREATE INDEX "idx_launchpad_mint_reservation_launchpad_id" ON "public"."launchpad_mint_reservation" USING btree ("launchpad_id");
+CREATE INDEX "idx_launchpad_mint_reservation_stage_id" ON "public"."launchpad_mint_reservation" USING btree ("stage_id");
+CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" USING btree ("token_id");
 
 -- public.inscription_market view definition
 
@@ -682,6 +786,14 @@ SELECT id, rarity_score, rarity_rank
 FROM inscription_rarity_view
 ON CONFLICT (id) DO UPDATE SET rarity_score = EXCLUDED.rarity_score, rarity_rank = EXCLUDED.rarity_rank;
 
+-- public.empty_collections view definition
+
+CREATE OR REPLACE VIEW public.empty_collections AS 
+SELECT c.id
+FROM collection c
+LEFT JOIN collection_stats cs ON c.id = cs.id
+LEFT JOIN launchpad l ON c.id = l.collection_id
+WHERE cs.id IS NULL AND l.collection_id IS NULL;
 
 ------------------ RIVER ---------------------
 

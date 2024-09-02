@@ -1,5 +1,6 @@
+import { Link } from '@remix-run/react'
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-daisyui'
+import { Link as DaisyLink } from 'react-daisyui'
 import { clientOnly$ } from 'vite-env-only'
 import { Status } from '~/api/status'
 import { useRootContext } from '~/context/root'
@@ -56,41 +57,62 @@ export default function Footer() {
 
   return (
     <footer className="footer fixed left-0 bottom-0 items-center bg-base-200 text-neutral-content border-t border-t-neutral">
-      <nav className="grid-flow-col gap-0">
-        <div className="flex flex-row h-full items-center uppercase border-r border-r-neutral px-4 py-2">
-          <span className="mr-2">Indexer</span>
-          {lag <= 1 && <span className="text-success">In Sync</span>}
-          {lag > 1 && lag < 5 && <span className="text-success">+{lag}</span>}
-          {lag >= 5 && lag < 30 && <span className="text-warning">+{lag}</span>}
-          {lag >= 30 && <span className="text-error">+{lag} Lagging</span>}
+      <nav className="flex gap-0 justify-between w-full">
+        <div className="flex">
+          <div className="flex flex-row items-center uppercase border-r border-r-neutral px-4 py-2.5">
+            <span className="mr-2">Indexer</span>
+            {lag <= 1 && <span className="text-success">In Sync</span>}
+            {lag > 1 && lag < 5 && <span className="text-success">+{lag}</span>}
+            {lag >= 5 && lag < 30 && (
+              <span className="text-warning">+{lag}</span>
+            )}
+            {lag >= 30 && <span className="text-error">+{lag} Lagging</span>}
+          </div>
+          <div className="flex flex-row h-full items-center border-r border-r-neutral px-4 py-2">
+            <DaisyLink
+              href="https://t.me/asteroidxyz"
+              title="Astroid Protocol Telegram Group"
+              target="_blank"
+            >
+              <Telegram className="w-5" />
+            </DaisyLink>
+            <DaisyLink
+              href="https://twitter.com/asteroidxyz"
+              title="Astroid Protocol on X"
+              target="_blank"
+              className="ml-4"
+            >
+              <Twitter className="w-5" />
+            </DaisyLink>
+            <DaisyLink
+              href="https://docs.asteroidprotocol.io"
+              title="Astroid Protocol Docs"
+              target="_blank"
+              className="ml-4"
+            >
+              <Gitbook className="w-5" />
+            </DaisyLink>
+          </div>
+          <div className="flex items-center border-r border-r-neutral px-4 py-2.5">
+            ATOM ${status.base_token_usd}
+          </div>
         </div>
-        <div className="flex flex-row h-full items-center border-r border-r-neutral px-4 py-2">
+        <div className="hidden md:flex items-center border-l border-l-neutral">
           <Link
-            href="https://t.me/asteroidxyz"
-            title="Astroid Protocol Telegram Group"
-            target="_blank"
+            to="/app/terms-of-service"
+            className="border-r border-r-neutral px-4 py-2.5 hover:underline"
           >
-            <Telegram className="w-5" />
+            Terms Of Service
           </Link>
           <Link
-            href="https://twitter.com/asteroidxyz"
-            title="Astroid Protocol on X"
-            target="_blank"
-            className="ml-4"
+            to="/app/privacy-policy"
+            className="border-r border-r-neutral px-4 py-2.5 hover:underline"
           >
-            <Twitter className="w-5" />
+            Privacy Policy
           </Link>
-          <Link
-            href="https://docs.asteroidprotocol.io"
-            title="Astroid Protocol Docs"
-            target="_blank"
-            className="ml-4"
-          >
-            <Gitbook className="w-5" />
+          <Link to="/app/dmca-notices" className="px-4 hover:underline">
+            DMCA Notices
           </Link>
-        </div>
-        <div className="flex h-full items-center border-r border-r-neutral px-4 py-2">
-          ATOM ${status.base_token_usd}
         </div>
       </nav>
     </footer>

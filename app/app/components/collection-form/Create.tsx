@@ -1,15 +1,8 @@
 import type { CollectionMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CheckIcon } from '@heroicons/react/20/solid'
-import { Link } from '@remix-run/react'
 import clsx from 'clsx'
 import { useState } from 'react'
-import {
-  Button,
-  Link as DaisyLink,
-  FileInput,
-  Form,
-  Input,
-} from 'react-daisyui'
+import { Button, FileInput, Form, Input } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
@@ -37,7 +30,17 @@ const NAME_MAX_LENGTH = 32
 const TICKER_MIN_LENGTH = 1
 const TICKER_MAX_LENGTH = 10
 
-export default function CreateCollection() {
+export default function CreateCollectionForm({
+  description,
+  title = 'Create a collection',
+  resultCTA,
+  resultLink,
+}: {
+  description: JSX.Element
+  title?: string
+  resultLink: (ticker: string) => string
+  resultCTA: string
+}) {
   const { maxFileSize } = useRootContext()
   const operations = useInscriptionOperations()
 
@@ -110,8 +113,8 @@ export default function CreateCollection() {
   })
 
   return (
-    <div>
-      <Form onSubmit={onSubmit} className="flex flex-col mt-4">
+    <div className="overflow-y-scroll w-full flex justify-center">
+      <Form onSubmit={onSubmit} className="flex flex-col mt-4 max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
         <div className="flex flex-col lg:flex-row">
           <div className="flex flex-1 flex-col items-center">
@@ -212,25 +215,8 @@ export default function CreateCollection() {
             </div>
           </div>
           <div className="flex flex-1 flex-col mt-4 lg:mt-0 lg:ml-8">
-            <strong>Create a collection</strong>
-            <p className="mt-2">
-              Creating a collection is a two-step process. First, create a
-              collection inscription using the form below. Then, you can add
-              inscriptions to your collection on the{' '}
-              <Link
-                className="link link-hover"
-                to="/app/create/inscription"
-                target="_blank"
-              >
-                Create Inscription
-              </Link>{' '}
-              page. All information below will appear on your collection&apos;s
-              landing page on{` `}
-              <DaisyLink href="https://asteroidprotocol.io">
-                asteroidprotocol.io
-              </DaisyLink>
-              . Note that collection inscriptions are non-transferrable.
-            </p>
+            <strong>{title}</strong>
+            {description}
 
             <div className="form-control w-full mt-4">
               <Label
@@ -326,14 +312,23 @@ export default function CreateCollection() {
                 Inscribing is not supported when using Ledger
               </Button>
             ) : operations ? (
-              <Button
-                type="submit"
-                color="primary"
-                className="mt-4"
-                startIcon={<CheckIcon className="size-5" />}
-              >
-                Create collection
-              </Button>
+              <>
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="mt-4"
+                  startIcon={<CheckIcon className="size-5" />}
+                >
+                  Create collection
+                </Button>
+                <p className="my-4 text-sm italic">
+                  Please note that you should only upload artwork that
+                  you&apos;ve created or material that otherwise exists in the
+                  public domain. Uploading copyrighted material, which you do
+                  not own the rights to violates the terms and conditions on
+                  asteroidprotocol.io.
+                </p>
+              </>
             ) : (
               <Wallet className="mt-4 btn-md w-full" color="primary" />
             )}
@@ -343,8 +338,10 @@ export default function CreateCollection() {
       <TxDialog
         ref={dialogRef}
         txInscription={value}
-        resultLink={`/app/collection/${createdTicker?.toUpperCase()}`}
-        resultCTA="View Collection"
+        resultLink={
+          createdTicker ? resultLink(createdTicker.toUpperCase()) : undefined
+        }
+        resultCTA={resultCTA}
         onSuccess={() => {
           setCreatedTicker(ticker)
           reset()

@@ -63,3 +63,7 @@ export function getMimeTitle(value: string) {
       return value
   }
 }
+
+export function getFileExtension(value: string) {
+  return value.split('.').pop() as string
+}

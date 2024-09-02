@@ -7,6 +7,9 @@ export const RootContext = createContext({
   txExplorer: '',
   asteroidApi: '',
   asteroidWs: '',
+  uploadApi: '',
+  assetsUrl: '',
+  minterAddress: '',
   chainId: '',
   neutronChainId: '',
   neutronChainName: '',
@@ -26,6 +29,7 @@ export const RootContext = createContext({
     lastProcessedHeight: 0,
     lastKnownHeight: 0,
   },
+  launchpadEnabled: false,
 })
 
 export const useRootContext = () => useContext(RootContext)
