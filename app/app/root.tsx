@@ -61,6 +61,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
       UPLOAD_API: context.cloudflare.env.UPLOAD_API,
       MINTER_ADDRESS: context.cloudflare.env.MINTER_ADDRESS,
       ASSETS_URL: context.cloudflare.env.ASSETS_URL,
+      LAUNCHPAD_ENABLED: context.cloudflare.env.LAUNCHPAD_ENABLED,
     },
   })
 }
@@ -184,6 +185,7 @@ export default function App() {
             astroportUrl: data.ENV.ASTROPORT_URL,
             minterAddress: data.ENV.MINTER_ADDRESS,
             assetsUrl: data.ENV.ASSETS_URL,
+            launchpadEnabled: data.ENV.LAUNCHPAD_ENABLED != 'false',
           }}
         >
           <WalletProviderWrapper

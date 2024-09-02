@@ -4,26 +4,45 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/models"
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
 	"gorm.io/gorm"
 )
 
 type Launchpad struct {
-	chainID     string
-	db          *gorm.DB
-	inscription *Inscription
+	chainID        string
+	db             *gorm.DB
+	inscription    *Inscription
+	Allowlist      []string
+	MintingEnabled bool
+}
+
+type LaunchpadConfig struct {
+	Allowlist      []string `envconfig:"LAUNCHPAD_ALLOWLIST"`
+	MintingEnabled bool     `envconfig:"LAUNCHPAD_MINTING_ENABLED" default:"false"`
 }
 
 func NewLaunchpadProcessor(chainID string, db *gorm.DB, inscription *Inscription) *Launchpad {
+	// Parse config environment variables for self
+	var config LaunchpadConfig
+	err := envconfig.Process("", &config)
+	if err != nil {
+		log.Fatalf("Unable to process config: %s", err)
+	}
+
 	return &Launchpad{
-		chainID:     chainID,
-		db:          db,
-		inscription: inscription,
+		chainID:        chainID,
+		db:             db,
+		inscription:    inscription,
+		Allowlist:      config.Allowlist,
+		MintingEnabled: config.MintingEnabled,
 	}
 }
 
@@ -59,6 +78,10 @@ func (protocol *Launchpad) Process(transactionModel models.Transaction, protocol
 }
 
 func (protocol *Launchpad) ReserveInscription(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	if !protocol.MintingEnabled {
+		return fmt.Errorf("minting is disabled")
+	}
+
 	// validate launchpad hash
 	launchpadHash := parsedURN.KeyValuePairs["h"]
 	if launchpadHash == "" {
@@ -181,6 +204,11 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 }
 
 func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	// check if sender is allowed to launch
+	if !slices.Contains(protocol.Allowlist, sender) {
+		return fmt.Errorf("sender not allowed to launch")
+	}
+
 	// validate collection hash
 	if parsedURN.KeyValuePairs["h"] == "" {
 		return fmt.Errorf("missing collection hash")

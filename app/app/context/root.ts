@@ -29,6 +29,7 @@ export const RootContext = createContext({
     lastProcessedHeight: 0,
     lastKnownHeight: 0,
   },
+  launchpadEnabled: false,
 })
 
 export const useRootContext = () => useContext(RootContext)

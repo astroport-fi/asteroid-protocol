@@ -26,7 +26,7 @@ export default function MintInscription({
   className?: string
   activeStage: StageDetail | undefined
 }) {
-  const { minterAddress } = useRootContext()
+  const { minterAddress, launchpadEnabled } = useRootContext()
   const operations = useLaunchpadOperations()
 
   const { data: authorizedAmount } = useGetSendAuthorizationAmount(
@@ -101,7 +101,15 @@ export default function MintInscription({
 
   return (
     <div className={className}>
-      {!operations ? (
+      {!launchpadEnabled ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
+          Launchpad disabled
+        </Button>
+      ) : !operations ? (
         <Wallet className="btn-md w-full" color="primary" />
       ) : isMintedOut ? (
         <Button
