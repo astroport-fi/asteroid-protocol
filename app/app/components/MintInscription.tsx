@@ -6,7 +6,7 @@ import {
   NoSymbolIcon,
 } from '@heroicons/react/20/solid'
 import { useState } from 'react'
-import { Button, Input } from 'react-daisyui'
+import { Alert, Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import { useDialogWithValue } from '~/hooks/useDialog'
@@ -162,6 +162,13 @@ export default function MintInscription({
       <TxDialog
         ref={dialogRef}
         txInscription={inscription}
+        description={
+          <Alert className="mt-2 border border-warning">
+            Please note that this image won&apos;t be inscribed until the
+            &ldquo;reveal&rdquo; date. That means you&apos;ll need to review and
+            pre-approve spending the mint price in your wallet popup to proceed.
+          </Alert>
+        }
         resultCTA="Back to mint"
         resultLink={`/app/launchpad/${launchpad.collection.symbol}`}
         onSuccess={() => {

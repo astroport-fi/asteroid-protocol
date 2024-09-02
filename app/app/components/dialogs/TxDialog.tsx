@@ -15,6 +15,7 @@ interface Props {
   resultCTA: string
   resultLink?: To | ((txHash: string) => To)
   feeOperationTitle?: string
+  description?: JSX.Element | string
   onSuccess?: (txHash: string) => void
 }
 
@@ -24,6 +25,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
     resultCTA,
     resultLink,
     feeOperationTitle,
+    description,
     onSuccess,
   },
   ref,
@@ -94,6 +96,7 @@ const TxDialog = forwardRef<HTMLDialogElement, Props>(function TxDialog(
             This can <strong>not</strong>
             {` `}be undone.
           </span>
+          {description && description}
         </InscriptionBody>
       </Modal.Body>
       <Modal.Actions className="flex justify-center">

@@ -74,6 +74,8 @@ export const launchpadDetailSelector = Selector('launchpad')({
   minted_supply: true,
   start_date: true,
   finish_date: true,
+  reveal_date: true,
+  reveal_immediately: true,
   transaction: {
     hash: true,
   },

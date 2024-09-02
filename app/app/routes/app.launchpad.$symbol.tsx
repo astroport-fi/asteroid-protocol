@@ -2,7 +2,7 @@ import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
-import { formatRelative } from 'date-fns'
+import { format, formatRelative } from 'date-fns'
 import { useMemo, useState } from 'react'
 import { Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
@@ -14,7 +14,7 @@ import MintInscription from '~/components/MintInscription'
 import PercentageText from '~/components/PercentageText'
 import CollectionSocials from '~/components/collection/CollectionSocials'
 import { getAddress } from '~/utils/cookies'
-import { getDateFromUTCString } from '~/utils/date'
+import { DATETIME_FORMAT, getDateFromUTCString } from '~/utils/date'
 import { getSupplyTitle } from '~/utils/number'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -138,6 +138,16 @@ export default function LaunchpadDetailPage() {
         <div className="btn btn-neutral btn-sm cursor-auto mt-4">
           Total supply
           <Badge>{getSupplyTitle(launchpad.max_supply)}</Badge>
+        </div>
+        <div className="btn btn-neutral btn-sm cursor-auto mt-4">
+          Reveal
+          <Badge>
+            {launchpad.reveal_immediately
+              ? 'with each mint'
+              : launchpad.reveal_date
+                ? `at ${format(getDateFromUTCString(launchpad.reveal_date), DATETIME_FORMAT)}`
+                : 'after fully minted out'}
+          </Badge>
         </div>
 
         <p
