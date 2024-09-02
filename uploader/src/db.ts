@@ -11,6 +11,7 @@ declare module 'knex/types/tables.js' {
   export interface Launchpad {
     creator: string
     hash: string
+    folder: string
     date_created: Date
   }
 

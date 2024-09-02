@@ -47,7 +47,9 @@ export class UploadApi {
         'Content-Type': 'application/json',
       },
     })
-    const data = await response.json<LaunchpadInscription[] | ErrorResponse>()
+    const data = await response.json<
+      { inscriptions: LaunchpadInscription[]; folder: string } | ErrorResponse
+    >()
 
     if ('status' in data) {
       console.error('Getting inscriptions failed', data.status, data.message)

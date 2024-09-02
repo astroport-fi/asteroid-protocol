@@ -12,21 +12,22 @@ import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
 import { AsteroidClient, LaunchpadMintReservation } from '../asteroid-client.js'
 import { Config, loadConfig } from '../config.js'
 import { estimate } from '../cosmos-client.js'
+import { connect } from '../db.js'
 
 async function buildInscription(
   config: Config,
   collectionHash: string,
-  launchpadHash: string,
+  folder: string,
   tokenId: number,
   reservationAddress: string,
 ) {
-  const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${launchpadHash}/${tokenId}_metadata.json`
+  const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${tokenId}_metadata.json`
   const metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
   )) as NFTMetadata
   metadata.token_id = tokenId
 
-  const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${launchpadHash}/${metadata.filename}`
+  const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${metadata.filename}`
   const inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
     res.arrayBuffer(),
   )
@@ -124,6 +125,7 @@ async function processMintReservation(
   client: SigningStargateClient,
   address: string,
   reservation: LaunchpadMintReservation,
+  launchpadFolder: string,
   gasMultiplier: number,
 ) {
   const { launchpad } = reservation
@@ -145,7 +147,7 @@ async function processMintReservation(
   const txData = await buildInscription(
     config,
     collection.transaction.hash,
-    launchpad.transaction.hash,
+    launchpadFolder,
     tokenId,
     reservation.address,
   )
@@ -203,6 +205,9 @@ async function main() {
   // api
   const api = new AsteroidClient(config.ASTEROID_API)
 
+  // db
+  const db = connect(config.DATABASE_URL)
+
   // load account
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(config.MNEMONIC)
   const accounts = await wallet.getAccounts()
@@ -257,12 +262,27 @@ async function main() {
           }
         }
 
+        const row = await db('launchpad')
+          .select('folder')
+          .where({
+            hash: launchpad.transaction.hash,
+          })
+          .first()
+
+        if (!row) {
+          console.error(
+            `Unable to find launchpad folder, launchpad_hash: ${launchpad.transaction.hash}`,
+          )
+          continue
+        }
+
         await processMintReservation(
           config,
           api,
           client,
           account.address,
           reservation,
+          row.folder,
           gasMultiplier,
         )
       } catch (e) {

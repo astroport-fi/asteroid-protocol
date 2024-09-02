@@ -47,11 +47,11 @@ interface InscriptionUrlsResponse extends InscriptionUrls {
   tokenId: number
 }
 
-function getMetadataUrl(launchHash: string, tokenId: number) {
+function getMetadataUrl(folder: string, tokenId: number) {
   return generateUploadURL(
     s3Client,
     config.S3_BUCKET,
-    launchHash,
+    folder,
     `${tokenId}_metadata.json`,
     'application/json',
   )
@@ -59,6 +59,7 @@ function getMetadataUrl(launchHash: string, tokenId: number) {
 
 async function getInscriptionSignedUrls(
   launchHash: string,
+  folder: string,
   tokenId: number,
   name: string,
   contentType: string,
@@ -74,11 +75,11 @@ async function getInscriptionSignedUrls(
   const inscriptionSignedUrl = await generateUploadURL(
     s3Client,
     config.S3_BUCKET,
-    launchHash,
+    folder,
     name,
     contentType,
   )
-  const metadataSignedUrl = await getMetadataUrl(launchHash, tokenId)
+  const metadataSignedUrl = await getMetadataUrl(folder, tokenId)
 
   return {
     inscriptionSignedUrl,
@@ -192,10 +193,22 @@ app.post(
       return
     }
 
+    // get launchpad exists and user is owner
+    const launchpad = await db('launchpad')
+      .select('folder')
+      .where({ hash: launchHash, creator: session.address })
+      .first()
+
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
     const inscriptions = await db('launchpad_inscription')
       .select()
       .where({ launchpad_hash: launchHash })
-    res.json(inscriptions)
+
+    res.json({ inscriptions, folder: launchpad.folder })
   }),
 )
 
@@ -223,12 +236,18 @@ app.post(
       .select()
       .where({ hash: launchHash, creator: session.address })
       .first()
+    let folder: string
+
     if (!launchpad) {
       // @todo check if launchpad is owned by session address
+      folder = cuid()
       await db('launchpad').insert({
         hash: launchHash,
         creator: session.address,
+        folder,
       })
+    } else {
+      folder = launchpad.folder
     }
 
     const urls: InscriptionUrlsResponse[] = []
@@ -236,6 +255,7 @@ app.post(
       const { inscriptionSignedUrl, metadataSignedUrl } =
         await getInscriptionSignedUrls(
           launchHash,
+          folder,
           inscription.tokenId,
           inscription.filename,
           inscription.contentType,
@@ -310,12 +330,17 @@ app.post(
       .select()
       .where({ hash: launchHash, creator: session.address })
       .first()
+    let folder: string
     if (!launchpad) {
       // @todo check if launchpad is owned by session address
+      folder = cuid()
       await db('launchpad').insert({
         hash: launchHash,
         creator: session.address,
+        folder,
       })
+    } else {
+      folder = launchpad.folder
     }
 
     // get max inscription number
@@ -328,7 +353,13 @@ app.post(
     const name = `${maxTokenId}.${extension}`
 
     const { inscriptionSignedUrl, metadataSignedUrl } =
-      await getInscriptionSignedUrls(launchHash, maxTokenId, name, contentType)
+      await getInscriptionSignedUrls(
+        launchHash,
+        folder,
+        maxTokenId,
+        name,
+        contentType,
+      )
 
     res.json({
       tokenId: maxTokenId,
@@ -377,7 +408,7 @@ app.post(
       return
     }
 
-    const metadataSignedUrl = await getMetadataUrl(launchHash, tokenId)
+    const metadataSignedUrl = await getMetadataUrl(launchpad.folder, tokenId)
 
     res.json({ metadataSignedUrl })
   }),

@@ -42,9 +42,11 @@ interface FormData {
 
 export function UploadedInscriptionBox({
   inscription,
+  folder,
   onClick,
 }: {
   inscription: LaunchpadInscription
+  folder: string
   onClick: (inscription: LaunchpadInscription) => void
 }) {
   const { assetsUrl } = useRootContext()
@@ -52,7 +54,7 @@ export function UploadedInscriptionBox({
   return (
     <div className="flex flex-col flex-shrink-0 justify-between bg-base-200 rounded-xl group w-60">
       <InscriptionImage
-        src={`${assetsUrl}/${inscription.launchpad_hash}/${inscription.name}`}
+        src={`${assetsUrl}/${folder}/${inscription.name}`}
         isExplicit={false}
         className="h-60"
         containerClassName="rounded-t-xl"
@@ -79,9 +81,11 @@ export function UploadedInscriptionBox({
 
 function UploadedInscriptions({
   inscriptions,
+  folder,
   onClick,
 }: {
   inscriptions: LaunchpadInscription[]
+  folder: string
   onClick: (inscription: LaunchpadInscription) => void
 }) {
   return (
@@ -90,6 +94,7 @@ function UploadedInscriptions({
         <UploadedInscriptionBox
           key={inscription.id}
           inscription={inscription}
+          folder={folder}
           onClick={onClick}
         />
       ))}
@@ -119,7 +124,7 @@ export default function UploadInscriptionsPage() {
 
   const selectedLaunchpadHash = watch('launchpad')
 
-  const { data: inscriptions } = useUploadedInscriptions(
+  const { data: inscriptionsRes } = useUploadedInscriptions(
     selectedLaunchpadHash ?? '',
   )
 
@@ -128,9 +133,9 @@ export default function UploadInscriptionsPage() {
   )
 
   const allUploaded =
-    inscriptions &&
+    inscriptionsRes &&
     selectedLaunchpad &&
-    inscriptions.length >= selectedLaunchpad.max_supply
+    inscriptionsRes.inscriptions.length >= selectedLaunchpad.max_supply
 
   const onSubmit = handleSubmit(async () => {
     showDialog()
@@ -165,7 +170,7 @@ export default function UploadInscriptionsPage() {
             </Select>
           </div>
           {selectedLaunchpad &&
-            inscriptions &&
+            inscriptionsRes &&
             (allUploaded ? (
               <Alert className="border border-success mt-4 gap-1">
                 All inscriptions have been uploaded. For more details about the
@@ -179,8 +184,8 @@ export default function UploadInscriptionsPage() {
               </Alert>
             ) : (
               <Alert className="border border-accent mt-4 gap-1">
-                {inscriptions.length} out of {selectedLaunchpad.max_supply}{' '}
-                inscriptions uploaded
+                {inscriptionsRes.inscriptions.length} out of{' '}
+                {selectedLaunchpad.max_supply} inscriptions uploaded
               </Alert>
             ))}
         </div>
@@ -203,9 +208,10 @@ export default function UploadInscriptionsPage() {
             </div>
           )}
 
-          {inscriptions && (
+          {inscriptionsRes && (
             <UploadedInscriptions
-              inscriptions={inscriptions}
+              inscriptions={inscriptionsRes.inscriptions}
+              folder={inscriptionsRes.folder}
               onClick={showEditDialog}
             />
           )}
@@ -227,6 +233,7 @@ export default function UploadInscriptionsPage() {
         {editInscription && (
           <EditMetadata
             launchpadHash={selectedLaunchpadHash}
+            folder={inscriptionsRes!.folder}
             tokenId={editInscription.inscription_number}
           />
         )}

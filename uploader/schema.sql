@@ -1,6 +1,7 @@
 CREATE TABLE "public"."launchpad" (
   "hash" character(64) NOT NULL,
   "creator" character(45) NOT NULL,
+  "folder" character(25) NOT NULL,
   "date_created" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "launchpad_pkey" PRIMARY KEY ("hash")
 );

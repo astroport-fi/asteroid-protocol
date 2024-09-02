@@ -30,9 +30,11 @@ enum UploadState {
 export default function EditMetadata({
   launchpadHash,
   tokenId,
+  folder,
 }: {
   launchpadHash: string
   tokenId: number
+  folder: string
 }) {
   const address = useAddress()
   const uploadApi = useUploadApi()
@@ -69,7 +71,7 @@ export default function EditMetadata({
 
   useEffect(() => {
     setIsLoading(true)
-    const url = `${assetsUrl}/${launchpadHash}/${tokenId}_metadata.json?${Date.now()}`
+    const url = `${assetsUrl}/${folder}/${tokenId}_metadata.json?${Date.now()}`
     fetch(url)
       .then((res) => res.json<NFTMetadata>())
       .then((data) => {
@@ -81,7 +83,7 @@ export default function EditMetadata({
         reset({ ...data, traits })
         setIsLoading(false)
       })
-  }, [assetsUrl, launchpadHash, tokenId, reset])
+  }, [assetsUrl, folder, tokenId, reset])
 
   const { fields, append, remove } = useFieldArray({
     control,
