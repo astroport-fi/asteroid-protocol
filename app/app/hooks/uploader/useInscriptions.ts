@@ -5,9 +5,10 @@ import useUploadApi from '../api/useUploadApi'
 
 export default function useUploadedInscriptions(launchHash: string) {
   const uploadApi = useUploadApi()
+  const { uploadApi: uploadApiUrl } = useRootContext()
 
   return useSWR(
-    launchHash ? `${uploadApi}/inscriptions/${launchHash}` : null,
+    launchHash ? `${uploadApiUrl}/inscriptions/${launchHash}` : null,
     () => uploadApi.getInscriptions(launchHash),
   )
 }
