@@ -139,6 +139,7 @@ export default function CreateCollectionForm({
                   <span className="flex items-center justify-center text-lg">
                     Collection Logo
                     <InfoTooltip
+                      position="bottom"
                       message={
                         'Can be a custom image\nor one of your favorite inscriptions\nfrom your collection'
                       }
