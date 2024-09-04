@@ -91,7 +91,12 @@ export default function BulkUploadInscriptions({
         for (const row of data) {
           const attributes: inscription.Trait[] = Object.entries(row).reduce(
             (acc, [key, value]) => {
-              if (key === 'token_id' || key === 'filename' || key === 'name') {
+              if (
+                key === 'token_id' ||
+                key === 'filename' ||
+                key === 'name' ||
+                key === 'description'
+              ) {
                 return acc
               }
               acc.push({ trait_type: key, value: `${value}` })
