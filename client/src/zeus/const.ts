@@ -988,6 +988,9 @@ export const AllTypesProps: Record<string, any> = {
     transaction: 'transaction_bool_exp',
     transaction_id: 'Int_comparison_exp',
   },
+  launchpad_mint_reservation: {
+    metadata: {},
+  },
   launchpad_mint_reservation_aggregate_bool_exp: {
     bool_and: 'launchpad_mint_reservation_aggregate_bool_exp_bool_and',
     bool_or: 'launchpad_mint_reservation_aggregate_bool_exp_bool_or',
@@ -1045,6 +1048,7 @@ export const AllTypesProps: Record<string, any> = {
     is_minted: 'Boolean_comparison_exp',
     launchpad: 'launchpad_bool_exp',
     launchpad_id: 'Int_comparison_exp',
+    metadata: 'jsonb_comparison_exp',
     stage: 'launchpad_stage_bool_exp',
     stage_id: 'Int_comparison_exp',
     token_id: 'Int_comparison_exp',
@@ -1072,6 +1076,7 @@ export const AllTypesProps: Record<string, any> = {
     is_minted: 'order_by',
     launchpad: 'launchpad_order_by',
     launchpad_id: 'order_by',
+    metadata: 'order_by',
     stage: 'launchpad_stage_order_by',
     stage_id: 'order_by',
     token_id: 'order_by',
@@ -1106,7 +1111,9 @@ export const AllTypesProps: Record<string, any> = {
     initial_value: 'launchpad_mint_reservation_stream_cursor_value_input',
     ordering: 'cursor_ordering',
   },
-  launchpad_mint_reservation_stream_cursor_value_input: {},
+  launchpad_mint_reservation_stream_cursor_value_input: {
+    metadata: 'jsonb',
+  },
   launchpad_mint_reservation_sum_order_by: {
     collection_id: 'order_by',
     id: 'order_by',
@@ -4651,6 +4658,7 @@ export const ReturnTypes: Record<string, any> = {
     is_minted: 'Boolean',
     launchpad: 'launchpad',
     launchpad_id: 'Int',
+    metadata: 'jsonb',
     stage: 'launchpad_stage',
     stage_id: 'Int',
     token_id: 'Int',
