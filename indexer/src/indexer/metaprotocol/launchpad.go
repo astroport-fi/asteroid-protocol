@@ -205,7 +205,7 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 
 func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
 	// check if sender is allowed to launch
-	if !slices.Contains(protocol.Allowlist, sender) {
+	if !protocol.MintingEnabled && !slices.Contains(protocol.Allowlist, sender) {
 		return fmt.Errorf("sender not allowed to launch")
 	}
 
