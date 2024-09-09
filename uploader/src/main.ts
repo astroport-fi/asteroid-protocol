@@ -334,6 +334,86 @@ app.post(
   }),
 )
 
+async function getNextTokenId(launchHash: string) {
+  const maxTokenIdRes = await db('launchpad_inscription')
+    .max('inscription_number')
+    .where({ launchpad_hash: launchHash })
+    .first()
+
+  return (maxTokenIdRes?.['max'] ?? 0) + 1
+}
+
+app.post(
+  '/reservation/upload',
+  asyncHandler(async (req, res) => {
+    const { launchHash, contentType, extension } = req.body
+
+    // check if launchpad exists, @todo check if launchpad allows reservations to upload files
+    const launchpad = await db('launchpad')
+      .select()
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    // get next token id
+    const nextTokenId = await getNextTokenId(launchHash)
+    const name = `${nextTokenId}.${extension}`
+
+    // create launchpad inscription record
+    await db('launchpad_inscription').insert({
+      launchpad_hash: launchHash,
+      inscription_number: nextTokenId,
+      name,
+    })
+
+    // generate signed URLs
+    const inscriptionSignedUrl = await generateUploadURL(
+      s3Client,
+      config.S3_BUCKET,
+      launchpad.folder,
+      name,
+      contentType,
+    )
+
+    res.json({
+      tokenId: nextTokenId,
+      inscriptionSignedUrl,
+      filename: name,
+      folder: launchpad.folder,
+    })
+  }),
+)
+
+app.post(
+  '/reservation/confirm',
+  asyncHandler(async (req, res) => {
+    const { launchHash, tokenId } = req.body
+
+    // check if launchpad exists, @todo check if launchpad allows reservations to upload files
+    const launchpad = await db('launchpad')
+      .select()
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    // update inscription record
+    await db('launchpad_inscription')
+      .where({
+        launchpad_hash: launchHash,
+        inscription_number: tokenId,
+      })
+      .update({ uploaded: true })
+
+    res.json({ success: true })
+  }),
+)
+
 app.post(
   '/inscription/upload',
   asyncHandler(async (req, res) => {
@@ -367,26 +447,21 @@ app.post(
       folder = launchpad.folder
     }
 
-    // get max inscription number
-    const maxTokenIdRes = await db('launchpad_inscription')
-      .max('inscription_number')
-      .where({ launchpad_hash: launchHash })
-      .first()
-
-    const maxTokenId = (maxTokenIdRes?.['max'] ?? 0) + 1
-    const name = `${maxTokenId}.${extension}`
+    // get next token id
+    const nextTokenId = await getNextTokenId(launchHash)
+    const name = `${nextTokenId}.${extension}`
 
     const { inscriptionSignedUrl, metadataSignedUrl } =
       await getInscriptionSignedUrls(
         launchHash,
         folder,
-        maxTokenId,
+        nextTokenId,
         name,
         contentType,
       )
 
     res.json({
-      tokenId: maxTokenId,
+      tokenId: nextTokenId,
       inscriptionSignedUrl,
       metadataSignedUrl,
     } as InscriptionUrlsResponse)

@@ -1,5 +1,12 @@
 import { NFTMetadata } from '@asteroid-protocol/sdk'
 
+interface InscriptionUploadUrl {
+  inscriptionSignedUrl: string
+  tokenId: number
+  filename: string
+  folder: string
+}
+
 interface InscriptionUploadUrls {
   inscriptionSignedUrl: string
   metadataSignedUrl: string
@@ -137,6 +144,56 @@ export class UploadApi {
     }
 
     return data
+  }
+
+  async reservationUploadImage(
+    launchHash: string,
+    contentType: string,
+    extension: string,
+  ) {
+    const uploadUrlsResponse = await fetch(
+      `${this.apiUrl}/reservation/upload`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          launchHash,
+          contentType,
+          extension,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+    const data = await uploadUrlsResponse.json<
+      InscriptionUploadUrl | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error(
+        'Reservation image upload failed',
+        data.status,
+        data.message,
+      )
+      throw new Error('Reservation image upload failed')
+    }
+
+    return data
+  }
+
+  reservationConfirmImage(launchHash: string, tokenId: number) {
+    return fetch(`${this.apiUrl}/reservation/confirm`, {
+      method: 'POST',
+      body: JSON.stringify({
+        launchHash,
+        tokenId,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
   }
 
   async editMetadata(launchHash: string, tokenId: number) {
