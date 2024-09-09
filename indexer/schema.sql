@@ -638,6 +638,7 @@ CREATE TABLE public."launchpad_mint_reservation" (
     launchpad_id int4 NOT NULL,
     stage_id int4 NOT NULL,
     "address" varchar(128) NOT NULL,
+    metadata jsonb NULL,
     token_id int4 NOT NULL,
     is_minted bool NULL DEFAULT false,
     CONSTRAINT launchpad_mint_reservation_pkey PRIMARY KEY (id),

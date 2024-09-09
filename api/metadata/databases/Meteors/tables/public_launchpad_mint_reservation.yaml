@@ -17,6 +17,7 @@ select_permissions:
         - id
         - is_minted
         - launchpad_id
+        - metadata
         - stage_id
         - token_id
       filter: {}
