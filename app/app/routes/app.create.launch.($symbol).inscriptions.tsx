@@ -263,12 +263,17 @@ export default function UploadInscriptionsPage() {
               <Button
                 className="mt-6"
                 color="accent"
+                disabled={!selectedLaunchpadHash}
                 onClick={() => setMultiple(false)}
               >
                 One by one
               </Button>
               <span className="my-2">OR</span>
-              <Button color="accent" onClick={() => setMultiple(true)}>
+              <Button
+                color="accent"
+                disabled={!selectedLaunchpadHash}
+                onClick={() => setMultiple(true)}
+              >
                 Bulk upload
               </Button>
             </div>
