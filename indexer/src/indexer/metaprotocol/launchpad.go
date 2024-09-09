@@ -90,9 +90,13 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	}
 
 	// validate stage id
-	stageID := parsedURN.KeyValuePairs["stg"]
+	stageIDString := parsedURN.KeyValuePairs["stg"]
 	if parsedURN.KeyValuePairs["stg"] == "" {
 		return fmt.Errorf("missing stage id")
+	}
+	stageID, err := strconv.ParseUint(stageIDString, 10, 64)
+	if err != nil {
+		return fmt.Errorf("unable to parse stage id '%s'", err)
 	}
 
 	// Check required fields

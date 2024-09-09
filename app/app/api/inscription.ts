@@ -7,13 +7,12 @@ import {
 } from '@asteroid-protocol/sdk/client'
 import { TraitItem } from './client'
 import { MarketplaceListing, marketplaceListingSelector } from './marketplace'
+import { transactionHashSelector } from './transaction'
 
 export const inscriptionSelector = Selector('inscription')({
   id: true,
   inscription_number: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   current_owner: true,
   creator: true,
   height: true,
@@ -116,9 +115,7 @@ export type InscriptionDetail = Omit<
 
 // Inscription image
 export const inscriptionImageSelector = Selector('inscription')({
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   is_explicit: true,
   content_path: true,
   __alias: {
@@ -197,9 +194,7 @@ export type InscriptionTradeHistory = Omit<
 export const inscriptionHistorySelector = Selector('inscription_history')({
   id: true,
   height: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   sender: true,
   receiver: true,
   action: true,

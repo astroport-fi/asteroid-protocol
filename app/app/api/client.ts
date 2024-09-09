@@ -79,6 +79,7 @@ import {
   oldMarketplaceListingSelector,
 } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
+import { transactionHashSelector } from './transaction'
 
 export type TokenMarketResult = {
   tokens: TokenMarket[]
@@ -1851,9 +1852,7 @@ export class AsteroidClient extends AsteroidService {
           },
         },
         {
-          transaction: {
-            hash: true,
-          },
+          transaction: transactionHashSelector,
         },
       ],
     })

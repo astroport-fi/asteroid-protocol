@@ -640,6 +640,7 @@ CREATE TABLE public."launchpad_mint_reservation" (
     "address" varchar(128) NOT NULL,
     metadata jsonb NULL,
     token_id int4 NOT NULL,
+    is_random bool NULL DEFAULT true,
     is_minted bool NULL DEFAULT false,
     CONSTRAINT launchpad_mint_reservation_pkey PRIMARY KEY (id),
     CONSTRAINT launchpad_mint_reservation_collection_fk FOREIGN KEY (collection_id) REFERENCES public."collection"(id),

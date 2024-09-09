@@ -5,6 +5,7 @@ import {
   Selector,
 } from '@asteroid-protocol/sdk/client'
 import { tokenSelector } from './token'
+import { transactionHashSelector } from './transaction'
 
 export const bridgeSignatureHistorySelector = Selector('bridge_history')({
   signature: true,
@@ -13,9 +14,7 @@ export const bridgeSignatureHistorySelector = Selector('bridge_history')({
 export const bridgeHistorySelector = Selector('bridge_history')({
   amount: true,
   receiver: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   action: true,
   height: true,
   sender: true,

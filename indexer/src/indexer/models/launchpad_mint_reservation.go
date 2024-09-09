@@ -11,6 +11,7 @@ type LaunchpadMintReservation struct {
 	TokenId      uint64         `gorm:"column:token_id"`
 	IsMinted     bool           `gorm:"column:is_minted"`
 	Metadata     datatypes.JSON `gorm:"column:metadata"`
+	IsRandom     bool           `gorm:"column:is_random"`
 }
 
 func (LaunchpadMintReservation) TableName() string {
