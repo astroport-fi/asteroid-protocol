@@ -214,6 +214,9 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		if metadataBytes != nil {
 			reservation.Metadata = datatypes.JSON(metadataBytes)
 		}
+		if metadataBytes != nil {
+			reservation.Metadata = datatypes.JSON(metadataBytes)
+		}
 
 		result = protocol.db.Save(&reservation)
 
