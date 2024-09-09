@@ -54,6 +54,11 @@ enum Reveal {
   SpecificDate = 'specificDate',
 }
 
+enum Supply {
+  Fixed = 'fixed',
+  Infinite = 'infinite',
+}
+
 interface FormStage {
   name?: string
   description?: string
@@ -66,6 +71,7 @@ interface FormStage {
 
 type FormData = {
   collection: string
+  supplyKind: Supply
   supply?: number
   reveal: Reveal
   revealDate?: Date
@@ -103,10 +109,12 @@ export default function CreateCollectionLaunch() {
       stages: [{}],
       reveal: Reveal.Immediately,
       collection: selectedHash,
+      supplyKind: Supply.Fixed,
     },
   })
 
   const reveal = watch('reveal')
+  const supplyKind = watch('supplyKind')
   const revealDate = watch('revealDate')
   const collectionHash = watch('collection')
   const selectedCollection = data.collections.find(
@@ -175,15 +183,46 @@ export default function CreateCollectionLaunch() {
             required
           />
 
-          <NumericInput
-            control={control}
-            required
-            error={errors.supply}
-            name="supply"
-            title="Collection supply"
-            placeholder="Total supply"
-            className="mt-8"
-          />
+          <div className="mt-8">
+            <strong>Collection supply</strong>
+          </div>
+
+          <div className="flex items-center">
+            <Radio
+              value={Supply.Fixed}
+              id="fixed"
+              {...register('supplyKind', { required: true })}
+            />
+            <Form.Label
+              htmlFor="fixed"
+              title="Fixed supply"
+              className="mt-1 ml-1"
+            ></Form.Label>
+          </div>
+
+          {supplyKind == Supply.Fixed && (
+            <NumericInput
+              control={control}
+              required
+              error={errors.supply}
+              name="supply"
+              placeholder="Total supply"
+              className="mb-2"
+            />
+          )}
+
+          <div className="flex items-center">
+            <Radio
+              value={Supply.Infinite}
+              id="infinite"
+              {...register('supplyKind', { required: true })}
+            />
+            <Form.Label
+              htmlFor="infinite"
+              title="Infinite supply"
+              className="mt-1 ml-1"
+            ></Form.Label>
+          </div>
 
           <div className="mt-8">
             <strong>Inscriptions reveal</strong>

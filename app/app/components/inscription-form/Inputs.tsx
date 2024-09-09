@@ -76,11 +76,21 @@ export function Description<TFieldValues extends FieldValues = FieldValues>({
 export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
   fileName,
   error,
+  title = (
+    <>
+      Inscription Content
+      <InfoTooltip
+        message="Inscribe any filetype that a browser can display (i.e. JPGs, PDFs, HTML and more!)"
+        className="ml-2 before:ml-[-5rem]"
+      />
+    </>
+  ),
   register,
   fileChange,
 }: {
   fileName: string | null
   error: Merge<FieldError, (FieldError | undefined)[]> | undefined
+  title?: JSX.Element | string
   register: UseFormRegister<TFieldValues>
   fileChange: (file: File | undefined) => void
 }) {
@@ -98,11 +108,7 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
       ) : (
         <>
           <span className="flex items-center justify-center text-lg">
-            Inscription Content
-            <InfoTooltip
-              message="Inscribe any filetype that a browser can display (i.e. JPGs, PDFs, HTML and more!)"
-              className="ml-2 before:ml-[-5rem]"
-            />
+            {title}
           </span>
           <span className="mt-4">Max file size</span>
           <span>550kb</span>

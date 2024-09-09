@@ -98,9 +98,13 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
             {getSupplyTitle(launchpad.max_supply)}
           </BoxValue>
           <BoxValue title="Minted">
-            <PercentageText
-              value={launchpad.minted_supply / launchpad.max_supply}
-            />
+            {launchpad.max_supply > 0 ? (
+              <PercentageText
+                value={launchpad.minted_supply / launchpad.max_supply}
+              />
+            ) : (
+              `${launchpad.minted_supply} / ∞`
+            )}
           </BoxValue>
         </div>
         <Divider className="my-1" />
