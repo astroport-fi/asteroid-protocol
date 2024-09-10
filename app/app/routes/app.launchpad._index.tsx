@@ -109,7 +109,7 @@ export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
         </div>
         <Divider className="my-1" />
         <div className="flex flex-col items-center">
-          <span className="text-lg">
+          <span>
             {isEnded ? (
               <span className="text-info">Ended</span>
             ) : isActive ? (
