@@ -23,6 +23,7 @@ export default function NumericInput<
   isFloat,
   className,
   placeholder,
+  disabled,
   ...props
 }: {
   control: Control<TFieldValues>
@@ -50,6 +51,7 @@ export default function NumericInput<
         rules={{ required: props.required, pattern: /^[0-9]+$/ }}
         control={control}
         name={name}
+        disabled={disabled}
         render={({
           field: { name, onChange, value, ref, onBlur, disabled },
         }) => (

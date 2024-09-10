@@ -111,9 +111,9 @@ export default function UpdateCollection() {
   })
 
   return (
-    <div>
-      <Form onSubmit={onSubmit} className="flex flex-row mt-4">
-        <div className="flex flex-1 flex-col ml-8">
+    <div className="flex flex-col items-center w-full overflow-y-auto">
+      <Form onSubmit={onSubmit} className="flex flex-row mt-4 w-full max-w-6xl">
+        <div className="flex flex-1 flex-col">
           <h2 className="text-lg">Update {data.name} metadata</h2>
 
           <RoyaltyPercentage control={control} errors={errors} />

@@ -67,14 +67,14 @@ export default function WalletCollections() {
                 <>
                   <Link
                     className="btn btn-circle btn-sm btn-ghost"
-                    to={`/app/edit/launch/${collection.symbol}`}
+                    to={`/app/edit/launch/${collection.symbol}/inscriptions`}
                     title="Upload inscriptions"
                   >
                     <ArrowUpTrayIcon className="size-4" />
                   </Link>
                   <Link
                     className="btn btn-circle btn-sm btn-ghost"
-                    to={`/app/edit/collection/${collection.symbol}`}
+                    to={`/app/edit/launch/${collection.symbol}`}
                     title="Edit collection"
                   >
                     <PencilSquareIcon className="size-4" />

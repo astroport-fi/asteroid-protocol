@@ -4,7 +4,7 @@ import { formatRelative } from 'date-fns'
 import { PropsWithChildren } from 'react'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
-import { Launchpad, getActiveOrFirstStageItem } from '~/api/launchpad'
+import { LaunchpadItem, getActiveOrFirstStageItem } from '~/api/launchpad'
 import { UploadApi } from '~/api/upload'
 import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
@@ -53,7 +53,7 @@ function BoxValue({ title, children }: PropsWithChildren<{ title: string }>) {
   )
 }
 
-export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
+export function LaunchBox({ launchpad }: { launchpad: LaunchpadItem }) {
   const { collection } = launchpad
 
   const stage = getActiveOrFirstStageItem(launchpad.stages)

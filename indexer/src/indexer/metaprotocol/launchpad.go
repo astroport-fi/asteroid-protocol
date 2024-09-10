@@ -74,6 +74,8 @@ func (protocol *Launchpad) Process(transactionModel models.Transaction, protocol
 		return protocol.LaunchCollection(transactionModel, parsedURN, rawTransaction, sender)
 	case "reserve":
 		return protocol.ReserveInscription(transactionModel, parsedURN, rawTransaction, sender)
+	case "update":
+		return protocol.UpdateLaunch(transactionModel, parsedURN, rawTransaction, sender)
 	}
 	return nil
 }
@@ -231,6 +233,168 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	return nil
 }
 
+func (protocol *Launchpad) UpdateLaunch(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	// check if sender is allowed to update
+	if !protocol.MintingEnabled && !slices.Contains(protocol.Allowlist, sender) {
+		return fmt.Errorf("sender not allowed to update")
+	}
+
+	// validate collection hash
+	collectionHash := parsedURN.KeyValuePairs["h"]
+	if collectionHash == "" {
+		return fmt.Errorf("missing collection hash")
+	}
+
+	// get collection
+	collection, err := protocol.inscription.GetCollection(collectionHash, sender, true)
+	if err != nil {
+		return err
+	}
+
+	// get launchpad
+	var launchpad models.Launchpad
+	result := protocol.db.Where("collection_id = ?", collection.ID).First(&launchpad)
+	if result.Error != nil {
+		return fmt.Errorf("launchpad not found")
+	}
+
+	// not allowed to update if launchpad is started
+	if !launchpad.StartDate.Valid || launchpad.StartDate.Time.Before(transactionModel.DateCreated) {
+		return fmt.Errorf("launchpad already started")
+	}
+
+	// get launch metadata from non_critical_extension_options
+	msg, err := rawTransaction.Body.GetExtensionMessage()
+	if err != nil {
+		return err
+	}
+
+	var launchMetadata types.LaunchMetadata
+	jsonBytes, err := msg.GetMetadataBytes()
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(jsonBytes, &launchMetadata)
+	if err != nil {
+		return fmt.Errorf("unable to unmarshal metadata '%s'", err)
+	}
+
+	// get start and finish launchpad dates from stages
+	startDate, finishDate := protocol.calculateLaunchWindow(launchMetadata)
+
+	// update launchpad
+	launchpad.MaxSupply = launchMetadata.Supply
+	launchpad.StartDate = startDate
+	launchpad.FinishDate = finishDate
+	launchpad.RevealImmediately = launchMetadata.RevealImmediately
+
+	if !launchMetadata.RevealDate.IsZero() {
+		launchpad.RevealDate = sql.NullTime{Time: launchMetadata.RevealDate, Valid: true}
+	}
+
+	result = protocol.db.Save(&launchpad)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// update stages
+	for i, stage := range launchMetadata.Stages {
+		// get stage
+		var launchpadStage models.LaunchpadStage
+		if stage.ID == 0 {
+			launchpadStage = models.LaunchpadStage{
+				CollectionID: collection.ID,
+				LaunchpadID:  launchpad.ID,
+			}
+		} else {
+			result := protocol.db.Where("launchpad_id = ? AND id = ?", launchpad.ID, stage.ID).First(&launchpadStage)
+			if result.Error != nil {
+				return fmt.Errorf("stage not found")
+			}
+		}
+
+		launchpadStage.Price = stage.Price
+		launchpadStage.PerUserLimit = stage.MaxPerUser
+		launchpadStage.HasWhitelist = len(stage.Whitelist) > 0
+
+		if stage.Name != "" {
+			launchpadStage.Name = sql.NullString{String: stage.Name, Valid: true}
+		}
+
+		if stage.Description != "" {
+			launchpadStage.Description = sql.NullString{String: stage.Description, Valid: true}
+		}
+
+		if stage.Start.IsZero() {
+			launchpadStage.StartDate = sql.NullTime{Valid: false}
+		} else {
+			launchpadStage.StartDate = sql.NullTime{Time: stage.Start, Valid: true}
+		}
+
+		if stage.Finish.IsZero() {
+			launchpadStage.FinishDate = sql.NullTime{Valid: false}
+		} else {
+			launchpadStage.FinishDate = sql.NullTime{Time: stage.Finish, Valid: true}
+		}
+
+		result = protocol.db.Save(&launchpadStage)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		launchMetadata.Stages[i].ID = launchpadStage.ID
+
+		// update whitelists
+		// delete all existing whitelists
+		result = protocol.db.Where("launchpad_id = ? AND stage_id = ?", launchpad.ID, launchpadStage.ID).Delete(&models.LaunchpadWhitelist{})
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// save new whitelists
+		for _, whitelist := range stage.Whitelist {
+			launchpadWhitelist := models.LaunchpadWhitelist{
+				CollectionID: collection.ID,
+				LaunchpadID:  launchpad.ID,
+				StageID:      launchpadStage.ID,
+				Address:      whitelist,
+			}
+
+			result := protocol.db.Save(&launchpadWhitelist)
+			if result.Error != nil {
+				return result.Error
+			}
+		}
+	}
+
+	// delete stage if not in metadata
+	var stages []models.LaunchpadStage
+	result = protocol.db.Where("launchpad_id = ?", launchpad.ID).Find(&stages)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	for _, stage := range stages {
+		found := false
+		for _, newStage := range launchMetadata.Stages {
+			if stage.ID == newStage.ID {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			result = protocol.db.Delete(&stage)
+			if result.Error != nil {
+				return result.Error
+			}
+		}
+	}
+
+	return nil
+}
+
 func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
 	// check if sender is allowed to launch
 	if !protocol.MintingEnabled && !slices.Contains(protocol.Allowlist, sender) {
@@ -281,29 +445,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 	}
 
 	// get start and finish launchpad dates from stages
-	var startDate, finishDate sql.NullTime
-	var startsNow bool = false
-	var isInfinite bool = false
-
-	for _, stage := range launchMetadata.Stages {
-		if stage.Start.IsZero() {
-			startsNow = true
-			startDate = sql.NullTime{Valid: false}
-		} else if !startsNow {
-			if !startDate.Valid || stage.Start.Before(startDate.Time) {
-				startDate = sql.NullTime{Time: stage.Start, Valid: true}
-			}
-		}
-
-		if stage.Finish.IsZero() {
-			isInfinite = true
-			finishDate = sql.NullTime{Valid: false}
-		} else if !isInfinite {
-			if !finishDate.Valid || stage.Finish.After(finishDate.Time) {
-				finishDate = sql.NullTime{Time: stage.Finish, Valid: true}
-			}
-		}
-	}
+	startDate, finishDate := protocol.calculateLaunchWindow(launchMetadata)
 
 	// save to db
 	launchpad = models.Launchpad{
@@ -377,4 +519,31 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 	}
 
 	return nil
+}
+
+func (*Launchpad) calculateLaunchWindow(launchMetadata types.LaunchMetadata) (sql.NullTime, sql.NullTime) {
+	var startDate, finishDate sql.NullTime
+	var startsNow bool = false
+	var isInfinite bool = false
+
+	for _, stage := range launchMetadata.Stages {
+		if stage.Start.IsZero() {
+			startsNow = true
+			startDate = sql.NullTime{Valid: false}
+		} else if !startsNow {
+			if !startDate.Valid || stage.Start.Before(startDate.Time) {
+				startDate = sql.NullTime{Time: stage.Start, Valid: true}
+			}
+		}
+
+		if stage.Finish.IsZero() {
+			isInfinite = true
+			finishDate = sql.NullTime{Valid: false}
+		} else if !isInfinite {
+			if !finishDate.Valid || stage.Finish.After(finishDate.Time) {
+				finishDate = sql.NullTime{Time: stage.Finish, Valid: true}
+			}
+		}
+	}
+	return startDate, finishDate
 }
