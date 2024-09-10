@@ -100,6 +100,11 @@ export class SigningClient {
     }
     return parseInt(authorizedCoin.amount, 10)
   }
+
+  async getAtomBalance(address: string) {
+    const balance = await this.client.getBalance(address, 'uatom')
+    return parseInt(balance.amount)
+  }
 }
 
 interface ClientState {

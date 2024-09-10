@@ -60,7 +60,7 @@ export function UploadedInscriptionBox({
   showMintButton: boolean
 }) {
   const { assetsUrl } = useRootContext()
-  const imageUrl = `${assetsUrl}/${folder}/${inscription.name}`
+  const imageUrl = `${assetsUrl}/${folder}/${encodeURIComponent(inscription.name)}`
   const operations = useInscriptionOperations()
 
   return (

@@ -3,7 +3,7 @@ import { LoaderFunctionArgs } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { format, formatRelative } from 'date-fns'
-import { useMemo, useState } from 'react'
+import { PropsWithChildren, useMemo, useState } from 'react'
 import { Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
@@ -38,6 +38,31 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   }
 
   return json(launch)
+}
+
+function CollapsibleDescription({
+  children,
+  className,
+}: PropsWithChildren<{ className?: string }>) {
+  const [collapsed, isCollapsed] = useState(true)
+
+  return (
+    <p
+      className={twMerge(
+        clsx(
+          'transition-all overflow-hidden ease-in-out delay-50 duration-500 whitespace-pre-wrap text-ellipsis cursor-pointer max-h-[100rem]',
+          className,
+          {
+            'max-h-24 line-clamp-4': collapsed,
+          },
+        ),
+      )}
+      onClick={() => isCollapsed(!collapsed)}
+      role="presentation"
+    >
+      {children}
+    </p>
+  )
 }
 
 function StageBox({
@@ -80,8 +105,11 @@ function StageBox({
       <div className="flex flex-col">
         {title}
         <DecimalText value={stage.price} suffix=" ATOM" className="mt-2" />
+        <CollapsibleDescription className="mt-2">
+          {stage.description}
+        </CollapsibleDescription>
       </div>
-      <div>
+      <div className="ml-4">
         {isEnded ? (
           <span className="text-primary">Ended</span>
         ) : isActive ? (
@@ -113,7 +141,6 @@ function StageBox({
 export default function LaunchpadDetailPage() {
   const launchpad = useLoaderData<typeof loader>()
   const { collection } = launchpad
-  const [collapsed, isCollapsed] = useState(true)
 
   const activeStage = useMemo(
     () => getActiveStage(launchpad.stages),
@@ -152,20 +179,9 @@ export default function LaunchpadDetailPage() {
           </Badge>
         </div>
 
-        <p
-          className={twMerge(
-            clsx(
-              'transition-all overflow-hidden ease-in-out delay-50 duration-500 whitespace-pre-wrap text-ellipsis mt-4 cursor-pointer max-h-[100rem]',
-              {
-                'max-h-24 line-clamp-4': collapsed,
-              },
-            ),
-          )}
-          onClick={() => isCollapsed(!collapsed)}
-          role="presentation"
-        >
+        <CollapsibleDescription className="mt-4">
           {collection.metadata.description}
-        </p>
+        </CollapsibleDescription>
 
         <div className="flex flex-col w-full justify-between mt-8">
           {launchpad.stages.map((stage) => (

@@ -1,14 +1,17 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
 import {
+  CheckIcon,
   CubeIcon,
   LockClosedIcon,
   NoSymbolIcon,
 } from '@heroicons/react/20/solid'
+import { Link } from '@remix-run/react'
 import { useState } from 'react'
 import { Alert, Button, Input } from 'react-daisyui'
 import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
+import useAtomBalance from '~/hooks/useAtomBalance'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import useGetSendAuthorizationAmount, {
   useInvalidateSendAuthorizationAmount,
@@ -33,6 +36,7 @@ export default function MintInscription({
   const { minterAddress, launchpadEnabled } = useRootContext()
   const operations = useLaunchpadOperations()
   const [inProgress, setInProgress] = useState(false)
+  const atomBalance = useAtomBalance()
 
   const { data: authorizedAmount } = useGetSendAuthorizationAmount(
     operations?.address ?? '',
@@ -72,6 +76,10 @@ export default function MintInscription({
     max = Math.min(max, activeStage.per_user_limit - userReservations)
   }
 
+  const mintFee = 100000
+  const fee = mintFee + (activeStage?.price ?? 0)
+  const requiredAmount = fee * amount + (authorizedAmount ?? 0)
+
   async function mint() {
     if (!activeStage) {
       console.warn('No active stage')
@@ -98,14 +106,9 @@ export default function MintInscription({
       metadata,
     )
 
-    const mintFee = 100000
-    const fee = mintFee + (activeStage.price ?? 0)
-
     const grant = getGrantSendMsg(operations.address, minterAddress, {
       allowList: [],
-      spendLimit: [
-        { denom: 'uatom', amount: `${fee * amount + (authorizedAmount ?? 0)}` },
-      ],
+      spendLimit: [{ denom: 'uatom', amount: `${requiredAmount}` }],
     })
     txInscription.messages = [grant]
 
@@ -127,13 +130,13 @@ export default function MintInscription({
       ) : !operations ? (
         <Wallet className="btn-md w-full" color="primary" />
       ) : isMintedOut ? (
-        <Button
-          disabled
-          fullWidth
-          startIcon={<NoSymbolIcon className="size-4" />}
+        <Link
+          className="btn btn-success w-full"
+          to={`/app/collection/${launchpad.collection.symbol}`}
         >
-          Minted out
-        </Button>
+          <CheckIcon className="size-4" />
+          Minted out, see collection
+        </Link>
       ) : !activeStage ? (
         <Button
           disabled
@@ -157,6 +160,14 @@ export default function MintInscription({
           startIcon={<NoSymbolIcon className="size-4" />}
         >
           Reached per user limit
+        </Button>
+      ) : atomBalance < requiredAmount ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
+          You do not have enough funds to complete this transaction
         </Button>
       ) : (
         <div className="flex w-full">

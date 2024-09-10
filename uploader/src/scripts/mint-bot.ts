@@ -24,10 +24,10 @@ async function buildInscription(
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${tokenId}_metadata.json`
   const metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
-  )) as NFTMetadata
+  )) as Required<NFTMetadata>
   metadata.token_id = tokenId
 
-  const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${metadata.filename}`
+  const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${encodeURIComponent(metadata.filename)}`
   const inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
     res.arrayBuffer(),
   )
