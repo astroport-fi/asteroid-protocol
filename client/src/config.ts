@@ -16,14 +16,14 @@ export const Networks: Record<string, Network> = {
     rpc: 'https://rpc.sentry-01.theta-testnet.polypore.xyz',
     rest: 'https://corsproxy.io/?https://rest.sentry-01.theta-testnet.polypore.xyz',
     explorer: 'https://www.mintscan.io/cosmoshub-testnet/tx/',
-    api: 'https://testnet-api.asteroidprotocol.io/v1/graphql',
+    api: 'https://testnet-new-api.asteroidprotocol.io/v1/graphql',
   },
   mainnet: {
     chainId: 'cosmoshub-4',
     rpc: 'https://cosmos-rpc.cosmos-apis.com',
     rest: 'https://cosmos-rest.cosmos-apis.com',
     explorer: 'https://www.mintscan.io/cosmos/tx/',
-    api: 'https://api.asteroidprotocol.io/v1/graphql',
+    api: 'https://new-api.asteroidprotocol.io/v1/graphql',
   },
 }
 
