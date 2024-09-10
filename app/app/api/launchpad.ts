@@ -76,9 +76,7 @@ export const launchpadDetailSelector = Selector('launchpad')({
   finish_date: true,
   reveal_date: true,
   reveal_immediately: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   stages: [{}, stageDetailSelector],
   collection: collectionDetailSelector,
 })
@@ -93,15 +91,15 @@ export type LaunchpadDetail = Omit<
 > & { collection: CollectionDetail }
 
 export const creatorLaunchSelector = Selector('launchpad')({
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   max_supply: true,
+  start_date: true,
   collection: {
     symbol: true,
     name: true,
     content_path: true,
     is_explicit: true,
+    transaction: transactionHashSelector,
   },
 })
 

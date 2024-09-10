@@ -5,12 +5,11 @@ import {
   Selector,
 } from '@asteroid-protocol/sdk/client'
 import { inscription } from '@asteroid-protocol/sdk/metaprotocol'
+import { transactionHashSelector } from './transaction'
 
 export const collectionSelector = Selector('collection')({
   id: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   symbol: true,
   name: true,
   creator: true,

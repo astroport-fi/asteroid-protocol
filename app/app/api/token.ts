@@ -6,6 +6,7 @@ import {
 } from '@asteroid-protocol/sdk/client'
 import { Aggregate } from './common'
 import { marketplaceListingSelector } from './marketplace'
+import { transactionHashSelector } from './transaction'
 
 export const tokenSelector = Selector('token')({
   id: true,
@@ -30,9 +31,7 @@ export type Token = InputType<
 export const tokenDetailSelector = Selector('token')({
   id: true,
   height: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   creator: true,
   current_owner: true,
   name: true,
@@ -109,9 +108,7 @@ export type TokenHolding = InputType<
 export const tokenAddressHistorySelector = Selector('token_address_history')({
   id: true,
   height: true,
-  transaction: {
-    hash: true,
-  },
+  transaction: transactionHashSelector,
   action: true,
   amount: true,
   sender: true,

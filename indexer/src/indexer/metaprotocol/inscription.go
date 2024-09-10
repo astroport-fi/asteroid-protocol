@@ -553,27 +553,38 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
 				}
 			} else {
-				var reservation models.LaunchpadMintReservation
-				result := protocol.db.Where("collection_id = ? and address = ? and is_minted = ?", collection.ID, sender, false).First(&reservation)
-				if result.Error != nil {
-					return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
-				}
+				// if sender is creator and launchpad is not launched yet, allow to pre-mint
+				if collection.Creator == sender && launchpad.StartDate.Valid && launchpad.StartDate.Time.After(transactionModel.DateCreated) {
+					// update minted supply
+					launchpad.MintedSupply += 1
+					result = protocol.db.Save(&launchpad)
+					if result.Error != nil {
+						return result.Error
+					}
+				} else {
+					var reservation models.LaunchpadMintReservation
+					result := protocol.db.Where("collection_id = ? and address = ? and is_minted = ?", collection.ID, sender, false).First(&reservation)
+					if result.Error != nil {
+						return fmt.Errorf("invalid sender, must have launchpad mint reservation or be collection owner")
+					}
 
-				// check inscribe tx was executed by minter bot
-				if rawTransaction.Body.Messages[0].Grantee != protocol.MinterBotAddress {
-					return fmt.Errorf("invalid sender, must be minter bot")
-				}
+					// check inscribe tx was executed by minter bot
+					if rawTransaction.Body.Messages[0].Grantee != protocol.MinterBotAddress {
+						return fmt.Errorf("invalid sender, must be minter bot")
+					}
 
-				// mark reservation as minted
-				reservation.IsMinted = true
+					// mark reservation as minted
+					reservation.IsMinted = true
+
+					result = protocol.db.Save(&reservation)
+					if result.Error != nil {
+						return result.Error
+					}
+				}
 
 				// set token_id to inscription
 				inscriptionModel.TokenID = sql.NullInt64{Int64: int64(inscriptionMetadata.Metadata.TokenID), Valid: true}
 
-				result = protocol.db.Save(&reservation)
-				if result.Error != nil {
-					return result.Error
-				}
 			}
 
 			if err != nil {

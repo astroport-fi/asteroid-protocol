@@ -21,13 +21,18 @@ export default function MintInscription({
   launchpad,
   className,
   activeStage,
+  metadataProvider,
+  disabled = false,
 }: {
   launchpad: LaunchpadDetail
   className?: string
   activeStage: StageDetail | undefined
+  metadataProvider?: () => Promise<unknown>
+  disabled?: boolean
 }) {
   const { minterAddress, launchpadEnabled } = useRootContext()
   const operations = useLaunchpadOperations()
+  const [inProgress, setInProgress] = useState(false)
 
   const { data: authorizedAmount } = useGetSendAuthorizationAmount(
     operations?.address ?? '',
@@ -67,7 +72,7 @@ export default function MintInscription({
     max = Math.min(max, activeStage.per_user_limit - userReservations)
   }
 
-  function mint() {
+  async function mint() {
     if (!activeStage) {
       console.warn('No active stage')
       return
@@ -79,10 +84,18 @@ export default function MintInscription({
       return
     }
 
+    setInProgress(true)
+
+    let metadata: undefined | unknown
+    if (typeof metadataProvider === 'function') {
+      metadata = await metadataProvider()
+    }
+
     const txInscription = operations.reserve(
       launchpad.transaction.hash,
       activeStage.id,
       amount,
+      metadata,
     )
 
     const mintFee = 100000
@@ -97,6 +110,8 @@ export default function MintInscription({
     txInscription.messages = [grant]
 
     showDialog(txInscription)
+
+    setInProgress(false)
   }
 
   return (
@@ -152,6 +167,7 @@ export default function MintInscription({
             min={1}
             max={max}
             step={1}
+            disabled={disabled}
             color={amount > max || amount < 1 ? 'error' : undefined}
             value={amount}
             onChange={(e) => setAmount(parseInt(e.target.value))}
@@ -160,6 +176,8 @@ export default function MintInscription({
             onClick={() => mint()}
             color="primary"
             fullWidth
+            disabled={disabled}
+            loading={inProgress}
             className="shrink ml-2"
             startIcon={<CubeIcon className="size-4" />}
           >

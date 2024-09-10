@@ -13,6 +13,7 @@ import (
 	"github.com/donovansolms/cosmos-inscriptions/indexer/src/indexer/types"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/leodido/go-urn"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -89,9 +90,13 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	}
 
 	// validate stage id
-	stageID := parsedURN.KeyValuePairs["stg"]
+	stageIDString := parsedURN.KeyValuePairs["stg"]
 	if parsedURN.KeyValuePairs["stg"] == "" {
 		return fmt.Errorf("missing stage id")
+	}
+	stageID, err := strconv.ParseUint(stageIDString, 10, 64)
+	if err != nil {
+		return fmt.Errorf("unable to parse stage id '%s'", err)
 	}
 
 	// Check required fields
@@ -133,8 +138,12 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	if launchpad.MaxSupply > 0 && launchpad.MintedSupply >= launchpad.MaxSupply {
 		return fmt.Errorf("launchpad minted out")
 	}
-	availableSupply := launchpad.MaxSupply - launchpad.MintedSupply
-	amountToMint := min(amount, availableSupply)
+	var amountToMint uint64
+	if launchpad.MaxSupply > 0 {
+		amountToMint = min(amount, launchpad.MaxSupply-launchpad.MintedSupply)
+	} else {
+		amountToMint = amount
+	}
 
 	// check if stage is active
 	if stage.StartDate.Valid && stage.StartDate.Time.After(transactionModel.DateCreated) {
@@ -173,6 +182,21 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		return err
 	}
 
+	// get metadata
+	// get launch metadata from non_critical_extension_options
+	msg, err := rawTransaction.Body.GetExtensionMessage()
+	var metadataBytes []byte
+	if err == nil {
+		metadataBytes, err = msg.GetMetadataBytes()
+		if err != nil {
+			return err
+		}
+	}
+
+	if amountToMint < 1 {
+		return fmt.Errorf("nothing to mint")
+	}
+
 	for i := uint64(0); i < amountToMint; i++ {
 		tokenId := maxTokenId + i + 1
 
@@ -183,6 +207,9 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 			StageID:      stage.ID,
 			Address:      sender,
 			TokenId:      tokenId,
+		}
+		if metadataBytes != nil {
+			reservation.Metadata = datatypes.JSON(metadataBytes)
 		}
 
 		result = protocol.db.Save(&reservation)
@@ -205,7 +232,7 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 
 func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
 	// check if sender is allowed to launch
-	if !slices.Contains(protocol.Allowlist, sender) {
+	if !protocol.MintingEnabled && !slices.Contains(protocol.Allowlist, sender) {
 		return fmt.Errorf("sender not allowed to launch")
 	}
 

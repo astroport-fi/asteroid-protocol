@@ -137,7 +137,9 @@ export default function LaunchpadDetailPage() {
         <CollectionSocials collection={collection} />
         <div className="btn btn-neutral btn-sm cursor-auto mt-4">
           Total supply
-          <Badge>{getSupplyTitle(launchpad.max_supply)}</Badge>
+          <Badge>
+            {launchpad.max_supply ? getSupplyTitle(launchpad.max_supply) : '∞'}
+          </Badge>
         </div>
         <div className="btn btn-neutral btn-sm cursor-auto mt-4">
           Reveal
@@ -181,7 +183,7 @@ export default function LaunchpadDetailPage() {
           activeStage={activeStage}
         />
 
-        {launchpad.max_supply && (
+        {launchpad.max_supply > 0 ? (
           <div className="flex flex-col w-full">
             <Progress
               color="primary"
@@ -196,6 +198,22 @@ export default function LaunchpadDetailPage() {
                 />
                 <span className="text-header-content ml-1 text-xs">
                   ({launchpad.minted_supply} / {launchpad.max_supply})
+                </span>
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full">
+            <Progress
+              color="primary"
+              className="mt-2"
+              value={launchpad.minted_supply ? 0.3 : 0}
+            />
+            <div className="flex justify-between mt-2 text-sm">
+              <span>Minted</span>
+              <span>
+                <span className="text-header-content ml-1 text-xs">
+                  ({launchpad.minted_supply} / ∞)
                 </span>
               </span>
             </div>

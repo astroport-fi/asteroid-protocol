@@ -5378,6 +5378,13 @@ export type ValueTypes = {
     /** An object relationship */
     launchpad?: ValueTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
+    metadata?: [
+      {
+        /** JSON select path */
+        path?: string | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
     /** An object relationship */
     stage?: ValueTypes['launchpad_stage']
     stage_id?: boolean | `@${string}`
@@ -5596,6 +5603,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    metadata?:
+      | ValueTypes['jsonb_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     stage?:
       | ValueTypes['launchpad_stage_bool_exp']
       | undefined
@@ -5690,6 +5702,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    metadata?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     stage?:
       | ValueTypes['launchpad_stage_order_by']
       | undefined
@@ -5799,6 +5812,7 @@ export type ValueTypes = {
     id?: number | undefined | null | Variable<any, string>
     is_minted?: boolean | undefined | null | Variable<any, string>
     launchpad_id?: number | undefined | null | Variable<any, string>
+    metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
     stage_id?: number | undefined | null | Variable<any, string>
     token_id?: number | undefined | null | Variable<any, string>
   }
@@ -20725,6 +20739,12 @@ export type ResolverInputTypes = {
     /** An object relationship */
     launchpad?: ResolverInputTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
+    metadata?: [
+      {
+        /** JSON select path */ path?: string | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
     /** An object relationship */
     stage?: ResolverInputTypes['launchpad_stage']
     stage_id?: boolean | `@${string}`
@@ -20888,6 +20908,7 @@ export type ResolverInputTypes = {
     is_minted?: ResolverInputTypes['Boolean_comparison_exp'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
     launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
     stage?: ResolverInputTypes['launchpad_stage_bool_exp'] | undefined | null
     stage_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     token_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
@@ -20938,6 +20959,7 @@ export type ResolverInputTypes = {
     is_minted?: ResolverInputTypes['order_by'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
+    metadata?: ResolverInputTypes['order_by'] | undefined | null
     stage?: ResolverInputTypes['launchpad_stage_order_by'] | undefined | null
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
     token_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -21013,6 +21035,7 @@ export type ResolverInputTypes = {
     id?: number | undefined | null
     is_minted?: boolean | undefined | null
     launchpad_id?: number | undefined | null
+    metadata?: ResolverInputTypes['jsonb'] | undefined | null
     stage_id?: number | undefined | null
     token_id?: number | undefined | null
   }
@@ -30797,6 +30820,7 @@ export type ModelTypes = {
     /** An object relationship */
     launchpad: ModelTypes['launchpad']
     launchpad_id: number
+    metadata?: ModelTypes['jsonb'] | undefined
     /** An object relationship */
     stage: ModelTypes['launchpad_stage']
     stage_id: number
@@ -30917,6 +30941,7 @@ export type ModelTypes = {
     is_minted?: ModelTypes['Boolean_comparison_exp'] | undefined
     launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
+    metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
     stage?: ModelTypes['launchpad_stage_bool_exp'] | undefined
     stage_id?: ModelTypes['Int_comparison_exp'] | undefined
     token_id?: ModelTypes['Int_comparison_exp'] | undefined
@@ -30965,6 +30990,7 @@ export type ModelTypes = {
     is_minted?: ModelTypes['order_by'] | undefined
     launchpad?: ModelTypes['launchpad_order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
+    metadata?: ModelTypes['order_by'] | undefined
     stage?: ModelTypes['launchpad_stage_order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
     token_id?: ModelTypes['order_by'] | undefined
@@ -31034,6 +31060,7 @@ export type ModelTypes = {
     id?: number | undefined
     is_minted?: boolean | undefined
     launchpad_id?: number | undefined
+    metadata?: ModelTypes['jsonb'] | undefined
     stage_id?: number | undefined
     token_id?: number | undefined
   }
@@ -37082,6 +37109,7 @@ export type GraphQLTypes = {
     /** An object relationship */
     launchpad: GraphQLTypes['launchpad']
     launchpad_id: number
+    metadata?: GraphQLTypes['jsonb'] | undefined
     /** An object relationship */
     stage: GraphQLTypes['launchpad_stage']
     stage_id: number
@@ -37209,6 +37237,7 @@ export type GraphQLTypes = {
     is_minted?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
     stage?: GraphQLTypes['launchpad_stage_bool_exp'] | undefined
     stage_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     token_id?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -37259,6 +37288,7 @@ export type GraphQLTypes = {
     is_minted?: GraphQLTypes['order_by'] | undefined
     launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
+    metadata?: GraphQLTypes['order_by'] | undefined
     stage?: GraphQLTypes['launchpad_stage_order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
     token_id?: GraphQLTypes['order_by'] | undefined
@@ -37334,6 +37364,7 @@ export type GraphQLTypes = {
     id?: number | undefined
     is_minted?: boolean | undefined
     launchpad_id?: number | undefined
+    metadata?: GraphQLTypes['jsonb'] | undefined
     stage_id?: number | undefined
     token_id?: number | undefined
   }
@@ -41449,6 +41480,7 @@ export const enum launchpad_mint_reservation_select_column {
   id = 'id',
   is_minted = 'is_minted',
   launchpad_id = 'launchpad_id',
+  metadata = 'metadata',
   stage_id = 'stage_id',
   token_id = 'token_id',
 }

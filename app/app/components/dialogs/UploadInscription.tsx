@@ -16,6 +16,7 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import { useInvalidateUploadedInscriptions } from '~/hooks/uploader/useInscriptions'
 import { useHasUploaderSession } from '~/hooks/useUploaderSession'
 import useAddress from '~/hooks/wallet/useAddress'
+import { getFileExtension } from '~/utils/string'
 import CreateUploaderSession from '../CreateUploaderSession'
 
 type FormData = {
@@ -86,7 +87,7 @@ export default function UploadInscription({
     }
 
     // upload inscription and metadata
-    const fileExt = file.name.split('.').pop() as string
+    const fileExt = getFileExtension(file.name)
 
     try {
       const { inscriptionSignedUrl, metadataSignedUrl, tokenId } =

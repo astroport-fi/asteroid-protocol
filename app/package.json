@@ -14,7 +14,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@asteroid-protocol/sdk": "^0.8.2-launchpad.17",
+    "@asteroid-protocol/sdk": "^0.8.2-mint-customization.0",
     "@chain-registry/types": "^0.18.0",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/stargate": "^0.32.2",
@@ -45,6 +45,7 @@
     "react-intersection-observer": "^9.8.1",
     "react-markdown": "^9.0.1",
     "react-number-format": "^5.3.1",
+    "react-rnd": "^10.4.12",
     "remix-utils": "^7.5.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.2.1",

@@ -247,31 +247,37 @@ export default function BulkUploadInscriptions({
               .
             </p>
 
-            <label htmlFor="content" className="btn btn-accent mt-4">
-              {contentLength > 0 ? 'Change files' : 'Select files'}
-            </label>
-            <FileInput
-              key="content"
-              id="content"
-              multiple
-              className="opacity-0 w-10 h-4"
-              {...register('content', {
-                required: true,
-                validate: async (files) => {
-                  if (
-                    Array.from(files).some((file) => file.size > maxFileSize)
-                  ) {
-                    return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
-                  }
-                },
-              })}
-            />
-            {errors.content && (
-              <span className="text-error">
-                {errors.content.message
-                  ? errors.content.message
-                  : 'Inscription content is required'}
-              </span>
+            {hasUploaderSession && (
+              <>
+                <label htmlFor="content" className="btn btn-accent mt-4">
+                  {contentLength > 0 ? 'Change files' : 'Select files'}
+                </label>
+                <FileInput
+                  key="content"
+                  id="content"
+                  multiple
+                  className="opacity-0 w-10 h-4"
+                  {...register('content', {
+                    required: true,
+                    validate: async (files) => {
+                      if (
+                        Array.from(files).some(
+                          (file) => file.size > maxFileSize,
+                        )
+                      ) {
+                        return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
+                      }
+                    },
+                  })}
+                />
+                {errors.content && (
+                  <span className="text-error">
+                    {errors.content.message
+                      ? errors.content.message
+                      : 'Inscription content is required'}
+                  </span>
+                )}
+              </>
             )}
 
             {address ? (

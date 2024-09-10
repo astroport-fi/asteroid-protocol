@@ -1,4 +1,5 @@
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
+import { CubeIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
@@ -11,11 +12,14 @@ import InscriptionImage from '~/components/InscriptionImage'
 import BulkUploadInscriptions from '~/components/dialogs/BulkUploadInscriptions'
 import EditMetadata from '~/components/dialogs/EditMetadataDialog'
 import Modal from '~/components/dialogs/Modal'
+import TxDialog from '~/components/dialogs/TxDialog'
 import UploadInscription from '~/components/dialogs/UploadInscription'
 import { useRootContext } from '~/context/root'
 import useUploadedInscriptions from '~/hooks/uploader/useInscriptions'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
+import { useInscriptionOperations } from '~/hooks/useOperations'
 import { getAddress } from '~/utils/cookies'
+import { getDateFromUTCString } from '~/utils/date'
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
@@ -41,20 +45,28 @@ interface FormData {
 }
 
 export function UploadedInscriptionBox({
+  collectionHash,
   inscription,
   folder,
-  onClick,
+  showMintButton,
+  onEditClick,
+  onMintClick,
 }: {
+  collectionHash: string
   inscription: LaunchpadInscription
   folder: string
-  onClick: (inscription: LaunchpadInscription) => void
+  onEditClick: (inscription: LaunchpadInscription) => void
+  onMintClick: (inscription: TxInscription) => void
+  showMintButton: boolean
 }) {
   const { assetsUrl } = useRootContext()
+  const imageUrl = `${assetsUrl}/${folder}/${inscription.name}`
+  const operations = useInscriptionOperations()
 
   return (
     <div className="flex flex-col flex-shrink-0 justify-between bg-base-200 rounded-xl group w-60">
       <InscriptionImage
-        src={`${assetsUrl}/${folder}/${inscription.name}`}
+        src={imageUrl}
         isExplicit={false}
         className="h-60"
         containerClassName="rounded-t-xl"
@@ -64,15 +76,50 @@ export function UploadedInscriptionBox({
           <strong className="text-nowrap overflow-hidden text-ellipsis">
             {inscription.name}
           </strong>
-          <Button
-            shape="circle"
-            color="ghost"
-            size="sm"
-            type="button"
-            onClick={() => onClick(inscription)}
-          >
-            <PencilSquareIcon className="size-4" />
-          </Button>
+          <div className="flex">
+            {showMintButton && (
+              <Button
+                shape="circle"
+                color="ghost"
+                size="sm"
+                type="button"
+                title="Pre-mint inscription"
+                onClick={async () => {
+                  if (!operations) {
+                    console.warn('No operations')
+                    return
+                  }
+
+                  const imageResponse = await fetch(imageUrl)
+                  const imageData = await imageResponse.arrayBuffer()
+                  const metadataUrl = `${assetsUrl}/${folder}/${inscription.inscription_number}_metadata.json?${Date.now()}`
+                  const metadataResponse = await fetch(metadataUrl)
+                  const metadataData =
+                    await metadataResponse.json<NFTMetadata>()
+
+                  const txInscription =
+                    operations.inscribeCollectionInscription(
+                      collectionHash,
+                      new Uint8Array(imageData),
+                      metadataData,
+                    )
+                  onMintClick(txInscription)
+                }}
+              >
+                <CubeIcon className="size-4" />
+              </Button>
+            )}
+            <Button
+              shape="circle"
+              color="ghost"
+              size="sm"
+              type="button"
+              title="Edit metadata"
+              onClick={() => onEditClick(inscription)}
+            >
+              <PencilSquareIcon className="size-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -82,11 +129,17 @@ export function UploadedInscriptionBox({
 function UploadedInscriptions({
   inscriptions,
   folder,
-  onClick,
+  collectionHash,
+  showMintButton,
+  onEditClick,
+  onMintClick,
 }: {
   inscriptions: LaunchpadInscription[]
   folder: string
-  onClick: (inscription: LaunchpadInscription) => void
+  collectionHash: string
+  onEditClick: (inscription: LaunchpadInscription) => void
+  onMintClick: (inscription: TxInscription) => void
+  showMintButton: boolean
 }) {
   return (
     <>
@@ -95,7 +148,10 @@ function UploadedInscriptions({
           key={inscription.id}
           inscription={inscription}
           folder={folder}
-          onClick={onClick}
+          collectionHash={collectionHash}
+          onEditClick={onEditClick}
+          onMintClick={onMintClick}
+          showMintButton={showMintButton}
         />
       ))}
     </>
@@ -113,6 +169,11 @@ export default function UploadInscriptionsPage() {
     showDialog: showEditDialog,
     value: editInscription,
   } = useDialogWithValue<LaunchpadInscription>()
+  const {
+    dialogRef: txDialogRef,
+    showDialog: showTxDialog,
+    value: txInscription,
+  } = useDialogWithValue<TxInscription>()
 
   // form
   const {
@@ -131,6 +192,11 @@ export default function UploadInscriptionsPage() {
   const selectedLaunchpad = launches.find(
     (launch) => launch.transaction.hash === selectedLaunchpadHash,
   )
+
+  const isActive =
+    selectedLaunchpad &&
+    (!selectedLaunchpad.start_date ||
+      getDateFromUTCString(selectedLaunchpad.start_date) < new Date())
 
   const allUploaded =
     inscriptionsRes &&
@@ -197,12 +263,17 @@ export default function UploadInscriptionsPage() {
               <Button
                 className="mt-6"
                 color="accent"
+                disabled={!selectedLaunchpadHash}
                 onClick={() => setMultiple(false)}
               >
                 One by one
               </Button>
               <span className="my-2">OR</span>
-              <Button color="accent" onClick={() => setMultiple(true)}>
+              <Button
+                color="accent"
+                disabled={!selectedLaunchpadHash}
+                onClick={() => setMultiple(true)}
+              >
                 Bulk upload
               </Button>
             </div>
@@ -210,9 +281,12 @@ export default function UploadInscriptionsPage() {
 
           {inscriptionsRes && (
             <UploadedInscriptions
+              collectionHash={selectedLaunchpad!.collection.transaction.hash}
               inscriptions={inscriptionsRes.inscriptions}
               folder={inscriptionsRes.folder}
-              onClick={showEditDialog}
+              onEditClick={showEditDialog}
+              showMintButton={isActive == false}
+              onMintClick={showTxDialog}
             />
           )}
         </div>
@@ -238,6 +312,13 @@ export default function UploadInscriptionsPage() {
           />
         )}
       </Modal>
+
+      <TxDialog
+        ref={txDialogRef}
+        txInscription={txInscription}
+        resultLink={(txHash) => `/app/inscription/${txHash}`}
+        resultCTA="View inscription"
+      />
     </div>
   )
 }

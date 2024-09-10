@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 -- Create index "idx_trgm_inscription_metadata_name" to table: "inscription"
 CREATE INDEX "idx_trgm_inscription_metadata_name" ON "public"."inscription" USING gin ((((metadata -> 'metadata'::text) ->> 'name'::text)) gin_trgm_ops);
 -- Create index "idx_inscription_trade_history_buyer_address" to table: "inscription_trade_history"
