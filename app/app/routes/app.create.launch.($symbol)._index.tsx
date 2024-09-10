@@ -18,7 +18,11 @@ import ErrorLabel from '~/components/form/ErrorLabel'
 import Label from '~/components/form/Label'
 import NumericInput from '~/components/form/NumericInput'
 import { Wallet } from '~/components/wallet/Wallet'
-import { COSMOS_ADDRESS_REGEXP } from '~/constants'
+import {
+  COSMOS_ADDRESS_REGEXP,
+  NAME_MAX_LENGTH,
+  NAME_MIN_LENGTH,
+} from '~/constants'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
@@ -342,8 +346,24 @@ export default function CreateCollectionLaunch() {
                       errors['stages']?.[index]?.name ? 'error' : undefined
                     }
                     id={`stages.${index}.name`}
-                    {...register(`stages.${index}.name`)}
+                    maxLength={NAME_MAX_LENGTH}
+                    minLength={NAME_MIN_LENGTH}
+                    {...register(`stages.${index}.name`, {
+                      minLength: NAME_MIN_LENGTH,
+                      maxLength: NAME_MAX_LENGTH,
+                    })}
                   />
+                  <label className="label" htmlFor="name">
+                    <span
+                      className={clsx('label-text-alt', {
+                        ['text-error']: errors['stages']?.[index]?.name != null,
+                      })}
+                    >
+                      {errors['stages']?.[index]?.name
+                        ? 'Name must be 3-32 characters long'
+                        : '3 - 32 characters'}
+                    </span>
+                  </label>
                 </div>
 
                 <div className="form-control w-full">
