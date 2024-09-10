@@ -91,7 +91,7 @@ How to integrate Asteroid Protocol SDK with Next.js and CosmosKit Wallet provide
 ```typescript
 import { AsteroidService } from "@asteroid-protocol/sdk/client";
 
-const asteroid = new AsteroidService('https://api.asteroidprotocol.io/v1/graphql')
+const asteroid = new AsteroidService('https://new-api.asteroidprotocol.io/v1/graphql')
 const tokens = await asteroid.query({
   token: [
     { limit: 20 },
