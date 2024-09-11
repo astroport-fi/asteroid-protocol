@@ -229,7 +229,7 @@ export default function BulkUploadInscriptions({
               which includes all the metadata for your images. You can download
               a sample CSV file to accompany your images{' '}
               <Link
-                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#add-metadata-with-a-.csv-file"
+                href="https://docs.asteroidprotocol.io/creators-and-artists/creating-a-collection-with-the-launchpad#bulk-upload-option-1-add-metadata-with-a-.csv-file"
                 target="_blank"
                 className="underline"
               >
@@ -238,7 +238,7 @@ export default function BulkUploadInscriptions({
               . Advanced users can also use individual JSON files instead of a
               spreadsheet. Learn more{' '}
               <Link
-                href="https://docs.asteroidprotocol.io/creators-and-artists/launchpad#example-metadata-json-file-like-1.json"
+                href="https://docs.asteroidprotocol.io/creators-and-artists/creating-a-collection-with-the-launchpad#bulk-upload-method-2-add-metadata-with-json"
                 target="_blank"
                 className="underline"
               >
