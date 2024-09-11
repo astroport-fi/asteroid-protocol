@@ -4,7 +4,7 @@ import { formatRelative } from 'date-fns'
 import { PropsWithChildren } from 'react'
 import { Divider } from 'react-daisyui'
 import { AsteroidClient } from '~/api/client'
-import { Launchpad } from '~/api/launchpad'
+import { Launchpad, getActiveOrFirstStageItem } from '~/api/launchpad'
 import { UploadApi } from '~/api/upload'
 import DecimalText from '~/components/DecimalText'
 import Grid from '~/components/Grid'
@@ -56,7 +56,7 @@ function BoxValue({ title, children }: PropsWithChildren<{ title: string }>) {
 export function LaunchBox({ launchpad }: { launchpad: Launchpad }) {
   const { collection } = launchpad
 
-  const stage = launchpad.stages[0]
+  const stage = getActiveOrFirstStageItem(launchpad.stages)
 
   const isMintedOut =
     launchpad.max_supply && launchpad.max_supply === launchpad.minted_supply
