@@ -24,6 +24,11 @@ export class LaunchpadOperations<
     return this.prepareOperation(operation, { metadata })
   }
 
+  update(collectionHash: string, metadata: LaunchMetadata) {
+    const operation = this.protocol.update(collectionHash)
+    return this.prepareOperation(operation, { metadata })
+  }
+
   // @todo signature
   reserve(
     launchpadHash: string,

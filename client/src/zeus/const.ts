@@ -1044,8 +1044,11 @@ export const AllTypesProps: Record<string, any> = {
     _or: 'launchpad_mint_reservation_bool_exp',
     address: 'String_comparison_exp',
     collection_id: 'Int_comparison_exp',
+    date_created: 'timestamp_comparison_exp',
     id: 'Int_comparison_exp',
+    is_expired: 'Boolean_comparison_exp',
     is_minted: 'Boolean_comparison_exp',
+    is_random: 'Boolean_comparison_exp',
     launchpad: 'launchpad_bool_exp',
     launchpad_id: 'Int_comparison_exp',
     metadata: 'jsonb_comparison_exp',
@@ -1056,6 +1059,7 @@ export const AllTypesProps: Record<string, any> = {
   launchpad_mint_reservation_max_order_by: {
     address: 'order_by',
     collection_id: 'order_by',
+    date_created: 'order_by',
     id: 'order_by',
     launchpad_id: 'order_by',
     stage_id: 'order_by',
@@ -1064,6 +1068,7 @@ export const AllTypesProps: Record<string, any> = {
   launchpad_mint_reservation_min_order_by: {
     address: 'order_by',
     collection_id: 'order_by',
+    date_created: 'order_by',
     id: 'order_by',
     launchpad_id: 'order_by',
     stage_id: 'order_by',
@@ -1072,8 +1077,11 @@ export const AllTypesProps: Record<string, any> = {
   launchpad_mint_reservation_order_by: {
     address: 'order_by',
     collection_id: 'order_by',
+    date_created: 'order_by',
     id: 'order_by',
+    is_expired: 'order_by',
     is_minted: 'order_by',
+    is_random: 'order_by',
     launchpad: 'launchpad_order_by',
     launchpad_id: 'order_by',
     metadata: 'order_by',
@@ -1112,6 +1120,7 @@ export const AllTypesProps: Record<string, any> = {
     ordering: 'cursor_ordering',
   },
   launchpad_mint_reservation_stream_cursor_value_input: {
+    date_created: 'timestamp',
     metadata: 'jsonb',
   },
   launchpad_mint_reservation_sum_order_by: {
@@ -4654,8 +4663,11 @@ export const ReturnTypes: Record<string, any> = {
   launchpad_mint_reservation: {
     address: 'String',
     collection_id: 'Int',
+    date_created: 'timestamp',
     id: 'Int',
+    is_expired: 'Boolean',
     is_minted: 'Boolean',
+    is_random: 'Boolean',
     launchpad: 'launchpad',
     launchpad_id: 'Int',
     metadata: 'jsonb',
@@ -4690,6 +4702,7 @@ export const ReturnTypes: Record<string, any> = {
   launchpad_mint_reservation_max_fields: {
     address: 'String',
     collection_id: 'Int',
+    date_created: 'timestamp',
     id: 'Int',
     launchpad_id: 'Int',
     stage_id: 'Int',
@@ -4698,6 +4711,7 @@ export const ReturnTypes: Record<string, any> = {
   launchpad_mint_reservation_min_fields: {
     address: 'String',
     collection_id: 'Int',
+    date_created: 'timestamp',
     id: 'Int',
     launchpad_id: 'Int',
     stage_id: 'Int',
