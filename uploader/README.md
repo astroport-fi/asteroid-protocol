@@ -44,6 +44,12 @@ Testnet:
 gaiad query authz grants cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw /cosmos.bank.v1beta1.MsgSend --chain-id theta-testnet-001 --node https://rpc-t.cosmos.nodestake.org:443
 ```
 
+Mainnet:
+
+```bash
+gaiad query authz grants cosmos1m9l358xunhhwds0568za49mzhvuxx9uxre5tud cosmos1kdffujrm0tkh0ephex25ejt4fq6ms3xl8s0em2 /cosmos.bank.v1beta1.MsgSend --chain-id cosmoshub-4 --node https://cosmos-rpc.cosmos-apis.com:443
+```
+
 #### Revoke grant
 
 ```bash

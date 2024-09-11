@@ -14,8 +14,11 @@ select_permissions:
       columns:
         - address
         - collection_id
+        - date_created
         - id
+        - is_expired
         - is_minted
+        - is_random
         - launchpad_id
         - metadata
         - stage_id

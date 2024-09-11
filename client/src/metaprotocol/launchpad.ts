@@ -10,6 +10,7 @@ const DEFAULT_FEE: ProtocolFee = {
 }
 
 export interface MintStage {
+  id?: number
   name?: string
   description?: string
   start?: Date
@@ -38,6 +39,11 @@ export default class LaunchpadProtocol extends BaseProtocol {
   launch(collectionHash: string) {
     const params: MetaProtocolParams = [['h', collectionHash]]
     return buildOperation(this, this.fee, this.chainId, 'launch', params)
+  }
+
+  update(collectionHash: string) {
+    const params: MetaProtocolParams = [['h', collectionHash]]
+    return buildOperation(this, this.fee, this.chainId, 'update', params)
   }
 
   reserve(launchpadHash: string, mintStage: number, amount: number = 1) {

@@ -5373,8 +5373,11 @@ export type ValueTypes = {
   ['launchpad_mint_reservation']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    is_expired?: boolean | `@${string}`
     is_minted?: boolean | `@${string}`
+    is_random?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ValueTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
@@ -5583,12 +5586,27 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     id?:
       | ValueTypes['Int_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
+    is_expired?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     is_minted?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    is_random?:
       | ValueTypes['Boolean_comparison_exp']
       | undefined
       | null
@@ -5628,6 +5646,7 @@ export type ValueTypes = {
   ['launchpad_mint_reservation_max_fields']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
     launchpad_id?: boolean | `@${string}`
     stage_id?: boolean | `@${string}`
@@ -5638,6 +5657,11 @@ export type ValueTypes = {
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
       | ValueTypes['order_by']
       | undefined
       | null
@@ -5655,6 +5679,7 @@ export type ValueTypes = {
   ['launchpad_mint_reservation_min_fields']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
     launchpad_id?: boolean | `@${string}`
     stage_id?: boolean | `@${string}`
@@ -5665,6 +5690,11 @@ export type ValueTypes = {
   ['launchpad_mint_reservation_min_order_by']: {
     address?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
       | ValueTypes['order_by']
       | undefined
       | null
@@ -5686,8 +5716,23 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    is_expired?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     is_minted?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    is_random?:
       | ValueTypes['order_by']
       | undefined
       | null
@@ -5809,8 +5854,15 @@ export type ValueTypes = {
   ['launchpad_mint_reservation_stream_cursor_value_input']: {
     address?: string | undefined | null | Variable<any, string>
     collection_id?: number | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
+    is_expired?: boolean | undefined | null | Variable<any, string>
     is_minted?: boolean | undefined | null | Variable<any, string>
+    is_random?: boolean | undefined | null | Variable<any, string>
     launchpad_id?: number | undefined | null | Variable<any, string>
     metadata?: ValueTypes['jsonb'] | undefined | null | Variable<any, string>
     stage_id?: number | undefined | null | Variable<any, string>
@@ -20734,8 +20786,11 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    is_expired?: boolean | `@${string}`
     is_minted?: boolean | `@${string}`
+    is_random?: boolean | `@${string}`
     /** An object relationship */
     launchpad?: ResolverInputTypes['launchpad']
     launchpad_id?: boolean | `@${string}`
@@ -20904,8 +20959,14 @@ export type ResolverInputTypes = {
       | null
     address?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    is_expired?: ResolverInputTypes['Boolean_comparison_exp'] | undefined | null
     is_minted?: ResolverInputTypes['Boolean_comparison_exp'] | undefined | null
+    is_random?: ResolverInputTypes['Boolean_comparison_exp'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
     launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     metadata?: ResolverInputTypes['jsonb_comparison_exp'] | undefined | null
@@ -20917,6 +20978,7 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_max_fields']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
     launchpad_id?: boolean | `@${string}`
     stage_id?: boolean | `@${string}`
@@ -20927,6 +20989,7 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ResolverInputTypes['order_by'] | undefined | null
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20936,6 +20999,7 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_min_fields']: AliasType<{
     address?: boolean | `@${string}`
     collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
     id?: boolean | `@${string}`
     launchpad_id?: boolean | `@${string}`
     stage_id?: boolean | `@${string}`
@@ -20946,6 +21010,7 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_min_order_by']: {
     address?: ResolverInputTypes['order_by'] | undefined | null
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
     stage_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -20955,8 +21020,11 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_order_by']: {
     address?: ResolverInputTypes['order_by'] | undefined | null
     collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
+    is_expired?: ResolverInputTypes['order_by'] | undefined | null
     is_minted?: ResolverInputTypes['order_by'] | undefined | null
+    is_random?: ResolverInputTypes['order_by'] | undefined | null
     launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
     launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
     metadata?: ResolverInputTypes['order_by'] | undefined | null
@@ -21032,8 +21100,11 @@ export type ResolverInputTypes = {
   ['launchpad_mint_reservation_stream_cursor_value_input']: {
     address?: string | undefined | null
     collection_id?: number | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
     id?: number | undefined | null
+    is_expired?: boolean | undefined | null
     is_minted?: boolean | undefined | null
+    is_random?: boolean | undefined | null
     launchpad_id?: number | undefined | null
     metadata?: ResolverInputTypes['jsonb'] | undefined | null
     stage_id?: number | undefined | null
@@ -30815,8 +30886,11 @@ export type ModelTypes = {
   ['launchpad_mint_reservation']: {
     address: string
     collection_id: number
+    date_created: ModelTypes['timestamp']
     id: number
+    is_expired?: boolean | undefined
     is_minted: boolean
+    is_random: boolean
     /** An object relationship */
     launchpad: ModelTypes['launchpad']
     launchpad_id: number
@@ -30937,8 +31011,11 @@ export type ModelTypes = {
     _or?: Array<ModelTypes['launchpad_mint_reservation_bool_exp']> | undefined
     address?: ModelTypes['String_comparison_exp'] | undefined
     collection_id?: ModelTypes['Int_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
+    is_expired?: ModelTypes['Boolean_comparison_exp'] | undefined
     is_minted?: ModelTypes['Boolean_comparison_exp'] | undefined
+    is_random?: ModelTypes['Boolean_comparison_exp'] | undefined
     launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
     metadata?: ModelTypes['jsonb_comparison_exp'] | undefined
@@ -30950,6 +31027,7 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_max_fields']: {
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
@@ -30959,6 +31037,7 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_max_order_by']: {
     address?: ModelTypes['order_by'] | undefined
     collection_id?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
@@ -30968,6 +31047,7 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_min_fields']: {
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
@@ -30977,6 +31057,7 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_min_order_by']: {
     address?: ModelTypes['order_by'] | undefined
     collection_id?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
     stage_id?: ModelTypes['order_by'] | undefined
@@ -30986,8 +31067,11 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_order_by']: {
     address?: ModelTypes['order_by'] | undefined
     collection_id?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
+    is_expired?: ModelTypes['order_by'] | undefined
     is_minted?: ModelTypes['order_by'] | undefined
+    is_random?: ModelTypes['order_by'] | undefined
     launchpad?: ModelTypes['launchpad_order_by'] | undefined
     launchpad_id?: ModelTypes['order_by'] | undefined
     metadata?: ModelTypes['order_by'] | undefined
@@ -31057,8 +31141,11 @@ export type ModelTypes = {
   ['launchpad_mint_reservation_stream_cursor_value_input']: {
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
     id?: number | undefined
+    is_expired?: boolean | undefined
     is_minted?: boolean | undefined
+    is_random?: boolean | undefined
     launchpad_id?: number | undefined
     metadata?: ModelTypes['jsonb'] | undefined
     stage_id?: number | undefined
@@ -37104,8 +37191,11 @@ export type GraphQLTypes = {
     __typename: 'launchpad_mint_reservation'
     address: string
     collection_id: number
+    date_created: GraphQLTypes['timestamp']
     id: number
+    is_expired?: boolean | undefined
     is_minted: boolean
+    is_random: boolean
     /** An object relationship */
     launchpad: GraphQLTypes['launchpad']
     launchpad_id: number
@@ -37233,8 +37323,11 @@ export type GraphQLTypes = {
     _or?: Array<GraphQLTypes['launchpad_mint_reservation_bool_exp']> | undefined
     address?: GraphQLTypes['String_comparison_exp'] | undefined
     collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    is_expired?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     is_minted?: GraphQLTypes['Boolean_comparison_exp'] | undefined
+    is_random?: GraphQLTypes['Boolean_comparison_exp'] | undefined
     launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
     launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     metadata?: GraphQLTypes['jsonb_comparison_exp'] | undefined
@@ -37247,6 +37340,7 @@ export type GraphQLTypes = {
     __typename: 'launchpad_mint_reservation_max_fields'
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
@@ -37256,6 +37350,7 @@ export type GraphQLTypes = {
   ['launchpad_mint_reservation_max_order_by']: {
     address?: GraphQLTypes['order_by'] | undefined
     collection_id?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
@@ -37266,6 +37361,7 @@ export type GraphQLTypes = {
     __typename: 'launchpad_mint_reservation_min_fields'
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
     id?: number | undefined
     launchpad_id?: number | undefined
     stage_id?: number | undefined
@@ -37275,6 +37371,7 @@ export type GraphQLTypes = {
   ['launchpad_mint_reservation_min_order_by']: {
     address?: GraphQLTypes['order_by'] | undefined
     collection_id?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     stage_id?: GraphQLTypes['order_by'] | undefined
@@ -37284,8 +37381,11 @@ export type GraphQLTypes = {
   ['launchpad_mint_reservation_order_by']: {
     address?: GraphQLTypes['order_by'] | undefined
     collection_id?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
+    is_expired?: GraphQLTypes['order_by'] | undefined
     is_minted?: GraphQLTypes['order_by'] | undefined
+    is_random?: GraphQLTypes['order_by'] | undefined
     launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
     launchpad_id?: GraphQLTypes['order_by'] | undefined
     metadata?: GraphQLTypes['order_by'] | undefined
@@ -37361,8 +37461,11 @@ export type GraphQLTypes = {
   ['launchpad_mint_reservation_stream_cursor_value_input']: {
     address?: string | undefined
     collection_id?: number | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
     id?: number | undefined
+    is_expired?: boolean | undefined
     is_minted?: boolean | undefined
+    is_random?: boolean | undefined
     launchpad_id?: number | undefined
     metadata?: GraphQLTypes['jsonb'] | undefined
     stage_id?: number | undefined
@@ -41477,8 +41580,11 @@ export const enum inscription_trade_history_select_column {
 export const enum launchpad_mint_reservation_select_column {
   address = 'address',
   collection_id = 'collection_id',
+  date_created = 'date_created',
   id = 'id',
+  is_expired = 'is_expired',
   is_minted = 'is_minted',
+  is_random = 'is_random',
   launchpad_id = 'launchpad_id',
   metadata = 'metadata',
   stage_id = 'stage_id',
@@ -41486,11 +41592,15 @@ export const enum launchpad_mint_reservation_select_column {
 }
 /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns" columns of table "launchpad_mint_reservation" */
 export const enum launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_and_arguments_columns {
+  is_expired = 'is_expired',
   is_minted = 'is_minted',
+  is_random = 'is_random',
 }
 /** select "launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns" columns of table "launchpad_mint_reservation" */
 export const enum launchpad_mint_reservation_select_column_launchpad_mint_reservation_aggregate_bool_exp_bool_or_arguments_columns {
+  is_expired = 'is_expired',
   is_minted = 'is_minted',
+  is_random = 'is_random',
 }
 /** select columns of table "launchpad" */
 export const enum launchpad_select_column {

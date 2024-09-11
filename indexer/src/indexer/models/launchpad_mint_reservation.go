@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/datatypes"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 type LaunchpadMintReservation struct {
 	ID           uint64         `gorm:"primary_key"`
@@ -12,6 +16,8 @@ type LaunchpadMintReservation struct {
 	IsMinted     bool           `gorm:"column:is_minted"`
 	Metadata     datatypes.JSON `gorm:"column:metadata"`
 	IsRandom     bool           `gorm:"column:is_random"`
+	IsExpired    bool           `gorm:"column:is_expired"`
+	DateCreated  time.Time      `gorm:"column:date_created"`
 }
 
 func (LaunchpadMintReservation) TableName() string {
