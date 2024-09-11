@@ -31,7 +31,7 @@ type ExpireLaunchpadReservationWorker struct {
 }
 
 func (w *ExpireLaunchpadReservationWorker) Work(ctx context.Context, job *river.Job[ExpireLaunchpadReservationArgs]) error {
-	// select launch reservations that have date_created older than 60 minutes with gorm
+	// select launch reservations that have date_created older than 60 minutes
 	var reservations []models.LaunchpadMintReservation
 	err := w.DB.Where("is_minted is false and date_created < NOW() - interval '60 minutes'").Find(&reservations).Error
 	if err != nil {
@@ -63,8 +63,8 @@ func (w *ExpireLaunchpadReservationWorker) Work(ctx context.Context, job *river.
 			}
 		} else {
 			if launchpad.RevealDate.Valid {
-				// if reveal_date is set and older than 1 hour, expire the reservation and update the launchpad minted supply
-				if launchpad.RevealDate.Time.Before(time.Now().UTC().Add(-time.Hour)) {
+				// if reveal_date is set and older than 2 hour, expire the reservation and update the launchpad minted supply
+				if launchpad.RevealDate.Time.Before(time.Now().UTC().Add(-2 * time.Hour)) {
 					reservation.IsExpired = true
 
 					err := w.DB.Save(&reservation).Error
@@ -86,8 +86,8 @@ func (w *ExpireLaunchpadReservationWorker) Work(ctx context.Context, job *river.
 					return err
 				}
 
-				// if the latest reservation is older than 1 hour, expire the reservation and update the launchpad minted supply
-				if latestReservation.DateCreated.Before(time.Now().UTC().Add(-time.Hour)) {
+				// if the latest reservation is older than 2 hour, expire the reservation and update the launchpad minted supply
+				if latestReservation.DateCreated.Before(time.Now().UTC().Add(-2 * time.Hour)) {
 					reservation.IsExpired = true
 
 					err := w.DB.Save(&reservation).Error
