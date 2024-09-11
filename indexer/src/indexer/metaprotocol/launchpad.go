@@ -207,6 +207,7 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 			StageID:      stage.ID,
 			Address:      sender,
 			TokenId:      tokenId,
+			DateCreated:  transactionModel.DateCreated,
 		}
 		if metadataBytes != nil {
 			reservation.Metadata = datatypes.JSON(metadataBytes)
