@@ -1739,6 +1739,9 @@ export class AsteroidClient extends AsteroidService {
             is_minted: {
               _eq: false,
             },
+            is_expired: {
+              _eq: false,
+            },
           },
           order_by: [
             {
