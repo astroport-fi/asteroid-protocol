@@ -7,7 +7,7 @@ import { PropsWithChildren, useMemo, useState } from 'react'
 import { Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
-import { StageDetail, getActiveStage } from '~/api/launchpad'
+import { StageDetail, getActiveStageDetail } from '~/api/launchpad'
 import DecimalText from '~/components/DecimalText'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintInscription from '~/components/MintInscription'
@@ -152,7 +152,7 @@ export default function LaunchpadDetailPage() {
   const { collection } = launchpad
 
   const activeStage = useMemo(
-    () => getActiveStage(launchpad.stages),
+    () => getActiveStageDetail(launchpad.stages),
     [launchpad.stages],
   )
 

@@ -12,13 +12,15 @@ import {
 } from './collection'
 import { transactionHashSelector } from './transaction'
 
-export const stageSelector = Selector('launchpad_stage')({
+export const stageItemSelector = Selector('launchpad_stage')({
   price: true,
+  start_date: true,
+  finish_date: true,
 })
 
-export type Stage = InputType<
+export type StageItem = InputType<
   GraphQLTypes['launchpad_stage'],
-  typeof stageSelector,
+  typeof stageItemSelector,
   ScalarDefinition
 >
 
@@ -59,7 +61,7 @@ export const launchpadSelector = Selector('launchpad')({
   minted_supply: true,
   start_date: true,
   finish_date: true,
-  stages: [{}, stageSelector],
+  stages: [{}, stageItemSelector],
   collection: collectionSelector,
 })
 
@@ -127,7 +129,7 @@ export type MintReservation = InputType<
   ScalarDefinition
 >
 
-function isStageActive(stage: StageDetail) {
+function isStageActive(stage: StageItem) {
   const now = new Date()
   return (
     (!stage.start_date || getDateFromUTCString(stage.start_date) < now) &&
@@ -135,7 +137,7 @@ function isStageActive(stage: StageDetail) {
   )
 }
 
-export function getActiveStage(stages: StageDetail[]) {
+export function getActiveStageDetail(stages: StageDetail[]) {
   // sort by price cheapest first
   stages.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))
 
@@ -155,4 +157,9 @@ export function getActiveStage(stages: StageDetail[]) {
 
   // if no active stage for user found, return the last stage
   return [...stages].reverse().find(isStageActive)
+}
+
+export function getActiveOrFirstStageItem(stages: StageItem[]) {
+  const activeStage = stages.find(isStageActive)
+  return activeStage ?? stages[0]
 }
