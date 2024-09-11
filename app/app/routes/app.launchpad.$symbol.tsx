@@ -1,5 +1,5 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
-import { LoaderFunctionArgs } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { format, formatRelative } from 'date-fns'
@@ -15,7 +15,16 @@ import PercentageText from '~/components/PercentageText'
 import CollectionSocials from '~/components/collection/CollectionSocials'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT, getDateFromUTCString } from '~/utils/date'
+import { collectionMeta } from '~/utils/meta'
 import { getSupplyTitle } from '~/utils/number'
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data || !data.collection) {
+    return []
+  }
+
+  return collectionMeta(data.collection)
+}
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!params.symbol) {
