@@ -52,6 +52,7 @@ func NewWorker(ctx context.Context, log *logrus.Entry) (*Worker, error) {
 	river.AddWorker(w, &workers.CollectionStatsWorker{DB: db})
 	river.AddWorker(w, &workers.CollectionTraitsWorker{DB: db})
 	river.AddWorker(w, &workers.CollectionsStatsWorker{DB: db})
+	river.AddWorker(w, &workers.ExpireLaunchpadReservationWorker{DB: db})
 
 	// Setup periodic jobs
 	periodicJobs := []*river.PeriodicJob{
@@ -59,6 +60,13 @@ func NewWorker(ctx context.Context, log *logrus.Entry) (*Worker, error) {
 			river.PeriodicInterval(workers.CollectionsStatsPeriod),
 			func() (river.JobArgs, *river.InsertOpts) {
 				return workers.CollectionsStatsArgs{}, nil
+			},
+			&river.PeriodicJobOpts{RunOnStart: true},
+		),
+		river.NewPeriodicJob(
+			river.PeriodicInterval(workers.ExpireLaunchpadReservationPeriod),
+			func() (river.JobArgs, *river.InsertOpts) {
+				return workers.ExpireLaunchpadReservationArgs{}, nil
 			},
 			&river.PeriodicJobOpts{RunOnStart: true},
 		),
