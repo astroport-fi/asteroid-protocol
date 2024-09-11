@@ -33,7 +33,7 @@ type ExpireLaunchpadReservationWorker struct {
 func (w *ExpireLaunchpadReservationWorker) Work(ctx context.Context, job *river.Job[ExpireLaunchpadReservationArgs]) error {
 	// select launch reservations that have date_created older than 60 minutes
 	var reservations []models.LaunchpadMintReservation
-	err := w.DB.Where("is_minted is false and date_created < NOW() - interval '60 minutes'").Find(&reservations).Error
+	err := w.DB.Where("is_minted is false and is_expired is false and date_created < NOW() - interval '60 minutes'").Find(&reservations).Error
 	if err != nil {
 		return err
 	}
