@@ -24,7 +24,7 @@ export type StageItem = InputType<
   ScalarDefinition
 >
 
-export const stageDetailSelector = Selector('launchpad_stage')({
+export const stageSelector = Selector('launchpad_stage')({
   id: true,
   name: true,
   description: true,
@@ -33,6 +33,40 @@ export const stageDetailSelector = Selector('launchpad_stage')({
   price: true,
   per_user_limit: true,
   has_whitelist: true,
+  whitelists: [
+    {},
+    {
+      address: true,
+    },
+  ],
+})
+
+export type Stage = InputType<
+  GraphQLTypes['launchpad_stage'],
+  typeof stageSelector,
+  ScalarDefinition
+>
+
+export const launchpadSelector = Selector('launchpad')({
+  transaction: transactionHashSelector,
+  max_supply: true,
+  minted_supply: true,
+  start_date: true,
+  finish_date: true,
+  reveal_date: true,
+  reveal_immediately: true,
+  stages: [{}, stageSelector],
+  collection: collectionSelector,
+})
+
+export type Launchpad = InputType<
+  GraphQLTypes['launchpad'],
+  typeof launchpadSelector,
+  ScalarDefinition
+>
+
+export const stageDetailSelector = Selector('launchpad_stage')({
+  ...stageSelector,
   whitelists: [
     {},
     {
@@ -55,7 +89,7 @@ export type StageDetail = InputType<
   ScalarDefinition
 >
 
-export const launchpadSelector = Selector('launchpad')({
+export const launchpadItemSelector = Selector('launchpad')({
   transaction: transactionHashSelector,
   max_supply: true,
   minted_supply: true,
@@ -65,9 +99,9 @@ export const launchpadSelector = Selector('launchpad')({
   collection: collectionSelector,
 })
 
-export type Launchpad = InputType<
+export type LaunchpadItem = InputType<
   GraphQLTypes['launchpad'],
-  typeof launchpadSelector,
+  typeof launchpadItemSelector,
   ScalarDefinition
 >
 

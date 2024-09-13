@@ -67,9 +67,11 @@ import {
   CreatorLaunch,
   Launchpad,
   LaunchpadDetail,
+  LaunchpadItem,
   MintReservation,
   creatorLaunchSelector,
   launchpadDetailSelector,
+  launchpadItemSelector,
   launchpadSelector,
   mintReservationSelector,
   stageDetailSelector,
@@ -1756,7 +1758,7 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad_mint_reservation
   }
 
-  async getActiveLaunches(): Promise<Launchpad[]> {
+  async getActiveLaunches(): Promise<LaunchpadItem[]> {
     const result = await this.query({
       launchpad: [
         {
@@ -1780,7 +1782,7 @@ export class AsteroidClient extends AsteroidService {
             ],
           },
         },
-        launchpadSelector,
+        launchpadItemSelector,
       ],
     })
 
@@ -1811,7 +1813,7 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad
   }
 
-  async getPastLaunches(): Promise<Launchpad[]> {
+  async getPastLaunches(): Promise<LaunchpadItem[]> {
     const result = await this.query({
       launchpad: [
         {
@@ -1835,7 +1837,7 @@ export class AsteroidClient extends AsteroidService {
             ],
           },
         },
-        launchpadSelector,
+        launchpadItemSelector,
       ],
     })
 
@@ -1861,6 +1863,25 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return result.launchpad?.[0].transaction.hash
+  }
+
+  async getLaunchpad(symbol: string): Promise<Launchpad | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            collection: {
+              symbol: {
+                _eq: symbol,
+              },
+            },
+          },
+        },
+        launchpadSelector,
+      ],
+    })
+
+    return result.launchpad[0]
   }
 
   async getLaunch(

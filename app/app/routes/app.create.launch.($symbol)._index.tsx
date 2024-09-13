@@ -2,15 +2,24 @@ import { TxInscription } from '@asteroid-protocol/sdk'
 import { launchpad } from '@asteroid-protocol/sdk/metaprotocol'
 import { CheckIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData, useParams } from '@remix-run/react'
+import { useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
-import React, { useState } from 'react'
-import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
+import React, { useMemo, useState } from 'react'
+import {
+  Alert,
+  Button,
+  Divider,
+  Form,
+  Input,
+  Radio,
+  Textarea,
+} from 'react-daisyui'
 import DatePicker from 'react-datepicker'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { clientOnly$ } from 'vite-env-only'
 import { AsteroidClient } from '~/api/client'
+import { Launchpad } from '~/api/launchpad'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import TxDialog from '~/components/dialogs/TxDialog'
 import { CollectionSelect } from '~/components/form/CollectionSelect'
@@ -27,7 +36,8 @@ import { useDialogWithValue } from '~/hooks/useDialog'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { getAddress } from '~/utils/cookies'
-import { toDecimalValue } from '~/utils/number'
+import { getDateFromUTCString } from '~/utils/date'
+import { getDecimalValue, toDecimalValue } from '~/utils/number'
 import 'react-datepicker/dist/react-datepicker.css'
 
 function convertLocalToUTCDate(date: Date) {
@@ -43,13 +53,16 @@ function getUTCString(date: Date | undefined) {
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
   if (!address) {
-    return json({ collections: [] })
+    return json({ collections: [], launchpad: undefined })
   }
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const collections = await asteroidClient.getEmptyCollections(address)
 
-  return json({ collections: collections })
+  return json({
+    collections: collections,
+    launchpad: undefined as Launchpad | undefined,
+  })
 }
 
 enum Reveal {
@@ -64,6 +77,7 @@ enum Supply {
 }
 
 interface FormStage {
+  id?: number
   name?: string
   description?: string
   start?: Date
@@ -99,6 +113,72 @@ export default function CreateCollectionLaunch() {
   const selectedHash = symbol
     ? data.collections.find((c) => c.symbol === symbol)?.transaction.hash
     : undefined
+  const isEdit = data.launchpad != undefined
+  const navigate = useNavigate()
+
+  const editingDisabled = useMemo(() => {
+    if (!data.launchpad) {
+      return false
+    }
+
+    return (
+      !data.launchpad.start_date ||
+      new Date() >= getDateFromUTCString(data.launchpad.start_date)
+    )
+  }, [data.launchpad])
+  console.log(data.launchpad?.start_date)
+
+  const defaultValues: Partial<FormData> = useMemo(() => {
+    if (!data.launchpad) {
+      return {
+        stages: [{}],
+        reveal: Reveal.Immediately,
+        collection: selectedHash,
+        supplyKind: Supply.Fixed,
+      }
+    }
+
+    const launchpad = data.launchpad
+
+    const stages: FormStage[] = launchpad.stages.map((stage) => {
+      let price = stage.price
+      if (price) {
+        price = getDecimalValue(price, 6)
+      }
+
+      return {
+        id: stage.id,
+        name: stage.name,
+        description: stage.description,
+        start: stage.start_date
+          ? getDateFromUTCString(stage.start_date)
+          : undefined,
+        finish: stage.finish_date
+          ? getDateFromUTCString(stage.finish_date)
+          : undefined,
+        price: price ? price : undefined,
+        maxPerUser: stage.per_user_limit ? stage.per_user_limit : undefined,
+        whitelist: stage.has_whitelist
+          ? stage.whitelists.map((w) => w.address).join(',')
+          : undefined,
+      }
+    })
+
+    return {
+      collection: launchpad.collection.transaction.hash,
+      supplyKind: launchpad.max_supply ? Supply.Fixed : Supply.Infinite,
+      supply: launchpad.max_supply ? launchpad.max_supply : undefined,
+      reveal: launchpad.reveal_immediately
+        ? Reveal.Immediately
+        : launchpad.reveal_date
+          ? Reveal.SpecificDate
+          : Reveal.MintedOut,
+      revealDate: launchpad.reveal_date
+        ? getDateFromUTCString(launchpad.reveal_date)
+        : undefined,
+      stages,
+    }
+  }, [data.launchpad, selectedHash])
 
   // form
   const {
@@ -109,12 +189,7 @@ export default function CreateCollectionLaunch() {
     reset,
     watch,
   } = useForm<FormData>({
-    defaultValues: {
-      stages: [{}],
-      reveal: Reveal.Immediately,
-      collection: selectedHash,
-      supplyKind: Supply.Fixed,
-    },
+    defaultValues,
   })
 
   const reveal = watch('reveal')
@@ -134,13 +209,13 @@ export default function CreateCollectionLaunch() {
   // dialog
   const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (submitData) => {
     if (!operations) {
       console.warn('No address')
       return
     }
 
-    const stages: launchpad.MintStage[] = data.stages.map((formStage) => {
+    const stages: launchpad.MintStage[] = submitData.stages.map((formStage) => {
       let price = formStage.price
       if (price) {
         price = toDecimalValue(price, 6)
@@ -154,19 +229,25 @@ export default function CreateCollectionLaunch() {
     })
 
     const metadata: launchpad.LaunchMetadata = {
-      supply: data.supply,
+      supply: submitData.supply,
       stages,
       revealImmediately: true,
     }
 
-    if (data.reveal === Reveal.MintedOut) {
+    if (submitData.reveal === Reveal.MintedOut) {
       metadata.revealImmediately = false
-    } else if (data.reveal === Reveal.SpecificDate) {
+    } else if (submitData.reveal === Reveal.SpecificDate) {
       metadata.revealImmediately = false
-      metadata.revealDate = data.revealDate
+      metadata.revealDate = submitData.revealDate
     }
 
-    const txInscription = operations.launch(data.collection, metadata)
+    let txInscription: TxInscription
+    if (isEdit) {
+      txInscription = operations.update(submitData.collection, metadata)
+    } else {
+      txInscription = operations.launch(submitData.collection, metadata)
+    }
+
     showDialog(txInscription)
   })
 
@@ -174,18 +255,28 @@ export default function CreateCollectionLaunch() {
     <div className="flex flex-col items-center w-full overflow-y-scroll pb-8">
       <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
+        {isEdit && editingDisabled && (
+          <Alert className="border border-warning mb-8">
+            Editing launch options is disabled because launchpad has already
+            started.
+          </Alert>
+        )}
 
         <div className="flex w-full flex-col">
-          <strong>Set launch options</strong>
+          <h2 className="text-lg">
+            {isEdit ? 'Update' : 'Set'} launch options
+          </h2>
 
-          <CollectionSelect
-            collections={data.collections}
-            error={errors.collection}
-            register={register}
-            link={'/app/create/launch/collection'}
-            linkInNewTab={false}
-            required
-          />
+          {!isEdit && (
+            <CollectionSelect
+              collections={data.collections}
+              error={errors.collection}
+              register={register}
+              link={'/app/create/launch/collection'}
+              linkInNewTab={false}
+              required
+            />
+          )}
 
           <div className="mt-8">
             <strong>Collection supply</strong>
@@ -207,6 +298,7 @@ export default function CreateCollectionLaunch() {
           {supplyKind == Supply.Fixed && (
             <NumericInput
               control={control}
+              disabled={editingDisabled}
               required
               error={errors.supply}
               name="supply"
@@ -235,6 +327,7 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.Immediately}
+              disabled={editingDisabled}
               id="immediately"
               {...register('reveal', { required: true })}
             />
@@ -248,6 +341,7 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.MintedOut}
+              disabled={editingDisabled}
               id="mintedOut"
               {...register('reveal', { required: true })}
             />
@@ -261,6 +355,7 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.SpecificDate}
+              disabled={editingDisabled}
               id="specificDate"
               {...register('reveal', { required: true })}
             />
@@ -273,42 +368,45 @@ export default function CreateCollectionLaunch() {
 
           {reveal == Reveal.SpecificDate && (
             <div className="flex flex-col w-full">
-              <Controller
-                rules={{ required: true }}
-                control={control}
-                name="revealDate"
-                render={({
-                  field: { name, onChange, value, ref, onBlur, disabled },
-                }) => (
-                  <DatePicker
-                    selected={value}
-                    onChange={onChange}
-                    ref={(dateRef) => {
-                      if (!dateRef) {
-                        return
-                      }
-                      ref({
-                        focus: dateRef.setFocus,
-                      })
-                    }}
-                    name={name}
-                    disabled={disabled}
-                    minDate={new Date()}
-                    onBlur={onBlur}
-                    className={clsx('input input-bordered', {
-                      'input-error': errors.revealDate,
-                    })}
-                    timeInputLabel="Time:"
-                    required
-                    placeholderText="Click to select a reveal date"
-                    dateFormat="MM/dd/yyyy h:mm aa"
-                    shouldCloseOnSelect={false}
-                    showTimeInput
-                    showTimeSelect
-                    timeIntervals={5}
-                  />
-                )}
-              />
+              {clientOnly$(
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name="revealDate"
+                  disabled={editingDisabled}
+                  render={({
+                    field: { name, onChange, value, ref, onBlur, disabled },
+                  }) => (
+                    <DatePicker
+                      selected={value}
+                      onChange={onChange}
+                      ref={(dateRef) => {
+                        if (!dateRef) {
+                          return
+                        }
+                        ref({
+                          focus: dateRef.setFocus,
+                        })
+                      }}
+                      name={name}
+                      disabled={disabled}
+                      minDate={new Date()}
+                      onBlur={onBlur}
+                      className={clsx('input input-bordered', {
+                        'input-error': errors.revealDate,
+                      })}
+                      timeInputLabel="Time:"
+                      required
+                      placeholderText="Click to select a reveal date"
+                      dateFormat="MM/dd/yyyy h:mm aa"
+                      shouldCloseOnSelect={false}
+                      showTimeInput
+                      showTimeSelect
+                      timeIntervals={5}
+                    />
+                  )}
+                />,
+              )}
               <span className="mt-2 ml-1 text-sm">
                 {getUTCString(revealDate)}
               </span>
@@ -323,6 +421,7 @@ export default function CreateCollectionLaunch() {
                   {index > 0 && (
                     <Button
                       type="button"
+                      disabled={editingDisabled}
                       shape="circle"
                       color="error"
                       size="xs"
@@ -345,6 +444,7 @@ export default function CreateCollectionLaunch() {
                     color={
                       errors['stages']?.[index]?.name ? 'error' : undefined
                     }
+                    disabled={editingDisabled}
                     id={`stages.${index}.name`}
                     maxLength={NAME_MAX_LENGTH}
                     minLength={NAME_MIN_LENGTH}
@@ -373,6 +473,7 @@ export default function CreateCollectionLaunch() {
                   />
                   <Textarea
                     id="description"
+                    disabled={editingDisabled}
                     placeholder="Describe mint stage..."
                     rows={10}
                     {...register(`stages.${index}.description`, {
@@ -383,6 +484,7 @@ export default function CreateCollectionLaunch() {
 
                 <NumericInput
                   control={control}
+                  disabled={editingDisabled}
                   error={errors['stages']?.[index]?.price}
                   name={`stages.${index}.price`}
                   title="Price in ATOM (optional)"
@@ -392,6 +494,7 @@ export default function CreateCollectionLaunch() {
 
                 <NumericInput
                   control={control}
+                  disabled={editingDisabled}
                   error={errors['stages']?.[index]?.maxPerUser}
                   name={`stages.${index}.maxPerUser`}
                   title="Maximum mints per user (optional)"
@@ -408,6 +511,7 @@ export default function CreateCollectionLaunch() {
                       {clientOnly$(
                         <Controller
                           control={control}
+                          disabled={editingDisabled}
                           name={`stages.${index}.start`}
                           render={({
                             field: {
@@ -461,6 +565,7 @@ export default function CreateCollectionLaunch() {
                       {clientOnly$(
                         <Controller
                           control={control}
+                          disabled={editingDisabled}
                           rules={{
                             validate: (v) => {
                               const start = stages[index].start
@@ -522,6 +627,7 @@ export default function CreateCollectionLaunch() {
                   />
                   <Textarea
                     id="whitelist"
+                    disabled={editingDisabled}
                     placeholder="Comma separated list of addresses"
                     rows={10}
                     color={
@@ -544,6 +650,7 @@ export default function CreateCollectionLaunch() {
 
           <Button
             color="accent"
+            disabled={editingDisabled}
             className="mt-4"
             startIcon={<PlusIcon className="size-5" />}
             type="button"
@@ -559,12 +666,13 @@ export default function CreateCollectionLaunch() {
             </Button>
           ) : operations ? (
             <Button
+              disabled={editingDisabled}
               type="submit"
               color="primary"
               className="mt-4"
               startIcon={<CheckIcon className="size-5" />}
             >
-              Set collection launch options
+              {isEdit ? 'Update' : 'Set'} collection launch options
             </Button>
           ) : (
             <Wallet className="mt-4 btn-md w-full" color="primary" />
@@ -575,12 +683,18 @@ export default function CreateCollectionLaunch() {
         ref={dialogRef}
         txInscription={value}
         resultLink={() =>
-          collectionTicker
-            ? `/app/create/launch/${collectionTicker}/inscriptions`
-            : '/app/create/launch/inscriptions'
+          isEdit
+            ? `/app/launchpad/${data.launchpad?.collection.symbol}`
+            : collectionTicker
+              ? `/app/create/launch/${collectionTicker}/inscriptions`
+              : '/app/create/launch/inscriptions'
         }
-        resultCTA="Step 3: Upload inscriptions"
+        resultCTA={isEdit ? 'View launchpad' : 'Step 3: Upload inscriptions'}
         onSuccess={() => {
+          if (isEdit) {
+            navigate({ hash: '' }, { replace: true })
+            return
+          }
           if (selectedCollection) {
             setCollectionTicker(selectedCollection.symbol)
           }

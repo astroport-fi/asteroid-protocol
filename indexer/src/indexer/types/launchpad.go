@@ -3,6 +3,7 @@ package types
 import "time"
 
 type MintStage struct {
+	ID          uint64    `json:"id,omitempty"`
 	Name        string    `json:"name,omitempty"`
 	Description string    `json:"description,omitempty"`
 	Start       time.Time `json:"start,omitempty"`

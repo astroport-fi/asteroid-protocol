@@ -2,6 +2,7 @@ import { NFTMetadata, TxInscription } from '@asteroid-protocol/sdk'
 import { CubeIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
+import clsx from 'clsx'
 import { useState } from 'react'
 import { Alert, Button, Form, Select } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
@@ -213,28 +214,35 @@ export default function UploadInscriptionsPage() {
         onSubmit={onSubmit}
         className="flex flex-col justify-center items-center w-full overflow-y-scroll"
       >
-        <div className="flex flex-col justify-between items-center mt-6">
-          <div className="form-control w-60">
-            <Select
-              id="collection"
-              className="w-full"
-              color={errors.launchpad ? 'error' : undefined}
-              {...register('launchpad', {
-                required: true,
-                minLength: 64,
-              })}
-            >
-              <Select.Option value={0}>Select collection</Select.Option>
-              {launches.map((launch) => (
-                <Select.Option
-                  key={launch.transaction.hash}
-                  value={launch.transaction.hash}
-                >
-                  {launch.collection.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
+        <div
+          className={clsx('flex flex-col justify-between items-center', {
+            'mt-6': launchpadHash == undefined,
+          })}
+        >
+          {launchpadHash == undefined && (
+            <div className="form-control w-60">
+              <Select
+                id="collection"
+                className="w-full"
+                color={errors.launchpad ? 'error' : undefined}
+                {...register('launchpad', {
+                  required: true,
+                  minLength: 64,
+                })}
+              >
+                <Select.Option value={0}>Select collection</Select.Option>
+                {launches.map((launch) => (
+                  <Select.Option
+                    key={launch.transaction.hash}
+                    value={launch.transaction.hash}
+                  >
+                    {launch.collection.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          )}
+
           {selectedLaunchpad &&
             inscriptionsRes &&
             (allUploaded ? (
