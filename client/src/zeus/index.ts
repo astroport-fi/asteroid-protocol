@@ -9731,6 +9731,281 @@ export type ValueTypes = {
   ['migration_permission_grant_stream_cursor_value_input']: {
     grantee?: string | undefined | null | Variable<any, string>
   }
+  /** columns and relationships of "minted_out_launches" */
+  ['minted_out_launches']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    /** An object relationship */
+    collection?: ValueTypes['collection']
+    collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    finish_date?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    max_supply?: boolean | `@${string}`
+    minted_supply?: boolean | `@${string}`
+    reveal_date?: boolean | `@${string}`
+    reveal_immediately?: boolean | `@${string}`
+    stages?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_stage_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_stage_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_stage_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_stage'],
+    ]
+    start_date?: boolean | `@${string}`
+    /** An object relationship */
+    transaction?: ValueTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "minted_out_launches". All fields are combined with a logical 'AND'. */
+  ['minted_out_launches_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['minted_out_launches_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['minted_out_launches_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['minted_out_launches_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    chain_id?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    finish_date?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    max_supply?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    stages?:
+      | ValueTypes['launchpad_stage_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    start_date?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Ordering options when selecting data from "minted_out_launches". */
+  ['minted_out_launches_order_by']: {
+    chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    collection?:
+      | ValueTypes['collection_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    collection_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    finish_date?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    max_supply?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    stages_aggregate?:
+      | ValueTypes['launchpad_stage_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    start_date?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "minted_out_launches" */
+  ['minted_out_launches_select_column']: minted_out_launches_select_column
+  /** Streaming cursor of the table "minted_out_launches" */
+  ['minted_out_launches_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['minted_out_launches_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['minted_out_launches_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null | Variable<any, string>
+    collection_id?: number | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    finish_date?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: number | undefined | null | Variable<any, string>
+    id?: number | undefined | null | Variable<any, string>
+    max_supply?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    minted_supply?:
+      | ValueTypes['numeric']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_date?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    reveal_immediately?: boolean | undefined | null | Variable<any, string>
+    start_date?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?: number | undefined | null | Variable<any, string>
+    version?: string | undefined | null | Variable<any, string>
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -10904,6 +11179,40 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['migration_permission_grant'],
+    ]
+    minted_out_launches?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['minted_out_launches_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['minted_out_launches_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['minted_out_launches'],
     ]
     status?: [
       {
@@ -13253,6 +13562,64 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['migration_permission_grant'],
+    ]
+    minted_out_launches?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['minted_out_launches_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['minted_out_launches_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['minted_out_launches'],
+    ]
+    minted_out_launches_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              | ValueTypes['minted_out_launches_stream_cursor_input']
+              | undefined
+              | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['minted_out_launches'],
     ]
     status?: [
       {
@@ -23319,6 +23686,146 @@ export type ResolverInputTypes = {
   ['migration_permission_grant_stream_cursor_value_input']: {
     grantee?: string | undefined | null
   }
+  /** columns and relationships of "minted_out_launches" */
+  ['minted_out_launches']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    /** An object relationship */
+    collection?: ResolverInputTypes['collection']
+    collection_id?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    finish_date?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    max_supply?: boolean | `@${string}`
+    minted_supply?: boolean | `@${string}`
+    reveal_date?: boolean | `@${string}`
+    reveal_immediately?: boolean | `@${string}`
+    stages?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['launchpad_stage_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_stage_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_stage_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_stage'],
+    ]
+    start_date?: boolean | `@${string}`
+    /** An object relationship */
+    transaction?: ResolverInputTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "minted_out_launches". All fields are combined with a logical 'AND'. */
+  ['minted_out_launches_bool_exp']: {
+    _and?:
+      | Array<ResolverInputTypes['minted_out_launches_bool_exp']>
+      | undefined
+      | null
+    _not?: ResolverInputTypes['minted_out_launches_bool_exp'] | undefined | null
+    _or?:
+      | Array<ResolverInputTypes['minted_out_launches_bool_exp']>
+      | undefined
+      | null
+    chain_id?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    collection?: ResolverInputTypes['collection_bool_exp'] | undefined | null
+    collection_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    finish_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    height?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    max_supply?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+    minted_supply?:
+      | ResolverInputTypes['numeric_comparison_exp']
+      | undefined
+      | null
+    reveal_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    reveal_immediately?:
+      | ResolverInputTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+    stages?: ResolverInputTypes['launchpad_stage_bool_exp'] | undefined | null
+    start_date?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
+    transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    version?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** Ordering options when selecting data from "minted_out_launches". */
+  ['minted_out_launches_order_by']: {
+    chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    collection?: ResolverInputTypes['collection_order_by'] | undefined | null
+    collection_id?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
+    finish_date?: ResolverInputTypes['order_by'] | undefined | null
+    height?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    max_supply?: ResolverInputTypes['order_by'] | undefined | null
+    minted_supply?: ResolverInputTypes['order_by'] | undefined | null
+    reveal_date?: ResolverInputTypes['order_by'] | undefined | null
+    reveal_immediately?: ResolverInputTypes['order_by'] | undefined | null
+    stages_aggregate?:
+      | ResolverInputTypes['launchpad_stage_aggregate_order_by']
+      | undefined
+      | null
+    start_date?: ResolverInputTypes['order_by'] | undefined | null
+    transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
+    transaction_id?: ResolverInputTypes['order_by'] | undefined | null
+    version?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "minted_out_launches" */
+  ['minted_out_launches_select_column']: minted_out_launches_select_column
+  /** Streaming cursor of the table "minted_out_launches" */
+  ['minted_out_launches_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['minted_out_launches_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['minted_out_launches_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null
+    collection_id?: number | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
+    finish_date?: ResolverInputTypes['timestamp'] | undefined | null
+    height?: number | undefined | null
+    id?: number | undefined | null
+    max_supply?: ResolverInputTypes['numeric'] | undefined | null
+    minted_supply?: ResolverInputTypes['numeric'] | undefined | null
+    reveal_date?: ResolverInputTypes['timestamp'] | undefined | null
+    reveal_immediately?: boolean | undefined | null
+    start_date?: ResolverInputTypes['timestamp'] | undefined | null
+    transaction_id?: number | undefined | null
+    version?: string | undefined | null
+  }
   ['numeric']: unknown
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -24204,6 +24711,32 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['migration_permission_grant'],
+    ]
+    minted_out_launches?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['minted_out_launches_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['minted_out_launches_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['minted_out_launches'],
     ]
     status?: [
       {
@@ -25848,6 +26381,48 @@ export type ResolverInputTypes = {
           | null
       },
       ResolverInputTypes['migration_permission_grant'],
+    ]
+    minted_out_launches?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['minted_out_launches_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['minted_out_launches_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['minted_out_launches'],
+    ]
+    minted_out_launches_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['minted_out_launches_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['minted_out_launches_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['minted_out_launches'],
     ]
     status?: [
       {
@@ -32771,6 +33346,95 @@ export type ModelTypes = {
   ['migration_permission_grant_stream_cursor_value_input']: {
     grantee?: string | undefined
   }
+  /** columns and relationships of "minted_out_launches" */
+  ['minted_out_launches']: {
+    chain_id?: string | undefined
+    /** An object relationship */
+    collection?: ModelTypes['collection'] | undefined
+    collection_id?: number | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    finish_date?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    max_supply?: ModelTypes['numeric'] | undefined
+    minted_supply?: ModelTypes['numeric'] | undefined
+    reveal_date?: ModelTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
+    /** An array relationship */
+    stages: Array<ModelTypes['launchpad_stage']>
+    start_date?: ModelTypes['timestamp'] | undefined
+    /** An object relationship */
+    transaction?: ModelTypes['transaction'] | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Boolean expression to filter rows from the table "minted_out_launches". All fields are combined with a logical 'AND'. */
+  ['minted_out_launches_bool_exp']: {
+    _and?: Array<ModelTypes['minted_out_launches_bool_exp']> | undefined
+    _not?: ModelTypes['minted_out_launches_bool_exp'] | undefined
+    _or?: Array<ModelTypes['minted_out_launches_bool_exp']> | undefined
+    chain_id?: ModelTypes['String_comparison_exp'] | undefined
+    collection?: ModelTypes['collection_bool_exp'] | undefined
+    collection_id?: ModelTypes['Int_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
+    finish_date?: ModelTypes['timestamp_comparison_exp'] | undefined
+    height?: ModelTypes['Int_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    max_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    minted_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    reveal_date?: ModelTypes['timestamp_comparison_exp'] | undefined
+    reveal_immediately?: ModelTypes['Boolean_comparison_exp'] | undefined
+    stages?: ModelTypes['launchpad_stage_bool_exp'] | undefined
+    start_date?: ModelTypes['timestamp_comparison_exp'] | undefined
+    transaction?: ModelTypes['transaction_bool_exp'] | undefined
+    transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
+    version?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "minted_out_launches". */
+  ['minted_out_launches_order_by']: {
+    chain_id?: ModelTypes['order_by'] | undefined
+    collection?: ModelTypes['collection_order_by'] | undefined
+    collection_id?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
+    finish_date?: ModelTypes['order_by'] | undefined
+    height?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    max_supply?: ModelTypes['order_by'] | undefined
+    minted_supply?: ModelTypes['order_by'] | undefined
+    reveal_date?: ModelTypes['order_by'] | undefined
+    reveal_immediately?: ModelTypes['order_by'] | undefined
+    stages_aggregate?:
+      | ModelTypes['launchpad_stage_aggregate_order_by']
+      | undefined
+    start_date?: ModelTypes['order_by'] | undefined
+    transaction?: ModelTypes['transaction_order_by'] | undefined
+    transaction_id?: ModelTypes['order_by'] | undefined
+    version?: ModelTypes['order_by'] | undefined
+  }
+  ['minted_out_launches_select_column']: minted_out_launches_select_column
+  /** Streaming cursor of the table "minted_out_launches" */
+  ['minted_out_launches_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['minted_out_launches_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['minted_out_launches_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    collection_id?: number | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    finish_date?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    max_supply?: ModelTypes['numeric'] | undefined
+    minted_supply?: ModelTypes['numeric'] | undefined
+    reveal_date?: ModelTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
+    start_date?: ModelTypes['timestamp'] | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
   ['numeric']: any
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -32894,6 +33558,8 @@ export type ModelTypes = {
       | undefined
     /** fetch data from the table: "migration_permission_grant" */
     migration_permission_grant: Array<ModelTypes['migration_permission_grant']>
+    /** fetch data from the table: "minted_out_launches" */
+    minted_out_launches: Array<ModelTypes['minted_out_launches']>
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -33205,6 +33871,10 @@ export type ModelTypes = {
     migration_permission_grant_stream: Array<
       ModelTypes['migration_permission_grant']
     >
+    /** fetch data from the table: "minted_out_launches" */
+    minted_out_launches: Array<ModelTypes['minted_out_launches']>
+    /** fetch data from the table in a streaming manner: "minted_out_launches" */
+    minted_out_launches_stream: Array<ModelTypes['minted_out_launches']>
     /** fetch data from the table: "status" */
     status: Array<ModelTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -39182,6 +39852,97 @@ export type GraphQLTypes = {
   ['migration_permission_grant_stream_cursor_value_input']: {
     grantee?: string | undefined
   }
+  /** columns and relationships of "minted_out_launches" */
+  ['minted_out_launches']: {
+    __typename: 'minted_out_launches'
+    chain_id?: string | undefined
+    /** An object relationship */
+    collection?: GraphQLTypes['collection'] | undefined
+    collection_id?: number | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    finish_date?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    max_supply?: GraphQLTypes['numeric'] | undefined
+    minted_supply?: GraphQLTypes['numeric'] | undefined
+    reveal_date?: GraphQLTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
+    /** An array relationship */
+    stages: Array<GraphQLTypes['launchpad_stage']>
+    start_date?: GraphQLTypes['timestamp'] | undefined
+    /** An object relationship */
+    transaction?: GraphQLTypes['transaction'] | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Boolean expression to filter rows from the table "minted_out_launches". All fields are combined with a logical 'AND'. */
+  ['minted_out_launches_bool_exp']: {
+    _and?: Array<GraphQLTypes['minted_out_launches_bool_exp']> | undefined
+    _not?: GraphQLTypes['minted_out_launches_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['minted_out_launches_bool_exp']> | undefined
+    chain_id?: GraphQLTypes['String_comparison_exp'] | undefined
+    collection?: GraphQLTypes['collection_bool_exp'] | undefined
+    collection_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    finish_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    height?: GraphQLTypes['Int_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    max_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    minted_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    reveal_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    reveal_immediately?: GraphQLTypes['Boolean_comparison_exp'] | undefined
+    stages?: GraphQLTypes['launchpad_stage_bool_exp'] | undefined
+    start_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
+    transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    version?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** Ordering options when selecting data from "minted_out_launches". */
+  ['minted_out_launches_order_by']: {
+    chain_id?: GraphQLTypes['order_by'] | undefined
+    collection?: GraphQLTypes['collection_order_by'] | undefined
+    collection_id?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
+    finish_date?: GraphQLTypes['order_by'] | undefined
+    height?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    max_supply?: GraphQLTypes['order_by'] | undefined
+    minted_supply?: GraphQLTypes['order_by'] | undefined
+    reveal_date?: GraphQLTypes['order_by'] | undefined
+    reveal_immediately?: GraphQLTypes['order_by'] | undefined
+    stages_aggregate?:
+      | GraphQLTypes['launchpad_stage_aggregate_order_by']
+      | undefined
+    start_date?: GraphQLTypes['order_by'] | undefined
+    transaction?: GraphQLTypes['transaction_order_by'] | undefined
+    transaction_id?: GraphQLTypes['order_by'] | undefined
+    version?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "minted_out_launches" */
+  ['minted_out_launches_select_column']: minted_out_launches_select_column
+  /** Streaming cursor of the table "minted_out_launches" */
+  ['minted_out_launches_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['minted_out_launches_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['minted_out_launches_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    collection_id?: number | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    finish_date?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    max_supply?: GraphQLTypes['numeric'] | undefined
+    minted_supply?: GraphQLTypes['numeric'] | undefined
+    reveal_date?: GraphQLTypes['timestamp'] | undefined
+    reveal_immediately?: boolean | undefined
+    start_date?: GraphQLTypes['timestamp'] | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
   ['numeric']: 'scalar' & { name: 'numeric' }
   /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
   ['numeric_comparison_exp']: {
@@ -39311,6 +40072,8 @@ export type GraphQLTypes = {
     migration_permission_grant: Array<
       GraphQLTypes['migration_permission_grant']
     >
+    /** fetch data from the table: "minted_out_launches" */
+    minted_out_launches: Array<GraphQLTypes['minted_out_launches']>
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -39630,6 +40393,10 @@ export type GraphQLTypes = {
     migration_permission_grant_stream: Array<
       GraphQLTypes['migration_permission_grant']
     >
+    /** fetch data from the table: "minted_out_launches" */
+    minted_out_launches: Array<GraphQLTypes['minted_out_launches']>
+    /** fetch data from the table in a streaming manner: "minted_out_launches" */
+    minted_out_launches_stream: Array<GraphQLTypes['minted_out_launches']>
     /** fetch data from the table: "status" */
     status: Array<GraphQLTypes['status']>
     /** fetch data from the table: "status" using primary key columns */
@@ -41696,6 +42463,22 @@ export const enum marketplace_listing_select_column {
 export const enum migration_permission_grant_select_column {
   grantee = 'grantee',
 }
+/** select columns of table "minted_out_launches" */
+export const enum minted_out_launches_select_column {
+  chain_id = 'chain_id',
+  collection_id = 'collection_id',
+  date_created = 'date_created',
+  finish_date = 'finish_date',
+  height = 'height',
+  id = 'id',
+  max_supply = 'max_supply',
+  minted_supply = 'minted_supply',
+  reveal_date = 'reveal_date',
+  reveal_immediately = 'reveal_immediately',
+  start_date = 'start_date',
+  transaction_id = 'transaction_id',
+  version = 'version',
+}
 /** column ordering options */
 export const enum order_by {
   asc = 'asc',
@@ -42119,6 +42902,11 @@ type ZEUS_VARIABLES = {
   ['migration_permission_grant_select_column']: ValueTypes['migration_permission_grant_select_column']
   ['migration_permission_grant_stream_cursor_input']: ValueTypes['migration_permission_grant_stream_cursor_input']
   ['migration_permission_grant_stream_cursor_value_input']: ValueTypes['migration_permission_grant_stream_cursor_value_input']
+  ['minted_out_launches_bool_exp']: ValueTypes['minted_out_launches_bool_exp']
+  ['minted_out_launches_order_by']: ValueTypes['minted_out_launches_order_by']
+  ['minted_out_launches_select_column']: ValueTypes['minted_out_launches_select_column']
+  ['minted_out_launches_stream_cursor_input']: ValueTypes['minted_out_launches_stream_cursor_input']
+  ['minted_out_launches_stream_cursor_value_input']: ValueTypes['minted_out_launches_stream_cursor_value_input']
   ['numeric']: ValueTypes['numeric']
   ['numeric_comparison_exp']: ValueTypes['numeric_comparison_exp']
   ['order_by']: ValueTypes['order_by']
