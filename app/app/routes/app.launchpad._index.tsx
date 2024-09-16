@@ -31,8 +31,13 @@ export async function loader({ context }: LoaderFunctionArgs) {
   )
 
   launches = launches.filter((launch) => {
+    if (launch.max_supply && launch.max_supply === launch.minted_supply) {
+      return false
+    }
     const stat = statsByHash[launch.transaction.hash]
-    if (!stat) return false
+    if (!stat) {
+      return false
+    }
     return stat.uploaded >= launch.max_supply
   })
 

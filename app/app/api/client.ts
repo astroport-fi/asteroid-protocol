@@ -1815,33 +1815,19 @@ export class AsteroidClient extends AsteroidService {
 
   async getPastLaunches(): Promise<LaunchpadItem[]> {
     const result = await this.query({
-      launchpad: [
+      minted_out_launches: [
         {
           order_by: [
             {
               date_created: order_by.desc,
             },
           ],
-          where: {
-            _and: [
-              {
-                finish_date: {
-                  _lt: new Date(),
-                },
-              },
-              {
-                finish_date: {
-                  _is_null: false,
-                },
-              },
-            ],
-          },
         },
         launchpadItemSelector,
       ],
     })
 
-    return result.launchpad
+    return result.minted_out_launches as LaunchpadItem[]
   }
 
   async getLaunchpadHash(symbol: string): Promise<string | undefined> {
