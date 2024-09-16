@@ -17,6 +17,7 @@ import useGetSendAuthorizationAmount, {
   useInvalidateSendAuthorizationAmount,
 } from '~/hooks/useGetSendAuthorizationAmount'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
+import useIsLedger from '~/hooks/wallet/useIsLedger'
 import TxDialog from './dialogs/TxDialog'
 import { Wallet } from './wallet/Wallet'
 
@@ -33,6 +34,7 @@ export default function MintInscription({
   metadataProvider?: () => Promise<unknown>
   disabled?: boolean
 }) {
+  const isLedger = useIsLedger()
   const { minterAddress, launchpadEnabled } = useRootContext()
   const operations = useLaunchpadOperations()
   const [inProgress, setInProgress] = useState(false)
@@ -168,6 +170,14 @@ export default function MintInscription({
           startIcon={<NoSymbolIcon className="size-4" />}
         >
           You do not have enough funds to complete this transaction
+        </Button>
+      ) : isLedger ? (
+        <Button
+          disabled
+          fullWidth
+          startIcon={<NoSymbolIcon className="size-4" />}
+        >
+          Minting is not supported when using Ledger
         </Button>
       ) : (
         <div className="flex w-full">

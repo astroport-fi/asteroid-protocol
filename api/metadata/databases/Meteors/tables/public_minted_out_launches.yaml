@@ -1,0 +1,51 @@
+table:
+  name: minted_out_launches
+  schema: public
+object_relationships:
+  - name: collection
+    using:
+      manual_configuration:
+        column_mapping:
+          collection_id: id
+        insertion_order: null
+        remote_table:
+          name: collection
+          schema: public
+  - name: transaction
+    using:
+      manual_configuration:
+        column_mapping:
+          transaction_id: id
+        insertion_order: null
+        remote_table:
+          name: transaction
+          schema: public
+array_relationships:
+  - name: stages
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: launchpad_stage
+          schema: public
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - reveal_immediately
+        - chain_id
+        - version
+        - collection_id
+        - height
+        - id
+        - transaction_id
+        - max_supply
+        - minted_supply
+        - date_created
+        - finish_date
+        - reveal_date
+        - start_date
+      filter: {}
+    comment: ""

@@ -799,6 +799,11 @@ LEFT JOIN collection_stats cs ON c.id = cs.id
 LEFT JOIN launchpad l ON c.id = l.collection_id
 WHERE cs.id IS NULL AND l.collection_id IS NULL;
 
+-- public.minted_out_launches view definition
+
+CREATE OR REPLACE VIEW public.minted_out_launches AS 
+SELECT * FROM launchpad WHERE minted_supply = max_supply OR finish_date < NOW()
+
 ------------------ RIVER ---------------------
 
 -- River migration 002 [up]
