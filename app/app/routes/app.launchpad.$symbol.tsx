@@ -4,10 +4,11 @@ import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { format, formatRelative } from 'date-fns'
 import { PropsWithChildren, useMemo, useState } from 'react'
-import { Badge, Progress } from 'react-daisyui'
+import { Alert, Badge, Progress } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
 import { StageDetail, getActiveStageDetail } from '~/api/launchpad'
+import { UploadApi } from '~/api/upload'
 import DecimalText from '~/components/DecimalText'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintInscription from '~/components/MintInscription'
@@ -46,7 +47,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     })
   }
 
-  return json(launch)
+  const uploadClient = new UploadApi(context.cloudflare.env.UPLOAD_API)
+  const stats = await uploadClient.launchpad(launch.transaction.hash)
+
+  return json({ launch, stats })
 }
 
 function CollapsibleDescription({
@@ -148,7 +152,8 @@ function StageBox({
 }
 
 export default function LaunchpadDetailPage() {
-  const launchpad = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
+  const { launch: launchpad, stats } = data
   const { collection } = launchpad
 
   const activeStage = useMemo(
@@ -202,11 +207,17 @@ export default function LaunchpadDetailPage() {
           ))}
         </div>
 
-        <MintInscription
-          launchpad={launchpad}
-          className="mt-4 w-full"
-          activeStage={activeStage}
-        />
+        {!launchpad.max_supply || stats.uploaded >= stats.total ? (
+          <MintInscription
+            launchpad={launchpad}
+            className="mt-4 w-full"
+            activeStage={activeStage}
+          />
+        ) : (
+          <Alert className="border border-warning mt-4">
+            Collection isn&apos;t ready to be minted yet
+          </Alert>
+        )}
 
         {launchpad.max_supply > 0 ? (
           <div className="flex flex-col w-full">

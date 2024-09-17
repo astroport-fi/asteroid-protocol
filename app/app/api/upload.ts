@@ -64,6 +64,11 @@ export class UploadApi {
     return response.json<LaunchpadStats[]>()
   }
 
+  async launchpad(hash: string) {
+    const response = await fetch(`${this.apiUrl}/launchpad/${hash}`)
+    return response.json<LaunchpadStats>()
+  }
+
   async createSession(address: string) {
     const response = await fetch(`${this.apiUrl}/create-session`, {
       method: 'POST',

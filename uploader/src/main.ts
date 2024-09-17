@@ -65,11 +65,14 @@ async function getInscriptionSignedUrls(
   contentType: string,
 ): Promise<InscriptionUrls> {
   // create launchpad inscription record
-  await db('launchpad_inscription').insert({
-    launchpad_hash: launchHash,
-    inscription_number: tokenId,
-    name,
-  })
+  await db('launchpad_inscription')
+    .insert({
+      launchpad_hash: launchHash,
+      inscription_number: tokenId,
+      name,
+    })
+    .onConflict(['launchpad_hash', 'inscription_number'])
+    .ignore()
 
   // generate signed URLs
   const inscriptionSignedUrl = await generateUploadURL(
@@ -175,6 +178,27 @@ app.get(
   }),
 )
 
+app.get(
+  '/launchpad/:launchHash',
+  asyncHandler(async (req, res) => {
+    const launchpad = await db('launchpad_inscription')
+      .count({ total: 'inscription_number' })
+      .count({ uploaded: db.raw('CASE WHEN uploaded THEN 1 END') })
+      .where({ launchpad_hash: req.params.launchHash })
+      .first()
+
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    res.json({
+      total: parseInt(launchpad.total as string),
+      uploaded: parseInt(launchpad.uploaded as string),
+    })
+  }),
+)
+
 app.post(
   '/inscriptions/:launchHash',
   asyncHandler(async (req, res) => {
@@ -206,7 +230,7 @@ app.post(
 
     const inscriptions = await db('launchpad_inscription')
       .select()
-      .where({ launchpad_hash: launchHash })
+      .where({ launchpad_hash: launchHash, uploaded: true })
 
     res.json({ inscriptions, folder: launchpad.folder })
   }),
