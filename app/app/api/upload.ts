@@ -45,6 +45,22 @@ export class UploadApi {
     private sessionHash?: string,
   ) {}
 
+  async getPublicInscriptions(launchHash: string) {
+    const response = await fetch(
+      `${this.apiUrl}/public/inscriptions/${launchHash}`,
+    )
+    const data = await response.json<
+      { inscriptions: LaunchpadInscription[]; folder: string } | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error('Getting inscriptions failed', data.status, data.message)
+      return null
+    }
+
+    return data
+  }
+
   async getInscriptions(launchHash: string) {
     const response = await fetch(`${this.apiUrl}/inscriptions/${launchHash}`, {
       method: 'POST',

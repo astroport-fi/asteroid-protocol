@@ -5,6 +5,7 @@ import cors from 'cors'
 import cuid from 'cuid'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
+import { AsteroidClient } from './asteroid-client.js'
 import { loadConfig } from './config.js'
 import { connect } from './db.js'
 import { createS3Client, generateUploadURL } from './s3.js'
@@ -196,6 +197,38 @@ app.get(
       total: parseInt(launchpad.total as string),
       uploaded: parseInt(launchpad.uploaded as string),
     })
+  }),
+)
+
+app.get(
+  '/public/inscriptions/:launchHash',
+  asyncHandler(async (req, res) => {
+    const { launchHash } = req.params
+    const asteroidClient = new AsteroidClient(config.ASTEROID_API)
+    const maxSupply = await asteroidClient.getCollectionSupply(launchHash)
+    if (maxSupply === null) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    if (maxSupply !== 0) {
+      res.status(403).json({ status: 403, message: 'Launchpad is not public' })
+    }
+
+    const launchpad = await db('launchpad')
+      .select('folder')
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    const inscriptions = await db('launchpad_inscription')
+      .select()
+      .where({ launchpad_hash: launchHash, uploaded: true })
+
+    res.json({ inscriptions, folder: launchpad.folder })
   }),
 )
 

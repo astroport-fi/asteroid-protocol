@@ -126,7 +126,6 @@ export default function CreateCollectionLaunch() {
       new Date() >= getDateFromUTCString(data.launchpad.start_date)
     )
   }, [data.launchpad])
-  console.log(data.launchpad?.start_date)
 
   const defaultValues: Partial<FormData> = useMemo(() => {
     if (!data.launchpad) {

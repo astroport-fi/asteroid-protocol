@@ -44,6 +44,27 @@ export class AsteroidClient extends AsteroidService {
     super(url)
   }
 
+  async getCollectionSupply(launchHash: string): Promise<number | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: launchHash,
+              },
+            },
+          },
+        },
+        {
+          max_supply: true,
+        },
+      ],
+    })
+
+    return result.launchpad?.[0].max_supply
+  }
+
   async checkIfMinted(collectionId: number, tokenId: number): Promise<boolean> {
     const result = await this.query({
       inscription: [

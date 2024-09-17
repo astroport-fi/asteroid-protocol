@@ -1,4 +1,5 @@
-import { LoaderFunctionArgs } from '@remix-run/cloudflare'
+import { NFTMetadata } from '@asteroid-protocol/sdk'
+import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
@@ -6,23 +7,34 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Alert, Badge, Checkbox, Input, Progress } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { Rnd } from 'react-rnd'
-import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
-import { getActiveStage } from '~/api/launchpad'
+import { getActiveStageDetail } from '~/api/launchpad'
+import { UploadApi } from '~/api/upload'
+import CollapsibleDescription from '~/components/CollapsibleDescription'
 import MintInscription from '~/components/MintInscription'
 import PercentageText from '~/components/PercentageText'
 import CollectionSocials from '~/components/collection/CollectionSocials'
+import LaunchpadInscriptionSelect from '~/components/dialogs/LaunchpadInscriptionSelect'
 import Label from '~/components/form/Label'
 import { ContentInput } from '~/components/inscription-form/Inputs'
 import { useRootContext } from '~/context/root'
 import useUploadApi from '~/hooks/api/useUploadApi'
+import useInscriptionUrl from '~/hooks/uploader/useInscriptionUrl'
 import { getAddress } from '~/utils/cookies'
 import { DATETIME_FORMAT, getDateFromUTCString } from '~/utils/date'
+import { collectionMeta } from '~/utils/meta'
 import { getSupplyTitle } from '~/utils/number'
 import { getFileExtension } from '~/utils/string'
-import cat from '../images/slowblink/slowblink.svg'
 
 const SYMBOL = 'ROBOTS7'
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data || !data.launch.collection) {
+    return []
+  }
+
+  return collectionMeta(data.launch.collection)
+}
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const address = await getAddress(request)
@@ -37,7 +49,24 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     })
   }
 
-  return json(launch)
+  const uploadClient = new UploadApi(context.cloudflare.env.UPLOAD_API)
+  const stats = await uploadClient.launchpad(launch.transaction.hash)
+  const inscriptionsRes = await uploadClient.getPublicInscriptions(
+    launch.transaction.hash,
+  )
+  if (!inscriptionsRes) {
+    throw new Response(null, {
+      status: 404,
+      statusText: 'Not Found',
+    })
+  }
+
+  return json({
+    launch,
+    stats,
+    inscriptions: inscriptionsRes.inscriptions,
+    folder: inscriptionsRes.folder,
+  })
 }
 
 type FormData = {
@@ -47,9 +76,9 @@ type FormData = {
 }
 
 export default function LaunchpadDetailPage() {
-  const launchpad = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
+  const { launch: launchpad } = data
   const { collection } = launchpad
-  const [collapsed, isCollapsed] = useState(true)
   const { assetsUrl } = useRootContext()
 
   // preview
@@ -94,7 +123,7 @@ export default function LaunchpadDetailPage() {
   }, [parentRef, fileName])
 
   const activeStage = useMemo(
-    () => getActiveStage(launchpad.stages),
+    () => getActiveStageDetail(launchpad.stages),
     [launchpad.stages],
   )
 
@@ -114,9 +143,24 @@ export default function LaunchpadDetailPage() {
   // upload
   const uploadApi = useUploadApi()
 
+  const [selectedInscription, setSelectedInscription] =
+    useState<NFTMetadata | null>(null)
+  const cat = useInscriptionUrl(
+    data.folder,
+    selectedInscription?.filename ?? '',
+  )
+
   return (
     <div className="flex flex-col lg:flex-row w-full max-w-[1920px] gap-8">
       <div className="flex flex-1 flex-col items-center">
+        <LaunchpadInscriptionSelect
+          className="max-w-md w-full mb-8"
+          folder={data.folder}
+          inscriptions={data.inscriptions}
+          title="Select a cat"
+          onSelect={setSelectedInscription}
+        />
+
         {preview && (
           <div className="mb-4">
             <div className="relative" ref={parentRef}>
@@ -161,6 +205,7 @@ export default function LaunchpadDetailPage() {
           fileName={fileName}
           error={errors.content}
           register={register}
+          disabled={selectedInscription == null}
           fileChange={(file) => {
             setFileName(file?.name ?? null)
 
@@ -174,10 +219,13 @@ export default function LaunchpadDetailPage() {
       </div>
 
       <div className="rounded-b-xl flex flex-1 flex-col items-start">
-        <div className="flex flex-col">
+        <div
+          className="CollapsibleDescription
+        flex flex-col"
+        >
           <h2 className="text-3xl">{collection.name}</h2>
         </div>
-        <CollectionSocials collection={collection} />
+        <CollectionSocials collection={collection} isLaunchpad />
         <div className="btn btn-neutral btn-sm cursor-auto mt-4">
           Total supply
           <Badge>
@@ -194,6 +242,10 @@ export default function LaunchpadDetailPage() {
                 : 'after fully minted out'}
           </Badge>
         </div>
+
+        <CollapsibleDescription className="mt-4">
+          {collection.metadata.description}
+        </CollapsibleDescription>
 
         <Input
           id="name"
@@ -234,21 +286,6 @@ export default function LaunchpadDetailPage() {
           </Label>
         </Alert>
 
-        <p
-          className={twMerge(
-            clsx(
-              'transition-all overflow-hidden ease-in-out delay-50 duration-500 whitespace-pre-wrap text-ellipsis mt-4 cursor-pointer max-h-[100rem]',
-              {
-                'max-h-24 line-clamp-4': collapsed,
-              },
-            ),
-          )}
-          onClick={() => isCollapsed(!collapsed)}
-          role="presentation"
-        >
-          {collection.metadata.description}
-        </p>
-
         <MintInscription
           launchpad={launchpad}
           className="mt-4 w-full"
@@ -272,11 +309,11 @@ export default function LaunchpadDetailPage() {
             )
 
             const url = `${assetsUrl}/${folder}/${filename}`
-            console.log(url)
 
             return {
               name,
               pfp: url,
+              token_id: selectedInscription!.token_id,
               coords: {
                 x: position.x / parentSize.width,
                 y: position.y / parentSize.height,

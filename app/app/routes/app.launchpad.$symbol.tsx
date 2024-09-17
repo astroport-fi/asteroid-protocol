@@ -3,12 +3,12 @@ import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare'
 import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import { format, formatRelative } from 'date-fns'
-import { PropsWithChildren, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Alert, Badge, Progress } from 'react-daisyui'
-import { twMerge } from 'tailwind-merge'
 import { AsteroidClient } from '~/api/client'
 import { StageDetail, getActiveStageDetail } from '~/api/launchpad'
 import { UploadApi } from '~/api/upload'
+import CollapsibleDescription from '~/components/CollapsibleDescription'
 import DecimalText from '~/components/DecimalText'
 import InscriptionImage from '~/components/InscriptionImage'
 import MintInscription from '~/components/MintInscription'
@@ -51,31 +51,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const stats = await uploadClient.launchpad(launch.transaction.hash)
 
   return json({ launch, stats })
-}
-
-function CollapsibleDescription({
-  children,
-  className,
-}: PropsWithChildren<{ className?: string }>) {
-  const [collapsed, isCollapsed] = useState(true)
-
-  return (
-    <p
-      className={twMerge(
-        clsx(
-          'transition-all overflow-hidden ease-in-out delay-50 duration-500 whitespace-pre-wrap text-ellipsis cursor-pointer max-h-[100rem]',
-          className,
-          {
-            'max-h-24 line-clamp-4': collapsed,
-          },
-        ),
-      )}
-      onClick={() => isCollapsed(!collapsed)}
-      role="presentation"
-    >
-      {children}
-    </p>
-  )
 }
 
 function StageBox({

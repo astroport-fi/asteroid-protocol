@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { Button, Divider, Form, Loading } from 'react-daisyui'
 import { useFieldArray, useForm } from 'react-hook-form'
 import InfoTooltip from '~/components/InfoTooltip'
-import { Description, Name } from '~/components/inscription-form/Inputs'
+import { Description, Name, Price } from '~/components/inscription-form/Inputs'
 import Trait from '~/components/inscription-form/Trait'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useRootContext } from '~/context/root'
@@ -13,11 +13,13 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import { useInvalidateUploadedInscriptions } from '~/hooks/uploader/useInscriptions'
 import { useHasUploaderSession } from '~/hooks/useUploaderSession'
 import useAddress from '~/hooks/wallet/useAddress'
+import { getDecimalValue } from '~/utils/number'
 import CreateUploaderSession from '../CreateUploaderSession'
 
 type FormData = {
   name: string
   description: string
+  price?: number
   traits: inscription.Trait[]
 }
 
@@ -80,7 +82,11 @@ export default function EditMetadata({
         if (!traits) {
           traits = []
         }
-        reset({ ...data, traits })
+        reset({
+          ...data,
+          traits,
+          price: data.price ? getDecimalValue(data.price, 6) : undefined,
+        })
         setIsLoading(false)
       })
   }, [assetsUrl, folder, tokenId, reset])
@@ -151,6 +157,8 @@ export default function EditMetadata({
         <Name register={register} name={name} error={errors.name} />
 
         <Description register={register} />
+
+        <Price control={control} error={errors.price} />
 
         <Divider className="mt-8 flex !gap-2">
           <span>Traits</span>
