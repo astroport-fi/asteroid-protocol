@@ -16,6 +16,7 @@ import Modal from '~/components/dialogs/Modal'
 import TxDialog from '~/components/dialogs/TxDialog'
 import UploadInscription from '~/components/dialogs/UploadInscription'
 import { useRootContext } from '~/context/root'
+import useInscriptionUrl from '~/hooks/uploader/useInscriptionUrl'
 import useUploadedInscriptions from '~/hooks/uploader/useInscriptions'
 import useDialog, { useDialogWithValue } from '~/hooks/useDialog'
 import { useInscriptionOperations } from '~/hooks/useOperations'
@@ -61,7 +62,7 @@ export function UploadedInscriptionBox({
   showMintButton: boolean
 }) {
   const { assetsUrl } = useRootContext()
-  const imageUrl = `${assetsUrl}/${folder}/${encodeURIComponent(inscription.name)}`
+  const imageUrl = useInscriptionUrl(folder, inscription.name)
   const operations = useInscriptionOperations()
 
   return (
@@ -202,6 +203,7 @@ export default function UploadInscriptionsPage() {
   const allUploaded =
     inscriptionsRes &&
     selectedLaunchpad &&
+    selectedLaunchpad.max_supply &&
     inscriptionsRes.inscriptions.length >= selectedLaunchpad.max_supply
 
   const onSubmit = handleSubmit(async () => {
@@ -258,8 +260,10 @@ export default function UploadInscriptionsPage() {
               </Alert>
             ) : (
               <Alert className="border border-accent mt-4 gap-1">
-                {inscriptionsRes.inscriptions.length} out of{' '}
-                {selectedLaunchpad.max_supply} inscriptions uploaded
+                {inscriptionsRes.inscriptions.length}{' '}
+                {selectedLaunchpad.max_supply > 0 &&
+                  `out of ${selectedLaunchpad.max_supply} `}
+                inscriptions uploaded
               </Alert>
             ))}
         </div>
