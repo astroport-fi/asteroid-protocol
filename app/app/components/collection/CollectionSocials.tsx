@@ -9,8 +9,10 @@ import useAddress from '~/hooks/wallet/useAddress'
 
 export default function CollectionSocials({
   collection,
+  isLaunchpad = false,
 }: {
   collection: CollectionDetail
+  isLaunchpad?: boolean
 }) {
   const { metadata, creator } = collection
   const address = useAddress()
@@ -55,7 +57,11 @@ export default function CollectionSocials({
       )}
       {creator === address && (
         <Link
-          to={`/app/edit/collection/${collection.symbol}`}
+          to={
+            isLaunchpad
+              ? `/app/edit/launch/${collection.symbol}`
+              : `/app/edit/collection/${collection.symbol}`
+          }
           title="Edit collection"
         >
           <PencilSquareIcon className="size-5" />

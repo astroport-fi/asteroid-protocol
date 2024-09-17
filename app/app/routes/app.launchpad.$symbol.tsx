@@ -20,11 +20,11 @@ import { collectionMeta } from '~/utils/meta'
 import { getSupplyTitle } from '~/utils/number'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  if (!data || !data.collection) {
+  if (!data || !data.launch.collection) {
     return []
   }
 
-  return collectionMeta(data.collection)
+  return collectionMeta(data.launch.collection)
 }
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -175,7 +175,7 @@ export default function LaunchpadDetailPage() {
         <div className="flex flex-col">
           <h2 className="text-3xl">{collection.name}</h2>
         </div>
-        <CollectionSocials collection={collection} />
+        <CollectionSocials collection={collection} isLaunchpad />
         <div className="btn btn-neutral btn-sm cursor-auto mt-4">
           Total supply
           <Badge>
@@ -207,7 +207,7 @@ export default function LaunchpadDetailPage() {
           ))}
         </div>
 
-        {!launchpad.max_supply || stats.uploaded >= stats.total ? (
+        {!launchpad.max_supply || stats.uploaded >= launchpad.max_supply ? (
           <MintInscription
             launchpad={launchpad}
             className="mt-4 w-full"
