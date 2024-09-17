@@ -34,6 +34,7 @@ export interface NFTMetadata extends ContentMetadata {
   attributes?: Trait[] | null
   filename?: string
   token_id?: number
+  price?: number
 }
 
 export type Parent = {
