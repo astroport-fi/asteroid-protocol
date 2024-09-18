@@ -27,12 +27,14 @@ export default function MintInscription({
   activeStage,
   metadataProvider,
   disabled = false,
+  price,
 }: {
   launchpad: LaunchpadDetail
   className?: string
   activeStage: StageDetail | undefined
   metadataProvider?: () => Promise<unknown>
   disabled?: boolean
+  price?: number
 }) {
   const isLedger = useIsLedger()
   const { minterAddress, launchpadEnabled } = useRootContext()
@@ -79,7 +81,7 @@ export default function MintInscription({
   }
 
   const mintFee = 100000
-  const fee = mintFee + (activeStage?.price ?? 0)
+  const fee = mintFee + (price ?? activeStage?.price ?? 0)
   const requiredAmount = fee * amount + (authorizedAmount ?? 0)
 
   async function mint() {
