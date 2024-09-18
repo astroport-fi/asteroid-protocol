@@ -296,17 +296,14 @@ export default function LaunchpadDetailPage() {
             const file = content[0]
             const fileExt = getFileExtension(file.name)
 
-            const { inscriptionSignedUrl, folder, filename, tokenId } =
-              await uploadApi.reservationUploadImage(
+            const { signedUrl, folder, filename, assetId } =
+              await uploadApi.uploadAsset(
                 launchpad.transaction.hash,
                 file.type,
                 fileExt,
               )
-            await uploadApi.upload(inscriptionSignedUrl, file)
-            await uploadApi.reservationConfirmImage(
-              launchpad.transaction.hash,
-              tokenId,
-            )
+            await uploadApi.upload(signedUrl, file)
+            await uploadApi.confirmAsset(launchpad.transaction.hash, assetId)
 
             const url = `${assetsUrl}/${folder}/${filename}`
 

@@ -15,12 +15,11 @@ CREATE TABLE "public"."launchpad_inscription" (
   "inscription_number" integer NOT NULL,
   "name" character varying(50) NOT NULL,
   "uploaded" boolean NOT NULL DEFAULT false,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id"),
+  CONSTRAINT "launchpad_inscription_number" UNIQUE ("launchpad_hash", "inscription_number")
 );
 -- Create index "idx_launchpad_inscription_launchpad_hash" to table: "launchpad_inscription"
 CREATE INDEX "idx_launchpad_inscription_launchpad_hash" ON "public"."launchpad_inscription" ("launchpad_hash");
--- Create index "launchpad_inscription_number" to table: "launchpad_inscription"
-CREATE UNIQUE INDEX "launchpad_inscription_number" ON "public"."launchpad_inscription" ("launchpad_hash", "inscription_number");
 -- Create "session" table
 CREATE TABLE "public"."session" (
   "address" character(45) NOT NULL,

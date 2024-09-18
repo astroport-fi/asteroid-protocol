@@ -11,13 +11,26 @@ export const launchpadMintReservationSelector = Selector(
   'launchpad_mint_reservation',
 )({
   address: true,
-  token_id: true,
+  __alias: {
+    reservation_id: { token_id: true },
+    token_id: {
+      metadata: [
+        {
+          path: '$.token_id',
+        },
+        true,
+      ],
+    },
+  },
+  is_random: true,
+  metadata: [{}, true],
   launchpad: {
     transaction: {
       hash: true,
     },
     collection: {
       id: true,
+      name: true,
       transaction: {
         hash: true,
       },
@@ -33,11 +46,14 @@ export const launchpadMintReservationSelector = Selector(
   },
 })
 
-export type LaunchpadMintReservation = InputType<
-  GraphQLTypes['launchpad_mint_reservation'],
-  typeof launchpadMintReservationSelector,
-  ScalarDefinition
->
+export type LaunchpadMintReservation = Omit<
+  InputType<
+    GraphQLTypes['launchpad_mint_reservation'],
+    typeof launchpadMintReservationSelector,
+    ScalarDefinition
+  >,
+  'token_id'
+> & { token_id: number | null }
 
 export class AsteroidClient extends AsteroidService {
   constructor(url: string) {
@@ -109,6 +125,6 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
 
-    return result.launchpad_mint_reservation
+    return result.launchpad_mint_reservation as LaunchpadMintReservation[]
   }
 }
