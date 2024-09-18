@@ -83,7 +83,7 @@ async function buildInscription(
   folder: string,
   tokenId: number,
   reservation: LaunchpadMintReservation,
-) {
+): Promise<{ txData: TxData; price: number | undefined }> {
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${tokenId}_metadata.json`
   let metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
@@ -114,11 +114,14 @@ async function buildInscription(
     config.CHAIN_ID,
     reservation.address,
   )
-  return operations.inscribeCollectionInscription(
-    collectionHash,
-    new Uint8Array(inscriptionBuffer),
-    metadata,
-  )
+  return {
+    txData: operations.inscribeCollectionInscription(
+      collectionHash,
+      new Uint8Array(inscriptionBuffer),
+      metadata,
+    ),
+    price: metadata.price,
+  }
 }
 
 async function calculateFee(
@@ -171,7 +174,7 @@ async function checkGrant(
   address: string,
   reservationAddress: string,
   feeEstimation: StdFee,
-  stagePrice: number | undefined,
+  price: number | undefined,
 ) {
   const grants = await client
     .forceGetQueryClient()
@@ -189,7 +192,7 @@ async function checkGrant(
   }
   const authorizedAmount = parseInt(authorizedCoin.amount, 10)
   const requiredAmount =
-    parseInt(feeEstimation.amount[0].amount, 10) + (stagePrice ?? 0) + 1
+    parseInt(feeEstimation.amount[0].amount, 10) + (price ?? 0) + 1
 
   if (requiredAmount > authorizedAmount) {
     throw new Error('insufficient authorization amount')
@@ -230,7 +233,7 @@ async function processMintReservation(
   }
 
   // download inscription content and metadata
-  const txData = await buildInscription(
+  const { txData, price: inscriptionPrice } = await buildInscription(
     config,
     collection.transaction.hash,
     launchpadFolder,
@@ -243,13 +246,14 @@ async function processMintReservation(
     getExecSendGrantMsg(address, msg.value),
   )
 
-  // add launchpad stage payment
-  if (reservation.stage.price) {
+  // add launchpad inscription or stage payment
+  const price = inscriptionPrice ?? reservation.stage.price
+  if (price) {
     msgs.push(
       getExecSendGrantMsg(address, {
         fromAddress: reservation.address,
         toAddress: collection.creator,
-        amount: [{ amount: `${reservation.stage.price}`, denom: 'uatom' }],
+        amount: [{ amount: `${price}`, denom: 'uatom' }],
       }),
     )
   }
@@ -266,13 +270,7 @@ async function processMintReservation(
   )
 
   // check grant
-  await checkGrant(
-    client,
-    address,
-    reservation.address,
-    feeEstimation,
-    reservation.stage.price,
-  )
+  await checkGrant(client, address, reservation.address, feeEstimation, price)
 
   // sign and broadcast
   const res = await broadcastTx(client, address, txData, gasMultiplier)

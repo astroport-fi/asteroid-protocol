@@ -291,6 +291,7 @@ export default function LaunchpadDetailPage() {
           className="mt-4 w-full"
           activeStage={activeStage}
           disabled={disabled}
+          price={selectedInscription?.price}
           metadataProvider={async () => {
             // upload image to s3
             const file = content[0]
