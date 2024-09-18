@@ -210,9 +210,7 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 			Address:      sender,
 			TokenId:      tokenId,
 			DateCreated:  transactionModel.DateCreated,
-		}
-		if metadataBytes != nil {
-			reservation.Metadata = datatypes.JSON(metadataBytes)
+			IsRandom:     launchpad.MaxSupply > 0,
 		}
 		if metadataBytes != nil {
 			reservation.Metadata = datatypes.JSON(metadataBytes)

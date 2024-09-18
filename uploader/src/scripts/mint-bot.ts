@@ -9,33 +9,110 @@ import { getExecSendGrantMsg } from '@asteroid-protocol/sdk/msg'
 import { Coin, DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 import { GasPrice, StdFee } from '@cosmjs/stargate'
 import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
+import sharp from 'sharp'
 import { AsteroidClient, LaunchpadMintReservation } from '../asteroid-client.js'
 import { Config, loadConfig } from '../config.js'
 import { estimate } from '../cosmos-client.js'
 import { connect } from '../db.js'
+
+interface PfpMetadata {
+  pfp: string
+  name: string
+  coords: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  token_id: number
+}
+
+async function pfpStickerMiddleware(
+  reservation: LaunchpadMintReservation,
+  nftMetadata: Required<NFTMetadata>,
+  inscriptionBuffer: ArrayBuffer,
+) {
+  console.log('PFPMiddleware', JSON.stringify(reservation.metadata, null, 2))
+
+  const reservationMetadata = reservation.metadata as PfpMetadata
+
+  // update nft metadata
+  nftMetadata.name = `${reservation.launchpad.collection.name} #${reservation.reservation_id}`
+  nftMetadata.description = `Signed by ${reservationMetadata.name}`
+  nftMetadata.token_id = reservation.reservation_id
+  nftMetadata.mime = 'image/png'
+
+  // create inscription image
+  const imageData = await fetch(reservationMetadata.pfp).then((res) =>
+    res.arrayBuffer(),
+  )
+  const image = sharp(imageData)
+  const imageMetadata = await image.metadata()
+  const imageWidth = imageMetadata.width as number
+  const imageHeight = imageMetadata.height as number
+
+  const relativeCoords = reservationMetadata.coords
+
+  const resizedOverlayWidth = Math.floor(relativeCoords.width * imageWidth)
+  const x = Math.floor(relativeCoords.x * imageWidth)
+  const y = Math.floor(relativeCoords.y * imageHeight)
+
+  const resizedOverlay = await sharp(inscriptionBuffer)
+    .resize(resizedOverlayWidth)
+    .toBuffer()
+  const composedImage = await image
+    .composite([
+      {
+        input: resizedOverlay,
+        left: x,
+        top: y,
+      },
+    ])
+    .png({ quality: 100 })
+    .toBuffer()
+
+  return {
+    nftMetadata,
+    image: composedImage,
+  }
+}
 
 async function buildInscription(
   config: Config,
   collectionHash: string,
   folder: string,
   tokenId: number,
-  reservationAddress: string,
+  reservation: LaunchpadMintReservation,
 ) {
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${tokenId}_metadata.json`
-  const metadata = (await fetch(metadataUrl).then((res) =>
+  let metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
   )) as Required<NFTMetadata>
   metadata.token_id = tokenId
 
   const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${encodeURIComponent(metadata.filename)}`
-  const inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
+  let inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
     res.arrayBuffer(),
   )
+
+  if (
+    reservation.metadata &&
+    typeof reservation.metadata === 'object' &&
+    'pfp' in reservation.metadata
+  ) {
+    const pfpRes = await pfpStickerMiddleware(
+      reservation,
+      metadata,
+      inscriptionBuffer,
+    )
+    metadata = pfpRes.nftMetadata
+    inscriptionBuffer = pfpRes.image
+  }
 
   // create inscription operations
   const operations = new InscriptionOperations(
     config.CHAIN_ID,
-    reservationAddress,
+    reservation.address,
   )
   return operations.inscribeCollectionInscription(
     collectionHash,
@@ -131,16 +208,25 @@ async function processMintReservation(
   const { launchpad } = reservation
   const { collection } = launchpad
 
-  // random token_id
-  // 1. random number between 1 and launchpad.max_supply
-  // 2. check if token_id is already minted
-  // 3. if not, mint token_id, otherwise repeat step 1
-  let tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
-  let minted = await api.checkIfMinted(collection.id, tokenId)
-  console.log(`Checking if token_id ${tokenId} is already minted...`)
-  while (minted) {
-    tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
-    minted = await api.checkIfMinted(collection.id, tokenId)
+  let tokenId: number | null = null
+  if (reservation.is_random) {
+    // random token_id
+    // 1. random number between 1 and launchpad.max_supply
+    // 2. check if token_id is already minted
+    // 3. if not, mint token_id, otherwise repeat step 1
+    let tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
+    let minted = await api.checkIfMinted(collection.id, tokenId)
+    console.log(`Checking if token_id ${tokenId} is already minted...`)
+    while (minted) {
+      tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
+      minted = await api.checkIfMinted(collection.id, tokenId)
+    }
+  } else if (reservation.token_id) {
+    tokenId = reservation.token_id
+  }
+
+  if (!tokenId) {
+    throw new Error('Unable to determine token_id')
   }
 
   // download inscription content and metadata
@@ -149,7 +235,7 @@ async function processMintReservation(
     collection.transaction.hash,
     launchpadFolder,
     tokenId,
-    reservation.address,
+    reservation,
   )
 
   // wrap to exec send grant
@@ -245,7 +331,7 @@ async function main() {
             const revealDate = new Date(launchpad.reveal_date)
             if (now < revealDate) {
               console.log(
-                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, reveal_date: ${revealDate}`,
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, reveal_date: ${revealDate}`,
               )
               continue
             }
@@ -255,7 +341,7 @@ async function main() {
               launchpad.minted_supply != launchpad.max_supply
             ) {
               console.log(
-                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, max_supply: ${launchpad.max_supply}, minted_supply: ${launchpad.minted_supply}`,
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, max_supply: ${launchpad.max_supply}, minted_supply: ${launchpad.minted_supply}`,
               )
               continue
             }
@@ -287,7 +373,7 @@ async function main() {
         )
       } catch (e) {
         console.error(
-          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, error: ${(e as Error).message}`,
+          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, error: ${(e as Error).message}`,
           e,
         )
       }

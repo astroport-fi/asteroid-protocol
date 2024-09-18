@@ -376,8 +376,17 @@ async function getNextTokenId(launchHash: string) {
   return (maxTokenIdRes?.['max'] ?? 0) + 1
 }
 
+async function getNextAssetId(launchHash: string) {
+  const maxTokenIdRes = await db('launchpad_asset')
+    .max('asset_id')
+    .where({ launchpad_hash: launchHash })
+    .first()
+
+  return (maxTokenIdRes?.['max'] ?? 0) + 1
+}
+
 app.post(
-  '/reservation/upload',
+  '/asset/upload',
   asyncHandler(async (req, res) => {
     const { launchHash, contentType, extension } = req.body
 
@@ -391,19 +400,19 @@ app.post(
       return
     }
 
-    // get next token id
-    const nextTokenId = await getNextTokenId(launchHash)
-    const name = `${nextTokenId}.${extension}`
+    // get next asset id
+    const nextAssetId = await getNextAssetId(launchHash)
+    const name = `${nextAssetId}.${extension}`
 
-    // create launchpad inscription record
-    await db('launchpad_inscription').insert({
+    // create launchpad asset record
+    await db('launchpad_asset').insert({
       launchpad_hash: launchHash,
-      inscription_number: nextTokenId,
+      asset_id: nextAssetId,
       name,
     })
 
     // generate signed URLs
-    const inscriptionSignedUrl = await generateUploadURL(
+    const signedUrl = await generateUploadURL(
       s3Client,
       config.S3_BUCKET,
       launchpad.folder,
@@ -412,8 +421,8 @@ app.post(
     )
 
     res.json({
-      tokenId: nextTokenId,
-      inscriptionSignedUrl,
+      assetId: nextAssetId,
+      signedUrl,
       filename: name,
       folder: launchpad.folder,
     })
@@ -421,9 +430,9 @@ app.post(
 )
 
 app.post(
-  '/reservation/confirm',
+  '/asset/confirm',
   asyncHandler(async (req, res) => {
-    const { launchHash, tokenId } = req.body
+    const { launchHash, assetId } = req.body
 
     // check if launchpad exists, @todo check if launchpad allows reservations to upload files
     const launchpad = await db('launchpad')
@@ -435,11 +444,11 @@ app.post(
       return
     }
 
-    // update inscription record
-    await db('launchpad_inscription')
+    // update inscription asset
+    await db('launchpad_asset')
       .where({
         launchpad_hash: launchHash,
-        inscription_number: tokenId,
+        asset_id: assetId,
       })
       .update({ uploaded: true })
 

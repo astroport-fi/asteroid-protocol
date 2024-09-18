@@ -7,6 +7,13 @@ interface InscriptionUploadUrl {
   folder: string
 }
 
+interface AssetUploadUrl {
+  signedUrl: string
+  assetId: number
+  filename: string
+  folder: string
+}
+
 interface InscriptionUploadUrls {
   inscriptionSignedUrl: string
   metadataSignedUrl: string
@@ -162,29 +169,24 @@ export class UploadApi {
     return data
   }
 
-  async reservationUploadImage(
+  async uploadAsset(
     launchHash: string,
     contentType: string,
     extension: string,
   ) {
-    const uploadUrlsResponse = await fetch(
-      `${this.apiUrl}/reservation/upload`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          launchHash,
-          contentType,
-          extension,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+    const uploadUrlsResponse = await fetch(`${this.apiUrl}/asset/upload`, {
+      method: 'POST',
+      body: JSON.stringify({
+        launchHash,
+        contentType,
+        extension,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
-    )
-    const data = await uploadUrlsResponse.json<
-      InscriptionUploadUrl | ErrorResponse
-    >()
+    })
+    const data = await uploadUrlsResponse.json<AssetUploadUrl | ErrorResponse>()
 
     if ('status' in data) {
       console.error(
@@ -198,12 +200,12 @@ export class UploadApi {
     return data
   }
 
-  reservationConfirmImage(launchHash: string, tokenId: number) {
-    return fetch(`${this.apiUrl}/reservation/confirm`, {
+  confirmAsset(launchHash: string, assetId: number) {
+    return fetch(`${this.apiUrl}/asset/confirm`, {
       method: 'POST',
       body: JSON.stringify({
         launchHash,
-        tokenId,
+        assetId,
       }),
       headers: {
         Accept: 'application/json',
