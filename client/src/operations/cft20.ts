@@ -1,7 +1,7 @@
 import CFT20Protocol from '../metaprotocol/cft20.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
-interface DeployParams {
+export interface DeployParams {
   name: string
   ticker: string
   maxSupply: number
