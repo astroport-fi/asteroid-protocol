@@ -21,6 +21,7 @@ type FormData = {
   ticker: string
   maxSupply: number
   mintLimit: number
+  preMine?: number
   launch: 'immediately' | 'specific'
   launchDate: Date
   content: File[]
@@ -43,6 +44,7 @@ export default function CreateToken() {
     control,
     reset,
     watch,
+    setError,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -74,7 +76,24 @@ export default function CreateToken() {
     const fileBuffer = await file.arrayBuffer()
     const byteArray = new Uint8Array(fileBuffer)
     if (!byteArray.byteLength) {
+      setError('content', { type: 'required' })
       console.warn('No file data')
+      return
+    }
+
+    if (data.preMine && data.preMine > data.maxSupply) {
+      setError('preMine', {
+        type: 'invalid',
+        message: 'Pre-mine must be less than max supply',
+      })
+      return
+    }
+
+    if (data.mintLimit > data.maxSupply / 100) {
+      setError('mintLimit', {
+        type: 'invalid',
+        message: 'Mint limit must be less than 1% of max supply',
+      })
       return
     }
 
@@ -85,6 +104,7 @@ export default function CreateToken() {
       name: encodeURI(data.name.trim()),
       ticker: data.ticker.toUpperCase(),
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
+      preMine: data.preMine,
     })
 
     showDialog(txInscription)
@@ -283,6 +303,14 @@ export default function CreateToken() {
               title="Per transaction mint limit"
               className="mt-4"
               required
+            />
+
+            <NumericInput
+              control={control}
+              error={errors.preMine}
+              name="preMine"
+              title="Pre-mine amount"
+              className="mt-4"
             />
 
             <div className="mt-4">

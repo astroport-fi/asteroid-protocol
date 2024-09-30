@@ -4,7 +4,7 @@ import mime from 'mime'
 import { Context, Options } from '../context.js'
 import CFT20Protocol from '../metaprotocol/cft20.js'
 import { TxData } from '../metaprotocol/tx.js'
-import { CFT20Operations } from '../operations/cft20.js'
+import { CFT20Operations, DeployParams } from '../operations/cft20.js'
 import {
   action,
   getOperationsOptions,
@@ -35,6 +35,7 @@ interface CFT20DeployOptions extends Options {
   supply: string
   logoPath: string
   mintLimit: string
+  preMine?: string
 }
 
 setupCommand(cft20Command.command('deploy'))
@@ -49,6 +50,7 @@ setupCommand(cft20Command.command('deploy'))
     'The maximum tokens that can be minted per transaction',
     '1000',
   )
+  .option('-p, --pre-mine [PRE_MINE]', 'The amount to pre-mine')
   .action(async (options: CFT20DeployOptions) => {
     cft20Action(options, async (context, operations) => {
       const mimeType = mime.getType(options.logoPath)
@@ -56,14 +58,18 @@ setupCommand(cft20Command.command('deploy'))
         throw new Error('Unknown mime type')
       }
       const data = await fs.readFile(options.logoPath)
-      return operations.deploy(data, mimeType, {
+      const params: DeployParams = {
         ticker: options.ticker.toUpperCase(),
         name: options.name,
         decimals: parseInt(options.decimals),
         maxSupply: parseInt(options.supply),
         mintLimit: parseInt(options.mintLimit),
         openTime: new Date(),
-      })
+      }
+      if (options.preMine) {
+        params.preMine = parseInt(options.preMine)
+      }
+      return operations.deploy(data, mimeType, params)
     })
   })
 
@@ -104,5 +110,23 @@ setupCommand(cft20Command.command('transfer'))
         parseInt(options.amount, 10),
         options.destination,
       )
+    })
+  })
+
+interface CFT20BurnOptions extends Options {
+  ticker: string
+  amount: string
+  destination: string
+}
+
+setupCommand(cft20Command.command('burn'))
+  .description('Burn a token')
+  .requiredOption('-t, --ticker <TICKER>', 'The token ticker')
+  .requiredOption('-m, --amount <AMOUNT>', 'The amount to burn')
+  .requiredOption('-d, --destination <DESTINATION>', 'The address to burn to')
+
+  .action(async (options: CFT20BurnOptions) => {
+    cft20Action(options, async (context, operations) => {
+      return operations.burn(options.ticker, parseInt(options.amount, 10))
     })
   })

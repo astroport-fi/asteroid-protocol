@@ -7,6 +7,7 @@ import { Token, TokenTypeWithHolder, isTokenLaunched } from '~/api/token'
 import useDialog from '~/hooks/useDialog'
 import { useTokenFactoryMetadata } from '~/hooks/useTokenFactory'
 import { getDecimalValue } from '~/utils/number'
+import BurnTokenDialog from './dialogs/BurnTokenDialog'
 import EnableTokenBridgeDialog from './dialogs/EnableBridgeTokenDialog'
 import SellTokenDialog from './dialogs/SellTokenDialog'
 import TransferTokenDialog from './dialogs/TransferTokenDialog'
@@ -21,6 +22,7 @@ export function TokenActions({ amount, token, className }: Props) {
   const { dialogRef: transferDialogRef, showDialog: showTransferDialog } =
     useDialog()
   const { dialogRef: sellDialogRef, showDialog: showSellDialog } = useDialog()
+  const { dialogRef: burnDialogRef, showDialog: showBurnDialog } = useDialog()
   const { dialogRef: bridgeDialogRef, showDialog: showBridgeDialog } =
     useDialog()
   const { metadata } = useTokenFactoryMetadata(token.ticker)
@@ -60,6 +62,14 @@ export function TokenActions({ amount, token, className }: Props) {
       >
         Trade
       </Link>
+      <Button
+        className="ml-2"
+        color="primary"
+        disabled={!amount}
+        onClick={() => showBurnDialog()}
+      >
+        Burn
+      </Button>
       {!metadata && (
         <Button
           className="ml-2"
@@ -70,6 +80,7 @@ export function TokenActions({ amount, token, className }: Props) {
         </Button>
       )}
       <TransferTokenDialog token={token} ref={transferDialogRef} />
+      <BurnTokenDialog token={token} ref={burnDialogRef} />
       <SellTokenDialog
         ticker={token.ticker}
         tokenAmount={amount ?? 0}

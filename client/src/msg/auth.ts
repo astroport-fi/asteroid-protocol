@@ -1,5 +1,9 @@
 import { EncodeObject } from '@cosmjs/proto-signing'
-import { MsgExec, MsgGrant } from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
+import {
+  MsgExec,
+  MsgGrant,
+  MsgRevoke,
+} from 'cosmjs-types/cosmos/authz/v1beta1/tx.js'
 import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx.js'
 
@@ -22,6 +26,18 @@ export function getGrantSendMsg(
   return {
     typeUrl: MsgGrant.typeUrl,
     value: grant,
+  }
+}
+
+export function getRevokeSendMsg(granter: string, grantee: string) {
+  const revoke: MsgRevoke = {
+    grantee,
+    granter,
+    msgTypeUrl: MsgSend.typeUrl,
+  }
+  return {
+    typeUrl: MsgRevoke.typeUrl,
+    value: revoke,
   }
 }
 

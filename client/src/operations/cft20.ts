@@ -1,13 +1,14 @@
 import CFT20Protocol from '../metaprotocol/cft20.js'
 import { OperationsBase, Options, getDefaultOptions } from './index.js'
 
-interface DeployParams {
+export interface DeployParams {
   name: string
   ticker: string
   maxSupply: number
   decimals: number
   mintLimit: number
   openTime: Date
+  preMine?: number
 }
 
 export class CFT20Operations<
@@ -41,6 +42,7 @@ export class CFT20Operations<
       params.decimals,
       params.mintLimit,
       params.openTime,
+      params.preMine,
     )
     return this.prepareOperation(operation, inscriptionData)
   }
@@ -53,6 +55,10 @@ export class CFT20Operations<
     return this.prepareOperation(
       this.protocol.transfer(ticker, amount, destination),
     )
+  }
+
+  burn(ticker: string, amount: number) {
+    return this.prepareOperation(this.protocol.burn(ticker, amount))
   }
 
   delist(ticker: string, orderNumber: number) {

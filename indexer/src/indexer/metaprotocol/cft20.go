@@ -89,6 +89,55 @@ func (protocol *CFT20) Name() string {
 	return "cft20"
 }
 
+func (protocol *CFT20) Mint(transactionModel models.Transaction, tokenModel models.Token, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string, mintAmount uint64) error {
+	// Add to tx history, we do this first so that if this tx has been processed
+	// we don't alter anything else
+	historyModel := models.TokenAddressHistory{
+		ChainID:       parsedURN.ChainID,
+		Height:        transactionModel.Height,
+		TransactionID: transactionModel.ID,
+		TokenID:       tokenModel.ID,
+		Sender:        tokenModel.Ticker,
+		Receiver:      sender,
+		Action:        "mint",
+		Amount:        mintAmount,
+		DateCreated:   transactionModel.DateCreated,
+	}
+	result := protocol.db.Save(&historyModel)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Update token circulating
+	tokenModel.CirculatingSupply = tokenModel.CirculatingSupply + mintAmount
+	result = protocol.db.Save(&tokenModel)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Update user balance
+	var holderModel models.TokenHolder
+	result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
+	if result.Error != nil {
+		if result.Error != gorm.ErrRecordNotFound {
+			return result.Error
+		}
+	}
+
+	holderModel.ChainID = parsedURN.ChainID
+	holderModel.TokenID = tokenModel.ID
+	holderModel.Address = sender
+	holderModel.Amount = holderModel.Amount + mintAmount
+	holderModel.DateUpdated = transactionModel.DateCreated
+
+	result = protocol.db.Save(&holderModel)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN *urn.URN, rawTransaction types.RawTransaction, sourceChannel string) error {
 	sender, err := rawTransaction.GetSenderAddress()
 	if err != nil {
@@ -245,6 +294,34 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return result.Error
 		}
 
+		// pre-mine if pre param exits
+		preMineAmountString := strings.TrimSpace(parsedURN.KeyValuePairs["pre"])
+		if preMineAmountString != "" {
+			preMineAmountFloat, err := strconv.ParseFloat(preMineAmountString, 64)
+
+			// Add the decimals to the premine amount
+			preMineAmountFloat = preMineAmountFloat * math.Pow10(int(decimals))
+			preMineAmount := uint64(math.Round(preMineAmountFloat))
+
+			if err != nil {
+				return fmt.Errorf("unable to parse premine amount '%s'", err)
+			}
+			if preMineAmount == 0 {
+				return fmt.Errorf("premine amount must be greater than 0")
+			}
+
+			// check if premine amount is less or equal than max supply
+			if preMineAmount > tokenModel.MaxSupply {
+				return fmt.Errorf("premine amount must be less or equal than max supply")
+			}
+
+			// mint the premine amount
+			err = protocol.Mint(transactionModel, tokenModel, parsedURN, rawTransaction, sender, preMineAmount)
+			if err != nil {
+				return err
+			}
+		}
+
 	case "mint":
 		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
 		ticker = strings.ToUpper(ticker)
@@ -270,50 +347,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			mintAmount = tokenModel.MaxSupply - tokenModel.CirculatingSupply
 		}
 
-		// Add to tx history, we do this first so that if this tx has been processed
-		// we don't alter anything else
-		historyModel := models.TokenAddressHistory{
-			ChainID:       parsedURN.ChainID,
-			Height:        transactionModel.Height,
-			TransactionID: transactionModel.ID,
-			TokenID:       tokenModel.ID,
-			Sender:        tokenModel.Ticker,
-			Receiver:      sender,
-			Action:        "mint",
-			Amount:        mintAmount,
-			DateCreated:   transactionModel.DateCreated,
-		}
-		result = protocol.db.Save(&historyModel)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		// Update token circulating
-		tokenModel.CirculatingSupply = tokenModel.CirculatingSupply + mintAmount
-		result = protocol.db.Save(&tokenModel)
-		if result.Error != nil {
-			return result.Error
-		}
-
-		// Update user balance
-		var holderModel models.TokenHolder
-		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
-		if result.Error != nil {
-			if result.Error != gorm.ErrRecordNotFound {
-				return result.Error
-			}
-		}
-
-		holderModel.ChainID = parsedURN.ChainID
-		holderModel.TokenID = tokenModel.ID
-		holderModel.Address = sender
-		holderModel.Amount = holderModel.Amount + mintAmount
-		holderModel.DateUpdated = transactionModel.DateCreated
-
-		result = protocol.db.Save(&holderModel)
-		if result.Error != nil {
-			return result.Error
-		}
+		return protocol.Mint(transactionModel, tokenModel, parsedURN, rawTransaction, sender, mintAmount)
 
 	case "transfer":
 
@@ -398,6 +432,75 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			Sender:        sender,
 			Receiver:      destinationAddress,
 			Action:        "transfer",
+			Amount:        amount,
+			DateCreated:   transactionModel.DateCreated,
+		}
+		result = protocol.db.Save(&historyModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+	case "burn":
+
+		ticker := strings.TrimSpace(parsedURN.KeyValuePairs["tic"])
+		ticker = strings.ToUpper(ticker)
+
+		// Check if the ticker exists
+		var tokenModel models.Token
+		result := protocol.db.Where("chain_id = ? AND ticker = ?", parsedURN.ChainID, ticker).First(&tokenModel)
+		if result.Error != nil {
+			return fmt.Errorf("token with ticker '%s' doesn't exist", ticker)
+		}
+
+		// Check required fields
+		amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+		// Convert amount to have the correct number of decimals
+		amountFloat, err := strconv.ParseFloat(amountString, 64)
+		if err != nil {
+			return fmt.Errorf("unable to parse amount '%s'", err)
+		}
+		if amountFloat == 0 {
+			return fmt.Errorf("amount must be greater than 0")
+		}
+
+		amount := uint64(math.Round(amountFloat * math.Pow10(int(tokenModel.Decimals))))
+
+		// Check that the user has enough tokens to burn
+		var holderModel models.TokenHolder
+		result = protocol.db.Where("chain_id = ? AND token_id = ? AND address = ?", parsedURN.ChainID, tokenModel.ID, sender).First(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("sender does not have any tokens to burn")
+		}
+
+		if holderModel.Amount < amount {
+			return fmt.Errorf("sender does not have enough tokens to burn")
+		}
+
+		// At this point we know that the sender has enough tokens to burn
+		// so update the sender's balance
+		holderModel.Amount = holderModel.Amount - amount
+		result = protocol.db.Save(&holderModel)
+		if result.Error != nil {
+			return fmt.Errorf("unable to update sender balance '%s'", err)
+		}
+
+		// update token circulating and total supply
+		tokenModel.CirculatingSupply = tokenModel.CirculatingSupply - amount
+		tokenModel.MaxSupply = tokenModel.MaxSupply - amount
+		result = protocol.db.Save(&tokenModel)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// Record the burn
+		historyModel := models.TokenAddressHistory{
+			ChainID:       parsedURN.ChainID,
+			Height:        transactionModel.Height,
+			TransactionID: transactionModel.ID,
+			TokenID:       tokenModel.ID,
+			Sender:        sender,
+			Receiver:      "cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a",
+			Action:        "burn",
 			Amount:        amount,
 			DateCreated:   transactionModel.DateCreated,
 		}
