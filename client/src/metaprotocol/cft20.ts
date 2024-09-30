@@ -57,6 +57,7 @@ export default class CFT20Protocol
     decimals: number,
     mintLimit: number,
     openTime: Date,
+    preMine?: number,
   ) {
     const params: MetaProtocolParams = [
       ['nam', name],
@@ -66,6 +67,9 @@ export default class CFT20Protocol
       ['lim', mintLimit],
       ['opn', Math.round(openTime.getTime() / 1000)],
     ]
+    if (preMine) {
+      params.push(['pre', preMine])
+    }
     return buildOperation(this, this.fee, this.chainId, 'deploy', params)
   }
 
@@ -84,6 +88,14 @@ export default class CFT20Protocol
       ['dst', destination],
     ]
     return buildOperation(this, this.fee, this.chainId, 'transfer', params)
+  }
+
+  burn(ticker: string, amount: number) {
+    const params: MetaProtocolParams = [
+      ['tic', ticker],
+      ['amt', amount],
+    ]
+    return buildOperation(this, this.fee, this.chainId, 'burn', params)
   }
 
   delist(ticker: string, orderNumber: number) {
