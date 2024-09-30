@@ -88,7 +88,9 @@ export default function NumericInput<
 
       {error && (
         <label className="label" htmlFor={name}>
-          <span className="label-text-alt text-error">Required</span>
+          <span className="label-text-alt text-error">
+            {error.message ?? 'Required'}
+          </span>
         </label>
       )}
     </div>
