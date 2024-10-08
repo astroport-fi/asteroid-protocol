@@ -20,12 +20,11 @@ CREATE TABLE "public"."transaction" (
   "content_length" integer NOT NULL,
   "status_message" character varying(255) NULL,
   "date_created" timestamp NOT NULL,
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id"),
+  CONSTRAINT "transaction_hash_key" UNIQUE ("hash")
 );
 -- Create index "idx_tx_hash" to table: "transaction"
 CREATE INDEX "idx_tx_hash" ON "public"."transaction" ("hash");
--- Create index "transaction_hash_key" to table: "transaction"
-CREATE UNIQUE INDEX "transaction_hash_key" ON "public"."transaction" ("hash");
 -- Create "inscription" table
 CREATE TABLE "public"."inscription" (
   "id" serial NOT NULL,
@@ -43,14 +42,12 @@ CREATE TABLE "public"."inscription" (
   "date_created" timestamp NOT NULL,
   "is_explicit" boolean NULL DEFAULT false,
   PRIMARY KEY ("id"),
+  CONSTRAINT "inscription_content_hash_key" UNIQUE ("content_hash"),
+  CONSTRAINT "inscription_tx_id" UNIQUE ("transaction_id"),
   CONSTRAINT "inscription_transaction_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."transaction" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 -- Create index "idx_inscriptions_owner_date" to table: "inscription"
 CREATE INDEX "idx_inscriptions_owner_date" ON "public"."inscription" ("date_created");
--- Create index "inscription_content_hash_key" to table: "inscription"
-CREATE UNIQUE INDEX "inscription_content_hash_key" ON "public"."inscription" ("content_hash");
--- Create index "inscription_tx_id" to table: "inscription"
-CREATE UNIQUE INDEX "inscription_tx_id" ON "public"."inscription" ("transaction_id");
 -- Create "inscription_history" table
 CREATE TABLE "public"."inscription_history" (
   "id" serial NOT NULL,
