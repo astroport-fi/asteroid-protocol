@@ -9,6 +9,8 @@ import {
   LaunchpadProtocol,
   MarketplaceOperations,
   MarketplaceProtocol,
+  TrollBoxOperations,
+  TrollBoxProtocol,
 } from '@asteroid-protocol/sdk'
 import { ProtocolFee } from '@asteroid-protocol/sdk/metaprotocol'
 import { useMemo } from 'react'
@@ -131,6 +133,28 @@ export function useLaunchpadOperations<T extends boolean = true>(
         useIbc,
         useExtensionData,
         fee: getFee(LaunchpadProtocol.DEFAULT_FEE, useIbc),
+      }),
+    )
+  }, [chainId, address, useIbc, useExtensionData, multi])
+}
+
+export function useTrollBoxOperations<T extends boolean = true>(
+  multi = true as T,
+) {
+  const { chainId, useIbc, useExtensionData } = useRootContext()
+  const address = useAddress()
+
+  return useMemo(() => {
+    if (!address) {
+      return null
+    }
+
+    return clientOnly$(
+      new TrollBoxOperations(chainId, address, {
+        multi,
+        useIbc,
+        useExtensionData,
+        fee: getFee(TrollBoxProtocol.DEFAULT_FEE, useIbc),
       }),
     )
   }, [chainId, address, useIbc, useExtensionData, multi])
