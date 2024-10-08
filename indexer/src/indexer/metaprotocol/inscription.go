@@ -450,7 +450,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// Store the content with the correct mime type on DO
-		contentPath, err := protocol.storeContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
+		contentPath, err := protocol.StoreContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
 		if err != nil {
 			return fmt.Errorf("unable to store content '%s'", err)
 		}
@@ -703,7 +703,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 }
 
 // storeContent stores the content in the S3 bucket
-func (protocol *Inscription) storeContent(mimeType string, txHash string, content []byte) (string, error) {
+func (protocol *Inscription) StoreContent(mimeType string, txHash string, content []byte) (string, error) {
 	if protocol.s3Endpoint == "" {
 		return "", nil
 	}
