@@ -1,0 +1,26 @@
+table:
+  name: troll_post
+  schema: public
+object_relationships:
+  - name: transaction
+    using:
+      foreign_key_constraint_on: transaction_id
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - is_explicit
+        - chain_id
+        - content_hash
+        - content_path
+        - creator
+        - version
+        - content_size_bytes
+        - height
+        - id
+        - transaction_id
+        - text
+        - date_created
+      filter: {}
+      allow_aggregations: true
+    comment: ""
