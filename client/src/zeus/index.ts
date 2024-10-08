@@ -14410,6 +14410,7 @@ export type ValueTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     token_address_histories?: [
       {
@@ -15056,6 +15057,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -15095,6 +15097,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -15225,6 +15228,11 @@ export type ValueTypes = {
       | Variable<any, string>
     per_mint_limit?:
       | ValueTypes['bigint_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    pre_mint?:
+      | ValueTypes['numeric_comparison_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -15665,6 +15673,7 @@ export type ValueTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -15730,6 +15739,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     ticker?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
@@ -15762,6 +15772,7 @@ export type ValueTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -15827,6 +15838,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     ticker?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
@@ -16325,6 +16337,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     ticker?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     token_address_histories_aggregate?:
       | ValueTypes['token_address_history_aggregate_order_by']
@@ -16376,6 +16389,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -16415,6 +16429,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -16437,6 +16452,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -16476,6 +16492,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -16498,6 +16515,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -16537,6 +16555,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -16604,6 +16623,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['numeric'] | undefined | null | Variable<any, string>
     ticker?: string | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
@@ -16624,6 +16644,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -16663,6 +16684,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -17226,6 +17248,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -17265,6 +17288,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -17287,6 +17311,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -17326,6 +17351,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -17348,6 +17374,7 @@ export type ValueTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -17387,6 +17414,7 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    pre_mint?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction_id?:
       | ValueTypes['order_by']
       | undefined
@@ -26976,6 +27004,7 @@ export type ResolverInputTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     token_address_histories?: [
       {
@@ -27403,6 +27432,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -27418,6 +27448,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -27483,6 +27514,7 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['bigint_comparison_exp']
       | undefined
       | null
+    pre_mint?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
     ticker?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     token_address_histories?:
       | ResolverInputTypes['token_address_history_bool_exp']
@@ -27806,6 +27838,7 @@ export type ResolverInputTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -27831,6 +27864,7 @@ export type ResolverInputTypes = {
     mint_page?: ResolverInputTypes['order_by'] | undefined | null
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     ticker?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     version?: ResolverInputTypes['order_by'] | undefined | null
@@ -27855,6 +27889,7 @@ export type ResolverInputTypes = {
     mint_page?: boolean | `@${string}`
     name?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     ticker?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -27880,6 +27915,7 @@ export type ResolverInputTypes = {
     mint_page?: ResolverInputTypes['order_by'] | undefined | null
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     ticker?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     version?: ResolverInputTypes['order_by'] | undefined | null
@@ -28157,6 +28193,7 @@ export type ResolverInputTypes = {
     mint_page?: ResolverInputTypes['order_by'] | undefined | null
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     ticker?: ResolverInputTypes['order_by'] | undefined | null
     token_address_histories_aggregate?:
       | ResolverInputTypes['token_address_history_aggregate_order_by']
@@ -28192,6 +28229,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28207,6 +28245,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28221,6 +28260,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28236,6 +28276,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28250,6 +28291,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28265,6 +28307,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28294,6 +28337,7 @@ export type ResolverInputTypes = {
     mint_page?: string | undefined | null
     name?: string | undefined | null
     per_mint_limit?: ResolverInputTypes['bigint'] | undefined | null
+    pre_mint?: ResolverInputTypes['numeric'] | undefined | null
     ticker?: string | undefined | null
     transaction_id?: number | undefined | null
     version?: string | undefined | null
@@ -28310,6 +28354,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28325,6 +28370,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28586,6 +28632,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28601,6 +28648,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28615,6 +28663,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28630,6 +28679,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -28644,6 +28694,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
     per_mint_limit?: boolean | `@${string}`
+    pre_mint?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     volume_24_base?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
@@ -28659,6 +28710,7 @@ export type ResolverInputTypes = {
     launch_timestamp?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
     per_mint_limit?: ResolverInputTypes['order_by'] | undefined | null
+    pre_mint?: ResolverInputTypes['order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
     volume_24_base?: ResolverInputTypes['order_by'] | undefined | null
   }
@@ -33973,6 +34025,7 @@ export type ModelTypes = {
     mint_page: string
     name: string
     per_mint_limit: ModelTypes['bigint']
+    pre_mint?: ModelTypes['numeric'] | undefined
     ticker: string
     /** An array relationship */
     token_address_histories: Array<ModelTypes['token_address_history']>
@@ -34222,6 +34275,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -34236,6 +34290,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -34271,6 +34326,7 @@ export type ModelTypes = {
     mint_page?: ModelTypes['String_comparison_exp'] | undefined
     name?: ModelTypes['String_comparison_exp'] | undefined
     per_mint_limit?: ModelTypes['bigint_comparison_exp'] | undefined
+    pre_mint?: ModelTypes['numeric_comparison_exp'] | undefined
     ticker?: ModelTypes['String_comparison_exp'] | undefined
     token_address_histories?:
       | ModelTypes['token_address_history_bool_exp']
@@ -34534,6 +34590,7 @@ export type ModelTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: ModelTypes['bigint'] | undefined
+    pre_mint?: ModelTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -34558,6 +34615,7 @@ export type ModelTypes = {
     mint_page?: ModelTypes['order_by'] | undefined
     name?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     ticker?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     version?: ModelTypes['order_by'] | undefined
@@ -34582,6 +34640,7 @@ export type ModelTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: ModelTypes['bigint'] | undefined
+    pre_mint?: ModelTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -34606,6 +34665,7 @@ export type ModelTypes = {
     mint_page?: ModelTypes['order_by'] | undefined
     name?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     ticker?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     version?: ModelTypes['order_by'] | undefined
@@ -34834,6 +34894,7 @@ export type ModelTypes = {
     mint_page?: ModelTypes['order_by'] | undefined
     name?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     ticker?: ModelTypes['order_by'] | undefined
     token_address_histories_aggregate?:
       | ModelTypes['token_address_history_aggregate_order_by']
@@ -34864,6 +34925,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -34878,6 +34940,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -34892,6 +34955,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -34906,6 +34970,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -34920,6 +34985,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -34934,6 +35000,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -34963,6 +35030,7 @@ export type ModelTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: ModelTypes['bigint'] | undefined
+    pre_mint?: ModelTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -34979,6 +35047,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['bigint'] | undefined
     max_supply?: ModelTypes['numeric'] | undefined
     per_mint_limit?: ModelTypes['bigint'] | undefined
+    pre_mint?: ModelTypes['numeric'] | undefined
     transaction_id?: number | undefined
     volume_24_base?: ModelTypes['bigint'] | undefined
   }
@@ -34993,6 +35062,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -35208,6 +35278,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -35222,6 +35293,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -35236,6 +35308,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -35250,6 +35323,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -35264,6 +35338,7 @@ export type ModelTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -35278,6 +35353,7 @@ export type ModelTypes = {
     launch_timestamp?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
     per_mint_limit?: ModelTypes['order_by'] | undefined
+    pre_mint?: ModelTypes['order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
     volume_24_base?: ModelTypes['order_by'] | undefined
   }
@@ -40496,6 +40572,7 @@ export type GraphQLTypes = {
     mint_page: string
     name: string
     per_mint_limit: GraphQLTypes['bigint']
+    pre_mint?: GraphQLTypes['numeric'] | undefined
     ticker: string
     /** An array relationship */
     token_address_histories: Array<GraphQLTypes['token_address_history']>
@@ -40754,6 +40831,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -40768,6 +40846,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -40803,6 +40882,7 @@ export type GraphQLTypes = {
     mint_page?: GraphQLTypes['String_comparison_exp'] | undefined
     name?: GraphQLTypes['String_comparison_exp'] | undefined
     per_mint_limit?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    pre_mint?: GraphQLTypes['numeric_comparison_exp'] | undefined
     ticker?: GraphQLTypes['String_comparison_exp'] | undefined
     token_address_histories?:
       | GraphQLTypes['token_address_history_bool_exp']
@@ -41081,6 +41161,7 @@ export type GraphQLTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: GraphQLTypes['bigint'] | undefined
+    pre_mint?: GraphQLTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -41105,6 +41186,7 @@ export type GraphQLTypes = {
     mint_page?: GraphQLTypes['order_by'] | undefined
     name?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     ticker?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     version?: GraphQLTypes['order_by'] | undefined
@@ -41130,6 +41212,7 @@ export type GraphQLTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: GraphQLTypes['bigint'] | undefined
+    pre_mint?: GraphQLTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -41154,6 +41237,7 @@ export type GraphQLTypes = {
     mint_page?: GraphQLTypes['order_by'] | undefined
     name?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     ticker?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     version?: GraphQLTypes['order_by'] | undefined
@@ -41384,6 +41468,7 @@ export type GraphQLTypes = {
     mint_page?: GraphQLTypes['order_by'] | undefined
     name?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     ticker?: GraphQLTypes['order_by'] | undefined
     token_address_histories_aggregate?:
       | GraphQLTypes['token_address_history_aggregate_order_by']
@@ -41416,6 +41501,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41430,6 +41516,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41445,6 +41532,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41459,6 +41547,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41474,6 +41563,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41488,6 +41578,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41517,6 +41608,7 @@ export type GraphQLTypes = {
     mint_page?: string | undefined
     name?: string | undefined
     per_mint_limit?: GraphQLTypes['bigint'] | undefined
+    pre_mint?: GraphQLTypes['numeric'] | undefined
     ticker?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -41534,6 +41626,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['bigint'] | undefined
     max_supply?: GraphQLTypes['numeric'] | undefined
     per_mint_limit?: GraphQLTypes['bigint'] | undefined
+    pre_mint?: GraphQLTypes['numeric'] | undefined
     transaction_id?: number | undefined
     volume_24_base?: GraphQLTypes['bigint'] | undefined
   }
@@ -41548,6 +41641,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41766,6 +41860,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41780,6 +41875,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41795,6 +41891,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41809,6 +41906,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -41824,6 +41922,7 @@ export type GraphQLTypes = {
     launch_timestamp?: number | undefined
     max_supply?: number | undefined
     per_mint_limit?: number | undefined
+    pre_mint?: number | undefined
     transaction_id?: number | undefined
     volume_24_base?: number | undefined
   }
@@ -41838,6 +41937,7 @@ export type GraphQLTypes = {
     launch_timestamp?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
     per_mint_limit?: GraphQLTypes['order_by'] | undefined
+    pre_mint?: GraphQLTypes['order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
     volume_24_base?: GraphQLTypes['order_by'] | undefined
   }
@@ -42566,6 +42666,7 @@ export const enum token_select_column {
   mint_page = 'mint_page',
   name = 'name',
   per_mint_limit = 'per_mint_limit',
+  pre_mint = 'pre_mint',
   ticker = 'ticker',
   transaction_id = 'transaction_id',
   version = 'version',

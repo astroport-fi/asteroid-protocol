@@ -86,6 +86,13 @@ export default function Tokenomics({
           <span>{format(token.launch_timestamp * 1000, DATETIME_FORMAT)}</span>
         </Column>
       </Row>
+      {token.pre_mint ? (
+        <Row>
+          <Column title="Pre-mint">
+            <PercentageText value={token.pre_mint / token.max_supply} />
+          </Column>
+        </Row>
+      ) : undefined}
     </div>
   )
 }

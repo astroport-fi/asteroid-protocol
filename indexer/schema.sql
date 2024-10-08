@@ -265,6 +265,7 @@ CREATE TABLE public."token" (
     decimals int2 NOT NULL,
     max_supply numeric NOT NULL,
     per_mint_limit int8 NOT NULL,
+    pre_mint numeric NULL,
     launch_timestamp int8 NOT NULL,
     mint_page varchar(128) NOT NULL DEFAULT 'default'::character varying,
     metadata text NULL,
@@ -802,7 +803,7 @@ WHERE cs.id IS NULL AND l.collection_id IS NULL;
 -- public.minted_out_launches view definition
 
 CREATE OR REPLACE VIEW public.minted_out_launches AS 
-SELECT * FROM launchpad WHERE minted_supply = max_supply OR finish_date < NOW()
+SELECT * FROM launchpad WHERE minted_supply = max_supply OR finish_date < NOW();
 
 ------------------ RIVER ---------------------
 

@@ -59,27 +59,28 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
-        - circulating_supply
-        - last_price_base
-        - launch_timestamp
-        - per_mint_limit
-        - volume_24_base
         - chain_id
+        - circulating_supply
         - content_path
+        - content_size_bytes
         - creator
         - current_owner
-        - mint_page
-        - name
-        - ticker
-        - version
-        - content_size_bytes
+        - date_created
+        - decimals
         - height
         - id
-        - transaction_id
+        - last_price_base
+        - launch_timestamp
         - max_supply
-        - decimals
         - metadata
-        - date_created
+        - mint_page
+        - name
+        - per_mint_limit
+        - pre_mint
+        - ticker
+        - transaction_id
+        - version
+        - volume_24_base
       filter: {}
       allow_aggregations: true
     comment: ""
