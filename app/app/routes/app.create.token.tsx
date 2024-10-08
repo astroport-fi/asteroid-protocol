@@ -21,7 +21,7 @@ type FormData = {
   ticker: string
   maxSupply: number
   mintLimit: number
-  preMine?: number
+  preMint?: number
   launch: 'immediately' | 'specific'
   launchDate: Date
   content: File[]
@@ -81,10 +81,10 @@ export default function CreateToken() {
       return
     }
 
-    if (data.preMine && data.preMine > data.maxSupply) {
-      setError('preMine', {
+    if (data.preMint && data.preMint > data.maxSupply) {
+      setError('preMint', {
         type: 'invalid',
-        message: 'Pre-mine must be less than max supply',
+        message: 'Pre-mint must be less than max supply',
       })
       return
     }
@@ -104,7 +104,7 @@ export default function CreateToken() {
       name: encodeURI(data.name.trim()),
       ticker: data.ticker.toUpperCase(),
       openTime: data.launch === 'immediately' ? new Date() : data.launchDate,
-      preMine: data.preMine,
+      preMine: data.preMint,
     })
 
     showDialog(txInscription)
@@ -307,9 +307,9 @@ export default function CreateToken() {
 
             <NumericInput
               control={control}
-              error={errors.preMine}
-              name="preMine"
-              title="Pre-mine amount"
+              error={errors.preMint}
+              name="preMint"
+              title="Pre-mint amount"
               className="mt-4"
             />
 
