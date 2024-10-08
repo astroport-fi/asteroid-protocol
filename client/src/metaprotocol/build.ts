@@ -48,13 +48,17 @@ export function buildOperation(
   }
 }
 
+export function hashContent(content: Uint8Array): string {
+  return toHex(sha256(content))
+}
+
 export function buildInscriptionData<T = unknown>(
   parentType: string,
   parentIdentifier: string,
   content: Uint8Array,
   metadata: T,
 ): Required<InscriptionData> {
-  const hash = toHex(sha256(content))
+  const hash = hashContent(content)
 
   return {
     parentType,
