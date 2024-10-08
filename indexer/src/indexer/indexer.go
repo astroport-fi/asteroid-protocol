@@ -80,12 +80,14 @@ func New(
 	metaprotocols := make(map[string]metaprotocol.Processor)
 	cft20 := metaprotocol.NewCFT20Processor(config.ChainID, db)
 	inscription := metaprotocol.NewInscriptionProcessor(config.ChainID, db, workerClient)
+	launchpad := metaprotocol.NewLaunchpadProcessor(config.ChainID, db, inscription)
 
 	metaprotocols["inscription"] = inscription
 	metaprotocols["cft20"] = cft20
 	metaprotocols["marketplace"] = metaprotocol.NewMarketplaceProcessor(config.ChainID, db, workerClient)
 	metaprotocols["bridge"] = metaprotocol.NewBridgeProcessor(config.ChainID, db, cft20)
-	metaprotocols["launchpad"] = metaprotocol.NewLaunchpadProcessor(config.ChainID, db, inscription)
+	metaprotocols["launchpad"] = launchpad
+	metaprotocols["trollbox"] = metaprotocol.NewTrollBoxProcessor(config.ChainID, db, inscription, launchpad)
 
 	return &Indexer{
 		chainID:                  config.ChainID,

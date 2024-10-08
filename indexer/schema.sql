@@ -657,6 +657,35 @@ CREATE INDEX "idx_launchpad_mint_reservation_launchpad_id" ON "public"."launchpa
 CREATE INDEX "idx_launchpad_mint_reservation_stage_id" ON "public"."launchpad_mint_reservation" USING btree ("stage_id");
 CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" USING btree ("token_id");
 
+-- public."troll_post" definition
+
+-- Drop table
+
+-- DROP TABLE public."troll_post";
+
+CREATE TABLE public."troll_post" (
+    id serial4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    content_hash varchar(128) NOT NULL,
+    creator varchar(128) NOT NULL,
+    "text" text NOT NULL,
+    content_path varchar(255) NULL DEFAULT NULL::character varying,
+    content_size_bytes int4 NULL,
+    is_explicit bool NULL DEFAULT false,
+    date_created timestamp NOT NULL,
+    CONSTRAINT troll_post_pkey PRIMARY KEY (id),
+    CONSTRAINT troll_post_content_hash_key UNIQUE (content_hash),
+    CONSTRAINT troll_post_tx_id UNIQUE (transaction_id),
+    CONSTRAINT troll_post_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id)
+);
+
+CREATE INDEX "idx_troll_post_creator" ON "public"."troll_post" USING btree ("creator");
+CREATE INDEX "idx_troll_post_transaction_id" ON "public"."troll_post" USING btree ("transaction_id");
+CREATE INDEX idx_trgm_troll_post_text ON "public"."troll_post" USING gin (("text") gin_trgm_ops);
+
 -- public.inscription_market view definition
 
 CREATE OR REPLACE VIEW public.inscription_market AS 
