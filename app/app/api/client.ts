@@ -82,6 +82,7 @@ import {
 } from './marketplace'
 import { TradeHistory, tradeHistorySelector } from './trade-history'
 import { transactionHashSelector } from './transaction'
+import { TrollPost, trollPostSelector } from './trollbox'
 
 export type TokenMarketResult = {
   tokens: TokenMarket[]
@@ -138,6 +139,11 @@ export interface Collections {
 export type CollectionsStats = {
   stats: CollectionsStatsItem[]
   count?: number
+}
+
+export interface TrollPosts {
+  posts: TrollPost[]
+  count: number
 }
 
 export class AsteroidClient extends AsteroidService {
@@ -1918,6 +1924,60 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return result.launchpad[0] as LaunchpadDetail | undefined
+  }
+
+  async getTrollPosts(
+    offset: number,
+    limit: number,
+    where: {
+      creator?: string
+      search?: string | null
+    } = {},
+    orderBy?: ValueTypes['troll_post_order_by'],
+  ): Promise<TrollPosts> {
+    if (!orderBy) {
+      orderBy = {
+        date_created: order_by.desc,
+      }
+    }
+
+    const queryWhere: ValueTypes['troll_post_bool_exp'] | undefined = {}
+    if (where.creator) {
+      queryWhere.creator = {
+        _eq: where.creator,
+      }
+    }
+
+    if (where.search) {
+      queryWhere.text = {
+        _ilike: `%${where.search}%`,
+      }
+    }
+
+    const result = await this.query({
+      troll_post: [
+        {
+          offset,
+          limit,
+          where: queryWhere,
+          order_by: [orderBy],
+        },
+        trollPostSelector,
+      ],
+      troll_post_aggregate: [
+        {
+          where: queryWhere,
+        },
+        aggregateCountSelector,
+      ],
+    })
+
+    return {
+      posts: result.troll_post,
+      count:
+        result.troll_post_aggregate.aggregate?.count ??
+        result.troll_post.length,
+    }
   }
 
   statusSubscription(chainId: string) {
