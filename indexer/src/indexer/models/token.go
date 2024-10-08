@@ -18,6 +18,7 @@ type Token struct {
 	Ticker            string         `gorm:"column:ticker"`
 	Decimals          uint64         `gorm:"column:decimals"`
 	MaxSupply         uint64         `gorm:"column:max_supply"`
+	PreMint           uint64         `gorm:"column:pre_mint"`
 	PerMintLimit      uint64         `gorm:"column:per_mint_limit"`
 	LaunchTimestamp   uint64         `gorm:"column:launch_timestamp"`
 	MintPage          string         `gorm:"column:mint_page"`

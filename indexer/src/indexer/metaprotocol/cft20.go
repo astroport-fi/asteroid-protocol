@@ -200,6 +200,30 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 		limitFloat = limitFloat * math.Pow10(int(decimals))
 		limit := uint64(math.Round(limitFloat))
 
+		// pre-mint if pre param exits
+		var preMintAmount uint64
+		preMintAmountString := strings.TrimSpace(parsedURN.KeyValuePairs["pre"])
+		if preMintAmountString != "" {
+			preMintAmountFloat, err := strconv.ParseFloat(preMintAmountString, 64)
+
+			if err != nil {
+				return fmt.Errorf("unable to parse pre-mint amount '%s'", err)
+			}
+
+			// Add the decimals to the pre-mint amount
+			preMintAmountFloat = preMintAmountFloat * math.Pow10(int(decimals))
+			preMintAmount = uint64(math.Round(preMintAmountFloat))
+
+			if preMintAmount == 0 {
+				return fmt.Errorf("pre-mint amount must be greater than 0")
+			}
+
+			// check if pre-mint amount is less or equal than max supply
+			if preMintAmount > supply {
+				return fmt.Errorf("pre-mint amount must be less or equal than max supply")
+			}
+		}
+
 		// TODO: Rework validation
 		// Validate some fields
 		if len(name) < protocol.nameMinLength || len(name) > protocol.nameMaxLength {
@@ -287,6 +311,7 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			ContentSizeBytes:  uint64(contentLength),
 			DateCreated:       transactionModel.DateCreated,
 			CirculatingSupply: 0,
+			PreMint:           preMintAmount,
 		}
 
 		result = protocol.db.Save(&tokenModel)
@@ -294,29 +319,9 @@ func (protocol *CFT20) Process(transactionModel models.Transaction, protocolURN 
 			return result.Error
 		}
 
-		// pre-mine if pre param exits
-		preMineAmountString := strings.TrimSpace(parsedURN.KeyValuePairs["pre"])
-		if preMineAmountString != "" {
-			preMineAmountFloat, err := strconv.ParseFloat(preMineAmountString, 64)
-
-			// Add the decimals to the premine amount
-			preMineAmountFloat = preMineAmountFloat * math.Pow10(int(decimals))
-			preMineAmount := uint64(math.Round(preMineAmountFloat))
-
-			if err != nil {
-				return fmt.Errorf("unable to parse premine amount '%s'", err)
-			}
-			if preMineAmount == 0 {
-				return fmt.Errorf("premine amount must be greater than 0")
-			}
-
-			// check if premine amount is less or equal than max supply
-			if preMineAmount > tokenModel.MaxSupply {
-				return fmt.Errorf("premine amount must be less or equal than max supply")
-			}
-
-			// mint the premine amount
-			err = protocol.Mint(transactionModel, tokenModel, parsedURN, rawTransaction, sender, preMineAmount)
+		// mint the pre-mint amount if pre param exits
+		if preMintAmount != 0 {
+			err = protocol.Mint(transactionModel, tokenModel, parsedURN, rawTransaction, sender, preMintAmount)
 			if err != nil {
 				return err
 			}
