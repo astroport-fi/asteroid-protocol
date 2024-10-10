@@ -27,4 +27,12 @@ export default class TrollBoxProtocol extends BaseProtocol {
     const params: MetaProtocolParams = [['h', hash]]
     return buildOperation(this, this.fee, this.chainId, 'post', params)
   }
+
+  collect(hash: string, amount: number = 1) {
+    const params: MetaProtocolParams = [
+      ['h', hash],
+      ['amt', amount],
+    ]
+    return buildOperation(this, this.fee, this.chainId, 'collect', params)
+  }
 }
