@@ -25,4 +25,9 @@ export class TrollBoxOperations<
     const operation = this.protocol.post(hash)
     return this.prepareOperation(operation, { metadata, content, hash })
   }
+
+  collect(hash: string, amount: number = 1) {
+    const operation = this.protocol.collect(hash, amount)
+    return this.prepareOperation(operation)
+  }
 }
