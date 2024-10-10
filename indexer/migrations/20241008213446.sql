@@ -1,6 +1,6 @@
 -- Create "troll_post" table
 CREATE TABLE "public"."troll_post" (
-  "id" serial NOT NULL,
+  "id" integer NOT NULL,
   "chain_id" character varying(32) NOT NULL,
   "height" integer NOT NULL,
   "version" character varying(32) NOT NULL,
