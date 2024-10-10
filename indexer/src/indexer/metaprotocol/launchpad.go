@@ -80,58 +80,22 @@ func (protocol *Launchpad) Process(transactionModel models.Transaction, protocol
 	return nil
 }
 
-func (protocol *Launchpad) ReserveInscription(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
-	if !protocol.MintingEnabled {
-		return fmt.Errorf("minting is disabled")
-	}
-
-	// validate launchpad hash
-	launchpadHash := parsedURN.KeyValuePairs["h"]
-	if launchpadHash == "" {
-		return fmt.Errorf("missing launchpad hash")
-	}
-
-	// validate stage id
-	stageIDString := parsedURN.KeyValuePairs["stg"]
-	if parsedURN.KeyValuePairs["stg"] == "" {
-		return fmt.Errorf("missing stage id")
-	}
-	stageID, err := strconv.ParseUint(stageIDString, 10, 64)
-	if err != nil {
-		return fmt.Errorf("unable to parse stage id '%s'", err)
-	}
-
-	// Check required fields
-	amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
-	// Convert amount to have the correct number of decimals
-	amount, err := strconv.ParseUint(amountString, 10, 64)
-	if err != nil {
-		return fmt.Errorf("unable to parse amount '%s'", err)
-	}
-	if amount <= 0 {
-		amount = 1
-	}
-
-	// @todo check signature
-
-	// get launchpad
-	// Fetch transaction from database with the given hash
-	var transaction models.Transaction
-	result := protocol.db.Where("hash = ?", launchpadHash).First(&transaction)
-	if result.Error != nil {
-		// Invalid hash
-		return result.Error
-	}
-
+func (protocol *Launchpad) ReserveInscriptionInternal(transactionModel models.Transaction, rawTransaction types.RawTransaction, sender string, launchpadTransactionID uint64, stageID uint64, amount uint64) error {
 	var launchpad models.Launchpad
-	result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&launchpad)
+	result := protocol.db.Where("transaction_id = ?", launchpadTransactionID).First(&launchpad)
 	if result.Error != nil {
 		return fmt.Errorf("launchpad not found")
 	}
 
 	// get stage
 	var stage models.LaunchpadStage
-	result = protocol.db.Where("launchpad_id = ? AND id = ?", launchpad.ID, stageID).First(&stage)
+	if stageID == 0 {
+		// get first stage
+		result = protocol.db.Where("launchpad_id = ?", launchpad.ID).First(&stage)
+	} else {
+		result = protocol.db.Where("launchpad_id = ? AND id = ?", launchpad.ID, stageID).First(&stage)
+
+	}
 	if result.Error != nil {
 		return fmt.Errorf("stage not found")
 	}
@@ -179,7 +143,7 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 
 	// get token id
 	var maxTokenId uint64
-	err = protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Where("launchpad_id = ?", launchpad.ID).Scan(&maxTokenId).Error
+	err := protocol.db.Model(&models.LaunchpadMintReservation{}).Select("COALESCE(MAX(token_id), 0)").Where("launchpad_id = ?", launchpad.ID).Scan(&maxTokenId).Error
 	if err != nil {
 		return err
 	}
@@ -232,6 +196,52 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 	}
 
 	return nil
+}
+
+func (protocol *Launchpad) ReserveInscription(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
+	if !protocol.MintingEnabled {
+		return fmt.Errorf("minting is disabled")
+	}
+
+	// validate launchpad hash
+	launchpadHash := parsedURN.KeyValuePairs["h"]
+	if launchpadHash == "" {
+		return fmt.Errorf("missing launchpad hash")
+	}
+
+	// validate stage id
+	stageIDString := parsedURN.KeyValuePairs["stg"]
+	if parsedURN.KeyValuePairs["stg"] == "" {
+		return fmt.Errorf("missing stage id")
+	}
+	stageID, err := strconv.ParseUint(stageIDString, 10, 64)
+	if err != nil {
+		return fmt.Errorf("unable to parse stage id '%s'", err)
+	}
+
+	// Check required fields
+	amountString := strings.TrimSpace(parsedURN.KeyValuePairs["amt"])
+	// Convert amount to have the correct number of decimals
+	amount, err := strconv.ParseUint(amountString, 10, 64)
+	if err != nil {
+		return fmt.Errorf("unable to parse amount '%s'", err)
+	}
+	if amount <= 0 {
+		amount = 1
+	}
+
+	// @todo check signature
+
+	// get launchpad
+	// Fetch transaction from database with the given hash
+	var transaction models.Transaction
+	result := protocol.db.Where("hash = ?", launchpadHash).First(&transaction)
+	if result.Error != nil {
+		// Invalid hash
+		return result.Error
+	}
+
+	return protocol.ReserveInscriptionInternal(transactionModel, rawTransaction, sender, transaction.ID, stageID, amount)
 }
 
 func (protocol *Launchpad) UpdateLaunch(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {

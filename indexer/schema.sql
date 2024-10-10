@@ -664,7 +664,7 @@ CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mi
 -- DROP TABLE public."troll_post";
 
 CREATE TABLE public."troll_post" (
-    id serial4 NOT NULL,
+    id int4 NOT NULL,
     chain_id varchar(32) NOT NULL,
     height int4 NOT NULL,
     "version" varchar(32) NOT NULL,
