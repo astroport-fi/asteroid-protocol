@@ -1053,6 +1053,7 @@ export type ScalarCoders = {
   bigint?: ScalarResolver
   jsonb?: ScalarResolver
   numeric?: ScalarResolver
+  price_curve?: ScalarResolver
   smallint?: ScalarResolver
   timestamp?: ScalarResolver
 }
@@ -5243,6 +5244,74 @@ export type ValueTypes = {
     finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    mint_reservations?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
+    mint_reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation_aggregate'],
+    ]
     minted_supply?: boolean | `@${string}`
     reveal_date?: boolean | `@${string}`
     reveal_immediately?: boolean | `@${string}`
@@ -5330,6 +5399,16 @@ export type ValueTypes = {
       | Variable<any, string>
     max_supply?:
       | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    mint_reservations?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    mint_reservations_aggregate?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -5996,6 +6075,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    mint_reservations_aggregate?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     minted_supply?:
       | ValueTypes['order_by']
       | undefined
@@ -6047,6 +6131,7 @@ export type ValueTypes = {
     name?: boolean | `@${string}`
     per_user_limit?: boolean | `@${string}`
     price?: boolean | `@${string}`
+    price_curve?: boolean | `@${string}`
     reservations?: [
       {
         /** distinct select on columns */
@@ -6293,6 +6378,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    price_curve?:
+      | ValueTypes['price_curve_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     reservations?:
       | ValueTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -6344,6 +6434,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['order_by']
       | undefined
@@ -6380,6 +6475,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['order_by']
       | undefined
@@ -6426,6 +6526,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     reservations_aggregate?:
       | ValueTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -6536,6 +6641,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['price_curve']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['timestamp']
       | undefined
@@ -10029,6 +10139,27 @@ export type ValueTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: unknown
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _gt?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _gte?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _in?:
+      | Array<ValueTypes['price_curve']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _is_null?: boolean | undefined | null | Variable<any, string>
+    _lt?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _lte?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _neq?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _nin?:
+      | Array<ValueTypes['price_curve']>
+      | undefined
+      | null
+      | Variable<any, string>
+  }
   ['query_root']: AliasType<{
     bridge_history?: [
       {
@@ -18588,6 +18719,9 @@ export type ValueTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     is_explicit?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ValueTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ValueTypes['transaction']
@@ -18631,6 +18765,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18696,6 +18831,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     text?:
       | ValueTypes['String_comparison_exp']
       | undefined
@@ -18727,6 +18872,7 @@ export type ValueTypes = {
     date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -18742,6 +18888,7 @@ export type ValueTypes = {
     date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -18778,6 +18925,16 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     text?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
     transaction?:
       | ValueTypes['transaction_order_by']
@@ -18798,6 +18955,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18806,6 +18964,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18814,6 +18973,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18845,6 +19005,7 @@ export type ValueTypes = {
     height?: number | undefined | null | Variable<any, string>
     id?: number | undefined | null | Variable<any, string>
     is_explicit?: boolean | undefined | null | Variable<any, string>
+    launchpad_id?: number | undefined | null | Variable<any, string>
     text?: string | undefined | null | Variable<any, string>
     transaction_id?: number | undefined | null | Variable<any, string>
     version?: string | undefined | null | Variable<any, string>
@@ -18854,6 +19015,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18862,6 +19024,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18870,6 +19033,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -18878,6 +19042,7 @@ export type ValueTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -21575,6 +21740,62 @@ export type ResolverInputTypes = {
     finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    mint_reservations?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    mint_reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation_aggregate'],
+    ]
     minted_supply?: boolean | `@${string}`
     reveal_date?: boolean | `@${string}`
     reveal_immediately?: boolean | `@${string}`
@@ -21627,6 +21848,14 @@ export type ResolverInputTypes = {
       | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     max_supply?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+    mint_reservations?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    mint_reservations_aggregate?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
+      | null
     minted_supply?:
       | ResolverInputTypes['numeric_comparison_exp']
       | undefined
@@ -22051,6 +22280,10 @@ export type ResolverInputTypes = {
     finish_date?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
+    mint_reservations_aggregate?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
+      | null
     minted_supply?: ResolverInputTypes['order_by'] | undefined | null
     reveal_date?: ResolverInputTypes['order_by'] | undefined | null
     reveal_immediately?: ResolverInputTypes['order_by'] | undefined | null
@@ -22077,6 +22310,7 @@ export type ResolverInputTypes = {
     name?: boolean | `@${string}`
     per_user_limit?: boolean | `@${string}`
     price?: boolean | `@${string}`
+    price_curve?: boolean | `@${string}`
     reservations?: [
       {
         /** distinct select on columns */
@@ -22232,6 +22466,10 @@ export type ResolverInputTypes = {
       | undefined
       | null
     price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    price_curve?:
+      | ResolverInputTypes['price_curve_comparison_exp']
+      | undefined
+      | null
     reservations?:
       | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -22259,6 +22497,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     start_date?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -22271,6 +22510,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     start_date?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -22285,6 +22525,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     reservations_aggregate?:
       | ResolverInputTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -22339,6 +22580,7 @@ export type ResolverInputTypes = {
     name?: string | undefined | null
     per_user_limit?: ResolverInputTypes['bigint'] | undefined | null
     price?: ResolverInputTypes['bigint'] | undefined | null
+    price_curve?: ResolverInputTypes['price_curve'] | undefined | null
     start_date?: ResolverInputTypes['timestamp'] | undefined | null
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -24339,6 +24581,19 @@ export type ResolverInputTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: unknown
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ResolverInputTypes['price_curve'] | undefined | null
+    _gt?: ResolverInputTypes['price_curve'] | undefined | null
+    _gte?: ResolverInputTypes['price_curve'] | undefined | null
+    _in?: Array<ResolverInputTypes['price_curve']> | undefined | null
+    _is_null?: boolean | undefined | null
+    _lt?: ResolverInputTypes['price_curve'] | undefined | null
+    _lte?: ResolverInputTypes['price_curve'] | undefined | null
+    _neq?: ResolverInputTypes['price_curve'] | undefined | null
+    _nin?: Array<ResolverInputTypes['price_curve']> | undefined | null
+  }
   ['query_root']: AliasType<{
     bridge_history?: [
       {
@@ -29983,6 +30238,9 @@ export type ResolverInputTypes = {
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
     is_explicit?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ResolverInputTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     /** An object relationship */
     transaction?: ResolverInputTypes['transaction']
@@ -30025,6 +30283,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30057,6 +30316,8 @@ export type ResolverInputTypes = {
       | ResolverInputTypes['Boolean_comparison_exp']
       | undefined
       | null
+    launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
+    launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     text?: ResolverInputTypes['String_comparison_exp'] | undefined | null
     transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
     transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
@@ -30072,6 +30333,7 @@ export type ResolverInputTypes = {
     date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -30087,6 +30349,7 @@ export type ResolverInputTypes = {
     date_created?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     text?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     version?: boolean | `@${string}`
@@ -30103,6 +30366,8 @@ export type ResolverInputTypes = {
     height?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     is_explicit?: ResolverInputTypes['order_by'] | undefined | null
+    launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
+    launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
     text?: ResolverInputTypes['order_by'] | undefined | null
     transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
     transaction_id?: ResolverInputTypes['order_by'] | undefined | null
@@ -30115,6 +30380,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30123,6 +30389,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30131,6 +30398,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30152,6 +30420,7 @@ export type ResolverInputTypes = {
     height?: number | undefined | null
     id?: number | undefined | null
     is_explicit?: boolean | undefined | null
+    launchpad_id?: number | undefined | null
     text?: string | undefined | null
     transaction_id?: number | undefined | null
     version?: string | undefined | null
@@ -30161,6 +30430,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30169,6 +30439,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30177,6 +30448,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -30185,6 +30457,7 @@ export type ResolverInputTypes = {
     content_size_bytes?: boolean | `@${string}`
     height?: boolean | `@${string}`
     id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
     transaction_id?: boolean | `@${string}`
     __typename?: boolean | `@${string}`
   }>
@@ -32273,6 +32546,10 @@ export type ModelTypes = {
     finish_date?: ModelTypes['timestamp'] | undefined
     id: number
     max_supply: ModelTypes['numeric']
+    /** An array relationship */
+    mint_reservations: Array<ModelTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    mint_reservations_aggregate: ModelTypes['launchpad_mint_reservation_aggregate']
     minted_supply: ModelTypes['numeric']
     reveal_date?: ModelTypes['timestamp'] | undefined
     reveal_immediately: boolean
@@ -32294,6 +32571,12 @@ export type ModelTypes = {
     finish_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     max_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    mint_reservations?:
+      | ModelTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+    mint_reservations_aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
     minted_supply?: ModelTypes['numeric_comparison_exp'] | undefined
     reveal_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     reveal_immediately?: ModelTypes['Boolean_comparison_exp'] | undefined
@@ -32643,6 +32926,9 @@ export type ModelTypes = {
     finish_date?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
+    mint_reservations_aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
     minted_supply?: ModelTypes['order_by'] | undefined
     reveal_date?: ModelTypes['order_by'] | undefined
     reveal_immediately?: ModelTypes['order_by'] | undefined
@@ -32667,6 +32953,7 @@ export type ModelTypes = {
     name?: string | undefined
     per_user_limit: ModelTypes['bigint']
     price: ModelTypes['bigint']
+    price_curve: ModelTypes['price_curve']
     /** An array relationship */
     reservations: Array<ModelTypes['launchpad_mint_reservation']>
     /** An aggregate relationship */
@@ -32712,6 +32999,7 @@ export type ModelTypes = {
     name?: ModelTypes['String_comparison_exp'] | undefined
     per_user_limit?: ModelTypes['bigint_comparison_exp'] | undefined
     price?: ModelTypes['bigint_comparison_exp'] | undefined
+    price_curve?: ModelTypes['price_curve_comparison_exp'] | undefined
     reservations?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
     reservations_aggregate?:
       | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp']
@@ -32729,6 +33017,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     start_date?: ModelTypes['order_by'] | undefined
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -32741,6 +33030,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     start_date?: ModelTypes['order_by'] | undefined
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -32755,6 +33045,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     reservations_aggregate?:
       | ModelTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -32806,6 +33097,7 @@ export type ModelTypes = {
     name?: string | undefined
     per_user_limit?: ModelTypes['bigint'] | undefined
     price?: ModelTypes['bigint'] | undefined
+    price_curve?: ModelTypes['price_curve'] | undefined
     start_date?: ModelTypes['timestamp'] | undefined
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -34294,6 +34586,19 @@ export type ModelTypes = {
     _nin?: Array<ModelTypes['numeric']> | undefined
   }
   ['order_by']: order_by
+  ['price_curve']: any
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ModelTypes['price_curve'] | undefined
+    _gt?: ModelTypes['price_curve'] | undefined
+    _gte?: ModelTypes['price_curve'] | undefined
+    _in?: Array<ModelTypes['price_curve']> | undefined
+    _is_null?: boolean | undefined
+    _lt?: ModelTypes['price_curve'] | undefined
+    _lte?: ModelTypes['price_curve'] | undefined
+    _neq?: ModelTypes['price_curve'] | undefined
+    _nin?: Array<ModelTypes['price_curve']> | undefined
+  }
   ['query_root']: {
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<ModelTypes['bridge_history']>
@@ -36521,6 +36826,9 @@ export type ModelTypes = {
     height: number
     id: number
     is_explicit?: boolean | undefined
+    /** An object relationship */
+    launchpad?: ModelTypes['launchpad'] | undefined
+    launchpad_id?: number | undefined
     text: string
     /** An object relationship */
     transaction: ModelTypes['transaction']
@@ -36551,6 +36859,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
@@ -36567,6 +36876,8 @@ export type ModelTypes = {
     height?: ModelTypes['Int_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     is_explicit?: ModelTypes['Boolean_comparison_exp'] | undefined
+    launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
     text?: ModelTypes['String_comparison_exp'] | undefined
     transaction?: ModelTypes['transaction_bool_exp'] | undefined
     transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
@@ -36582,6 +36893,7 @@ export type ModelTypes = {
     date_created?: ModelTypes['timestamp'] | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -36596,6 +36908,7 @@ export type ModelTypes = {
     date_created?: ModelTypes['timestamp'] | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -36611,6 +36924,8 @@ export type ModelTypes = {
     height?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     is_explicit?: ModelTypes['order_by'] | undefined
+    launchpad?: ModelTypes['launchpad_order_by'] | undefined
+    launchpad_id?: ModelTypes['order_by'] | undefined
     text?: ModelTypes['order_by'] | undefined
     transaction?: ModelTypes['transaction_order_by'] | undefined
     transaction_id?: ModelTypes['order_by'] | undefined
@@ -36622,6 +36937,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -36629,6 +36945,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -36636,6 +36953,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "troll_post" */
@@ -36656,6 +36974,7 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     is_explicit?: boolean | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -36665,6 +36984,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_pop on columns */
@@ -36672,6 +36992,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -36679,6 +37000,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -36686,6 +37008,7 @@ export type ModelTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
 }
@@ -38888,6 +39211,10 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['timestamp'] | undefined
     id: number
     max_supply: GraphQLTypes['numeric']
+    /** An array relationship */
+    mint_reservations: Array<GraphQLTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    mint_reservations_aggregate: GraphQLTypes['launchpad_mint_reservation_aggregate']
     minted_supply: GraphQLTypes['numeric']
     reveal_date?: GraphQLTypes['timestamp'] | undefined
     reveal_immediately: boolean
@@ -38909,6 +39236,12 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     max_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    mint_reservations?:
+      | GraphQLTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+    mint_reservations_aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
     minted_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
     reveal_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     reveal_immediately?: GraphQLTypes['Boolean_comparison_exp'] | undefined
@@ -39278,6 +39611,9 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
+    mint_reservations_aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
     minted_supply?: GraphQLTypes['order_by'] | undefined
     reveal_date?: GraphQLTypes['order_by'] | undefined
     reveal_immediately?: GraphQLTypes['order_by'] | undefined
@@ -39304,6 +39640,7 @@ export type GraphQLTypes = {
     name?: string | undefined
     per_user_limit: GraphQLTypes['bigint']
     price: GraphQLTypes['bigint']
+    price_curve: GraphQLTypes['price_curve']
     /** An array relationship */
     reservations: Array<GraphQLTypes['launchpad_mint_reservation']>
     /** An aggregate relationship */
@@ -39351,6 +39688,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['String_comparison_exp'] | undefined
     per_user_limit?: GraphQLTypes['bigint_comparison_exp'] | undefined
     price?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    price_curve?: GraphQLTypes['price_curve_comparison_exp'] | undefined
     reservations?:
       | GraphQLTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -39370,6 +39708,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     start_date?: GraphQLTypes['order_by'] | undefined
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -39382,6 +39721,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     start_date?: GraphQLTypes['order_by'] | undefined
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -39396,6 +39736,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     reservations_aggregate?:
       | GraphQLTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -39448,6 +39789,7 @@ export type GraphQLTypes = {
     name?: string | undefined
     per_user_limit?: GraphQLTypes['bigint'] | undefined
     price?: GraphQLTypes['bigint'] | undefined
+    price_curve?: GraphQLTypes['price_curve'] | undefined
     start_date?: GraphQLTypes['timestamp'] | undefined
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -41019,6 +41361,19 @@ export type GraphQLTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: 'scalar' & { name: 'price_curve' }
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: GraphQLTypes['price_curve'] | undefined
+    _gt?: GraphQLTypes['price_curve'] | undefined
+    _gte?: GraphQLTypes['price_curve'] | undefined
+    _in?: Array<GraphQLTypes['price_curve']> | undefined
+    _is_null?: boolean | undefined
+    _lt?: GraphQLTypes['price_curve'] | undefined
+    _lte?: GraphQLTypes['price_curve'] | undefined
+    _neq?: GraphQLTypes['price_curve'] | undefined
+    _nin?: Array<GraphQLTypes['price_curve']> | undefined
+  }
   ['query_root']: {
     __typename: 'query_root'
     /** fetch data from the table: "bridge_history" */
@@ -43315,6 +43670,9 @@ export type GraphQLTypes = {
     height: number
     id: number
     is_explicit?: boolean | undefined
+    /** An object relationship */
+    launchpad?: GraphQLTypes['launchpad'] | undefined
+    launchpad_id?: number | undefined
     text: string
     /** An object relationship */
     transaction: GraphQLTypes['transaction']
@@ -43348,6 +43706,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
@@ -43364,6 +43723,8 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['Int_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     is_explicit?: GraphQLTypes['Boolean_comparison_exp'] | undefined
+    launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
     text?: GraphQLTypes['String_comparison_exp'] | undefined
     transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
     transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
@@ -43380,6 +43741,7 @@ export type GraphQLTypes = {
     date_created?: GraphQLTypes['timestamp'] | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -43395,6 +43757,7 @@ export type GraphQLTypes = {
     date_created?: GraphQLTypes['timestamp'] | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -43410,6 +43773,8 @@ export type GraphQLTypes = {
     height?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     is_explicit?: GraphQLTypes['order_by'] | undefined
+    launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
+    launchpad_id?: GraphQLTypes['order_by'] | undefined
     text?: GraphQLTypes['order_by'] | undefined
     transaction?: GraphQLTypes['transaction_order_by'] | undefined
     transaction_id?: GraphQLTypes['order_by'] | undefined
@@ -43423,6 +43788,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_pop on columns */
@@ -43431,6 +43797,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate stddev_samp on columns */
@@ -43439,6 +43806,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** Streaming cursor of the table "troll_post" */
@@ -43459,6 +43827,7 @@ export type GraphQLTypes = {
     height?: number | undefined
     id?: number | undefined
     is_explicit?: boolean | undefined
+    launchpad_id?: number | undefined
     text?: string | undefined
     transaction_id?: number | undefined
     version?: string | undefined
@@ -43469,6 +43838,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_pop on columns */
@@ -43477,6 +43847,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate var_samp on columns */
@@ -43485,6 +43856,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
   /** aggregate variance on columns */
@@ -43493,6 +43865,7 @@ export type GraphQLTypes = {
     content_size_bytes?: number | undefined
     height?: number | undefined
     id?: number | undefined
+    launchpad_id?: number | undefined
     transaction_id?: number | undefined
   }
 }
@@ -43684,6 +44057,7 @@ export const enum launchpad_stage_select_column {
   name = 'name',
   per_user_limit = 'per_user_limit',
   price = 'price',
+  price_curve = 'price_curve',
   start_date = 'start_date',
 }
 /** select columns of table "launchpad_whitelist" */
@@ -43919,6 +44293,7 @@ export const enum troll_post_select_column {
   height = 'height',
   id = 'id',
   is_explicit = 'is_explicit',
+  launchpad_id = 'launchpad_id',
   text = 'text',
   transaction_id = 'transaction_id',
   version = 'version',
@@ -44217,6 +44592,8 @@ type ZEUS_VARIABLES = {
   ['numeric']: ValueTypes['numeric']
   ['numeric_comparison_exp']: ValueTypes['numeric_comparison_exp']
   ['order_by']: ValueTypes['order_by']
+  ['price_curve']: ValueTypes['price_curve']
+  ['price_curve_comparison_exp']: ValueTypes['price_curve_comparison_exp']
   ['search_result_bool_exp_bool_exp']: ValueTypes['search_result_bool_exp_bool_exp']
   ['search_result_enum_name']: ValueTypes['search_result_enum_name']
   ['search_result_order_by']: ValueTypes['search_result_order_by']
