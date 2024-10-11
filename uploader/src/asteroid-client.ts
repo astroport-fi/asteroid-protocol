@@ -30,6 +30,7 @@ export const launchpadMintReservationSelector = Selector(
     },
     collection: {
       id: true,
+      symbol: true,
       name: true,
       transaction: {
         hash: true,
@@ -43,6 +44,7 @@ export const launchpadMintReservationSelector = Selector(
   },
   stage: {
     price: true,
+    price_curve: true,
   },
 })
 
@@ -54,6 +56,18 @@ export type LaunchpadMintReservation = Omit<
   >,
   'token_id'
 > & { token_id: number | null }
+
+const trollPostSelector = Selector('troll_post')({
+  id: true,
+  text: true,
+  content_path: true,
+})
+
+export type TrollPost = InputType<
+  GraphQLTypes['troll_post'],
+  typeof trollPostSelector,
+  ScalarDefinition
+>
 
 export class AsteroidClient extends AsteroidService {
   constructor(url: string) {
@@ -126,5 +140,24 @@ export class AsteroidClient extends AsteroidService {
     })
 
     return result.launchpad_mint_reservation as LaunchpadMintReservation[]
+  }
+
+  async getTrollPost(transactionHash: string): Promise<TrollPost | undefined> {
+    const result = await this.query({
+      troll_post: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: transactionHash,
+              },
+            },
+          },
+        },
+        trollPostSelector,
+      ],
+    })
+
+    return result.troll_post?.[0]
   }
 }

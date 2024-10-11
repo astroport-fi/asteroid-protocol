@@ -12,12 +12,12 @@ export default function DecimalText({
 } & NumericFormatProps) {
   return (
     <NumericFormat
-      {...props}
       className={twMerge('font-mono', props.className)}
       displayType="text"
       thousandSeparator
       value={getDecimalValue(value, decimals)}
       decimalScale={value < 1 ? decimals : 2}
+      {...props}
     />
   )
 }

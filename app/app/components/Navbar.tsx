@@ -1,39 +1,11 @@
-import {
-  Link,
-  LinkProps,
-  Location,
-  Navigation,
-  useLocation,
-  useNavigation,
-} from '@remix-run/react'
-import clsx from 'clsx'
+import { Link } from '@remix-run/react'
 import { MouseEvent, useCallback, useState } from 'react'
 import { Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
+import NavLink from './NavLink'
 import { Details } from './form/Select'
 import { Wallet } from './wallet/Wallet'
 import logo from '../images/logo/white.svg'
-
-function isActive(navigation: Navigation, location: Location, to: string) {
-  if (navigation.state === 'loading') {
-    return navigation.location.pathname.includes(to)
-  }
-
-  return location.pathname.includes(to)
-}
-
-function NavLink(props: LinkProps) {
-  const navigation = useNavigation()
-  const location = useLocation()
-  return (
-    <Link
-      {...props}
-      className={clsx({
-        active: isActive(navigation, location, props.to as string),
-      })}
-    />
-  )
-}
 
 export default function Navbar() {
   const [detailOpen, setDetailOpen] = useState(false)

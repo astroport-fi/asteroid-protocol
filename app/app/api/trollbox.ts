@@ -14,6 +14,12 @@ export const trollPostSelector = Selector('troll_post')({
   content_path: true,
   date_created: true,
   is_explicit: true,
+  launchpad: {
+    mint_reservations_aggregate: [
+      {},
+      { aggregate: { max: { token_id: true } } },
+    ],
+  },
 })
 
 export type TrollPost = InputType<

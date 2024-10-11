@@ -1078,8 +1078,11 @@ export class AsteroidClient extends AsteroidService {
     address: string,
     offset: number,
     limit: number,
+    where: {
+      collectionSymbolSearch?: string
+    } = {},
   ): Promise<InscriptionsResult> {
-    const where: ValueTypes['marketplace_inscription_detail_bool_exp'] = {
+    const queryWhere: ValueTypes['marketplace_inscription_detail_bool_exp'] = {
       marketplace_listing: {
         seller_address: {
           _eq: address,
@@ -1093,12 +1096,22 @@ export class AsteroidClient extends AsteroidService {
       },
     }
 
+    if (where.collectionSymbolSearch) {
+      queryWhere.inscription = {
+        collection: {
+          symbol: {
+            _ilike: `${where.collectionSymbolSearch}%`,
+          },
+        },
+      }
+    }
+
     const res = await this.query({
       marketplace_inscription_detail: [
         {
           limit,
           offset,
-          where,
+          where: queryWhere,
           order_by: [{ id: order_by.desc }],
         },
         {
@@ -1108,7 +1121,7 @@ export class AsteroidClient extends AsteroidService {
       ],
       marketplace_inscription_detail_aggregate: [
         {
-          where,
+          where: queryWhere,
         },
         aggregateCountSelector,
       ],
@@ -1128,11 +1141,22 @@ export class AsteroidClient extends AsteroidService {
     address: string,
     offset: number,
     limit: number,
+    where: {
+      collectionSymbolSearch?: string
+    } = {},
   ): Promise<InscriptionsResult> {
-    const where: ValueTypes['inscription_bool_exp'] = {
+    const queryWhere: ValueTypes['inscription_bool_exp'] = {
       current_owner: {
         _eq: address,
       },
+    }
+
+    if (where.collectionSymbolSearch) {
+      queryWhere.collection = {
+        symbol: {
+          _ilike: `${where.collectionSymbolSearch}%`,
+        },
+      }
     }
 
     const res = await this.query({
@@ -1140,14 +1164,14 @@ export class AsteroidClient extends AsteroidService {
         {
           limit,
           offset,
-          where,
+          where: queryWhere,
           order_by: [{ id: order_by.desc }],
         },
         inscriptionSelector,
       ],
       inscription_aggregate: [
         {
-          where,
+          where: queryWhere,
         },
         aggregateCountSelector,
       ],
@@ -1736,21 +1760,38 @@ export class AsteroidClient extends AsteroidService {
     }
   }
 
-  async getUserMintReservations(address: string): Promise<MintReservation[]> {
+  async getUserMintReservations(
+    address: string,
+    where: {
+      collectionSymbolSearch?: string
+    } = {},
+  ): Promise<MintReservation[]> {
+    const queryWhere: ValueTypes['launchpad_mint_reservation_bool_exp'] = {
+      address: {
+        _eq: address,
+      },
+      is_minted: {
+        _eq: false,
+      },
+      is_expired: {
+        _eq: false,
+      },
+    }
+
+    if (where.collectionSymbolSearch) {
+      queryWhere.launchpad = {
+        collection: {
+          symbol: {
+            _ilike: `${where.collectionSymbolSearch}%`,
+          },
+        },
+      }
+    }
+
     const result = await this.query({
       launchpad_mint_reservation: [
         {
-          where: {
-            address: {
-              _eq: address,
-            },
-            is_minted: {
-              _eq: false,
-            },
-            is_expired: {
-              _eq: false,
-            },
-          },
+          where: queryWhere,
           order_by: [
             {
               id: order_by.desc,

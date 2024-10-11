@@ -1,6 +1,7 @@
 package metaprotocol
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -91,15 +92,16 @@ func (protocol *TrollBox) Collect(transactionModel models.Transaction, parsedURN
 
 	// check if collection for this post already exists
 	symbol := fmt.Sprintf("TROLL:%d", trollPost.ID)
-	var collection models.Collection
-	result = protocol.db.Where("symbol = ?", symbol).First(&collection)
+	var launchpad models.Launchpad
+	result = protocol.db.Where("transaction_id = ?", trollPost.TransactionID).First(&launchpad)
+
 	if result.Error != nil {
 		if result.Error != gorm.ErrRecordNotFound {
 			return result.Error
 		}
 
 		// prepare name
-		name := fmt.Sprintf("Troll %d", trollPost.ID)
+		name := fmt.Sprintf("Troll Post #%d", trollPost.ID)
 
 		// prepare metadata
 		collectionMetadata := types.InscriptionMetadata[types.CollectionMetadata]{
@@ -118,7 +120,7 @@ func (protocol *TrollBox) Collect(transactionModel models.Transaction, parsedURN
 		}
 
 		// create collection
-		collection = models.Collection{
+		collection := models.Collection{
 			ChainID:          parsedURN.ChainID,
 			Height:           trollPost.Height,
 			Version:          "v2",
@@ -139,7 +141,7 @@ func (protocol *TrollBox) Collect(transactionModel models.Transaction, parsedURN
 		}
 
 		// create launchpad with one stage
-		launchpad := models.Launchpad{
+		launchpad = models.Launchpad{
 			ChainID:           parsedURN.ChainID,
 			Height:            trollPost.Height,
 			Version:           "v2",
@@ -156,11 +158,23 @@ func (protocol *TrollBox) Collect(transactionModel models.Transaction, parsedURN
 			return result.Error
 		}
 
+		// save launchpad id to troll post
+		trollPost.LaunchpadID = sql.NullInt64{
+			Int64: int64(launchpad.ID),
+			Valid: true,
+		}
+
+		result = protocol.db.Save(&trollPost)
+		if result.Error != nil {
+			return result.Error
+		}
+
 		// create stage
 		stage := models.LaunchpadStage{
 			CollectionID: collection.ID,
 			LaunchpadID:  launchpad.ID,
-			Price:        100000,
+			Price:        1000,
+			PriceCurve:   models.Linear,
 			HasWhitelist: false,
 		}
 
@@ -171,9 +185,7 @@ func (protocol *TrollBox) Collect(transactionModel models.Transaction, parsedURN
 	}
 
 	// create a mint reservation
-	protocol.launchpad.ReserveInscriptionInternal(transactionModel, rawTransaction, sender, collection.TransactionID, 0, 1)
-
-	return nil
+	return protocol.launchpad.ReserveInscriptionInternal(transactionModel, rawTransaction, sender, launchpad, 0, 1, false)
 }
 
 func (protocol *TrollBox) Post(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {

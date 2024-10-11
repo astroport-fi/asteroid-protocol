@@ -2,6 +2,9 @@ table:
   name: troll_post
   schema: public
 object_relationships:
+  - name: launchpad
+    using:
+      foreign_key_constraint_on: launchpad_id
   - name: transaction
     using:
       foreign_key_constraint_on: transaction_id
@@ -9,18 +12,19 @@ select_permissions:
   - role: anonymous
     permission:
       columns:
-        - is_explicit
         - chain_id
         - content_hash
         - content_path
-        - creator
-        - version
         - content_size_bytes
+        - creator
+        - date_created
         - height
         - id
-        - transaction_id
+        - is_explicit
+        - launchpad_id
         - text
-        - date_created
+        - transaction_id
+        - version
       filter: {}
       allow_aggregations: true
     comment: ""

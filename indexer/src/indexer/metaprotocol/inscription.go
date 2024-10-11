@@ -449,10 +449,24 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 			return err
 		}
 
-		// Store the content with the correct mime type on DO
-		contentPath, err := protocol.StoreContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
-		if err != nil {
-			return fmt.Errorf("unable to store content '%s'", err)
+		// Check if the content hash is already in the database
+		var contentPath string
+		var contentAlreadyExists bool = false
+		var inscription models.Inscription
+		result := protocol.db.Where("content_hash = ?", contentHash).First(&inscription)
+		if result.Error == nil {
+			// Content hash already exists
+			contentPath = inscription.ContentPath
+			contentAlreadyExists = true
+		} else if result.Error != gorm.ErrRecordNotFound {
+			// Error fetching content hash
+			return result.Error
+		} else {
+			// Store the content with the correct mime type on DO
+			contentPath, err = protocol.StoreContent(inscriptionMetadata.Metadata.Mime, rawTransaction.Hash, content)
+			if err != nil {
+				return fmt.Errorf("unable to store content '%s'", err)
+			}
 		}
 
 		// Check if the inscription is a Collection
@@ -585,6 +599,11 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 				// set token_id to inscription
 				inscriptionModel.TokenID = sql.NullInt64{Int64: int64(inscriptionMetadata.Metadata.TokenID), Valid: true}
 
+				// allow multiple inscriptions with the same content hash
+				if contentAlreadyExists {
+					inscriptionModel.ContentHash = fmt.Sprintf("%s-%d", contentHash, inscriptionMetadata.Metadata.TokenID)
+				}
+
 			}
 
 			if err != nil {
@@ -597,7 +616,7 @@ func (protocol *Inscription) Process(transactionModel models.Transaction, protoc
 		}
 
 		// insert inscription to DB
-		result := protocol.db.Save(&inscriptionModel)
+		result = protocol.db.Save(&inscriptionModel)
 		if result.Error != nil {
 			return result.Error
 		}

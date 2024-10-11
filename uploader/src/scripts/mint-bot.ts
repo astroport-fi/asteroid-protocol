@@ -77,6 +77,43 @@ async function pfpStickerMiddleware(
   }
 }
 
+async function buildInscriptionFromTrollPost(
+  config: Config,
+  api: AsteroidClient,
+  collectionHash: string,
+  tokenId: number,
+  reservation: LaunchpadMintReservation,
+) {
+  const trollPost = await api.getTrollPost(collectionHash)
+  if (!trollPost) {
+    throw new Error('Troll post not found')
+  }
+
+  const res = await fetch(trollPost.content_path!)
+  const inscriptionBuffer = await res.arrayBuffer()
+  const contentType = res.headers.get('content-type') ?? 'text/plain'
+
+  const metadata: NFTMetadata = {
+    name: `Troll Post #${trollPost.id}`,
+    description: trollPost.text,
+    mime: contentType,
+    token_id: tokenId,
+  }
+
+  // create inscription operations
+  const operations = new InscriptionOperations(
+    config.CHAIN_ID,
+    reservation.address,
+  )
+  return {
+    txData: operations.inscribeCollectionInscription(
+      collectionHash,
+      new Uint8Array(inscriptionBuffer),
+      metadata,
+    ),
+  }
+}
+
 async function buildInscription(
   config: Config,
   collectionHash: string,
@@ -205,7 +242,7 @@ async function processMintReservation(
   client: SigningStargateClient,
   address: string,
   reservation: LaunchpadMintReservation,
-  launchpadFolder: string,
+  launchpadFolder: string | undefined,
   gasMultiplier: number,
 ) {
   const { launchpad } = reservation
@@ -225,7 +262,11 @@ async function processMintReservation(
       minted = await api.checkIfMinted(collection.id, tokenId)
     }
   } else if (reservation.token_id) {
+    // handle case where token_id is provided in metadata
     tokenId = reservation.token_id
+  } else if (reservation.reservation_id) {
+    // handle case where token_id is provided as reservation_id
+    tokenId = reservation.reservation_id
   }
 
   if (!tokenId) {
@@ -233,13 +274,33 @@ async function processMintReservation(
   }
 
   // download inscription content and metadata
-  const { txData, price: inscriptionPrice } = await buildInscription(
-    config,
-    collection.transaction.hash,
-    launchpadFolder,
-    tokenId,
-    reservation,
-  )
+  let txData: TxData
+  let inscriptionPrice: number | undefined
+
+  if (collection.symbol.startsWith('TROLL:')) {
+    const res = await buildInscriptionFromTrollPost(
+      config,
+      api,
+      collection.transaction.hash,
+      tokenId,
+      reservation,
+    )
+    txData = res.txData
+  } else {
+    if (!launchpadFolder) {
+      throw new Error('Missing launchpad folder')
+    }
+
+    const res = await buildInscription(
+      config,
+      collection.transaction.hash,
+      launchpadFolder,
+      tokenId,
+      reservation,
+    )
+    txData = res.txData
+    inscriptionPrice = res.price
+  }
 
   // wrap to exec send grant
   const msgs = txData.messages.map((msg) =>
@@ -247,8 +308,12 @@ async function processMintReservation(
   )
 
   // add launchpad inscription or stage payment
-  const price = inscriptionPrice ?? reservation.stage.price
+  let price = inscriptionPrice ?? reservation.stage.price
   if (price) {
+    if (reservation.stage.price_curve === 'linear') {
+      price = price * tokenId
+    }
+
     msgs.push(
       getExecSendGrantMsg(address, {
         fromAddress: reservation.address,
@@ -346,6 +411,7 @@ async function main() {
           }
         }
 
+        let launchpadFolder: string | undefined
         const row = await db('launchpad')
           .select('folder')
           .where({
@@ -353,7 +419,10 @@ async function main() {
           })
           .first()
 
-        if (!row) {
+        if (row) {
+          launchpadFolder = row.folder
+        } else if (!launchpad.collection.symbol.startsWith('TROLL:')) {
+          // non-troll collections require a folder
           console.error(
             `Unable to find launchpad folder, launchpad_hash: ${launchpad.transaction.hash}`,
           )
@@ -366,7 +435,7 @@ async function main() {
           client,
           account.address,
           reservation,
-          row.folder,
+          launchpadFolder,
           gasMultiplier,
         )
       } catch (e) {

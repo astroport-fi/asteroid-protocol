@@ -80,15 +80,11 @@ func (protocol *Launchpad) Process(transactionModel models.Transaction, protocol
 	return nil
 }
 
-func (protocol *Launchpad) ReserveInscriptionInternal(transactionModel models.Transaction, rawTransaction types.RawTransaction, sender string, launchpadTransactionID uint64, stageID uint64, amount uint64) error {
-	var launchpad models.Launchpad
-	result := protocol.db.Where("transaction_id = ?", launchpadTransactionID).First(&launchpad)
-	if result.Error != nil {
-		return fmt.Errorf("launchpad not found")
-	}
+func (protocol *Launchpad) ReserveInscriptionInternal(transactionModel models.Transaction, rawTransaction types.RawTransaction, sender string, launchpad models.Launchpad, stageID uint64, amount uint64, isRandom bool) error {
 
 	// get stage
 	var stage models.LaunchpadStage
+	var result *gorm.DB
 	if stageID == 0 {
 		// get first stage
 		result = protocol.db.Where("launchpad_id = ?", launchpad.ID).First(&stage)
@@ -174,7 +170,7 @@ func (protocol *Launchpad) ReserveInscriptionInternal(transactionModel models.Tr
 			Address:      sender,
 			TokenId:      tokenId,
 			DateCreated:  transactionModel.DateCreated,
-			IsRandom:     launchpad.MaxSupply > 0,
+			IsRandom:     isRandom,
 		}
 		if metadataBytes != nil {
 			reservation.Metadata = datatypes.JSON(metadataBytes)
@@ -241,7 +237,13 @@ func (protocol *Launchpad) ReserveInscription(transactionModel models.Transactio
 		return result.Error
 	}
 
-	return protocol.ReserveInscriptionInternal(transactionModel, rawTransaction, sender, transaction.ID, stageID, amount)
+	var launchpad models.Launchpad
+	result = protocol.db.Where("transaction_id = ?", transaction.ID).First(&launchpad)
+	if result.Error != nil {
+		return fmt.Errorf("launchpad not found")
+	}
+
+	return protocol.ReserveInscriptionInternal(transactionModel, rawTransaction, sender, launchpad, stageID, amount, launchpad.MaxSupply > 0)
 }
 
 func (protocol *Launchpad) UpdateLaunch(transactionModel models.Transaction, parsedURN ProtocolURN, rawTransaction types.RawTransaction, sender string) error {
