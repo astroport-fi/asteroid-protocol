@@ -226,7 +226,7 @@ func (protocol *TrollBox) Post(transactionModel models.Transaction, parsedURN Pr
 	// Get the max id
 	var maxID uint64
 
-	result := protocol.db.Model(&models.TrollPost{}).Select("MAX(id)")
+	result := protocol.db.Model(&models.TrollPost{}).Select("COALESCE(MAX(id), 0)")
 	if result.Error != nil {
 		if result.Error != gorm.ErrRecordNotFound {
 			return result.Error
