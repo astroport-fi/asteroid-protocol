@@ -256,7 +256,7 @@ func (protocol *TrollBox) Post(transactionModel models.Transaction, parsedURN Pr
 		DateCreated:      transactionModel.DateCreated,
 	}
 
-	result := protocol.db.Save(&trollPost)
+	result = protocol.db.Save(&trollPost)
 	if result.Error != nil {
 		return result.Error
 	}
