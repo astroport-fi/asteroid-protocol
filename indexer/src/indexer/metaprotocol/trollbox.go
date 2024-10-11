@@ -225,10 +225,20 @@ func (protocol *TrollBox) Post(transactionModel models.Transaction, parsedURN Pr
 
 	// Get the max id
 	var maxID uint64
-	err = protocol.db.Model(&models.TrollPost{}).Select("MAX(id)").Scan(&maxID).Error
-	if err != nil {
-		return err
+
+	result := protocol.db.Model(&models.TrollPost{}).Select("MAX(id)")
+	if result.Error != nil {
+		if result.Error != gorm.ErrRecordNotFound {
+			return result.Error
+		}
+		maxID = 0
+	} else {
+		err = result.Scan(&maxID).Error
+		if err != nil {
+			return err
+		}
 	}
+
 	postID := maxID + 1
 
 	// save to db
