@@ -63,7 +63,7 @@ function Post({ post }: { post: TrollPost }) {
 
 function PostsList({ posts }: { posts: TrollPost[] }) {
   return (
-    <div className="flex flex-col w-full items-center overflow-y-auto h-[calc(100svh-42rem)]">
+    <div className="flex flex-col w-full items-center overflow-y-auto h-[calc(100svh-44rem)]">
       {posts.map((post) => (
         <Post key={post.id} post={post} />
       ))}

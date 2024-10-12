@@ -105,7 +105,7 @@ export default function BulkUploadInscriptions({
             [] as inscription.Trait[],
           )
 
-          const metadata: Required<NFTMetadata> = {
+          const metadata: NFTMetadata & { token_id: number } = {
             token_id: row.token_id as number,
             name: row.name as string,
             filename: row.filename as string,

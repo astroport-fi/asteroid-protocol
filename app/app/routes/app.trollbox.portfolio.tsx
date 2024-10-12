@@ -37,7 +37,9 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
       collectionSymbolSearch: 'TROLL:',
     },
   )
-  const reservations = await asteroidClient.getUserMintReservations(address)
+  const reservations = await asteroidClient.getUserMintReservations(address, {
+    collectionSymbolSearch: 'TROLL:',
+  })
 
   return json({
     inscriptions: res.inscriptions,
@@ -54,9 +56,12 @@ export default function WalletInscriptions() {
 
   const showMintReservations = data.reservations.length > 0
   const showListed = data.listed.length > 0
+  const hasUnlisted = data.inscriptions.length > 0
   const showUnlisted = showMintReservations || showListed
 
-  if (data.inscriptions.length < 1 && data.listed.length < 1) {
+  const emptyState = !hasUnlisted && !showMintReservations && !showListed
+
+  if (emptyState) {
     return (
       <GhostEmptyState>
         <div className="flex mt-8">
