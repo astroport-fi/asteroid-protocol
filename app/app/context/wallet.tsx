@@ -1,6 +1,12 @@
-import type { WalletModalProps, WalletRepo } from '@cosmos-kit/core'
+import type {
+  ChainWalletBase,
+  WalletModalProps,
+  WalletRepo,
+} from '@cosmos-kit/core'
 import { wallets as keplr } from '@cosmos-kit/keplr-extension'
+import { wallets as keplrMobile } from '@cosmos-kit/keplr-mobile'
 import { wallets as leap } from '@cosmos-kit/leap-extension'
+import { wallets as leapMobile } from '@cosmos-kit/leap-mobile'
 import { ChainProvider } from '@cosmos-kit/react-lite'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { WalletIcon } from '@heroicons/react/24/solid'
@@ -29,10 +35,23 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
   }, [status, walletRepo])
 
   if (status === WalletStatus.Disconnected) {
+    let wallets: ChainWalletBase[]
+    if (walletRepo.isMobile) {
+      wallets = walletRepo?.wallets.filter((w) =>
+        typeof w.walletInfo.mobileDisabled === 'boolean'
+          ? !w.walletInfo.mobileDisabled
+          : !w.walletInfo.mobileDisabled(),
+      )
+    } else {
+      wallets = walletRepo?.wallets.filter((w) =>
+        w.walletName.endsWith('extension'),
+      )
+    }
+
     return (
       <>
         <Modal.Header className="mb-6 text-center">Choose Wallet</Modal.Header>
-        {walletRepo.wallets.map(({ walletName, walletInfo, connect }) => (
+        {wallets.map(({ walletName, walletInfo, connect }) => (
           <Button
             key={walletName}
             className="mb-4 text-lg justify-start"
@@ -155,7 +174,7 @@ export default function WalletProvider({
       chains={getChains()}
       subscribeConnectEvents={true}
       assetLists={getAssets()}
-      wallets={[...keplr, ...leap]}
+      wallets={[...keplr, ...leap, ...keplrMobile, ...leapMobile]}
       walletModal={MyModal}
       sessionOptions={{ duration: Math.pow(2, 31) - 1 }}
       endpointOptions={{
@@ -171,20 +190,17 @@ export default function WalletProvider({
           },
         },
       }}
-      // walletConnectOptions={{
-      //   signClient: {
-      //     projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
-      //     relayUrl: 'wss://relay.walletconnect.org',
-      //     metadata: {
-      //       name: 'Asteroid',
-      //       description: 'Asteroid Protocol',
-      //       url: 'https://asteroidprotocol.io/app/',
-      //       icons: [
-      //         'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
-      //       ],
-      //     },
-      //   },
-      // }}
+      walletConnectOptions={{
+        signClient: {
+          projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
+          metadata: {
+            name: 'Asteroid',
+            description: 'Asteroid Protocol',
+            url: 'https://asteroidprotocol.io/app/',
+            icons: ['https://asteroidprotocol.io/apple-touch-icon.png'],
+          },
+        },
+      }}
     >
       <Outlet />
     </ChainProvider>
