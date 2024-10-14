@@ -131,12 +131,12 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
               return `File size exceeds maximum allowed size of ${maxFileSize / 1000} kb`
             }
           },
+          onChange: (e) => {
+            const file = e.target.files?.[0]
+            fileChange(file)
+          },
         })}
         color={error ? 'error' : undefined}
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          fileChange(file)
-        }}
       />
       {error && (
         <span className="text-error">

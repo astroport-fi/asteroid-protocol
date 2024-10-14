@@ -171,12 +171,12 @@ export default function CreateInscription() {
                     return `CSV file contains invalid characters\n${ALLOWED_CHARACTERS_INFO}`
                   }
                 },
+                onChange: (e) => {
+                  const file = e.target.files?.[0]
+                  setFileName(file?.name ?? null)
+                },
               })}
               color={errors.content ? 'error' : undefined}
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                setFileName(file?.name ?? null)
-              }}
             />
             {errors.content && (
               <span className="text-error whitespace-pre-wrap">

@@ -193,18 +193,18 @@ export default function CreateCollectionForm({
                       return 'Image must be square and between 250x250 and 1024x1024 pixels'
                     }
                   },
+                  onChange: (e) => {
+                    const file = e.target.files?.[0]
+                    setFileName(file?.name ?? null)
+
+                    if (file && file.type.startsWith('image/')) {
+                      setPreview(URL.createObjectURL(file))
+                    } else {
+                      setPreview(null)
+                    }
+                  },
                 })}
                 color={errors.content ? 'error' : undefined}
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  setFileName(file?.name ?? null)
-
-                  if (file && file.type.startsWith('image/')) {
-                    setPreview(URL.createObjectURL(file))
-                  } else {
-                    setPreview(null)
-                  }
-                }}
               />
               {errors.content && (
                 <span className="text-error">
