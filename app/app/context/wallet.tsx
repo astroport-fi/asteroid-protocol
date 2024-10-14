@@ -197,9 +197,7 @@ export default function WalletProvider({
             name: 'Asteroid',
             description: 'Asteroid Protocol',
             url: 'https://asteroidprotocol.io/app/',
-            icons: [
-              'https://raw.githubusercontent.com/cosmology-tech/cosmos-kit/main/packages/docs/public/favicon-96x96.png',
-            ],
+            icons: ['https://asteroidprotocol.io/apple-touch-icon.png'],
           },
         },
       }}
