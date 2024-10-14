@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import useChain from '~/hooks/wallet/useChain'
 
 export default function useOfflineSigner(chainName: string) {
-  const { chainWallet } = useChain(chainName)
+  const { chainWallet, address, isWalletConnected } = useChain(chainName)
   const [offlineSigner, setOfflineSigner] = useState<OfflineSigner | null>(null)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function useOfflineSigner(chainName: string) {
         setOfflineSigner(directSigner)
       }
     })
-  }, [chainWallet])
+  }, [chainWallet, address, isWalletConnected])
 
   return offlineSigner
 }
