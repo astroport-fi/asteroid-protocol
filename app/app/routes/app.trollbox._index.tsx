@@ -3,72 +3,30 @@ import { toUtf8 } from '@cosmjs/encoding'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
-import { Button, ChatBubble, Form, Textarea } from 'react-daisyui'
+import { Button, Form, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
-import { TrollPost } from '~/api/trollbox'
-import CollectPost from '~/components/CollectPost'
-import DecimalText from '~/components/DecimalText'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import TxDialog from '~/components/dialogs/TxDialog'
-import SearchInputForm from '~/components/form/SearchInput'
+import PostsList from '~/components/troll/Posts'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useDialogWithValue } from '~/hooks/useDialog'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { parsePagination } from '~/utils/pagination'
-import { shortAddress } from '~/utils/string'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url)
   const { offset, limit } = parsePagination(searchParams)
-  const search = searchParams.get('search')
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
-  const res = await asteroidClient.getTrollPosts(offset, limit, { search })
+  const res = await asteroidClient.getTrollPosts(offset, limit)
 
   return json({
     posts: res.posts,
     pages: Math.ceil(res.count / limit),
     total: res.count,
   })
-}
-
-function Post({ post }: { post: TrollPost }) {
-  const mintedAmount =
-    post.launchpad?.mint_reservations_aggregate?.aggregate?.max?.token_id ?? 0
-  const price = 1000 * (mintedAmount + 1)
-
-  return (
-    <div className="flex items-center p-4">
-      <ChatBubble>
-        <ChatBubble.Avatar
-          letters={shortAddress(post.creator)}
-          color="neutral"
-          shape="circle"
-          size="sm"
-        />
-        <ChatBubble.Message>{post.text}</ChatBubble.Message>
-        <ChatBubble.Footer className="flex items-center opacity-100">
-          <CollectPost trollPost={post} price={price} />
-          <span className="mx-2">•</span>
-          <DecimalText value={price} decimalScale={6} suffix=" ATOM" />
-          <span className="mx-2">•</span>
-          <span>{mintedAmount} / 100 minted</span>
-        </ChatBubble.Footer>
-      </ChatBubble>
-    </div>
-  )
-}
-
-function PostsList({ posts }: { posts: TrollPost[] }) {
-  return (
-    <div className="flex flex-col w-full items-center overflow-y-auto h-[calc(100svh-44rem)]">
-      {posts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))}
-    </div>
-  )
 }
 
 type FormData = {
@@ -117,7 +75,7 @@ function CreatePostForm() {
               id="text"
               placeholder="Write your post here"
               color={textError ? 'error' : undefined}
-              rows={10}
+              rows={5}
               required
               {...register('text', { required: true, minLength: 10 })}
             />
@@ -166,15 +124,12 @@ export default function TrollBoxPage() {
   const data = useLoaderData<typeof loader>()
 
   return (
-    <div className="flex flex-col w-full max-w-[1920px] overflow-y-scroll">
-      <div className="flex justify-end">
-        <SearchInputForm placeholder="Search by text" />
-      </div>
+    <div className="flex flex-col w-full overflow-y-scroll">
       {data.posts.length < 1 && (
-        <span className="p-4">{'No troll posts found'}</span>
+        <span className="p-4 text-center">{'No troll posts found'}</span>
       )}
       <div className="flex flex-col items-center">
-        <PostsList posts={data.posts} />
+        <PostsList posts={data.posts} className="h-[calc(100svh-26rem)]" />
         <CreatePostForm />
       </div>
     </div>

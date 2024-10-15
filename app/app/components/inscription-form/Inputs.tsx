@@ -135,6 +135,7 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
         key="content"
         id="content"
         className="opacity-0 w-10"
+        color={error ? 'error' : undefined}
         {...register('content' as FieldPath<TFieldValues>, {
           required: true,
           validate: async (files) => {
@@ -149,7 +150,6 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
             fileChange(file)
           },
         })}
-        color={error ? 'error' : undefined}
       />
       {error && (
         <span className="text-error">

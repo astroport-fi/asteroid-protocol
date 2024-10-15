@@ -192,9 +192,11 @@ export default function WalletProvider({
       }}
       walletConnectOptions={{
         signClient: {
+          // projectId: '3018abf8adaea881049a7c03bcf2d3aa',
           projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
+          // relayUrl: 'wss://relay.walletconnect.org',
           metadata: {
-            name: 'Asteroid',
+            name: 'Asteroid Protocol',
             description: 'Asteroid Protocol',
             url: 'https://asteroidprotocol.io/app/',
             icons: ['https://asteroidprotocol.io/apple-touch-icon.png'],

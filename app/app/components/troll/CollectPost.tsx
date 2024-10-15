@@ -13,7 +13,7 @@ import useGetSendAuthorizationAmount, {
 } from '~/hooks/useGetSendAuthorizationAmount'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
-import TxDialog from './dialogs/TxDialog'
+import TxDialog from '../dialogs/TxDialog'
 
 export default function CollectPost({
   trollPost,

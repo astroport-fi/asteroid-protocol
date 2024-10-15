@@ -13,7 +13,8 @@ export default function App() {
     !location.pathname.includes('/app/market') &&
     !location.pathname.includes('/app/collection/') &&
     !location.pathname.includes('/app/create/launch') &&
-    !location.pathname.includes('/app/create/collection/')
+    !location.pathname.includes('/app/create/collection/') &&
+    !location.pathname.includes('/app/trollbox')
 
   const center =
     location.pathname === '/app/inscriptions' ||

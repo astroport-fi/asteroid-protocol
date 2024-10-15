@@ -1,18 +1,16 @@
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
+import SearchInputForm from '~/components/form/SearchInput'
 import PostsList from '~/components/troll/Posts'
-import { getAddress } from '~/utils/cookies'
 
-export async function loader({ context, request, params }: LoaderFunctionArgs) {
-  let address = params.address
-  if (!address) {
-    address = await getAddress(request)
-  }
+export async function loader({ context, request }: LoaderFunctionArgs) {
+  const { searchParams } = new URL(request.url)
+  const search = searchParams.get('search')
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const limit = 100
-  const res = await asteroidClient.getTrollPosts(0, limit, { creator: address })
+  const res = await asteroidClient.getTrollPosts(0, limit, { search })
 
   return json({
     posts: res.posts,
@@ -21,12 +19,14 @@ export async function loader({ context, request, params }: LoaderFunctionArgs) {
   })
 }
 
-export default function TrollBoxProfilePage() {
+export default function TrollBoxSearchPage() {
   const data = useLoaderData<typeof loader>()
 
   return (
     <div className="flex flex-col w-full overflow-y-scroll">
-      <h2 className="text-center text-xl">My posts</h2>
+      <div className="flex justify-center mt-2">
+        <SearchInputForm placeholder="Search by text" />
+      </div>
       {data.posts.length < 1 && (
         <span className="p-4 text-center">{'No troll posts found'}</span>
       )}

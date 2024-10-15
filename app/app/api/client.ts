@@ -1967,6 +1967,23 @@ export class AsteroidClient extends AsteroidService {
     return result.launchpad[0] as LaunchpadDetail | undefined
   }
 
+  async getTrollPost(trollId: number): Promise<TrollPost | undefined> {
+    const result = await this.query({
+      troll_post: [
+        {
+          where: {
+            id: {
+              _eq: trollId,
+            },
+          },
+        },
+        trollPostSelector,
+      ],
+    })
+
+    return result.troll_post[0]
+  }
+
   async getTrollPosts(
     offset: number,
     limit: number,

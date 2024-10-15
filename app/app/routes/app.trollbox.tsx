@@ -11,13 +11,16 @@ export default function TrollBoxBasePage() {
           </NavLink>
         </Menu.Item>
         <Menu.Item>
+          <NavLink to="/app/trollbox/search">Search</NavLink>
+        </Menu.Item>
+        <Menu.Item>
           <NavLink to="/app/trollbox/portfolio">Portfolio</NavLink>
         </Menu.Item>
         <Menu.Item>
           <NavLink to="/app/trollbox/profile">Profile</NavLink>
         </Menu.Item>
       </Menu>
-      <div className="flex w-full p-10">
+      <div className="flex w-full p-5">
         <Outlet />
       </div>
     </div>
