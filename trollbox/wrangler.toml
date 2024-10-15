@@ -1,0 +1,110 @@
+name = "trollbox"
+
+[vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "http://localhost:8080/v1/graphql"
+ASTEROID_API_WSS = "ws://localhost:8080/v1/graphql"
+TX_EXPLORER = "http://localhost:1316/cosmos/tx/v1beta1/txs/"
+RPC = "http://localhost:16657"
+REST = "http://localhost:1316"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+MAINTENANCE_MODE = false
+NEUTRON_CHAIN_ID = "test-1"
+NEUTRON_CHAIN_NAME = "localneutron"
+NEUTRON_BRIDGE_CONTRACT = "neutron1vlqvaptpe7hztjj52whxk5mm6k2ey9hu4rv5ueu89shagk72mewq6jnxez"
+NEUTRON_RPC = "http://localhost:26657"
+NEUTRON_REST = "http://localhost:1317"
+BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
+ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
+ASTROPORT_URL = "https://app.astroport.fi"
+UPLOAD_API = "http://localhost:3000"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+LAUNCHPAD_ENABLED = false
+
+[env.localroids.vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+RPC = "https://rpc-localroids.asteroidprotocol.io"
+REST = "https://rest-localroids.asteroidprotocol.io"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+MAINTENANCE_MODE = false
+NEUTRON_CHAIN_ID = "test-1"
+NEUTRON_CHAIN_NAME = "localneutron"
+NEUTRON_BRIDGE_CONTRACT = "neutron1vlqvaptpe7hztjj52whxk5mm6k2ey9hu4rv5ueu89shagk72mewq6jnxez"
+NEUTRON_RPC = "http://localhost:26657"
+NEUTRON_REST = "http://localhost:1317"
+BRIDGE_ENDPOINTS = "http://localhost:8080/v1/graphql"
+ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
+ASTROPORT_URL = "https://app.astroport.fi"
+ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+
+[env.testnet.vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://testnet-new-api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
+RPC = "https://rpc-t.cosmos.nodestake.org"
+REST = "https://api-t.cosmos.nodestake.org"
+CHAIN_ID = "theta-testnet-001"
+CHAIN_NAME = "cosmoshubtestnet"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+NEUTRON_CHAIN_ID = "pion-1"
+NEUTRON_CHAIN_NAME = "neutrontestnet"
+NEUTRON_BRIDGE_CONTRACT = "neutron15rmdejy4ugkkk3a4qznyje3qveu3n8qs45j4rhw0v20e024jprpsxa56w7"
+NEUTRON_RPC = "https://rpc-falcron.pion-1.ntrn.tech:443"
+NEUTRON_REST = "https://rest-falcron.pion-1.ntrn.tech:443"
+BRIDGE_ENDPOINTS = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
+ASTROPORT_FACTORY_CONTRACT = "neutron1jj0scx400pswhpjes589aujlqagxgcztw04srynmhf0f6zplzn2qqmhwj7"
+ASTROPORT_URL = "https://testnet.astroport.fi"
+UPLOAD_API = "https://testnet-uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-testnet.ams3.digitaloceanspaces.com"
+
+[env.mainnet.vars]
+ENVIRONMENT = "production"
+ASTEROID_API = "https://new-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://new-api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmos/tx/"
+RPC = "https://cosmos-rpc.cosmos-apis.com"
+REST = "https://cosmos-rest.cosmos-apis.com"
+CHAIN_ID = "cosmoshub-4"
+CHAIN_NAME = "cosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = true
+USE_EXTENSION_DATA = true
+NEUTRON_CHAIN_ID = "neutron-1"
+NEUTRON_CHAIN_NAME = "neutron"
+NEUTRON_BRIDGE_CONTRACT = "neutron1d59rkwmkt6f46aeyra6zfk6ghehlsqc2qevw96c6x4xfmyk4qxhsjh8ajn"
+NEUTRON_RPC = "https://neutron-rpc.publicnode.com"
+NEUTRON_REST = "https://neutron-rest.publicnode.com"
+BRIDGE_ENDPOINTS = "https://new-api.asteroidprotocol.io/v1/graphql,https://asteroid-indexer.rhino-apis.com/v1/graphql,https://api-asteroid.stakecito.com/v1/graphql"
+ASTROPORT_FACTORY_CONTRACT = "neutron1hptk0k5kng7hjy35vmh009qd5m6l33609nypgf2yc6nqnewduqasxplt4e"
+ASTROPORT_URL = "https://app.astroport.fi"
+UPLOAD_API = "https://uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid.ams3.digitaloceanspaces.com"
+
+[dev]
+ip = "192.168.1.1"
+port = 8080
+local_protocol = "http"
+
+[limits]
+cpu_ms = 50
