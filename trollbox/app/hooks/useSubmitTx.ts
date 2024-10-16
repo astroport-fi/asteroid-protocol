@@ -242,8 +242,8 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     setError(null)
   }, [])
 
-  // Retry
-  function retry() {
+  // Send or retry
+  function sendOrRetry() {
     if (chainFee) {
       sendTx()
     } else {
@@ -257,10 +257,9 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     error,
     chainFee,
     metaprotocolFee,
-    sendTx,
+    sendTx: sendOrRetry,
     setError,
     resetState,
-    retry,
   }
 }
 

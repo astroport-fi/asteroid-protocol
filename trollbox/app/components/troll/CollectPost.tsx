@@ -1,20 +1,19 @@
 import { TxInscription } from '@asteroid-protocol/sdk'
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
 import { CheckIcon, CubeIcon, NoSymbolIcon } from '@heroicons/react/20/solid'
-import { Link } from '@remix-run/react'
-import { useState } from 'react'
-import { Alert, Button } from 'react-daisyui'
+import { Link, useNavigate } from '@remix-run/react'
+import { useMemo, useState } from 'react'
+import { Button } from 'react-daisyui'
+import { toast } from 'react-toastify'
 import { TrollPost } from '~/api/trollbox'
 import { useRootContext } from '~/context/root'
 import useAtomBalance from '~/hooks/useAtomBalance'
-// import { useDialogWithValue } from '~/hooks/useDialog'
 import useGetSendAuthorizationAmount, {
   useInvalidateSendAuthorizationAmount,
 } from '~/hooks/useGetSendAuthorizationAmount'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
+import useToastSubmitTx from '~/hooks/useToastSubmitTx'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
-
-// import TxDialog from '../dialogs/TxDialog'
 
 export default function CollectPost({
   trollPost,
@@ -28,7 +27,6 @@ export default function CollectPost({
   const isLedger = useIsLedger()
   const { minterAddress } = useRootContext()
   const operations = useTrollBoxOperations()
-  const [inProgress, setInProgress] = useState(false)
   const atomBalance = useAtomBalance()
 
   const { data: authorizedAmount } = useGetSendAuthorizationAmount(
@@ -39,12 +37,6 @@ export default function CollectPost({
     operations?.address ?? '',
     minterAddress,
   )
-
-  // const {
-  //   dialogRef,
-  //   value: inscription,
-  //   showDialog,
-  // } = useDialogWithValue<TxInscription | null>()
 
   const symbol = `TROLL:${trollPost.id}`
   const maxSupply = 100
@@ -57,25 +49,14 @@ export default function CollectPost({
   // @todo we can't simply multiply the price by the amount, because the price is dynamic
   // const [amount, setAmount] = useState(1)
 
-  const [notEnoughFunds, setNotEnoughFunds] = useState(false)
-
   const mintFee = 100000
   const fee = mintFee + price
   const requiredAmount = fee + (authorizedAmount ?? 0)
 
-  async function mint() {
+  const txInscription = useMemo(() => {
     if (!operations) {
-      console.warn('No address')
-      // showDialog(null)
-      return
+      return null
     }
-
-    if (atomBalance < requiredAmount) {
-      setNotEnoughFunds(true)
-      return
-    }
-
-    setInProgress(true)
 
     const txInscription = operations.collect(trollPost.transaction.hash)
 
@@ -84,10 +65,35 @@ export default function CollectPost({
       spendLimit: [{ denom: 'uatom', amount: `${requiredAmount}` }],
     })
     txInscription.messages = [grant]
+    return txInscription
+  }, [operations, trollPost.transaction.hash, requiredAmount, minterAddress])
 
+  const navigate = useNavigate()
+  const { sendTx } = useToastSubmitTx(txInscription, {
+    onSuccess: () => {
+      navigate({ hash: '' }, { replace: true })
+    },
+    successMessage: 'Post collected',
+  })
+
+  async function mint() {
+    if (!operations) {
+      toast.error('Wallet is not connected')
+      return
+    }
+
+    if (atomBalance < requiredAmount) {
+      toast.error('You do not have enough funds to complete this transaction')
+      return
+    }
+
+    if (isLedger) {
+      toast.error('Collecting is not supported when using Ledger')
+      return
+    }
+
+    sendTx()
     // showDialog(txInscription)
-
-    setInProgress(false)
   }
 
   // @todo change You do not have enough funds to complete this transaction not a notification
@@ -102,24 +108,6 @@ export default function CollectPost({
           <CheckIcon className="size-4" />
           Minted out, see collection
         </Link>
-      ) : notEnoughFunds ? (
-        <Button
-          color="error"
-          size="sm"
-          fullWidth
-          startIcon={<NoSymbolIcon className="size-4" />}
-        >
-          You do not have enough funds to complete this transaction
-        </Button>
-      ) : isLedger ? (
-        <Button
-          disabled
-          size="sm"
-          fullWidth
-          startIcon={<NoSymbolIcon className="size-4" />}
-        >
-          Minting is not supported when using Ledger
-        </Button>
       ) : (
         <div className="flex w-full">
           {/* <Input
@@ -137,7 +125,6 @@ export default function CollectPost({
             onClick={() => mint()}
             size="sm"
             fullWidth
-            loading={inProgress}
             className="shrink"
             startIcon={<CubeIcon className="size-4" />}
           >

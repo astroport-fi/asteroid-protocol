@@ -1,7 +1,9 @@
 import { Outlet, useNavigation } from '@remix-run/react'
 import { Progress } from 'react-daisyui'
+import { Bounce, ToastContainer } from 'react-toastify'
 import Menu from '~/components/Menu'
 import { Wallet } from '~/components/wallet/Wallet'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function App() {
   const navigation = useNavigation()
@@ -22,6 +24,15 @@ export default function App() {
         </div>
         <Wallet className="ml-8" />
       </div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        pauseOnHover
+        pauseOnFocusLoss
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   )
 }

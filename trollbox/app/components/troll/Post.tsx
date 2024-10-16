@@ -22,7 +22,10 @@ export default function Post({ post }: { post: TrollPost }) {
           shape="circle"
           size="sm"
         />
-        <ChatBubble.Message color={isOwner ? 'accent' : undefined}>
+        <ChatBubble.Message
+          color={isOwner ? 'accent' : undefined}
+          className="whitespace-pre-wrap"
+        >
           <Link to={`/post/${post.id}`}>{post.text}</Link>
         </ChatBubble.Message>
         <ChatBubble.Footer className="flex items-center opacity-100">

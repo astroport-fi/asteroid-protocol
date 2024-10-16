@@ -1,17 +1,16 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
 import { toUtf8 } from '@cosmjs/encoding'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useNavigate } from '@remix-run/react'
+import { useMemo } from 'react'
 import { Button, Form, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
-// import TxDialog from '~/components/dialogs/TxDialog'
 import PostsList from '~/components/troll/Posts'
 import { Wallet } from '~/components/wallet/Wallet'
-// import { useDialogWithValue } from '~/hooks/useDialog'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
+import useToastSubmitTx from '~/hooks/useToastSubmitTx'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { parsePagination } from '~/utils/pagination'
 
@@ -43,23 +42,32 @@ function CreatePostForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<FormData>()
 
-  // dialog
-  // const { dialogRef, value, showDialog } = useDialogWithValue<TxInscription>()
+  const text = watch('text')
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (!operations) {
-      console.warn('No address')
-      return
+  const txInscription = useMemo(() => {
+    if (!operations || !text) {
+      return null
     }
-
-    const txInscription = operations.post(toUtf8(data.text), {
-      text: data.text,
+    return operations.post(toUtf8(text), {
+      text: text,
       mime: 'text/plain',
     })
+  }, [operations, text])
 
-    // showDialog(txInscription)
+  const navigate = useNavigate()
+  const { sendTx } = useToastSubmitTx(txInscription, {
+    onSuccess: () => {
+      reset()
+      navigate({ hash: '' }, { replace: true })
+    },
+    successMessage: 'Post created',
+  })
+
+  const onSubmit = handleSubmit(async () => {
+    sendTx()
   })
 
   const textError = errors.text
@@ -105,15 +113,6 @@ function CreatePostForm() {
           <Wallet className="mt-4 btn-md w-full" color="primary" />
         )}
       </Form>
-      {/* <TxDialog
-        ref={dialogRef}
-        txInscription={value}
-        resultLink="/app/trollbox"
-        resultCTA="View post"
-        onSuccess={() => {
-          reset()
-        }}
-      /> */}
     </div>
   )
 }
