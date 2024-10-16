@@ -98,7 +98,7 @@ function CreatePostForm() {
 
         {isLedger ? (
           <Button type="button" className="mt-4">
-            Inscribing is not supported when using Ledger
+            Ledger is not supported at the moment
           </Button>
         ) : operations ? (
           <Button

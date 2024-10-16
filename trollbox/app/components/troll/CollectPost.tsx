@@ -93,7 +93,6 @@ export default function CollectPost({
     }
 
     sendTx()
-    // showDialog(txInscription)
   }
 
   // @todo change You do not have enough funds to complete this transaction not a notification
