@@ -136,7 +136,7 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
 
-    return result.launchpad_mint_reservation
+    return result.launchpad_mint_reservation as MintReservation[]
   }
 
   async getTrollPost(trollId: number): Promise<TrollPost | undefined> {
