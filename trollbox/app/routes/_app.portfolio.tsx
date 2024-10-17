@@ -57,7 +57,7 @@ export default function PortfolioPage() {
     return (
       <GhostEmptyState>
         <div className="flex mt-8">
-          <Link to="" className="btn btn-primary">
+          <Link to="/" className="btn btn-primary">
             Collect some troll posts
           </Link>
         </div>
@@ -65,11 +65,11 @@ export default function PortfolioPage() {
     )
   }
 
-  // @tood implement pagination
+  // @todo implement pagination
 
   return (
     <div className="flex flex-col w-full overflow-y-auto">
-      <h2 className="text-center text-xl mt-4 lg:mt-0">My portfolio</h2>
+      <h2 className="text-center text-xl my-4 lg:mt-0">My portfolio</h2>
       {showMintReservations && (
         <>
           <Divider>Mint Reservations</Divider>

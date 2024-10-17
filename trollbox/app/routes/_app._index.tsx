@@ -75,7 +75,11 @@ function CreatePostForm() {
 
   return (
     <div className="flex flex-col w-full max-w-md">
-      <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full">
+      <Form
+        onSubmit={onSubmit}
+        className="flex flex-col mt-4 w-full"
+        noValidate
+      >
         {isLedger && <InscribingNotSupportedWithLedger />}
 
         <div className="form-control w-full">
@@ -98,14 +102,11 @@ function CreatePostForm() {
         </div>
 
         {isLedger ? (
-          <Button type="button" className="mt-4">
-            Ledger is not supported at the moment
-          </Button>
+          <Button type="button">Ledger is not supported at the moment</Button>
         ) : operations ? (
           <Button
             type="submit"
             color="primary"
-            className="mt-4"
             startIcon={<PencilSquareIcon className="size-5" />}
           >
             Create

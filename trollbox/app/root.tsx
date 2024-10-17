@@ -61,18 +61,31 @@ function WalletProviderWrapper(props: WalletProviderProps) {
   let Provider: JSX.Element | undefined
 
   Provider = import.meta.env.DEV
-    ? serverOnly$(<WalletProvider {...props} />)
+    ? serverOnly$(
+        <div>
+          <WalletProvider {...props} />
+        </div>,
+      )
     : undefined
 
   if (Provider) {
     return Provider
   }
 
-  Provider = clientOnly$(<WalletProvider {...props} />)
+  Provider = clientOnly$(
+    <div>
+      <WalletProvider {...props} />
+    </div>,
+  )
   if (Provider) {
     return Provider
   }
-  return <Outlet />
+
+  return (
+    <div>
+      <Outlet />
+    </div>
+  )
 }
 
 export const links: LinksFunction = () => {

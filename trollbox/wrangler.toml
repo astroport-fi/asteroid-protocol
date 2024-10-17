@@ -1,4 +1,7 @@
 name = "trollbox"
+pages_build_output_dir = "./build/client"
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-05-12"
 
 [vars]
 ENVIRONMENT = "development"
@@ -19,24 +22,24 @@ MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
 ASTEROID_URL = "http://localhost:5174"
 
-[env.localroids.vars]
-ENVIRONMENT = "development"
-ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
-ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
-TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
-RPC = "https://rpc-localroids.asteroidprotocol.io"
-REST = "https://rest-localroids.asteroidprotocol.io"
-CHAIN_ID = "gaialocal-1"
-CHAIN_NAME = "localcosmoshub"
-MAX_FILE_SIZE = 550000
-GAS_PRICE = "0.005uatom"
-USE_IBC = false
-USE_EXTENSION_DATA = true
-MAINTENANCE_MODE = false
-ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
-ASTEROID_URL = "http://localhost:5174"
+# [env.localroids.vars]
+# ENVIRONMENT = "development"
+# ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
+# ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
+# TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+# RPC = "https://rpc-localroids.asteroidprotocol.io"
+# REST = "https://rest-localroids.asteroidprotocol.io"
+# CHAIN_ID = "gaialocal-1"
+# CHAIN_NAME = "localcosmoshub"
+# MAX_FILE_SIZE = 550000
+# GAS_PRICE = "0.005uatom"
+# USE_IBC = false
+# USE_EXTENSION_DATA = true
+# MAINTENANCE_MODE = false
+# ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+# ASTEROID_URL = "http://localhost:5174"
 
-[env.testnet.vars]
+[env.preview.vars]
 ENVIRONMENT = "development"
 ASTEROID_API = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://testnet-new-api.asteroidprotocol.io/v1/graphql"
@@ -54,7 +57,7 @@ MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 ASSETS_URL = "https://asteroid-testnet.ams3.digitaloceanspaces.com"
 ASTEROID_URL = "https://testnet.asteroidprotocol.io"
 
-[env.mainnet.vars]
+[env.production.vars]
 ENVIRONMENT = "production"
 ASTEROID_API = "https://new-api.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://new-api.asteroidprotocol.io/v1/graphql"
@@ -73,9 +76,7 @@ ASSETS_URL = "https://asteroid.ams3.digitaloceanspaces.com"
 ASTEROID_URL = "https://asteroidprotocol.io"
 
 [dev]
-ip = "192.168.1.1"
-port = 8080
-local_protocol = "http"
+ip = "localhost"
 
 [limits]
 cpu_ms = 50

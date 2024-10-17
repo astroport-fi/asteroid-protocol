@@ -50,7 +50,7 @@
     "vite-env-only": "^2.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230518.0",
+    "@cloudflare/workers-types": "^4.20240512.0",
     "@remix-run/dev": "^2.13.1",
     "@tailwindcss/typography": "^0.5.10",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
@@ -74,11 +74,11 @@
     "tailwindcss": "^3.4.14",
     "tsc-files": "^1.1.4",
     "typescript": "^5.1.6",
-    "vite": "^5.4.9",
+    "vite": "^5.1.0",
     "vite-plugin-image-optimizer": "^1.1.8",
     "vite-plugin-node-polyfills": "^0.21.0",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.80.4"
+    "wrangler": "^3.81.0"
   },
   "overrides": {
     "react": "18.3.0-canary-01ab35a9a-20240228",
