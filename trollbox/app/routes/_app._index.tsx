@@ -84,14 +84,14 @@ function CreatePostForm() {
             color={textError ? 'error' : undefined}
             rows={5}
             required
-            {...register('text', { required: true, minLength: 10 })}
+            {...register('text', { required: true, minLength: 5 })}
           />
           <label className="label" htmlFor="text">
             <span className="label-text-alt text-error">
               {textError &&
                 (textError.message
                   ? textError.message
-                  : 'Text is required and must at least 10 characters long.')}
+                  : 'Text is required and must at least 5 characters long.')}
             </span>
           </label>
         </div>
@@ -110,7 +110,7 @@ function CreatePostForm() {
             Create
           </Button>
         ) : (
-          <Wallet className="mt-4 btn-md w-full" color="primary" />
+          <Wallet className="btn-md w-full" color="primary" />
         )}
       </Form>
     </div>

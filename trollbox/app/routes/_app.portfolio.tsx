@@ -69,7 +69,7 @@ export default function PortfolioPage() {
 
   return (
     <div className="flex flex-col w-full overflow-y-auto">
-      <h2 className="text-center text-xl">My portfolio</h2>
+      <h2 className="text-center text-xl mt-4 lg:mt-0">My portfolio</h2>
       {showMintReservations && (
         <>
           <Divider>Mint Reservations</Divider>

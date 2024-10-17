@@ -26,7 +26,7 @@ export default function TrollBoxProfilePage() {
 
   return (
     <div className="flex flex-col w-full overflow-y-auto">
-      <h2 className="text-center text-xl">My posts</h2>
+      <h2 className="text-center text-xl mt-4 lg:mt-0">My posts</h2>
       {data.posts.length < 1 && (
         <span className="p-4 text-center">{'No troll posts found'}</span>
       )}

@@ -49,19 +49,10 @@ export async function loader({ context }: LoaderFunctionArgs) {
       USE_EXTENSION_DATA: context.cloudflare.env.USE_EXTENSION_DATA,
       REST: context.cloudflare.env.REST,
       RPC: context.cloudflare.env.RPC,
-      NEUTRON_BRIDGE_CONTRACT: context.cloudflare.env.NEUTRON_BRIDGE_CONTRACT,
-      NEUTRON_CHAIN_ID: context.cloudflare.env.NEUTRON_CHAIN_ID,
-      NEUTRON_CHAIN_NAME: context.cloudflare.env.NEUTRON_CHAIN_NAME,
-      NEUTRON_RPC: context.cloudflare.env.NEUTRON_RPC,
-      NEUTRON_REST: context.cloudflare.env.NEUTRON_REST,
-      BRIDGE_ENDPOINTS: context.cloudflare.env.BRIDGE_ENDPOINTS.split(','),
-      ASTROPORT_FACTORY_CONTRACT:
-        context.cloudflare.env.ASTROPORT_FACTORY_CONTRACT,
-      ASTROPORT_URL: context.cloudflare.env.ASTROPORT_URL,
       UPLOAD_API: context.cloudflare.env.UPLOAD_API,
       MINTER_ADDRESS: context.cloudflare.env.MINTER_ADDRESS,
       ASSETS_URL: context.cloudflare.env.ASSETS_URL,
-      LAUNCHPAD_ENABLED: context.cloudflare.env.LAUNCHPAD_ENABLED,
+      ASTEROID_URL: context.cloudflare.env.ASTEROID_URL,
     },
   })
 }
@@ -175,26 +166,15 @@ export default function App() {
               lastProcessedHeight: data.status?.last_processed_height ?? 0,
               lastKnownHeight: data.status?.last_known_height ?? 0,
             },
-            neutronBridgeContract: data.ENV.NEUTRON_BRIDGE_CONTRACT,
-            neutronChainId: data.ENV.NEUTRON_CHAIN_ID,
-            neutronChainName: data.ENV.NEUTRON_CHAIN_NAME,
-            neutronRpcEndpoint: data.ENV.NEUTRON_RPC,
-            neutronRestEndpoint: data.ENV.NEUTRON_REST,
-            bridgeEndpoints: data.ENV.BRIDGE_ENDPOINTS,
-            astroportFactoryContract: data.ENV.ASTROPORT_FACTORY_CONTRACT,
-            astroportUrl: data.ENV.ASTROPORT_URL,
             minterAddress: data.ENV.MINTER_ADDRESS,
             assetsUrl: data.ENV.ASSETS_URL,
-            launchpadEnabled: data.ENV.LAUNCHPAD_ENABLED != 'false',
+            asteroidUrl: data.ENV.ASTEROID_URL,
           }}
         >
           <WalletProviderWrapper
             chainName={data.ENV.CHAIN_NAME}
             rpcEndpoint={data.ENV.RPC}
             restEndpoint={data.ENV.REST}
-            neutronChainName={data.ENV.NEUTRON_CHAIN_NAME}
-            neutronRpcEndpoint={data.ENV.NEUTRON_RPC}
-            neutronRestEndpoint={data.ENV.NEUTRON_REST}
           />
         </RootContext.Provider>
         <ScrollRestoration />

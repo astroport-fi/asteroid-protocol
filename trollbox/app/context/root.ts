@@ -9,16 +9,9 @@ export const RootContext = createContext({
   asteroidWs: '',
   uploadApi: '',
   assetsUrl: '',
+  asteroidUrl: '',
   minterAddress: '',
   chainId: '',
-  neutronChainId: '',
-  neutronChainName: '',
-  neutronRpcEndpoint: '',
-  neutronRestEndpoint: '',
-  neutronBridgeContract: '',
-  astroportFactoryContract: '',
-  astroportUrl: '',
-  bridgeEndpoints: [] as string[],
   useIbc: true,
   useExtensionData: true,
   chainName: '',
@@ -29,7 +22,6 @@ export const RootContext = createContext({
     lastProcessedHeight: 0,
     lastKnownHeight: 0,
   },
-  launchpadEnabled: false,
 })
 
 export const useRootContext = () => useContext(RootContext)

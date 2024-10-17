@@ -9,6 +9,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
+  server: {
+    port: 5174,
+  },
   plugins: [
     ViteImageOptimizer(),
     envOnly(),

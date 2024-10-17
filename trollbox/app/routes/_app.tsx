@@ -1,7 +1,7 @@
 import { Outlet, useNavigation } from '@remix-run/react'
-import { Progress } from 'react-daisyui'
+import { Navbar, Progress } from 'react-daisyui'
 import { Bounce, ToastContainer } from 'react-toastify'
-import Menu from '~/components/Menu'
+import { DesktopMenu, MobileMenu } from '~/components/Menu'
 import { Wallet } from '~/components/wallet/Wallet'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -18,11 +18,19 @@ export default function App() {
         />
       ) : null}
       <div className="flex w-full max-w-6xl justify-center mt-8">
-        <Menu />
-        <div className="flex flex-col items-center w-full px-8">
+        <DesktopMenu />
+        <Navbar className="absolute left-0 top-0 lg:hidden p-0 border-b border-b-neutral">
+          <Navbar.Start>
+            <MobileMenu />
+          </Navbar.Start>
+          <Navbar.End className="pr-4">
+            <Wallet />
+          </Navbar.End>
+        </Navbar>
+        <div className="flex flex-col items-center w-full lg:px-8 px-4 mt-8 lg:mt-0">
           <Outlet />
         </div>
-        <Wallet className="ml-8" />
+        <Wallet className="ml-8 hidden lg:flex" />
       </div>
       <ToastContainer
         position="bottom-right"

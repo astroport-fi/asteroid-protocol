@@ -24,16 +24,22 @@ export default function Post({ post }: { post: TrollPost }) {
         />
         <ChatBubble.Message
           color={isOwner ? 'accent' : undefined}
-          className="whitespace-pre-wrap"
+          className="whitespace-pre-wrap break-words"
         >
           <Link to={`/post/${post.id}`}>{post.text}</Link>
         </ChatBubble.Message>
         <ChatBubble.Footer className="flex items-center opacity-100">
           <CollectPost trollPost={post} price={price} />
           <span className="mx-2">•</span>
-          <DecimalText value={price} decimalScale={6} suffix=" ATOM" />
+          <div className="flex flex-col lg:flex-row">
+            <DecimalText value={price} decimalScale={6} />
+            <span className="lg:ml-1">ATOM</span>
+          </div>
           <span className="mx-2">•</span>
-          <span>{mintedAmount} / 100 minted</span>
+          <div className="flex flex-col lg:flex-row">
+            <span>{mintedAmount} / 100</span>
+            <span className="lg:ml-1">minted</span>
+          </div>
         </ChatBubble.Footer>
       </ChatBubble>
     </div>
