@@ -7,7 +7,7 @@ import { Button, Form, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
 import { AsteroidClient } from '~/api/client'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
-import PostsList from '~/components/troll/Posts'
+import PostsInfiniteScroll from '~/components/troll/PostsInfiniteScroll'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useToastSubmitTx from '~/hooks/useToastSubmitTx'
@@ -16,7 +16,7 @@ import { parsePagination } from '~/utils/pagination'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url)
-  const { offset, limit } = parsePagination(searchParams)
+  const { offset, limit, page } = parsePagination(searchParams)
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const res = await asteroidClient.getTrollPosts(offset, limit)
@@ -25,6 +25,7 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
     posts: res.posts,
     pages: Math.ceil(res.count / limit),
     total: res.count,
+    page,
   })
 }
 
@@ -126,7 +127,16 @@ export default function IndexPage() {
         <span className="p-4 text-center">{'No troll posts found'}</span>
       )}
       <div className="flex flex-col items-center">
-        <PostsList posts={data.posts} className="h-[calc(100svh-20rem)]" />
+        <div
+          id="scrollableDiv"
+          className="overflow-y-scroll h-[calc(100svh-20rem)]"
+        >
+          <PostsInfiniteScroll
+            posts={data.posts}
+            count={data.total}
+            page={data.page}
+          />
+        </div>
         <CreatePostForm />
       </div>
     </div>
