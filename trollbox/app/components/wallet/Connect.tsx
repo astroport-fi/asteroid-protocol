@@ -1,9 +1,9 @@
-import { WalletIcon } from '@heroicons/react/20/solid'
 import { MouseEventHandler, ReactNode } from 'react'
 import {
   Button as DaisyButton,
   ButtonProps as DaisyButtonProps,
 } from 'react-daisyui'
+import PortfolioIcon from '../icons/Portfolio'
 
 export type ButtonProps = {
   text?: ReactNode
@@ -47,7 +47,7 @@ export const ButtonConnect = ({
 }: ButtonProps) => (
   <Button
     text={text}
-    icon={<WalletIcon className="w-5" />}
+    icon={<PortfolioIcon className="size-5" />}
     className={className}
     color={color}
     onClick={onClick}

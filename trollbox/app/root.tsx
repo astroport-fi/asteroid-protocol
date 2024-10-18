@@ -133,13 +133,13 @@ export const meta: MetaFunction = () => {
     { property: 'twitter:domain', content: 'https://trollbox.app' },
     {
       property: 'twitter:image',
-      content: 'https://trollbox.app/banner.png',
+      content: 'https://trollbox.app/trollbox.png',
     },
     { property: 'og:site_name', content: 'Trollbox' },
     { property: 'og:type', content: 'website' },
     {
       property: 'og:image',
-      content: 'https://trollbox.app/banner.png',
+      content: 'https://trollbox.app/trollbox.png',
     },
     {
       tagName: 'link',

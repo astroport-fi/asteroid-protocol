@@ -9,11 +9,11 @@ import { wallets as leap } from '@cosmos-kit/leap-extension'
 import { wallets as leapMobile } from '@cosmos-kit/leap-mobile'
 import { ChainProvider } from '@cosmos-kit/react-lite'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
-import { WalletIcon } from '@heroicons/react/24/solid'
 import { Outlet } from '@remix-run/react'
 import { useEffect, useRef } from 'react'
 import { Button, Loading, Modal } from 'react-daisyui'
 import { useClipboard } from 'use-clipboard-copy'
+import PortfolioIcon from '~/components/icons/Portfolio'
 import { WalletStatus } from '~/components/wallet/Wallet'
 import { getAssets, getChains } from '~/utils/chain'
 import { getEllipsisTxt } from '~/utils/string'
@@ -103,7 +103,7 @@ function WalletContent({ walletRepo }: { walletRepo: WalletRepo }) {
           onClick={() => walletRepo.disconnect()}
           color="primary"
           className="mt-4"
-          startIcon={<WalletIcon className="size-5" />}
+          startIcon={<PortfolioIcon className="size-5" />}
         >
           Disconnect
         </Button>
@@ -186,10 +186,11 @@ export default function WalletProvider({
           projectId: 'a8510432ebb71e6948cfd6cde54b70f7',
           // relayUrl: 'wss://relay.walletconnect.org',
           metadata: {
-            name: 'Asteroid Protocol',
-            description: 'Asteroid Protocol',
-            url: 'https://asteroidprotocol.io/app/',
-            icons: ['https://asteroidprotocol.io/apple-touch-icon.png'],
+            name: 'Trollbox',
+            description:
+              'Immortalize your words as tokens, collect trending content and trade your thoughts.',
+            url: 'https://trollbox.app',
+            icons: ['https://trollbox.app/apple-touch-icon.png'],
           },
         },
       }}

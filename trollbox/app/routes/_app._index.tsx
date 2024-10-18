@@ -1,5 +1,4 @@
 import { toUtf8 } from '@cosmjs/encoding'
-import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
@@ -9,6 +8,7 @@ import { toast } from 'react-toastify'
 import { AsteroidClient } from '~/api/client'
 import { TrollPost } from '~/api/trollbox'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
+import PencilIcon from '~/components/icons/Pencil'
 import PostsInfiniteScroll from '~/components/troll/PostsInfiniteScroll'
 import { Wallet } from '~/components/wallet/Wallet'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
@@ -113,9 +113,9 @@ function CreatePostForm({ onPostCreated }: { onPostCreated: () => void }) {
           <Button
             type="submit"
             color="primary"
-            startIcon={<PencilSquareIcon className="size-5" />}
+            startIcon={<PencilIcon className="size-4" />}
           >
-            Create
+            Post
           </Button>
         ) : (
           <Wallet className="btn-md w-full" color="primary" />

@@ -1,9 +1,16 @@
-import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 import { AsteroidClient } from '~/api/client'
 import Post from '~/components/troll/Post'
+import { postMeta } from '~/utils/meta'
 
-// @todo meta tags
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data) {
+    return []
+  }
+
+  return postMeta(data)
+}
 
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)

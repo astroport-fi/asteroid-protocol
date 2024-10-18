@@ -1,8 +1,7 @@
-import { TxInscription } from '@asteroid-protocol/sdk'
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
-import { CheckIcon, CubeIcon, NoSymbolIcon } from '@heroicons/react/20/solid'
+import { CheckIcon } from '@heroicons/react/20/solid'
 import { Link, useNavigate } from '@remix-run/react'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Button } from 'react-daisyui'
 import { toast } from 'react-toastify'
 import { TrollPost } from '~/api/trollbox'
@@ -14,6 +13,7 @@ import useGetSendAuthorizationAmount, {
 import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useToastSubmitTx from '~/hooks/useToastSubmitTx'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
+import PlusIcon from '../icons/Plus'
 
 export default function CollectPost({
   trollPost,
@@ -125,7 +125,7 @@ export default function CollectPost({
             size="sm"
             fullWidth
             className="shrink"
-            startIcon={<CubeIcon className="size-4" />}
+            startIcon={<PlusIcon className="size-4" />}
           >
             Collect
           </Button>

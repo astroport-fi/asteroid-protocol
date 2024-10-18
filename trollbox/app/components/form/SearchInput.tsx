@@ -1,9 +1,9 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { useSearchParams } from '@remix-run/react'
 import { Form as DaisyForm, Form } from 'react-daisyui'
 import { ExistingSearchParams } from 'remix-utils/existing-search-params'
 import { useDebounceSubmit } from 'remix-utils/use-debounce-submit'
 import { twMerge } from 'tailwind-merge'
+import SearchIcon from '../icons/Search'
 
 interface SearchInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -25,7 +25,7 @@ export function SearchInput(props: SearchInputProps) {
         name="search"
         className="grow w-full"
       />
-      <MagnifyingGlassIcon className="size-5" />
+      <SearchIcon className="size-6" />
     </DaisyForm.Label>
   )
 }
