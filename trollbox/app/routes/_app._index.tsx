@@ -1,11 +1,13 @@
 import { toUtf8 } from '@cosmjs/encoding'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
 import { LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { useLoaderData, useNavigate } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useMemo } from 'react'
 import { Button, Form, Textarea } from 'react-daisyui'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { AsteroidClient } from '~/api/client'
+import { TrollPost } from '~/api/trollbox'
 import { InscribingNotSupportedWithLedger } from '~/components/alerts/InscribingNotSupportedWithLedger'
 import PostsInfiniteScroll from '~/components/troll/PostsInfiniteScroll'
 import { Wallet } from '~/components/wallet/Wallet'
@@ -33,7 +35,7 @@ type FormData = {
   text: string
 }
 
-function CreatePostForm() {
+function CreatePostForm({ onPostCreated }: { onPostCreated: () => void }) {
   const operations = useTrollBoxOperations()
   const isLedger = useIsLedger()
 
@@ -58,16 +60,20 @@ function CreatePostForm() {
     })
   }, [operations, text])
 
-  const navigate = useNavigate()
   const { sendTx } = useToastSubmitTx(txInscription, {
     onSuccess: () => {
       reset()
-      navigate({ hash: '' }, { replace: true })
+      onPostCreated()
     },
     successMessage: 'Post created',
   })
 
   const onSubmit = handleSubmit(async () => {
+    if (!operations) {
+      toast.info('Connect wallet first')
+      return
+    }
+
     sendTx()
   })
 
@@ -122,6 +128,12 @@ function CreatePostForm() {
 export default function IndexPage() {
   const data = useLoaderData<typeof loader>()
 
+  const fetcher = useFetcher<{
+    posts: TrollPost[]
+    page: number
+    total: number
+  }>()
+
   return (
     <div className="flex flex-col w-full">
       {data.posts.length < 1 && (
@@ -130,15 +142,15 @@ export default function IndexPage() {
       <div className="flex flex-col items-center">
         <div
           id="scrollableDiv"
-          className="overflow-y-scroll h-[calc(100svh-20rem)]"
+          className="flex flex-col-reverse overflow-y-scroll h-[calc(100svh-20rem)]"
         >
           <PostsInfiniteScroll
-            posts={data.posts}
-            count={data.total}
+            posts={fetcher.data?.posts ?? data.posts}
+            count={fetcher.data?.total ?? data.total}
             page={data.page}
           />
         </div>
-        <CreatePostForm />
+        <CreatePostForm onPostCreated={() => fetcher.load('')} />
       </div>
     </div>
   )

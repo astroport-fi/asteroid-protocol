@@ -53,6 +53,8 @@ export default function PostsInfiniteScroll({
 
   return (
     <InfiniteScroll
+      inverse={true}
+      className="flex flex-col-reverse"
       dataLength={items.length}
       next={getMoreData}
       hasMore={count > items.length}
@@ -63,7 +65,9 @@ export default function PostsInfiniteScroll({
       }
       scrollableTarget="scrollableDiv"
     >
-      {!isLoading && <PostsList posts={items} />}
+      {!isLoading && (
+        <PostsList posts={items} className="flex flex-col-reverse" />
+      )}
     </InfiniteScroll>
   )
 }
