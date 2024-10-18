@@ -21,6 +21,8 @@ export default function Post({ post }: { post: TrollPost }) {
           color="neutral"
           shape="circle"
           size="sm"
+          border
+          borderColor="primary"
         />
         <ChatBubble.Message
           color={isOwner ? 'accent' : undefined}

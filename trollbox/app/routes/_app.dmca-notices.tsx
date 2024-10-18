@@ -1,8 +1,6 @@
-import Markdown from 'react-markdown'
+import MarkdownPage from '~/components/MarkdownPage'
 
 const md = `
-## DMCA Notices on Asteroidprotocol.io
-
 **What is a DMCA Notice?**
 
 A DMCA notice is also known as a DMCA takedown notice or a DMCA request. DMCA stands for Digital Millennium Copyright Act. A DMCA Takedown is when content is removed from a website or internet platform at the request of the owner of the content. The DMCA Takedown notice is a well-established and accepted internet standard followed by website owners and internet service providers everywhere.
@@ -23,9 +21,9 @@ Who can submit a DMCA Notice?
 
  
 
-**How do I send a DMCA notice to Asteroidprotocol.io?**
+**How do I send a DMCA notice to Trollbox.app?**
 
-Asteroidprotocol.io is operated by Delphi Labs Ltd, a British Virgin Islands company limited by shares. Delphi Labs complies with the provisions of the Digital Millennium Copyright Act applicable to Internet service providers (17 U.S.C. § 512, as amended). If you have an intellectual property rights-related complaint about any material on the Service, you may contact our Designated Agent via email at: <asteroidprotocol@proton.me> 
+Trollbox.app is operated by Delphi Labs Ltd, a British Virgin Islands company limited by shares. Delphi Labs complies with the provisions of the Digital Millennium Copyright Act applicable to Internet service providers (17 U.S.C. § 512, as amended). If you have an intellectual property rights-related complaint about any material on the Service, you may contact our Designated Agent via email at: <asteroidprotocol@proton.me> 
 
  
 
@@ -35,7 +33,7 @@ If you believe that any content made available on or through the Service has bee
 
 1. an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other right being infringed;
 2. a description of the copyrighted work or other intellectual property right that you claim has been infringed;
-3. a description of the material that you claim is infringing and where it is located on the Service, including a URL representing a link to the material on asteroidprotocol.io;
+3. a description of the material that you claim is infringing and where it is located on the Service, including a URL representing a link to the material on Trollbox.app;
 4. your address, telephone number, and email address;
 5. a statement by you that you have a good faith belief that the use of the materials on the Service of which you are complaining is not authorized by the copyright or other intellectual property right owner, its agent, or the law; and
 6. a statement by you that the above information in your notice is accurate and that, under penalty of perjury, you are the copyright or other intellectual property right owner or authorized to act on the copyright or intellectual property owner’s behalf.
@@ -49,7 +47,7 @@ Your Notification of Claimed Infringement may be shared by Delphi Labs with the 
 
 You will receive a notification with a reference number. You will need to reach out to <asteroidprotocol@proton.me> with this reference number to request a copy of the original DMCA notice. Once you have a copy of the original DMCA notice you can file a counter DMCA by emailing <asteroidprotocol@proton.me> or contacting our registered agent at the address listed in the previous segment. \
  \
-If you receive a notification from Delphi Labs that material made available by you on or through the Service has been the subject of a Notification of Claimed Infringement, then you will have the right to provide Delphi Labs with what is called a “Counter Notification.” To be effective, a Counter Notification must be in writing, provided to Delphi Labs via email at asteroidprotocol.io and include substantially the following information:
+If you receive a notification from Delphi Labs that material made available by you on or through the Service has been the subject of a Notification of Claimed Infringement, then you will have the right to provide Delphi Labs with what is called a “Counter Notification.” To be effective, a Counter Notification must be in writing, provided to Delphi Labs via email at Trollbox.app and include substantially the following information:
 
 
 
@@ -63,7 +61,7 @@ A party submitting a Counter Notification should consult a lawyer or see 17 U.S.
 
  
 
-If you submit a Counter Notification to Delphi Labs in response to a Notification of Claimed Infringement, then Delphi Labs will promptly provide the person who provided the Notification of Claimed Infringement with a copy of your Counter Notification and inform that person that Delphi Labs will replace the removed User Content or cease disabling access to it in 10 business days, and Delphi Labs will replace the removed User Content and cease disabling access to it not less than 10, nor more than 14, business days following receipt of the Counter Notification, unless Delphi Labs receives notice from the party that submitted the Notification of Claimed Infringement that such person has filed an action seeking a court order to restrain the user from engaging in infringing activity relating to the material on asteroidprotocol.io.
+If you submit a Counter Notification to Delphi Labs in response to a Notification of Claimed Infringement, then Delphi Labs will promptly provide the person who provided the Notification of Claimed Infringement with a copy of your Counter Notification and inform that person that Delphi Labs will replace the removed User Content or cease disabling access to it in 10 business days, and Delphi Labs will replace the removed User Content and cease disabling access to it not less than 10, nor more than 14, business days following receipt of the Counter Notification, unless Delphi Labs receives notice from the party that submitted the Notification of Claimed Infringement that such person has filed an action seeking a court order to restrain the user from engaging in infringing activity relating to the material on Trollbox.app.
 
  
 
@@ -76,9 +74,5 @@ The Copyright Act provides at 17 U.S.C. § 512(f) that: “[a]ny person who know
 Delphi Labs reserves the right to seek damages from any party that submits a Notification of Claimed Infringement or Counter Notification in violation of the law.`
 
 export default function DmcaNoticesPage() {
-  return (
-    <Markdown className="prose bg-base-200 p-8 rounded w-full max-w-full">
-      {md}
-    </Markdown>
-  )
+  return <MarkdownPage title="DMCA Notices on Trollbox.app">{md}</MarkdownPage>
 }

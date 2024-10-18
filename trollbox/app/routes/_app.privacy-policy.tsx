@@ -1,9 +1,7 @@
-import Markdown from 'react-markdown'
+import MarkdownPage from '~/components/MarkdownPage'
 
 const md = `
-## Privacy Policy
-
-Delphi Labs Ltd and its affiliates (hereinafter, "Delphi", "we", "us" or "our") are committed to protecting and respecting your privacy. This privacy policy (the "Privacy Policy") together with our [Terms of Service](/app/terms-of-service) (the "Terms") governs our collection, processing and use of your personal data. By accessing the website under the main domain [https://asteroidprotocol.io](https://asteroidprotocol.io) (the "Site"), you are confirming to know the contents of the Privacy Policy and consenting to the information collection and specific purposes described in this Privacy Policy.
+Delphi Labs Ltd and its affiliates (hereinafter, "Delphi", "we", "us" or "our") are committed to protecting and respecting your privacy. This privacy policy (the "Privacy Policy") together with our [Terms of Service](/app/terms-of-service) (the "Terms") governs our collection, processing and use of your personal data. By accessing the website under the main domain [https://trollbox.app](https://trollbox.app) (the "Site"), you are confirming to know the contents of the Privacy Policy and consenting to the information collection and specific purposes described in this Privacy Policy.
 
 **1. Which are the relevant definitions used within the privacy policy?**
 
@@ -151,9 +149,5 @@ Please consider that data committed to blockchains cannot be altered or eliminat
 In the event that you wish to exercise any of your above rights, please contact <asteroidprotocol@proton.me>.`
 
 export default function PrivacyPolicyPage() {
-  return (
-    <Markdown className="prose bg-base-200 p-8 rounded w-full max-w-full">
-      {md}
-    </Markdown>
-  )
+  return <MarkdownPage title="Privacy Policy">{md}</MarkdownPage>
 }

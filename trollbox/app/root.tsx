@@ -113,7 +113,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Asteroid Protocol | Inscribe anything on the Hub' },
+    { title: 'Trollbox | Where Every Post is a Collectible' },
     { name: 'color-scheme', content: 'light dark' },
     {
       name: 'viewport',
@@ -125,20 +125,21 @@ export const meta: MetaFunction = () => {
 
     {
       name: 'description',
-      content: 'Asteroid Protocol allows you to inscribe anything on the Hub',
+      content:
+        'Immortalize your words as tokens, collect trending content and trade your thoughts.',
     },
     { name: 'theme-color', content: '#ebb348' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { property: 'twitter:domain', content: 'https://asteroidprotocol.io' },
+    { property: 'twitter:domain', content: 'https://trollbox.app' },
     {
       property: 'twitter:image',
-      content: 'https://asteroidprotocol.io/banner.png',
+      content: 'https://trollbox.app/banner.png',
     },
-    { property: 'og:site_name', content: 'Asteroid Protocol' },
+    { property: 'og:site_name', content: 'Trollbox' },
     { property: 'og:type', content: 'website' },
     {
       property: 'og:image',
-      content: 'https://asteroidprotocol.io/banner.png',
+      content: 'https://trollbox.app/banner.png',
     },
     {
       tagName: 'link',

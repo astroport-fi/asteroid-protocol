@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: 'PixelifySans-Variable';
+  src: url('./fonts/PixelifySans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Poppins-VariableFont_wght';
   src:
     url('./fonts/Poppins-VariableFont_wght.woff2') format('woff2'),

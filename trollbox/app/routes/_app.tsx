@@ -4,6 +4,8 @@ import { Bounce, ToastContainer } from 'react-toastify'
 import { DesktopMenu, MobileMenu } from '~/components/Menu'
 import { Wallet } from '~/components/wallet/Wallet'
 import 'react-toastify/dist/ReactToastify.css'
+import beta from '~/images/logo/beta.svg'
+import logo from '~/images/logo/logo.svg'
 
 export default function App() {
   const navigation = useNavigation()
@@ -17,7 +19,11 @@ export default function App() {
           color="primary"
         />
       ) : null}
-      <div className="flex w-full max-w-6xl justify-center mt-8">
+      <div className="flex w-full max-w-6xl justify-center mt-8 ">
+        <div className="mr-16 hidden lg:flex">
+          <img src={logo} alt="logo" className="h-96" />
+          <img src={beta} alt="beta" className="h-16 mt-8 ml-1" />
+        </div>
         <DesktopMenu />
         <Navbar className="absolute left-0 top-0 lg:hidden p-0 border-b border-b-neutral">
           <Navbar.Start>

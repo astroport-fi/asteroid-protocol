@@ -55,7 +55,7 @@ export default function PortfolioPage() {
 
   if (emptyState) {
     return (
-      <GhostEmptyState>
+      <GhostEmptyState className="mt-4">
         <div className="flex mt-8">
           <Link to="/" className="btn btn-primary">
             Collect some troll posts

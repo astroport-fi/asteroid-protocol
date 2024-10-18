@@ -25,6 +25,9 @@ export default {
         'main-gradient':
           'linear-gradient(251.43deg, #151515 17.97%, #1E1E1E 43.41%, #303030 51.83%, #1E1E1E 58.81%, #151515 87.04%)',
       },
+      fontFamily: {
+        heading: ['PixelifySans-Variable', 'sans-serif'],
+      },
     },
     fontFamily: {
       sans: [
@@ -51,13 +54,13 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: '#EBB348',
-          secondary: '#E47286',
-          accent: '#57AAA7',
-          neutral: '#303030',
-          'base-100': '#151515',
-          'base-200': '#212121',
-          'base-300': '#2c2c2c',
+          primary: '#21EED1',
+          secondary: '#F03AA9',
+          accent: '#21EED1',
+          neutral: '#d7d8da',
+          'base-100': '#383E46',
+          'base-200': '#4b5158',
+          'base-300': '#5f646a',
           success: '#ADE25D',
           error: '#F95200',
         },
