@@ -492,6 +492,7 @@ func (protocol *Launchpad) LaunchCollection(transactionModel models.Transaction,
 			Price:        stage.Price,
 			PerUserLimit: stage.MaxPerUser,
 			HasWhitelist: len(stage.Whitelist) > 0,
+			PriceCurve:   models.Fixed,
 		}
 
 		if stage.Name != "" {
