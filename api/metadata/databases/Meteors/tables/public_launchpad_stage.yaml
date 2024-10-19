@@ -39,6 +39,7 @@ select_permissions:
         - name
         - per_user_limit
         - price
+        - price_curve
         - start_date
       filter: {}
     comment: ""

@@ -9,6 +9,13 @@ object_relationships:
     using:
       foreign_key_constraint_on: transaction_id
 array_relationships:
+  - name: mint_reservations
+    using:
+      foreign_key_constraint_on:
+        column: launchpad_id
+        table:
+          name: launchpad_mint_reservation
+          schema: public
   - name: stages
     using:
       foreign_key_constraint_on:

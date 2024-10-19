@@ -585,6 +585,8 @@ CREATE INDEX "idx_launchpad_collection_id" ON "public"."launchpad" USING btree (
 
 -- DROP TABLE public."launchpad_stage";
 
+CREATE TYPE price_curve AS ENUM ('fixed', 'linear');
+
 CREATE TABLE public."launchpad_stage" (
     id serial4 NOT NULL,
     collection_id int4 NOT NULL,
@@ -594,6 +596,7 @@ CREATE TABLE public."launchpad_stage" (
     "start_date" timestamp NULL DEFAULT NULL,
     finish_date timestamp NULL DEFAULT NULL,
     price int8 NOT NULL,
+    price_curve price_curve NOT NULL default 'fixed',
     per_user_limit int8 NOT NULL,
     has_whitelist bool NOT NULL default false,
     CONSTRAINT launchpad_stage_pkey PRIMARY KEY (id),
@@ -656,6 +659,38 @@ CREATE INDEX "idx_launchpad_mint_reservation_collection_id" ON "public"."launchp
 CREATE INDEX "idx_launchpad_mint_reservation_launchpad_id" ON "public"."launchpad_mint_reservation" USING btree ("launchpad_id");
 CREATE INDEX "idx_launchpad_mint_reservation_stage_id" ON "public"."launchpad_mint_reservation" USING btree ("stage_id");
 CREATE INDEX "idx_launchpad_mint_reservation_token_id" ON "public"."launchpad_mint_reservation" USING btree ("token_id");
+
+-- public."troll_post" definition
+
+-- Drop table
+
+-- DROP TABLE public."troll_post";
+
+CREATE TABLE public."troll_post" (
+    id int4 NOT NULL,
+    chain_id varchar(32) NOT NULL,
+    height int4 NOT NULL,
+    "version" varchar(32) NOT NULL,
+    transaction_id int4 NOT NULL,
+    launchpad_id int4 NULL DEFAULT NULL,
+    content_hash varchar(128) NOT NULL,
+    creator varchar(128) NOT NULL,
+    "text" text NOT NULL,
+    content_path varchar(255) NULL DEFAULT NULL::character varying,
+    content_size_bytes int4 NULL,
+    is_explicit bool NULL DEFAULT false,
+    date_created timestamp NOT NULL,
+    CONSTRAINT troll_post_pkey PRIMARY KEY (id),
+    CONSTRAINT troll_post_content_hash_key UNIQUE (content_hash),
+    CONSTRAINT troll_post_tx_id UNIQUE (transaction_id),
+    CONSTRAINT troll_post_transaction_fk FOREIGN KEY (transaction_id) REFERENCES public."transaction"(id),
+    CONSTRAINT troll_post_launchpad_fk FOREIGN KEY (launchpad_id) REFERENCES public."launchpad"(id)
+);
+
+CREATE INDEX "idx_troll_post_creator" ON "public"."troll_post" USING btree ("creator");
+CREATE INDEX "idx_troll_post_transaction_id" ON "public"."troll_post" USING btree ("transaction_id");
+CREATE INDEX "idx_troll_post_launchpad_id" ON "public"."troll_post" USING btree ("launchpad_id");
+CREATE INDEX idx_trgm_troll_post_text ON "public"."troll_post" USING gin (("text") gin_trgm_ops);
 
 -- public.inscription_market view definition
 

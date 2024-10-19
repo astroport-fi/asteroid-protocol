@@ -9,39 +9,156 @@ import { getExecSendGrantMsg } from '@asteroid-protocol/sdk/msg'
 import { Coin, DirectSecp256k1HdWallet } from '@cosmjs/proto-signing'
 import { GasPrice, StdFee } from '@cosmjs/stargate'
 import { SendAuthorization } from 'cosmjs-types/cosmos/bank/v1beta1/authz.js'
+import sharp from 'sharp'
 import { AsteroidClient, LaunchpadMintReservation } from '../asteroid-client.js'
 import { Config, loadConfig } from '../config.js'
 import { estimate } from '../cosmos-client.js'
 import { connect } from '../db.js'
+
+interface PfpMetadata {
+  pfp: string
+  name: string
+  coords: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  token_id: number
+}
+
+async function pfpStickerMiddleware(
+  reservation: LaunchpadMintReservation,
+  nftMetadata: Required<NFTMetadata>,
+  inscriptionBuffer: ArrayBuffer,
+) {
+  console.log('PFPMiddleware', JSON.stringify(reservation.metadata, null, 2))
+
+  const reservationMetadata = reservation.metadata as PfpMetadata
+
+  // update nft metadata
+  nftMetadata.name = `${reservation.launchpad.collection.name} #${reservation.reservation_id}`
+  nftMetadata.description = `Signed by ${reservationMetadata.name}`
+  nftMetadata.token_id = reservation.reservation_id
+  nftMetadata.mime = 'image/png'
+
+  // create inscription image
+  const imageData = await fetch(reservationMetadata.pfp).then((res) =>
+    res.arrayBuffer(),
+  )
+  const image = sharp(imageData)
+  const imageMetadata = await image.metadata()
+  const imageWidth = imageMetadata.width as number
+  const imageHeight = imageMetadata.height as number
+
+  const relativeCoords = reservationMetadata.coords
+
+  const resizedOverlayWidth = Math.floor(relativeCoords.width * imageWidth)
+  const x = Math.floor(relativeCoords.x * imageWidth)
+  const y = Math.floor(relativeCoords.y * imageHeight)
+
+  const resizedOverlay = await sharp(inscriptionBuffer)
+    .resize(resizedOverlayWidth)
+    .toBuffer()
+  const composedImage = await image
+    .composite([
+      {
+        input: resizedOverlay,
+        left: x,
+        top: y,
+      },
+    ])
+    .png({ quality: 100 })
+    .toBuffer()
+
+  return {
+    nftMetadata,
+    image: composedImage,
+  }
+}
+
+async function buildInscriptionFromTrollPost(
+  config: Config,
+  api: AsteroidClient,
+  collectionHash: string,
+  tokenId: number,
+  reservation: LaunchpadMintReservation,
+) {
+  const trollPost = await api.getTrollPost(collectionHash)
+  if (!trollPost) {
+    throw new Error('Troll post not found')
+  }
+
+  const res = await fetch(trollPost.content_path!)
+  const inscriptionBuffer = await res.arrayBuffer()
+  const contentType = res.headers.get('content-type') ?? 'text/plain'
+
+  const metadata: NFTMetadata = {
+    name: `Troll Post #${trollPost.id}`,
+    description: trollPost.text,
+    mime: contentType,
+    token_id: tokenId,
+  }
+
+  // create inscription operations
+  const operations = new InscriptionOperations(
+    config.CHAIN_ID,
+    reservation.address,
+  )
+  return {
+    txData: operations.inscribeCollectionInscription(
+      collectionHash,
+      new Uint8Array(inscriptionBuffer),
+      metadata,
+    ),
+  }
+}
 
 async function buildInscription(
   config: Config,
   collectionHash: string,
   folder: string,
   tokenId: number,
-  reservationAddress: string,
-) {
+  reservation: LaunchpadMintReservation,
+): Promise<{ txData: TxData; price: number | undefined }> {
   const metadataUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${tokenId}_metadata.json`
-  const metadata = (await fetch(metadataUrl).then((res) =>
+  let metadata = (await fetch(metadataUrl).then((res) =>
     res.json(),
   )) as Required<NFTMetadata>
   metadata.token_id = tokenId
 
   const inscriptionUrl = `https://${config.S3_BUCKET}.${config.S3_ENDPOINT}/${folder}/${encodeURIComponent(metadata.filename)}`
-  const inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
+  let inscriptionBuffer = await fetch(inscriptionUrl).then((res) =>
     res.arrayBuffer(),
   )
+
+  if (
+    reservation.metadata &&
+    typeof reservation.metadata === 'object' &&
+    'pfp' in reservation.metadata
+  ) {
+    const pfpRes = await pfpStickerMiddleware(
+      reservation,
+      metadata,
+      inscriptionBuffer,
+    )
+    metadata = pfpRes.nftMetadata
+    inscriptionBuffer = pfpRes.image
+  }
 
   // create inscription operations
   const operations = new InscriptionOperations(
     config.CHAIN_ID,
-    reservationAddress,
+    reservation.address,
   )
-  return operations.inscribeCollectionInscription(
-    collectionHash,
-    new Uint8Array(inscriptionBuffer),
-    metadata,
-  )
+  return {
+    txData: operations.inscribeCollectionInscription(
+      collectionHash,
+      new Uint8Array(inscriptionBuffer),
+      metadata,
+    ),
+    price: metadata.price,
+  }
 }
 
 async function calculateFee(
@@ -94,7 +211,7 @@ async function checkGrant(
   address: string,
   reservationAddress: string,
   feeEstimation: StdFee,
-  stagePrice: number | undefined,
+  price: number | undefined,
 ) {
   const grants = await client
     .forceGetQueryClient()
@@ -112,7 +229,7 @@ async function checkGrant(
   }
   const authorizedAmount = parseInt(authorizedCoin.amount, 10)
   const requiredAmount =
-    parseInt(feeEstimation.amount[0].amount, 10) + (stagePrice ?? 0) + 1
+    parseInt(feeEstimation.amount[0].amount, 10) + (price ?? 0) + 1
 
   if (requiredAmount > authorizedAmount) {
     throw new Error('insufficient authorization amount')
@@ -125,45 +242,83 @@ async function processMintReservation(
   client: SigningStargateClient,
   address: string,
   reservation: LaunchpadMintReservation,
-  launchpadFolder: string,
+  launchpadFolder: string | undefined,
   gasMultiplier: number,
 ) {
   const { launchpad } = reservation
   const { collection } = launchpad
 
-  // random token_id
-  // 1. random number between 1 and launchpad.max_supply
-  // 2. check if token_id is already minted
-  // 3. if not, mint token_id, otherwise repeat step 1
-  let tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
-  let minted = await api.checkIfMinted(collection.id, tokenId)
-  console.log(`Checking if token_id ${tokenId} is already minted...`)
-  while (minted) {
-    tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
-    minted = await api.checkIfMinted(collection.id, tokenId)
+  let tokenId: number | null = null
+  if (reservation.is_random) {
+    // random token_id
+    // 1. random number between 1 and launchpad.max_supply
+    // 2. check if token_id is already minted
+    // 3. if not, mint token_id, otherwise repeat step 1
+    let tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
+    let minted = await api.checkIfMinted(collection.id, tokenId)
+    console.log(`Checking if token_id ${tokenId} is already minted...`)
+    while (minted) {
+      tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
+      minted = await api.checkIfMinted(collection.id, tokenId)
+    }
+  } else if (reservation.token_id) {
+    // handle case where token_id is provided in metadata
+    tokenId = reservation.token_id
+  } else if (reservation.reservation_id) {
+    // handle case where token_id is provided as reservation_id
+    tokenId = reservation.reservation_id
+  }
+
+  if (!tokenId) {
+    throw new Error('Unable to determine token_id')
   }
 
   // download inscription content and metadata
-  const txData = await buildInscription(
-    config,
-    collection.transaction.hash,
-    launchpadFolder,
-    tokenId,
-    reservation.address,
-  )
+  let txData: TxData
+  let inscriptionPrice: number | undefined
+
+  if (collection.symbol.startsWith('TROLL:')) {
+    const res = await buildInscriptionFromTrollPost(
+      config,
+      api,
+      collection.transaction.hash,
+      tokenId,
+      reservation,
+    )
+    txData = res.txData
+  } else {
+    if (!launchpadFolder) {
+      throw new Error('Missing launchpad folder')
+    }
+
+    const res = await buildInscription(
+      config,
+      collection.transaction.hash,
+      launchpadFolder,
+      tokenId,
+      reservation,
+    )
+    txData = res.txData
+    inscriptionPrice = res.price
+  }
 
   // wrap to exec send grant
   const msgs = txData.messages.map((msg) =>
     getExecSendGrantMsg(address, msg.value),
   )
 
-  // add launchpad stage payment
-  if (reservation.stage.price) {
+  // add launchpad inscription or stage payment
+  let price = inscriptionPrice ?? reservation.stage.price
+  if (price) {
+    if (reservation.stage.price_curve === 'linear') {
+      price = price * tokenId
+    }
+
     msgs.push(
       getExecSendGrantMsg(address, {
         fromAddress: reservation.address,
         toAddress: collection.creator,
-        amount: [{ amount: `${reservation.stage.price}`, denom: 'uatom' }],
+        amount: [{ amount: `${price}`, denom: 'uatom' }],
       }),
     )
   }
@@ -180,13 +335,7 @@ async function processMintReservation(
   )
 
   // check grant
-  await checkGrant(
-    client,
-    address,
-    reservation.address,
-    feeEstimation,
-    reservation.stage.price,
-  )
+  await checkGrant(client, address, reservation.address, feeEstimation, price)
 
   // sign and broadcast
   const res = await broadcastTx(client, address, txData, gasMultiplier)
@@ -245,7 +394,7 @@ async function main() {
             const revealDate = new Date(launchpad.reveal_date)
             if (now < revealDate) {
               console.log(
-                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, reveal_date: ${revealDate}`,
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, reveal_date: ${revealDate}`,
               )
               continue
             }
@@ -255,13 +404,14 @@ async function main() {
               launchpad.minted_supply != launchpad.max_supply
             ) {
               console.log(
-                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, max_supply: ${launchpad.max_supply}, minted_supply: ${launchpad.minted_supply}`,
+                `Reservation not ready for processing, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, max_supply: ${launchpad.max_supply}, minted_supply: ${launchpad.minted_supply}`,
               )
               continue
             }
           }
         }
 
+        let launchpadFolder: string | undefined
         const row = await db('launchpad')
           .select('folder')
           .where({
@@ -269,7 +419,10 @@ async function main() {
           })
           .first()
 
-        if (!row) {
+        if (row) {
+          launchpadFolder = row.folder
+        } else if (!launchpad.collection.symbol.startsWith('TROLL:')) {
+          // non-troll collections require a folder
           console.error(
             `Unable to find launchpad folder, launchpad_hash: ${launchpad.transaction.hash}`,
           )
@@ -282,12 +435,12 @@ async function main() {
           client,
           account.address,
           reservation,
-          row.folder,
+          launchpadFolder,
           gasMultiplier,
         )
       } catch (e) {
         console.error(
-          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, token_id: ${reservation.token_id}, error: ${(e as Error).message}`,
+          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, error: ${(e as Error).message}`,
           e,
         )
       }

@@ -27,15 +27,17 @@ export default function MintInscription({
   activeStage,
   metadataProvider,
   disabled = false,
+  price,
 }: {
   launchpad: LaunchpadDetail
   className?: string
   activeStage: StageDetail | undefined
   metadataProvider?: () => Promise<unknown>
   disabled?: boolean
+  price?: number
 }) {
   const isLedger = useIsLedger()
-  const { minterAddress, launchpadEnabled } = useRootContext()
+  const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
   const [inProgress, setInProgress] = useState(false)
   const atomBalance = useAtomBalance()
@@ -79,7 +81,7 @@ export default function MintInscription({
   }
 
   const mintFee = 100000
-  const fee = mintFee + (activeStage?.price ?? 0)
+  const fee = mintFee + (price ?? activeStage?.price ?? 0)
   const requiredAmount = fee * amount + (authorizedAmount ?? 0)
 
   async function mint() {
@@ -121,15 +123,7 @@ export default function MintInscription({
 
   return (
     <div className={className}>
-      {!launchpadEnabled ? (
-        <Button
-          disabled
-          fullWidth
-          startIcon={<NoSymbolIcon className="size-4" />}
-        >
-          Launchpad disabled
-        </Button>
-      ) : !operations ? (
+      {!operations ? (
         <Wallet className="btn-md w-full" color="primary" />
       ) : isMintedOut ? (
         <Link

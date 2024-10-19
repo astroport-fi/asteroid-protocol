@@ -126,7 +126,6 @@ export default function CreateCollectionLaunch() {
       new Date() >= getDateFromUTCString(data.launchpad.start_date)
     )
   }, [data.launchpad])
-  console.log(data.launchpad?.start_date)
 
   const defaultValues: Partial<FormData> = useMemo(() => {
     if (!data.launchpad) {
@@ -307,7 +306,7 @@ export default function CreateCollectionLaunch() {
             />
           )}
 
-          {/* <div className="flex items-center">
+          <div className="flex items-center">
             <Radio
               value={Supply.Infinite}
               id="infinite"
@@ -318,7 +317,7 @@ export default function CreateCollectionLaunch() {
               title="Infinite supply"
               className="mt-1 ml-1"
             ></Form.Label>
-          </div> */}
+          </div>
 
           <div className="mt-8">
             <strong>Inscriptions reveal</strong>

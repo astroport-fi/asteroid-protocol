@@ -40,10 +40,10 @@ export class InscriptionOperations<
     return this.prepareOperation(operation, inscriptionData)
   }
 
-  inscribeCollectionInscription(
+  inscribeCollectionInscription<M = NFTMetadata>(
     collection: string,
     content: Uint8Array,
-    metadata: NFTMetadata,
+    metadata: M,
   ) {
     return this.inscribe(content, metadata, collectionIdentifier(collection))
   }

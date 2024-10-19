@@ -14,13 +14,6 @@ import { getDateFromUTCString } from '~/utils/date'
 import { getSupplyTitle } from '~/utils/number'
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  if (context.cloudflare.env.LAUNCHPAD_ENABLED === 'false') {
-    throw new Response(null, {
-      status: 404,
-      statusText: 'Not Found',
-    })
-  }
-
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const uploadClient = new UploadApi(context.cloudflare.env.UPLOAD_API)
 

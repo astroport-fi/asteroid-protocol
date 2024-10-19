@@ -9,6 +9,7 @@ import {
   ContentInput,
   Description,
   Name,
+  Price,
 } from '~/components/inscription-form/Inputs'
 import Trait from '~/components/inscription-form/Trait'
 import { Wallet } from '~/components/wallet/Wallet'
@@ -16,6 +17,7 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import { useInvalidateUploadedInscriptions } from '~/hooks/uploader/useInscriptions'
 import { useHasUploaderSession } from '~/hooks/useUploaderSession'
 import useAddress from '~/hooks/wallet/useAddress'
+import { toDecimalValue } from '~/utils/number'
 import { getFileExtension } from '~/utils/string'
 import CreateUploaderSession from '../CreateUploaderSession'
 
@@ -24,6 +26,7 @@ type FormData = {
   description: string
   content: File[]
   newTraits: inscription.Trait[]
+  price?: number
 }
 
 enum UploadState {
@@ -102,6 +105,10 @@ export default function UploadInscription({
         token_id: tokenId,
       }
 
+      if (data.price) {
+        metadata.price = toDecimalValue(data.price, 6)
+      }
+
       if (data.newTraits.length > 0) {
         metadata.attributes = data.newTraits.filter(
           (trait) => trait.trait_type && trait.value,
@@ -164,6 +171,8 @@ export default function UploadInscription({
         <Name register={register} name={name} error={errors.name} />
 
         <Description register={register} />
+
+        <Price control={control} error={errors.price} />
 
         <Divider className="mt-8 flex !gap-2">
           <span>Traits</span>

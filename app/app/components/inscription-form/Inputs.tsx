@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { FileInput, Input, Textarea } from 'react-daisyui'
 import {
+  Control,
   FieldError,
   FieldPath,
   FieldValues,
@@ -10,6 +11,7 @@ import {
 import { useRootContext } from '~/context/root'
 import InfoTooltip from '../InfoTooltip'
 import Label from '../form/Label'
+import NumericInput from '../form/NumericInput'
 
 const NAME_MIN_LENGTH = 3
 const NAME_MAX_LENGTH = 32
@@ -76,6 +78,8 @@ export function Description<TFieldValues extends FieldValues = FieldValues>({
 export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
   fileName,
   error,
+  className,
+  disabled = false,
   title = (
     <>
       Inscription Content
@@ -91,6 +95,8 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
   fileName: string | null
   error: Merge<FieldError, (FieldError | undefined)[]> | undefined
   title?: JSX.Element | string
+  className?: string
+  disabled?: boolean
   register: UseFormRegister<TFieldValues>
   fileChange: (file: File | undefined) => void
 }) {
@@ -98,10 +104,14 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
 
   return (
     <div
-      className={clsx('flex flex-col', {
-        ['bg-base-200 w-full max-w-md border border-neutral border-dashed rounded-3xl p-8']:
-          fileName == null,
-      })}
+      className={clsx(
+        'flex flex-col',
+        {
+          ['bg-base-200 w-full max-w-md border border-neutral border-dashed rounded-3xl p-8']:
+            fileName == null,
+        },
+        className,
+      )}
     >
       {fileName ? (
         <span className="text-center">{fileName}</span>
@@ -115,13 +125,17 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
         </>
       )}
 
-      <label htmlFor="content" className="btn btn-accent mt-4">
+      <label
+        htmlFor="content"
+        className={clsx('btn btn-accent mt-4', { 'btn-disabled': disabled })}
+      >
         {fileName ? 'Change file' : 'Select file'}
       </label>
       <FileInput
         key="content"
         id="content"
         className="opacity-0 w-10"
+        color={error ? 'error' : undefined}
         {...register('content' as FieldPath<TFieldValues>, {
           required: true,
           validate: async (files) => {
@@ -136,7 +150,6 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
             fileChange(file)
           },
         })}
-        color={error ? 'error' : undefined}
       />
       {error && (
         <span className="text-error">
@@ -144,5 +157,26 @@ export function ContentInput<TFieldValues extends FieldValues = FieldValues>({
         </span>
       )}
     </div>
+  )
+}
+
+export function Price<TFieldValues extends FieldValues = FieldValues>({
+  control,
+  error,
+}: {
+  control: Control<TFieldValues>
+  error: FieldError | undefined
+}) {
+  return (
+    <NumericInput
+      control={control}
+      error={error}
+      name={'price' as FieldPath<TFieldValues>}
+      title="Price (Optional)"
+      tooltip="Optional price for your inscription"
+      placeholder="Price per inscription"
+      className="mt-4"
+      isFloat
+    />
   )
 }

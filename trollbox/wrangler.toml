@@ -1,0 +1,82 @@
+name = "trollbox"
+pages_build_output_dir = "./build/client"
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-05-12"
+
+[vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "http://localhost:8080/v1/graphql"
+ASTEROID_API_WSS = "ws://localhost:8080/v1/graphql"
+TX_EXPLORER = "http://localhost:1316/cosmos/tx/v1beta1/txs/"
+RPC = "http://localhost:16657"
+REST = "http://localhost:1316"
+CHAIN_ID = "gaialocal-1"
+CHAIN_NAME = "localcosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+MAINTENANCE_MODE = false
+UPLOAD_API = "http://localhost:3000"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+ASTEROID_URL = "http://localhost:5174"
+
+# [env.localroids.vars]
+# ENVIRONMENT = "development"
+# ASTEROID_API = "https://api-localroids.asteroidprotocol.io/v1/graphql"
+# ASTEROID_API_WSS = "wss://api-localroids.asteroidprotocol.io/v1/graphql"
+# TX_EXPLORER = "https://rest-localroids.asteroidprotocol.io/cosmos/tx/v1beta1/txs/"
+# RPC = "https://rpc-localroids.asteroidprotocol.io"
+# REST = "https://rest-localroids.asteroidprotocol.io"
+# CHAIN_ID = "gaialocal-1"
+# CHAIN_NAME = "localcosmoshub"
+# MAX_FILE_SIZE = 550000
+# GAS_PRICE = "0.005uatom"
+# USE_IBC = false
+# USE_EXTENSION_DATA = true
+# MAINTENANCE_MODE = false
+# ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
+# ASTEROID_URL = "http://localhost:5174"
+
+[env.preview.vars]
+ENVIRONMENT = "development"
+ASTEROID_API = "https://testnet-new-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://testnet-new-api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmoshub-testnet/tx/"
+RPC = "https://rpc-t.cosmos.nodestake.org"
+REST = "https://api-t.cosmos.nodestake.org"
+CHAIN_ID = "theta-testnet-001"
+CHAIN_NAME = "cosmoshubtestnet"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = false
+USE_EXTENSION_DATA = true
+UPLOAD_API = "https://testnet-uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid-testnet.ams3.digitaloceanspaces.com"
+ASTEROID_URL = "https://testnet.asteroidprotocol.io"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+ASTEROID_API = "https://new-api.asteroidprotocol.io/v1/graphql"
+ASTEROID_API_WSS = "wss://new-api.asteroidprotocol.io/v1/graphql"
+TX_EXPLORER = "https://www.mintscan.io/cosmos/tx/"
+RPC = "https://cosmos-rpc.cosmos-apis.com"
+REST = "https://cosmos-rest.cosmos-apis.com"
+CHAIN_ID = "cosmoshub-4"
+CHAIN_NAME = "cosmoshub"
+MAX_FILE_SIZE = 550000
+GAS_PRICE = "0.005uatom"
+USE_IBC = true
+USE_EXTENSION_DATA = true
+UPLOAD_API = "https://uploader.asteroidprotocol.io"
+MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+ASSETS_URL = "https://asteroid.ams3.digitaloceanspaces.com"
+ASTEROID_URL = "https://asteroidprotocol.io"
+
+[dev]
+ip = "localhost"
+
+[limits]
+cpu_ms = 50

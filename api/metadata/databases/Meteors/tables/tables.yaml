@@ -28,3 +28,4 @@
 - "!include public_token_trade_history.yaml"
 - "!include public_trade_history.yaml"
 - "!include public_transaction.yaml"
+- "!include public_troll_post.yaml"

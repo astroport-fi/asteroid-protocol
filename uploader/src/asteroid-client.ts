@@ -11,13 +11,27 @@ export const launchpadMintReservationSelector = Selector(
   'launchpad_mint_reservation',
 )({
   address: true,
-  token_id: true,
+  __alias: {
+    reservation_id: { token_id: true },
+    token_id: {
+      metadata: [
+        {
+          path: '$.token_id',
+        },
+        true,
+      ],
+    },
+  },
+  is_random: true,
+  metadata: [{}, true],
   launchpad: {
     transaction: {
       hash: true,
     },
     collection: {
       id: true,
+      symbol: true,
+      name: true,
       transaction: {
         hash: true,
       },
@@ -30,18 +44,55 @@ export const launchpadMintReservationSelector = Selector(
   },
   stage: {
     price: true,
+    price_curve: true,
   },
 })
 
-export type LaunchpadMintReservation = InputType<
-  GraphQLTypes['launchpad_mint_reservation'],
-  typeof launchpadMintReservationSelector,
+export type LaunchpadMintReservation = Omit<
+  InputType<
+    GraphQLTypes['launchpad_mint_reservation'],
+    typeof launchpadMintReservationSelector,
+    ScalarDefinition
+  >,
+  'token_id'
+> & { token_id: number | null }
+
+const trollPostSelector = Selector('troll_post')({
+  id: true,
+  text: true,
+  content_path: true,
+})
+
+export type TrollPost = InputType<
+  GraphQLTypes['troll_post'],
+  typeof trollPostSelector,
   ScalarDefinition
 >
 
 export class AsteroidClient extends AsteroidService {
   constructor(url: string) {
     super(url)
+  }
+
+  async getCollectionSupply(launchHash: string): Promise<number | undefined> {
+    const result = await this.query({
+      launchpad: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: launchHash,
+              },
+            },
+          },
+        },
+        {
+          max_supply: true,
+        },
+      ],
+    })
+
+    return result.launchpad?.[0].max_supply
   }
 
   async checkIfMinted(collectionId: number, tokenId: number): Promise<boolean> {
@@ -88,6 +139,25 @@ export class AsteroidClient extends AsteroidService {
       ],
     })
 
-    return result.launchpad_mint_reservation
+    return result.launchpad_mint_reservation as LaunchpadMintReservation[]
+  }
+
+  async getTrollPost(transactionHash: string): Promise<TrollPost | undefined> {
+    const result = await this.query({
+      troll_post: [
+        {
+          where: {
+            transaction: {
+              hash: {
+                _eq: transactionHash,
+              },
+            },
+          },
+        },
+        trollPostSelector,
+      ],
+    })
+
+    return result.troll_post?.[0]
   }
 }

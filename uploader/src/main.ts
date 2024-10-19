@@ -5,6 +5,7 @@ import cors from 'cors'
 import cuid from 'cuid'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
+import { AsteroidClient } from './asteroid-client.js'
 import { loadConfig } from './config.js'
 import { connect } from './db.js'
 import { createS3Client, generateUploadURL } from './s3.js'
@@ -199,6 +200,38 @@ app.get(
   }),
 )
 
+app.get(
+  '/public/inscriptions/:launchHash',
+  asyncHandler(async (req, res) => {
+    const { launchHash } = req.params
+    const asteroidClient = new AsteroidClient(config.ASTEROID_API)
+    const maxSupply = await asteroidClient.getCollectionSupply(launchHash)
+    if (maxSupply === null) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    if (maxSupply !== 0) {
+      res.status(403).json({ status: 403, message: 'Launchpad is not public' })
+    }
+
+    const launchpad = await db('launchpad')
+      .select('folder')
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    const inscriptions = await db('launchpad_inscription')
+      .select()
+      .where({ launchpad_hash: launchHash, uploaded: true })
+
+    res.json({ inscriptions, folder: launchpad.folder })
+  }),
+)
+
 app.post(
   '/inscriptions/:launchHash',
   asyncHandler(async (req, res) => {
@@ -334,6 +367,95 @@ app.post(
   }),
 )
 
+async function getNextTokenId(launchHash: string) {
+  const maxTokenIdRes = await db('launchpad_inscription')
+    .max('inscription_number')
+    .where({ launchpad_hash: launchHash })
+    .first()
+
+  return (maxTokenIdRes?.['max'] ?? 0) + 1
+}
+
+async function getNextAssetId(launchHash: string) {
+  const maxTokenIdRes = await db('launchpad_asset')
+    .max('asset_id')
+    .where({ launchpad_hash: launchHash })
+    .first()
+
+  return (maxTokenIdRes?.['max'] ?? 0) + 1
+}
+
+app.post(
+  '/asset/upload',
+  asyncHandler(async (req, res) => {
+    const { launchHash, contentType, extension } = req.body
+
+    // check if launchpad exists, @todo check if launchpad allows reservations to upload files
+    const launchpad = await db('launchpad')
+      .select()
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    // get next asset id
+    const nextAssetId = await getNextAssetId(launchHash)
+    const name = `${nextAssetId}.${extension}`
+
+    // create launchpad asset record
+    await db('launchpad_asset').insert({
+      launchpad_hash: launchHash,
+      asset_id: nextAssetId,
+      name,
+    })
+
+    // generate signed URLs
+    const signedUrl = await generateUploadURL(
+      s3Client,
+      config.S3_BUCKET,
+      launchpad.folder,
+      name,
+      contentType,
+    )
+
+    res.json({
+      assetId: nextAssetId,
+      signedUrl,
+      filename: name,
+      folder: launchpad.folder,
+    })
+  }),
+)
+
+app.post(
+  '/asset/confirm',
+  asyncHandler(async (req, res) => {
+    const { launchHash, assetId } = req.body
+
+    // check if launchpad exists, @todo check if launchpad allows reservations to upload files
+    const launchpad = await db('launchpad')
+      .select()
+      .where({ hash: launchHash })
+      .first()
+    if (!launchpad) {
+      res.status(404).json({ status: 404, message: 'Launchpad not found' })
+      return
+    }
+
+    // update inscription asset
+    await db('launchpad_asset')
+      .where({
+        launchpad_hash: launchHash,
+        asset_id: assetId,
+      })
+      .update({ uploaded: true })
+
+    res.json({ success: true })
+  }),
+)
+
 app.post(
   '/inscription/upload',
   asyncHandler(async (req, res) => {
@@ -367,26 +489,21 @@ app.post(
       folder = launchpad.folder
     }
 
-    // get max inscription number
-    const maxTokenIdRes = await db('launchpad_inscription')
-      .max('inscription_number')
-      .where({ launchpad_hash: launchHash })
-      .first()
-
-    const maxTokenId = (maxTokenIdRes?.['max'] ?? 0) + 1
-    const name = `${maxTokenId}.${extension}`
+    // get next token id
+    const nextTokenId = await getNextTokenId(launchHash)
+    const name = `${nextTokenId}.${extension}`
 
     const { inscriptionSignedUrl, metadataSignedUrl } =
       await getInscriptionSignedUrls(
         launchHash,
         folder,
-        maxTokenId,
+        nextTokenId,
         name,
         contentType,
       )
 
     res.json({
-      tokenId: maxTokenId,
+      tokenId: nextTokenId,
       inscriptionSignedUrl,
       metadataSignedUrl,
     } as InscriptionUrlsResponse)

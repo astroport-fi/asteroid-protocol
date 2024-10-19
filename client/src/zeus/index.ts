@@ -1053,6 +1053,7 @@ export type ScalarCoders = {
   bigint?: ScalarResolver
   jsonb?: ScalarResolver
   numeric?: ScalarResolver
+  price_curve?: ScalarResolver
   smallint?: ScalarResolver
   timestamp?: ScalarResolver
 }
@@ -5243,6 +5244,74 @@ export type ValueTypes = {
     finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    mint_reservations?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation'],
+    ]
+    mint_reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['launchpad_mint_reservation_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['launchpad_mint_reservation_aggregate'],
+    ]
     minted_supply?: boolean | `@${string}`
     reveal_date?: boolean | `@${string}`
     reveal_immediately?: boolean | `@${string}`
@@ -5330,6 +5399,16 @@ export type ValueTypes = {
       | Variable<any, string>
     max_supply?:
       | ValueTypes['numeric_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    mint_reservations?:
+      | ValueTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    mint_reservations_aggregate?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_bool_exp']
       | undefined
       | null
       | Variable<any, string>
@@ -5996,6 +6075,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    mint_reservations_aggregate?:
+      | ValueTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     minted_supply?:
       | ValueTypes['order_by']
       | undefined
@@ -6047,6 +6131,7 @@ export type ValueTypes = {
     name?: boolean | `@${string}`
     per_user_limit?: boolean | `@${string}`
     price?: boolean | `@${string}`
+    price_curve?: boolean | `@${string}`
     reservations?: [
       {
         /** distinct select on columns */
@@ -6293,6 +6378,11 @@ export type ValueTypes = {
       | undefined
       | null
       | Variable<any, string>
+    price_curve?:
+      | ValueTypes['price_curve_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
     reservations?:
       | ValueTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -6344,6 +6434,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['order_by']
       | undefined
@@ -6380,6 +6475,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['order_by']
       | undefined
@@ -6426,6 +6526,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
     reservations_aggregate?:
       | ValueTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -6536,6 +6641,11 @@ export type ValueTypes = {
       | null
       | Variable<any, string>
     price?: ValueTypes['bigint'] | undefined | null | Variable<any, string>
+    price_curve?:
+      | ValueTypes['price_curve']
+      | undefined
+      | null
+      | Variable<any, string>
     start_date?:
       | ValueTypes['timestamp']
       | undefined
@@ -10029,6 +10139,27 @@ export type ValueTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: unknown
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _gt?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _gte?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _in?:
+      | Array<ValueTypes['price_curve']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _is_null?: boolean | undefined | null | Variable<any, string>
+    _lt?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _lte?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _neq?: ValueTypes['price_curve'] | undefined | null | Variable<any, string>
+    _nin?:
+      | Array<ValueTypes['price_curve']>
+      | undefined
+      | null
+      | Variable<any, string>
+  }
   ['query_root']: AliasType<{
     bridge_history?: [
       {
@@ -11646,6 +11777,78 @@ export type ValueTypes = {
     transaction_by_pk?: [
       { id: number | Variable<any, string> },
       ValueTypes['transaction'],
+    ]
+    troll_post?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['troll_post_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['troll_post_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['troll_post_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['troll_post'],
+    ]
+    troll_post_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['troll_post_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['troll_post_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['troll_post_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['troll_post_aggregate'],
+    ]
+    troll_post_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['troll_post'],
     ]
     __typename?: boolean | `@${string}`
   }>
@@ -14231,6 +14434,100 @@ export type ValueTypes = {
           | Variable<any, string>
       },
       ValueTypes['transaction'],
+    ]
+    troll_post?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['troll_post_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['troll_post_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['troll_post_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['troll_post'],
+    ]
+    troll_post_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ValueTypes['troll_post_select_column']>
+          | undefined
+          | null
+          | Variable<any, string> /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null
+          | Variable<
+              any,
+              string
+            > /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null
+          | Variable<any, string> /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ValueTypes['troll_post_order_by']>
+          | undefined
+          | null
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['troll_post_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['troll_post_aggregate'],
+    ]
+    troll_post_by_pk?: [
+      { id: number | Variable<any, string> },
+      ValueTypes['troll_post'],
+    ]
+    troll_post_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size:
+          | number
+          | Variable<
+              any,
+              string
+            > /** cursor to stream the results returned by the query */
+        cursor:
+          | Array<
+              ValueTypes['troll_post_stream_cursor_input'] | undefined | null
+            >
+          | Variable<any, string> /** filter the rows returned */
+        where?:
+          | ValueTypes['troll_post_bool_exp']
+          | undefined
+          | null
+          | Variable<any, string>
+      },
+      ValueTypes['troll_post'],
     ]
     __typename?: boolean | `@${string}`
   }>
@@ -18411,6 +18708,344 @@ export type ValueTypes = {
     id?: number | undefined | null | Variable<any, string>
     status_message?: string | undefined | null | Variable<any, string>
   }
+  /** columns and relationships of "troll_post" */
+  ['troll_post']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    is_explicit?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ValueTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    /** An object relationship */
+    transaction?: ValueTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "troll_post" */
+  ['troll_post_aggregate']: AliasType<{
+    aggregate?: ValueTypes['troll_post_aggregate_fields']
+    nodes?: ValueTypes['troll_post']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "troll_post" */
+  ['troll_post_aggregate_fields']: AliasType<{
+    avg?: ValueTypes['troll_post_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ValueTypes['troll_post_select_column']>
+          | undefined
+          | null
+          | Variable<any, string>
+        distinct?: boolean | undefined | null | Variable<any, string>
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ValueTypes['troll_post_max_fields']
+    min?: ValueTypes['troll_post_min_fields']
+    stddev?: ValueTypes['troll_post_stddev_fields']
+    stddev_pop?: ValueTypes['troll_post_stddev_pop_fields']
+    stddev_samp?: ValueTypes['troll_post_stddev_samp_fields']
+    sum?: ValueTypes['troll_post_sum_fields']
+    var_pop?: ValueTypes['troll_post_var_pop_fields']
+    var_samp?: ValueTypes['troll_post_var_samp_fields']
+    variance?: ValueTypes['troll_post_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['troll_post_avg_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
+  ['troll_post_bool_exp']: {
+    _and?:
+      | Array<ValueTypes['troll_post_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    _not?:
+      | ValueTypes['troll_post_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    _or?:
+      | Array<ValueTypes['troll_post_bool_exp']>
+      | undefined
+      | null
+      | Variable<any, string>
+    chain_id?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_hash?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_size_bytes?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    creator?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    is_explicit?:
+      | ValueTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    text?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_bool_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['Int_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?:
+      | ValueTypes['String_comparison_exp']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** aggregate max on columns */
+  ['troll_post_max_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['troll_post_min_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "troll_post". */
+  ['troll_post_order_by']: {
+    chain_id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    content_hash?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_path?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    content_size_bytes?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    creator?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    id?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    is_explicit?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad?:
+      | ValueTypes['launchpad_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    launchpad_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    text?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+    transaction?:
+      | ValueTypes['transaction_order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    transaction_id?:
+      | ValueTypes['order_by']
+      | undefined
+      | null
+      | Variable<any, string>
+    version?: ValueTypes['order_by'] | undefined | null | Variable<any, string>
+  }
+  /** select columns of table "troll_post" */
+  ['troll_post_select_column']: troll_post_select_column
+  /** aggregate stddev on columns */
+  ['troll_post_stddev_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['troll_post_stddev_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['troll_post_stddev_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "troll_post" */
+  ['troll_post_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value:
+      | ValueTypes['troll_post_stream_cursor_value_input']
+      | Variable<any, string>
+    /** cursor ordering */
+    ordering?:
+      | ValueTypes['cursor_ordering']
+      | undefined
+      | null
+      | Variable<any, string>
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['troll_post_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null | Variable<any, string>
+    content_hash?: string | undefined | null | Variable<any, string>
+    content_path?: string | undefined | null | Variable<any, string>
+    content_size_bytes?: number | undefined | null | Variable<any, string>
+    creator?: string | undefined | null | Variable<any, string>
+    date_created?:
+      | ValueTypes['timestamp']
+      | undefined
+      | null
+      | Variable<any, string>
+    height?: number | undefined | null | Variable<any, string>
+    id?: number | undefined | null | Variable<any, string>
+    is_explicit?: boolean | undefined | null | Variable<any, string>
+    launchpad_id?: number | undefined | null | Variable<any, string>
+    text?: string | undefined | null | Variable<any, string>
+    transaction_id?: number | undefined | null | Variable<any, string>
+    version?: string | undefined | null | Variable<any, string>
+  }
+  /** aggregate sum on columns */
+  ['troll_post_sum_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['troll_post_var_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['troll_post_var_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['troll_post_variance_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
 }
 
 export type ResolverInputTypes = {
@@ -21105,6 +21740,62 @@ export type ResolverInputTypes = {
     finish_date?: boolean | `@${string}`
     id?: boolean | `@${string}`
     max_supply?: boolean | `@${string}`
+    mint_reservations?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation'],
+    ]
+    mint_reservations_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<
+              ResolverInputTypes['launchpad_mint_reservation_select_column']
+            >
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['launchpad_mint_reservation_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?:
+          | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+          | undefined
+          | null
+      },
+      ResolverInputTypes['launchpad_mint_reservation_aggregate'],
+    ]
     minted_supply?: boolean | `@${string}`
     reveal_date?: boolean | `@${string}`
     reveal_immediately?: boolean | `@${string}`
@@ -21157,6 +21848,14 @@ export type ResolverInputTypes = {
       | null
     id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
     max_supply?: ResolverInputTypes['numeric_comparison_exp'] | undefined | null
+    mint_reservations?:
+      | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+      | null
+    mint_reservations_aggregate?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
+      | null
     minted_supply?:
       | ResolverInputTypes['numeric_comparison_exp']
       | undefined
@@ -21581,6 +22280,10 @@ export type ResolverInputTypes = {
     finish_date?: ResolverInputTypes['order_by'] | undefined | null
     id?: ResolverInputTypes['order_by'] | undefined | null
     max_supply?: ResolverInputTypes['order_by'] | undefined | null
+    mint_reservations_aggregate?:
+      | ResolverInputTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
+      | null
     minted_supply?: ResolverInputTypes['order_by'] | undefined | null
     reveal_date?: ResolverInputTypes['order_by'] | undefined | null
     reveal_immediately?: ResolverInputTypes['order_by'] | undefined | null
@@ -21607,6 +22310,7 @@ export type ResolverInputTypes = {
     name?: boolean | `@${string}`
     per_user_limit?: boolean | `@${string}`
     price?: boolean | `@${string}`
+    price_curve?: boolean | `@${string}`
     reservations?: [
       {
         /** distinct select on columns */
@@ -21762,6 +22466,10 @@ export type ResolverInputTypes = {
       | undefined
       | null
     price?: ResolverInputTypes['bigint_comparison_exp'] | undefined | null
+    price_curve?:
+      | ResolverInputTypes['price_curve_comparison_exp']
+      | undefined
+      | null
     reservations?:
       | ResolverInputTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -21789,6 +22497,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     start_date?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -21801,6 +22510,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     start_date?: ResolverInputTypes['order_by'] | undefined | null
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -21815,6 +22525,7 @@ export type ResolverInputTypes = {
     name?: ResolverInputTypes['order_by'] | undefined | null
     per_user_limit?: ResolverInputTypes['order_by'] | undefined | null
     price?: ResolverInputTypes['order_by'] | undefined | null
+    price_curve?: ResolverInputTypes['order_by'] | undefined | null
     reservations_aggregate?:
       | ResolverInputTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -21869,6 +22580,7 @@ export type ResolverInputTypes = {
     name?: string | undefined | null
     per_user_limit?: ResolverInputTypes['bigint'] | undefined | null
     price?: ResolverInputTypes['bigint'] | undefined | null
+    price_curve?: ResolverInputTypes['price_curve'] | undefined | null
     start_date?: ResolverInputTypes['timestamp'] | undefined | null
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -23869,6 +24581,19 @@ export type ResolverInputTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: unknown
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ResolverInputTypes['price_curve'] | undefined | null
+    _gt?: ResolverInputTypes['price_curve'] | undefined | null
+    _gte?: ResolverInputTypes['price_curve'] | undefined | null
+    _in?: Array<ResolverInputTypes['price_curve']> | undefined | null
+    _is_null?: boolean | undefined | null
+    _lt?: ResolverInputTypes['price_curve'] | undefined | null
+    _lte?: ResolverInputTypes['price_curve'] | undefined | null
+    _neq?: ResolverInputTypes['price_curve'] | undefined | null
+    _nin?: Array<ResolverInputTypes['price_curve']> | undefined | null
+  }
   ['query_root']: AliasType<{
     bridge_history?: [
       {
@@ -25070,6 +25795,53 @@ export type ResolverInputTypes = {
       ResolverInputTypes['transaction'],
     ]
     transaction_by_pk?: [{ id: number }, ResolverInputTypes['transaction']]
+    troll_post?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['troll_post_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['troll_post_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['troll_post'],
+    ]
+    troll_post_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['troll_post_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['troll_post_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['troll_post_aggregate'],
+    ]
+    troll_post_by_pk?: [{ id: number }, ResolverInputTypes['troll_post']]
     __typename?: boolean | `@${string}`
   }>
   ['search_result']: AliasType<{
@@ -26864,6 +27636,66 @@ export type ResolverInputTypes = {
         where?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
       },
       ResolverInputTypes['transaction'],
+    ]
+    troll_post?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['troll_post_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['troll_post_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['troll_post'],
+    ]
+    troll_post_aggregate?: [
+      {
+        /** distinct select on columns */
+        distinct_on?:
+          | Array<ResolverInputTypes['troll_post_select_column']>
+          | undefined
+          | null /** limit the number of rows returned */
+        limit?:
+          | number
+          | undefined
+          | null /** skip the first n rows. Use only with order_by */
+        offset?:
+          | number
+          | undefined
+          | null /** sort the rows by one or more columns */
+        order_by?:
+          | Array<ResolverInputTypes['troll_post_order_by']>
+          | undefined
+          | null /** filter the rows returned */
+        where?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['troll_post_aggregate'],
+    ]
+    troll_post_by_pk?: [{ id: number }, ResolverInputTypes['troll_post']]
+    troll_post_stream?: [
+      {
+        /** maximum number of rows returned in a single batch */
+        batch_size: number /** cursor to stream the results returned by the query */
+        cursor: Array<
+          | ResolverInputTypes['troll_post_stream_cursor_input']
+          | undefined
+          | null
+        > /** filter the rows returned */
+        where?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+      },
+      ResolverInputTypes['troll_post'],
     ]
     __typename?: boolean | `@${string}`
   }>
@@ -29395,6 +30227,240 @@ export type ResolverInputTypes = {
     id?: number | undefined | null
     status_message?: string | undefined | null
   }
+  /** columns and relationships of "troll_post" */
+  ['troll_post']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    is_explicit?: boolean | `@${string}`
+    /** An object relationship */
+    launchpad?: ResolverInputTypes['launchpad']
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    /** An object relationship */
+    transaction?: ResolverInputTypes['transaction']
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregated selection of "troll_post" */
+  ['troll_post_aggregate']: AliasType<{
+    aggregate?: ResolverInputTypes['troll_post_aggregate_fields']
+    nodes?: ResolverInputTypes['troll_post']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate fields of "troll_post" */
+  ['troll_post_aggregate_fields']: AliasType<{
+    avg?: ResolverInputTypes['troll_post_avg_fields']
+    count?: [
+      {
+        columns?:
+          | Array<ResolverInputTypes['troll_post_select_column']>
+          | undefined
+          | null
+        distinct?: boolean | undefined | null
+      },
+      boolean | `@${string}`,
+    ]
+    max?: ResolverInputTypes['troll_post_max_fields']
+    min?: ResolverInputTypes['troll_post_min_fields']
+    stddev?: ResolverInputTypes['troll_post_stddev_fields']
+    stddev_pop?: ResolverInputTypes['troll_post_stddev_pop_fields']
+    stddev_samp?: ResolverInputTypes['troll_post_stddev_samp_fields']
+    sum?: ResolverInputTypes['troll_post_sum_fields']
+    var_pop?: ResolverInputTypes['troll_post_var_pop_fields']
+    var_samp?: ResolverInputTypes['troll_post_var_samp_fields']
+    variance?: ResolverInputTypes['troll_post_variance_fields']
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate avg on columns */
+  ['troll_post_avg_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
+  ['troll_post_bool_exp']: {
+    _and?: Array<ResolverInputTypes['troll_post_bool_exp']> | undefined | null
+    _not?: ResolverInputTypes['troll_post_bool_exp'] | undefined | null
+    _or?: Array<ResolverInputTypes['troll_post_bool_exp']> | undefined | null
+    chain_id?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    content_hash?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    content_path?:
+      | ResolverInputTypes['String_comparison_exp']
+      | undefined
+      | null
+    content_size_bytes?:
+      | ResolverInputTypes['Int_comparison_exp']
+      | undefined
+      | null
+    creator?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    date_created?:
+      | ResolverInputTypes['timestamp_comparison_exp']
+      | undefined
+      | null
+    height?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    is_explicit?:
+      | ResolverInputTypes['Boolean_comparison_exp']
+      | undefined
+      | null
+    launchpad?: ResolverInputTypes['launchpad_bool_exp'] | undefined | null
+    launchpad_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    text?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+    transaction?: ResolverInputTypes['transaction_bool_exp'] | undefined | null
+    transaction_id?: ResolverInputTypes['Int_comparison_exp'] | undefined | null
+    version?: ResolverInputTypes['String_comparison_exp'] | undefined | null
+  }
+  /** aggregate max on columns */
+  ['troll_post_max_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate min on columns */
+  ['troll_post_min_fields']: AliasType<{
+    chain_id?: boolean | `@${string}`
+    content_hash?: boolean | `@${string}`
+    content_path?: boolean | `@${string}`
+    content_size_bytes?: boolean | `@${string}`
+    creator?: boolean | `@${string}`
+    date_created?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    text?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    version?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Ordering options when selecting data from "troll_post". */
+  ['troll_post_order_by']: {
+    chain_id?: ResolverInputTypes['order_by'] | undefined | null
+    content_hash?: ResolverInputTypes['order_by'] | undefined | null
+    content_path?: ResolverInputTypes['order_by'] | undefined | null
+    content_size_bytes?: ResolverInputTypes['order_by'] | undefined | null
+    creator?: ResolverInputTypes['order_by'] | undefined | null
+    date_created?: ResolverInputTypes['order_by'] | undefined | null
+    height?: ResolverInputTypes['order_by'] | undefined | null
+    id?: ResolverInputTypes['order_by'] | undefined | null
+    is_explicit?: ResolverInputTypes['order_by'] | undefined | null
+    launchpad?: ResolverInputTypes['launchpad_order_by'] | undefined | null
+    launchpad_id?: ResolverInputTypes['order_by'] | undefined | null
+    text?: ResolverInputTypes['order_by'] | undefined | null
+    transaction?: ResolverInputTypes['transaction_order_by'] | undefined | null
+    transaction_id?: ResolverInputTypes['order_by'] | undefined | null
+    version?: ResolverInputTypes['order_by'] | undefined | null
+  }
+  /** select columns of table "troll_post" */
+  ['troll_post_select_column']: troll_post_select_column
+  /** aggregate stddev on columns */
+  ['troll_post_stddev_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_pop on columns */
+  ['troll_post_stddev_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate stddev_samp on columns */
+  ['troll_post_stddev_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** Streaming cursor of the table "troll_post" */
+  ['troll_post_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ResolverInputTypes['troll_post_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ResolverInputTypes['cursor_ordering'] | undefined | null
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['troll_post_stream_cursor_value_input']: {
+    chain_id?: string | undefined | null
+    content_hash?: string | undefined | null
+    content_path?: string | undefined | null
+    content_size_bytes?: number | undefined | null
+    creator?: string | undefined | null
+    date_created?: ResolverInputTypes['timestamp'] | undefined | null
+    height?: number | undefined | null
+    id?: number | undefined | null
+    is_explicit?: boolean | undefined | null
+    launchpad_id?: number | undefined | null
+    text?: string | undefined | null
+    transaction_id?: number | undefined | null
+    version?: string | undefined | null
+  }
+  /** aggregate sum on columns */
+  ['troll_post_sum_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_pop on columns */
+  ['troll_post_var_pop_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate var_samp on columns */
+  ['troll_post_var_samp_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
+  /** aggregate variance on columns */
+  ['troll_post_variance_fields']: AliasType<{
+    content_size_bytes?: boolean | `@${string}`
+    height?: boolean | `@${string}`
+    id?: boolean | `@${string}`
+    launchpad_id?: boolean | `@${string}`
+    transaction_id?: boolean | `@${string}`
+    __typename?: boolean | `@${string}`
+  }>
 }
 
 export type ModelTypes = {
@@ -31480,6 +32546,10 @@ export type ModelTypes = {
     finish_date?: ModelTypes['timestamp'] | undefined
     id: number
     max_supply: ModelTypes['numeric']
+    /** An array relationship */
+    mint_reservations: Array<ModelTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    mint_reservations_aggregate: ModelTypes['launchpad_mint_reservation_aggregate']
     minted_supply: ModelTypes['numeric']
     reveal_date?: ModelTypes['timestamp'] | undefined
     reveal_immediately: boolean
@@ -31501,6 +32571,12 @@ export type ModelTypes = {
     finish_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     id?: ModelTypes['Int_comparison_exp'] | undefined
     max_supply?: ModelTypes['numeric_comparison_exp'] | undefined
+    mint_reservations?:
+      | ModelTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+    mint_reservations_aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
     minted_supply?: ModelTypes['numeric_comparison_exp'] | undefined
     reveal_date?: ModelTypes['timestamp_comparison_exp'] | undefined
     reveal_immediately?: ModelTypes['Boolean_comparison_exp'] | undefined
@@ -31850,6 +32926,9 @@ export type ModelTypes = {
     finish_date?: ModelTypes['order_by'] | undefined
     id?: ModelTypes['order_by'] | undefined
     max_supply?: ModelTypes['order_by'] | undefined
+    mint_reservations_aggregate?:
+      | ModelTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
     minted_supply?: ModelTypes['order_by'] | undefined
     reveal_date?: ModelTypes['order_by'] | undefined
     reveal_immediately?: ModelTypes['order_by'] | undefined
@@ -31874,6 +32953,7 @@ export type ModelTypes = {
     name?: string | undefined
     per_user_limit: ModelTypes['bigint']
     price: ModelTypes['bigint']
+    price_curve: ModelTypes['price_curve']
     /** An array relationship */
     reservations: Array<ModelTypes['launchpad_mint_reservation']>
     /** An aggregate relationship */
@@ -31919,6 +32999,7 @@ export type ModelTypes = {
     name?: ModelTypes['String_comparison_exp'] | undefined
     per_user_limit?: ModelTypes['bigint_comparison_exp'] | undefined
     price?: ModelTypes['bigint_comparison_exp'] | undefined
+    price_curve?: ModelTypes['price_curve_comparison_exp'] | undefined
     reservations?: ModelTypes['launchpad_mint_reservation_bool_exp'] | undefined
     reservations_aggregate?:
       | ModelTypes['launchpad_mint_reservation_aggregate_bool_exp']
@@ -31936,6 +33017,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     start_date?: ModelTypes['order_by'] | undefined
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -31948,6 +33030,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     start_date?: ModelTypes['order_by'] | undefined
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -31962,6 +33045,7 @@ export type ModelTypes = {
     name?: ModelTypes['order_by'] | undefined
     per_user_limit?: ModelTypes['order_by'] | undefined
     price?: ModelTypes['order_by'] | undefined
+    price_curve?: ModelTypes['order_by'] | undefined
     reservations_aggregate?:
       | ModelTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -32013,6 +33097,7 @@ export type ModelTypes = {
     name?: string | undefined
     per_user_limit?: ModelTypes['bigint'] | undefined
     price?: ModelTypes['bigint'] | undefined
+    price_curve?: ModelTypes['price_curve'] | undefined
     start_date?: ModelTypes['timestamp'] | undefined
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -33501,6 +34586,19 @@ export type ModelTypes = {
     _nin?: Array<ModelTypes['numeric']> | undefined
   }
   ['order_by']: order_by
+  ['price_curve']: any
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: ModelTypes['price_curve'] | undefined
+    _gt?: ModelTypes['price_curve'] | undefined
+    _gte?: ModelTypes['price_curve'] | undefined
+    _in?: Array<ModelTypes['price_curve']> | undefined
+    _is_null?: boolean | undefined
+    _lt?: ModelTypes['price_curve'] | undefined
+    _lte?: ModelTypes['price_curve'] | undefined
+    _neq?: ModelTypes['price_curve'] | undefined
+    _nin?: Array<ModelTypes['price_curve']> | undefined
+  }
   ['query_root']: {
     /** fetch data from the table: "bridge_history" */
     bridge_history: Array<ModelTypes['bridge_history']>
@@ -33651,6 +34749,12 @@ export type ModelTypes = {
     transaction: Array<ModelTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
     transaction_by_pk?: ModelTypes['transaction'] | undefined
+    /** fetch data from the table: "troll_post" */
+    troll_post: Array<ModelTypes['troll_post']>
+    /** fetch aggregated fields from the table: "troll_post" */
+    troll_post_aggregate: ModelTypes['troll_post_aggregate']
+    /** fetch data from the table: "troll_post" using primary key columns */
+    troll_post_by_pk?: ModelTypes['troll_post'] | undefined
   }
   ['search_result']: {
     content_path?: string | undefined
@@ -33982,6 +35086,14 @@ export type ModelTypes = {
     transaction_by_pk?: ModelTypes['transaction'] | undefined
     /** fetch data from the table in a streaming manner: "transaction" */
     transaction_stream: Array<ModelTypes['transaction']>
+    /** fetch data from the table: "troll_post" */
+    troll_post: Array<ModelTypes['troll_post']>
+    /** fetch aggregated fields from the table: "troll_post" */
+    troll_post_aggregate: ModelTypes['troll_post_aggregate']
+    /** fetch data from the table: "troll_post" using primary key columns */
+    troll_post_by_pk?: ModelTypes['troll_post'] | undefined
+    /** fetch data from the table in a streaming manner: "troll_post" */
+    troll_post_stream: Array<ModelTypes['troll_post']>
   }
   ['timestamp']: any
   /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -35702,6 +36814,202 @@ export type ModelTypes = {
     height?: number | undefined
     id?: number | undefined
     status_message?: string | undefined
+  }
+  /** columns and relationships of "troll_post" */
+  ['troll_post']: {
+    chain_id: string
+    content_hash: string
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator: string
+    date_created: ModelTypes['timestamp']
+    height: number
+    id: number
+    is_explicit?: boolean | undefined
+    /** An object relationship */
+    launchpad?: ModelTypes['launchpad'] | undefined
+    launchpad_id?: number | undefined
+    text: string
+    /** An object relationship */
+    transaction: ModelTypes['transaction']
+    transaction_id: number
+    version: string
+  }
+  /** aggregated selection of "troll_post" */
+  ['troll_post_aggregate']: {
+    aggregate?: ModelTypes['troll_post_aggregate_fields'] | undefined
+    nodes: Array<ModelTypes['troll_post']>
+  }
+  /** aggregate fields of "troll_post" */
+  ['troll_post_aggregate_fields']: {
+    avg?: ModelTypes['troll_post_avg_fields'] | undefined
+    count: number
+    max?: ModelTypes['troll_post_max_fields'] | undefined
+    min?: ModelTypes['troll_post_min_fields'] | undefined
+    stddev?: ModelTypes['troll_post_stddev_fields'] | undefined
+    stddev_pop?: ModelTypes['troll_post_stddev_pop_fields'] | undefined
+    stddev_samp?: ModelTypes['troll_post_stddev_samp_fields'] | undefined
+    sum?: ModelTypes['troll_post_sum_fields'] | undefined
+    var_pop?: ModelTypes['troll_post_var_pop_fields'] | undefined
+    var_samp?: ModelTypes['troll_post_var_samp_fields'] | undefined
+    variance?: ModelTypes['troll_post_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['troll_post_avg_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
+  ['troll_post_bool_exp']: {
+    _and?: Array<ModelTypes['troll_post_bool_exp']> | undefined
+    _not?: ModelTypes['troll_post_bool_exp'] | undefined
+    _or?: Array<ModelTypes['troll_post_bool_exp']> | undefined
+    chain_id?: ModelTypes['String_comparison_exp'] | undefined
+    content_hash?: ModelTypes['String_comparison_exp'] | undefined
+    content_path?: ModelTypes['String_comparison_exp'] | undefined
+    content_size_bytes?: ModelTypes['Int_comparison_exp'] | undefined
+    creator?: ModelTypes['String_comparison_exp'] | undefined
+    date_created?: ModelTypes['timestamp_comparison_exp'] | undefined
+    height?: ModelTypes['Int_comparison_exp'] | undefined
+    id?: ModelTypes['Int_comparison_exp'] | undefined
+    is_explicit?: ModelTypes['Boolean_comparison_exp'] | undefined
+    launchpad?: ModelTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: ModelTypes['Int_comparison_exp'] | undefined
+    text?: ModelTypes['String_comparison_exp'] | undefined
+    transaction?: ModelTypes['transaction_bool_exp'] | undefined
+    transaction_id?: ModelTypes['Int_comparison_exp'] | undefined
+    version?: ModelTypes['String_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['troll_post_max_fields']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate min on columns */
+  ['troll_post_min_fields']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Ordering options when selecting data from "troll_post". */
+  ['troll_post_order_by']: {
+    chain_id?: ModelTypes['order_by'] | undefined
+    content_hash?: ModelTypes['order_by'] | undefined
+    content_path?: ModelTypes['order_by'] | undefined
+    content_size_bytes?: ModelTypes['order_by'] | undefined
+    creator?: ModelTypes['order_by'] | undefined
+    date_created?: ModelTypes['order_by'] | undefined
+    height?: ModelTypes['order_by'] | undefined
+    id?: ModelTypes['order_by'] | undefined
+    is_explicit?: ModelTypes['order_by'] | undefined
+    launchpad?: ModelTypes['launchpad_order_by'] | undefined
+    launchpad_id?: ModelTypes['order_by'] | undefined
+    text?: ModelTypes['order_by'] | undefined
+    transaction?: ModelTypes['transaction_order_by'] | undefined
+    transaction_id?: ModelTypes['order_by'] | undefined
+    version?: ModelTypes['order_by'] | undefined
+  }
+  ['troll_post_select_column']: troll_post_select_column
+  /** aggregate stddev on columns */
+  ['troll_post_stddev_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['troll_post_stddev_pop_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['troll_post_stddev_samp_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Streaming cursor of the table "troll_post" */
+  ['troll_post_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: ModelTypes['troll_post_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: ModelTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['troll_post_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: ModelTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    is_explicit?: boolean | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate sum on columns */
+  ['troll_post_sum_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['troll_post_var_pop_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['troll_post_var_samp_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['troll_post_variance_fields']: {
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
   }
 }
 
@@ -37903,6 +39211,10 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['timestamp'] | undefined
     id: number
     max_supply: GraphQLTypes['numeric']
+    /** An array relationship */
+    mint_reservations: Array<GraphQLTypes['launchpad_mint_reservation']>
+    /** An aggregate relationship */
+    mint_reservations_aggregate: GraphQLTypes['launchpad_mint_reservation_aggregate']
     minted_supply: GraphQLTypes['numeric']
     reveal_date?: GraphQLTypes['timestamp'] | undefined
     reveal_immediately: boolean
@@ -37924,6 +39236,12 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     id?: GraphQLTypes['Int_comparison_exp'] | undefined
     max_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
+    mint_reservations?:
+      | GraphQLTypes['launchpad_mint_reservation_bool_exp']
+      | undefined
+    mint_reservations_aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_bool_exp']
+      | undefined
     minted_supply?: GraphQLTypes['numeric_comparison_exp'] | undefined
     reveal_date?: GraphQLTypes['timestamp_comparison_exp'] | undefined
     reveal_immediately?: GraphQLTypes['Boolean_comparison_exp'] | undefined
@@ -38293,6 +39611,9 @@ export type GraphQLTypes = {
     finish_date?: GraphQLTypes['order_by'] | undefined
     id?: GraphQLTypes['order_by'] | undefined
     max_supply?: GraphQLTypes['order_by'] | undefined
+    mint_reservations_aggregate?:
+      | GraphQLTypes['launchpad_mint_reservation_aggregate_order_by']
+      | undefined
     minted_supply?: GraphQLTypes['order_by'] | undefined
     reveal_date?: GraphQLTypes['order_by'] | undefined
     reveal_immediately?: GraphQLTypes['order_by'] | undefined
@@ -38319,6 +39640,7 @@ export type GraphQLTypes = {
     name?: string | undefined
     per_user_limit: GraphQLTypes['bigint']
     price: GraphQLTypes['bigint']
+    price_curve: GraphQLTypes['price_curve']
     /** An array relationship */
     reservations: Array<GraphQLTypes['launchpad_mint_reservation']>
     /** An aggregate relationship */
@@ -38366,6 +39688,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['String_comparison_exp'] | undefined
     per_user_limit?: GraphQLTypes['bigint_comparison_exp'] | undefined
     price?: GraphQLTypes['bigint_comparison_exp'] | undefined
+    price_curve?: GraphQLTypes['price_curve_comparison_exp'] | undefined
     reservations?:
       | GraphQLTypes['launchpad_mint_reservation_bool_exp']
       | undefined
@@ -38385,6 +39708,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     start_date?: GraphQLTypes['order_by'] | undefined
   }
   /** order by min() on columns of table "launchpad_stage" */
@@ -38397,6 +39721,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     start_date?: GraphQLTypes['order_by'] | undefined
   }
   /** Ordering options when selecting data from "launchpad_stage". */
@@ -38411,6 +39736,7 @@ export type GraphQLTypes = {
     name?: GraphQLTypes['order_by'] | undefined
     per_user_limit?: GraphQLTypes['order_by'] | undefined
     price?: GraphQLTypes['order_by'] | undefined
+    price_curve?: GraphQLTypes['order_by'] | undefined
     reservations_aggregate?:
       | GraphQLTypes['launchpad_mint_reservation_aggregate_order_by']
       | undefined
@@ -38463,6 +39789,7 @@ export type GraphQLTypes = {
     name?: string | undefined
     per_user_limit?: GraphQLTypes['bigint'] | undefined
     price?: GraphQLTypes['bigint'] | undefined
+    price_curve?: GraphQLTypes['price_curve'] | undefined
     start_date?: GraphQLTypes['timestamp'] | undefined
   }
   /** order by sum() on columns of table "launchpad_stage" */
@@ -40034,6 +41361,19 @@ export type GraphQLTypes = {
   }
   /** column ordering options */
   ['order_by']: order_by
+  ['price_curve']: 'scalar' & { name: 'price_curve' }
+  /** Boolean expression to compare columns of type "price_curve". All fields are combined with logical 'AND'. */
+  ['price_curve_comparison_exp']: {
+    _eq?: GraphQLTypes['price_curve'] | undefined
+    _gt?: GraphQLTypes['price_curve'] | undefined
+    _gte?: GraphQLTypes['price_curve'] | undefined
+    _in?: Array<GraphQLTypes['price_curve']> | undefined
+    _is_null?: boolean | undefined
+    _lt?: GraphQLTypes['price_curve'] | undefined
+    _lte?: GraphQLTypes['price_curve'] | undefined
+    _neq?: GraphQLTypes['price_curve'] | undefined
+    _nin?: Array<GraphQLTypes['price_curve']> | undefined
+  }
   ['query_root']: {
     __typename: 'query_root'
     /** fetch data from the table: "bridge_history" */
@@ -40189,6 +41529,12 @@ export type GraphQLTypes = {
     transaction: Array<GraphQLTypes['transaction']>
     /** fetch data from the table: "transaction" using primary key columns */
     transaction_by_pk?: GraphQLTypes['transaction'] | undefined
+    /** fetch data from the table: "troll_post" */
+    troll_post: Array<GraphQLTypes['troll_post']>
+    /** fetch aggregated fields from the table: "troll_post" */
+    troll_post_aggregate: GraphQLTypes['troll_post_aggregate']
+    /** fetch data from the table: "troll_post" using primary key columns */
+    troll_post_by_pk?: GraphQLTypes['troll_post'] | undefined
   }
   ['search_result']: {
     __typename: 'search_result'
@@ -40528,6 +41874,14 @@ export type GraphQLTypes = {
     transaction_by_pk?: GraphQLTypes['transaction'] | undefined
     /** fetch data from the table in a streaming manner: "transaction" */
     transaction_stream: Array<GraphQLTypes['transaction']>
+    /** fetch data from the table: "troll_post" */
+    troll_post: Array<GraphQLTypes['troll_post']>
+    /** fetch aggregated fields from the table: "troll_post" */
+    troll_post_aggregate: GraphQLTypes['troll_post_aggregate']
+    /** fetch data from the table: "troll_post" using primary key columns */
+    troll_post_by_pk?: GraphQLTypes['troll_post'] | undefined
+    /** fetch data from the table in a streaming manner: "troll_post" */
+    troll_post_stream: Array<GraphQLTypes['troll_post']>
   }
   ['timestamp']: 'scalar' & { name: 'timestamp' }
   /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -42304,6 +43658,216 @@ export type GraphQLTypes = {
     id?: number | undefined
     status_message?: string | undefined
   }
+  /** columns and relationships of "troll_post" */
+  ['troll_post']: {
+    __typename: 'troll_post'
+    chain_id: string
+    content_hash: string
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator: string
+    date_created: GraphQLTypes['timestamp']
+    height: number
+    id: number
+    is_explicit?: boolean | undefined
+    /** An object relationship */
+    launchpad?: GraphQLTypes['launchpad'] | undefined
+    launchpad_id?: number | undefined
+    text: string
+    /** An object relationship */
+    transaction: GraphQLTypes['transaction']
+    transaction_id: number
+    version: string
+  }
+  /** aggregated selection of "troll_post" */
+  ['troll_post_aggregate']: {
+    __typename: 'troll_post_aggregate'
+    aggregate?: GraphQLTypes['troll_post_aggregate_fields'] | undefined
+    nodes: Array<GraphQLTypes['troll_post']>
+  }
+  /** aggregate fields of "troll_post" */
+  ['troll_post_aggregate_fields']: {
+    __typename: 'troll_post_aggregate_fields'
+    avg?: GraphQLTypes['troll_post_avg_fields'] | undefined
+    count: number
+    max?: GraphQLTypes['troll_post_max_fields'] | undefined
+    min?: GraphQLTypes['troll_post_min_fields'] | undefined
+    stddev?: GraphQLTypes['troll_post_stddev_fields'] | undefined
+    stddev_pop?: GraphQLTypes['troll_post_stddev_pop_fields'] | undefined
+    stddev_samp?: GraphQLTypes['troll_post_stddev_samp_fields'] | undefined
+    sum?: GraphQLTypes['troll_post_sum_fields'] | undefined
+    var_pop?: GraphQLTypes['troll_post_var_pop_fields'] | undefined
+    var_samp?: GraphQLTypes['troll_post_var_samp_fields'] | undefined
+    variance?: GraphQLTypes['troll_post_variance_fields'] | undefined
+  }
+  /** aggregate avg on columns */
+  ['troll_post_avg_fields']: {
+    __typename: 'troll_post_avg_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Boolean expression to filter rows from the table "troll_post". All fields are combined with a logical 'AND'. */
+  ['troll_post_bool_exp']: {
+    _and?: Array<GraphQLTypes['troll_post_bool_exp']> | undefined
+    _not?: GraphQLTypes['troll_post_bool_exp'] | undefined
+    _or?: Array<GraphQLTypes['troll_post_bool_exp']> | undefined
+    chain_id?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_hash?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_path?: GraphQLTypes['String_comparison_exp'] | undefined
+    content_size_bytes?: GraphQLTypes['Int_comparison_exp'] | undefined
+    creator?: GraphQLTypes['String_comparison_exp'] | undefined
+    date_created?: GraphQLTypes['timestamp_comparison_exp'] | undefined
+    height?: GraphQLTypes['Int_comparison_exp'] | undefined
+    id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    is_explicit?: GraphQLTypes['Boolean_comparison_exp'] | undefined
+    launchpad?: GraphQLTypes['launchpad_bool_exp'] | undefined
+    launchpad_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    text?: GraphQLTypes['String_comparison_exp'] | undefined
+    transaction?: GraphQLTypes['transaction_bool_exp'] | undefined
+    transaction_id?: GraphQLTypes['Int_comparison_exp'] | undefined
+    version?: GraphQLTypes['String_comparison_exp'] | undefined
+  }
+  /** aggregate max on columns */
+  ['troll_post_max_fields']: {
+    __typename: 'troll_post_max_fields'
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate min on columns */
+  ['troll_post_min_fields']: {
+    __typename: 'troll_post_min_fields'
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** Ordering options when selecting data from "troll_post". */
+  ['troll_post_order_by']: {
+    chain_id?: GraphQLTypes['order_by'] | undefined
+    content_hash?: GraphQLTypes['order_by'] | undefined
+    content_path?: GraphQLTypes['order_by'] | undefined
+    content_size_bytes?: GraphQLTypes['order_by'] | undefined
+    creator?: GraphQLTypes['order_by'] | undefined
+    date_created?: GraphQLTypes['order_by'] | undefined
+    height?: GraphQLTypes['order_by'] | undefined
+    id?: GraphQLTypes['order_by'] | undefined
+    is_explicit?: GraphQLTypes['order_by'] | undefined
+    launchpad?: GraphQLTypes['launchpad_order_by'] | undefined
+    launchpad_id?: GraphQLTypes['order_by'] | undefined
+    text?: GraphQLTypes['order_by'] | undefined
+    transaction?: GraphQLTypes['transaction_order_by'] | undefined
+    transaction_id?: GraphQLTypes['order_by'] | undefined
+    version?: GraphQLTypes['order_by'] | undefined
+  }
+  /** select columns of table "troll_post" */
+  ['troll_post_select_column']: troll_post_select_column
+  /** aggregate stddev on columns */
+  ['troll_post_stddev_fields']: {
+    __typename: 'troll_post_stddev_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_pop on columns */
+  ['troll_post_stddev_pop_fields']: {
+    __typename: 'troll_post_stddev_pop_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate stddev_samp on columns */
+  ['troll_post_stddev_samp_fields']: {
+    __typename: 'troll_post_stddev_samp_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** Streaming cursor of the table "troll_post" */
+  ['troll_post_stream_cursor_input']: {
+    /** Stream column input with initial value */
+    initial_value: GraphQLTypes['troll_post_stream_cursor_value_input']
+    /** cursor ordering */
+    ordering?: GraphQLTypes['cursor_ordering'] | undefined
+  }
+  /** Initial value of the column from where the streaming should start */
+  ['troll_post_stream_cursor_value_input']: {
+    chain_id?: string | undefined
+    content_hash?: string | undefined
+    content_path?: string | undefined
+    content_size_bytes?: number | undefined
+    creator?: string | undefined
+    date_created?: GraphQLTypes['timestamp'] | undefined
+    height?: number | undefined
+    id?: number | undefined
+    is_explicit?: boolean | undefined
+    launchpad_id?: number | undefined
+    text?: string | undefined
+    transaction_id?: number | undefined
+    version?: string | undefined
+  }
+  /** aggregate sum on columns */
+  ['troll_post_sum_fields']: {
+    __typename: 'troll_post_sum_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_pop on columns */
+  ['troll_post_var_pop_fields']: {
+    __typename: 'troll_post_var_pop_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate var_samp on columns */
+  ['troll_post_var_samp_fields']: {
+    __typename: 'troll_post_var_samp_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
+  /** aggregate variance on columns */
+  ['troll_post_variance_fields']: {
+    __typename: 'troll_post_variance_fields'
+    content_size_bytes?: number | undefined
+    height?: number | undefined
+    id?: number | undefined
+    launchpad_id?: number | undefined
+    transaction_id?: number | undefined
+  }
 }
 /** select columns of table "bridge_history" */
 export const enum bridge_history_select_column {
@@ -42493,6 +44057,7 @@ export const enum launchpad_stage_select_column {
   name = 'name',
   per_user_limit = 'per_user_limit',
   price = 'price',
+  price_curve = 'price_curve',
   start_date = 'start_date',
 }
 /** select columns of table "launchpad_whitelist" */
@@ -42716,6 +44281,22 @@ export const enum transaction_select_column {
   height = 'height',
   id = 'id',
   status_message = 'status_message',
+}
+/** select columns of table "troll_post" */
+export const enum troll_post_select_column {
+  chain_id = 'chain_id',
+  content_hash = 'content_hash',
+  content_path = 'content_path',
+  content_size_bytes = 'content_size_bytes',
+  creator = 'creator',
+  date_created = 'date_created',
+  height = 'height',
+  id = 'id',
+  is_explicit = 'is_explicit',
+  launchpad_id = 'launchpad_id',
+  text = 'text',
+  transaction_id = 'transaction_id',
+  version = 'version',
 }
 
 type ZEUS_VARIABLES = {
@@ -43011,6 +44592,8 @@ type ZEUS_VARIABLES = {
   ['numeric']: ValueTypes['numeric']
   ['numeric_comparison_exp']: ValueTypes['numeric_comparison_exp']
   ['order_by']: ValueTypes['order_by']
+  ['price_curve']: ValueTypes['price_curve']
+  ['price_curve_comparison_exp']: ValueTypes['price_curve_comparison_exp']
   ['search_result_bool_exp_bool_exp']: ValueTypes['search_result_bool_exp_bool_exp']
   ['search_result_enum_name']: ValueTypes['search_result_enum_name']
   ['search_result_order_by']: ValueTypes['search_result_order_by']
@@ -43120,4 +44703,9 @@ type ZEUS_VARIABLES = {
   ['transaction_select_column']: ValueTypes['transaction_select_column']
   ['transaction_stream_cursor_input']: ValueTypes['transaction_stream_cursor_input']
   ['transaction_stream_cursor_value_input']: ValueTypes['transaction_stream_cursor_value_input']
+  ['troll_post_bool_exp']: ValueTypes['troll_post_bool_exp']
+  ['troll_post_order_by']: ValueTypes['troll_post_order_by']
+  ['troll_post_select_column']: ValueTypes['troll_post_select_column']
+  ['troll_post_stream_cursor_input']: ValueTypes['troll_post_stream_cursor_input']
+  ['troll_post_stream_cursor_value_input']: ValueTypes['troll_post_stream_cursor_value_input']
 }

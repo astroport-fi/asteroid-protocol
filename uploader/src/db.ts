@@ -30,11 +30,25 @@ declare module 'knex/types/tables.js' {
     'id' | 'uploaded'
   >
 
+  export interface LaunchpadAsset {
+    id: number
+    launchpad_hash: string
+    asset_id: number
+    name: string
+    uploaded: boolean
+  }
+
+  export type LaunchpadAssetInsert = Omit<
+    LaunchpadInscription,
+    'id' | 'uploaded'
+  >
+
   interface Tables {
     session: Session
 
     launchpad: Launchpad
     launchpad_inscription: LaunchpadInscription
+    launchpad_asset: LaunchpadAsset
 
     launchpad_composite: Knex.CompositeTableType<
       Launchpad,
@@ -46,6 +60,12 @@ declare module 'knex/types/tables.js' {
       LaunchpadInscription,
       LaunchpadInscription,
       LaunchpadInscriptionInsert
+    >
+
+    launchpad_asset_composite: Knex.CompositeTableType<
+      LaunchpadAsset,
+      LaunchpadAsset,
+      LaunchpadAssetInsert
     >
   }
 }

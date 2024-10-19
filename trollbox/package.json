@@ -1,0 +1,99 @@
+{
+  "name": "trollbox",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "deploy": "wrangler pages deploy ./build/client",
+    "dev": "remix vite:dev",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "start": "wrangler pages dev ./build/client",
+    "typecheck": "tsc",
+    "prettify": "prettier . --write",
+    "typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@asteroid-protocol/sdk": "^0.9.5",
+    "@chain-registry/types": "^0.49.0",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
+    "@cosmjs/stargate": "^0.32.2",
+    "@cosmos-kit/keplr-extension": "^2.14.0",
+    "@cosmos-kit/keplr-mobile": "^2.14.1",
+    "@cosmos-kit/leap-extension": "^2.14.1",
+    "@cosmos-kit/leap-mobile": "^2.13.1",
+    "@cosmos-kit/react-lite": "^2.15.0",
+    "@heroicons/react": "^2.1.1",
+    "@remix-run/cloudflare": "^2.13.1",
+    "@remix-run/cloudflare-pages": "^2.13.1",
+    "@remix-run/react": "^2.13.1",
+    "chain-registry": "^1.67.0",
+    "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
+    "isbot": "^4.1.0",
+    "mime": "^4.0.1",
+    "miniflare": "^3.20231030.4",
+    "react": "18.3.0-canary-01ab35a9a-20240228",
+    "react-cookie": "^7.0.2",
+    "react-daisyui": "^5.0.0",
+    "react-dom": "18.3.0-canary-01ab35a9a-20240228",
+    "react-hook-form": "^7.50.1",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-intersection-observer": "^9.8.1",
+    "react-markdown": "^9.0.1",
+    "react-number-format": "^5.3.1",
+    "react-toastify": "^10.0.6",
+    "remix-utils": "^7.5.0",
+    "swr": "^2.2.5",
+    "tailwind-merge": "^2.2.1",
+    "use-clipboard-copy": "^0.2.0",
+    "vite-env-only": "^2.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240512.0",
+    "@remix-run/dev": "^2.13.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/react": "^18.2.20",
+    "@types/react-datepicker": "^6.0.3",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "buffer": "^6.0.3",
+    "eslint": "^8.38.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "node-fetch": "^3.3.2",
+    "prettier": "^3.2.5",
+    "sharp": "^0.33.3",
+    "svgo": "^3.2.0",
+    "tailwindcss": "^3.4.14",
+    "tsc-files": "^1.1.4",
+    "typescript": "^5.1.6",
+    "vite": "^5.1.0",
+    "vite-plugin-image-optimizer": "^1.1.8",
+    "vite-plugin-node-polyfills": "^0.21.0",
+    "vite-tsconfig-paths": "^4.2.1",
+    "wrangler": "^3.81.0"
+  },
+  "overrides": {
+    "react": "18.3.0-canary-01ab35a9a-20240228",
+    "react-dom": "18.3.0-canary-01ab35a9a-20240228"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "lint-staged": {
+    "app/**/*.{js,ts,jsx,tsx}": "prettier --write --ignore-unknown",
+    "app/**/*.{ts,tsx}": "tsc-files --noEmit"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

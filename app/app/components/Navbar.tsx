@@ -1,39 +1,11 @@
-import {
-  Link,
-  LinkProps,
-  Location,
-  Navigation,
-  useLocation,
-  useNavigation,
-} from '@remix-run/react'
-import clsx from 'clsx'
+import { Link } from '@remix-run/react'
 import { MouseEvent, useCallback, useState } from 'react'
 import { Navbar as DaisyNavbar, Dropdown, Menu } from 'react-daisyui'
 import { useRootContext } from '~/context/root'
+import NavLink from './NavLink'
 import { Details } from './form/Select'
 import { Wallet } from './wallet/Wallet'
 import logo from '../images/logo/white.svg'
-
-function isActive(navigation: Navigation, location: Location, to: string) {
-  if (navigation.state === 'loading') {
-    return navigation.location.pathname.includes(to)
-  }
-
-  return location.pathname.includes(to)
-}
-
-function NavLink(props: LinkProps) {
-  const navigation = useNavigation()
-  const location = useLocation()
-  return (
-    <Link
-      {...props}
-      className={clsx({
-        active: isActive(navigation, location, props.to as string),
-      })}
-    />
-  )
-}
 
 export default function Navbar() {
   const [detailOpen, setDetailOpen] = useState(false)
@@ -42,10 +14,6 @@ export default function Navbar() {
     (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),
     [],
   )
-  const { launchpadEnabled } = useRootContext()
-  const createCollectionLink = launchpadEnabled
-    ? '/app/create/collection'
-    : '/app/create/collection/mint'
 
   return (
     <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral uppercase">
@@ -88,17 +56,15 @@ export default function Navbar() {
                 Inscriptions
               </NavLink>
             </Dropdown.Item>
-            {launchpadEnabled && (
-              <Dropdown.Item anchor={false}>
-                <NavLink
-                  to="/app/launchpad"
-                  onMouseDown={preventDefault}
-                  onClick={close}
-                >
-                  Launchpad
-                </NavLink>
-              </Dropdown.Item>
-            )}
+            <Dropdown.Item anchor={false}>
+              <NavLink
+                to="/app/launchpad"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Launchpad
+              </NavLink>
+            </Dropdown.Item>
             <Dropdown.Item anchor={false}>
               <NavLink
                 to="/app/tokens"
@@ -142,7 +108,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    to={createCollectionLink}
+                    to="/app/create/collection"
                     onMouseDown={preventDefault}
                     onClick={close}
                   >
@@ -208,11 +174,9 @@ export default function Navbar() {
           <Menu.Item>
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>
-          {launchpadEnabled && (
-            <Menu.Item>
-              <NavLink to="/app/launchpad">Launchpad</NavLink>
-            </Menu.Item>
-          )}
+          <Menu.Item>
+            <NavLink to="/app/launchpad">Launchpad</NavLink>
+          </Menu.Item>
           <Menu.Item>
             <NavLink to="/app/tokens">Tokens</NavLink>
           </Menu.Item>
@@ -243,7 +207,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item>
                 <NavLink
-                  to={createCollectionLink}
+                  to="/app/create/collection"
                   onMouseDown={preventDefault}
                   onClick={close}
                 >

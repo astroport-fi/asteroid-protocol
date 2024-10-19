@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'PixelifySans-Variable';
+  src: url('./fonts/PixelifySans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-VariableFont_wght';
+  src:
+    url('./fonts/Poppins-VariableFont_wght.woff2') format('woff2'),
+    url('./fonts/Poppins-VariableFont_wght.woff') format('woff'),
+    url('./fonts/Poppins-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+html {
+  font-variation-settings: 'wght' 400;
+  @apply font-sans;
+}
+
+strong {
+  font-variation-settings: 'wght' 700;
+}
+
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: #c2c9d2;
+  }
+}
+
+@layer utilities {
+  .font-thin {
+    font-variation-settings: 'wght' 100;
+  }
+  .font-extralight {
+    font-variation-settings: 'wght' 200;
+  }
+  .font-light {
+    font-variation-settings: 'wght' 300;
+  }
+  .font-normal {
+    font-variation-settings: 'wght' 400;
+  }
+  .font-medium {
+    font-variation-settings: 'wght' 500;
+  }
+  .font-semibold {
+    font-variation-settings: 'wght' 600;
+  }
+  .font-bold {
+    font-variation-settings: 'wght' 700;
+  }
+  .font-extrabold {
+    font-variation-settings: 'wght' 800;
+  }
+  .font-black {
+    font-variation-settings: 'wght' 900;
+  }
+
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .w-available {
+    width: -webkit-fill-available;
+    width: -moz-available;
+  }
+
+  .border-mask {
+    -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+  }
+}
+
+@layer components {
+  .tab.tab-active:not(.tab-disabled):not([disabled]) {
+    @apply border-primary;
+  }
+
+  .menu li > *:not(ul, .menu-title, .btn) {
+    @apply text-header-content;
+  }
+
+  .menu li > *:not(ul, .menu-title, .btn).active {
+    @apply text-primary;
+    @apply bg-inherit;
+    @apply font-bold;
+  }
+
+  .image-pixelated {
+    image-rendering: pixelated;
+  }
+
+  .collapse > input[type='checkbox'] {
+    @apply cursor-pointer;
+  }
+
+  .tooltip:before {
+    @apply whitespace-pre-wrap;
+    @apply text-center;
+  }
+}
+
+.react-datepicker-time__input {
+  @apply bg-neutral;
+  @apply text-neutral-content;
+}
+
+div[data-testid='sliderList'] {
+  display: flex;
+}

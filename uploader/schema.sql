@@ -29,3 +29,15 @@ CREATE TABLE "public"."session" (
 );
 
 CREATE INDEX "idx_session" ON "public"."session" USING btree ("hash");
+
+CREATE TABLE "public"."launchpad_asset" (
+    "id" serial4 NOT NULL,
+    "launchpad_hash" character(64) NOT NULL,
+    "asset_id" integer NOT NULL,
+    "name" character varying(50) NOT NULL,
+    "uploaded" boolean NOT NULL DEFAULT false,
+    CONSTRAINT "launchpad_asset_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT launchpad_asset_id UNIQUE ("launchpad_hash", "asset_id")
+);
+
+CREATE INDEX "idx_launchpad_asset_launchpad_hash" ON "public"."launchpad_asset" USING btree ("launchpad_hash");

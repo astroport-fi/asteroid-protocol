@@ -1,5 +1,19 @@
 import { NFTMetadata } from '@asteroid-protocol/sdk'
 
+interface InscriptionUploadUrl {
+  inscriptionSignedUrl: string
+  tokenId: number
+  filename: string
+  folder: string
+}
+
+interface AssetUploadUrl {
+  signedUrl: string
+  assetId: number
+  filename: string
+  folder: string
+}
+
 interface InscriptionUploadUrls {
   inscriptionSignedUrl: string
   metadataSignedUrl: string
@@ -37,6 +51,22 @@ export class UploadApi {
     private apiUrl: string,
     private sessionHash?: string,
   ) {}
+
+  async getPublicInscriptions(launchHash: string) {
+    const response = await fetch(
+      `${this.apiUrl}/public/inscriptions/${launchHash}`,
+    )
+    const data = await response.json<
+      { inscriptions: LaunchpadInscription[]; folder: string } | ErrorResponse
+    >()
+
+    if ('status' in data) {
+      console.error('Getting inscriptions failed', data.status, data.message)
+      return null
+    }
+
+    return data
+  }
 
   async getInscriptions(launchHash: string) {
     const response = await fetch(`${this.apiUrl}/inscriptions/${launchHash}`, {
@@ -137,6 +167,51 @@ export class UploadApi {
     }
 
     return data
+  }
+
+  async uploadAsset(
+    launchHash: string,
+    contentType: string,
+    extension: string,
+  ) {
+    const uploadUrlsResponse = await fetch(`${this.apiUrl}/asset/upload`, {
+      method: 'POST',
+      body: JSON.stringify({
+        launchHash,
+        contentType,
+        extension,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    const data = await uploadUrlsResponse.json<AssetUploadUrl | ErrorResponse>()
+
+    if ('status' in data) {
+      console.error(
+        'Reservation image upload failed',
+        data.status,
+        data.message,
+      )
+      throw new Error('Reservation image upload failed')
+    }
+
+    return data
+  }
+
+  confirmAsset(launchHash: string, assetId: number) {
+    return fetch(`${this.apiUrl}/asset/confirm`, {
+      method: 'POST',
+      body: JSON.stringify({
+        launchHash,
+        assetId,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
   }
 
   async editMetadata(launchHash: string, tokenId: number) {
