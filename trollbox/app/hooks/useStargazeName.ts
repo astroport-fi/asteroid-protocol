@@ -16,7 +16,7 @@ export default function useStargazeName(address: string) {
   )
 
   return {
-    name: data?.data ? `${data.data}.cosmos` : null,
+    name: data?.data,
     isLoading,
     isError: error,
   }
