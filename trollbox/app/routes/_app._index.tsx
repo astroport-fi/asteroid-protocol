@@ -15,6 +15,7 @@ import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useToastSubmitTx from '~/hooks/useToastSubmitTx'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import { parsePagination } from '~/utils/pagination'
+import troll from '~/images/troll.png'
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url)
@@ -136,20 +137,27 @@ export default function IndexPage() {
 
   return (
     <div className="flex flex-col w-full">
-      {data.posts.length < 1 && (
-        <span className="p-4 text-center">{'No troll posts found'}</span>
-      )}
       <div className="flex flex-col items-center">
-        <div
-          id="scrollableDiv"
-          className="flex flex-col-reverse overflow-y-scroll h-[calc(100svh-20rem)]"
-        >
-          <PostsInfiniteScroll
-            posts={fetcher.data?.posts ?? data.posts}
-            count={fetcher.data?.total ?? data.total}
-            page={data.page}
-          />
-        </div>
+        {data.posts.length < 1 ? (
+          <div className="flex flex-col items-center">
+            <img src={troll} alt="troll" className="w-1/2" />
+            <div className="mt-4 text-lg">
+              Be the first to drop a troll post!
+            </div>
+          </div>
+        ) : (
+          <div
+            id="scrollableDiv"
+            className="flex flex-col-reverse overflow-y-scroll h-[calc(100svh-20rem)]"
+          >
+            <PostsInfiniteScroll
+              posts={fetcher.data?.posts ?? data.posts}
+              count={fetcher.data?.total ?? data.total}
+              page={data.page}
+            />
+          </div>
+        )}
+
         <CreatePostForm onPostCreated={() => fetcher.load('')} />
       </div>
     </div>
