@@ -37,7 +37,7 @@ export default function MintInscription({
   price?: number
 }) {
   const isLedger = useIsLedger()
-  const { minterAddress, launchpadEnabled } = useRootContext()
+  const { minterAddress } = useRootContext()
   const operations = useLaunchpadOperations()
   const [inProgress, setInProgress] = useState(false)
   const atomBalance = useAtomBalance()
@@ -123,15 +123,7 @@ export default function MintInscription({
 
   return (
     <div className={className}>
-      {!launchpadEnabled ? (
-        <Button
-          disabled
-          fullWidth
-          startIcon={<NoSymbolIcon className="size-4" />}
-        >
-          Launchpad disabled
-        </Button>
-      ) : !operations ? (
+      {!operations ? (
         <Wallet className="btn-md w-full" color="primary" />
       ) : isMintedOut ? (
         <Link

@@ -25,7 +25,6 @@ ASTROPORT_URL = "https://app.astroport.fi"
 UPLOAD_API = "http://localhost:3000"
 MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
-LAUNCHPAD_ENABLED = false
 
 [env.localroids.vars]
 ENVIRONMENT = "development"

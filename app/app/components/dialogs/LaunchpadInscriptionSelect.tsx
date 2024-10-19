@@ -1,7 +1,9 @@
 import { NFTMetadata } from '@asteroid-protocol/sdk'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
 import { forwardRef, useState } from 'react'
 import { Button } from 'react-daisyui'
+import { twMerge } from 'tailwind-merge'
 import { LaunchpadInscription } from '~/api/upload'
 import useInscriptionUrl from '~/hooks/uploader/useInscriptionUrl'
 import useMetadata from '~/hooks/uploader/useMetadata'
@@ -21,13 +23,18 @@ function InscriptionListItem({
 }) {
   const metadata = useMetadata(folder, inscription.inscription_number)
   const imageUrl = useInscriptionUrl(folder, inscription.name)
+  const hasDescription = !!metadata.data?.description
 
   return (
     <Button
       onClick={() => onSelect(metadata.data!)}
-      className="justify-between mb-4"
-      loading={metadata.isLoading}
       size="lg"
+      className={twMerge(
+        clsx('justify-between items-center mb-4', {
+          'h-24 min-h-24': hasDescription,
+        }),
+      )}
+      loading={metadata.isLoading}
       fullWidth
     >
       {metadata.data && (
@@ -40,10 +47,15 @@ function InscriptionListItem({
             />
             <div className="flex flex-col justify-center ml-2">
               <span className="text-left">{metadata.data.name}</span>
+              {hasDescription && (
+                <p className="text-header-content mt-0.5 text-sm">
+                  {metadata.data.description}
+                </p>
+              )}
               <DecimalText
                 value={metadata.data.price!}
                 suffix=" ATOM"
-                className="mt-1 font-normal text-base"
+                className="mt-1 font-normal text-base text-left"
               />
             </div>
           </div>
@@ -119,7 +131,7 @@ export default function LaunchpadInscriptionSelect({
         type="button"
         onClick={() => showSelectDialog()}
         color="ghost"
-        className="flex flex-row justify-between items-center bg-base-300 p-5 w-full rounded-full hover:cursor-pointer"
+        className="flex flex-row justify-between items-center bg-base-300 p-5 w-full rounded-full hover:cursor-pointer hover:bg-opacity-80"
       >
         <div className="flex items-center">
           {selectedInscription ? (
@@ -131,10 +143,13 @@ export default function LaunchpadInscriptionSelect({
               />
               <div className="flex flex-col justify-center ml-2">
                 <span className="text-left">{selectedInscription.name}</span>
+                <p className="text-header-content mt-0.5">
+                  {selectedInscription.description}
+                </p>
                 <DecimalText
                   value={selectedInscription.price!}
                   suffix=" ATOM"
-                  className="mt-1 font-normal text-base"
+                  className="mt-1 font-normal text-base text-left"
                 />
               </div>
             </>

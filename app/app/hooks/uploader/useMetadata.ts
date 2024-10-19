@@ -7,6 +7,6 @@ export default function useMetadata(folder: string, tokenId: number) {
   const { assetsUrl } = useRootContext()
   return useSWR<NFTMetadata>(
     `${assetsUrl}/${folder}/${tokenId}_metadata.json`,
-    fetcher,
+    (url: string) => fetcher<NFTMetadata>(`${url}?${Date.now()}`),
   )
 }

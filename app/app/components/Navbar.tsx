@@ -14,10 +14,6 @@ export default function Navbar() {
     (e: MouseEvent<HTMLAnchorElement>) => e.preventDefault(),
     [],
   )
-  const { launchpadEnabled } = useRootContext()
-  const createCollectionLink = launchpadEnabled
-    ? '/app/create/collection'
-    : '/app/create/collection/mint'
 
   return (
     <DaisyNavbar className="absolute left-0 top-0 p-0 border-b border-b-neutral uppercase">
@@ -60,17 +56,15 @@ export default function Navbar() {
                 Inscriptions
               </NavLink>
             </Dropdown.Item>
-            {launchpadEnabled && (
-              <Dropdown.Item anchor={false}>
-                <NavLink
-                  to="/app/launchpad"
-                  onMouseDown={preventDefault}
-                  onClick={close}
-                >
-                  Launchpad
-                </NavLink>
-              </Dropdown.Item>
-            )}
+            <Dropdown.Item anchor={false}>
+              <NavLink
+                to="/app/launchpad"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Launchpad
+              </NavLink>
+            </Dropdown.Item>
             <Dropdown.Item anchor={false}>
               <NavLink
                 to="/app/tokens"
@@ -114,7 +108,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <NavLink
-                    to={createCollectionLink}
+                    to="/app/create/collection"
                     onMouseDown={preventDefault}
                     onClick={close}
                   >
@@ -180,11 +174,9 @@ export default function Navbar() {
           <Menu.Item>
             <NavLink to="/app/inscriptions">Inscriptions</NavLink>
           </Menu.Item>
-          {launchpadEnabled && (
-            <Menu.Item>
-              <NavLink to="/app/launchpad">Launchpad</NavLink>
-            </Menu.Item>
-          )}
+          <Menu.Item>
+            <NavLink to="/app/launchpad">Launchpad</NavLink>
+          </Menu.Item>
           <Menu.Item>
             <NavLink to="/app/tokens">Tokens</NavLink>
           </Menu.Item>
@@ -215,7 +207,7 @@ export default function Navbar() {
               </Menu.Item>
               <Menu.Item>
                 <NavLink
-                  to={createCollectionLink}
+                  to="/app/create/collection"
                   onMouseDown={preventDefault}
                   onClick={close}
                 >

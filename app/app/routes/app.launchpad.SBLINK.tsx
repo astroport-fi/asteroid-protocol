@@ -26,7 +26,7 @@ import { collectionMeta } from '~/utils/meta'
 import { getSupplyTitle } from '~/utils/number'
 import { getFileExtension } from '~/utils/string'
 
-const SYMBOL = 'SBLINK'
+const SYMBOL = 'BLINK'
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data || !data.launch.collection) {
