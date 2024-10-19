@@ -8,8 +8,6 @@ import LegalIcon from './icons/Legal'
 import PortfolioIcon from './icons/Portfolio'
 import ProfileIcon from './icons/Profile'
 import SearchIcon from './icons/Search'
-import TrollIcon from './icons/Troll'
-import home from '~/images/icons/home.svg'
 
 export function MobileMenu() {
   const [detailOpen, setDetailOpen] = useState(false)
