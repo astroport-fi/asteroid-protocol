@@ -6,18 +6,21 @@ import useSubmitTx, { TxState } from '~/hooks/useSubmitTx'
 
 export default function useToastSubmitTx(
   txInscription: TxInscription | null,
-  options: { onSuccess?: () => void; successMessage?: string } = {},
+  {
+    onSuccess,
+    successMessage,
+  }: { onSuccess?: () => void; successMessage?: string } = {},
 ) {
   const toastId = useRef<Id | null>(null)
 
   const {
-    chainFee,
     metaprotocolFee,
     error,
     txState,
     txHash,
     sendTx,
     resetState,
+    client,
   } = useSubmitTx(txInscription)
 
   useEffect(() => {
@@ -33,13 +36,13 @@ export default function useToastSubmitTx(
         isLoading: false,
         render: (
           <TxLinkToast
-            text={options.successMessage ?? 'Transaction complete'}
+            text={successMessage ?? 'Transaction complete'}
             txHash={txHash}
           />
         ),
       })
       resetState()
-      options.onSuccess?.()
+      onSuccess?.()
       return
     }
 
@@ -100,7 +103,7 @@ export default function useToastSubmitTx(
       resetState()
       return
     }
-  }, [txState, txHash, error, resetState, options])
+  }, [txState, txHash, error, resetState, onSuccess, successMessage])
 
   return {
     sendTx: () => {
@@ -110,8 +113,8 @@ export default function useToastSubmitTx(
       })
       sendTx()
     },
-    chainFee,
     metaprotocolFee,
+    client,
     toastId,
   }
 }

@@ -20,7 +20,7 @@ MAINTENANCE_MODE = false
 UPLOAD_API = "http://localhost:3000"
 MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
 ASSETS_URL = "https://asteroid-local.ams3.digitaloceanspaces.com"
-ASTEROID_URL = "http://localhost:5174"
+ASTEROID_URL = "http://localhost:5173"
 
 # [env.localroids.vars]
 # ENVIRONMENT = "development"
@@ -62,8 +62,8 @@ ENVIRONMENT = "production"
 ASTEROID_API = "https://new-api.asteroidprotocol.io/v1/graphql"
 ASTEROID_API_WSS = "wss://new-api.asteroidprotocol.io/v1/graphql"
 TX_EXPLORER = "https://www.mintscan.io/cosmos/tx/"
-RPC = "https://cosmos-rpc.cosmos-apis.com"
-REST = "https://cosmos-rest.cosmos-apis.com"
+RPC = "https://cosmoshub.tendermintrpc.lava.build"
+REST = "https://cosmoshub.lava.build"
 CHAIN_ID = "cosmoshub-4"
 CHAIN_NAME = "cosmoshub"
 MAX_FILE_SIZE = 550000
@@ -71,7 +71,7 @@ GAS_PRICE = "0.005uatom"
 USE_IBC = true
 USE_EXTENSION_DATA = true
 UPLOAD_API = "https://uploader.asteroidprotocol.io"
-MINTER_ADDRESS = "cosmos10h9stc5v6ntgeygf5xf945njqq5h32r53uquvw"
+MINTER_ADDRESS = "cosmos1kdffujrm0tkh0ephex25ejt4fq6ms3xl8s0em2"
 ASSETS_URL = "https://asteroid.ams3.digitaloceanspaces.com"
 ASTEROID_URL = "https://asteroidprotocol.io"
 

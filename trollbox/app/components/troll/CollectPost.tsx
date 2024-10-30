@@ -1,7 +1,7 @@
 import { getGrantSendMsg } from '@asteroid-protocol/sdk/msg'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { Link, useNavigate } from '@remix-run/react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from 'react-daisyui'
 import { toast } from 'react-toastify'
 import { TrollPost } from '~/api/trollbox'
@@ -12,10 +12,48 @@ import useGetSendAuthorizationAmount, {
 } from '~/hooks/useGetSendAuthorizationAmount'
 import { useTrollBoxOperations } from '~/hooks/useOperations'
 import useToastSubmitTx from '~/hooks/useToastSubmitTx'
+import useAddress from '~/hooks/wallet/useAddress'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import PlusIcon from '../icons/Plus'
 
 export default function CollectPost({
+  trollPost,
+  price,
+  className,
+}: {
+  trollPost: TrollPost
+  price: number
+  className?: string
+}) {
+  const [clicked, setClicked] = useState(false)
+  const address = useAddress()
+
+  return (
+    <div>
+      {clicked ? (
+        <CollectPostInner
+          key={trollPost.id}
+          price={price}
+          trollPost={trollPost}
+          className={className}
+        />
+      ) : (
+        <Button
+          onClick={() => setClicked(true)}
+          size="sm"
+          fullWidth
+          className="shrink"
+          disabled={address == null}
+          startIcon={<PlusIcon className="size-4" />}
+        >
+          Collect
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function CollectPostInner({
   trollPost,
   price,
   className,
@@ -69,12 +107,21 @@ export default function CollectPost({
   }, [operations, trollPost.transaction.hash, requiredAmount, minterAddress])
 
   const navigate = useNavigate()
-  const { sendTx } = useToastSubmitTx(txInscription, {
+  const { sendTx, toastId, client } = useToastSubmitTx(txInscription, {
     onSuccess: () => {
       navigate({ hash: '' }, { replace: true })
     },
     successMessage: 'Post collected',
   })
+
+  const x = useRef<boolean | null>(null)
+
+  useEffect(() => {
+    if (!x.current && txInscription && client && client.client) {
+      sendTx()
+      x.current = true
+    }
+  }, [x, txInscription, client])
 
   async function mint() {
     if (!operations) {
@@ -125,6 +172,7 @@ export default function CollectPost({
             size="sm"
             fullWidth
             className="shrink"
+            loading={toastId.current == null}
             startIcon={<PlusIcon className="size-4" />}
           >
             Collect

@@ -23,13 +23,16 @@ export async function loader({ context, request }: LoaderFunctionArgs) {
 
   const { offset, limit } = parsePagination(searchParams, 100)
   const search = searchParams.get('search')
+  const hasTrollbox = searchParams.has('trollbox')
 
   const asteroidClient = new AsteroidClient(context.cloudflare.env.ASTEROID_API)
   const transactions = await asteroidClient.getInscriptionTradeHistory(0, 50)
   const res = await asteroidClient.getCollections(offset, limit, { search })
   const topCollections = await asteroidClient.getTopCollections()
   const orderBy = getCollectionsStatsOrder(searchParams, 'volume_24h')
-  const collectionsStats = await asteroidClient.getCollectionsStats(orderBy)
+  const collectionsStats = await asteroidClient.getCollectionsStats(orderBy, {
+    trollbox: hasTrollbox,
+  })
 
   return json({
     collections: res.collections,
@@ -108,6 +111,7 @@ export enum CollectionCategory {
   Trending,
   Top,
   New,
+  Trollbox,
 }
 
 export default function CollectionsPage() {
@@ -115,15 +119,18 @@ export default function CollectionsPage() {
   const [searchParams] = useSearchParams()
   const hasSearch = !!searchParams.get('search')
   const sort = searchParams.get('sort')
+  const hasTrollbox = searchParams.has('trollbox')
   const direction = searchParams.get('direction')
   const collectionCategory = useMemo(() => {
-    if (sort == 'volume' && direction == 'desc') {
+    if (hasTrollbox) {
+      return CollectionCategory.Trollbox
+    } else if (sort == 'volume' && direction == 'desc') {
       return CollectionCategory.Top
     } else if (sort == 'id' && direction == 'desc') {
       return CollectionCategory.New
     }
     return CollectionCategory.Trending
-  }, [sort, direction])
+  }, [sort, direction, hasTrollbox])
 
   if (hasSearch) {
     return (
@@ -185,6 +192,18 @@ export default function CollectionsPage() {
             }}
           >
             New
+          </Link>
+          <Link
+            className={clsx('ml-3', {
+              'text-xl text-primary':
+                collectionCategory === CollectionCategory.Trollbox,
+            })}
+            to={{
+              pathname: '/app/inscriptions',
+              search: 'sort=id&direction=desc&trollbox',
+            }}
+          >
+            Trollbox
           </Link>
         </div>
         <Link to="/app/collections" className="flex items-center">
