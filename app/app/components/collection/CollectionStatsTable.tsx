@@ -54,30 +54,30 @@ export default function CollectionStatsTable({
         <AtomValue className="justify-end" horizontal value={info.getValue()} />
       ),
     }),
-    columnHelper.accessor('floor_price_1d_change', {
-      header: '1D Change',
-      meta: {
-        headerClassName: 'text-right pb-0',
-        className: 'text-right',
-      },
-      cell: (info) => (
-        <NA value={info.getValue()}>
-          {(value) => <PercentageTextColored value={value} />}
-        </NA>
-      ),
-    }),
-    columnHelper.accessor('floor_price_1w_change', {
-      header: '7D Change',
-      meta: {
-        headerClassName: 'text-right pb-0',
-        className: 'text-right',
-      },
-      cell: (info) => (
-        <NA value={info.getValue()}>
-          {(value) => <PercentageTextColored value={value} />}
-        </NA>
-      ),
-    }),
+    // columnHelper.accessor('floor_price_1d_change', {
+    //   header: '1D Change',
+    //   meta: {
+    //     headerClassName: 'text-right pb-0',
+    //     className: 'text-right',
+    //   },
+    //   cell: (info) => (
+    //     <NA value={info.getValue()}>
+    //       {(value) => <PercentageTextColored value={value} />}
+    //     </NA>
+    //   ),
+    // }),
+    // columnHelper.accessor('floor_price_1w_change', {
+    //   header: '7D Change',
+    //   meta: {
+    //     headerClassName: 'text-right pb-0',
+    //     className: 'text-right',
+    //   },
+    //   cell: (info) => (
+    //     <NA value={info.getValue()}>
+    //       {(value) => <PercentageTextColored value={value} />}
+    //     </NA>
+    //   ),
+    // }),
     columnHelper.accessor('volume_24h', {
       header: '1D Volume',
       meta: {
