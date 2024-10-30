@@ -29,16 +29,24 @@ export default function CollectionDetailComponent({
   }, [collection.symbol, metadata])
 
   const [open, setOpen] = useState(false)
+  const isTrollbox = collection.symbol.startsWith('TROLL:')
 
   return (
     <div className="flex flex-col p-5 pb-6 border-b border-b-neutral">
       <div className="flex items-center flex-col xl:flex-row">
-        <InscriptionImage
-          src={collection.content_path!}
-          isExplicit={collection.is_explicit}
-          className="size-20 shrink-0"
-          imageClassName="rounded-full"
-        />
+        {isTrollbox ? (
+          <span className="flex flex-shrink-0 items-center justify-center p-2 size-20 bg-no-repeat bg-cover bg-center rounded-full bg-base-200">
+            TROLLBOX
+          </span>
+        ) : (
+          <InscriptionImage
+            src={collection.content_path!}
+            isExplicit={collection.is_explicit}
+            className="size-20 shrink-0"
+            imageClassName="rounded-full"
+          />
+        )}
+
         <div
           className={clsx(
             'flex flex-col xl:ml-4 mt-2 xl:mt-1 h-full items-center xl:items-start',

@@ -48,7 +48,7 @@ function InscriptionListItem({
             <div className="flex flex-col justify-center ml-2">
               <span className="text-left">{metadata.data.name}</span>
               {hasDescription && (
-                <p className="text-header-content mt-0.5 text-sm">
+                <p className="text-header-content mt-0.5 text-sm text-left max-w-40 lg:max-w-72">
                   {metadata.data.description}
                 </p>
               )}
@@ -143,7 +143,7 @@ export default function LaunchpadInscriptionSelect({
               />
               <div className="flex flex-col justify-center ml-2">
                 <span className="text-left">{selectedInscription.name}</span>
-                <p className="text-header-content mt-0.5">
+                <p className="text-header-content mt-0.5 text-left max-w-48 lg:max-w-96">
                   {selectedInscription.description}
                 </p>
                 <DecimalText

@@ -13,7 +13,7 @@ import useUploadApi from '~/hooks/api/useUploadApi'
 import { useInvalidateUploadedInscriptions } from '~/hooks/uploader/useInscriptions'
 import { useHasUploaderSession } from '~/hooks/useUploaderSession'
 import useAddress from '~/hooks/wallet/useAddress'
-import { getDecimalValue } from '~/utils/number'
+import { getDecimalValue, toDecimalValue } from '~/utils/number'
 import CreateUploaderSession from '../CreateUploaderSession'
 
 type FormData = {
@@ -118,6 +118,10 @@ export default function EditMetadata({
         ...metadata,
         name: data.name,
         description: data.description,
+      }
+
+      if (data.price) {
+        newMetadata.price = toDecimalValue(data.price, 6)
       }
 
       if (data.traits.length > 0) {
