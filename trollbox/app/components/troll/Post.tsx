@@ -43,12 +43,12 @@ export default function Post({ post }: { post: TrollPost }) {
         </ChatBubble.Header>
         <ChatBubble.Message
           color={isOwner ? 'accent' : undefined}
-          className="whitespace-pre-wrap break-words mt-1"
+          className="whitespace-pre-wrap break-all mt-1"
         >
           <Link to={`/post/${post.id}`}>{post.text}</Link>
         </ChatBubble.Message>
         <ChatBubble.Footer className="flex items-center opacity-100 mt-2">
-          <CollectPost trollPost={post} price={price} />
+          <CollectPost trollPost={post} price={price} key={post.id} />
           <span className="mx-2">•</span>
           <div className="flex flex-col lg:flex-row">
             <DecimalText value={price} decimalScale={6} />

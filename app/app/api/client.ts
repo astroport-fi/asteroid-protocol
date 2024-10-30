@@ -667,7 +667,10 @@ export class AsteroidClient extends AsteroidService {
             {
               limit: 8,
               order_by: [{ id: order_by.desc }],
-              where: { supply: { _gt: 0 } },
+              where: {
+                supply: { _gt: 0 },
+                collection: { symbol: { _nilike: 'TROLL:%' } },
+              },
             },
             {
               collection: topCollectionSelector,
@@ -679,7 +682,10 @@ export class AsteroidClient extends AsteroidService {
             {
               limit: 8,
               order_by: [{ volume: order_by.desc }],
-              where: { supply: { _gt: 0 } },
+              where: {
+                supply: { _gt: 0 },
+                collection: { symbol: { _nilike: 'TROLL:%' } },
+              },
             },
             {
               collection: topCollectionSelector,
@@ -701,7 +707,10 @@ export class AsteroidClient extends AsteroidService {
                   volume: order_by.desc,
                 },
               ],
-              where: { supply: { _gt: 0 } },
+              where: {
+                supply: { _gt: 0 },
+                collection: { symbol: { _nilike: 'TROLL:%' } },
+              },
             },
             {
               collection: topCollectionSelector,
@@ -824,6 +833,7 @@ export class AsteroidClient extends AsteroidService {
     orderBy: Array<ValueTypes['collection_stats_order_by']>,
     where: {
       search?: string | null
+      trollbox?: boolean
     } = {},
     offset: number = 0,
     limit: number = 15,
@@ -836,6 +846,29 @@ export class AsteroidClient extends AsteroidService {
           name: {
             _ilike: `%${where.search}%`,
           },
+        },
+      }
+    }
+
+    let symbolSearch: ValueTypes['collection_bool_exp']['symbol'] | undefined
+    if (where.trollbox) {
+      symbolSearch = {
+        _ilike: `TROLL:%`,
+      }
+    } else {
+      symbolSearch = {
+        _nilike: `TROLL:%`,
+      }
+    }
+
+    if (queryWhere && queryWhere.collection) {
+      queryWhere.collection = Object.assign(queryWhere.collection, {
+        symbol: symbolSearch,
+      })
+    } else {
+      queryWhere = {
+        collection: {
+          symbol: symbolSearch,
         },
       }
     }

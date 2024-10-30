@@ -20,17 +20,26 @@ export function CollectionBox({
   route?: string
   editActions?: EditActions
 }) {
+  const isTrollbox = collection.symbol.startsWith('TROLL:')
+
   return (
     <Link
       className="flex flex-col justify-between bg-base-200 rounded-xl group"
       to={`${route}/${collection.symbol}`}
     >
-      <InscriptionImage
-        src={collection.content_path!}
-        isExplicit={collection.is_explicit}
-        className="h-60"
-        containerClassName="rounded-t-xl"
-      />
+      {isTrollbox ? (
+        <span className="flex items-center justify-center p-2 h-60 bg-no-repeat bg-cover bg-center rounded-full bg-base-200">
+          TROLLBOX
+        </span>
+      ) : (
+        <InscriptionImage
+          src={collection.content_path!}
+          isExplicit={collection.is_explicit}
+          className="h-60"
+          containerClassName="rounded-t-xl"
+        />
+      )}
+
       <div className="bg-base-300 rounded-b-xl flex flex-col py-4">
         <div className="flex flex-col px-4">
           <strong className="text-nowrap overflow-hidden text-ellipsis">

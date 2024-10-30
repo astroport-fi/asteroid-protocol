@@ -11,8 +11,6 @@ import { CollectionsStatsItem } from '~/api/collection'
 import usePagination from '~/hooks/usePagination'
 import useSorting from '~/hooks/useSorting'
 import AtomValue from '../AtomValue'
-import NA from '../NA'
-import { PercentageTextColored } from '../PercentageText'
 import Table from '../table'
 import { CollectionCell } from './CollectionCell'
 
@@ -78,15 +76,15 @@ export default function CollectionStatsTable({
     //     </NA>
     //   ),
     // }),
-    columnHelper.accessor('volume_24h', {
-      header: '1D Volume',
-      meta: {
-        headerClassName: 'text-right pb-0',
-      },
-      cell: (info) => (
-        <AtomValue className="justify-end" horizontal value={info.getValue()} />
-      ),
-    }),
+    // columnHelper.accessor('volume_24h', {
+    //   header: '1D Volume',
+    //   meta: {
+    //     headerClassName: 'text-right pb-0',
+    //   },
+    //   cell: (info) => (
+    //     <AtomValue className="justify-end" horizontal value={info.getValue()} />
+    //   ),
+    // }),
     columnHelper.accessor('volume_7d', {
       header: '7D Volume',
       meta: {

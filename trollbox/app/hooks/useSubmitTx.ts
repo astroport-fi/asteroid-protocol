@@ -90,7 +90,6 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
   const [txState, setTxState] = useState<TxState>(TxState.Initial)
   const [txHash, setTxHash] = useState('')
   const [error, setError] = useState<SubmitTxError | null>(null)
-  const [chainFee, setChainFee] = useState<StdFee | null>(null)
 
   const txData = useMemo(() => {
     if (!address || !txInscription) {
@@ -129,35 +128,6 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
     }
   }, [txInscription])
 
-  // Estimate chain fee
-  useEffect(() => {
-    if (!txData || !clientState || clientState.isLoading) {
-      return
-    }
-
-    if (clientState.error || !clientState.client) {
-      const errMsg = clientState.error?.message
-      setError({
-        kind: ErrorKind.Estimation,
-        message: `There is no client to estimate chain fee${errMsg ? `: ${errMsg}` : ''}`,
-      })
-      return
-    }
-
-    clientState.client
-      .estimate(txData)
-      .then((res) => {
-        setChainFee(res)
-        setError(null)
-      })
-      .catch((err) => {
-        setError({
-          kind: ErrorKind.Estimation,
-          message: (err as Error).message,
-        })
-      })
-  }, [txData, clientState, retryCounter])
-
   // Send transaction
   const sendTx = useCallback(async () => {
     if (!address) {
@@ -175,6 +145,17 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
 
     if (!txData) {
       setError({ message: 'invalid txData', kind: ErrorKind.Generic })
+      return
+    }
+
+    let chainFee: StdFee | null = null
+    try {
+      chainFee = await clientState.client.estimate(txData)
+    } catch (err) {
+      setError({
+        kind: ErrorKind.Estimation,
+        message: (err as Error).message,
+      })
       return
     }
 
@@ -201,7 +182,7 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
       setTxState(TxState.Failed)
       console.error(err)
     }
-  }, [address, clientState, chainFee, txData, setTxState])
+  }, [address, clientState, txData, setTxState])
 
   // Check transaction status
   useEffect(() => {
@@ -229,14 +210,14 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
           setError({ message: res.error, kind: ErrorKind.Transaction })
         }
       }
-    }, 1000)
+    }, 1500)
 
     return () => clearInterval(intervalId)
   }, [txHash, txState, clientState, asteroidClient])
 
   // Reset state
   const resetState = useCallback(() => {
-    setChainFee(null)
+    // setChainFee(null)
     setTxState(TxState.Initial)
     setTxHash('')
     setError(null)
@@ -244,18 +225,19 @@ export default function useSubmitTx(txInscription: TxInscription | null) {
 
   // Send or retry
   function sendOrRetry() {
-    if (chainFee) {
-      sendTx()
-    } else {
-      setRetryCounter(retryCounter + 1)
-    }
+    // if (chainFee) {
+    sendTx()
+    // } else {
+    // setRetryCounter(retryCounter + 1)
+    // }
   }
 
   return {
     txState,
     txHash,
     error,
-    chainFee,
+    client: clientState,
+    // chainFee,
     metaprotocolFee,
     sendTx: sendOrRetry,
     setError,
