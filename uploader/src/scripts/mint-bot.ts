@@ -254,7 +254,7 @@ async function processMintReservation(
     // 1. random number between 1 and launchpad.max_supply
     // 2. check if token_id is already minted
     // 3. if not, mint token_id, otherwise repeat step 1
-    let tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
+    tokenId = Math.floor(Math.random() * launchpad.max_supply) + 1
     let minted = await api.checkIfMinted(collection.id, tokenId)
     console.log(`Checking if token_id ${tokenId} is already minted...`)
     while (minted) {
@@ -440,7 +440,7 @@ async function main() {
         )
       } catch (e) {
         console.error(
-          `Unable to process reservation, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, error: ${(e as Error).message}`,
+          `Unable to process reservation, collection: ${launchpad.collection.symbol}, launchpad_hash: ${launchpad.transaction.hash}, reservation_id: ${reservation.reservation_id}, error: ${(e as Error).message}`,
           e,
         )
       }
