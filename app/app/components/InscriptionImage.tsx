@@ -5,12 +5,14 @@ import { Skeleton } from 'react-daisyui'
 import { twMerge } from 'tailwind-merge'
 import { getMimeTitle } from '~/utils/string'
 import LazyImage from './LazyImage'
+import ScalableText from './ScalableText'
 
 const SMALL_IMAGE_THRESHOLD = 200
 
 export default function InscriptionImage({
   isExplicit,
   src,
+  text,
   mime,
   className,
   containerClassName,
@@ -21,6 +23,7 @@ export default function InscriptionImage({
   className?: string
   containerClassName?: string
   imageClassName?: string
+  text?: string
   src: string
   mime?: string
   min?: boolean
@@ -84,6 +87,19 @@ export default function InscriptionImage({
         <source src={src} type={mime} />
         Video not supported by browser
       </video>
+    )
+  } else if (mimeTitle === 'Text' && text) {
+    imageComponent = (
+      <div
+        className={twMerge(
+          'bg-base-200 flex w-full h-full items-center justify-center',
+          imageClassName,
+          generalClass,
+          className,
+        )}
+      >
+        <ScalableText text={text} />
+      </div>
     )
   } else {
     imageComponent = (

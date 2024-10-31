@@ -163,6 +163,47 @@ export type MintReservation = InputType<
   ScalarDefinition
 >
 
+export const mintSelector = Selector('launchpad_mint_reservation')({
+  id: true,
+  address: true,
+  stage: {
+    price: true,
+  },
+  date_created: true,
+  launchpad: {
+    collection: {
+      symbol: true,
+      name: true,
+      content_path: true,
+      is_explicit: true,
+      __alias: {
+        description: {
+          metadata: [
+            {
+              path: '$.metadata.description',
+            },
+            true,
+          ],
+        },
+        mime: {
+          metadata: [
+            {
+              path: '$.metadata.mime',
+            },
+            true,
+          ],
+        },
+      },
+    },
+  },
+})
+
+export type Mint = InputType<
+  GraphQLTypes['launchpad_mint_reservation'],
+  typeof mintSelector,
+  ScalarDefinition
+>
+
 function isStageActive(stage: StageItem) {
   const now = new Date()
   return (

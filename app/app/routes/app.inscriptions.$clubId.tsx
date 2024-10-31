@@ -66,8 +66,11 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     txsType === 'collection' && collection != null ? collection.id : undefined,
   )
 
+  const mints = await asteroidClient.getLatestMints()
+
   return json({
     transactions,
+    mints,
     reservedListings,
     collection,
     stats,
@@ -81,8 +84,15 @@ export interface Context {
 }
 
 export default function InscriptionsParentPage() {
-  const { reservedListings, transactions, collection, stats, status, sort } =
-    useLoaderData<typeof loader>()
+  const {
+    reservedListings,
+    transactions,
+    mints,
+    collection,
+    stats,
+    status,
+    sort,
+  } = useLoaderData<typeof loader>()
   const { dialogRef, value, showDialog } =
     useDialogWithValue<InscriptionWithMarket>()
   const { clubId } = useParams()
@@ -168,6 +178,7 @@ export default function InscriptionsParentPage() {
                 className="drawer-overlay"
               ></label>
               <LatestInscriptionTxs
+                mints={mints}
                 transactions={transactions}
                 collectionName={collection?.name}
               />

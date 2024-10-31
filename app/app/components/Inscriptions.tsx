@@ -30,6 +30,7 @@ function InscriptionBox<T extends InscriptionWithMarket>({
         src={inscription.content_path}
         isExplicit={inscription.is_explicit}
         mime={inscription.mime}
+        text={inscription.description}
         className="h-60"
         containerClassName="rounded-t-xl"
       />

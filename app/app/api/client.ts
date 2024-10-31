@@ -74,6 +74,7 @@ import {
   launchpadItemSelector,
   launchpadSelector,
   mintReservationSelector,
+  mintSelector,
   stageDetailSelector,
 } from './launchpad'
 import {
@@ -1785,6 +1786,29 @@ export class AsteroidClient extends AsteroidService {
         result.bridge_history_aggregate.aggregate?.count ??
         result.bridge_history.length,
     }
+  }
+
+  async getLatestMints() {
+    const result = await this.query({
+      launchpad_mint_reservation: [
+        {
+          where: {
+            is_minted: {
+              _eq: true,
+            },
+          },
+          order_by: [
+            {
+              date_created: order_by.desc,
+            },
+          ],
+          limit: 50,
+        },
+        mintSelector,
+      ],
+    })
+
+    return result.launchpad_mint_reservation
   }
 
   async getUserMintReservations(

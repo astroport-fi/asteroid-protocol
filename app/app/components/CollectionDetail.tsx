@@ -8,8 +8,10 @@ import { usesAsteroidSocialLinks } from '~/utils/collection'
 import { CollapseTextContent, CollapseTextTrigger } from './CollapseText'
 import CollectionStatsComponent from './CollectionStats'
 import InscriptionImage from './InscriptionImage'
+import ScalableText from './ScalableText'
 import { NotAffiliatedWarning } from './alerts/NotAffiliatedAlert'
 import CollectionSocials from './collection/CollectionSocials'
+import TrollboxLink from './trollbox/TrollboxLink'
 
 export default function CollectionDetailComponent({
   collection,
@@ -35,8 +37,8 @@ export default function CollectionDetailComponent({
     <div className="flex flex-col p-5 pb-6 border-b border-b-neutral">
       <div className="flex items-center flex-col xl:flex-row">
         {isTrollbox ? (
-          <span className="flex flex-shrink-0 items-center justify-center p-2 size-20 bg-no-repeat bg-cover bg-center rounded-full bg-base-200">
-            TROLLBOX
+          <span className="flex flex-shrink-0 items-center justify-center p-2 size-20 bg-no-repeat bg-cover bg-center rounded-full overflow-hidden bg-base-200">
+            <ScalableText text={collection.metadata.description} />
           </span>
         ) : (
           <InscriptionImage
@@ -67,13 +69,17 @@ export default function CollectionDetailComponent({
               </DaisyLink>
             )}
           </h2>
-          {collection.metadata.description && (
-            <div className="hidden lg:flex">
-              <CollapseTextTrigger
-                onToggle={() => setOpen(!open)}
-                title={collection.metadata.description}
-              />
-            </div>
+          {isTrollbox ? (
+            <TrollboxLink />
+          ) : (
+            collection.metadata.description && (
+              <div className="hidden lg:flex">
+                <CollapseTextTrigger
+                  onToggle={() => setOpen(!open)}
+                  title={collection.metadata.description}
+                />
+              </div>
+            )
           )}
 
           <CollectionSocials collection={collection} />
