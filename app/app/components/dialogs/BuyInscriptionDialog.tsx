@@ -61,6 +61,7 @@ const BuyInscriptionDialog = forwardRef<HTMLDialogElement, Props>(
                   mime={inscription.mime}
                   src={inscription.content_path}
                   isExplicit={inscription.is_explicit}
+                  text={inscription.description}
                   className="w-2/3 max-w-lg"
                   imageClassName="rounded-xl object-contain"
                 />

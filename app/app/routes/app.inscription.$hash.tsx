@@ -25,6 +25,7 @@ import TxLink from '~/components/TxLink'
 import { NotAffiliatedWarning } from '~/components/alerts/NotAffiliatedAlert'
 import GrantMigrationPermissionDialog from '~/components/dialogs/GrantMigrationPermissionDialog'
 import Table from '~/components/table'
+import TrollboxLink from '~/components/trollbox/TrollboxLink'
 import useDialog from '~/hooks/useDialog'
 import useSorting from '~/hooks/useSorting'
 import useAddress from '~/hooks/wallet/useAddress'
@@ -192,6 +193,9 @@ function InscriptionDetailComponent({
     )
   }, [inscription.collection])
 
+  const isTrollbox =
+    inscription.collection?.symbol.startsWith('TROLL:') ?? false
+
   return (
     <div className="flex flex-col xl:grid grid-cols-2 gap-4 w-full mt-4">
       <div className="flex flex-1 flex-col px-4 lg:px-8 items-center">
@@ -199,6 +203,7 @@ function InscriptionDetailComponent({
           mime={inscription.mime}
           src={inscription.content_path}
           isExplicit={inscription.is_explicit}
+          text={inscription.description}
           imageClassName="rounded-xl object-contain"
           className="max-w-3xl w-full"
         />
@@ -258,6 +263,12 @@ function InscriptionDetailComponent({
           </div>
         )}
         <AddToCollection inscription={inscription} />
+        {isTrollbox && (
+          <div className="flex flex-col mt-6">
+            <strong>About Trollposts</strong>
+            <TrollboxLink />
+          </div>
+        )}
 
         {inscription.rarity && (
           <div className="flex flex-col mt-6">
