@@ -27,12 +27,19 @@ export function getOperationFee(
   operation: string,
 ): OperationFee {
   const operationFee = protocolFee.operations[operation]
-  if (!operationFee) {
+  if (operationFee) {
+    return operationFee
+  }
+
+  if (protocolFee.fee) {
     return {
-      amount: '0',
+      amount: protocolFee.fee,
     }
   }
-  return operationFee
+
+  return {
+    amount: '0',
+  }
 }
 
 export function buildOperation(

@@ -28,6 +28,7 @@ export interface ProtocolFee {
   ibcChannel: string
   denom: string
   operations: Record<string, OperationFee>
+  fee?: string
 }
 
 export abstract class BaseProtocol implements MetaProtocol {

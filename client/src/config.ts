@@ -1,4 +1,11 @@
 import { z } from 'zod'
+import {
+  DEFAULT_FEE_MULTIPLIER,
+  DEFAULT_FEE_RECEIVER,
+  DEFAULT_GAS_PRICE,
+  DEFAULT_USE_EXTENSION_DATA,
+  DEFAULT_USE_IBC,
+} from './constants.js'
 
 export const CONFIG_NAME = 'asteroid.json'
 export const CONFIG_PATH = `./${CONFIG_NAME}`
@@ -26,13 +33,6 @@ export const Networks: Record<string, Network> = {
     api: 'https://new-api.asteroidprotocol.io/v1/graphql',
   },
 }
-
-const DEFAULT_GAS_PRICE = '0.005uatom'
-const DEFAULT_FEE_MULTIPLIER = 1.6
-const DEFAULT_USE_EXTENSION_DATA = true
-const DEFAULT_USE_IBC = true
-const DEFAULT_FEE_RECEIVER =
-  'neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p'
 
 export const DEFAULT_CONFIG: Config = {
   gasPrice: DEFAULT_GAS_PRICE,

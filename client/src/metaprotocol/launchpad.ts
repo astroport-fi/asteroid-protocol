@@ -1,10 +1,11 @@
+import { DEFAULT_FEE_AMOUNT, DEFAULT_FEE_RECEIVER } from '../constants.js'
 import { buildOperation } from './build.js'
 import { BaseProtocol, MetaProtocolParams, ProtocolFee } from './types.js'
 
 const DEFAULT_FEE: ProtocolFee = {
   ibcChannel: 'channel-569',
-  receiver:
-    'neutron1unc0549k2f0d7mjjyfm94fuz2x53wrx3px0pr55va27grdgmspcqgzfr8p',
+  receiver: DEFAULT_FEE_RECEIVER,
+  fee: DEFAULT_FEE_AMOUNT,
   denom: 'uatom',
   operations: {},
 }
