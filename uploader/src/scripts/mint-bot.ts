@@ -1,6 +1,8 @@
 import {
   InscriptionOperations,
+  InscriptionProtocol,
   NFTMetadata,
+  ProtocolFee,
   SigningStargateClient,
   TxData,
   broadcastTx,
@@ -25,6 +27,23 @@ interface PfpMetadata {
     height: number
   }
   token_id: number
+}
+
+function getFee(fee: ProtocolFee, useIbc: boolean): ProtocolFee | undefined {
+  if (useIbc) {
+    return
+  }
+
+  return { ...fee, receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv' }
+}
+
+function getInscriptionOperations(config: Config, address: string) {
+  const useIbc = config.USE_IBC !== 'false'
+  return new InscriptionOperations(config.CHAIN_ID, address, {
+    useIbc,
+    fee: getFee(InscriptionProtocol.DEFAULT_FEE, useIbc),
+    multi: false,
+  })
 }
 
 async function pfpStickerMiddleware(
@@ -101,10 +120,7 @@ async function buildInscriptionFromTrollPost(
   }
 
   // create inscription operations
-  const operations = new InscriptionOperations(
-    config.CHAIN_ID,
-    reservation.address,
-  )
+  const operations = getInscriptionOperations(config, reservation.address)
   return {
     txData: operations.inscribeCollectionInscription(
       collectionHash,
@@ -147,10 +163,7 @@ async function buildInscription(
   }
 
   // create inscription operations
-  const operations = new InscriptionOperations(
-    config.CHAIN_ID,
-    reservation.address,
-  )
+  const operations = getInscriptionOperations(config, reservation.address)
   return {
     txData: operations.inscribeCollectionInscription(
       collectionHash,

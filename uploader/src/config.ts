@@ -16,6 +16,7 @@ export const Config = z.object({
   MNEMONIC: z.string(),
   CHAIN_ID: z.string(),
   GAS_MULTIPLIER: z.string(),
+  USE_IBC: z.string(),
 })
 
 export type Config = z.infer<typeof Config>
