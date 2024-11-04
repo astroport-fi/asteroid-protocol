@@ -14,7 +14,7 @@ export class BridgeOperations<
     options: Options<T> = getDefaultOptions(),
   ) {
     super()
-    this.protocol = new BridgeProtocol(chainId)
+    this.protocol = new BridgeProtocol(chainId, options.fee)
     this.address = address
     this.options = options
   }
