@@ -34,7 +34,7 @@ function getFee(fee: ProtocolFee, useIbc: boolean): ProtocolFee | undefined {
     return
   }
 
-  return { ...fee, receiver: 'cosmos1y6338yfh4syssaglcgh3ved9fxhfn0jk4v8qtv' }
+  return { ...fee, receiver: 'cosmos1kdffujrm0tkh0ephex25ejt4fq6ms3xl8s0em2' }
 }
 
 function getInscriptionOperations(config: Config, address: string) {
