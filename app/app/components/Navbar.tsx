@@ -93,6 +93,15 @@ export default function Navbar() {
               </NavLink>
             </Dropdown.Item>
             <Dropdown.Item anchor={false}>
+              <NavLink
+                to="/app/apps"
+                onMouseDown={preventDefault}
+                onClick={close}
+              >
+                Apps
+              </NavLink>
+            </Dropdown.Item>
+            <Dropdown.Item anchor={false}>
               <span>Create</span>
             </Dropdown.Item>
             <li>
@@ -185,6 +194,9 @@ export default function Navbar() {
           </Menu.Item>
           <Menu.Item>
             <NavLink to="/app/bridge">Bridge</NavLink>
+          </Menu.Item>
+          <Menu.Item>
+            <NavLink to="/app/apps">Apps</NavLink>
           </Menu.Item>
           <Menu.Item>
             <Menu.Details
