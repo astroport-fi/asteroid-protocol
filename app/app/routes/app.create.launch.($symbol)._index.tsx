@@ -6,15 +6,7 @@ import { useLoaderData, useNavigate, useParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import React, { useMemo, useState } from 'react'
-import {
-  Alert,
-  Button,
-  Divider,
-  Form,
-  Input,
-  Radio,
-  Textarea,
-} from 'react-daisyui'
+import { Button, Divider, Form, Input, Radio, Textarea } from 'react-daisyui'
 import DatePicker from 'react-datepicker'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { clientOnly$ } from 'vite-env-only'
@@ -115,17 +107,6 @@ export default function CreateCollectionLaunch() {
     : undefined
   const isEdit = data.launchpad != undefined
   const navigate = useNavigate()
-
-  const editingDisabled = useMemo(() => {
-    if (!data.launchpad) {
-      return false
-    }
-
-    return (
-      !data.launchpad.start_date ||
-      new Date() >= getDateFromUTCString(data.launchpad.start_date)
-    )
-  }, [data.launchpad])
 
   const defaultValues: Partial<FormData> = useMemo(() => {
     if (!data.launchpad) {
@@ -254,12 +235,6 @@ export default function CreateCollectionLaunch() {
     <div className="flex flex-col items-center w-full overflow-y-scroll pb-8">
       <Form onSubmit={onSubmit} className="flex flex-col mt-4 w-full max-w-6xl">
         {isLedger && <InscribingNotSupportedWithLedger />}
-        {isEdit && editingDisabled && (
-          <Alert className="border border-warning mb-8">
-            Editing launch options is disabled because launchpad has already
-            started.
-          </Alert>
-        )}
 
         <div className="flex w-full flex-col">
           <h2 className="text-lg">
@@ -297,7 +272,6 @@ export default function CreateCollectionLaunch() {
           {supplyKind == Supply.Fixed && (
             <NumericInput
               control={control}
-              disabled={editingDisabled}
               required
               error={errors.supply}
               name="supply"
@@ -326,7 +300,6 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.Immediately}
-              disabled={editingDisabled}
               id="immediately"
               {...register('reveal', { required: true })}
             />
@@ -340,7 +313,6 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.MintedOut}
-              disabled={editingDisabled}
               id="mintedOut"
               {...register('reveal', { required: true })}
             />
@@ -354,7 +326,6 @@ export default function CreateCollectionLaunch() {
           <div className="flex items-center">
             <Radio
               value={Reveal.SpecificDate}
-              disabled={editingDisabled}
               id="specificDate"
               {...register('reveal', { required: true })}
             />
@@ -372,7 +343,6 @@ export default function CreateCollectionLaunch() {
                   rules={{ required: true }}
                   control={control}
                   name="revealDate"
-                  disabled={editingDisabled}
                   render={({
                     field: { name, onChange, value, ref, onBlur, disabled },
                   }) => (
@@ -420,7 +390,6 @@ export default function CreateCollectionLaunch() {
                   {index > 0 && (
                     <Button
                       type="button"
-                      disabled={editingDisabled}
                       shape="circle"
                       color="error"
                       size="xs"
@@ -443,7 +412,6 @@ export default function CreateCollectionLaunch() {
                     color={
                       errors['stages']?.[index]?.name ? 'error' : undefined
                     }
-                    disabled={editingDisabled}
                     id={`stages.${index}.name`}
                     maxLength={NAME_MAX_LENGTH}
                     minLength={NAME_MIN_LENGTH}
@@ -472,7 +440,6 @@ export default function CreateCollectionLaunch() {
                   />
                   <Textarea
                     id="description"
-                    disabled={editingDisabled}
                     placeholder="Describe mint stage..."
                     rows={10}
                     {...register(`stages.${index}.description`, {
@@ -483,7 +450,6 @@ export default function CreateCollectionLaunch() {
 
                 <NumericInput
                   control={control}
-                  disabled={editingDisabled}
                   error={errors['stages']?.[index]?.price}
                   name={`stages.${index}.price`}
                   title="Price in ATOM (optional)"
@@ -493,7 +459,6 @@ export default function CreateCollectionLaunch() {
 
                 <NumericInput
                   control={control}
-                  disabled={editingDisabled}
                   error={errors['stages']?.[index]?.maxPerUser}
                   name={`stages.${index}.maxPerUser`}
                   title="Maximum mints per user (optional)"
@@ -510,7 +475,6 @@ export default function CreateCollectionLaunch() {
                       {clientOnly$(
                         <Controller
                           control={control}
-                          disabled={editingDisabled}
                           name={`stages.${index}.start`}
                           render={({
                             field: {
@@ -564,7 +528,6 @@ export default function CreateCollectionLaunch() {
                       {clientOnly$(
                         <Controller
                           control={control}
-                          disabled={editingDisabled}
                           rules={{
                             validate: (v) => {
                               const start = stages[index].start
@@ -626,7 +589,6 @@ export default function CreateCollectionLaunch() {
                   />
                   <Textarea
                     id="whitelist"
-                    disabled={editingDisabled}
                     placeholder="Comma separated list of addresses"
                     rows={10}
                     color={
@@ -649,7 +611,6 @@ export default function CreateCollectionLaunch() {
 
           <Button
             color="accent"
-            disabled={editingDisabled}
             className="mt-4"
             startIcon={<PlusIcon className="size-5" />}
             type="button"
@@ -665,7 +626,6 @@ export default function CreateCollectionLaunch() {
             </Button>
           ) : operations ? (
             <Button
-              disabled={editingDisabled}
               type="submit"
               color="primary"
               className="mt-4"

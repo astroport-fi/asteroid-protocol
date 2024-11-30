@@ -271,11 +271,6 @@ func (protocol *Launchpad) UpdateLaunch(transactionModel models.Transaction, par
 		return fmt.Errorf("launchpad not found")
 	}
 
-	// not allowed to update if launchpad is started
-	if !launchpad.StartDate.Valid || launchpad.StartDate.Time.Before(transactionModel.DateCreated) {
-		return fmt.Errorf("launchpad already started")
-	}
-
 	// get launch metadata from non_critical_extension_options
 	msg, err := rawTransaction.Body.GetExtensionMessage()
 	if err != nil {
