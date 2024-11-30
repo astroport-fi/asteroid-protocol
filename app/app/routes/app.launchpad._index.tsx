@@ -54,6 +54,13 @@ function BoxValue({ title, children }: PropsWithChildren<{ title: string }>) {
 export function LaunchBox({ launchpad }: { launchpad: LaunchpadItem }) {
   const { collection } = launchpad
 
+  if (
+    launchpad.stages.length < 1 ||
+    (!launchpad.max_supply && launchpad.collection.symbol !== 'SBLINK')
+  ) {
+    return
+  }
+
   const stage = getActiveOrFirstStageItem(launchpad.stages)
 
   const isMintedOut =
@@ -90,7 +97,7 @@ export function LaunchBox({ launchpad }: { launchpad: LaunchpadItem }) {
         <Divider className="my-1" />
         <div className="flex justify-between mx-4 gap-4 flex-shrink-0">
           <BoxValue title="Price">
-            <DecimalText value={stage.price} suffix=" ATOM" />
+            {stage && <DecimalText value={stage.price} suffix=" ATOM" />}
           </BoxValue>
           <BoxValue title="Items">
             {getSupplyTitle(launchpad.max_supply)}

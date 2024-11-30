@@ -459,7 +459,7 @@ async function main() {
       }
     }
 
-    setTimeout(loop, 10000)
+    setTimeout(loop, 30000)
   }
 
   // loop
