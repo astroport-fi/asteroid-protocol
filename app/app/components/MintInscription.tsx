@@ -13,9 +13,9 @@ import { LaunchpadDetail, StageDetail } from '~/api/launchpad'
 import { useRootContext } from '~/context/root'
 import useAtomBalance from '~/hooks/useAtomBalance'
 import { useDialogWithValue } from '~/hooks/useDialog'
-import useGetSendAuthorizationAmount, {
-  useInvalidateSendAuthorizationAmount,
-} from '~/hooks/useGetSendAuthorizationAmount'
+// import useGetSendAuthorizationAmount, {
+//   useInvalidateSendAuthorizationAmount,
+// } from '~/hooks/useGetSendAuthorizationAmount'
 import { useLaunchpadOperations } from '~/hooks/useOperations'
 import useIsLedger from '~/hooks/wallet/useIsLedger'
 import TxDialog from './dialogs/TxDialog'
@@ -42,14 +42,14 @@ export default function MintInscription({
   const [inProgress, setInProgress] = useState(false)
   const atomBalance = useAtomBalance()
 
-  const { data: authorizedAmount } = useGetSendAuthorizationAmount(
-    operations?.address ?? '',
-    minterAddress,
-  )
-  const invalidateAuthorizedAmount = useInvalidateSendAuthorizationAmount(
-    operations?.address ?? '',
-    minterAddress,
-  )
+  // const { data: authorizedAmount } = useGetSendAuthorizationAmount(
+  //   operations?.address ?? '',
+  //   minterAddress,
+  // )
+  // const invalidateAuthorizedAmount = useInvalidateSendAuthorizationAmount(
+  //   operations?.address ?? '',
+  //   minterAddress,
+  // )
 
   const {
     dialogRef,
@@ -82,7 +82,7 @@ export default function MintInscription({
 
   const mintFee = 100000
   const fee = mintFee + (price ?? activeStage?.price ?? 0)
-  const requiredAmount = fee * amount + (authorizedAmount ?? 0)
+  const requiredAmount = fee * amount
 
   async function mint() {
     if (!activeStage) {
@@ -212,9 +212,9 @@ export default function MintInscription({
         }
         resultCTA="Back to mint"
         resultLink={`/app/launchpad/${launchpad.collection.symbol}`}
-        onSuccess={() => {
-          invalidateAuthorizedAmount()
-        }}
+        // onSuccess={() => {
+        //   invalidateAuthorizedAmount()
+        // }}
       />
     </div>
   )

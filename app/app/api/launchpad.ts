@@ -234,7 +234,9 @@ export function getActiveStageDetail(stages: StageDetail[]) {
   return [...stages].reverse().find(isStageActive)
 }
 
-export function getActiveOrFirstStageItem(stages: StageItem[]) {
+export function getActiveOrFirstStageItem(
+  stages: StageItem[],
+): StageItem | undefined {
   const activeStage = stages.find(isStageActive)
   return activeStage ?? stages[0]
 }
