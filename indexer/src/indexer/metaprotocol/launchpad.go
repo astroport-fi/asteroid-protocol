@@ -314,6 +314,7 @@ func (protocol *Launchpad) UpdateLaunch(transactionModel models.Transaction, par
 			launchpadStage = models.LaunchpadStage{
 				CollectionID: collection.ID,
 				LaunchpadID:  launchpad.ID,
+				PriceCurve:   models.Fixed,
 			}
 		} else {
 			result := protocol.db.Where("launchpad_id = ? AND id = ?", launchpad.ID, stage.ID).First(&launchpadStage)
